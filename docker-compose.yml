@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (for future use)
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: codetutor
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: codetutor
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Python Executor
+  python-executor:
+    build:
+      context: ./apps/executors/python
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+
+volumes:
+  postgres_data:
