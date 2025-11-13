@@ -44,5 +44,41 @@ services:
       - "4001:4001"
     restart: unless-stopped
 
+  # Kotlin Executor
+  kotlin-executor:
+    build:
+      context: ./apps/executors/kotlin
+      dockerfile: Dockerfile
+    ports:
+      - "4002:4002"
+    restart: unless-stopped
+
+  # Rust Executor
+  rust-executor:
+    build:
+      context: ./apps/executors/rust
+      dockerfile: Dockerfile
+    ports:
+      - "4003:4003"
+    restart: unless-stopped
+
+  # C# Executor
+  csharp-executor:
+    build:
+      context: ./apps/executors/csharp
+      dockerfile: Dockerfile
+    ports:
+      - "4004:4004"
+    restart: unless-stopped
+
+  # Dart/Flutter Executor
+  dart-executor:
+    build:
+      context: ./apps/executors/dart
+      dockerfile: Dockerfile
+    ports:
+      - "4007:4007"
+    restart: unless-stopped
+
 volumes:
   postgres_data:
