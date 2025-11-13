@@ -114,13 +114,13 @@ Code-Tutor/
 
 #### Executors (`apps/executors/`)
 Each language has its own sandboxed executor service:
-- **Python:** Flask + Docker ✅ (completed)
-- **JavaScript/TypeScript:** Node.js + VM2 + Docker ✅ (completed)
-- **Java:** Spark Java + JDK 17 + Docker ✅ (completed)
-- **Kotlin:** Kotlin compiler + Docker (planned)
-- **C#:** .NET + Docker (planned)
-- **Rust:** rustc + Docker (planned)
-- **Flutter/Dart:** Dart SDK + Docker (planned)
+- **Python:** Flask + Docker ✅ (port 4000)
+- **Java:** Spark Java + JDK 17 + Docker ✅ (port 4001)
+- **Kotlin:** Kotlin Compiler + JVM + Docker ✅ (port 4002)
+- **Rust:** Actix-web + rustc + Docker ✅ (port 4003)
+- **C#:** ASP.NET Core + Roslyn + Docker ✅ (port 4004)
+- **JavaScript/TypeScript:** Node.js + VM2 + Docker ✅ (port 4005)
+- **Dart/Flutter:** Dart SDK + Shelf + Docker ✅ (port 4007)
 
 ### Running Development Services
 
@@ -246,12 +246,12 @@ cd apps/api && npm test
 | Language | Status | Lessons | Executors |
 |----------|--------|---------|-----------|
 | Python | 🟢 Started | 3/73 | ✅ Complete |
-| JavaScript/TS | 🟡 Planned | 0/40 | ✅ Complete |
 | Java | 🟡 Planned | 0/20 | ✅ Complete |
-| Kotlin | 🟡 Planned | 0/29 | ⏳ Planned |
-| C# | 🟡 Planned | 0/26 | ⏳ Planned |
-| Rust | 🟡 Planned | 0/60 | ⏳ Planned |
-| Flutter | 🟡 Planned | 0/95 | ⏳ Planned |
+| Kotlin | 🟡 Planned | 0/29 | ✅ Complete |
+| Rust | 🟡 Planned | 0/60 | ✅ Complete |
+| C# | 🟡 Planned | 0/26 | ✅ Complete |
+| JavaScript/TS | 🟡 Planned | 0/40 | ✅ Complete |
+| Flutter/Dart | 🟡 Planned | 0/95 | ✅ Complete |
 
 ### Migration Status
 
@@ -274,21 +274,22 @@ See [UNIFIED_PLATFORM_PLAN.md](./UNIFIED_PLATFORM_PLAN.md) for the comprehensive
 - [x] Sample Python course content
 - [x] Progress tracking
 
-### Phase 2: Migration Tools & Executors 🚧 (In Progress)
+### Phase 2: Migration Tools & Executors ✅ (Complete)
 **Tools:**
 - [x] Content migration CLI
 - [x] Content validator script
 
-**Executors:**
+**All 7 Language Executors:**
 - [x] Python executor (Flask + Docker)
-- [x] JavaScript/TypeScript executor (Node.js + VM2)
 - [x] Java executor (Spark Java + JDK 17)
-- [ ] Kotlin executor
-- [ ] C# executor
-- [ ] Rust executor
-- [ ] Dart/Flutter executor
+- [x] Kotlin executor (Kotlin Compiler + JVM)
+- [x] Rust executor (Actix-web + rustc)
+- [x] C# executor (ASP.NET Core + Roslyn)
+- [x] JavaScript/TypeScript executor (Node.js + VM2)
+- [x] Dart/Flutter executor (Dart SDK + Shelf)
 
-**Content Migration:**
+### Phase 3: Content Migration 🚧 (Next)
+**Content to Migrate:**
 - [ ] Migrate Python course (70 remaining lessons)
 - [ ] Migrate Kotlin course (29 lessons)
 - [ ] Migrate Java course (20 lessons)
