@@ -23,12 +23,16 @@ Code-Tutor/
 │   ├── web/              # React + TypeScript frontend
 │   ├── api/              # Node.js/Express backend
 │   └── executors/
-│       └── python/       # Python code executor service
+│       ├── python/       # Python executor (Flask)
+│       ├── javascript/   # JavaScript/TS executor (Node.js)
+│       └── java/         # Java executor (Spark Java)
 ├── content/
 │   └── courses/
 │       └── python/       # Python course content
 ├── packages/             # Shared packages
-└── tools/                # Development tools
+└── tools/
+    ├── content-migrator/ # Migration CLI tool
+    └── content-validator/# Validation script
 ```
 
 ## 🚀 Quick Start
@@ -110,12 +114,12 @@ Code-Tutor/
 
 #### Executors (`apps/executors/`)
 Each language has its own sandboxed executor service:
-- **Python:** Flask + Docker (completed)
-- **Java:** JDK + Docker (planned)
+- **Python:** Flask + Docker ✅ (completed)
+- **JavaScript/TypeScript:** Node.js + VM2 + Docker ✅ (completed)
+- **Java:** Spark Java + JDK 17 + Docker ✅ (completed)
 - **Kotlin:** Kotlin compiler + Docker (planned)
-- **Rust:** rustc + Docker (planned)
 - **C#:** .NET + Docker (planned)
-- **JavaScript/TypeScript:** Node.js + Docker (planned)
+- **Rust:** rustc + Docker (planned)
 - **Flutter/Dart:** Dart SDK + Docker (planned)
 
 ### Running Development Services
@@ -242,12 +246,12 @@ cd apps/api && npm test
 | Language | Status | Lessons | Executors |
 |----------|--------|---------|-----------|
 | Python | 🟢 Started | 3/73 | ✅ Complete |
-| Java | 🟡 Planned | 0/20 | ⏳ Planned |
+| JavaScript/TS | 🟡 Planned | 0/40 | ✅ Complete |
+| Java | 🟡 Planned | 0/20 | ✅ Complete |
 | Kotlin | 🟡 Planned | 0/29 | ⏳ Planned |
-| Rust | 🟡 Planned | 0/60 | ⏳ Planned |
 | C# | 🟡 Planned | 0/26 | ⏳ Planned |
+| Rust | 🟡 Planned | 0/60 | ⏳ Planned |
 | Flutter | 🟡 Planned | 0/95 | ⏳ Planned |
-| JS/TS | 🟡 Planned | 0/40 | ⏳ Planned |
 
 ### Migration Status
 
@@ -263,31 +267,35 @@ Content is being migrated from individual repos:
 
 See [UNIFIED_PLATFORM_PLAN.md](./UNIFIED_PLATFORM_PLAN.md) for the comprehensive plan.
 
-### Phase 1: Foundation ✅ (Current)
+### Phase 1: Foundation ✅ (Complete)
 - [x] React frontend with Monaco Editor
 - [x] Node.js backend API
 - [x] Python executor service
 - [x] Sample Python course content
 - [x] Progress tracking
-- [ ] End-to-end testing
 
-### Phase 2: Content Migration (Weeks 5-10)
-- [ ] Migrate Python course (73 lessons)
+### Phase 2: Migration Tools & Executors 🚧 (In Progress)
+**Tools:**
+- [x] Content migration CLI
+- [x] Content validator script
+
+**Executors:**
+- [x] Python executor (Flask + Docker)
+- [x] JavaScript/TypeScript executor (Node.js + VM2)
+- [x] Java executor (Spark Java + JDK 17)
+- [ ] Kotlin executor
+- [ ] C# executor
+- [ ] Rust executor
+- [ ] Dart/Flutter executor
+
+**Content Migration:**
+- [ ] Migrate Python course (70 remaining lessons)
 - [ ] Migrate Kotlin course (29 lessons)
 - [ ] Migrate Java course (20 lessons)
 - [ ] Migrate C# course (26 lessons)
 - [ ] Migrate Flutter course (95 lessons)
 - [ ] Migrate Rust course (60 lessons)
 - [ ] Create JavaScript/TypeScript course (40 lessons)
-
-### Phase 3: Executor Services (Weeks 8-10)
-- [x] Python executor
-- [ ] JavaScript/TypeScript executor
-- [ ] Java executor
-- [ ] Kotlin executor
-- [ ] C# executor
-- [ ] Rust executor
-- [ ] Dart/Flutter executor
 
 ### Phase 4: Advanced Features (Weeks 11-14)
 - [ ] User authentication (full implementation)
