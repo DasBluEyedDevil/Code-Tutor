@@ -19,6 +19,7 @@ import { useMonacoSetup } from './hooks/useMonacoSetup'
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const CoursePage = lazy(() => import('./pages/CoursePage'))
 const LessonPage = lazy(() => import('./pages/LessonPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 // Inner component with router hooks
 function AppContent() {
@@ -106,6 +107,7 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/course/:language" element={<CoursePage />} />
           <Route path="/course/:language/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
       <ToastContainer>

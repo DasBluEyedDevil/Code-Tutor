@@ -137,9 +137,25 @@ export default function LandingPage() {
             <Link
               key={lang.id}
               to={lang.comingSoon ? '#' : `/course/${lang.id}`}
-              className={`group relative block animate-fade-in-up`}
+              className={`group relative block animate-fade-in-up focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg transition-all ${
+                lang.comingSoon ? 'pointer-events-none' : ''
+              }`}
               style={{ animationDelay: `${index * 50}ms` }}
               onClick={(e) => lang.comingSoon && e.preventDefault()}
+              onKeyDown={(e) => {
+                if (lang.comingSoon) {
+                  e.preventDefault()
+                  return
+                }
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  // React Router's Link will handle navigation
+                  e.currentTarget.click()
+                }
+              }}
+              tabIndex={lang.comingSoon ? -1 : 0}
+              aria-disabled={lang.comingSoon}
+              aria-label={`${lang.name} course - ${lang.lessons} lessons${lang.comingSoon ? ' (Coming Soon)' : ''}`}
             >
               <Card
                 hover={!lang.comingSoon}
