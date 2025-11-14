@@ -93,24 +93,49 @@ export function CodeCompletionChallenge({
     setIsRunningTests(true)
     setHasRunTests(true)
 
-    // Simulate test execution (in real app, this would call the backend API)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      // Call backend validation API
+      const response = await fetch('/api/challenges/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          challenge,
+          userSubmission: {
+            userAnswer: code,
+            hintsUsed,
+          },
+        }),
+      })
 
-    // Mock test results - in production, this would come from the backend
-    const mockResults: TestResult[] = challenge.testCases.map((testCase) => ({
-      testCase,
-      passed: Math.random() > 0.3, // Mock random pass/fail for demo
-      actualOutput: 'Mock output',
-      expectedOutput: testCase.expectedOutput,
-    }))
+      if (!response.ok) {
+        throw new Error(`Validation failed: ${response.statusText}`)
+      }
 
-    setTestResults(mockResults)
-    setIsRunningTests(false)
-    onTestRun?.(mockResults, code)
+      const result = await response.json()
+      const results = result.testResults || []
 
-    // Check if all tests passed
-    if (mockResults.every((r) => r.passed)) {
-      onComplete?.(code, hintsUsed, mockResults)
+      setTestResults(results)
+      onTestRun?.(results, code)
+
+      // Check if all tests passed
+      if (results.every((r: TestResult) => r.passed)) {
+        onComplete?.(code, hintsUsed, results)
+      }
+    } catch (error) {
+      console.error('Failed to run tests:', error)
+      // Show error to user
+      const errorResults: TestResult[] = challenge.testCases.map((testCase) => ({
+        testCase,
+        passed: false,
+        actualOutput: '',
+        expectedOutput: testCase.expectedOutput,
+        errorMessage: error instanceof Error ? error.message : 'Failed to run tests',
+      }))
+      setTestResults(errorResults)
+    } finally {
+      setIsRunningTests(false)
     }
   }
 
