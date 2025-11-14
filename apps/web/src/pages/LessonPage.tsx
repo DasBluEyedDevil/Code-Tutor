@@ -10,6 +10,7 @@ import { useProgressStore } from '../stores/progressStore'
 import { useThemeStore } from '../stores/themeStore'
 import { useToastStore } from '../stores/toastStore'
 import { usePreferencesStore } from '../stores/preferencesStore'
+import { useAchievementsStore } from '../stores/achievementsStore'
 import { fetchCourse, executeCode } from '../api/content'
 import { Card, CardContent } from '../components/Card'
 import { Badge } from '../components/Badge'
@@ -40,6 +41,19 @@ export default function LessonPage() {
   const { markLessonComplete, updateLessonProgress, getLessonProgress } = useProgressStore()
   const { addToast } = useToastStore()
   const { editor: editorPrefs, autoSave, autoSaveDelay } = usePreferencesStore()
+  const {
+    incrementLessonsCompleted,
+    incrementCodeRuns,
+    incrementTestsPassed,
+    updateStreak,
+    initializeAchievements,
+  } = useAchievementsStore()
+
+  // Initialize achievements on mount
+  useEffect(() => {
+    initializeAchievements()
+    updateStreak()
+  }, [initializeAchievements, updateStreak])
 
   // Auto-save code changes
   useAutoSave(
@@ -102,6 +116,9 @@ export default function LessonPage() {
     setOutput('')
 
     try {
+      // Track code execution
+      incrementCodeRuns()
+
       const currentExercise = currentLesson?.exercises[currentExerciseIndex]
       const result = await executeCode(language, code, currentExercise?.testCases)
 
@@ -114,6 +131,11 @@ export default function LessonPage() {
             (prev) =>
               `${prev}\n\nTest Results: ${passed} passed, ${failed} failed\nExecution time: ${result.executionTime}ms`
           )
+
+          // Track tests passed
+          if (passed > 0) {
+            incrementTestsPassed(passed)
+          }
 
           if (failed === 0) {
             addToast({
@@ -158,6 +180,9 @@ export default function LessonPage() {
   const handleMarkComplete = () => {
     if (language && moduleId && lessonId) {
       markLessonComplete(language, moduleId, lessonId)
+
+      // Track lesson completion for achievements
+      incrementLessonsCompleted()
 
       addToast({
         message: 'Lesson completed! Keep up the great work!',
