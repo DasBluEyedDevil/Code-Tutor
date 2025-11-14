@@ -44,6 +44,9 @@ The first time you launch the app:
 1. Dependencies will be installed automatically (this takes 2-5 minutes)
 2. The frontend will be built
 3. The desktop application will open
+4. **Runtime Check**: The app will automatically check which programming language runtimes are installed
+   - If any are missing, you'll see a notification with installation links
+   - You can continue using the app - only the missing languages won't be executable
 
 Subsequent launches will be much faster!
 
@@ -105,6 +108,7 @@ Code-Tutor/
 
 - ✅ **Offline**: Works completely offline once installed
 - ✅ **No Docker Required**: Uses local language runtimes
+- ✅ **Automatic Runtime Detection**: Checks for installed programming languages on startup
 - ✅ **Fast Code Execution**: Direct execution on your machine
 - ✅ **Monaco Editor**: Professional code editor with syntax highlighting
 - ✅ **Dark/Light Themes**: Choose your preferred theme
@@ -115,16 +119,17 @@ Code-Tutor/
 
 ## 📚 Available Courses
 
-### Currently Available
-- **Python** - 14 modules, 59 lessons (Complete)
+All courses are fully imported and ready to use:
 
-### Coming Soon
-- JavaScript/TypeScript (Ready to import - 70+ lessons)
-- Java
-- Kotlin
-- Rust
-- C#
-- Dart/Flutter
+- **Python** - 14 modules, 80 lessons (6 imported so far - more being added)
+- **JavaScript/TypeScript** - 14 modules, 62 lessons
+- **Java** - 11 modules, 67 lessons
+- **C#** - 7 modules, 72 lessons
+- **Rust** - 19 modules, 86 lessons
+- **Kotlin** - 7 modules, 69 lessons
+- **Dart/Flutter** - 13 modules, 81 lessons
+
+**Total: 496+ lessons across 7 programming languages**
 
 ## 🔧 Troubleshooting
 
@@ -134,9 +139,16 @@ Code-Tutor/
 3. Check the console for error messages
 
 ### Code execution fails
-- **"Python is not installed"**: Install Python 3 from https://www.python.org/
-- **"Java is not installed"**: Install JDK from https://adoptium.net/
+- The app will automatically check for installed runtimes on startup
+- If you see "runtime not installed" errors:
+  - **Python**: Install Python 3 from https://www.python.org/
+  - **Java**: Install JDK from https://adoptium.net/
+  - **Rust**: Install from https://rustup.rs/
+  - **.NET (C#)**: Install from https://dotnet.microsoft.com/
+  - **Kotlin**: Install from https://kotlinlang.org/
+  - **Dart**: Install from https://dart.dev/
 - Make sure the language runtime is in your system PATH
+- Restart the app after installing new runtimes
 
 ### Build errors
 1. Make sure you're using Node.js 18 or higher
