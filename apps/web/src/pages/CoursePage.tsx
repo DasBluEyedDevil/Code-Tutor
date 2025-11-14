@@ -67,9 +67,15 @@ export default function CoursePage() {
   const overallProgress = getCourseProgress(language)
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-10">
+      <header className="border-b glass sticky top-0 z-10 shine">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Link to="/" className="hover:text-foreground flex items-center gap-1">
@@ -94,38 +100,38 @@ export default function CoursePage() {
       </header>
 
       {/* Course Info */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card hover className="animate-fade-in-up" style={{ animationDelay: '0ms' }}>
+          <Card hover className="animate-fade-in-up shine border-blue-500/20 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300" style={{ animationDelay: '0ms' }}>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="bg-blue-500/10 p-3 rounded-lg">
+                <div className="bg-gradient-to-br from-blue-500/20 to-blue-500/5 p-3 rounded-lg group-hover:scale-110 transition-transform shadow-lg">
                   <BookOpen className="w-6 h-6 text-blue-500" />
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">Total Modules</div>
-                  <div className="text-2xl font-bold">{course.modules.length}</div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent">{course.modules.length}</div>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card hover className="animate-fade-in-up" style={{ animationDelay: '50ms' }}>
+          <Card hover className="animate-fade-in-up shine border-green-500/20 hover:border-green-500/50 hover:shadow-xl hover:shadow-green-500/20 transition-all duration-300" style={{ animationDelay: '50ms' }}>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="bg-green-500/10 p-3 rounded-lg">
+                <div className="bg-gradient-to-br from-green-500/20 to-green-500/5 p-3 rounded-lg shadow-lg">
                   <Clock className="w-6 h-6 text-green-500" />
                 </div>
                 <div>
                   <div className="text-sm text-muted-foreground">Estimated Time</div>
-                  <div className="text-2xl font-bold">{course.courseMetadata.estimatedHours}h</div>
+                  <div className="text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">{course.courseMetadata.estimatedHours}h</div>
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card hover className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <Card hover className="animate-fade-in-up shine border-purple-500/20 hover:border-purple-500/50 hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300" style={{ animationDelay: '100ms' }}>
             <CardContent className="pt-6">
               <div className="flex items-center gap-4">
-                <div className="bg-purple-500/10 p-3 rounded-lg">
+                <div className="bg-gradient-to-br from-purple-500/20 to-purple-500/5 p-3 rounded-lg shadow-lg">
                   <Award className="w-6 h-6 text-purple-500" />
                 </div>
                 <div>
@@ -135,7 +141,7 @@ export default function CoursePage() {
                       course.courseMetadata.difficulty === 'beginner' ? 'success' :
                       course.courseMetadata.difficulty === 'intermediate' ? 'warning' : 'error'
                     }
-                    className="text-sm px-3 py-1 mt-1"
+                    className="text-sm px-3 py-1 mt-1 shadow-md"
                   >
                     {course.courseMetadata.difficulty}
                   </Badge>
@@ -156,10 +162,10 @@ export default function CoursePage() {
             return (
               <Card
                 key={module.id}
-                className="overflow-hidden animate-fade-in-up"
+                className="overflow-hidden animate-fade-in-up shine border-primary/10 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-6 bg-secondary/30">
+                <CardContent className="p-6 bg-gradient-to-br from-secondary/40 to-secondary/10">
                   <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
                     <div className="flex-1">
                       <h2 className="text-2xl font-bold mb-2">{module.title}</h2>
