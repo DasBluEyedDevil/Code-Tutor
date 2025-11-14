@@ -146,9 +146,10 @@ See `PACKAGING_GUIDE.md` for 4 different options:
 | Node.js | ✅ Installed | System |
 | Dependencies | ✅ Installed | node_modules |
 | Web App | ✅ Ready | apps/web |
-| API Server | ⏳ Start it! | apps/api |
+| API Server | ✅ Ready | apps/api |
 | Courses | ✅ All 7 imported | apps/api/content |
-| Docker | ❌ Optional | Not needed yet |
+| Docker | ⚠️ Required | Install if not running |
+| Executors | 🐳 Docker containers | Started via docker-compose |
 
 ---
 
