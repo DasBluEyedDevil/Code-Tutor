@@ -194,7 +194,7 @@ interface TestResultItemProps {
   onToggleExpand: () => void
 }
 
-function TestResultItem({ result, index, isExpanded, onToggleExpand }: TestResultItemProps) {
+function TestResultItem({ result, index: _index, isExpanded, onToggleExpand }: TestResultItemProps) {
   const { testCase, passed, actualOutput, expectedOutput, errorMessage } = result
   const hasDetails = !passed && (actualOutput !== undefined || errorMessage)
 

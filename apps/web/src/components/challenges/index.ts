@@ -13,6 +13,7 @@ export { TrueFalseChallenge } from './TrueFalseChallenge'
 export { CodeOutputChallenge } from './CodeOutputChallenge'
 export { FreeCodingChallenge } from './FreeCodingChallenge'
 export { CodeCompletionChallenge } from './CodeCompletionChallenge'
+export { ConceptualChallenge } from './ConceptualChallenge'
 
 // Panel components
 export { HintsPanel } from './HintsPanel'
