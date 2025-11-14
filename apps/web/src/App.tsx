@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect, lazy, Suspense, useState } from 'react'
 import { useThemeStore } from './stores/themeStore'
 import { useToastStore } from './stores/toastStore'
 import { Toast, ToastContainer } from './components/Toast'
@@ -8,6 +8,7 @@ import { LoadingSpinner } from './components/Loading'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
+import { Settings } from './components/Settings'
 import { SkipToContent } from './components/SkipToContent'
 import { useReducedMotion } from './hooks/useReducedMotion'
 import { useMonacoSetup } from './hooks/useMonacoSetup'
@@ -23,6 +24,7 @@ function AppContent() {
   const { toggleTheme } = useThemeStore()
   const { toasts, removeToast } = useToastStore()
   const { shortcuts, isHelpOpen, toggleHelp, setHelpOpen, registerShortcuts } = useKeyboardStore()
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   // Register global keyboard shortcuts
   useEffect(() => {
@@ -44,9 +46,18 @@ function AppContent() {
         action: toggleTheme,
       },
       {
+        key: ',',
+        ctrl: true,
+        description: 'Open settings',
+        action: () => setIsSettingsOpen(true),
+      },
+      {
         key: 'Escape',
         description: 'Close dialogs',
-        action: () => setHelpOpen(false),
+        action: () => {
+          setHelpOpen(false)
+          setIsSettingsOpen(false)
+        },
       },
     ])
   }, [navigate, toggleTheme, toggleHelp, setHelpOpen, registerShortcuts])
@@ -90,6 +101,7 @@ function AppContent() {
         onClose={() => setHelpOpen(false)}
         shortcuts={shortcuts}
       />
+      <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </>
   )
 }

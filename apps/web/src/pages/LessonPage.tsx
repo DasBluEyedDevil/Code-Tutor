@@ -9,12 +9,14 @@ import { Course, Lesson, Module } from '../types/content'
 import { useProgressStore } from '../stores/progressStore'
 import { useThemeStore } from '../stores/themeStore'
 import { useToastStore } from '../stores/toastStore'
+import { usePreferencesStore } from '../stores/preferencesStore'
 import { fetchCourse, executeCode } from '../api/content'
 import { Card, CardContent } from '../components/Card'
 import { Badge } from '../components/Badge'
 import { Button } from '../components/Button'
 import { LoadingSpinner } from '../components/Loading'
 import { getEditorOptions } from '../utils/monacoConfig'
+import { useAutoSave } from '../hooks/useAutoSave'
 import 'highlight.js/styles/github-dark.css'
 
 export default function LessonPage() {
@@ -37,6 +39,20 @@ export default function LessonPage() {
   const { theme } = useThemeStore()
   const { markLessonComplete, updateLessonProgress, getLessonProgress } = useProgressStore()
   const { addToast } = useToastStore()
+  const { editor: editorPrefs, autoSave, autoSaveDelay } = usePreferencesStore()
+
+  // Auto-save code changes
+  useAutoSave(
+    code,
+    (savedCode) => {
+      if (language && moduleId && lessonId) {
+        // Save code to localStorage with lesson identifier
+        const storageKey = `code-${language}-${moduleId}-${lessonId}`
+        localStorage.setItem(storageKey, savedCode)
+      }
+    },
+    { enabled: autoSave, delay: autoSaveDelay }
+  )
 
   useEffect(() => {
     if (language) {
@@ -50,10 +66,18 @@ export default function LessonPage() {
             setCurrentModule(module)
             setCurrentLesson(lesson)
 
-            // Set initial code from first exercise if available
-            if (lesson.exercises && lesson.exercises.length > 0) {
+            // Try to load saved code from localStorage first
+            const storageKey = `code-${language}-${moduleId}-${lessonId}`
+            const savedCode = localStorage.getItem(storageKey)
+
+            if (savedCode) {
+              // Use saved code if available
+              setCode(savedCode)
+            } else if (lesson.exercises && lesson.exercises.length > 0) {
+              // Otherwise, set initial code from first exercise if available
               setCode(lesson.exercises[0].starterCode)
             } else if (courseData.languageConfig.editorSettings.defaultTemplate) {
+              // Fall back to default template
               setCode(courseData.languageConfig.editorSettings.defaultTemplate)
             }
 
@@ -264,6 +288,7 @@ export default function LessonPage() {
                     language: example.language,
                     readOnly: true,
                     compact: true,
+                    userPreferences: editorPrefs,
                   })}
                 />
               </Card>
@@ -339,6 +364,7 @@ export default function LessonPage() {
                   language: course.languageConfig.editorSettings.monacoLanguageId,
                   readOnly: false,
                   compact: false,
+                  userPreferences: editorPrefs,
                 })}
               />
 

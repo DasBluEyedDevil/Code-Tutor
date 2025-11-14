@@ -1,4 +1,5 @@
 import type { editor } from 'monaco-editor'
+import type { EditorPreferences } from '../stores/preferencesStore'
 
 /**
  * Enhanced Monaco editor configuration
@@ -9,34 +10,36 @@ export interface EditorConfig {
   language: string
   readOnly?: boolean
   compact?: boolean
+  userPreferences?: EditorPreferences
 }
 
 /**
  * Get enhanced Monaco editor options
  */
 export function getEditorOptions(config: EditorConfig): editor.IStandaloneEditorConstructionOptions {
-  const { language, readOnly = false, compact = false } = config
+  const { language, readOnly = false, compact = false, userPreferences } = config
 
   const baseOptions: editor.IStandaloneEditorConstructionOptions = {
-    // Basic settings
-    fontSize: compact ? 13 : 14,
-    fontFamily: 'Fira Code, Consolas, Monaco, "Courier New", monospace',
+    // Basic settings - use user preferences if provided
+    fontSize: userPreferences?.fontSize ?? (compact ? 13 : 14),
+    fontFamily:
+      userPreferences?.fontFamily ?? 'Fira Code, Consolas, Monaco, "Courier New", monospace',
     fontLigatures: true,
-    lineNumbers: 'on',
+    lineNumbers: userPreferences?.lineNumbers ?? 'on',
     lineNumbersMinChars: compact ? 3 : 4,
 
     // Layout
-    minimap: { enabled: !compact },
+    minimap: { enabled: userPreferences?.minimap ?? !compact },
     scrollBeyondLastLine: false,
     automaticLayout: true,
     padding: { top: compact ? 8 : 12, bottom: compact ? 8 : 12 },
 
     // Editing behavior
     readOnly,
-    tabSize: 2,
+    tabSize: userPreferences?.tabSize ?? 2,
     insertSpaces: true,
     detectIndentation: true,
-    wordWrap: 'on',
+    wordWrap: userPreferences?.wordWrap ?? 'on',
     wrappingStrategy: 'advanced',
 
     // IntelliSense & suggestions
@@ -70,9 +73,9 @@ export function getEditorOptions(config: EditorConfig): editor.IStandaloneEditor
       delay: 300,
     },
 
-    // Formatting
-    formatOnPaste: !readOnly,
-    formatOnType: !readOnly,
+    // Formatting - use user preferences if provided
+    formatOnPaste: userPreferences?.formatOnPaste ?? !readOnly,
+    formatOnType: userPreferences?.formatOnType ?? !readOnly,
 
     // Scrolling & rendering
     smoothScrolling: true,
