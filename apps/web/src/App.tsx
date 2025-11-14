@@ -9,6 +9,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
 import { Settings } from './components/Settings'
+import { Achievements } from './components/Achievements'
 import { CommandPalette, useCommandActions } from './components/CommandPalette'
 import { SkipToContent } from './components/SkipToContent'
 import { useReducedMotion } from './hooks/useReducedMotion'
@@ -27,6 +28,7 @@ function AppContent() {
   const { shortcuts, isHelpOpen, toggleHelp, setHelpOpen, registerShortcuts } = useKeyboardStore()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false)
+  const [isAchievementsOpen, setIsAchievementsOpen] = useState(false)
 
   // Get default command actions
   const commandActions = useCommandActions({
@@ -66,12 +68,19 @@ function AppContent() {
         action: () => setIsCommandPaletteOpen(true),
       },
       {
+        key: 'a',
+        ctrl: true,
+        description: 'Open achievements',
+        action: () => setIsAchievementsOpen(true),
+      },
+      {
         key: 'Escape',
         description: 'Close dialogs',
         action: () => {
           setHelpOpen(false)
           setIsSettingsOpen(false)
           setIsCommandPaletteOpen(false)
+          setIsAchievementsOpen(false)
         },
       },
     ])
@@ -122,6 +131,7 @@ function AppContent() {
         onClose={() => setIsCommandPaletteOpen(false)}
         actions={commandActions}
       />
+      <Achievements isOpen={isAchievementsOpen} onClose={() => setIsAchievementsOpen(false)} />
     </>
   )
 }
