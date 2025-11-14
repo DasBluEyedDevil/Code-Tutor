@@ -2,7 +2,22 @@
 
 > Master multiple programming languages in one unified platform with interactive lessons and real-time code execution.
 
-A modern, web-based learning platform that teaches **Java, Python, Kotlin, Rust, C#, Flutter, and JavaScript/TypeScript** through interactive lessons, real-time code execution, and progress tracking.
+## 🖥️ **Desktop App Available!**
+
+**Want a simple double-click experience?** Code Tutor is now available as a **standalone desktop application**!
+
+- ✅ **No Docker required** - uses your local language runtimes
+- ✅ **One-click launch** - just double-click the launcher script
+- ✅ **Works offline** - everything runs on your machine
+- ✅ **Cross-platform** - Windows, macOS, and Linux
+
+**Get Started:** See **[QUICK_START.md](./QUICK_START.md)** for the desktop app
+
+---
+
+A modern learning platform that teaches **Java, Python, Kotlin, Rust, C#, Flutter, and JavaScript/TypeScript** through interactive lessons, real-time code execution, and progress tracking.
+
+Available as both a **desktop application** and **web-based platform**.
 
 ## 🌟 Features
 

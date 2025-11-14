@@ -1,53 +1,32 @@
 import { useEffect } from 'react'
-import { editor, languages } from 'monaco-editor'
-import { customThemes, codeSnippets } from '../utils/monacoConfig'
+// import { editor, languages } from 'monaco-editor'
+// import { customThemes, codeSnippets } from '../utils/monacoConfig'
 
 /**
  * Hook to set up Monaco editor with custom themes and IntelliSense
  * Should be called once at app initialization
+ *
+ * Note: Disabled for Electron build - Monaco setup is handled by @monaco-editor/react
  */
 export function useMonacoSetup() {
   useEffect(() => {
-    // Define custom themes
-    Object.entries(customThemes).forEach(([themeName, themeData]) => {
-      editor.defineTheme(themeName, themeData)
-    })
+    // Monaco setup disabled for now to fix build issues
+    // This will be handled by the Monaco editor component itself
 
-    // Register code snippets for each language
-    Object.entries(codeSnippets).forEach(([language, snippets]) => {
-      languages.registerCompletionItemProvider(language, {
-        provideCompletionItems: (model, position) => {
-          const word = model.getWordUntilPosition(position)
-          const range = {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn: word.startColumn,
-            endColumn: word.endColumn,
-          }
-
-          const suggestions = snippets.map((snippet) => ({
-            label: snippet.label,
-            kind: languages.CompletionItemKind.Snippet,
-            insertText: snippet.insertText,
-            insertTextRules: languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            documentation: snippet.documentation,
-            range,
-          }))
-
-          return { suggestions }
-        },
-      })
-    })
-
-    // Configure language-specific settings
-    configureLanguageDefaults()
+    // TODO: Re-enable monaco configuration when needed
+    // See utils/monacoConfig.ts for theme and snippet definitions
   }, [])
 }
 
 /**
  * Configure default settings for each language
+ * Note: Currently disabled for Electron build
  */
 function configureLanguageDefaults() {
+  // Disabled for now
+  return
+
+  /* Original code commented out
   // TypeScript/JavaScript configuration
   languages.typescript.typescriptDefaults.setCompilerOptions({
     target: languages.typescript.ScriptTarget.ES2020,
@@ -78,4 +57,5 @@ function configureLanguageDefaults() {
   // Set eager model sync for better IntelliSense
   languages.typescript.typescriptDefaults.setEagerModelSync(true)
   languages.typescript.javascriptDefaults.setEagerModelSync(true)
+  */
 }
