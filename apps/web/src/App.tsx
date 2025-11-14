@@ -1,19 +1,97 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { useEffect, lazy, Suspense } from 'react'
 import { useThemeStore } from './stores/themeStore'
 import { useToastStore } from './stores/toastStore'
 import { Toast, ToastContainer } from './components/Toast'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { LoadingSpinner } from './components/Loading'
+import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
+import { useKeyboardStore } from './stores/keyboardStore'
+import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
 
 // Lazy load route components for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'))
 const CoursePage = lazy(() => import('./pages/CoursePage'))
 const LessonPage = lazy(() => import('./pages/LessonPage'))
 
+// Inner component with router hooks
+function AppContent() {
+  const navigate = useNavigate()
+  const { toggleTheme } = useThemeStore()
+  const { toasts, removeToast } = useToastStore()
+  const { shortcuts, isHelpOpen, toggleHelp, setHelpOpen, registerShortcuts } = useKeyboardStore()
+
+  // Register global keyboard shortcuts
+  useEffect(() => {
+    registerShortcuts([
+      {
+        key: '?',
+        description: 'Show keyboard shortcuts',
+        action: toggleHelp,
+      },
+      {
+        key: 'h',
+        description: 'Go to home page',
+        action: () => navigate('/'),
+      },
+      {
+        key: 't',
+        ctrl: true,
+        description: 'Toggle theme',
+        action: toggleTheme,
+      },
+      {
+        key: 'Escape',
+        description: 'Close dialogs',
+        action: () => setHelpOpen(false),
+      },
+    ])
+  }, [navigate, toggleTheme, toggleHelp, setHelpOpen, registerShortcuts])
+
+  // Apply keyboard shortcuts
+  useKeyboardShortcuts(shortcuts, { enabled: true })
+
+  return (
+    <>
+      <Suspense
+        fallback={
+          <div className="min-h-screen flex items-center justify-center bg-background">
+            <div className="text-center">
+              <LoadingSpinner size="lg" />
+              <p className="mt-4 text-muted-foreground">Loading...</p>
+            </div>
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/course/:language" element={<CoursePage />} />
+          <Route path="/course/:language/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
+        </Routes>
+      </Suspense>
+      <ToastContainer>
+        {toasts.map((toast) => (
+          <Toast
+            key={toast.id}
+            id={toast.id}
+            message={toast.message}
+            type={toast.type}
+            duration={toast.duration}
+            onClose={removeToast}
+          />
+        ))}
+      </ToastContainer>
+      <KeyboardShortcutsHelp
+        isOpen={isHelpOpen}
+        onClose={() => setHelpOpen(false)}
+        shortcuts={shortcuts}
+      />
+    </>
+  )
+}
+
 function App() {
   const { theme } = useThemeStore()
-  const { toasts, removeToast } = useToastStore()
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -26,34 +104,7 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <Suspense
-          fallback={
-            <div className="min-h-screen flex items-center justify-center bg-background">
-              <div className="text-center">
-                <LoadingSpinner size="lg" />
-                <p className="mt-4 text-muted-foreground">Loading...</p>
-              </div>
-            </div>
-          }
-        >
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/course/:language" element={<CoursePage />} />
-            <Route path="/course/:language/module/:moduleId/lesson/:lessonId" element={<LessonPage />} />
-          </Routes>
-        </Suspense>
-        <ToastContainer>
-          {toasts.map((toast) => (
-            <Toast
-              key={toast.id}
-              id={toast.id}
-              message={toast.message}
-              type={toast.type}
-              duration={toast.duration}
-              onClose={removeToast}
-            />
-          ))}
-        </ToastContainer>
+        <AppContent />
       </BrowserRouter>
     </ErrorBoundary>
   )
