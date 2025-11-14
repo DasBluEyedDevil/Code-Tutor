@@ -4,6 +4,8 @@ import path from 'path'
 
 export default defineConfig({
   plugins: [react()],
+  // Use relative paths for Electron compatibility
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -32,8 +34,8 @@ export default defineConfig({
           // React core
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
 
-          // Monaco Editor (large dependency)
-          'monaco': ['@monaco-editor/react', 'monaco-editor'],
+          // Monaco Editor (large dependency) - Note: monaco-editor itself is bundled by @monaco-editor/react
+          'monaco': ['@monaco-editor/react'],
 
           // Markdown rendering
           'markdown': ['react-markdown', 'remark-gfm', 'rehype-highlight'],
