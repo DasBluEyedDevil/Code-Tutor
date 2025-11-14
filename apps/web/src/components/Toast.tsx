@@ -36,16 +36,20 @@ export function Toast({ id, message, type = 'info', duration = 3000, onClose }: 
 
   return (
     <div
+      role={type === 'error' ? 'alert' : 'status'}
+      aria-live={type === 'error' ? 'assertive' : 'polite'}
+      aria-atomic="true"
       className={clsx(
         'flex items-center gap-3 p-4 rounded-lg border shadow-lg animate-slide-in-right',
         styles[type]
       )}
     >
-      <div className="flex-shrink-0">{icons[type]}</div>
+      <div className="flex-shrink-0" aria-hidden="true">{icons[type]}</div>
       <p className="flex-1 text-sm font-medium">{message}</p>
       <button
         onClick={() => onClose(id)}
-        className="flex-shrink-0 hover:opacity-70 transition-opacity"
+        aria-label="Close notification"
+        className="flex-shrink-0 hover:opacity-70 transition-opacity focus:outline-none focus:ring-2 focus:ring-offset-1 rounded"
       >
         <X className="w-4 h-4" />
       </button>
@@ -55,7 +59,11 @@ export function Toast({ id, message, type = 'info', duration = 3000, onClose }: 
 
 export function ToastContainer({ children }: { children: React.ReactNode }) {
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full px-4">
+    <div
+      className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 max-w-md w-full px-4"
+      aria-label="Notifications"
+      role="region"
+    >
       {children}
     </div>
   )

@@ -9,11 +9,15 @@ import { Course, Lesson, Module } from '../types/content'
 import { useProgressStore } from '../stores/progressStore'
 import { useThemeStore } from '../stores/themeStore'
 import { useToastStore } from '../stores/toastStore'
+import { usePreferencesStore } from '../stores/preferencesStore'
+import { useAchievementsStore } from '../stores/achievementsStore'
 import { fetchCourse, executeCode } from '../api/content'
 import { Card, CardContent } from '../components/Card'
 import { Badge } from '../components/Badge'
 import { Button } from '../components/Button'
 import { LoadingSpinner } from '../components/Loading'
+import { getEditorOptions } from '../utils/monacoConfig'
+import { useAutoSave } from '../hooks/useAutoSave'
 import 'highlight.js/styles/github-dark.css'
 
 export default function LessonPage() {
@@ -36,6 +40,33 @@ export default function LessonPage() {
   const { theme } = useThemeStore()
   const { markLessonComplete, updateLessonProgress, getLessonProgress } = useProgressStore()
   const { addToast } = useToastStore()
+  const { editor: editorPrefs, autoSave, autoSaveDelay } = usePreferencesStore()
+  const {
+    incrementLessonsCompleted,
+    incrementCodeRuns,
+    incrementTestsPassed,
+    updateStreak,
+    initializeAchievements,
+  } = useAchievementsStore()
+
+  // Initialize achievements on mount
+  useEffect(() => {
+    initializeAchievements()
+    updateStreak()
+  }, [initializeAchievements, updateStreak])
+
+  // Auto-save code changes
+  useAutoSave(
+    code,
+    (savedCode) => {
+      if (language && moduleId && lessonId) {
+        // Save code to localStorage with lesson identifier
+        const storageKey = `code-${language}-${moduleId}-${lessonId}`
+        localStorage.setItem(storageKey, savedCode)
+      }
+    },
+    { enabled: autoSave, delay: autoSaveDelay }
+  )
 
   useEffect(() => {
     if (language) {
@@ -49,10 +80,18 @@ export default function LessonPage() {
             setCurrentModule(module)
             setCurrentLesson(lesson)
 
-            // Set initial code from first exercise if available
-            if (lesson.exercises && lesson.exercises.length > 0) {
+            // Try to load saved code from localStorage first
+            const storageKey = `code-${language}-${moduleId}-${lessonId}`
+            const savedCode = localStorage.getItem(storageKey)
+
+            if (savedCode) {
+              // Use saved code if available
+              setCode(savedCode)
+            } else if (lesson.exercises && lesson.exercises.length > 0) {
+              // Otherwise, set initial code from first exercise if available
               setCode(lesson.exercises[0].starterCode)
             } else if (courseData.languageConfig.editorSettings.defaultTemplate) {
+              // Fall back to default template
               setCode(courseData.languageConfig.editorSettings.defaultTemplate)
             }
 
@@ -77,6 +116,9 @@ export default function LessonPage() {
     setOutput('')
 
     try {
+      // Track code execution
+      incrementCodeRuns()
+
       const currentExercise = currentLesson?.exercises[currentExerciseIndex]
       const result = await executeCode(language, code, currentExercise?.testCases)
 
@@ -89,6 +131,11 @@ export default function LessonPage() {
             (prev) =>
               `${prev}\n\nTest Results: ${passed} passed, ${failed} failed\nExecution time: ${result.executionTime}ms`
           )
+
+          // Track tests passed
+          if (passed > 0) {
+            incrementTestsPassed(passed)
+          }
 
           if (failed === 0) {
             addToast({
@@ -133,6 +180,9 @@ export default function LessonPage() {
   const handleMarkComplete = () => {
     if (language && moduleId && lessonId) {
       markLessonComplete(language, moduleId, lessonId)
+
+      // Track lesson completion for achievements
+      incrementLessonsCompleted()
 
       addToast({
         message: 'Lesson completed! Keep up the great work!',
@@ -210,7 +260,7 @@ export default function LessonPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div id="main-content" tabIndex={-1} className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Lesson Content */}
           <div className="space-y-6">
@@ -258,12 +308,13 @@ export default function LessonPage() {
                   height="200px"
                   language={example.language}
                   value={example.code}
-                  theme={theme === 'dark' ? 'vs-dark' : 'light'}
-                  options={{
+                  theme={theme === 'dark' ? 'code-tutor-dark' : 'code-tutor-light'}
+                  options={getEditorOptions({
+                    language: example.language,
                     readOnly: true,
-                    minimap: { enabled: false },
-                    lineNumbers: 'on',
-                  }}
+                    compact: true,
+                    userPreferences: editorPrefs,
+                  })}
                 />
               </Card>
             ))}
@@ -333,14 +384,13 @@ export default function LessonPage() {
                 language={course.languageConfig.editorSettings.monacoLanguageId}
                 value={code}
                 onChange={(value) => setCode(value || '')}
-                theme={theme === 'dark' ? 'vs-dark' : 'light'}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                }}
+                theme={theme === 'dark' ? 'code-tutor-dark' : 'code-tutor-light'}
+                options={getEditorOptions({
+                  language: course.languageConfig.editorSettings.monacoLanguageId,
+                  readOnly: false,
+                  compact: false,
+                  userPreferences: editorPrefs,
+                })}
               />
 
               {/* Output */}

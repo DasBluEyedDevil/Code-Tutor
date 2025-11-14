@@ -1,4 +1,5 @@
 import { clsx } from 'clsx'
+import { memo } from 'react'
 
 interface BadgeProps {
   children: React.ReactNode
@@ -6,7 +7,7 @@ interface BadgeProps {
   className?: string
 }
 
-export function Badge({ children, variant = 'default', className }: BadgeProps) {
+export const Badge = memo(function Badge({ children, variant = 'default', className }: BadgeProps) {
   return (
     <span
       className={clsx(
@@ -25,4 +26,4 @@ export function Badge({ children, variant = 'default', className }: BadgeProps) 
       {children}
     </span>
   )
-}
+})
