@@ -6,6 +6,7 @@ interface ProgressBarProps {
   showLabel?: boolean
   size?: 'sm' | 'md' | 'lg'
   variant?: 'default' | 'success' | 'warning'
+  label?: string
 }
 
 export const ProgressBar = memo(function ProgressBar({
@@ -14,6 +15,7 @@ export const ProgressBar = memo(function ProgressBar({
   showLabel = false,
   size = 'md',
   variant = 'default',
+  label,
 }: ProgressBarProps) {
   const percentage = useMemo(() =>
     Math.min(Math.round((value / max) * 100), 100),
@@ -34,14 +36,24 @@ export const ProgressBar = memo(function ProgressBar({
 
   return (
     <div className="w-full">
-      <div className={`relative w-full ${heights[size]} bg-secondary rounded-full overflow-hidden`}>
+      <div
+        className={`relative w-full ${heights[size]} bg-secondary rounded-full overflow-hidden`}
+        role="progressbar"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-label={label || `Progress: ${percentage}%`}
+      >
         <div
           className={`${colors[variant]} ${heights[size]} rounded-full transition-all duration-500 ease-out`}
           style={{ width: `${percentage}%` }}
+          aria-hidden="true"
         ></div>
       </div>
       {showLabel && (
-        <div className="mt-1 text-sm text-muted-foreground text-right">{percentage}%</div>
+        <div className="mt-1 text-sm text-muted-foreground text-right" aria-hidden="true">
+          {percentage}%
+        </div>
       )}
     </div>
   )
