@@ -3,6 +3,8 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import { app } from 'electron';
 import { executeCode } from './executors';
+import { validateChallenge, validateVisibleTestCases } from './challenge-validator';
+import type { Challenge, ChallengeSubmission } from './types';
 
 // Get the content directory based on whether app is packaged
 function getContentPath() {
@@ -87,6 +89,72 @@ export async function startApiServer(server: Express) {
         success: false,
         output: '',
         error: error.message || 'Execution failed'
+      });
+    }
+  });
+
+  // POST /api/challenges/validate - Validate challenge submission
+  server.post('/api/challenges/validate', async (req, res) => {
+    try {
+      const { challenge, userSubmission } = req.body;
+
+      // Validate required fields
+      if (!challenge || !userSubmission) {
+        return res.status(400).json({
+          error: 'Missing required fields: challenge and userSubmission'
+        });
+      }
+
+      if (!challenge.type) {
+        return res.status(400).json({
+          error: 'Invalid challenge: missing type field'
+        });
+      }
+
+      if (!userSubmission.challengeId || userSubmission.userAnswer === undefined) {
+        return res.status(400).json({
+          error: 'Invalid submission: missing challengeId or userAnswer'
+        });
+      }
+
+      // Validate the challenge
+      const validationResult = await validateChallenge(challenge, userSubmission);
+
+      res.json(validationResult);
+    } catch (error: any) {
+      console.error('Validation error:', error);
+      res.status(500).json({
+        success: false,
+        passed: false,
+        score: 0,
+        message: 'Validation failed due to server error',
+        runtimeError: error.message || 'Unknown error'
+      });
+    }
+  });
+
+  // POST /api/challenges/validate-visible - Validate only visible test cases (for development feedback)
+  server.post('/api/challenges/validate-visible', async (req, res) => {
+    try {
+      const { code, language, testCases } = req.body;
+
+      if (!code || !language || !testCases) {
+        return res.status(400).json({
+          error: 'Missing required fields: code, language, and testCases'
+        });
+      }
+
+      const validationResult = await validateVisibleTestCases(code, language, testCases);
+
+      res.json(validationResult);
+    } catch (error: any) {
+      console.error('Visible test validation error:', error);
+      res.status(500).json({
+        success: false,
+        passed: false,
+        score: 0,
+        message: 'Validation failed due to server error',
+        runtimeError: error.message || 'Unknown error'
       });
     }
   });
