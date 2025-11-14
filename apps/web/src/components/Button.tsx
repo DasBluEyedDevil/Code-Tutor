@@ -12,9 +12,11 @@ export const Button = memo(forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
+        aria-busy={isLoading}
+        aria-disabled={disabled || isLoading}
         className={clsx(
           'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200',
-          'focus:outline-none focus:ring-2 focus:ring-offset-2',
+          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-offset-2',
           'disabled:opacity-50 disabled:cursor-not-allowed',
           {
             // Variants
@@ -43,6 +45,8 @@ export const Button = memo(forwardRef<HTMLButtonElement, ButtonProps>(
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
+            aria-label="Loading"
+            role="status"
           >
             <circle
               className="opacity-25"
