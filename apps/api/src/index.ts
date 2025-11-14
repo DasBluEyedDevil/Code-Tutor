@@ -5,6 +5,7 @@ import coursesRouter from './routes/courses.js'
 import executeRouter from './routes/execute.js'
 import progressRouter from './routes/progress.js'
 import authRouter from './routes/auth.js'
+import { rateLimiters } from './middleware/rateLimit.js'
 
 dotenv.config()
 
@@ -21,11 +22,14 @@ app.use((req, res, next) => {
   next()
 })
 
-// Routes
-app.use('/api/courses', coursesRouter)
-app.use('/api/execute', executeRouter)
+// Global rate limiting for all API routes
+app.use('/api', rateLimiters.general)
+
+// Routes with specific rate limiting
+app.use('/api/courses', rateLimiters.courseAccess, coursesRouter)
+app.use('/api/execute', rateLimiters.codeExecution, executeRouter)
 app.use('/api/progress', progressRouter)
-app.use('/api/auth', authRouter)
+app.use('/api/auth', rateLimiters.strict, authRouter)
 
 // Health check
 app.get('/health', (req, res) => {
