@@ -14,6 +14,7 @@ import { Card, CardContent } from '../components/Card'
 import { Badge } from '../components/Badge'
 import { Button } from '../components/Button'
 import { LoadingSpinner } from '../components/Loading'
+import { getEditorOptions } from '../utils/monacoConfig'
 import 'highlight.js/styles/github-dark.css'
 
 export default function LessonPage() {
@@ -258,12 +259,12 @@ export default function LessonPage() {
                   height="200px"
                   language={example.language}
                   value={example.code}
-                  theme={theme === 'dark' ? 'vs-dark' : 'light'}
-                  options={{
+                  theme={theme === 'dark' ? 'code-tutor-dark' : 'code-tutor-light'}
+                  options={getEditorOptions({
+                    language: example.language,
                     readOnly: true,
-                    minimap: { enabled: false },
-                    lineNumbers: 'on',
-                  }}
+                    compact: true,
+                  })}
                 />
               </Card>
             ))}
@@ -333,14 +334,12 @@ export default function LessonPage() {
                 language={course.languageConfig.editorSettings.monacoLanguageId}
                 value={code}
                 onChange={(value) => setCode(value || '')}
-                theme={theme === 'dark' ? 'vs-dark' : 'light'}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  lineNumbers: 'on',
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                }}
+                theme={theme === 'dark' ? 'code-tutor-dark' : 'code-tutor-light'}
+                options={getEditorOptions({
+                  language: course.languageConfig.editorSettings.monacoLanguageId,
+                  readOnly: false,
+                  compact: false,
+                })}
               />
 
               {/* Output */}

@@ -10,6 +10,7 @@ import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
 import { SkipToContent } from './components/SkipToContent'
 import { useReducedMotion } from './hooks/useReducedMotion'
+import { useMonacoSetup } from './hooks/useMonacoSetup'
 
 // Lazy load route components for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'))
@@ -96,6 +97,9 @@ function AppContent() {
 function App() {
   const { theme, getEffectiveMotionPreference } = useThemeStore()
   const systemPrefersReducedMotion = useReducedMotion()
+
+  // Set up Monaco editor with custom themes and configurations
+  useMonacoSetup()
 
   useEffect(() => {
     if (theme === 'dark') {
