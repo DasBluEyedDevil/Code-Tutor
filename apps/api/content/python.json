@@ -1,0 +1,255 @@
+{
+  "courseMetadata": {
+    "id": "python",
+    "language": "Python",
+    "version": "1.0",
+    "displayName": "Python Full-Stack Development",
+    "description": "From fundamentals to full-stack Python development",
+    "totalModules": 14,
+    "estimatedHours": 120,
+    "difficulty": "beginner-to-advanced",
+    "prerequisites": [],
+    "learningOutcomes": [
+      "Master Python fundamentals and syntax",
+      "Build web applications with Flask",
+      "Work with databases and APIs",
+      "Deploy production-ready applications"
+    ],
+    "icon": "python-icon.svg",
+    "color": "#3776ab"
+  },
+  "modules": [
+    {
+      "id": "module-00",
+      "title": "The Absolute Basics",
+      "description": "Start your programming journey with Python fundamentals",
+      "order": 0,
+      "estimatedHours": 8,
+      "prerequisites": [],
+      "lessons": [
+        {
+          "id": "lesson-00-01",
+          "title": "What is Programming?",
+          "type": "reading",
+          "order": 1,
+          "estimatedMinutes": 20,
+          "difficulty": "beginner",
+          "tags": [
+            "basics",
+            "concepts",
+            "introduction"
+          ],
+          "content": {
+            "format": "markdown",
+            "bodyFile": "lesson-00-01.md",
+            "body": "# What is Programming?\n\nWelcome to your journey into programming! You're about to learn one of the most valuable skills in the modern world.\n\n## Programming is Like Giving Instructions\n\nThink about giving directions to a friend:\n- \"Go straight for 2 blocks\"\n- \"Turn left at the traffic light\"\n- \"The house is on your right\"\n\nProgramming is similar! You're giving instructions to a computer. The difference is that computers are very literal - they do exactly what you tell them, nothing more, nothing less.\n\n## Why Python?\n\nPython is one of the best languages to start with because:\n\n1. **It reads like English** - You can often guess what code does just by reading it\n2. **It's forgiving** - Python is designed to be beginner-friendly\n3. **It's powerful** - From websites to AI, Python can do it all\n4. **It's popular** - Millions of developers use Python daily\n\n## Your First Program\n\nThe traditional first program in any language is \"Hello, World!\" - a simple program that displays text on the screen.\n\nIn Python, it's incredibly simple:\n\n```python\nprint(\"Hello, World!\")\n```\n\nThat's it! One line of code that tells the computer to display \"Hello, World!\" on the screen.\n\n## What Does It Do?\n\n- `print()` is a **function** - a command that tells Python to do something\n- The text inside the parentheses and quotes is what will be displayed\n- Functions are like verbs in English - they represent actions\n\n## Key Concepts\n\n**Programming**: Writing instructions for a computer to follow\n\n**Code**: The instructions you write in a programming language\n\n**Function**: A reusable piece of code that performs a specific task\n\n**Print**: A function that displays text on the screen\n\n## Let's Get Started!\n\nIn the next exercise, you'll write your own Python code for the first time. Don't worry about making mistakes - that's how we all learn!\n\nRemember: Every expert programmer started exactly where you are right now.\n",
+            "codeExamples": [
+              {
+                "id": "example-01",
+                "language": "python",
+                "code": "print(\"Hello, World!\")",
+                "explanation": "Your first Python program",
+                "runnable": true,
+                "highlightLines": []
+              }
+            ]
+          },
+          "exercises": [
+            {
+              "id": "exercise-01",
+              "type": "coding",
+              "title": "Print Your Name",
+              "instructions": "Write a program that prints your name to the console using the print() function.",
+              "difficulty": "beginner",
+              "estimatedMinutes": 5,
+              "starterCode": "# Write your code below\n",
+              "solution": "print(\"Your Name\")",
+              "hints": [
+                "Use the print() function",
+                "Text must be enclosed in quotes",
+                "Try: print(\"Your Name\")"
+              ],
+              "testCases": [],
+              "validationRules": {
+                "mustContain": [
+                  "print"
+                ],
+                "mustNotContain": [],
+                "maxLines": 5,
+                "allowedPackages": [],
+                "customValidator": null
+              }
+            }
+          ],
+          "quiz": {
+            "id": "quiz-00-01",
+            "passingScore": 70,
+            "questions": [
+              {
+                "id": "q-01",
+                "type": "multiple-choice",
+                "question": "What function is used to display output in Python?",
+                "points": 10,
+                "options": [
+                  "print()",
+                  "display()",
+                  "show()",
+                  "output()"
+                ],
+                "correctAnswer": 0,
+                "explanation": "The print() function is used to display output to the console in Python."
+              }
+            ]
+          }
+        },
+        {
+          "id": "lesson-00-02",
+          "title": "Variables and Data Types",
+          "type": "interactive",
+          "order": 2,
+          "estimatedMinutes": 30,
+          "difficulty": "beginner",
+          "tags": [
+            "variables",
+            "data-types",
+            "basics"
+          ],
+          "content": {
+            "format": "markdown",
+            "bodyFile": "lesson-00-02.md",
+            "body": "# Variables and Data Types\n\nNow that you can display text, let's learn how to store and work with information.\n\n## What is a Variable?\n\nThink of a variable as a labeled box where you can store information. You can:\n- Put something in the box\n- Look at what's inside\n- Change what's inside\n- Use what's inside for calculations\n\n## Creating Variables in Python\n\nCreating a variable is simple - you just give it a name and a value:\n\n```python\nname = \"Alice\"\nage = 25\nheight = 5.6\n```\n\nThe `=` sign doesn't mean \"equals\" like in math - it means \"assign this value to this variable.\"\n\n## Data Types\n\nComputers store different kinds of information in different ways:\n\n### Strings (Text)\nText must be in quotes:\n```python\nname = \"Alice\"\ncity = \"New York\"\nmessage = \"Hello, World!\"\n```\n\n### Integers (Whole Numbers)\nNumbers without decimals:\n```python\nage = 25\nyear = 2025\nscore = 100\n```\n\n### Floats (Decimal Numbers)\nNumbers with decimal points:\n```python\nheight = 5.6\nprice = 19.99\ntemperature = 98.6\n```\n\n### Booleans (True/False)\nUsed for yes/no, on/off situations:\n```python\nis_student = True\nhas_license = False\n```\n\n## Naming Variables\n\nGood variable names:\n- Describe what they store: `age` not `a`\n- Use lowercase with underscores: `first_name` not `FirstName`\n- Can't start with numbers: `name1` is ok, `1name` is not\n- Can't use spaces: `first_name` not `first name`\n\n## Using Variables\n\nOnce you create a variable, you can use it:\n\n```python\nname = \"Bob\"\nage = 30\n\nprint(name)  # Displays: Bob\nprint(age)   # Displays: 30\n```\n\nYou can also combine them:\n\n```python\nname = \"Bob\"\nage = 30\nprint(f\"{name} is {age} years old\")\n# Displays: Bob is 30 years old\n```\n\nThe `f` before the string makes it an \"f-string\" - it lets you put variables inside the text using curly braces `{}`.\n\n## Key Concepts\n\n**Variable**: A container for storing data values\n\n**String**: Text data enclosed in quotes\n\n**Integer**: Whole numbers without decimals\n\n**Float**: Numbers with decimal points\n\n**Boolean**: True or False values\n\n**Assignment**: Using = to put a value in a variable\n\n## Common Mistakes\n\n❌ Forgetting quotes around text:\n```python\nname = Alice  # Wrong!\n```\n\n✓ Including quotes:\n```python\nname = \"Alice\"  # Correct!\n```\n\n❌ Using spaces in variable names:\n```python\nfirst name = \"Bob\"  # Wrong!\n```\n\n✓ Using underscores:\n```python\nfirst_name = \"Bob\"  # Correct!\n```\n\nNow it's your turn to practice!\n",
+            "codeExamples": [
+              {
+                "id": "example-02",
+                "language": "python",
+                "code": "name = \"Alice\"\nage = 25\nheight = 5.6\nprint(f\"{name} is {age} years old and {height} feet tall\")",
+                "explanation": "Variables store different types of data",
+                "runnable": true,
+                "highlightLines": []
+              }
+            ]
+          },
+          "exercises": [
+            {
+              "id": "exercise-02",
+              "type": "coding",
+              "title": "Create Variables",
+              "instructions": "Create three variables: 'name' with your name, 'age' with your age, and 'city' with your city. Then print them all.",
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
+              "starterCode": "# Create your variables here\nname = \nage = \ncity = \n\n# Print them\n",
+              "solution": "name = \"John\"\nage = 25\ncity = \"New York\"\n\nprint(name)\nprint(age)\nprint(city)",
+              "hints": [
+                "Strings need quotes, numbers don't",
+                "Use = to assign values to variables",
+                "Print each variable on a separate line"
+              ],
+              "testCases": [],
+              "validationRules": {
+                "mustContain": [
+                  "name",
+                  "age",
+                  "city",
+                  "print"
+                ],
+                "mustNotContain": [],
+                "maxLines": 20,
+                "allowedPackages": [],
+                "customValidator": null
+              }
+            }
+          ]
+        },
+        {
+          "id": "lesson-00-03",
+          "title": "Math Operations",
+          "type": "interactive",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "beginner",
+          "tags": [
+            "math",
+            "operators",
+            "basics"
+          ],
+          "content": {
+            "format": "markdown",
+            "bodyFile": "lesson-00-03.md",
+            "body": "# Math Operations\n\nPython is great at math! Let's learn how to perform calculations.\n\n## Basic Operators\n\nPython uses symbols called **operators** to perform math:\n\n| Operator | Name | Example | Result |\n|----------|------|---------|--------|\n| `+` | Addition | `10 + 5` | `15` |\n| `-` | Subtraction | `10 - 5` | `5` |\n| `*` | Multiplication | `10 * 5` | `50` |\n| `/` | Division | `10 / 5` | `2.0` |\n| `**` | Exponent (Power) | `10 ** 2` | `100` |\n| `//` | Floor Division | `10 // 3` | `3` |\n| `%` | Modulus (Remainder) | `10 % 3` | `1` |\n\n## Addition and Subtraction\n\nJust like you learned in school:\n\n```python\nresult = 10 + 5\nprint(result)  # Displays: 15\n\nresult = 10 - 5\nprint(result)  # Displays: 5\n```\n\n## Multiplication and Division\n\nThe `*` means multiply, and `/` means divide:\n\n```python\nresult = 10 * 5\nprint(result)  # Displays: 50\n\nresult = 10 / 5\nprint(result)  # Displays: 2.0\n```\n\nNotice that division always gives you a decimal number (float), even if the answer is a whole number!\n\n## Using Variables\n\nYou can do math with variables:\n\n```python\nwidth = 10\nheight = 5\narea = width * height\nprint(area)  # Displays: 50\n```\n\n## Order of Operations\n\nPython follows the same math rules you learned in school (PEMDAS):\n\n1. **P**arentheses `()`\n2. **E**xponents `**`\n3. **M**ultiplication and **D**ivision `*` `/`\n4. **A**ddition and **S**ubtraction `+` `-`\n\n```python\nresult = 2 + 3 * 4\nprint(result)  # Displays: 14 (not 20!)\n\nresult = (2 + 3) * 4\nprint(result)  # Displays: 20\n```\n\n## Special Operators\n\n### Floor Division (`//`)\nRegular division but throws away the decimal:\n\n```python\nresult = 10 / 3\nprint(result)  # Displays: 3.3333...\n\nresult = 10 // 3\nprint(result)  # Displays: 3\n```\n\n### Modulus (`%`)\nGives you the remainder after division:\n\n```python\nresult = 10 % 3\nprint(result)  # Displays: 1\n# Because 10 ÷ 3 = 3 remainder 1\n```\n\nThis is useful for checking if numbers are even or odd:\n\n```python\nnumber = 7\nremainder = number % 2\nprint(remainder)  # Displays: 1 (odd number)\n```\n\n## Combining Operations\n\nYou can do complex calculations:\n\n```python\n# Calculate the area of a circle\n# Formula: π × radius²\nradius = 5\npi = 3.14159\narea = pi * (radius ** 2)\nprint(area)  # Displays: 78.53975\n```\n\n## Common Mistakes\n\n❌ Forgetting order of operations:\n```python\nresult = 2 + 3 * 4  # Result is 14, not 20\n```\n\n✓ Using parentheses to be clear:\n```python\nresult = (2 + 3) * 4  # Result is 20\n```\n\n❌ Using commas in numbers:\n```python\nnumber = 1,000  # Wrong! This creates a tuple\n```\n\n✓ No commas needed:\n```python\nnumber = 1000  # Correct!\n```\n\n## Key Concepts\n\n**Operator**: A symbol that performs an operation (+, -, *, /)\n\n**Expression**: A combination of values and operators that produces a result\n\n**PEMDAS**: The order in which operations are performed\n\nNow try the exercise to practice what you've learned!\n",
+            "codeExamples": [
+              {
+                "id": "example-03",
+                "language": "python",
+                "code": "# Basic math operations\nresult_add = 10 + 5\nresult_subtract = 10 - 5\nresult_multiply = 10 * 5\nresult_divide = 10 / 5\n\nprint(f\"Addition: {result_add}\")\nprint(f\"Subtraction: {result_subtract}\")\nprint(f\"Multiplication: {result_multiply}\")\nprint(f\"Division: {result_divide}\")",
+                "explanation": "Python can perform all basic math operations",
+                "runnable": true,
+                "highlightLines": []
+              }
+            ]
+          },
+          "exercises": [
+            {
+              "id": "exercise-03",
+              "type": "coding",
+              "title": "Simple Calculator",
+              "instructions": "Create two variables (num1 = 20 and num2 = 4) and print the result of adding them together.",
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
+              "starterCode": "# Create your variables\nnum1 = 20\nnum2 = 4\n\n# Calculate and print the sum\n",
+              "solution": "num1 = 20\nnum2 = 4\nresult = num1 + num2\nprint(result)",
+              "hints": [
+                "Use the + operator to add numbers",
+                "Store the result in a variable",
+                "Use print() to display the result"
+              ],
+              "testCases": [
+                {
+                  "id": "test-01",
+                  "input": null,
+                  "expectedOutput": "24",
+                  "description": "Should print 24"
+                }
+              ],
+              "validationRules": {
+                "mustContain": [
+                  "num1",
+                  "num2",
+                  "print"
+                ],
+                "mustNotContain": [],
+                "maxLines": 10,
+                "allowedPackages": [],
+                "customValidator": null
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "languageConfig": {
+    "executionEngine": "python-3.11",
+    "compilerOptions": {
+      "version": "3.11",
+      "flags": []
+    },
+    "editorSettings": {
+      "defaultTemplate": "# Write your Python code here\n",
+      "fileExtension": ".py",
+      "monacoLanguageId": "python",
+      "tabSize": 4,
+      "insertSpaces": true
+    },
+    "sandboxConstraints": {
+      "maxExecutionTimeMs": 5000,
+      "maxMemoryMB": 256,
+      "maxOutputChars": 10000,
+      "allowedPackages": [],
+      "blockedPackages": [
+        "os",
+        "sys",
+        "subprocess"
+      ]
+    }
+  }
+}
