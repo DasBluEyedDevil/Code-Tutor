@@ -1,228 +1,288 @@
 {
-  "courseMetadata": {
-    "id": "python",
-    "language": "Python",
-    "version": "1.0",
-    "displayName": "Python Full-Stack Development",
-    "description": "From fundamentals to full-stack Python development",
-    "totalModules": 14,
-    "estimatedHours": 120,
-    "difficulty": "beginner-to-advanced",
-    "prerequisites": [],
-    "learningOutcomes": [
-      "Master Python fundamentals and syntax",
-      "Build web applications with Flask",
-      "Work with databases and APIs",
-      "Deploy production-ready applications"
-    ],
-    "icon": "python-icon.svg",
-    "color": "#3776ab"
-  },
+  "id": "python",
+  "language": "python",
+  "title": "Python Full-Stack Development",
+  "description": "Master Python from fundamentals to full-stack development, including web applications with Flask, databases, APIs, and deployment.",
+  "difficulty": "beginner",
+  "estimatedHours": 2,
+  "prerequisites": [],
   "modules": [
     {
-      "id": "module-00",
-      "title": "The Absolute Basics",
-      "description": "Start your programming journey with Python fundamentals",
-      "order": 0,
-      "estimatedHours": 8,
-      "prerequisites": [],
+      "id": "module-01",
+      "title": "Module 1",
+      "description": "Module 1",
+      "difficulty": "beginner",
+      "estimatedHours": 1,
       "lessons": [
         {
-          "id": "lesson-00-01",
-          "title": "What is Programming?",
-          "type": "reading",
-          "order": 1,
-          "estimatedMinutes": 20,
+          "id": "lesson-01-01",
+          "title": "What is Programming, Really?",
+          "type": "exercise",
+          "estimatedMinutes": 10,
           "difficulty": "beginner",
-          "tags": ["basics", "concepts", "introduction"],
           "content": {
             "format": "markdown",
-            "bodyFile": "lesson-00-01.md",
-            "body": "",
-            "codeExamples": [
-              {
-                "id": "example-01",
-                "language": "python",
-                "code": "print(\"Hello, World!\")",
-                "explanation": "Your first Python program",
-                "runnable": true,
-                "highlightLines": []
-              }
-            ]
+            "body": "# What is Programming, Really?\n\n## Understanding the Concept\n\nImagine you're teaching a very literal-minded friend how to make a peanut butter and jelly sandwich. You can't just say 'make a sandwich'—you have to break it down into tiny, specific steps:\n\n- Pick up the bread bag\n- Open the bag\n- Take out two slices of bread\n- Place them on the counter\n- Pick up the jar of peanut butter\n- Twist the lid counter-clockwise to open it\n- ...and so on\n\n**That's exactly what programming is.**\n\nA computer is like that very literal friend. It's incredibly fast and never gets tired, but it only does <em>exactly</em> what you tell it to do, in <em>exactly</em> the order you tell it. If you forget a step or put them in the wrong order, it won't figure it out—it'll either do the wrong thing or stop and say \"I don't understand.\"\n\n**Python is the language you'll use to give these instructions.** Just like English or Spanish is a language humans use to communicate, Python is a language humans use to communicate with computers.\n\nThe beautiful thing? Python was designed to be as close to plain English as possible, so it reads almost like a recipe or a set of instructions you'd give to a friend.\n\n## Code Example\n\n```python\n# This is your first Python program!\n# The '#' symbol creates a comment - notes for humans that the computer ignores\n\n# Tell the computer to print (display) a message\nprint(\"Hello, World!\")\n\n# That's it! This simple instruction tells Python:\n# \"Show the text 'Hello, World!' on the screen\"\n```\n\n**Output:**\n```\nHello, World!\n```\n\n## Breaking Down the Syntax\n\nLet's break down what just happened:\n\n- **`print()`** - This is a **function** (we'll learn more about these later). Think of it as a command or action word, like 'display' or 'show'. It tells Python: 'take whatever is inside the parentheses and show it to the user.'\n- **`(\"Hello, World!\")`** - The parentheses `( )` are like a lunchbox—they carry the information that `print` needs. Inside, we have `\"Hello, World!\"` wrapped in quotes.\n- **`\"Hello, World!\"`** - The quotation marks tell Python: 'This is text (what programmers call a **string**), not a command.' Without quotes, Python would think `Hello` is a command and get confused.\n- **`#`** - Everything after a `#` on a line is a **comment**. Python completely ignores it. Comments are notes you leave for yourself or other programmers to explain what the code does.\n\n**Why does this matter?** Because if you wrote `print(Hello, World!)` without quotes, Python would say 'Error! I don't know what Hello is!' The quotes are crucial.\n\n## Key Takeaways\n\n- Programming is like giving very detailed, step-by-step instructions to a computer\n- Python is a language designed to be readable and beginner-friendly\n- `print()` is your first Python command—it displays text on the screen\n- Text (strings) must be wrapped in quotation marks: `\"like this\"` or `'like this'`\n- Comments (lines starting with `#`) are notes for humans—Python ignores them\n- Python is case-sensitive: `print` works, but `Print` doesn't\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Forgetting the quotation marks:**\n\n```\nprint(Hello)  ❌ Wrong - Python thinks Hello is a variable\nprint(\"Hello\")  ✅ Correct - Python knows this is text\n```\n</li><li>**Misspelling 'print':**\n\n```\nPrint(\"Hello\")  ❌ Wrong - capital P\nPRINT(\"Hello\")  ❌ Wrong - all caps\nprint(\"Hello\")  ✅ Correct - lowercase 'print'\n```\nPython is case-sensitive! `print` and `Print` are different things.\n\n</li><li>**Forgetting the parentheses:**\n\n```\nprint \"Hello\"  ❌ Wrong in Python 3\nprint(\"Hello\")  ✅ Correct\n```\n</li><li>**Mixing up quote types mid-string:**\n\n```\nprint(\"Hello')  ❌ Wrong - starts with \" but ends with '\nprint(\"Hello\")  ✅ Correct - matching quotes\nprint('Hello')  ✅ Also correct - single quotes work too!\n```\n</li>\n**Pro Tip:** Both double quotes `\"\"` and single quotes `''` work in Python, but you must be consistent within each string!"
           },
           "exercises": [
             {
-              "id": "exercise-01",
               "type": "coding",
-              "title": "Print Your Name",
-              "instructions": "Write a program that prints your name to the console using the print() function.",
-              "difficulty": "beginner",
-              "estimatedMinutes": 5,
-              "starterCode": "# Write your code below\n",
-              "solution": "print(\"Your Name\")",
+              "title": "Practice Exercise",
+              "instructions": "**Your Turn!**\n\nNow it's time to write your own code. In the code editor below, you'll see some starter code with blanks (shown as `____`).\n\n**Your task:** Replace the blanks to make Python print your own message.\n\n- Replace `____` with the command that displays text\n- Inside the parentheses, write **your own message** (remember the quotes!)\n- Click 'Run Code' to see your message appear\n\n**Bonus Challenge:** Add a second `print()` line to display a second message!",
+              "starterCode": "# Welcome to your first Python exercise!\n# Replace the ____ below with the correct code\n\n____(\"Your message here\")\n\n# Bonus: Add another print() line below to display a second message",
+              "solution": "# Welcome to your first Python exercise!\n# Here's the solution!\n\nprint(\"Your message here\")\n\n# Bonus: Here's a second print statement\nprint(\"I'm learning Python!\")\n\n# You could have written ANY message, like:\n# print(\"My name is Alice\")\n# print(\"Python is fun!\")\n# print(\"2025 is my year!\")",
               "hints": [
-                "Use the print() function",
-                "Text must be enclosed in quotes",
-                "Try: print(\"Your Name\")"
-              ],
-              "testCases": [],
-              "validationRules": {
-                "mustContain": ["print"],
-                "mustNotContain": [],
-                "maxLines": 5,
-                "allowedPackages": [],
-                "customValidator": null
-              }
-            }
-          ],
-          "quiz": {
-            "id": "quiz-00-01",
-            "passingScore": 70,
-            "questions": [
-              {
-                "id": "q-01",
-                "type": "multiple-choice",
-                "question": "What function is used to display output in Python?",
-                "points": 10,
-                "options": [
-                  "print()",
-                  "display()",
-                  "show()",
-                  "output()"
-                ],
-                "correctAnswer": 0,
-                "explanation": "The print() function is used to display output to the console in Python."
-              }
-            ]
-          }
-        },
-        {
-          "id": "lesson-00-02",
-          "title": "Variables and Data Types",
-          "type": "interactive",
-          "order": 2,
-          "estimatedMinutes": 30,
-          "difficulty": "beginner",
-          "tags": ["variables", "data-types", "basics"],
-          "content": {
-            "format": "markdown",
-            "bodyFile": "lesson-00-02.md",
-            "body": "",
-            "codeExamples": [
-              {
-                "id": "example-02",
-                "language": "python",
-                "code": "name = \"Alice\"\nage = 25\nheight = 5.6\nprint(f\"{name} is {age} years old and {height} feet tall\")",
-                "explanation": "Variables store different types of data",
-                "runnable": true,
-                "highlightLines": []
-              }
-            ]
-          },
-          "exercises": [
-            {
-              "id": "exercise-02",
-              "type": "coding",
-              "title": "Create Variables",
-              "instructions": "Create three variables: 'name' with your name, 'age' with your age, and 'city' with your city. Then print them all.",
-              "difficulty": "beginner",
-              "estimatedMinutes": 10,
-              "starterCode": "# Create your variables here\nname = \nage = \ncity = \n\n# Print them\n",
-              "solution": "name = \"John\"\nage = 25\ncity = \"New York\"\n\nprint(name)\nprint(age)\nprint(city)",
-              "hints": [
-                "Strings need quotes, numbers don't",
-                "Use = to assign values to variables",
-                "Print each variable on a separate line"
-              ],
-              "testCases": [],
-              "validationRules": {
-                "mustContain": ["name", "age", "city", "print"],
-                "mustNotContain": [],
-                "maxLines": 20,
-                "allowedPackages": [],
-                "customValidator": null
-              }
+                "**Hint:** The command to display text is `print`. Remember to keep the quotation marks around your message!\n\nYour code should look like: `print(\"Your message here\")`"
+              ]
             }
           ]
         },
         {
-          "id": "lesson-00-03",
-          "title": "Math Operations",
-          "type": "interactive",
-          "order": 3,
-          "estimatedMinutes": 25,
+          "id": "lesson-01-02",
+          "title": "Your First Python Playground",
+          "type": "exercise",
+          "estimatedMinutes": 12,
           "difficulty": "beginner",
-          "tags": ["math", "operators", "basics"],
           "content": {
             "format": "markdown",
-            "bodyFile": "lesson-00-03.md",
-            "body": "",
-            "codeExamples": [
-              {
-                "id": "example-03",
-                "language": "python",
-                "code": "# Basic math operations\nresult_add = 10 + 5\nresult_subtract = 10 - 5\nresult_multiply = 10 * 5\nresult_divide = 10 / 5\n\nprint(f\"Addition: {result_add}\")\nprint(f\"Subtraction: {result_subtract}\")\nprint(f\"Multiplication: {result_multiply}\")\nprint(f\"Division: {result_divide}\")",
-                "explanation": "Python can perform all basic math operations",
-                "runnable": true,
-                "highlightLines": []
-              }
-            ]
+            "body": "# Your First Python Playground\n\n## Understanding the Concept\n\nBefore you can speak Python to a computer, you need a place where the computer can listen and respond. Think of it like this:\n\n- If you want to cook, you need a **kitchen**\n- If you want to paint, you need a **canvas**\n- If you want to write Python code, you need a **development environment**\n\nDon't let that fancy term scare you! A 'development environment' is just a place where you write code and see what happens when you run it. It's your programming workspace.\n\n**For this course, you have two options:**\n\n- **Use this website's built-in code editor** (the easiest way to start)\n- **Use a web-based Python playground** like <a href='https://www.python.org/shell/' target='_blank'>Python.org's online shell</a> or <a href='https://replit.com/languages/python3' target='_blank'>Replit</a>\n\nLater, when you're more comfortable, you might want to install Python on your own computer. But for now, let's keep it simple and use the tools that are already available in your web browser.\n\n**Think of it like learning to drive:** You don't buy a car on day one. You use a driving school's car first, then get your own when you're ready. Same idea here!\n\n## Code Example\n\n```python\n# Let's test that everything is working!\n# This code will perform a few simple tasks\n\n# 1. Display a welcome message\nprint(\"🐍 Welcome to your Python Playground!\")\n\n# 2. Do some simple math\nprint(\"Python can do math: 5 + 3 =\", 5 + 3)\n\n# 3. Display multiple lines\nprint(\"Python can:\")\nprint(\"  - Display text\")\nprint(\"  - Calculate numbers\")\nprint(\"  - And much, much more!\")\n\n# 4. Celebrate!\nprint(\"\\n🎉 Your Python environment is working perfectly!\")\n```\n\n**Output:**\n```\n🐍 Welcome to your Python Playground!\nPython can do math: 5 + 3 = 8\nPython can:\n  - Display text\n  - Calculate numbers\n  - And much, much more!\n\n🎉 Your Python environment is working perfectly!\n```\n\n## Breaking Down the Syntax\n\nLet's examine some new things in this code:\n\n<li>**`print(\"text\", 5 + 3)`** - You can print multiple things in one line! Separate them with commas. Python will display them with a space in between.\n\n<pre>`print(\"The answer is\", 42)  # Shows: The answer is 42`</pre></li><li>**`\\n`** - This is a special code that means 'new line' or 'press Enter'. It's like hitting the Enter key in the middle of your text.\n\n<pre>`print(\"Line 1\\nLine 2\")  # Shows two separate lines`</pre></li><li>**`5 + 3`** - When you write math without quotes, Python actually calculates it! The result (8) gets printed.\n\n```\nprint(5 + 3)     # Shows: 8\nprint(\"5 + 3\")   # Shows: 5 + 3 (just text)\n```\n</li><li>**Emojis** - Yes, Python supports emojis in strings! You can use them just like any other text. They make your output more fun and readable.\n\n</li>\n**The key concept:** Anything inside quotation marks is displayed exactly as written. Anything outside quotes (like `5 + 3`) is executed as Python code.\n\n## Key Takeaways\n\n- You can use web-based Python environments (playgrounds) to write and run code without installing anything\n- `print()` can display multiple items separated by commas\n- `\\n` creates a new line in your output\n- Math without quotes gets calculated; math in quotes is just text\n- Python can use emojis and special characters in strings\n- The asterisk (*) means multiplication in Python\n- Your code is personal—make it yours!\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Putting math in quotes:**\n\n```\nprint(\"25 * 12\")  ❌ Shows: 25 * 12 (just text)\nprint(25 * 12)    ✅ Shows: 300 (calculated)\n```\nIf you want Python to calculate, DON'T use quotes!\n\n</li><li>**Forgetting commas when printing multiple things:**\n\n```\nprint(\"I am\" 25 \"years old\")  ❌ Error!\nprint(\"I am\", 25, \"years old\")  ✅ Correct\n```\n</li><li>**Confusing `\\n` with `/n`:**\n\n```\nprint(\"/n\")   ❌ Wrong slash - just prints /n\nprint(\"\\n\")  ✅ Correct - creates a new line\n```\nIt's a backslash (\\), not a forward slash (/)!\n\n</li><li>**Overthinking it:** Your message doesn't have to be perfect or fancy. The goal is to practice using `print()`, combining text and numbers, and seeing that it works!\n\n</li>\n**Remember:** There's no single \"right answer\" for this exercise—your unique output is the right answer as long as the code runs without errors!"
           },
           "exercises": [
             {
-              "id": "exercise-03",
               "type": "coding",
-              "title": "Simple Calculator",
-              "instructions": "Create two variables (num1 = 20 and num2 = 4) and print the result of adding them together.",
-              "difficulty": "beginner",
-              "estimatedMinutes": 10,
-              "starterCode": "# Create your variables\nnum1 = 20\nnum2 = 4\n\n# Calculate and print the sum\n",
-              "solution": "num1 = 20\nnum2 = 4\nresult = num1 + num2\nprint(result)",
+              "title": "Practice Exercise",
+              "instructions": "**Your Mission:** Create a program that introduces yourself!\n\n**Requirements:**\n\n- Print a welcome message with your name\n- Print your favorite hobby or interest\n- Use Python to calculate your age in months (your age × 12)\n- Print a fun fact about yourself\n\n**Challenge yourself:** Use `\\n` to add blank lines between sections to make it easier to read!",
+              "starterCode": "# Create your introduction program!\n\n# 1. Welcome message\nprint(\"____\")  # Replace with a greeting and your name\n\n# 2. Print a blank line for spacing\nprint(\"\\n\")\n\n# 3. Your hobby\nprint(\"My favorite hobby is: ____\")  # Fill in your hobby\n\n# 4. Calculate your age in months\n# If you're 25 years old, you'd write: print(\"I am\", 25 * 12, \"months old\")\nprint(\"I am\", ____ * 12, \"months old\")  # Replace ____ with your age\n\n# 5. A fun fact\nprint(\"____\")  # Add any fun fact about yourself!",
+              "solution": "# Create your introduction program!\n\n# 1. Welcome message\nprint(\"👋 Hello! My name is Alex\")\n\n# 2. Print a blank line for spacing\nprint(\"\\n\")\n\n# 3. Your hobby\nprint(\"My favorite hobby is: reading science fiction books\")\n\n# 4. Calculate age in months\nprint(\"I am\", 25 * 12, \"months old\")\n\n# 5. A fun fact\nprint(\"Fun fact: I can solve a Rubik's cube in under 2 minutes!\")\n\n# Bonus: Add a closing message\nprint(\"\\n🚀 I'm excited to learn Python!\")",
               "hints": [
-                "Use the + operator to add numbers",
-                "Store the result in a variable",
-                "Use print() to display the result"
-              ],
-              "testCases": [
-                {
-                  "id": "test-01",
-                  "input": null,
-                  "expectedOutput": "24",
-                  "description": "Should print 24"
-                }
-              ],
-              "validationRules": {
-                "mustContain": ["num1", "num2", "print"],
-                "mustNotContain": [],
-                "maxLines": 10,
-                "allowedPackages": [],
-                "customValidator": null
-              }
+                "**Hints:**\n",
+                "For the welcome message, try something like: `print(\"Hello! My name is Alex\")`",
+                "Remember to put text in quotation marks: `\"text goes here\"`",
+                "For math, you DON'T use quotes: `25 * 12` (not `\"25 * 12\"`)",
+                "The asterisk (*) means multiplication in Python"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lesson-01-03",
+          "title": "Making the Computer Talk",
+          "type": "exercise",
+          "estimatedMinutes": 15,
+          "difficulty": "beginner",
+          "content": {
+            "format": "markdown",
+            "body": "# Making the Computer Talk\n\n## Understanding the Concept\n\nImagine you're at a drive-through restaurant. You pull up to the speaker and say your order. The speaker talks back: 'That'll be $8.50. Please pull forward.' Then you drive to the window, hand over your money, and receive your food.\n\n**That's a conversation!** You give information, they respond. Back and forth.\n\nIn programming, we call this **input and output**:\n\n- **Output** = The computer talking to YOU (like displaying text on screen)\n- **Input** = YOU talking to the computer (like typing something)\n\nSo far, we've only done output with `print()`. Now we're going to learn input, which lets your program ask questions and wait for answers. This transforms your code from a one-way announcement into a two-way conversation!\n\n**Real-world examples:**\n\n- When Netflix asks \"Who's watching?\" and you click your profile - that's input\n- When you type your password and hit Enter - that's input\n- When a game asks \"What's your name?\" and you type it - that's input\n\nNow YOUR programs can do the same thing!\n\n## Code Example\n\n```python\n# Let's create our first interactive program!\n\n# Output: Ask the user for their name\nprint(\"Hello! What's your name?\")\n\n# Input: Wait for the user to type their name and press Enter\nname = input()\n\n# Output: Greet them personally\nprint(\"Nice to meet you,\", name, \"!\")\n\n# Let's ask another question\nprint(\"\\nWhat's your favorite color?\")\ncolor = input()\n\n# Respond\nprint(\"Wow!\", color, \"is a great color!\")\n```\n\n**Output:**\n```\nHello! What's your name?\n[User types: Sarah]\nNice to meet you, Sarah !\n\nWhat's your favorite color?\n[User types: blue]\nWow! blue is a great color!\n```\n\n## Breaking Down the Syntax\n\nLet's break down this new concept:\n\n<li>**`name = input()`** - This is a BIG moment! Let's unpack it:\n\n- `input()` - This is a function (like `print()`) that pauses your program and waits for the user to type something and press Enter\n- `name =` - This creates a **variable** (a labeled storage box) called `name` and puts whatever the user typed into that box\n\nThink of it like this: `input()` is like a mailbox. When mail arrives, you put it in a labeled envelope (`name`) so you can find it later.\n\n</li><li>**Using the variable:** Once you've stored something in a variable, you can use it anywhere!\n\n<pre>`print(\"Nice to meet you,\", name, \"!\")`</pre>Python looks in the `name` box, finds \"Sarah\" (or whatever the user typed), and uses it.\n\n</li><li>**The equals sign (=):** In Python, `=` doesn't mean \"equals\" like in math. It means \"store this value in this variable.\" We call it the **assignment operator**.\n\n<pre>`color = input()  # Means: \"Take whatever input() gets and store it in 'color'\"`</pre></li>\n\n## Key Takeaways\n\n- `input()` pauses your program and waits for the user to type something and press Enter\n- Variables are like labeled storage boxes that hold information\n- You create a variable with: `variable_name = value`\n- The `=` sign means \"store this value\" (not \"equals\" like in math)\n- Variable names should be descriptive: `name`, `age`, `color` (not `x`, `y`, `z`)\n- When using a variable in `print()`, DON'T put it in quotes\n- You can put the prompt text inside `input()`: `input(\"Your question here: \")`\n- Variables let you store information and reuse it throughout your program\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Putting quotes around variable names when using them:**\n\n```\nprint(\"Nice to meet you,\", \"name\", \"!\")  ❌ Shows: Nice to meet you, name !\nprint(\"Nice to meet you,\", name, \"!\")   ✅ Shows: Nice to meet you, Alex !\n```\nWhen you want the VALUE stored in a variable, DON'T use quotes!\n\n</li><li>**Forgetting to store the input in a variable:**\n\n```\nprint(\"What's your name?\")\ninput()  ❌ Input is collected but immediately forgotten\n\nprint(\"What's your name?\")\nname = input()  ✅ Input is stored in 'name' so you can use it later\n```\n</li><li>**Trying to use a variable you haven't created:**\n\n```\nprint(\"Hello,\", username, \"!\")  ❌ Error: 'username' is not defined\n\n# You need to create it first:\nusername = input(\"What's your name? \")\nprint(\"Hello,\", username, \"!\")  ✅ Works!\n```\n</li><li>**Misspelling variable names:**\n\n```\nname = input(\"What's your name? \")\nprint(\"Hello,\", nama, \"!\")  ❌ Error: 'nama' is not defined (should be 'name')\n```\nPython is picky! `name` and `Name` and `nama` are all different variables.\n\n</li>\n**Pro Tip:** You can put the question INSIDE the `input()` parentheses:\n\n```\nname = input(\"What's your name? \")  # Asks and waits on the same line!\n# This is often cleaner than using a separate print() statement\n```"
+          },
+          "exercises": [
+            {
+              "type": "coding",
+              "title": "Practice Exercise",
+              "instructions": "**Your Mission:** Create a \"Getting to Know You\" program!\n\n**Your program should:**\n\n- Ask for the user's name and store it in a variable\n- Ask for their age and store it in a variable\n- Ask for their favorite food and store it in a variable\n- Print a summary that uses ALL three pieces of information\n\n**Example output:**\n\n<pre>What's your name? Alex\nHow old are you? 25\nWhat's your favorite food? pizza\n\nNice to meet you, Alex!\nYou are 25 years old and you love pizza!\nThat's awesome!</pre>",
+              "starterCode": "# Getting to Know You program\n\n# Ask for name\nprint(\"What's your name?\")\nname = ____  # Get the user's input\n\n# Ask for age\nprint(\"How old are you?\")\n____ = input()  # Create a variable called 'age' and store the input\n\n# Ask for favorite food\n____(\"What's your favorite food?\")\nfood = ____\n\n# Now create a summary using all three variables\nprint(\"\\nNice to meet you,\", ____, \"!\")\nprint(\"You are\", age, \"years old and you love\", ____, \"!\")\nprint(\"That's awesome!\")",
+              "solution": "# Getting to Know You program - SOLUTION\n\n# Ask for name\nprint(\"What's your name?\")\nname = input()  # Get the user's input\n\n# Ask for age\nprint(\"How old are you?\")\nage = input()  # Create a variable called 'age' and store the input\n\n# Ask for favorite food\nprint(\"What's your favorite food?\")\nfood = input()\n\n# Now create a summary using all three variables\nprint(\"\\nNice to meet you,\", name, \"!\")\nprint(\"You are\", age, \"years old and you love\", food, \"!\")\nprint(\"That's awesome!\")",
+              "hints": [
+                "**Hints:**\n",
+                "To get user input, use: `input()`",
+                "To store it in a variable: `variable_name = input()`",
+                "To display text, use: `print(\"your text\")`",
+                "To use a variable in print, just write its name without quotes: `print(name)`"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lesson-01-05",
+          "title": "Mini-Project: A Conversation Program",
+          "type": "exercise",
+          "estimatedMinutes": 20,
+          "difficulty": "beginner",
+          "content": {
+            "format": "markdown",
+            "body": "# Mini-Project: A Conversation Program\n\n## Understanding the Concept\n\n**Congratulations!** You've learned the fundamentals of Python:\n\n- ✅ How to display output with `print()`\n- ✅ How to get input from users with `input()`\n- ✅ How to store information in variables\n- ✅ How to create clean, readable output with f-strings\n\nNow it's time to put it all together in a real project!\n\n**Project Goal:** Create an interactive chatbot that has a multi-turn conversation with the user.\n\n**Think of it like building with LEGO blocks:**\n\nYou've been learning about individual blocks (print, input, variables, f-strings). Now we're going to snap them together to build something cool! Each block you've learned is simple on its own, but when combined, they can create something that feels almost magical.\n\n**What makes a good conversation program?**\n\n- **It's personal** - Uses the person's name and remembers what they said\n- **It's engaging** - Asks interesting questions\n- **It's responsive** - Reacts to what the user tells it\n- **It's polite** - Greets and says goodbye\n\nYour program will do all of these things!\n\n## Code Example\n\n```python\n# Personal Assistant Chatbot - Example Project\n\nprint(\"=\"*50)\nprint(\"    WELCOME TO YOUR PERSONAL ASSISTANT\")\nprint(\"=\"*50)\n\n# Get to know the user\nname = input(\"\\nHello! What's your name? \")\nprint(f\"\\nNice to meet you, {name}!\")\n\n# Ask about their day\nfeeling = input(f\"How are you feeling today, {name}? \")\nprint(f\"I'm glad you're feeling {feeling}!\")\n\n# Get their age and calculate fun facts\nage = input(\"\\nHow old are you? \")\nage_months = int(age) * 12  # Convert age to months\nage_days = int(age) * 365   # Approximate days lived\n\nprint(f\"\\nWow! That means you've been alive for approximately:\")\nprint(f\"  🗓️  {age_months} months\")\nprint(f\"  📅  {age_days} days\")\n\n# Future plans\ngoal = input(f\"\\nWhat's one goal you have this year, {name}? \")\nprint(f\"That's awesome! I believe you can achieve {goal}!\")\n\n# Favorite things\nfav_food = input(\"What's your favorite food? \")\nfav_color = input(\"What's your favorite color? \")\n\n# Summary\nprint(\"\\n\" + \"=\"*50)\nprint(\"           CONVERSATION SUMMARY\")\nprint(\"=\"*50)\nprint(f\"Name: {name}\")\nprint(f\"Age: {age} years old ({age_months} months!)\")\nprint(f\"Feeling: {feeling}\")\nprint(f\"Goal: {goal}\")\nprint(f\"Favorite Food: {fav_food}\")\nprint(f\"Favorite Color: {fav_color}\")\nprint(\"=\"*50)\n\nprint(f\"\\nThank you for chatting with me, {name}!\")\nprint(f\"I hope you enjoy some {fav_color} {fav_food} today!\")\nprint(\"Good luck with your goals! 🚀\")\n```\n\n**Output:**\n```\n==================================================\n    WELCOME TO YOUR PERSONAL ASSISTANT\n==================================================\n\nHello! What's your name? Emma\n\nNice to meet you, Emma!\nHow are you feeling today, Emma? excited\nI'm glad you're feeling excited!\n\nHow old are you? 24\n\nWow! That means you've been alive for approximately:\n  🗓️  288 months\n  📅  8760 days\n\nWhat's one goal you have this year, Emma? learn Python\nThat's awesome! I believe you can achieve learn Python!\nWhat's your favorite food? sushi\nWhat's your favorite color? blue\n\n==================================================\n           CONVERSATION SUMMARY\n==================================================\nName: Emma\nAge: 24 years old (288 months!)\nFeeling: excited\nGoal: learn Python\nFavorite Food: sushi\nFavorite Color: blue\n==================================================\n\nThank you for chatting with me, Emma!\nI hope you enjoy some blue sushi today!\nGood luck with your goals! 🚀\n```\n\n## Breaking Down the Syntax\n\nThis project introduces one new concept: **converting text to numbers**.\n\n<li>**`int(age)`** - This converts text to an integer (whole number).\n\n**Why is this necessary?** When you use `input()`, Python treats everything as text (a string), even if the user types a number.\n\n```\nage = input(\"How old are you? \")  # If user types \"24\", age = \"24\" (text)\nage_months = age * 12              # ❌ Error! Can't multiply text\n\nage = input(\"How old are you? \")   # User types \"24\", age = \"24\" (text)\nage_months = int(age) * 12         # ✅ Works! int() converts \"24\" to 24 (number)\n```\n</li><li>**The `int()` function explained:**\n\n- `int` is short for \"integer\" (a whole number)\n- It takes text that looks like a number and converts it to an actual number\n- `int(\"24\")` → `24`\n- `int(\"100\")` → `100`\n\n</li><li>**Using the converted number:**\n\n```\nage_months = int(age) * 12\nage_days = int(age) * 365\n```\nNow we can do math! `*` means multiply, so if age is 24: - `24 * 12 = 288` months - `24 * 365 = 8,760` days\n\n</li><li>**Everything else:** The rest is just clever use of what you already know:\n\n- Variables to remember information\n- F-strings to create personalized messages\n- String multiplication (`\"=\"*50`) for decorative lines\n- Good prompts to make the conversation natural\n\n</li>\n\n## Key Takeaways\n\n- You can combine `print()`, `input()`, variables, and f-strings to create interactive programs\n- `input()` always returns text (a string), even if the user types a number\n- Use `int()` to convert text to a whole number before doing math\n- Good programs are more than just question-and-answer—they process information and provide value\n- Planning your program's structure before coding makes it easier to build\n- Visual formatting (lines, spacing, emojis) makes output more readable and engaging\n- Using variables lets you reference information throughout your program\n- The best programs reflect your creativity and interests!\n\n<p class='congratulations-box' style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-top: 20px;'>**🎉 Congratulations!**\nYou've completed Module 1! You now understand:\n• What programming is\n• How to use Python basics\n• How to create interactive programs\n\nYou're ready to learn about storing and organizing information in Module 2!</p>\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Forgetting to convert strings to integers before math:**\n\n```\nage = input(\"Age: \")  # age = \"24\" (text)\nfuture = age + 10     # ❌ Error! Can't add number to text\n\nage = input(\"Age: \")\nfuture = int(age) + 10  # ✅ Works! Converts to number first\n```\n</li><li>**Converting variables that aren't numbers:**\n\n```\nname = input(\"Name: \")  # User types \"Emma\"\nresult = int(name)      # ❌ Error! Can't convert \"Emma\" to a number\n```\nOnly use `int()` on variables that contain numbers!\n\n</li><li>**Not having enough questions:** The requirement is at least 5 questions. Make sure you're asking enough to create an engaging conversation!\n\n</li><li>**Making the program too simple:** Don't just collect information and repeat it. DO SOMETHING with it!\n\n- ❌ Bad: Ask for age, then just print the age\n- ✅ Good: Ask for age, calculate age in months/days/future years\n\n</li><li>**Forgetting the summary:** The summary section should display ALL the information in an organized, visually appealing way.\n\n</li><li>**Not testing the program:** Run your code with different inputs to make sure it works correctly!\n\n</li>\n**Pro Tips:**\n\n- Add comments to explain sections of your code\n- Use blank lines (`print()`) to space out your output\n- Test with different inputs to ensure your calculations work\n- Have fun! If you're not excited about your program's topic, choose a different one"
+          },
+          "exercises": [
+            {
+              "type": "coding",
+              "title": "Practice Exercise",
+              "instructions": "**Your Mission:** Create your OWN conversation program! Make it unique and fun.\n\n**Requirements - your program must:**\n\n- Have a creative title/greeting\n- Ask at least 5 different questions\n- Store all answers in variables\n- Use f-strings to create personalized responses\n- Include at least ONE calculation (like the age example)\n- Display a summary at the end using all the collected information\n- Have a friendly goodbye message\n\n**Ideas to get you started:**\n\n- **A Travel Advisor:** Ask where they want to go, their budget, how many days, etc.\n- **A Future Teller:** Ask their age, calculate what year they'll turn 100, etc.\n- **A Recipe Helper:** Ask for ingredients, calculate servings, etc.\n- **A Fitness Buddy:** Ask about exercise goals, calculate calories, etc.\n- **A Study Planner:** Ask about subjects, calculate study hours needed, etc.\n\n**Be creative!** This is YOUR program. Make it about something YOU find interesting!",
+              "starterCode": "# My Conversation Program\n# Created by: [Your Name]\n\n# Create a title/greeting\nprint(\"=\"*50)\nprint(\"    YOUR CREATIVE TITLE HERE\")\nprint(\"=\"*50)\n\n# Start the conversation\n# Ask your first question\nquestion1 = input(\"\\nYour first question here: \")\n\n# Add more questions (you need at least 5 total!)\n\n\n# Do a calculation with one of the answers\n# Example: number_answer = int(question1) * 2\n\n\n# Create a summary section\nprint(\"\\n\" + \"=\"*50)\nprint(\"           SUMMARY\")\nprint(\"=\"*50)\n# Display all the information you collected\n\n\n# Goodbye message\nprint(\"\\nThank you for using [Your Program Name]!\")",
+              "solution": "# Future Year Calculator - SAMPLE SOLUTION\n# Created by: The Python Team\n\nprint(\"=\"*50)\nprint(\"    FUTURE YEAR CALCULATOR\")\nprint(\"    Discover Your Future Milestones!\")\nprint(\"=\"*50)\n\n# Get user information\nname = input(\"\\nWhat's your name? \")\nprint(f\"\\nHello, {name}! Let's explore your future together.\")\n\nage = input(\"How old are you right now? \")\ncurrent_year = input(\"What year is it? \")\n\n# Ask about goals\nmilestone_age = input(\"At what age would you like to achieve a major goal? \")\ngoal = input(\"What goal do you want to achieve? \")\nfavorite_place = input(\"What's your dream travel destination? \")\n\n# Calculate future milestones\nage_100 = int(current_year) + (100 - int(age))\nyears_to_milestone = int(milestone_age) - int(age)\nmilestone_year = int(current_year) + years_to_milestone\n\n# Create an exciting summary\nprint(\"\\n\" + \"=\"*50)\nprint(\"        YOUR FUTURE MILESTONES\")\nprint(\"=\"*50)\nprint(f\"Name: {name}\")\nprint(f\"Current Age: {age} years old\")\nprint(f\"Current Year: {current_year}\")\nprint(\"\\n--- EXCITING PREDICTIONS ---\")\nprint(f\"🎂 You'll turn 100 in the year {age_100}!\")\nprint(f\"🎯 In {years_to_milestone} years (year {milestone_year}),\")\nprint(f\"   you'll be {milestone_age} and achieve: {goal}\")\nprint(f\"✈️  Don't forget to visit {favorite_place}!\")\nprint(\"=\"*50)\n\nprint(f\"\\nAmazing, {name}! The future is bright! 🌟\")\nprint(f\"Start working towards {goal} today!\")\nprint(\"\\nThank you for using the Future Year Calculator!\")\nprint(\"Good luck on your journey! 🚀\")",
+              "hints": [
+                "**Hints:**\n",
+                "**Structure your program in sections:**\n<li>Title/Greeting",
+                "Questions (5+ with good prompts)",
+                "Calculations (at least 1)",
+                "Summary"
+              ]
             }
           ]
         }
       ]
+    },
+    {
+      "id": "module-02",
+      "title": "Module 2",
+      "description": "Module 2",
+      "difficulty": "beginner",
+      "estimatedHours": 1,
+      "lessons": [
+        {
+          "id": "lesson-02-01",
+          "title": "The Labeled Box (Variables Explained)",
+          "type": "exercise",
+          "estimatedMinutes": 15,
+          "difficulty": "beginner",
+          "content": {
+            "format": "markdown",
+            "body": "# The Labeled Box (Variables Explained)\n\n## Understanding the Concept\n\nImagine you're moving into a new apartment. You have lots of boxes, but if they're not labeled, you'll never find anything! You need to write on each box:\n\n- 📦 'Kitchen Stuff'\n- 📦 'Books'\n- 📦 'Clothes'\n- 📦 'Electronics'\n\nNow when you need a specific item, you know exactly which box to open.\n\n**Variables work exactly like labeled moving boxes!**\n\nA variable is a container that stores information, and you give it a name (label) so you can find that information later. Without variables, your program would forget everything immediately—like having boxes with no labels!\n\n**Real-world analogy:**\n\n- Your phone saves contacts with names (variables): 'Mom', 'Best Friend', 'Pizza Place'\n- Without names, you'd just have a list of random numbers—impossible to use!\n- The name 'Mom' points to a phone number, just like a variable name points to a value\n\nIn Python, you create a variable by giving it a name and assigning it a value using the equals sign (=).\n\n## Code Example\n\n```python\n# Creating variables - like labeling boxes\n\n# A variable that stores text (a person's name)\nname = \"Sarah\"\n\n# A variable that stores a number (age)\nage = 28\n\n# A variable that stores a decimal number (price)\nprice = 19.99\n\n# A variable that stores a True/False value\nis_student = True\n\n# Now let's use these variables\nprint(\"Customer Information:\")\nprint(f\"Name: {name}\")\nprint(f\"Age: {age}\")\nprint(f\"Item Price: ${price}\")\nprint(f\"Student Discount Eligible: {is_student}\")\n\n# You can change what's in a variable (relabel the box)\nage = 29  # Happy birthday!\nprint(f\"\\nUpdated Age: {age}\")\n```\n\n**Output:**\n```\nCustomer Information:\nName: Sarah\nAge: 28\nItem Price: $19.99\nStudent Discount Eligible: True\n\nUpdated Age: 29\n```\n\n## Breaking Down the Syntax\n\nLet's understand the rules for creating and using variables:\n\n<li>**Creating a variable:** `variable_name = value`\n\n<pre>`name = \"Sarah\"  # Create a variable called 'name', put \"Sarah\" in it`</pre>The `=` sign is like a label maker. It says: \"From now on, whenever I say 'name', I mean 'Sarah'.\"\n\n</li><li>**Variable naming rules:**\n\n- Can contain letters, numbers, and underscores: `my_age_2` ✅\n- Must start with a letter or underscore, NOT a number: `age2` ✅, `2age` ❌\n- Cannot contain spaces: `user_name` ✅, `user name` ❌\n- Case-sensitive: `Name` and `name` are different variables\n- Cannot use Python keywords (like `print`, `if`, `for`)\n\n</li><li>**Good variable names are descriptive:**\n\n```\n# Bad - what does 'x' mean?\nx = 25\n\n# Good - clearly stores someone's age\nage = 25\n```\n</li><li>**Changing a variable's value:**\n\n```\nscore = 100   # Start with 100\nscore = 150   # Change it to 150\n# The old value (100) is gone; score now holds 150\n```\nIt's like taking items out of a labeled box and putting different items in!\n\n</li>\n\n## Key Takeaways\n\n- Variables are like labeled boxes that store information\n- Create a variable with: `variable_name = value`\n- Variable names should be descriptive: `age` not `x`\n- Variable naming rules: start with letter, no spaces, use underscores\n- Text (strings) needs quotes: `\"Sarah\"`\n- Numbers don't need quotes: `25`\n- True/False are special values (Booleans): `True`, `False`\n- You can change a variable's value anytime\n- Good variable names make your code readable and maintainable\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Putting quotes around numbers:**\n\n```\nage = \"25\"  ❌ This is text, not a number!\nage = 25    ✅ This is a number you can use in math\n```\n</li><li>**Forgetting quotes around text:**\n\n```\nname = Sarah  ❌ Python looks for a variable called Sarah\nname = \"Sarah\"  ✅ This creates text\n```\n</li><li>**Wrong capitalization for True/False:**\n\n```\nlikes_pizza = true   ❌ Lowercase doesn't work\nlikes_pizza = TRUE   ❌ All caps doesn't work\nlikes_pizza = True   ✅ Must have capital T\n```\n</li><li>**Using variable names that don't exist:**\n\n```\n# You created: favorite_number = 7\nprint(f\"Number: {fav_num}\")  ❌ 'fav_num' was never created!\nprint(f\"Number: {favorite_number}\")  ✅ Correct name\n```\n</li><li>**Not updating related calculations:**\n\n```\nage = 25\nage_in_months = age * 12  # 300\nage = 26  # Changed age\n# age_in_months is still 300! Need to recalculate it!\n```\n</li>"
+          },
+          "exercises": [
+            {
+              "type": "coding",
+              "title": "Practice Exercise",
+              "instructions": "**Your Mission:** Create a profile card for yourself using variables!\n\n**Requirements:**\n\n- Create variables for:\n<li>Your first name\n- Your last name\n- Your age\n- Your favorite number\n- Whether you like pizza (True or False)\n- Your city\n\n</li>- Use f-strings to display all this information in a nicely formatted profile\n- Calculate and display your age in months\n- Change one variable and print the updated value",
+              "starterCode": "# Personal Profile Card\n\n# Create your variables\nfirst_name = \"____\"  # Your first name\nlast_name = \"____\"   # Your last name\nage = ____           # Your age (number, no quotes)\nfavorite_number = ____\nlikes_pizza = ____   # True or False (no quotes)\ncity = \"____\"\n\n# Calculate age in months\nage_in_months = age * 12\n\n# Display your profile\nprint(\"=\" * 40)\nprint(\"       PERSONAL PROFILE CARD\")\nprint(\"=\" * 40)\nprint(f\"Name: {first_name} {last_name}\")\nprint(f\"Age: {age} years ({age_in_months} months)\")\nprint(f\"City: {____}\")\nprint(f\"Favorite Number: {____}\")\nprint(f\"Likes Pizza: {____}\")\nprint(\"=\" * 40)\n\n# Update one variable\nage = ____  # Change your age\nprint(f\"\\nUpdated Age: {age}\")",
+              "solution": "# Personal Profile Card - SOLUTION\n\n# Create your variables\nfirst_name = \"Alex\"\nlast_name = \"Johnson\"\nage = 25\nfavorite_number = 7\nlikes_pizza = True\ncity = \"Portland\"\n\n# Calculate age in months\nage_in_months = age * 12\n\n# Display your profile\nprint(\"=\" * 40)\nprint(\"       PERSONAL PROFILE CARD\")\nprint(\"=\" * 40)\nprint(f\"Name: {first_name} {last_name}\")\nprint(f\"Age: {age} years ({age_in_months} months)\")\nprint(f\"City: {city}\")\nprint(f\"Favorite Number: {favorite_number}\")\nprint(f\"Likes Pizza: {likes_pizza}\")\nprint(\"=\" * 40)\n\n# Update one variable\nage = 26  # Birthday!\nage_in_months = age * 12  # Recalculate\nprint(f\"\\nUpdated Age: {age} years ({age_in_months} months)\")",
+              "hints": [
+                "**Hints:**\n",
+                "Text values need quotes: `\"Sarah\"`",
+                "Numbers DON'T need quotes: `25`",
+                "True and False are special values (no quotes, capital first letter): `True` or `False`",
+                "To use a variable in an f-string: `f\"Text {variable_name} more text\"`"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "lesson-02-02",
+          "title": "Different Kinds of Boxes (Data Types: Strings, Integers, Floats)",
+          "type": "exercise",
+          "estimatedMinutes": 18,
+          "difficulty": "beginner",
+          "content": {
+            "format": "markdown",
+            "body": "# Different Kinds of Boxes (Data Types: Strings, Integers, Floats)\n\n## Understanding the Concept\n\nImagine you're organizing your garage. You have different types of containers for different things:\n\n- 📦 **Cardboard boxes** for storing books and papers (fragile text items)\n- 🧰 **Plastic bins with numbers** for counting screws and nails (whole numbers)\n- ⚖️ **Containers with measurement scales** for liquids like paint (precise amounts with decimals)\n- ✅ **Yes/No labels** for items that are either here or not (True/False)\n\nYou wouldn't store liquid paint in a cardboard box, right? And you wouldn't count screws with a measuring cup. **You use the right container for the right type of thing.**\n\n**Python works the same way!** It has different \"types\" of data, and each type is suited for a specific purpose:\n\n- **Strings (str)** - Text and words. Like labels on boxes: `\"Hello\"`, `\"Sarah\"`, `\"123 Main St\"`\n- **Integers (int)** - Whole numbers for counting. Like counting screws: `5`, `100`, `-42`\n- **Floats (float)** - Numbers with decimal points for precise measurements. Like measuring paint: `3.14`, `19.99`, `-0.5`\n- **Booleans (bool)** - True or False values. Like yes/no questions: `True`, `False`\n\n**Why does this matter?**\n\nBecause you can't do math with text, and you can't make \"HELLO\" uppercase if it's a number! Python needs to know what kind of data you're working with so it knows what operations make sense.\n\nThink of it like this: if someone hands you a container, you need to know if it holds text, numbers, or true/false values before you know what you can do with it.\n\n## Code Example\n\n```python\n# Let's explore Python's main data types!\n\n# STRING - text wrapped in quotes\nname = \"Alice\"\ngreeting = 'Hello, World!'\naddress = \"123 Main Street\"\n\nprint(\"STRINGS (text):\")\nprint(f\"name = {name}\")\nprint(f\"Type: {type(name)}\")\nprint()\n\n# INTEGER - whole numbers (no quotes, no decimal point)\nage = 25\nstudents = 100\ntemperature = -5\n\nprint(\"INTEGERS (whole numbers):\")\nprint(f\"age = {age}\")\nprint(f\"Type: {type(age)}\")\nprint()\n\n# FLOAT - numbers with decimal points\nprice = 19.99\npi = 3.14159\ntemperature_precise = 98.6\n\nprint(\"FLOATS (decimal numbers):\")\nprint(f\"price = {price}\")\nprint(f\"Type: {type(price)}\")\nprint()\n\n# BOOLEAN - True or False (capital T and F, no quotes)\nis_student = True\nhas_license = False\n\nprint(\"BOOLEANS (True/False):\")\nprint(f\"is_student = {is_student}\")\nprint(f\"Type: {type(is_student)}\")\nprint()\n\n# What happens when you mix types?\nprint(\"MIXING TYPES:\")\nprint(f\"String + String: {'Hello' + ' ' + 'World'}\")\nprint(f\"Integer + Integer: {10 + 5}\")\nprint(f\"Float + Integer: {3.5 + 2}\")\nprint(f\"String * Integer: {'Ha' * 3}\")\n# print(f\"String + Integer: {'Age: ' + 25}\")  # This would cause an ERROR!\n```\n\n**Output:**\n```\nSTRINGS (text):\nname = Alice\nType: <class 'str'>\n\nINTEGERS (whole numbers):\nage = 25\nType: <class 'int'>\n\nFLOATS (decimal numbers):\nprice = 19.99\nType: <class 'float'>\n\nBOOLEANS (True/False):\nis_student = True\nType: <class 'bool'>\n\nMIXING TYPES:\nString + String: Hello World\nInteger + Integer: 15\nFloat + Integer: 5.5\nString * Integer: HaHaHa\n```\n\n## Breaking Down the Syntax\n\nLet's break down each data type and understand the rules:\n\n### 1. Strings (str) - The Text Type\n\n<li>**What they are:** Any text wrapped in quotes (single `'` or double `\"`)\n\n```\nname = \"Alice\"     # Double quotes\ngreeting = 'Hi!'   # Single quotes (works the same)\nmessage = \"123\"    # Even numbers in quotes are strings!\n```\n</li><li>**Key rule:** MUST have matching quotes at start and end\n\n```\n\"Hello\"  ✅ Correct\n'Hello'  ✅ Also correct\n\"Hello'  ❌ Error - quotes don't match!\n```\n</li><li>**The `type()` function:** Tells you what type a value is\n\n<pre>`print(type(\"Alice\"))  # Shows: <class 'str'>`</pre>Think of `type()` as asking \"What kind of container is this?\"\n\n</li>\n### 2. Integers (int) - The Whole Number Type\n\n<li>**What they are:** Whole numbers with NO decimal point and NO quotes\n\n```\nage = 25        # Positive integer\ncount = 0       # Zero is an integer\ndebt = -500     # Negative integer\n```\n</li><li>**Key rule:** NO quotes, NO decimal point\n\n```\nage = 25       ✅ Integer\nage = \"25\"     ❌ String (has quotes)\nage = 25.0     ❌ Float (has decimal point)\n```\n</li><li>**You can do math:** +, -, *, /, //, %, **\n\n```\nstudents = 20 + 5   # Addition: 25\ngroups = 20 // 5    # Division (whole number): 4\nsquared = 5 ** 2    # Exponent: 25\n```\n</li>\n### 3. Floats (float) - The Decimal Number Type\n\n<li>**What they are:** Numbers with a decimal point\n\n```\nprice = 19.99\npi = 3.14159\ntemperature = -2.5\nexact_value = 5.0  # Even whole numbers with .0 are floats!\n```\n</li><li>**Key rule:** MUST have a decimal point (even if it's .0)\n\n```\nprice = 19.99  ✅ Float\nprice = 20     ❌ Integer (no decimal point)\n```\n</li><li>**Mixing int and float:** Result is always a float\n\n```\nresult = 5 + 2.5   # 5 (int) + 2.5 (float) = 7.5 (float)\nprint(type(result))  # <class 'float'>\n```\n</li><li>**IEEE 754 Standard:** Python uses 64-bit precision for floats (about 15-17 decimal digits of accuracy)\n\n</li>\n### 4. Booleans (bool) - The True/False Type\n\n<li>**What they are:** Only TWO possible values: `True` or `False`\n\n```\nis_raining = True\nhas_license = False\n```\n</li><li>**Key rules:**\n\n- Must be capitalized: `True` and `False` (not `true` or `false`)\n- NO quotes (with quotes they become strings)\n\n```\nis_student = True    ✅ Boolean\nis_student = true    ❌ Error (not capitalized)\nis_student = \"True\"  ❌ String (has quotes)\n```\n</li>\n### 5. Mixing Types - What Works and What Doesn't\n<table><thead><tr><th>Operation</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td>String + String</td><td>`\"Hello\" + \" World\"`</td><td>✅ `\"Hello World\"`</td></tr><tr><td>Integer + Integer</td><td>`5 + 3`</td><td>✅ `8`</td></tr><tr><td>Float + Integer</td><td>`5.5 + 2`</td><td>✅ `7.5`</td></tr><tr><td>String * Integer</td><td>`\"Ha\" * 3`</td><td>✅ `\"HaHaHa\"`</td></tr><tr><td>String + Integer</td><td>`\"Age: \" + 25`</td><td>❌ TypeError!</td></tr></tbody></table>**The golden rule:** You can't directly combine strings and numbers with `+`. You need to convert them first (we'll learn this next lesson!).\n\n## Key Takeaways\n\n- Python has four main basic data types: **str** (strings), **int** (integers), **float** (decimals), and **bool** (True/False)\n- **Strings** are text in quotes: `\"Hello\"` or `'Hello'`\n- **Integers** are whole numbers without quotes: `42`, `-5`, `0`\n- **Floats** are decimal numbers: `3.14`, `19.99`, `-2.5`\n- **Booleans** are `True` or `False` (capitalized, no quotes)\n- Use `type(variable)` to check what type of data a variable holds\n- You can do math with integers and floats, but NOT directly with strings\n- Mixing int and float in math gives you a float result\n- You CAN multiply a string by an integer to repeat it: `\"Hi\" * 3` = `\"HiHiHi\"`\n- Each type has its own \"rules\" and \"superpowers\" - use the right type for the right job!\n- Python follows IEEE 754 standard for floats (64-bit, ~15-17 decimal digits precision)\n\n## Common Mistakes\n\n#### ⚠️ Common Sticking Points:\n\n<li>**Putting quotes around numbers when you want to do math:**\n\n```\nage = \"25\"       # ❌ This is a STRING\nage = age + 1    # ❌ Error! Can't add number to string\n\nage = 25         # ✅ This is an INTEGER\nage = age + 1    # ✅ Works! Result: 26\n```\n**Rule:** If you plan to do math, DON'T use quotes!\n\n</li><li>**Forgetting the decimal point for floats:**\n\n```\nprice = 20       # This is an INTEGER (20)\nprice = 20.0     # This is a FLOAT (20.0)\n\n# They look similar but are different types!\nprint(type(20))    # <class 'int'>\nprint(type(20.0))  # <class 'float'>\n```\n</li><li>**Wrong capitalization for booleans:**\n\n```\nis_ready = true    ❌ Error: 'true' is not defined\nis_ready = TRUE    ❌ Error: 'TRUE' is not defined\nis_ready = True    ✅ Correct - capital T\nis_ready = False   ✅ Correct - capital F\n```\nPython is case-sensitive! `True` and `False` are keywords, not variables.\n\n</li><li>**Trying to add strings and numbers directly:**\n\n```\n# ❌ This doesn't work:\nprint(\"Age: \" + 25)  # TypeError: can only concatenate str to str\n\n# ✅ Solutions:\nprint(\"Age:\", 25)           # Use comma (adds space automatically)\nprint(f\"Age: {25}\")         # Use f-string\nprint(\"Age: \" + str(25))    # Convert to string first (next lesson!)\n```\n</li><li>**Confusing `/` and `//`:**\n\n```\nresult = 10 / 3    # Regular division: 3.3333... (float)\nresult = 10 // 3   # Floor division: 3 (integer, rounds down)\n\nprint(type(10 / 3))   # <class 'float'>\nprint(type(10 // 3))  # <class 'int'>\n```\n</li><li>**Thinking `type()` changes the type:**\n\n```\nage = \"25\"\nprint(type(age))  # ❌ This just CHECKS the type, doesn't change it!\n\nage = int(age)    # ✅ This CONVERTS it (we'll learn this in Lesson 3!)\n```\n`type()` is like looking at a label - it doesn't change what's inside!\n\n</li>\n**Pro Tip:** When in doubt, use `print(type(your_variable))` to check what type you're working with. It's like asking Python \"What kind of box is this?\" before you try to use it!"
+          },
+          "exercises": [
+            {
+              "type": "coding",
+              "title": "Practice Exercise",
+              "instructions": "**Your Mission:** Create a \"Player Profile\" program that demonstrates all four data types!\n\n**Requirements:**\n\n- Create variables for:\n<li>Player name (string)\n- Player level (integer)\n- Health points (float)\n- Is online (boolean)\n\n</li>- Use `type()` to verify each variable's type\n- Display a formatted profile showing all the information\n- Perform at least one math operation with numbers\n- Try multiplying a string by an integer\n\n**Bonus Challenge:** Calculate the player's health percentage (current health / max health * 100) and display it!",
+              "starterCode": "# Player Profile Program\n\n# Create your variables (replace the ____ )\nplayer_name = \"____\"        # A string (use quotes)\nplayer_level = ____         # An integer (no quotes, no decimal)\nhealth_points = ____        # A float (use decimal point)\nis_online = ____            # True or False (no quotes, capital T/F)\n\n# Display the profile\nprint(\"=\" * 40)\nprint(\"       PLAYER PROFILE\")\nprint(\"=\" * 40)\nprint(f\"Name: {player_name}\")\nprint(f\"Level: {player_level}\")\nprint(f\"Health: {health_points} HP\")\nprint(f\"Status: {'Online' if is_online else 'Offline'}\")\nprint(\"=\" * 40)\n\n# Check the types\nprint(\"\\nDATA TYPES:\")\nprint(f\"player_name type: {type(____)}\")     # Fill in the variable name\nprint(f\"player_level type: {type(____)}\")   # Fill in the variable name\nprint(f\"health_points type: {type(____)}\")  # Fill in the variable name\nprint(f\"is_online type: {type(____)}\")      # Fill in the variable name\n\n# Do some math\nnext_level = player_level + ____  # Add 1 to level\nprint(f\"\\nNext level will be: {next_level}\")\n\n# String multiplication\nbattle_cry = \"____\" * 3  # Repeat any word 3 times\nprint(f\"Battle cry: {battle_cry}\")\n\n# BONUS: Calculate health percentage\nmax_health = 100.0  # Maximum health\nhealth_percent = (health_points / max_health) * 100\nprint(f\"\\nHealth: {health_percent}%\")",
+              "solution": "# Player Profile Program - SOLUTION\n\n# Create your variables\nplayer_name = \"DragonSlayer\"    # String\nplayer_level = 42               # Integer\nhealth_points = 87.5            # Float\nis_online = True                # Boolean\n\n# Display the profile\nprint(\"=\" * 40)\nprint(\"       PLAYER PROFILE\")\nprint(\"=\" * 40)\nprint(f\"Name: {player_name}\")\nprint(f\"Level: {player_level}\")\nprint(f\"Health: {health_points} HP\")\nprint(f\"Status: {'Online' if is_online else 'Offline'}\")\nprint(\"=\" * 40)\n\n# Check the types\nprint(\"\\nDATA TYPES:\")\nprint(f\"player_name type: {type(player_name)}\")\nprint(f\"player_level type: {type(player_level)}\")\nprint(f\"health_points type: {type(health_points)}\")\nprint(f\"is_online type: {type(is_online)}\")\n\n# Do some math\nnext_level = player_level + 1\nprint(f\"\\nNext level will be: {next_level}\")\n\n# String multiplication\nbattle_cry = \"Victory\" * 3\nprint(f\"Battle cry: {battle_cry}\")\n\n# BONUS: Calculate health percentage\nmax_health = 100.0\nhealth_percent = (health_points / max_health) * 100\nprint(f\"\\nHealth: {health_percent}%\")\n\n# Additional examples:\nprint(\"\\n--- EXTRA EXAMPLES ---\")\nprint(f\"Level squared: {player_level ** 2}\")\nprint(f\"Half health: {health_points / 2}\")\nprint(f\"Name in uppercase: {player_name.upper()}\")",
+              "hints": [
+                "**Hints:**\n",
+                "**Strings:** Use quotes: `\"DragonSlayer\"`",
+                "**Integers:** Whole numbers, no quotes: `25`",
+                "**Floats:** Include decimal point: `87.5`",
+                "**Booleans:** Capital T or F, no quotes: `True`"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-03",
+      "title": "Module 3",
+      "description": "Module 3",
+      "difficulty": "beginner",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-04",
+      "title": "Module 4",
+      "description": "Module 4",
+      "difficulty": "beginner",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-05",
+      "title": "Module 5",
+      "description": "Module 5",
+      "difficulty": "beginner",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-06",
+      "title": "Module 6",
+      "description": "Module 6",
+      "difficulty": "intermediate",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-07",
+      "title": "Module 7",
+      "description": "Module 7",
+      "difficulty": "intermediate",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-08",
+      "title": "Module 8",
+      "description": "Module 8",
+      "difficulty": "intermediate",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-09",
+      "title": "Module 9",
+      "description": "Module 9",
+      "difficulty": "intermediate",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-10",
+      "title": "Module 10",
+      "description": "Module 10",
+      "difficulty": "intermediate",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-11",
+      "title": "Module 11",
+      "description": "Module 11",
+      "difficulty": "advanced",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-12",
+      "title": "Module 12",
+      "description": "Module 12",
+      "difficulty": "advanced",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-13",
+      "title": "Module 13",
+      "description": "Module 13",
+      "difficulty": "advanced",
+      "estimatedHours": 0,
+      "lessons": []
+    },
+    {
+      "id": "module-14",
+      "title": "Module 14",
+      "description": "Module 14",
+      "difficulty": "advanced",
+      "estimatedHours": 0,
+      "lessons": []
     }
   ],
-  "languageConfig": {
-    "executionEngine": "python-3.11",
-    "compilerOptions": {
-      "version": "3.11",
-      "flags": []
-    },
-    "editorSettings": {
-      "defaultTemplate": "# Write your Python code here\n",
-      "fileExtension": ".py",
-      "monacoLanguageId": "python",
-      "tabSize": 4,
-      "insertSpaces": true
-    },
-    "sandboxConstraints": {
-      "maxExecutionTimeMs": 5000,
-      "maxMemoryMB": 256,
-      "maxOutputChars": 10000,
-      "allowedPackages": [],
-      "blockedPackages": ["os", "sys", "subprocess"]
-    }
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-11-14",
+    "author": "Code Tutor"
   }
 }
