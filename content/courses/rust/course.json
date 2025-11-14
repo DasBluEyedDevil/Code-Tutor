@@ -358,6 +358,193 @@
             "body": "# Module 4, Lesson 8: Practice Project — Building a Text Processor\n\n## Project Overview\n\nBuild a text processor that demonstrates ownership, borrowing, and memory efficiency!\n\n**What we're building:**\n- Analyze text without unnecessary copying\n- Modify text in-place using mutable references\n- Return processed data efficiently\n- No memory leaks, no data races\n\n**Skills practiced:**\n- ✅ Ownership and moves\n- ✅ Immutable borrowing (reading without copying)\n- ✅ Mutable borrowing (modifying in-place)\n- ✅ Lifetimes (returning references)\n- ✅ Efficient memory usage\n\n## The Complete Project\n\n### **Step 1: Create the Project**\n\n```bash\ncargo new text_processor\ncd text_processor\ncode .\n```\n\n### **Step 2: Build the Processor (Complete Code)**\n\n```rust\n// Text statistics struct\nstruct TextStats {\n    char_count: usize,\n    word_count: usize,\n    line_count: usize,\n    unique_words: usize,\n}\n\n// Analyze text without taking ownership\nfn analyze_text(text: &str) -> TextStats {\n    let char_count = text.len();\n    let line_count = text.lines().count();\n    let word_count = text.split_whitespace().count();\n\n    // Count unique words (case-insensitive)\n    let mut unique_words = std::collections::HashSet::new();\n    for word in text.split_whitespace() {\n        unique_words.insert(word.to_lowercase());\n    }\n\n    TextStats {\n        char_count,\n        word_count,\n        line_count,\n        unique_words: unique_words.len(),\n    }\n}\n\n// Modify text in-place (mutable borrowing)\nfn remove_extra_spaces(text: &mut String) {\n    let words: Vec<&str> = text.split_whitespace().collect();\n    *text = words.join(\" \");\n}\n\n// Convert to title case in-place\nfn to_title_case(text: &mut String) {\n    let words: Vec<String> = text\n        .split_whitespace()\n        .map(|word| {\n            let mut chars = word.chars();\n            match chars.next() {\n                None => String::new(),\n                Some(first) => first.to_uppercase().chain(chars).collect(),\n            }\n        })\n        .collect();\n\n    *text = words.join(\" \");\n}\n\n// Find longest word (returns reference - lifetime!)\nfn find_longest_word(text: &str) -> Option<&str> {\n    text.split_whitespace()\n        .max_by_key(|word| word.len())\n}\n\n// Count occurrences of a word (case-insensitive)\nfn count_word(text: &str, target: &str) -> usize {\n    let target_lower = target.to_lowercase();\n\n    text.split_whitespace()\n        .filter(|word| word.to_lowercase() == target_lower)\n        .count()\n}\n\n// Replace all occurrences (mutable borrowing)\nfn replace_word(text: &mut String, from: &str, to: &str) {\n    *text = text.replace(from, to);\n}\n\nfn main() {\n    // Original text (we own this)\n    let mut text = String::from(\n        \"the quick brown fox jumps over the lazy dog. \\\n         The  dog  was  really  lazy.\"\n    );\n\n    println!(\"=== Original Text ===\");\n    println!(\"{}\\n\", text);\n\n    // Analyze (immutable borrow - no copying!)\n    println!(\"=== Analysis ===\");\n    let stats = analyze_text(&text);\n    println!(\"Characters: {}\", stats.char_count);\n    println!(\"Words: {}\", stats.word_count);\n    println!(\"Lines: {}\", stats.line_count);\n    println!(\"Unique words: {}\", stats.unique_words);\n\n    // Find longest word (returns reference - efficient!)\n    if let Some(longest) = find_longest_word(&text) {\n        println!(\"Longest word: {}\", longest);\n    }\n\n    // Count specific word\n    let dog_count = count_word(&text, \"dog\");\n    println!(\"'dog' appears {} times\\n\", dog_count);\n\n    // Modify in-place (mutable borrow)\n    println!(\"=== Cleaning Text ===\");\n    remove_extra_spaces(&mut text);\n    println!(\"{}\\n\", text);\n\n    println!(\"=== Title Case ===\");\n    to_title_case(&mut text);\n    println!(\"{}\\n\", text);\n\n    println!(\"=== Replace 'Dog' with 'Cat' ===\");\n    replace_word(&mut text, \"Dog\", \"Cat\");\n    println!(\"{}\\n\", text);\n\n    // Final analysis\n    println!(\"=== Final Analysis ===\");\n    let final_stats = analyze_text(&text);\n    println!(\"Characters: {}\", final_stats.char_count);\n    println!(\"Words: {}\", final_stats.word_count);\n    println!(\"Unique words: {}\", final_stats.unique_words);\n}\n```\n\n### **Step 3: Run the Project**\n\n```bash\ncargo run\n```\n\n**Expected output:**\n\n```\n=== Original Text ===\nthe quick brown fox jumps over the lazy dog. The  dog  was  really  lazy.\n\n=== Analysis ===\nCharacters: 75\nWords: 13\nLines: 1\nUnique words: 11\nLongest word: really\n'dog' appears 2 times\n\n=== Cleaning Text ===\nthe quick brown fox jumps over the lazy dog. The dog was really lazy.\n\n=== Title Case ===\nThe Quick Brown Fox Jumps Over The Lazy Dog. The Dog Was Really Lazy.\n\n=== Replace 'Dog' with 'Cat' ===\nThe Quick Brown Fox Jumps Over The Lazy Cat. The Cat Was Really Lazy.\n\n=== Final Analysis ===\nCharacters: 75\nWords: 13\nUnique words: 11\n```\n\n## Understanding the Code\n\n### **Immutable Borrowing (Analysis)**\n\n```rust\nfn analyze_text(text: &str) -> TextStats {\n    // Reads text without copying it\n    let char_count = text.len();\n    // ...\n}\n```\n\n**Why it matters**: No expensive string copying!\n\n### **Returning References (Lifetimes)**\n\n```rust\nfn find_longest_word(text: &str) -> Option<&str> {\n    // Returns reference to a word in the original text\n    text.split_whitespace().max_by_key(|word| word.len())\n}\n```\n\n**Why it matters**: No allocation - returns a \"slice\" into existing data!\n\n### **Mutable Borrowing (Modification)**\n\n```rust\nfn remove_extra_spaces(text: &mut String) {\n    // Modifies in-place\n    *text = words.join(\" \");\n}\n```\n\n**Why it matters**: Efficient modification without creating temporary copies!\n\n## Challenges and Extensions\n\n### **Challenge 1: Add More Analysis**\n\nAdd functions to calculate:\n- Average word length\n- Sentence count (count `.` characters)\n- Alphabetical first/last words\n\n### **Challenge 2: Word Frequency**\n\nCreate a function that returns the top 5 most frequent words:\n\n```rust\nuse std::collections::HashMap;\n\nfn top_words(text: &str, n: usize) -> Vec<(&str, usize)> {\n    let mut freq: HashMap<&str, usize> = HashMap::new();\n\n    for word in text.split_whitespace() {\n        *freq.entry(word).or_insert(0) += 1;\n    }\n\n    let mut pairs: Vec<_> = freq.iter().collect();\n    pairs.sort_by(|a, b| b.1.cmp(a.1));\n    pairs.into_iter().take(n).map(|(k, v)| (*k, *v)).collect()\n}\n```\n\n### **Challenge 3: Palindrome Detector**\n\n```rust\nfn is_palindrome(text: &str) -> bool {\n    let clean: String = text\n        .chars()\n        .filter(|c| c.is_alphanumeric())\n        .map(|c| c.to_ascii_lowercase())\n        .collect();\n\n    clean == clean.chars().rev().collect::<String>()\n}\n```\n\n### **Challenge 4: Add Sentence Manipulation**\n\n```rust\nfn reverse_sentences(text: &mut String) {\n    let sentences: Vec<&str> = text.split('.').collect();\n    let reversed: Vec<&str> = sentences.into_iter().rev().collect();\n    *text = reversed.join(\".\");\n}\n```\n\n## Memory Efficiency Comparison\n\n**BAD (copies everywhere):**\n\n```rust\nfn bad_analyze(text: String) -> String {  // Takes ownership\n    let modified = text.clone();  // Unnecessary clone\n    let result = modified.clone();  // Another clone\n    result  // Returns owned String\n}\n```\n\n**GOOD (borrows efficiently):**\n\n```rust\nfn good_analyze(text: &str) -> &str {  // Borrows\n    // Return reference into original string\n    &text[0..10]\n}\n```\n\n## Key Takeaways\n\n- ✅ Use `&str` for reading (no copies)\n- ✅ Use `&mut String` for in-place modification\n- ✅ Return references when possible (lifetimes)\n- ✅ Avoid `.clone()` unless necessary\n- ✅ Mutable borrows enable efficient updates\n- ✅ Immutable borrows enable safe concurrent reads\n- ✅ Ownership prevents memory leaks automatically\n\n---\n\n## ✅ Module 4 Complete!\n\nYou've mastered Rust's ownership system:\n- ✅ Stack vs. Heap\n- ✅ The three ownership rules\n- ✅ Common ownership errors\n- ✅ Immutable borrowing (`&T`)\n- ✅ Mutable borrowing (`&mut T`)\n- ✅ Borrow checker errors\n- ✅ Lifetimes (basics)\n- ✅ Built an efficient text processor!\n\n**This is THE hardest part of Rust. You did it!**\n\n**Next: Module 5 — Collections (String, Vec, HashMap)**\n"
           }
         }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-04",
+          "title": "Module 4: Ownership System - Assessment Quiz",
+          "description": "Assessment quiz for Module 04",
+          "passingScore": 80,
+          "estimatedMinutes": 18,
+          "questions": [
+            {
+              "id": "rust-quiz-module-04-q1",
+              "type": "multiple-choice",
+              "question": "What are the three ownership rules in Rust?",
+              "options": [
+                "Each value has multiple owners, owners can overlap, values persist after owner disappears",
+                "Each value has an owner, only one owner at a time, value dropped when owner goes out of scope",
+                "Values are reference counted, multiple refs allowed, garbage collected",
+                "Ownership is optional, can be disabled, managed by programmer"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q2",
+              "type": "multiple-choice",
+              "question": "Which is stored on the heap?",
+              "options": [
+                "`let x = 5;`",
+                "`let active = true;`",
+                "`let s = String::from(\"hello\");`",
+                "`let ch = 'A';`"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q3",
+              "type": "multiple-choice",
+              "question": "What happens when you assign one variable to another with heap data?\n\n```rust\nlet s1 = String::from(\"hello\");\nlet s2 = s1;\n```",
+              "options": [
+                "Both s1 and s2 are valid and point to separate copies",
+                "s1 is moved to s2; s1 is no longer valid",
+                "s2 is a reference to s1",
+                "Compile error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q4",
+              "type": "multiple-choice",
+              "question": "What does the borrow checker prevent?",
+              "options": [
+                "Memory leaks only",
+                "Data races, use-after-free, double-free",
+                "Slow code execution",
+                "Type mismatches"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q5",
+              "type": "multiple-choice",
+              "question": "When does a value get dropped (freed)?",
+              "options": [
+                "Manually with `free()`",
+                "When the garbage collector runs",
+                "When its owner goes out of scope",
+                "After 5 seconds of inactivity"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q6",
+              "type": "multiple-choice",
+              "question": "Will this code compile?\n\n```rust\nfn main() {\n    let s = String::from(\"hello\");\n    takes_ownership(s);\n    println!(\"{}\", s);\n}\n\nfn takes_ownership(text: String) {\n    println!(\"{}\", text);\n}\n```",
+              "options": [
+                "Yes, compiles fine",
+                "No, error: s moved into function",
+                "Yes, but runtime error",
+                "No, error: function signature wrong"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q7",
+              "type": "multiple-choice",
+              "question": "Will this code compile?\n\n```rust\nfn main() {\n    let s1 = String::from(\"hello\");\n    let s2 = s1.clone();\n    println!(\"{}, {}\", s1, s2);\n}\n```",
+              "options": [
+                "No, s1 was moved",
+                "No, clone not available",
+                "Yes, clone makes deep copy",
+                "No, type mismatch"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q8",
+              "type": "multiple-choice",
+              "question": "What does this print?\n\n```rust\nfn main() {\n    let x = 5;\n    let y = x;\n    println!(\"{}, {}\", x, y);\n}\n```",
+              "options": [
+                "Compile error: x moved",
+                "5, 5",
+                "0, 5",
+                "Undefined behavior"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q10",
+              "type": "multiple-choice",
+              "question": "What's the difference between `&T` and `&mut T`?",
+              "options": [
+                "No difference, just style",
+                "`&T` is immutable reference, `&mut T` is mutable reference",
+                "`&T` is for stack, `&mut T` is for heap",
+                "`&mut T` is faster"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q11",
+              "type": "multiple-choice",
+              "question": "How many mutable references can exist to the same data at once?",
+              "options": [
+                "Unlimited",
+                "Exactly one",
+                "Up to 10",
+                "Two per thread"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q12",
+              "type": "multiple-choice",
+              "question": "Will this code compile?\n\n```rust\nfn main() {\n    let mut s = String::from(\"hello\");\n    let r1 = &s;\n    let r2 = &s;\n    let r3 = &mut s;\n    println!(\"{}, {}, {}\", r1, r2, r3);\n}\n```",
+              "options": [
+                "Yes, all references are valid",
+                "No, can't have mutable reference while immutable exist",
+                "Yes, but runtime panic",
+                "No, s must be immutable"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-04-q13",
+              "type": "multiple-choice",
+              "question": "What makes this code safe?\n\n```rust\nfn main() {\n    let mut s = String::from(\"hello\");\n\n    let r1 = &s;\n    let r2 = &s;\n    println!(\"{}, {}\", r1, r2);\n\n    let r3 = &mut s;\n    r3.push_str(\" world\");\n}\n```\n\n```rust\nfn example1(x: &str) -> &str { x }\n\nfn example2(x: &str, y: &str) -> &str {\n    if x.len() > y.len() { x } else { y }\n}\n```",
+              "options": [
+                "r1 and r2 are no longer used after println!, so r3 is OK",
+                "Compiler is lenient here",
+                "s is mutable",
+                "This code won't compile",
+                "Measuring program execution time",
+                "Ensuring references don't outlive the data they point to",
+                "Memory optimization",
+                "Thread management",
+                "Both need annotations",
+                "Neither needs annotations",
+                "Only example1",
+                "Only example2"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -475,6 +662,193 @@
             "body": "# Module 6, Lesson 5: Practice Project — Building a File Validator\n\n## Project Overview\n\nBuild a professional file validation system that demonstrates all error handling techniques!\n\n**What we're building:**\n- Validate file existence, size, format\n- Parse and validate file contents\n- Comprehensive error reporting\n- Clean error propagation with `?`\n\n**Skills practiced:**\n- ✅ `Option<T>` for optional values\n- ✅ `Result<T, E>` for operations that can fail\n- ✅ The `?` operator for clean error propagation\n- ✅ Custom error types with detailed information\n- ✅ Error conversion with `From` trait\n- ✅ All error handling patterns working together\n\n## The Complete Project\n\n### **Step 1: Create the Project**\n\n```bash\ncargo new file_validator\ncd file_validator\ncode .\n```\n\n### **Step 2: Build the Validator (Complete Code)**\n\n```rust\nuse std::error::Error;\nuse std::fmt;\nuse std::fs;\nuse std::io;\nuse std::path::Path;\n\n// ===== Custom Error Types =====\n\n#[derive(Debug)]\nenum ValidationError {\n    FileNotFound(String),\n    FileTooLarge { path: String, size: u64, max: u64 },\n    FileTooSmall { path: String, size: u64, min: u64 },\n    InvalidExtension { path: String, expected: Vec<String> },\n    EmptyFile(String),\n    InvalidFormat(String),\n    ParseError { line: usize, reason: String },\n    IoError(io::Error),\n}\n\nimpl fmt::Display for ValidationError {\n    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n        match self {\n            ValidationError::FileNotFound(path) => {\n                write!(f, \"File not found: {}\", path)\n            }\n            ValidationError::FileTooLarge { path, size, max } => {\n                write!(f, \"File '{}' is too large: {} bytes (max: {})\", path, size, max)\n            }\n            ValidationError::FileTooSmall { path, size, min } => {\n                write!(f, \"File '{}' is too small: {} bytes (min: {})\", path, size, min)\n            }\n            ValidationError::InvalidExtension { path, expected } => {\n                write!(\n                    f,\n                    \"File '{}' has wrong extension. Expected: {:?}\",\n                    path, expected\n                )\n            }\n            ValidationError::EmptyFile(path) => {\n                write!(f, \"File '{}' is empty\", path)\n            }\n            ValidationError::InvalidFormat(msg) => {\n                write!(f, \"Invalid format: {}\", msg)\n            }\n            ValidationError::ParseError { line, reason } => {\n                write!(f, \"Parse error at line {}: {}\", line, reason)\n            }\n            ValidationError::IoError(e) => {\n                write!(f, \"IO error: {}\", e)\n            }\n        }\n    }\n}\n\nimpl Error for ValidationError {}\n\nimpl From<io::Error> for ValidationError {\n    fn from(error: io::Error) -> Self {\n        ValidationError::IoError(error)\n    }\n}\n\n// ===== Validation Rules =====\n\nstruct ValidationRules {\n    allowed_extensions: Vec<String>,\n    min_size: u64,\n    max_size: u64,\n    require_header: Option<String>,\n}\n\nimpl ValidationRules {\n    fn for_csv() -> Self {\n        ValidationRules {\n            allowed_extensions: vec![String::from(\"csv\")],\n            min_size: 1,\n            max_size: 10_000_000,  // 10 MB\n            require_header: Some(String::from(\"name,age,email\")),\n        }\n    }\n\n    fn for_text() -> Self {\n        ValidationRules {\n            allowed_extensions: vec![String::from(\"txt\"), String::from(\"md\")],\n            min_size: 1,\n            max_size: 1_000_000,  // 1 MB\n            require_header: None,\n        }\n    }\n}\n\n// ===== File Validator =====\n\nstruct FileValidator {\n    path: String,\n    rules: ValidationRules,\n}\n\nimpl FileValidator {\n    fn new(path: &str, rules: ValidationRules) -> Self {\n        FileValidator {\n            path: path.to_string(),\n            rules,\n        }\n    }\n\n    fn validate(&self) -> Result<ValidationReport, ValidationError> {\n        // Check existence\n        self.check_exists()?;\n\n        // Check size\n        let size = self.check_size()?;\n\n        // Check extension\n        self.check_extension()?;\n\n        // Read and validate content\n        let content = self.read_content()?;\n        let line_count = self.validate_content(&content)?;\n\n        Ok(ValidationReport {\n            path: self.path.clone(),\n            size,\n            line_count,\n            status: String::from(\"Valid\"),\n        })\n    }\n\n    fn check_exists(&self) -> Result<(), ValidationError> {\n        if !Path::new(&self.path).exists() {\n            return Err(ValidationError::FileNotFound(self.path.clone()));\n        }\n        Ok(())\n    }\n\n    fn check_size(&self) -> Result<u64, ValidationError> {\n        let metadata = fs::metadata(&self.path)?;\n        let size = metadata.len();\n\n        if size == 0 {\n            return Err(ValidationError::EmptyFile(self.path.clone()));\n        }\n\n        if size < self.rules.min_size {\n            return Err(ValidationError::FileTooSmall {\n                path: self.path.clone(),\n                size,\n                min: self.rules.min_size,\n            });\n        }\n\n        if size > self.rules.max_size {\n            return Err(ValidationError::FileTooLarge {\n                path: self.path.clone(),\n                size,\n                max: self.rules.max_size,\n            });\n        }\n\n        Ok(size)\n    }\n\n    fn check_extension(&self) -> Result<(), ValidationError> {\n        let path = Path::new(&self.path);\n\n        let extension = path\n            .extension()\n            .and_then(|ext| ext.to_str())\n            .map(|s| s.to_lowercase());\n\n        match extension {\n            Some(ext) => {\n                if !self.rules.allowed_extensions.contains(&ext) {\n                    return Err(ValidationError::InvalidExtension {\n                        path: self.path.clone(),\n                        expected: self.rules.allowed_extensions.clone(),\n                    });\n                }\n                Ok(())\n            }\n            None => Err(ValidationError::InvalidExtension {\n                path: self.path.clone(),\n                expected: self.rules.allowed_extensions.clone(),\n            }),\n        }\n    }\n\n    fn read_content(&self) -> Result<String, ValidationError> {\n        let content = fs::read_to_string(&self.path)?;\n        Ok(content)\n    }\n\n    fn validate_content(&self, content: &str) -> Result<usize, ValidationError> {\n        let lines: Vec<&str> = content.lines().collect();\n\n        if lines.is_empty() {\n            return Err(ValidationError::EmptyFile(self.path.clone()));\n        }\n\n        // Check header if required\n        if let Some(expected_header) = &self.rules.require_header {\n            let actual_header = lines[0].trim();\n            if actual_header != expected_header {\n                return Err(ValidationError::InvalidFormat(format!(\n                    \"Expected header: {}, got: {}\",\n                    expected_header, actual_header\n                )));\n            }\n        }\n\n        Ok(lines.len())\n    }\n}\n\n// ===== Validation Report =====\n\n#[derive(Debug)]\nstruct ValidationReport {\n    path: String,\n    size: u64,\n    line_count: usize,\n    status: String,\n}\n\nimpl ValidationReport {\n    fn print(&self) {\n        println!(\"╔═══════════════════════════════════════╗\");\n        println!(\"║       File Validation Report          ║\");\n        println!(\"╠═══════════════════════════════════════╣\");\n        println!(\"║ File: {:30} ║\", self.path);\n        println!(\"║ Size: {:30} bytes ║\", self.size);\n        println!(\"║ Lines: {:29} ║\", self.line_count);\n        println!(\"║ Status: {:28} ║\", self.status);\n        println!(\"╚═══════════════════════════════════════╝\");\n    }\n}\n\n// ===== CSV Parser =====\n\n#[derive(Debug)]\nstruct Person {\n    name: String,\n    age: u32,\n    email: String,\n}\n\nimpl Person {\n    fn from_csv_line(line: &str, line_num: usize) -> Result<Self, ValidationError> {\n        let parts: Vec<&str> = line.split(',').collect();\n\n        if parts.len() != 3 {\n            return Err(ValidationError::ParseError {\n                line: line_num,\n                reason: format!(\"Expected 3 fields, got {}\", parts.len()),\n            });\n        }\n\n        let name = parts[0].trim().to_string();\n        if name.is_empty() {\n            return Err(ValidationError::ParseError {\n                line: line_num,\n                reason: String::from(\"Name cannot be empty\"),\n            });\n        }\n\n        let age = parts[1]\n            .trim()\n            .parse::<u32>()\n            .map_err(|_| ValidationError::ParseError {\n                line: line_num,\n                reason: format!(\"Invalid age: {}\", parts[1]),\n            })?;\n\n        let email = parts[2].trim().to_string();\n        if !email.contains('@') {\n            return Err(ValidationError::ParseError {\n                line: line_num,\n                reason: format!(\"Invalid email: {}\", email),\n            });\n        }\n\n        Ok(Person { name, age, email })\n    }\n}\n\nfn parse_csv_file(path: &str) -> Result<Vec<Person>, ValidationError> {\n    let content = fs::read_to_string(path)?;\n    let mut people = Vec::new();\n\n    for (i, line) in content.lines().enumerate() {\n        if i == 0 {\n            continue;  // Skip header\n        }\n\n        if line.trim().is_empty() {\n            continue;  // Skip empty lines\n        }\n\n        let person = Person::from_csv_line(line, i + 1)?;\n        people.push(person);\n    }\n\n    Ok(people)\n}\n\n// ===== Main Program =====\n\nfn main() -> Result<(), Box<dyn Error>> {\n    println!(\"=== File Validator Demo ===\\n\");\n\n    // Create test files\n    create_test_files()?;\n\n    // Test 1: Valid CSV file\n    println!(\"Test 1: Validating valid CSV file\");\n    validate_and_report(\"data.csv\", ValidationRules::for_csv());\n\n    // Test 2: Invalid CSV (wrong header)\n    println!(\"\\nTest 2: Validating CSV with wrong header\");\n    validate_and_report(\"bad_header.csv\", ValidationRules::for_csv());\n\n    // Test 3: File too large\n    println!(\"\\nTest 3: Validating file that's too large\");\n    let mut rules = ValidationRules::for_text();\n    rules.max_size = 10;  // Set very low limit\n    validate_and_report(\"large.txt\", rules);\n\n    // Test 4: Non-existent file\n    println!(\"\\nTest 4: Validating non-existent file\");\n    validate_and_report(\"missing.csv\", ValidationRules::for_csv());\n\n    // Test 5: Parse CSV and display\n    println!(\"\\nTest 5: Parsing and displaying CSV data\");\n    match parse_csv_file(\"data.csv\") {\n        Ok(people) => {\n            println!(\"✅ Successfully parsed {} people:\", people.len());\n            for person in people {\n                println!(\"  - {} ({} years old) - {}\", person.name, person.age, person.email);\n            }\n        }\n        Err(e) => println!(\"❌ Error: {}\", e),\n    }\n\n    Ok(())\n}\n\nfn validate_and_report(path: &str, rules: ValidationRules) {\n    let validator = FileValidator::new(path, rules);\n\n    match validator.validate() {\n        Ok(report) => {\n            println!(\"✅ Validation successful!\");\n            report.print();\n        }\n        Err(e) => {\n            println!(\"❌ Validation failed: {}\", e);\n        }\n    }\n}\n\nfn create_test_files() -> Result<(), Box<dyn Error>> {\n    // Valid CSV\n    fs::write(\n        \"data.csv\",\n        \"name,age,email\\nAlice,30,alice@example.com\\nBob,25,bob@example.com\\nCharlie,35,charlie@example.com\",\n    )?;\n\n    // CSV with wrong header\n    fs::write(\n        \"bad_header.csv\",\n        \"username,years,contact\\nAlice,30,alice@example.com\",\n    )?;\n\n    // Large text file\n    fs::write(\"large.txt\", \"This is a test file with some content.\")?;\n\n    Ok(())\n}\n```\n\n### **Step 3: Run the Project**\n\n```bash\ncargo run\n```\n\n**Expected output:**\n\n```\n=== File Validator Demo ===\n\nTest 1: Validating valid CSV file\n✅ Validation successful!\n╔═══════════════════════════════════════╗\n║       File Validation Report          ║\n╠═══════════════════════════════════════╣\n║ File: data.csv                         ║\n║ Size: 104                        bytes ║\n║ Lines: 4                               ║\n║ Status: Valid                          ║\n╚═══════════════════════════════════════╝\n\nTest 2: Validating CSV with wrong header\n❌ Validation failed: Invalid format: Expected header: name,age,email, got: username,years,contact\n\nTest 3: Validating file that's too large\n❌ Validation failed: File 'large.txt' is too large: 39 bytes (max: 10)\n\nTest 4: Validating non-existent file\n❌ Validation failed: File not found: missing.csv\n\nTest 5: Parsing and displaying CSV data\n✅ Successfully parsed 3 people:\n  - Alice (30 years old) - alice@example.com\n  - Bob (25 years old) - bob@example.com\n  - Charlie (35 years old) - charlie@example.com\n```\n\n## Understanding the Code\n\n### **Custom Error Enum**\n\n```rust\n#[derive(Debug)]\nenum ValidationError {\n    FileNotFound(String),\n    FileTooLarge { path: String, size: u64, max: u64 },\n    // ... more variants with contextual data\n}\n```\n\n**Why**: Provides specific, actionable error information.\n\n### **Error Conversion**\n\n```rust\nimpl From<io::Error> for ValidationError {\n    fn from(error: io::Error) -> Self {\n        ValidationError::IoError(error)\n    }\n}\n```\n\n**Why**: Enables `?` operator to work with different error types.\n\n### **Clean Error Propagation**\n\n```rust\nfn validate(&self) -> Result<ValidationReport, ValidationError> {\n    self.check_exists()?;         // Return error if fails\n    let size = self.check_size()?; // Unwrap if succeeds\n    self.check_extension()?;\n    // ... continue\n}\n```\n\n**Why**: Clean, readable code without nested match statements.\n\n### **Option to Result Conversion**\n\n```rust\nlet extension = path\n    .extension()\n    .and_then(|ext| ext.to_str())\n    .map(|s| s.to_lowercase());\n\nmatch extension {\n    Some(ext) => { /* validate */ },\n    None => Err(ValidationError::InvalidExtension { /* ... */ }),\n}\n```\n\n**Why**: Safely handle potentially missing values.\n\n## Challenges and Extensions\n\n### **Challenge 1: Add JSON Validation**\n\n```rust\n// Add to Cargo.toml:\n// [dependencies]\n// serde_json = \"1.0\"\n\nuse serde_json::Value;\n\nimpl ValidationRules {\n    fn for_json() -> Self {\n        ValidationRules {\n            allowed_extensions: vec![String::from(\"json\")],\n            min_size: 2,  // At least \"{}\"\n            max_size: 5_000_000,\n            require_header: None,\n        }\n    }\n}\n\nfn validate_json(path: &str) -> Result<(), ValidationError> {\n    let content = fs::read_to_string(path)?;\n\n    serde_json::from_str::<Value>(&content)\n        .map_err(|e| ValidationError::InvalidFormat(format!(\"Invalid JSON: {}\", e)))?;\n\n    Ok(())\n}\n```\n\n### **Challenge 2: Batch Validation**\n\n```rust\nfn validate_multiple(paths: Vec<&str>, rules: ValidationRules) -> Vec<Result<ValidationReport, ValidationError>> {\n    paths\n        .into_iter()\n        .map(|path| FileValidator::new(path, &rules).validate())\n        .collect()\n}\n\nfn main() {\n    let files = vec![\"file1.csv\", \"file2.csv\", \"file3.csv\"];\n    let results = validate_multiple(files, ValidationRules::for_csv());\n\n    for (i, result) in results.iter().enumerate() {\n        match result {\n            Ok(report) => println!(\"✅ File {}: Valid\", i + 1),\n            Err(e) => println!(\"❌ File {}: {}\", i + 1, e),\n        }\n    }\n}\n```\n\n### **Challenge 3: Warning System**\n\n```rust\n#[derive(Debug)]\nenum Warning {\n    LargeFile(u64),\n    ManyLines(usize),\n    OldFormat,\n}\n\nstruct ValidationReport {\n    path: String,\n    size: u64,\n    line_count: usize,\n    status: String,\n    warnings: Vec<Warning>,  // Add warnings\n}\n\nimpl FileValidator {\n    fn generate_warnings(&self, size: u64, line_count: usize) -> Vec<Warning> {\n        let mut warnings = Vec::new();\n\n        if size > 5_000_000 {\n            warnings.push(Warning::LargeFile(size));\n        }\n\n        if line_count > 10_000 {\n            warnings.push(Warning::ManyLines(line_count));\n        }\n\n        warnings\n    }\n}\n```\n\n### **Challenge 4: Progress Reporting**\n\n```rust\nuse std::sync::mpsc;\nuse std::thread;\n\nfn validate_with_progress(paths: Vec<String>) {\n    let (tx, rx) = mpsc::channel();\n    let total = paths.len();\n\n    thread::spawn(move || {\n        for (i, path) in paths.iter().enumerate() {\n            let validator = FileValidator::new(path, ValidationRules::for_csv());\n            let result = validator.validate();\n\n            tx.send((i + 1, total, result)).unwrap();\n        }\n    });\n\n    for (current, total, result) in rx {\n        println!(\"Progress: {}/{}\", current, total);\n        match result {\n            Ok(_) => println!(\"  ✅ Valid\"),\n            Err(e) => println!(\"  ❌ Error: {}\", e),\n        }\n    }\n}\n```\n\n## Key Takeaways\n\n- ✅ Custom error enums provide detailed, specific error information\n- ✅ `From` trait enables seamless error conversion with `?`\n- ✅ The `?` operator creates clean, readable error handling code\n- ✅ Pattern matching on custom errors allows specific handling\n- ✅ `Display` trait implementation provides user-friendly messages\n- ✅ Combining `Option` and `Result` handles optional and fallible operations\n- ✅ Error context (line numbers, file names) makes debugging easier\n- ✅ Validation rules encapsulate reusable logic\n- ✅ Comprehensive error handling is the foundation of robust applications\n- ✅ All error handling techniques work together seamlessly\n\n---\n\n## ✅ Module 6 Complete!\n\nYou've mastered Rust error handling:\n- ✅ `Option<T>` for values that might not exist\n- ✅ `Result<T, E>` for operations that can fail\n- ✅ The `?` operator for clean error propagation\n- ✅ Custom error types for specific, actionable errors\n- ✅ Built a professional file validation system!\n\n**Next: Module 7 — File I/O and Command-Line Arguments**\n\nTotal Progress: 38 lessons complete (~63%)\n\n---\n\n[← Back to Module 6](README.md) | [Continue to Module 7 →](../module_07_file_io/)\n"
           }
         }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-06",
+          "title": "Module 6: Error Handling - Assessment Quiz",
+          "description": "Assessment quiz for Module 06",
+          "passingScore": 80,
+          "estimatedMinutes": 18,
+          "questions": [
+            {
+              "id": "rust-quiz-module-06-q1",
+              "type": "multiple-choice",
+              "question": "When should you use Option<T> vs Result<T, E>?",
+              "options": [
+                "Option when value might not exist, Result when operation can fail with error details",
+                "Option for numbers, Result for strings",
+                "Always use Result, Option is deprecated",
+                "They're interchangeable"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q2",
+              "type": "multiple-choice",
+              "question": "What does this code print?\n\n```rust\nlet x: Option<i32> = None;\nlet y = x.unwrap_or(10);\nprintln!(\"{}\", y);\n```",
+              "options": [
+                "Compile error",
+                "Panic",
+                "10",
+                "None"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q3",
+              "type": "multiple-choice",
+              "question": "What does map() do on an Option?\n\n```rust\nlet x = Some(5);\nlet y = x.map(|n| n * 2);\n```",
+              "options": [
+                "Creates Some(10)",
+                "Creates Some(5)",
+                "Panics",
+                "Creates None"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q4",
+              "type": "multiple-choice",
+              "question": "Will this code compile?\n\n```rust\nfn get_first(v: Vec<i32>) -> i32 {\n    v.first()?\n}\n```",
+              "options": [
+                "Yes, compiles fine",
+                "No, ? operator returns Option but function returns i32",
+                "Yes, but runtime error",
+                "No, ? can't be used with vectors"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q5",
+              "type": "multiple-choice",
+              "question": "What are the two variants of Result?",
+              "options": [
+                "Some and None",
+                "Ok and Err",
+                "Success and Failure",
+                "True and False"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q6",
+              "type": "multiple-choice",
+              "question": "What does this code do?\n\n```rust\nlet result: Result<i32, String> = Ok(42);\nlet value = result.unwrap_or_else(|e| {\n    println!(\"Error: {}\", e);\n    0\n});\n```",
+              "options": [
+                "Panics with error message",
+                "Returns 42",
+                "Returns 0 and prints error",
+                "Compile error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q7",
+              "type": "multiple-choice",
+              "question": "What's the main danger of using .unwrap()?",
+              "options": [
+                "It's slow",
+                "It panics if Result is Err or Option is None",
+                "It causes memory leaks",
+                "It's deprecated"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q8",
+              "type": "multiple-choice",
+              "question": "What does and_then() do?\n\n```rust\nlet result = divide(10, 2)\n    .and_then(|n| divide(n, 0));\n```",
+              "options": [
+                "Chains operations, stops at first error",
+                "Adds the results together",
+                "Runs both operations regardless of errors",
+                "Compile error"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q9",
+              "type": "multiple-choice",
+              "question": "What does the ? operator do?",
+              "options": [
+                "Makes values optional",
+                "If Ok/Some, unwraps; if Err/None, returns early",
+                "Always panics",
+                "Converts Result to Option"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q10",
+              "type": "multiple-choice",
+              "question": "Can you use ? in a function that returns ()?",
+              "options": [
+                "Yes, always",
+                "No, function must return Result or Option",
+                "Only with Option",
+                "Only with Result"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q11",
+              "type": "multiple-choice",
+              "question": "Will this compile?\n\n```rust\nuse std::fs;\n\nfn read_file() -> Result<String, std::io::Error> {\n    let content = fs::read_to_string(\"file.txt\")?;\n    Ok(content.to_uppercase())\n}\n```",
+              "options": [
+                "Yes, compiles fine",
+                "No, ? can't be used with fs operations",
+                "No, return type mismatch",
+                "Yes, but runtime error"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-06-q12",
+              "type": "multiple-choice",
+              "question": "What is Box<dyn Error> used for?\n\n```rust\nimpl From<io::Error> for MyError {\n    fn from(error: io::Error) -> Self {\n        MyError::IoError(error)\n    }\n}\n```",
+              "options": [
+                "Allocating errors on heap",
+                "Allowing multiple different error types",
+                "Making errors faster",
+                "Required for all custom errors",
+                "Display",
+                "Error",
+                "Debug",
+                "Both Error and Display",
+                "Automatic error conversion with ?",
+                "Better error messages",
+                "Faster code execution",
+                "Nothing, it's optional"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -539,6 +913,193 @@
             "body": "# Module 7, Lesson 5: Practice Project — Building a File Management Tool\n\n## Project Overview\n\nBuild a comprehensive command-line file management tool that demonstrates all file I/O techniques!\n\n**What we're building:**\n- File and directory operations\n- Search and filter capabilities\n- File content analysis\n- Batch operations\n- Complete CLI interface\n\n**Skills practiced:**\n- ✅ Command-line argument parsing\n- ✅ Reading and writing files\n- ✅ Path manipulation\n- ✅ Directory traversal\n- ✅ Error handling\n- ✅ All file I/O concepts working together\n\n## The Complete Project\n\n### **Step 1: Create the Project**\n\n```bash\ncargo new filetool\ncd filetool\ncode .\n```\n\n### **Step 2: Add Dependencies to Cargo.toml**\n\n```toml\n[package]\nname = \"filetool\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\nclap = { version = \"4.5\", features = [\"derive\"] }\n```\n\n### **Step 3: Build the Tool (Complete Code)**\n\n```rust\nuse clap::{Parser, Subcommand};\nuse std::error::Error;\nuse std::fs;\nuse std::path::{Path, PathBuf};\n\n// ===== CLI Definition =====\n\n#[derive(Parser)]\n#[command(name = \"filetool\")]\n#[command(about = \"A comprehensive file management tool\", long_about = None)]\nstruct Cli {\n    #[command(subcommand)]\n    command: Commands,\n}\n\n#[derive(Subcommand)]\nenum Commands {\n    /// List files in a directory\n    List {\n        /// Directory to list (default: current directory)\n        #[arg(default_value = \".\")]\n        path: String,\n\n        /// Show file sizes\n        #[arg(short, long)]\n        size: bool,\n    },\n\n    /// Search for files by name\n    Search {\n        /// Directory to search in\n        path: String,\n\n        /// Search pattern\n        pattern: String,\n    },\n\n    /// Count words in a text file\n    Count {\n        /// File to analyze\n        file: String,\n    },\n\n    /// Copy a file\n    Copy {\n        /// Source file\n        source: String,\n\n        /// Destination file\n        dest: String,\n    },\n\n    /// Find and replace text in a file\n    Replace {\n        /// File to modify\n        file: String,\n\n        /// Text to find\n        find: String,\n\n        /// Replacement text\n        replace: String,\n    },\n\n    /// Create a backup of a file\n    Backup {\n        /// File to backup\n        file: String,\n    },\n\n    /// Get file information\n    Info {\n        /// File to analyze\n        file: String,\n    },\n}\n\n// ===== Implementation =====\n\nfn list_files(path: &str, show_size: bool) -> Result<(), Box<dyn Error>> {\n    let dir_path = Path::new(path);\n\n    if !dir_path.exists() {\n        return Err(format!(\"Directory '{}' not found\", path).into());\n    }\n\n    if !dir_path.is_dir() {\n        return Err(format!(\"'{}' is not a directory\", path).into());\n    }\n\n    println!(\"📂 Contents of {}:\\n\", path);\n\n    let mut entries: Vec<_> = fs::read_dir(dir_path)?.collect();\n    entries.sort_by_key(|e| e.as_ref().ok().map(|e| e.path()));\n\n    for entry in entries {\n        let entry = entry?;\n        let path = entry.path();\n        let metadata = entry.metadata()?;\n\n        let name = path\n            .file_name()\n            .and_then(|n| n.to_str())\n            .unwrap_or(\"?\");\n\n        if path.is_dir() {\n            if show_size {\n                println!(\"📁 {}/\", name);\n            } else {\n                println!(\"📁 {}/\", name);\n            }\n        } else {\n            if show_size {\n                let size = metadata.len();\n                println!(\"📄 {} ({} bytes)\", name, size);\n            } else {\n                println!(\"📄 {}\", name);\n            }\n        }\n    }\n\n    Ok(())\n}\n\nfn search_files(dir: &str, pattern: &str) -> Result<(), Box<dyn Error>> {\n    let search_path = Path::new(dir);\n\n    if !search_path.exists() {\n        return Err(format!(\"Directory '{}' not found\", dir).into());\n    }\n\n    println!(\"🔍 Searching for '{}' in {}...\\n\", pattern, dir);\n\n    let mut matches = Vec::new();\n    search_recursive(search_path, pattern, &mut matches)?;\n\n    if matches.is_empty() {\n        println!(\"No files found matching '{}'\", pattern);\n    } else {\n        println!(\"Found {} matching file(s):\\n\", matches.len());\n        for (i, file) in matches.iter().enumerate() {\n            println!(\"{}. {}\", i + 1, file);\n        }\n    }\n\n    Ok(())\n}\n\nfn search_recursive(\n    dir: &Path,\n    pattern: &str,\n    matches: &mut Vec<String>,\n) -> Result<(), Box<dyn Error>> {\n    for entry in fs::read_dir(dir)? {\n        let entry = entry?;\n        let path = entry.path();\n\n        if path.is_dir() {\n            search_recursive(&path, pattern, matches)?;\n        } else if path.is_file() {\n            if let Some(name) = path.file_name().and_then(|n| n.to_str()) {\n                if name.contains(pattern) {\n                    if let Some(path_str) = path.to_str() {\n                        matches.push(path_str.to_string());\n                    }\n                }\n            }\n        }\n    }\n\n    Ok(())\n}\n\nfn count_file(file: &str) -> Result<(), Box<dyn Error>> {\n    let path = Path::new(file);\n\n    if !path.exists() {\n        return Err(format!(\"File '{}' not found\", file).into());\n    }\n\n    let content = fs::read_to_string(path)?;\n\n    let lines = content.lines().count();\n    let words = content.split_whitespace().count();\n    let chars = content.len();\n    let bytes = path.metadata()?.len();\n\n    println!(\"╔═══════════════════════════════════╗\");\n    println!(\"║      File Statistics              ║\");\n    println!(\"╠═══════════════════════════════════╣\");\n    println!(\"║ File:       {:19} ║\", file);\n    println!(\"║ Lines:      {:19} ║\", lines);\n    println!(\"║ Words:      {:19} ║\", words);\n    println!(\"║ Characters: {:19} ║\", chars);\n    println!(\"║ Bytes:      {:19} ║\", bytes);\n    println!(\"╚═══════════════════════════════════╝\");\n\n    Ok(())\n}\n\nfn copy_file(source: &str, dest: &str) -> Result<(), Box<dyn Error>> {\n    let src_path = Path::new(source);\n    let dst_path = Path::new(dest);\n\n    if !src_path.exists() {\n        return Err(format!(\"Source file '{}' not found\", source).into());\n    }\n\n    if dst_path.exists() {\n        return Err(format!(\"Destination file '{}' already exists\", dest).into());\n    }\n\n    // Create parent directories if needed\n    if let Some(parent) = dst_path.parent() {\n        fs::create_dir_all(parent)?;\n    }\n\n    fs::copy(src_path, dst_path)?;\n\n    println!(\"✅ Copied '{}' to '{}'\", source, dest);\n\n    Ok(())\n}\n\nfn replace_in_file(file: &str, find: &str, replace: &str) -> Result<(), Box<dyn Error>> {\n    let path = Path::new(file);\n\n    if !path.exists() {\n        return Err(format!(\"File '{}' not found\", file).into());\n    }\n\n    let content = fs::read_to_string(path)?;\n    let occurrences = content.matches(find).count();\n\n    if occurrences == 0 {\n        println!(\"⚠️  No occurrences of '{}' found in '{}'\", find, file);\n        return Ok(());\n    }\n\n    let new_content = content.replace(find, replace);\n    fs::write(path, new_content)?;\n\n    println!(\n        \"✅ Replaced {} occurrence(s) of '{}' with '{}' in '{}'\",\n        occurrences, find, replace, file\n    );\n\n    Ok(())\n}\n\nfn backup_file(file: &str) -> Result<(), Box<dyn Error>> {\n    let path = Path::new(file);\n\n    if !path.exists() {\n        return Err(format!(\"File '{}' not found\", file).into());\n    }\n\n    let backup_path = create_backup_path(path);\n    fs::copy(path, &backup_path)?;\n\n    println!(\n        \"✅ Created backup: {}\",\n        backup_path.to_str().unwrap_or(\"?\")\n    );\n\n    Ok(())\n}\n\nfn create_backup_path(original: &Path) -> PathBuf {\n    let mut backup = original.to_path_buf();\n\n    if let Some(stem) = original.file_stem() {\n        let timestamp = std::time::SystemTime::now()\n            .duration_since(std::time::UNIX_EPOCH)\n            .unwrap()\n            .as_secs();\n\n        let backup_name = if let Some(ext) = original.extension() {\n            format!(\n                \"{}.backup_{}.{}\",\n                stem.to_str().unwrap(),\n                timestamp,\n                ext.to_str().unwrap()\n            )\n        } else {\n            format!(\"{}.backup_{}\", stem.to_str().unwrap(), timestamp)\n        };\n\n        backup.set_file_name(backup_name);\n    }\n\n    backup\n}\n\nfn file_info(file: &str) -> Result<(), Box<dyn Error>> {\n    let path = Path::new(file);\n\n    if !path.exists() {\n        return Err(format!(\"File '{}' not found\", file).into());\n    }\n\n    let metadata = path.metadata()?;\n    let file_type = if metadata.is_file() {\n        \"File\"\n    } else if metadata.is_dir() {\n        \"Directory\"\n    } else {\n        \"Other\"\n    };\n\n    let size = metadata.len();\n    let readonly = metadata.permissions().readonly();\n\n    let extension = path\n        .extension()\n        .and_then(|e| e.to_str())\n        .unwrap_or(\"(none)\");\n\n    let parent = path\n        .parent()\n        .and_then(|p| p.to_str())\n        .unwrap_or(\"(none)\");\n\n    println!(\"╔═══════════════════════════════════╗\");\n    println!(\"║      File Information             ║\");\n    println!(\"╠═══════════════════════════════════╣\");\n    println!(\"║ Path:      {:20} ║\", file);\n    println!(\"║ Type:      {:20} ║\", file_type);\n    println!(\"║ Size:      {:17} bytes ║\", size);\n    println!(\"║ Extension: {:20} ║\", extension);\n    println!(\"║ Parent:    {:20} ║\", parent);\n    println!(\"║ Read-only: {:20} ║\", readonly);\n    println!(\"╚═══════════════════════════════════╝\");\n\n    Ok(())\n}\n\n// ===== Main Function =====\n\nfn main() {\n    let cli = Cli::parse();\n\n    let result = match cli.command {\n        Commands::List { path, size } => list_files(&path, size),\n        Commands::Search { path, pattern } => search_files(&path, &pattern),\n        Commands::Count { file } => count_file(&file),\n        Commands::Copy { source, dest } => copy_file(&source, &dest),\n        Commands::Replace {\n            file,\n            find,\n            replace,\n        } => replace_in_file(&file, &find, &replace),\n        Commands::Backup { file } => backup_file(&file),\n        Commands::Info { file } => file_info(&file),\n    };\n\n    if let Err(e) = result {\n        eprintln!(\"❌ Error: {}\", e);\n        std::process::exit(1);\n    }\n}\n```\n\n### **Step 4: Build and Test**\n\n```bash\ncargo build --release\n```\n\n## Usage Examples\n\n### **List Files**\n\n```bash\ncargo run -- list .\ncargo run -- list src --size\n```\n\n**Output:**\n```\n📂 Contents of src:\n\n📄 main.rs (5234 bytes)\n```\n\n### **Search for Files**\n\n```bash\n# Create test files first\nmkdir -p test_data\necho \"Hello\" > test_data/hello.txt\necho \"World\" > test_data/world.txt\necho \"Test\" > test_data/test.md\n\ncargo run -- search test_data txt\n```\n\n**Output:**\n```\n🔍 Searching for 'txt' in test_data...\n\nFound 2 matching file(s):\n\n1. test_data/hello.txt\n2. test_data/world.txt\n```\n\n### **Count Words**\n\n```bash\necho \"The quick brown fox jumps over the lazy dog\" > sample.txt\ncargo run -- count sample.txt\n```\n\n**Output:**\n```\n╔═══════════════════════════════════╗\n║      File Statistics              ║\n╠═══════════════════════════════════╣\n║ File:       sample.txt            ║\n║ Lines:      1                     ║\n║ Words:      9                     ║\n║ Characters: 43                    ║\n║ Bytes:      43                    ║\n╚═══════════════════════════════════╝\n```\n\n### **Copy File**\n\n```bash\ncargo run -- copy sample.txt copy_of_sample.txt\n```\n\n**Output:**\n```\n✅ Copied 'sample.txt' to 'copy_of_sample.txt'\n```\n\n### **Find and Replace**\n\n```bash\ncargo run -- replace sample.txt \"fox\" \"cat\"\n```\n\n**Output:**\n```\n✅ Replaced 1 occurrence(s) of 'fox' with 'cat' in 'sample.txt'\n```\n\n### **Create Backup**\n\n```bash\ncargo run -- backup sample.txt\n```\n\n**Output:**\n```\n✅ Created backup: sample.backup_1704153600.txt\n```\n\n### **Get File Info**\n\n```bash\ncargo run -- info sample.txt\n```\n\n**Output:**\n```\n╔═══════════════════════════════════╗\n║      File Information             ║\n╠═══════════════════════════════════╣\n║ Path:      sample.txt             ║\n║ Type:      File                   ║\n║ Size:      43 bytes               ║\n║ Extension: txt                    ║\n║ Parent:    .                      ║\n║ Read-only: false                  ║\n╚═══════════════════════════════════╝\n```\n\n## Understanding the Code\n\n### **Command-Line Interface with clap**\n\n```rust\n#[derive(Parser)]\n#[command(name = \"filetool\")]\nstruct Cli {\n    #[command(subcommand)]\n    command: Commands,\n}\n```\n\n**Why**: Professional CLI with automatic help generation and parsing.\n\n### **Recursive Directory Search**\n\n```rust\nfn search_recursive(dir: &Path, pattern: &str, matches: &mut Vec<String>) -> Result<(), Box<dyn Error>> {\n    for entry in fs::read_dir(dir)? {\n        let path = entry.path();\n        if path.is_dir() {\n            search_recursive(&path, pattern, matches)?;  // Recurse\n        }\n        // ...\n    }\n    Ok(())\n}\n```\n\n**Why**: Searches all subdirectories systematically.\n\n### **Safe File Operations**\n\n```rust\nif !src_path.exists() {\n    return Err(format!(\"Source file '{}' not found\", source).into());\n}\n\nif dst_path.exists() {\n    return Err(format!(\"Destination file '{}' already exists\", dest).into());\n}\n```\n\n**Why**: Prevents accidental data loss and provides clear error messages.\n\n### **Timestamp-Based Backups**\n\n```rust\nlet timestamp = std::time::SystemTime::now()\n    .duration_since(std::time::UNIX_EPOCH)\n    .unwrap()\n    .as_secs();\n\nlet backup_name = format!(\"{}.backup_{}.{}\", stem, timestamp, ext);\n```\n\n**Why**: Unique backup filenames prevent overwriting previous backups.\n\n## Challenges and Extensions\n\n### **Challenge 1: Add Delete Command**\n\n```rust\nCommands::Delete {\n    /// File to delete\n    file: String,\n\n    /// Skip confirmation\n    #[arg(short, long)]\n    force: bool,\n},\n\nfn delete_file(file: &str, force: bool) -> Result<(), Box<dyn Error>> {\n    let path = Path::new(file);\n\n    if !path.exists() {\n        return Err(format!(\"File '{}' not found\", file).into());\n    }\n\n    if !force {\n        use std::io::{self, Write};\n        print!(\"Delete '{}'? (y/N): \", file);\n        io::stdout().flush()?;\n\n        let mut input = String::new();\n        io::stdin().read_line(&mut input)?;\n\n        if input.trim().to_lowercase() != \"y\" {\n            println!(\"Cancelled\");\n            return Ok(());\n        }\n    }\n\n    fs::remove_file(path)?;\n    println!(\"✅ Deleted '{}'\", file);\n\n    Ok(())\n}\n```\n\n### **Challenge 2: Add Move Command**\n\n```rust\nCommands::Move {\n    /// Source file\n    source: String,\n\n    /// Destination\n    dest: String,\n},\n\nfn move_file(source: &str, dest: &str) -> Result<(), Box<dyn Error>> {\n    let src_path = Path::new(source);\n    let dst_path = Path::new(dest);\n\n    if !src_path.exists() {\n        return Err(format!(\"Source '{}' not found\", source).into());\n    }\n\n    fs::rename(src_path, dst_path)?;\n    println!(\"✅ Moved '{}' to '{}'\", source, dest);\n\n    Ok(())\n}\n```\n\n### **Challenge 3: Add File Comparison**\n\n```rust\nCommands::Compare {\n    /// First file\n    file1: String,\n\n    /// Second file\n    file2: String,\n},\n\nfn compare_files(file1: &str, file2: &str) -> Result<(), Box<dyn Error>> {\n    let content1 = fs::read_to_string(file1)?;\n    let content2 = fs::read_to_string(file2)?;\n\n    if content1 == content2 {\n        println!(\"✅ Files are identical\");\n    } else {\n        println!(\"❌ Files are different\");\n\n        let lines1: Vec<&str> = content1.lines().collect();\n        let lines2: Vec<&str> = content2.lines().collect();\n\n        for (i, (line1, line2)) in lines1.iter().zip(lines2.iter()).enumerate() {\n            if line1 != line2 {\n                println!(\"Difference at line {}:\", i + 1);\n                println!(\"  File 1: {}\", line1);\n                println!(\"  File 2: {}\", line2);\n            }\n        }\n    }\n\n    Ok(())\n}\n```\n\n### **Challenge 4: Add File Statistics Summary**\n\n```rust\nCommands::Stats {\n    /// Directory to analyze\n    #[arg(default_value = \".\")]\n    path: String,\n},\n\nfn directory_stats(path: &str) -> Result<(), Box<dyn Error>> {\n    let mut total_files = 0;\n    let mut total_dirs = 0;\n    let mut total_size = 0u64;\n\n    for entry in fs::read_dir(path)? {\n        let entry = entry?;\n        let metadata = entry.metadata()?;\n\n        if metadata.is_file() {\n            total_files += 1;\n            total_size += metadata.len();\n        } else if metadata.is_dir() {\n            total_dirs += 1;\n        }\n    }\n\n    println!(\"╔═══════════════════════════════════╗\");\n    println!(\"║    Directory Statistics           ║\");\n    println!(\"╠═══════════════════════════════════╣\");\n    println!(\"║ Files:       {:17} ║\", total_files);\n    println!(\"║ Directories: {:17} ║\", total_dirs);\n    println!(\"║ Total size:  {:14} bytes ║\", total_size);\n    println!(\"╚═══════════════════════════════════╝\");\n\n    Ok(())\n}\n```\n\n## Key Takeaways\n\n- ✅ Command-line tools combine multiple file I/O operations\n- ✅ The `clap` crate makes building professional CLIs easy\n- ✅ Always validate inputs and handle errors gracefully\n- ✅ Recursive functions enable directory tree traversal\n- ✅ Path manipulation ensures cross-platform compatibility\n- ✅ Safety checks prevent accidental data loss\n- ✅ Timestamps create unique backup filenames\n- ✅ Comprehensive error messages improve user experience\n- ✅ Modular functions make code maintainable and testable\n- ✅ All file I/O concepts work together in real applications\n\n---\n\n## ✅ Module 7 Complete!\n\nYou've mastered Rust file I/O:\n- ✅ Command-line argument parsing\n- ✅ Reading files (whole and line-by-line)\n- ✅ Writing files (create and append)\n- ✅ Path manipulation and navigation\n- ✅ Built a complete file management tool!\n\n**Next: Module 8 — Traits & Generics**\n\nTotal Progress: 43 lessons complete (~72%)\n\n---\n\n[← Back to Module 7](README.md) | [Continue to Module 8 →](../module_08_traits_generics/)\n"
           }
         }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-07",
+          "title": "Module 7: File I/O - Assessment Quiz",
+          "description": "Assessment quiz for Module 07",
+          "passingScore": 80,
+          "estimatedMinutes": 18,
+          "questions": [
+            {
+              "id": "rust-quiz-module-07-q1",
+              "type": "multiple-choice",
+              "question": "What is always at index 0 of command-line arguments?",
+              "options": [
+                "The first user-provided argument",
+                "The program name or path",
+                "The current directory",
+                "Nothing, it's empty"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q2",
+              "type": "multiple-choice",
+              "question": "How do you access command-line arguments in Rust?",
+              "options": [
+                "`std::args::get()`",
+                "`std::env::args()`",
+                "`std::cmd::args()`",
+                "`process::args()`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q3",
+              "type": "multiple-choice",
+              "question": "What does this code do?\n\n```rust\nlet args: Vec<String> = env::args().collect();\nif args.len() < 2 {\n    return;\n}\nlet name = &args[1];\n```",
+              "options": [
+                "Gets the program name",
+                "Gets the first user-provided argument",
+                "Counts all arguments",
+                "Compile error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q4",
+              "type": "multiple-choice",
+              "question": "What's the simplest way to read an entire file as a String?",
+              "options": [
+                "`fs::read(path)`",
+                "`fs::read_to_string(path)`",
+                "`File::open(path).read()`",
+                "`fs::load(path)`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q5",
+              "type": "multiple-choice",
+              "question": "What type does `fs::read_to_string()` return?",
+              "options": [
+                "`String`",
+                "`Option<String>`",
+                "`Result<String, std::io::Error>`",
+                "`Vec<u8>`"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q6",
+              "type": "multiple-choice",
+              "question": "When should you use BufReader instead of read_to_string()?",
+              "options": [
+                "For small files",
+                "For large files or line-by-line processing",
+                "For binary files only",
+                "Never, read_to_string is always better"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q7",
+              "type": "multiple-choice",
+              "question": "What does `fs::write()` do if the file already exists?",
+              "options": [
+                "Appends to it",
+                "Returns an error",
+                "Overwrites it completely",
+                "Creates a backup first"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q8",
+              "type": "multiple-choice",
+              "question": "How do you append to a file instead of overwriting?",
+              "options": [
+                "`fs::append(path, content)`",
+                "`fs::write(path, content, true)`",
+                "Use `OpenOptions` with `.append(true)`",
+                "`fs::add(path, content)`"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q9",
+              "type": "multiple-choice",
+              "question": "What does this code do?\n\n```rust\nuse std::fs::OpenOptions;\nuse std::io::Write;\n\nlet mut file = OpenOptions::new()\n    .create(true)\n    .append(true)\n    .open(\"log.txt\")?;\n\nwriteln!(file, \"Entry\")?;\n```",
+              "options": [
+                "Overwrites log.txt with \"Entry\"",
+                "Creates log.txt if needed and appends \"Entry\\n\"",
+                "Only works if log.txt exists",
+                "Compile error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q10",
+              "type": "multiple-choice",
+              "question": "What's the difference between Path and PathBuf?",
+              "options": [
+                "No difference",
+                "Path is borrowed, PathBuf is owned",
+                "Path is for files, PathBuf is for directories",
+                "PathBuf is deprecated"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q11",
+              "type": "multiple-choice",
+              "question": "How do you safely combine path components?",
+              "options": [
+                "Use string concatenation with \"/\"",
+                "Use `.join()` method",
+                "Use `+` operator",
+                "Use `Path::combine()`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-07-q12",
+              "type": "multiple-choice",
+              "question": "What does `.extension()` return for \"document.txt\"?\n\n```rust\nlet path = Path::new(\"data\").join(\"files\").join(\"doc.txt\");\n```",
+              "options": [
+                "`String` with value \"txt\"",
+                "`Option<&OsStr>`",
+                "`\"txt\"`",
+                "`.txt`",
+                "No, needs different code for each OS",
+                "Yes, Rust handles path separators automatically",
+                "Only works on Unix",
+                "Only works on Windows",
+                "They're the same",
+                "`create_dir_all` creates parent directories as needed",
+                "`create_dir_all` is faster",
+                "`create_dir_all` works with files too"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -602,6 +1163,193 @@
             "format": "markdown",
             "body": "# Module 8, Lesson 5: Practice Project — Building a Generic Data Filter\n\n## Project Overview\n\nBuild a powerful, generic data filtering and transformation system that demonstrates traits, generics, and iterators!\n\n**What we're building:**\n- Generic filter system for any data type\n- Chainable transformations\n- Statistical analysis\n- Custom iterators\n- Complete type safety\n\n**Skills practiced:**\n- ✅ Defining and implementing traits\n- ✅ Generic types and functions\n- ✅ Trait bounds\n- ✅ Iterator methods and chains\n- ✅ All advanced concepts working together\n\n## The Complete Project\n\n### **Step 1: Create the Project**\n\n```bash\ncargo new data_filter\ncd data_filter\ncode .\n```\n\n### **Step 2: Build the Filter System**\n\n```rust\nuse std::fmt::Display;\n\n// ===== Filterable Trait =====\n\ntrait Filterable {\n    fn matches(&self, criteria: &str) -> bool;\n}\n\n// ===== Analyzable Trait =====\n\ntrait Analyzable: Display {\n    fn score(&self) -> f64;\n    fn category(&self) -> String;\n}\n\n// ===== Generic Filter =====\n\nstruct DataFilter<T> {\n    items: Vec<T>,\n}\n\nimpl<T> DataFilter<T> {\n    fn new() -> Self {\n        DataFilter { items: Vec::new() }\n    }\n\n    fn add(&mut self, item: T) {\n        self.items.push(item);\n    }\n\n    fn count(&self) -> usize {\n        self.items.len()\n    }\n\n    fn is_empty(&self) -> bool {\n        self.items.is_empty()\n    }\n}\n\nimpl<T: Filterable> DataFilter<T> {\n    fn filter_by(&self, criteria: &str) -> Vec<&T> {\n        self.items\n            .iter()\n            .filter(|item| item.matches(criteria))\n            .collect()\n    }\n\n    fn count_matching(&self, criteria: &str) -> usize {\n        self.items\n            .iter()\n            .filter(|item| item.matches(criteria))\n            .count()\n    }\n}\n\nimpl<T: Analyzable> DataFilter<T> {\n    fn average_score(&self) -> f64 {\n        if self.items.is_empty() {\n            return 0.0;\n        }\n\n        let sum: f64 = self.items.iter().map(|item| item.score()).sum();\n        sum / self.items.len() as f64\n    }\n\n    fn top_scores(&self, n: usize) -> Vec<&T> {\n        let mut sorted: Vec<&T> = self.items.iter().collect();\n        sorted.sort_by(|a, b| {\n            b.score()\n                .partial_cmp(&a.score())\n                .unwrap_or(std::cmp::Ordering::Equal)\n        });\n\n        sorted.into_iter().take(n).collect()\n    }\n\n    fn group_by_category(&self) -> std::collections::HashMap<String, Vec<&T>> {\n        let mut groups = std::collections::HashMap::new();\n\n        for item in &self.items {\n            let category = item.category();\n            groups.entry(category).or_insert_with(Vec::new).push(item);\n        }\n\n        groups\n    }\n\n    fn display_all(&self) {\n        for (i, item) in self.items.iter().enumerate() {\n            println!(\"{}. {}\", i + 1, item);\n        }\n    }\n}\n\n// ===== Student Example =====\n\n#[derive(Debug, Clone)]\nstruct Student {\n    name: String,\n    grade: f64,\n    major: String,\n}\n\nimpl Display for Student {\n    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n        write!(f, \"{} ({}) - {:.1}\", self.name, self.major, self.grade)\n    }\n}\n\nimpl Filterable for Student {\n    fn matches(&self, criteria: &str) -> bool {\n        self.name.to_lowercase().contains(&criteria.to_lowercase())\n            || self.major.to_lowercase().contains(&criteria.to_lowercase())\n    }\n}\n\nimpl Analyzable for Student {\n    fn score(&self) -> f64 {\n        self.grade\n    }\n\n    fn category(&self) -> String {\n        self.major.clone()\n    }\n}\n\n// ===== Product Example =====\n\n#[derive(Debug, Clone)]\nstruct Product {\n    name: String,\n    price: f64,\n    category: String,\n    rating: f64,\n}\n\nimpl Display for Product {\n    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {\n        write!(\n            f,\n            \"{} (${:.2}) - {} stars\",\n            self.name, self.price, self.rating\n        )\n    }\n}\n\nimpl Filterable for Product {\n    fn matches(&self, criteria: &str) -> bool {\n        self.name.to_lowercase().contains(&criteria.to_lowercase())\n            || self.category.to_lowercase().contains(&criteria.to_lowercase())\n    }\n}\n\nimpl Analyzable for Product {\n    fn score(&self) -> f64 {\n        self.rating\n    }\n\n    fn category(&self) -> String {\n        self.category.clone()\n    }\n}\n\n// ===== Generic Statistics =====\n\nstruct Statistics<T> {\n    data: Vec<T>,\n}\n\nimpl<T: Analyzable + Clone> Statistics<T> {\n    fn new(data: Vec<T>) -> Self {\n        Statistics { data }\n    }\n\n    fn summary(&self) {\n        if self.data.is_empty() {\n            println!(\"No data\");\n            return;\n        }\n\n        let scores: Vec<f64> = self.data.iter().map(|item| item.score()).collect();\n\n        let sum: f64 = scores.iter().sum();\n        let avg = sum / scores.len() as f64;\n        let min = scores\n            .iter()\n            .cloned()\n            .fold(f64::INFINITY, f64::min);\n        let max = scores\n            .iter()\n            .cloned()\n            .fold(f64::NEG_INFINITY, f64::max);\n\n        println!(\"╔═══════════════════════════════════╗\");\n        println!(\"║      Statistical Summary          ║\");\n        println!(\"╠═══════════════════════════════════╣\");\n        println!(\"║ Count:   {:22} ║\", self.data.len());\n        println!(\"║ Average: {:22.2} ║\", avg);\n        println!(\"║ Min:     {:22.2} ║\", min);\n        println!(\"║ Max:     {:22.2} ║\", max);\n        println!(\"╚═══════════════════════════════════╝\");\n    }\n\n    fn percentile(&self, p: f64) -> Option<f64> {\n        if self.data.is_empty() || p < 0.0 || p > 100.0 {\n            return None;\n        }\n\n        let mut scores: Vec<f64> = self.data.iter().map(|item| item.score()).collect();\n        scores.sort_by(|a, b| a.partial_cmp(b).unwrap());\n\n        let index = ((p / 100.0) * (scores.len() - 1) as f64).round() as usize;\n        Some(scores[index])\n    }\n}\n\n// ===== Main Program =====\n\nfn main() {\n    println!(\"=== Student Data Filter Demo ===\\n\");\n\n    let mut students = DataFilter::new();\n\n    students.add(Student {\n        name: String::from(\"Alice Johnson\"),\n        grade: 92.5,\n        major: String::from(\"Computer Science\"),\n    });\n\n    students.add(Student {\n        name: String::from(\"Bob Smith\"),\n        grade: 85.0,\n        major: String::from(\"Mathematics\"),\n    });\n\n    students.add(Student {\n        name: String::from(\"Charlie Davis\"),\n        grade: 88.5,\n        major: String::from(\"Computer Science\"),\n    });\n\n    students.add(Student {\n        name: String::from(\"Diana Wilson\"),\n        grade: 95.0,\n        major: String::from(\"Physics\"),\n    });\n\n    students.add(Student {\n        name: String::from(\"Eve Brown\"),\n        grade: 90.5,\n        major: String::from(\"Mathematics\"),\n    });\n\n    println!(\"All students:\");\n    students.display_all();\n\n    println!(\"\\n--- Filtering by 'Computer' ---\");\n    let cs_students = students.filter_by(\"Computer\");\n    for student in cs_students {\n        println!(\"  - {}\", student);\n    }\n\n    println!(\"\\n--- Top 3 Students ---\");\n    let top_3 = students.top_scores(3);\n    for student in top_3 {\n        println!(\"  - {}\", student);\n    }\n\n    println!(\"\\n--- Students by Major ---\");\n    let grouped = students.group_by_category();\n    for (major, students_in_major) in grouped {\n        println!(\"{}:\", major);\n        for student in students_in_major {\n            println!(\"  - {}\", student);\n        }\n    }\n\n    println!(\"\\n--- Statistics ---\");\n    println!(\"Average grade: {:.2}\", students.average_score());\n    println!(\"CS students: {}\", students.count_matching(\"Computer\"));\n\n    let stats = Statistics::new(\n        students\n            .items\n            .iter()\n            .cloned()\n            .collect(),\n    );\n    stats.summary();\n\n    if let Some(p90) = stats.percentile(90.0) {\n        println!(\"90th percentile: {:.2}\", p90);\n    }\n\n    println!(\"\\n\\n=== Product Data Filter Demo ===\\n\");\n\n    let mut products = DataFilter::new();\n\n    products.add(Product {\n        name: String::from(\"Laptop\"),\n        price: 999.99,\n        category: String::from(\"Electronics\"),\n        rating: 4.5,\n    });\n\n    products.add(Product {\n        name: String::from(\"Mouse\"),\n        price: 29.99,\n        category: String::from(\"Electronics\"),\n        rating: 4.2,\n    });\n\n    products.add(Product {\n        name: String::from(\"Desk\"),\n        price: 299.99,\n        category: String::from(\"Furniture\"),\n        rating: 4.7,\n    });\n\n    products.add(Product {\n        name: String::from(\"Chair\"),\n        price: 199.99,\n        category: String::from(\"Furniture\"),\n        rating: 4.8,\n    });\n\n    println!(\"All products:\");\n    products.display_all();\n\n    println!(\"\\n--- Electronics ---\");\n    let electronics = products.filter_by(\"Electronics\");\n    for product in electronics {\n        println!(\"  - {}\", product);\n    }\n\n    println!(\"\\n--- Top 2 Rated Products ---\");\n    let top_rated = products.top_scores(2);\n    for product in top_rated {\n        println!(\"  - {}\", product);\n    }\n\n    println!(\"\\n--- Average Rating ---\");\n    println!(\"{:.2} stars\", products.average_score());\n}\n```\n\n### **Step 3: Run the Project**\n\n```bash\ncargo run\n```\n\n**Expected Output:**\n\n```\n=== Student Data Filter Demo ===\n\nAll students:\n1. Alice Johnson (Computer Science) - 92.5\n2. Bob Smith (Mathematics) - 85.0\n3. Charlie Davis (Computer Science) - 88.5\n4. Diana Wilson (Physics) - 95.0\n5. Eve Brown (Mathematics) - 90.5\n\n--- Filtering by 'Computer' ---\n  - Alice Johnson (Computer Science) - 92.5\n  - Charlie Davis (Computer Science) - 88.5\n\n--- Top 3 Students ---\n  - Diana Wilson (Physics) - 95.0\n  - Alice Johnson (Computer Science) - 92.5\n  - Eve Brown (Mathematics) - 90.5\n\n--- Students by Major ---\nMathematics:\n  - Bob Smith (Mathematics) - 85.0\n  - Eve Brown (Mathematics) - 90.5\nPhysics:\n  - Diana Wilson (Physics) - 95.0\nComputer Science:\n  - Alice Johnson (Computer Science) - 92.5\n  - Charlie Davis (Computer Science) - 88.5\n\n--- Statistics ---\nAverage grade: 90.30\nCS students: 2\n╔═══════════════════════════════════╗\n║      Statistical Summary          ║\n╠═══════════════════════════════════╣\n║ Count:                        5   ║\n║ Average:                  90.30   ║\n║ Min:                      85.00   ║\n║ Max:                      95.00   ║\n╚═══════════════════════════════════╝\n90th percentile: 92.50\n\n\n=== Product Data Filter Demo ===\n\nAll products:\n1. Laptop ($999.99) - 4.5 stars\n2. Mouse ($29.99) - 4.2 stars\n3. Desk ($299.99) - 4.7 stars\n4. Chair ($199.99) - 4.8 stars\n\n--- Electronics ---\n  - Laptop ($999.99) - 4.5 stars\n  - Mouse ($29.99) - 4.2 stars\n\n--- Top 2 Rated Products ---\n  - Chair ($199.99) - 4.8 stars\n  - Desk ($299.99) - 4.7 stars\n\n--- Average Rating ---\n4.55 stars\n```\n\n## Understanding the Code\n\n### **Generic with Trait Bounds**\n\n```rust\nimpl<T: Filterable> DataFilter<T> {\n    fn filter_by(&self, criteria: &str) -> Vec<&T> {\n        // Only available when T implements Filterable\n    }\n}\n```\n\n**Why**: Different functionality based on what traits T implements.\n\n### **Multiple Trait Bounds**\n\n```rust\ntrait Analyzable: Display {\n    // Analyzable requires Display\n}\n```\n\n**Why**: Ensures types can be both analyzed and displayed.\n\n### **Iterator Chains**\n\n```rust\nself.items\n    .iter()\n    .filter(|item| item.matches(criteria))\n    .collect()\n```\n\n**Why**: Clean, functional data processing.\n\n### **Generic Statistics**\n\n```rust\nstruct Statistics<T> {\n    data: Vec<T>,\n}\n\nimpl<T: Analyzable + Clone> Statistics<T> {\n    // Works with any Analyzable type\n}\n```\n\n**Why**: Single implementation works for Students, Products, and any future types!\n\n## Challenges and Extensions\n\n### **Challenge 1: Add Sorting Options**\n\n```rust\nimpl<T: Analyzable + Clone> DataFilter<T> {\n    fn sorted_by_score(&self, ascending: bool) -> Vec<T> {\n        let mut sorted = self.items.clone();\n        sorted.sort_by(|a, b| {\n            let cmp = a.score().partial_cmp(&b.score()).unwrap();\n            if ascending {\n                cmp\n            } else {\n                cmp.reverse()\n            }\n        });\n        sorted\n    }\n}\n```\n\n### **Challenge 2: Add Filtering by Range**\n\n```rust\nimpl<T: Analyzable> DataFilter<T> {\n    fn filter_by_score_range(&self, min: f64, max: f64) -> Vec<&T> {\n        self.items\n            .iter()\n            .filter(|item| {\n                let score = item.score();\n                score >= min && score <= max\n            })\n            .collect()\n    }\n}\n```\n\n### **Challenge 3: Add Export Functionality**\n\n```rust\nimpl<T: Analyzable> DataFilter<T> {\n    fn export_csv(&self, filename: &str) -> std::io::Result<()> {\n        use std::fs::File;\n        use std::io::Write;\n\n        let mut file = File::create(filename)?;\n\n        writeln!(file, \"Item,Score,Category\")?;\n\n        for item in &self.items {\n            writeln!(\n                file,\n                \"\\\"{}\\\",{},\\\"{}\\\"\",\n                item,\n                item.score(),\n                item.category()\n            )?;\n        }\n\n        Ok(())\n    }\n}\n```\n\n### **Challenge 4: Custom Iterator**\n\n```rust\nstruct FilterIterator<'a, T> {\n    items: &'a [T],\n    criteria: String,\n    index: usize,\n}\n\nimpl<'a, T: Filterable> Iterator for FilterIterator<'a, T> {\n    type Item = &'a T;\n\n    fn next(&mut self) -> Option<Self::Item> {\n        while self.index < self.items.len() {\n            let item = &self.items[self.index];\n            self.index += 1;\n\n            if item.matches(&self.criteria) {\n                return Some(item);\n            }\n        }\n        None\n    }\n}\n\nimpl<T: Filterable> DataFilter<T> {\n    fn iter_matching(&self, criteria: &str) -> FilterIterator<T> {\n        FilterIterator {\n            items: &self.items,\n            criteria: criteria.to_string(),\n            index: 0,\n        }\n    }\n}\n```\n\n## Key Concepts Demonstrated\n\n### **1. Trait-Based Polymorphism**\nDifferent types (Student, Product) work with the same generic code through shared traits.\n\n### **2. Generic Type Parameters**\n`DataFilter<T>` works with any type, providing type-safe collections.\n\n### **3. Trait Bounds**\n`impl<T: Analyzable>` ensures T has required methods at compile time.\n\n### **4. Iterator Methods**\nPowerful data processing with `filter()`, `map()`, `collect()`, `fold()`.\n\n### **5. Zero-Cost Abstractions**\nAll generics compiled to efficient specialized code - no runtime overhead!\n\n## Key Takeaways\n\n- ✅ Traits define shared behavior across different types\n- ✅ Generics enable code reuse without duplication\n- ✅ Trait bounds constrain generic types at compile time\n- ✅ Iterators provide expressive data processing\n- ✅ Multiple trait implementations unlock different functionality\n- ✅ Generic code is type-safe and performant\n- ✅ Combining traits + generics + iterators creates powerful abstractions\n- ✅ Real-world applications benefit from these patterns\n- ✅ Single implementation works for unlimited types\n- ✅ Rust's type system ensures correctness\n\n---\n\n## ✅ Module 8 Complete!\n\nYou've mastered advanced Rust concepts:\n- ✅ Traits for shared behavior\n- ✅ Generics for flexible, reusable code\n- ✅ Common traits (Debug, Display, Clone, etc.)\n- ✅ Iterators for elegant data processing\n- ✅ Built a complete generic data filtering system!\n\n**Next: Module 9 — Capstone Project (Task Manager Application)**\n\nTotal Progress: 48 lessons complete (80%)\n\n---\n\n[← Back to Module 8](README.md) | [Continue to Module 9 →](../module_09_capstone/)\n"
           }
+        }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-08",
+          "title": "Module 8: Traits & Generics - Assessment Quiz",
+          "description": "Assessment quiz for Module 08",
+          "passingScore": 80,
+          "estimatedMinutes": 18,
+          "questions": [
+            {
+              "id": "rust-quiz-module-08-q1",
+              "type": "multiple-choice",
+              "question": "What is a trait in Rust?",
+              "options": [
+                "A type of variable",
+                "A definition of shared behavior that types can implement",
+                "A way to create classes",
+                "A memory management tool"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q2",
+              "type": "multiple-choice",
+              "question": "How do you implement a trait for a type?",
+              "options": [
+                "`trait TypeName for TraitName { }`",
+                "`impl TraitName for TypeName { }`",
+                "`implement TraitName on TypeName { }`",
+                "`TypeName implements TraitName { }`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q3",
+              "type": "multiple-choice",
+              "question": "Can traits have default method implementations?",
+              "options": [
+                "No, all methods must be implemented by types",
+                "Yes, traits can provide default implementations",
+                "Only if marked with #[default]",
+                "Only for Debug and Display traits"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q4",
+              "type": "multiple-choice",
+              "question": "What does `&impl Trait` mean in a function parameter?",
+              "options": [
+                "A reference to the Trait itself",
+                "A reference to any type implementing Trait",
+                "Implementation details",
+                "Compile error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q5",
+              "type": "multiple-choice",
+              "question": "What does `<T>` represent in `fn process<T>(value: T)`?",
+              "options": [
+                "A specific type T",
+                "A type parameter that can be any type",
+                "A template",
+                "A trait"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q6",
+              "type": "multiple-choice",
+              "question": "What is a trait bound?\n\n```rust\nfn process<T: Display>(value: T) {\n    println!(\"{}\", value);\n}\n```",
+              "options": [
+                "T must equal Display",
+                "T must implement the Display trait",
+                "T must be a string",
+                "T must be printable"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q7",
+              "type": "multiple-choice",
+              "question": "Are generics a runtime or compile-time feature?",
+              "options": [
+                "Runtime - types determined during execution",
+                "Compile-time - monomorphization creates specialized code",
+                "Both runtime and compile-time",
+                "Neither, they're interpreted"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q8",
+              "type": "multiple-choice",
+              "question": "Will this compile?\n\n```rust\nstruct Pair<T> {\n    first: T,\n    second: T,\n}\n\nlet mixed = Pair {\n    first: 5,\n    second: \"hello\",\n};\n```",
+              "options": [
+                "Yes, T can be different types",
+                "No, both fields must be the same type T",
+                "Yes, but with a warning",
+                "Only if T implements Copy"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q9",
+              "type": "multiple-choice",
+              "question": "Which trait must be implemented to use `println!(\"{:?}\", value)`?",
+              "options": [
+                "Display",
+                "Debug",
+                "Print",
+                "Format"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q10",
+              "type": "multiple-choice",
+              "question": "What's the difference between Clone and Copy?",
+              "options": [
+                "No difference",
+                "Clone is explicit (.clone()), Copy is implicit (automatic)",
+                "Clone is faster",
+                "Copy works with heap data"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q11",
+              "type": "multiple-choice",
+              "question": "What does `.iter()` return?",
+              "options": [
+                "The collection itself",
+                "An iterator over immutable references",
+                "An iterator over mutable references",
+                "An iterator that takes ownership"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-08-q12",
+              "type": "multiple-choice",
+              "question": "What does this code produce?\n\n```rust\nlet numbers = vec![1, 2, 3, 4, 5];\nlet result: Vec<i32> = numbers\n    .iter()\n    .map(|x| x * 2)\n    .filter(|x| *x > 5)\n    .collect();\n```",
+              "options": [
+                "[2, 4, 6, 8, 10]",
+                "[6, 8, 10]",
+                "[3, 4, 5]",
+                "Compile error",
+                "Making code polymorphic",
+                "Compiler generating specialized code for each concrete type used with generics",
+                "Converting traits to types",
+                "A runtime optimization",
+                "They execute immediately",
+                "They're lazy - only execute when consumed",
+                "They're slower than loops",
+                "They can't be chained"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
         }
       ]
     },
@@ -677,6 +1425,193 @@
             "format": "markdown",
             "body": "# Module 9, Lesson 6: Finishing Touches — Testing & Deployment\n\n## Final Polish and Production Readiness\n\nLet's add the finishing touches to make TaskMaster production-ready.\n\n## Step 1: Add Unit Tests\n\nCreate `src/task_tests.rs`:\n\n```rust\n#[cfg(test)]\nmod tests {\n    use super::*;\n    use crate::task::{Priority, Status, Task};\n\n    #[test]\n    fn test_task_creation() {\n        let task = Task::new(1, \"Test task\".to_string());\n        assert_eq!(task.id, 1);\n        assert_eq!(task.title, \"Test task\");\n        assert_eq!(task.status, Status::Todo);\n        assert_eq!(task.priority, Priority::Medium);\n    }\n\n    #[test]\n    fn test_task_builder() {\n        let task = Task::new(1, \"Test\".to_string())\n            .with_priority(Priority::High)\n            .with_description(\"Description\".to_string());\n\n        assert_eq!(task.priority, Priority::High);\n        assert_eq!(task.description, Some(\"Description\".to_string()));\n    }\n\n    #[test]\n    fn test_task_search() {\n        let task = Task::new(1, \"Learn Rust\".to_string())\n            .with_description(\"Study ownership\".to_string());\n\n        assert!(task.matches_search(\"rust\"));\n        assert!(task.matches_search(\"ownership\"));\n        assert!(!task.matches_search(\"python\"));\n    }\n\n    #[test]\n    fn test_tag_management() {\n        let mut task = Task::new(1, \"Test\".to_string());\n\n        task.add_tag(\"important\".to_string());\n        assert_eq!(task.tags.len(), 1);\n\n        task.add_tag(\"urgent\".to_string());\n        assert_eq!(task.tags.len(), 2);\n\n        task.remove_tag(\"important\");\n        assert_eq!(task.tags.len(), 1);\n        assert!(task.tags.contains(&\"urgent\".to_string()));\n    }\n}\n```\n\nRun tests:\n\n```bash\ncargo test\n```\n\n## Step 2: Add Configuration\n\nCreate `src/config.rs`:\n\n```rust\nuse serde::{Deserialize, Serialize};\nuse std::fs;\nuse std::path::PathBuf;\n\n#[derive(Debug, Serialize, Deserialize)]\npub struct Config {\n    pub data_file: String,\n    pub auto_save: bool,\n    pub default_priority: String,\n}\n\nimpl Default for Config {\n    fn default() -> Self {\n        Config {\n            data_file: \"tasks.json\".to_string(),\n            auto_save: true,\n            default_priority: \"medium\".to_string(),\n        }\n    }\n}\n\nimpl Config {\n    pub fn load() -> Self {\n        let config_path = Self::config_path();\n\n        if config_path.exists() {\n            if let Ok(content) = fs::read_to_string(&config_path) {\n                if let Ok(config) = serde_json::from_str(&content) {\n                    return config;\n                }\n            }\n        }\n\n        Config::default()\n    }\n\n    pub fn save(&self) -> std::io::Result<()> {\n        let config_path = Self::config_path();\n\n        if let Some(parent) = config_path.parent() {\n            fs::create_dir_all(parent)?;\n        }\n\n        let json = serde_json::to_string_pretty(self)?;\n        fs::write(&config_path, json)?;\n\n        Ok(())\n    }\n\n    fn config_path() -> PathBuf {\n        dirs::config_dir()\n            .unwrap_or_else(|| PathBuf::from(\".\"))\n            .join(\"taskmaster\")\n            .join(\"config.json\")\n    }\n}\n```\n\nAdd `dirs` dependency to `Cargo.toml`:\n\n```toml\n[dependencies]\ndirs = \"5.0\"\n```\n\n## Step 3: Add README\n\nCreate a comprehensive `README.md`:\n\n```markdown\n# TaskMaster\n\nA powerful command-line task manager built with Rust.\n\n## Features\n\n- ✅ Create, update, and delete tasks\n- ✅ Priority levels (Low, Medium, High, Urgent)\n- ✅ Status tracking (Todo, In Progress, Done)\n- ✅ Tags for organization\n- ✅ Due dates with overdue detection\n- ✅ Full-text search\n- ✅ Statistics and productivity reports\n- ✅ JSON file persistence\n- ✅ Export/import functionality\n\n## Installation\n\n### From Source\n\n```bash\ngit clone https://github.com/yourusername/taskmaster.git\ncd taskmaster\ncargo build --release\ncargo install --path .\n```\n\n## Usage\n\n### Basic Commands\n\n```bash\n# Add a task\ntaskmaster add \"Learn Rust\" -p high -t learning\n\n# List tasks\ntaskmaster list\ntaskmaster list --status todo\ntaskmaster list --priority high\n\n# Show task details\ntaskmaster show 1\n\n# Update task\ntaskmaster update 1 --status inprogress\ntaskmaster update 1 --priority urgent\n\n# Mark as done\ntaskmaster done 1\n\n# Delete task\ntaskmaster delete 1\n```\n\n### Advanced Features\n\n```bash\n# Search tasks\ntaskmaster search \"rust\"\n\n# Show overdue tasks\ntaskmaster overdue\n\n# Show tasks due soon\ntaskmaster due-soon 7\n\n# Statistics\ntaskmaster stats\ntaskmaster stats --detailed\n\n# Productivity report\ntaskmaster productivity 30\n\n# Complete report\ntaskmaster report\n\n# Export data\ntaskmaster export tasks_backup.json\n```\n\n## Configuration\n\nTaskMaster stores configuration in `~/.config/taskmaster/config.json`:\n\n```json\n{\n  \"data_file\": \"tasks.json\",\n  \"auto_save\": true,\n  \"default_priority\": \"medium\"\n}\n```\n\n## License\n\nMIT\n\n## Contributing\n\nContributions welcome! Please open an issue or PR.\n```\n\n## Step 4: Build Release Binary\n\n```bash\n# Build optimized release binary\ncargo build --release\n\n# Binary located at: target/release/taskmaster\n\n# Install globally (Unix-like systems)\ncargo install --path .\n\n# Create distributable package\ncargo build --release\nstrip target/release/taskmaster  # Reduce binary size\n```\n\n## Step 5: Add Shell Completions\n\nAdd to `src/main.rs`:\n\n```rust\nuse clap::CommandFactory;\nuse clap_complete::{generate_to, shells::*};\n\n// Generate shell completions\nfn generate_completions() {\n    let mut cmd = Cli::command();\n    let bin_name = \"taskmaster\";\n\n    let outdir = std::env::var_os(\"OUT_DIR\").unwrap();\n\n    generate_to(Bash, &mut cmd, bin_name, &outdir).ok();\n    generate_to(Zsh, &mut cmd, bin_name, &outdir).ok();\n    generate_to(Fish, &mut cmd, bin_name, &outdir).ok();\n}\n```\n\nAdd dependency:\n\n```toml\n[dependencies]\nclap_complete = \"4.5\"\n```\n\n## Usage as Library\n\nTaskMaster can also be used as a library:\n\n```rust\nuse taskmaster::{TaskManager, Task, Priority};\n\nfn main() {\n    let mut manager = TaskManager::new();\n\n    let id = manager.add_task(\"My task\".to_string()).unwrap();\n\n    manager.update_task(id, |task| {\n        task.with_priority(Priority::High);\n    }).unwrap();\n\n    for task in manager.list_tasks() {\n        println!(\"{}\", task);\n    }\n}\n```\n\n## Complete Example: Daily Workflow\n\n```bash\n#!/bin/bash\n# daily_tasks.sh\n\n# Morning routine\ntaskmaster list --status todo --priority urgent\ntaskmaster overdue\ntaskmaster due-soon 1\n\n# During work\ntaskmaster add \"Review PR #123\" -p high -t review\ntaskmaster update 15 --status inprogress\ntaskmaster done 12\n\n# End of day\ntaskmaster stats --detailed\ntaskmaster productivity 1\ntaskmaster export daily_backup.json\n```\n\n## Troubleshooting\n\n### Tasks not persisting\n\nCheck file permissions for `tasks.json`:\n\n```bash\nls -l tasks.json\nchmod 644 tasks.json\n```\n\n### Performance with many tasks\n\nTaskMaster efficiently handles thousands of tasks. If experiencing slowness:\n\n```bash\n# Export and archive old completed tasks\ntaskmaster export archive.json\ntaskmaster list --status done | # filter and delete old ones\n```\n\n## Capstone Project Complete! 🎉\n\nYou've built a professional-grade CLI application demonstrating:\n\n- ✅ **Structs & Enums**: Task, Priority, Status\n- ✅ **Error Handling**: Custom errors with From trait\n- ✅ **File I/O**: JSON persistence\n- ✅ **Traits**: Display, Serialize, Deserialize\n- ✅ **Generics**: Flexible functions\n- ✅ **Iterators**: Filtering, mapping, collecting\n- ✅ **CLI Parsing**: clap with subcommands\n- ✅ **Testing**: Unit tests\n- ✅ **Documentation**: Comprehensive README\n\n## Next Steps\n\n**Optional enhancements:**\n\n1. **Database backend**: SQLite instead of JSON\n2. **Sync**: Cloud synchronization\n3. **Web interface**: REST API with web UI\n4. **Mobile app**: Share data with mobile client\n5. **AI features**: Smart task suggestions\n6. **Team features**: Shared task lists\n7. **Notifications**: Desktop/email reminders\n8. **Time tracking**: Log time spent on tasks\n9. **Recurring tasks**: Scheduled repetition\n10. **Subtasks**: Task hierarchies\n\n## Deployment Options\n\n### **As CLI Tool**\n\n```bash\ncargo install --path .\n```\n\n### **Distribute Binary**\n\n```bash\n# Create releases for multiple platforms\ncargo build --release --target x86_64-unknown-linux-gnu\ncargo build --release --target x86_64-apple-darwin\ncargo build --release --target x86_64-pc-windows-msvc\n```\n\n### **Publish to crates.io**\n\n```bash\ncargo publish\n```\n\n---\n\n**Progress**: Module 9, Lesson 6 complete (54/60 lessons total)\n\n**Next**: Quiz to test your understanding of building complete applications!\n"
           }
+        }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-09",
+          "title": "Module 9: Capstone Project - Assessment Quiz",
+          "description": "Assessment quiz for Module 09",
+          "passingScore": 80,
+          "estimatedMinutes": 18,
+          "questions": [
+            {
+              "id": "rust-quiz-module-09-q1",
+              "type": "multiple-choice",
+              "question": "Why use separate modules (task.rs, manager.rs, storage.rs, etc.)?",
+              "options": [
+                "Required by Rust compiler",
+                "Separation of concerns and maintainability",
+                "Makes code run faster",
+                "Only works with cargo"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q2",
+              "type": "multiple-choice",
+              "question": "What trait enables automatic JSON serialization in TaskMaster?",
+              "options": [
+                "Debug",
+                "Display",
+                "Serialize (from serde)",
+                "ToString"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q3",
+              "type": "multiple-choice",
+              "question": "Why does TaskManager expose fields as `pub(crate)` instead of `pub`?",
+              "options": [
+                "It's faster",
+                "Visible within the crate but not to external users",
+                "Required for serialization",
+                "No difference from pub"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q4",
+              "type": "multiple-choice",
+              "question": "What does this From implementation enable?\n\n```rust\nimpl From<std::io::Error> for TaskError {\n    fn from(error: std::io::Error) -> Self {\n        TaskError::IoError(error)\n    }\n}\n```",
+              "options": [
+                "Convert TaskError to io::Error",
+                "Automatic error conversion with ? operator",
+                "Better error messages",
+                "Faster code"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q5",
+              "type": "multiple-choice",
+              "question": "Why use custom error types instead of strings?",
+              "options": [
+                "Strings are slower",
+                "Type-safe, pattern-matchable, specific error information",
+                "Required by Rust",
+                "No real advantage"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q6",
+              "type": "multiple-choice",
+              "question": "What happens if storage::save() fails in add_task()?\n\n```rust\npub fn add_task(&mut self, title: String) -> Result<u32> {\n    // ... create task ...\n    if let Err(e) = crate::storage::save(self) {\n        eprintln!(\"Warning: Failed to save: {}\", e);\n    }\n    Ok(id)\n}\n```",
+              "options": [
+                "Function returns error",
+                "Warning printed, task still added",
+                "Program panics",
+                "Task is not added"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q7",
+              "type": "multiple-choice",
+              "question": "What does #[derive(Parser)] from clap provide?",
+              "options": [
+                "Automatic CLI parsing from struct",
+                "Pretty printing",
+                "Serialization",
+                "Error handling"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q8",
+              "type": "multiple-choice",
+              "question": "Why use subcommands instead of flags for main actions?",
+              "options": [
+                "Faster execution",
+                "Clearer organization and better UX for complex CLIs",
+                "Required by clap",
+                "Easier to implement"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q9",
+              "type": "multiple-choice",
+              "question": "What does this accomplish?\n\n```rust\nprint!(\"Delete task (y/N)? \");\nio::stdout().flush()?;\n```",
+              "options": [
+                "Clears the terminal",
+                "Ensures prompt displays before reading input",
+                "Saves data to disk",
+                "Validates user input"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q10",
+              "type": "multiple-choice",
+              "question": "Why use iterators for filtering instead of loops?\n\n```rust\ntasks.iter().filter(|t| t.status == status).collect()\n```",
+              "options": [
+                "Always faster than loops",
+                "More expressive, composable, zero-cost abstraction",
+                "Required by Rust",
+                "Uses less memory"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q11",
+              "type": "multiple-choice",
+              "question": "What does this pattern achieve?\n\n```rust\npub fn update_task<F>(&mut self, id: u32, update_fn: F) -> Result<()>\nwhere\n    F: FnOnce(&mut Task),\n```",
+              "options": [
+                "Multiple updates simultaneously",
+                "Flexible task updates without exposing internal mutability",
+                "Automatic validation",
+                "Async updates"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-09-q12",
+              "type": "multiple-choice",
+              "question": "Why use HashMap for statistics grouping?\n\n```rust\nTask::new(id, title)\n    .with_priority(Priority::High)\n    .with_description(\"Details\")\n```",
+              "options": [
+                "Sorted automatically",
+                "Efficient counting by category",
+                "Required for serialization",
+                "Faster than Vec",
+                "Faster performance",
+                "Prevents data loss if program crashes",
+                "Required by JSON format",
+                "Makes code simpler",
+                "Faster creation",
+                "Readable, chainable configuration",
+                "Required for serialization",
+                "Automatic validation"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
         }
       ]
     },
@@ -815,6 +1750,157 @@
             "body": "# Module 12: Web Development with Rust\n\n# Lesson 5: Practice Project — Blog REST API\n\n## Project Overview\n\nBuild a complete **Blog REST API** with:\n- Posts (create, read, update, delete, list)\n- Comments on posts\n- Tags for categorization\n- Filtering and pagination\n- Proper error handling\n- Input validation\n\nThis project integrates everything you've learned in Module 12!\n\n## Project Setup\n\n```bash\ncargo new blog_api\ncd blog_api\n```\n\n### Dependencies\n\n```toml\n[package]\nname = \"blog_api\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\naxum = \"0.8.x\"\ntokio = { version = \"1.x\", features = [\"full\"] }\nserde = { version = \"1.0\", features = [\"derive\"] }\nserde_json = \"1.0\"\nchrono = { version = \"0.4\", features = [\"serde\"] }\n```\n\n## Step 1: Data Models\n\nCreate `src/models.rs`:\n\n```rust\nuse serde::{Deserialize, Serialize};\nuse chrono::{DateTime, Utc};\n\n#[derive(Serialize, Deserialize, Clone, Debug)]\npub struct Post {\n    pub id: u32,\n    pub title: String,\n    pub content: String,\n    pub author: String,\n    pub tags: Vec<String>,\n    pub created_at: DateTime<Utc>,\n    pub updated_at: DateTime<Utc>,\n}\n\n#[derive(Serialize, Deserialize, Clone, Debug)]\npub struct Comment {\n    pub id: u32,\n    pub post_id: u32,\n    pub author: String,\n    pub content: String,\n    pub created_at: DateTime<Utc>,\n}\n\n#[derive(Deserialize, Debug)]\npub struct CreatePost {\n    pub title: String,\n    pub content: String,\n    pub author: String,\n    pub tags: Vec<String>,\n}\n\n#[derive(Deserialize, Debug)]\npub struct UpdatePost {\n    pub title: Option<String>,\n    pub content: Option<String>,\n    pub tags: Option<Vec<String>>,\n}\n\n#[derive(Deserialize, Debug)]\npub struct CreateComment {\n    pub author: String,\n    pub content: String,\n}\n\n#[derive(Deserialize, Debug)]\npub struct ListPostsQuery {\n    pub tag: Option<String>,\n    #[serde(default)]\n    pub page: u32,\n    #[serde(default = \"default_limit\")]\n    pub limit: u32,\n}\n\nfn default_limit() -> u32 {\n    10\n}\n```\n\n## Step 2: Application State\n\nCreate `src/state.rs`:\n\n```rust\nuse crate::models::{Post, Comment};\nuse std::sync::{Arc, Mutex};\n\n#[derive(Clone)]\npub struct AppState {\n    pub posts: Arc<Mutex<Vec<Post>>>,\n    pub comments: Arc<Mutex<Vec<Comment>>>,\n}\n\nimpl AppState {\n    pub fn new() -> Self {\n        Self {\n            posts: Arc::new(Mutex::new(Vec::new())),\n            comments: Arc::new(Mutex::new(Vec::new())),\n        }\n    }\n\n    pub fn with_sample_data() -> Self {\n        use chrono::Utc;\n\n        let posts = vec![\n            Post {\n                id: 1,\n                title: \"Getting Started with Rust\".to_string(),\n                content: \"Rust is a systems programming language...\".to_string(),\n                author: \"Alice\".to_string(),\n                tags: vec![\"rust\".to_string(), \"programming\".to_string()],\n                created_at: Utc::now(),\n                updated_at: Utc::now(),\n            },\n            Post {\n                id: 2,\n                title: \"Building Web APIs with Axum\".to_string(),\n                content: \"Axum is a modern web framework...\".to_string(),\n                author: \"Bob\".to_string(),\n                tags: vec![\"rust\".to_string(), \"web\".to_string(), \"axum\".to_string()],\n                created_at: Utc::now(),\n                updated_at: Utc::now(),\n            },\n        ];\n\n        let comments = vec![\n            Comment {\n                id: 1,\n                post_id: 1,\n                author: \"Charlie\".to_string(),\n                content: \"Great article!\".to_string(),\n                created_at: Utc::now(),\n            },\n        ];\n\n        Self {\n            posts: Arc::new(Mutex::new(posts)),\n            comments: Arc::new(Mutex::new(comments)),\n        }\n    }\n}\n```\n\n## Step 3: Error Handling\n\nCreate `src/errors.rs`:\n\n```rust\nuse axum::{\n    response::{IntoResponse, Response},\n    http::StatusCode,\n    Json,\n};\nuse serde::Serialize;\n\n#[derive(Serialize)]\nstruct ErrorResponse {\n    error: String,\n    message: String,\n}\n\npub enum ApiError {\n    NotFound,\n    BadRequest(String),\n    InternalError,\n}\n\nimpl IntoResponse for ApiError {\n    fn into_response(self) -> Response {\n        let (status, error_code, message) = match self {\n            ApiError::NotFound => (\n                StatusCode::NOT_FOUND,\n                \"NOT_FOUND\",\n                \"Resource not found\".to_string(),\n            ),\n            ApiError::BadRequest(msg) => (\n                StatusCode::BAD_REQUEST,\n                \"BAD_REQUEST\",\n                msg,\n            ),\n            ApiError::InternalError => (\n                StatusCode::INTERNAL_SERVER_ERROR,\n                \"INTERNAL_ERROR\",\n                \"An internal error occurred\".to_string(),\n            ),\n        };\n\n        (\n            status,\n            Json(ErrorResponse {\n                error: error_code.to_string(),\n                message,\n            }),\n        )\n            .into_response()\n    }\n}\n\npub fn validate_create_post(post: &crate::models::CreatePost) -> Result<(), ApiError> {\n    if post.title.trim().is_empty() {\n        return Err(ApiError::BadRequest(\"Title cannot be empty\".to_string()));\n    }\n\n    if post.content.trim().is_empty() {\n        return Err(ApiError::BadRequest(\"Content cannot be empty\".to_string()));\n    }\n\n    if post.author.trim().is_empty() {\n        return Err(ApiError::BadRequest(\"Author cannot be empty\".to_string()));\n    }\n\n    Ok(())\n}\n\npub fn validate_create_comment(comment: &crate::models::CreateComment) -> Result<(), ApiError> {\n    if comment.author.trim().is_empty() {\n        return Err(ApiError::BadRequest(\"Author cannot be empty\".to_string()));\n    }\n\n    if comment.content.trim().is_empty() {\n        return Err(ApiError::BadRequest(\"Comment cannot be empty\".to_string()));\n    }\n\n    Ok(())\n}\n```\n\n## Step 4: Post Handlers\n\nCreate `src/handlers/posts.rs`:\n\n```rust\nuse axum::{\n    extract::{Path, Query, State},\n    http::StatusCode,\n    Json,\n};\nuse chrono::Utc;\n\nuse crate::{\n    models::{Post, CreatePost, UpdatePost, ListPostsQuery},\n    state::AppState,\n    errors::{ApiError, validate_create_post},\n};\n\npub async fn list_posts(\n    State(state): State<AppState>,\n    Query(query): Query<ListPostsQuery>,\n) -> Json<Vec<Post>> {\n    let posts = state.posts.lock().unwrap();\n\n    let mut filtered: Vec<Post> = posts\n        .iter()\n        .filter(|post| {\n            if let Some(ref tag) = query.tag {\n                post.tags.contains(tag)\n            } else {\n                true\n            }\n        })\n        .cloned()\n        .collect();\n\n    // Sort by created_at descending\n    filtered.sort_by(|a, b| b.created_at.cmp(&a.created_at));\n\n    // Pagination\n    let start = (query.page * query.limit) as usize;\n    let end = start + query.limit as usize;\n\n    let paginated = filtered.into_iter().skip(start).take(query.limit as usize).collect();\n\n    Json(paginated)\n}\n\npub async fn get_post(\n    Path(id): Path<u32>,\n    State(state): State<AppState>,\n) -> Result<Json<Post>, ApiError> {\n    let posts = state.posts.lock().unwrap();\n\n    posts\n        .iter()\n        .find(|p| p.id == id)\n        .cloned()\n        .map(Json)\n        .ok_or(ApiError::NotFound)\n}\n\npub async fn create_post(\n    State(state): State<AppState>,\n    Json(create): Json<CreatePost>,\n) -> Result<(StatusCode, Json<Post>), ApiError> {\n    validate_create_post(&create)?;\n\n    let mut posts = state.posts.lock().unwrap();\n\n    let id = posts.iter().map(|p| p.id).max().unwrap_or(0) + 1;\n\n    let now = Utc::now();\n    let post = Post {\n        id,\n        title: create.title,\n        content: create.content,\n        author: create.author,\n        tags: create.tags,\n        created_at: now,\n        updated_at: now,\n    };\n\n    posts.push(post.clone());\n\n    Ok((StatusCode::CREATED, Json(post)))\n}\n\npub async fn update_post(\n    Path(id): Path<u32>,\n    State(state): State<AppState>,\n    Json(update): Json<UpdatePost>,\n) -> Result<Json<Post>, ApiError> {\n    let mut posts = state.posts.lock().unwrap();\n\n    let post = posts\n        .iter_mut()\n        .find(|p| p.id == id)\n        .ok_or(ApiError::NotFound)?;\n\n    if let Some(title) = update.title {\n        if title.trim().is_empty() {\n            return Err(ApiError::BadRequest(\"Title cannot be empty\".to_string()));\n        }\n        post.title = title;\n    }\n\n    if let Some(content) = update.content {\n        if content.trim().is_empty() {\n            return Err(ApiError::BadRequest(\"Content cannot be empty\".to_string()));\n        }\n        post.content = content;\n    }\n\n    if let Some(tags) = update.tags {\n        post.tags = tags;\n    }\n\n    post.updated_at = Utc::now();\n\n    Ok(Json(post.clone()))\n}\n\npub async fn delete_post(\n    Path(id): Path<u32>,\n    State(state): State<AppState>,\n) -> Result<StatusCode, ApiError> {\n    let mut posts = state.posts.lock().unwrap();\n\n    let index = posts\n        .iter()\n        .position(|p| p.id == id)\n        .ok_or(ApiError::NotFound)?;\n\n    posts.remove(index);\n\n    // Also delete associated comments\n    let mut comments = state.comments.lock().unwrap();\n    comments.retain(|c| c.post_id != id);\n\n    Ok(StatusCode::NO_CONTENT)\n}\n```\n\n## Step 5: Comment Handlers\n\nCreate `src/handlers/comments.rs`:\n\n```rust\nuse axum::{\n    extract::{Path, State},\n    http::StatusCode,\n    Json,\n};\nuse chrono::Utc;\n\nuse crate::{\n    models::{Comment, CreateComment},\n    state::AppState,\n    errors::{ApiError, validate_create_comment},\n};\n\npub async fn list_comments(\n    Path(post_id): Path<u32>,\n    State(state): State<AppState>,\n) -> Result<Json<Vec<Comment>>, ApiError> {\n    // Verify post exists\n    {\n        let posts = state.posts.lock().unwrap();\n        if !posts.iter().any(|p| p.id == post_id) {\n            return Err(ApiError::NotFound);\n        }\n    }\n\n    let comments = state.comments.lock().unwrap();\n\n    let post_comments: Vec<Comment> = comments\n        .iter()\n        .filter(|c| c.post_id == post_id)\n        .cloned()\n        .collect();\n\n    Ok(Json(post_comments))\n}\n\npub async fn create_comment(\n    Path(post_id): Path<u32>,\n    State(state): State<AppState>,\n    Json(create): Json<CreateComment>,\n) -> Result<(StatusCode, Json<Comment>), ApiError> {\n    validate_create_comment(&create)?;\n\n    // Verify post exists\n    {\n        let posts = state.posts.lock().unwrap();\n        if !posts.iter().any(|p| p.id == post_id) {\n            return Err(ApiError::NotFound);\n        }\n    }\n\n    let mut comments = state.comments.lock().unwrap();\n\n    let id = comments.iter().map(|c| c.id).max().unwrap_or(0) + 1;\n\n    let comment = Comment {\n        id,\n        post_id,\n        author: create.author,\n        content: create.content,\n        created_at: Utc::now(),\n    };\n\n    comments.push(comment.clone());\n\n    Ok((StatusCode::CREATED, Json(comment)))\n}\n\npub async fn delete_comment(\n    Path((post_id, comment_id)): Path<(u32, u32)>,\n    State(state): State<AppState>,\n) -> Result<StatusCode, ApiError> {\n    let mut comments = state.comments.lock().unwrap();\n\n    let index = comments\n        .iter()\n        .position(|c| c.id == comment_id && c.post_id == post_id)\n        .ok_or(ApiError::NotFound)?;\n\n    comments.remove(index);\n\n    Ok(StatusCode::NO_CONTENT)\n}\n```\n\n## Step 6: Module Organization\n\nCreate `src/handlers/mod.rs`:\n\n```rust\npub mod posts;\npub mod comments;\n```\n\nUpdate `src/main.rs` to declare modules:\n\n```rust\nmod models;\nmod state;\nmod errors;\nmod handlers;\n\n// (rest of main.rs below)\n```\n\n## Step 7: Main Application\n\nUpdate `src/main.rs`:\n\n```rust\nmod models;\nmod state;\nmod errors;\nmod handlers;\n\nuse axum::{\n    routing::{get, post, put, delete},\n    Router,\n};\n\nuse state::AppState;\nuse handlers::{posts, comments};\n\n#[tokio::main]\nasync fn main() {\n    // Initialize state with sample data\n    let state = AppState::with_sample_data();\n\n    // Build router\n    let app = Router::new()\n        // API info\n        .route(\"/\", get(api_info))\n        // Posts\n        .route(\"/posts\", get(posts::list_posts).post(posts::create_post))\n        .route(\"/posts/{id}\", get(posts::get_post).put(posts::update_post).delete(posts::delete_post))\n        // Comments\n        .route(\"/posts/{post_id}/comments\", get(comments::list_comments).post(comments::create_comment))\n        .route(\"/posts/{post_id}/comments/{comment_id}\", delete(comments::delete_comment))\n        .with_state(state);\n\n    let listener = tokio::net::TcpListener::bind(\"0.0.0.0:3000\")\n        .await\n        .unwrap();\n\n    println!(\"🚀 Blog API running on http://localhost:3000\");\n    println!(\"\\n📖 Available endpoints:\");\n    println!(\"   GET    /posts\");\n    println!(\"   GET    /posts?tag=rust&page=0&limit=10\");\n    println!(\"   GET    /posts/{{id}}\");\n    println!(\"   POST   /posts\");\n    println!(\"   PUT    /posts/{{id}}\");\n    println!(\"   DELETE /posts/{{id}}\");\n    println!(\"   GET    /posts/{{post_id}}/comments\");\n    println!(\"   POST   /posts/{{post_id}}/comments\");\n    println!(\"   DELETE /posts/{{post_id}}/comments/{{comment_id}}\");\n\n    axum::serve(listener, app).await.unwrap();\n}\n\nasync fn api_info() -> &'static str {\n    \"Blog REST API v1.0 - Built with Rust & Axum\"\n}\n```\n\n## Step 8: Testing the API\n\n### List All Posts\n\n```bash\ncurl http://localhost:3000/posts\n```\n\n### List Posts by Tag\n\n```bash\ncurl \"http://localhost:3000/posts?tag=rust\"\n```\n\n### Get Single Post\n\n```bash\ncurl http://localhost:3000/posts/1\n```\n\n### Create Post\n\n```bash\ncurl -X POST http://localhost:3000/posts \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"My New Post\",\n    \"content\": \"This is the content of my new post\",\n    \"author\": \"Dave\",\n    \"tags\": [\"rust\", \"tutorial\"]\n  }'\n```\n\n### Update Post\n\n```bash\ncurl -X PUT http://localhost:3000/posts/1 \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"Updated Title\"\n  }'\n```\n\n### Delete Post\n\n```bash\ncurl -X DELETE http://localhost:3000/posts/1\n```\n\n### List Comments\n\n```bash\ncurl http://localhost:3000/posts/1/comments\n```\n\n### Create Comment\n\n```bash\ncurl -X POST http://localhost:3000/posts/1/comments \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"author\": \"Eve\",\n    \"content\": \"Interesting post!\"\n  }'\n```\n\n### Delete Comment\n\n```bash\ncurl -X DELETE http://localhost:3000/posts/1/comments/1\n```\n\n## Challenge Extensions\n\n### 1. Add Search Functionality\n\nAdd `/posts/search?q=rust` endpoint that searches in title and content.\n\n<details>\n<summary>Hint</summary>\n\n```rust\n#[derive(Deserialize)]\nstruct SearchQuery {\n    q: String,\n}\n\nasync fn search_posts(\n    State(state): State<AppState>,\n    Query(query): Query<SearchQuery>,\n) -> Json<Vec<Post>> {\n    let posts = state.posts.lock().unwrap();\n    let query_lower = query.q.to_lowercase();\n\n    let results: Vec<Post> = posts\n        .iter()\n        .filter(|p| {\n            p.title.to_lowercase().contains(&query_lower)\n                || p.content.to_lowercase().contains(&query_lower)\n        })\n        .cloned()\n        .collect();\n\n    Json(results)\n}\n```\n</details>\n\n### 2. Add Statistics Endpoint\n\nCreate `GET /stats` that returns:\n- Total posts\n- Total comments\n- Posts by tag\n\n<details>\n<summary>Hint</summary>\n\n```rust\nuse std::collections::HashMap;\n\n#[derive(Serialize)]\nstruct Stats {\n    total_posts: usize,\n    total_comments: usize,\n    posts_by_tag: HashMap<String, usize>,\n}\n\nasync fn get_stats(State(state): State<AppState>) -> Json<Stats> {\n    let posts = state.posts.lock().unwrap();\n    let comments = state.comments.lock().unwrap();\n\n    let mut posts_by_tag = HashMap::new();\n    for post in posts.iter() {\n        for tag in &post.tags {\n            *posts_by_tag.entry(tag.clone()).or_insert(0) += 1;\n        }\n    }\n\n    Json(Stats {\n        total_posts: posts.len(),\n        total_comments: comments.len(),\n        posts_by_tag,\n    })\n}\n```\n</details>\n\n### 3. Add Sorting\n\nSupport `?sort=created_at&order=desc` query parameters.\n\n### 4. Add Post Likes\n\n- Add `likes: u32` field to Post\n- Create `POST /posts/{id}/like` endpoint\n- Return updated post with incremented likes\n\n## Key Takeaways\n\n- ✅ Organized code into modules (models, state, errors, handlers)\n- ✅ Implemented complete CRUD operations\n- ✅ Added input validation\n- ✅ Proper error handling with custom types\n- ✅ Filtering and pagination\n- ✅ Nested resources (posts and comments)\n- ✅ Type-safe request/response handling\n\n## What You've Built\n\nA production-ready REST API structure with:\n- Clean code organization\n- Proper error handling\n- Input validation\n- Filtering and pagination\n- Nested resources\n- Comprehensive documentation\n\n**Next Module**: Database Integration with SQLx!\n\n---\n\n**Progress**: Module 12 complete! (62/90+ lessons total)\n"
           }
         }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-12",
+          "title": "Module 12 Quiz: Web Development Fundamentals",
+          "description": "Assessment quiz for Module module-12",
+          "passingScore": 80,
+          "estimatedMinutes": 15,
+          "questions": [
+            {
+              "id": "rust-quiz-module-12-q1",
+              "type": "multiple-choice",
+              "question": "Which HTTP method is used to retrieve data?",
+              "options": [
+                "POST",
+                "PUT",
+                "GET",
+                "DELETE"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q2",
+              "type": "multiple-choice",
+              "question": "What status code indicates successful resource creation?",
+              "options": [
+                "200 OK",
+                "201 Created",
+                "204 No Content",
+                "400 Bad Request"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q3",
+              "type": "multiple-choice",
+              "question": "What does REST stand for?",
+              "options": [
+                "Reliable State Transfer",
+                "Representational State Transfer",
+                "Resource Execution and State Transfer",
+                "Remote State Transaction"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q4",
+              "type": "multiple-choice",
+              "question": "In Axum 0.8, what is the new path parameter syntax?",
+              "options": [
+                "`/users/:id`",
+                "`/users/{id}`",
+                "`/users/$id`",
+                "`/users/<id>`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q5",
+              "type": "multiple-choice",
+              "question": "What does `Json<T>` in Axum do?",
+              "options": [
+                "Only serializes responses",
+                "Only deserializes requests",
+                "Both serializes and deserializes",
+                "None of the above"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q6",
+              "type": "multiple-choice",
+              "question": "Which extractor gets URL query parameters?",
+              "options": [
+                "Path<T>",
+                "Query<T>",
+                "Form<T>",
+                "State<T>"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q7",
+              "type": "multiple-choice",
+              "question": "What is `Arc<Mutex<T>>` used for in web applications?",
+              "options": [
+                "Encryption",
+                "Shared state across threads",
+                "Async operations",
+                "JSON parsing"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q8",
+              "type": "multiple-choice",
+              "question": "Which status code indicates unauthorized access?",
+              "options": [
+                "403 Forbidden",
+                "401 Unauthorized",
+                "404 Not Found",
+                "500 Internal Server Error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q9",
+              "type": "multiple-choice",
+              "question": "What does `with_state()` do in Axum?",
+              "options": [
+                "Creates new state",
+                "Shares state with handlers",
+                "Deletes state",
+                "Validates state"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-12-q10",
+              "type": "multiple-choice",
+              "question": "Which is the correct way to handle errors in Axum?",
+              "options": [
+                "Return string errors",
+                "Use panic!()",
+                "Implement IntoResponse for custom error types",
+                "Ignore errors"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -879,6 +1965,157 @@
             "body": "# Module 13: Database Integration\n\n# Lesson 5: Practice Project — Full-Stack Blog with Database\n\n## Project Overview\n\nBuild a complete blog platform with:\n- Users, Posts, Comments, Tags\n- Full CRUD operations\n- Relationships and joins\n- Search functionality\n- Statistics dashboard\n- All backed by PostgreSQL!\n\nThis integrates everything from Modules 12 and 13.\n\n## Project Setup\n\n```bash\ncargo new fullstack_blog\ncd fullstack_blog\n```\n\n### Dependencies\n\n```toml\n[package]\nname = \"fullstack_blog\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\naxum = \"0.8.x\"\ntokio = { version = \"1.x\", features = [\"full\"] }\nsqlx = { version = \"0.8.x\", features = [\"runtime-tokio\", \"postgres\", \"chrono\"] }\nserde = { version = \"1.0\", features = [\"derive\"] }\nserde_json = \"1.0\"\nchrono = { version = \"0.4\", features = [\"serde\"] }\ndotenvy = \"0.15\"\n```\n\n### Environment Setup\n\nCreate `.env`:\n\n```env\nDATABASE_URL=postgresql://postgres:password@localhost:5432/fullstack_blog\n```\n\n## Database Schema\n\n### Create Database\n\n```bash\nsqlx database create\n```\n\n### Migration 1: Core Tables\n\n```bash\nsqlx migrate add create_core_tables\n```\n\nEdit `migrations/TIMESTAMP_create_core_tables.sql`:\n\n```sql\n-- Users table\nCREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    username VARCHAR(50) UNIQUE NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL,\n    bio TEXT,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Posts table\nCREATE TABLE posts (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    title VARCHAR(255) NOT NULL,\n    slug VARCHAR(255) UNIQUE NOT NULL,\n    content TEXT NOT NULL,\n    excerpt VARCHAR(500),\n    published BOOLEAN DEFAULT FALSE,\n    view_count INTEGER DEFAULT 0,\n    created_at TIMESTAMP DEFAULT NOW(),\n    updated_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Comments table\nCREATE TABLE comments (\n    id SERIAL PRIMARY KEY,\n    post_id INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    content TEXT NOT NULL,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Tags table\nCREATE TABLE tags (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(50) UNIQUE NOT NULL,\n    slug VARCHAR(50) UNIQUE NOT NULL\n);\n\n-- Post-Tag junction table\nCREATE TABLE post_tags (\n    post_id INTEGER REFERENCES posts(id) ON DELETE CASCADE,\n    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,\n    PRIMARY KEY (post_id, tag_id)\n);\n\n-- Indexes\nCREATE INDEX idx_posts_user_id ON posts(user_id);\nCREATE INDEX idx_posts_published ON posts(published);\nCREATE INDEX idx_posts_slug ON posts(slug);\nCREATE INDEX idx_comments_post_id ON comments(post_id);\nCREATE INDEX idx_comments_user_id ON comments(user_id);\nCREATE INDEX idx_post_tags_post_id ON post_tags(post_id);\nCREATE INDEX idx_post_tags_tag_id ON post_tags(tag_id);\n\n-- Full-text search\nALTER TABLE posts ADD COLUMN search_vector tsvector;\nCREATE INDEX idx_posts_search ON posts USING GIN(search_vector);\n\nCREATE FUNCTION posts_search_trigger() RETURNS trigger AS $$\nBEGIN\n    NEW.search_vector :=\n        setweight(to_tsvector('english', COALESCE(NEW.title, '')), 'A') ||\n        setweight(to_tsvector('english', COALESCE(NEW.content, '')), 'B');\n    RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql;\n\nCREATE TRIGGER posts_search_update\n    BEFORE INSERT OR UPDATE ON posts\n    FOR EACH ROW EXECUTE FUNCTION posts_search_trigger();\n```\n\n### Migration 2: Sample Data\n\n```bash\nsqlx migrate add seed_data\n```\n\nEdit `migrations/TIMESTAMP_seed_data.sql`:\n\n```sql\n-- Insert users\nINSERT INTO users (username, email, bio) VALUES\n    ('alice', 'alice@example.com', 'Rust enthusiast and blogger'),\n    ('bob', 'bob@example.com', 'Full-stack developer'),\n    ('charlie', 'charlie@example.com', 'Systems programmer');\n\n-- Insert tags\nINSERT INTO tags (name, slug) VALUES\n    ('Rust', 'rust'),\n    ('Web Development', 'web-development'),\n    ('Tutorial', 'tutorial'),\n    ('Backend', 'backend'),\n    ('Axum', 'axum');\n\n-- Insert posts\nINSERT INTO posts (user_id, title, slug, content, excerpt, published) VALUES\n    (1, 'Getting Started with Rust', 'getting-started-rust',\n     'Rust is a systems programming language focused on safety, speed, and concurrency...',\n     'An introduction to Rust programming',\n     true),\n    (1, 'Building Web APIs with Axum', 'building-web-apis-axum',\n     'Axum is a modern web framework built on Tokio, Tower, and Hyper...',\n     'Learn how to build REST APIs with Axum',\n     true),\n    (2, 'Database Integration with SQLx', 'database-integration-sqlx',\n     'SQLx provides async, type-safe database access for Rust...',\n     'Complete guide to using SQLx',\n     true),\n    (3, 'Draft Post', 'draft-post',\n     'This is a draft post...',\n     'A work in progress',\n     false);\n\n-- Link posts to tags\nINSERT INTO post_tags (post_id, tag_id) VALUES\n    (1, 1), (1, 3),  -- Getting Started with Rust: Rust, Tutorial\n    (2, 1), (2, 2), (2, 4), (2, 5),  -- Building Web APIs: Rust, Web Dev, Backend, Axum\n    (3, 1), (3, 2), (3, 4);  -- Database Integration: Rust, Web Dev, Backend\n\n-- Insert comments\nINSERT INTO comments (post_id, user_id, content) VALUES\n    (1, 2, 'Great introduction! Very helpful.'),\n    (1, 3, 'Looking forward to more Rust content!'),\n    (2, 3, 'Axum is amazing. Thanks for this guide!');\n```\n\nRun migrations:\n\n```bash\nsqlx migrate run\n```\n\n## Project Structure\n\n```\nsrc/\n├── main.rs\n├── models.rs\n├── errors.rs\n├── handlers/\n│   ├── mod.rs\n│   ├── users.rs\n│   ├── posts.rs\n│   ├── comments.rs\n│   ├── tags.rs\n│   └── stats.rs\n```\n\n## Implementation\n\n### src/models.rs\n\n```rust\nuse serde::{Deserialize, Serialize};\nuse chrono::NaiveDateTime;\n\n#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]\npub struct User {\n    pub id: i32,\n    pub username: String,\n    pub email: String,\n    pub bio: Option<String>,\n    pub created_at: NaiveDateTime,\n}\n\n#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]\npub struct Post {\n    pub id: i32,\n    pub user_id: i32,\n    pub title: String,\n    pub slug: String,\n    pub content: String,\n    pub excerpt: Option<String>,\n    pub published: bool,\n    pub view_count: i32,\n    pub created_at: NaiveDateTime,\n    pub updated_at: NaiveDateTime,\n}\n\n#[derive(Debug, Serialize)]\npub struct PostWithAuthor {\n    #[serde(flatten)]\n    pub post: Post,\n    pub author: String,\n    pub tags: Vec<String>,\n    pub comment_count: i64,\n}\n\n#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]\npub struct Comment {\n    pub id: i32,\n    pub post_id: i32,\n    pub user_id: i32,\n    pub content: String,\n    pub created_at: NaiveDateTime,\n}\n\n#[derive(Debug, Serialize)]\npub struct CommentWithAuthor {\n    #[serde(flatten)]\n    pub comment: Comment,\n    pub author: String,\n}\n\n#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]\npub struct Tag {\n    pub id: i32,\n    pub name: String,\n    pub slug: String,\n}\n\n#[derive(Debug, Deserialize)]\npub struct CreatePost {\n    pub title: String,\n    pub content: String,\n    pub excerpt: Option<String>,\n    pub published: bool,\n    pub tags: Vec<String>,\n}\n\n#[derive(Debug, Deserialize)]\npub struct UpdatePost {\n    pub title: Option<String>,\n    pub content: Option<String>,\n    pub excerpt: Option<String>,\n    pub published: Option<bool>,\n    pub tags: Option<Vec<String>>,\n}\n\n#[derive(Debug, Deserialize)]\npub struct CreateComment {\n    pub content: String,\n}\n\n#[derive(Debug, Serialize)]\npub struct Stats {\n    pub total_users: i64,\n    pub total_posts: i64,\n    pub published_posts: i64,\n    pub draft_posts: i64,\n    pub total_comments: i64,\n    pub total_tags: i64,\n}\n```\n\n### src/errors.rs\n\n```rust\nuse axum::{\n    response::{IntoResponse, Response},\n    http::StatusCode,\n    Json,\n};\nuse serde::Serialize;\n\n#[derive(Serialize)]\nstruct ErrorResponse {\n    error: String,\n}\n\npub enum ApiError {\n    NotFound(String),\n    BadRequest(String),\n    InternalError(String),\n}\n\nimpl IntoResponse for ApiError {\n    fn into_response(self) -> Response {\n        let (status, message) = match self {\n            ApiError::NotFound(msg) => (StatusCode::NOT_FOUND, msg),\n            ApiError::BadRequest(msg) => (StatusCode::BAD_REQUEST, msg),\n            ApiError::InternalError(msg) => (StatusCode::INTERNAL_SERVER_ERROR, msg),\n        };\n\n        (status, Json(ErrorResponse { error: message })).into_response()\n    }\n}\n\nimpl From<sqlx::Error> for ApiError {\n    fn from(err: sqlx::Error) -> Self {\n        match err {\n            sqlx::Error::RowNotFound => ApiError::NotFound(\"Resource not found\".to_string()),\n            _ => ApiError::InternalError(err.to_string()),\n        }\n    }\n}\n```\n\n### src/handlers/posts.rs\n\n```rust\nuse axum::{\n    extract::{Path, Query, State},\n    http::StatusCode,\n    Json,\n};\nuse serde::Deserialize;\nuse sqlx::PgPool;\n\nuse crate::{\n    models::{Post, PostWithAuthor, CreatePost, UpdatePost},\n    errors::ApiError,\n};\n\n#[derive(Deserialize)]\npub struct ListQuery {\n    pub tag: Option<String>,\n    pub published: Option<bool>,\n    #[serde(default)]\n    pub page: i64,\n    #[serde(default = \"default_limit\")]\n    pub limit: i64,\n}\n\nfn default_limit() -> i64 { 10 }\n\npub async fn list_posts(\n    State(pool): State<PgPool>,\n    Query(query): Query<ListQuery>,\n) -> Result<Json<Vec<PostWithAuthor>>, ApiError> {\n    let offset = query.page * query.limit;\n\n    let posts = if let Some(tag_slug) = query.tag {\n        sqlx::query_as!(\n            PostWithAuthor,\n            r#\"\n            SELECT\n                p.id, p.user_id, p.title, p.slug, p.content, p.excerpt,\n                p.published, p.view_count, p.created_at, p.updated_at,\n                u.username as author,\n                ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL) as \"tags!: Vec<String>\",\n                COUNT(DISTINCT c.id) as \"comment_count!\"\n            FROM posts p\n            JOIN users u ON p.user_id = u.id\n            LEFT JOIN post_tags pt ON p.id = pt.post_id\n            LEFT JOIN tags t ON pt.tag_id = t.id\n            LEFT JOIN comments c ON p.id = c.post_id\n            WHERE p.published = COALESCE($1, p.published)\n              AND EXISTS (\n                  SELECT 1 FROM post_tags pt2\n                  JOIN tags t2 ON pt2.tag_id = t2.id\n                  WHERE pt2.post_id = p.id AND t2.slug = $2\n              )\n            GROUP BY p.id, p.user_id, p.title, p.slug, p.content, p.excerpt,\n                     p.published, p.view_count, p.created_at, p.updated_at, u.username\n            ORDER BY p.created_at DESC\n            LIMIT $3 OFFSET $4\n            \"#,\n            query.published,\n            tag_slug,\n            query.limit,\n            offset\n        )\n        .fetch_all(&pool)\n        .await?\n    } else {\n        sqlx::query_as!(\n            PostWithAuthor,\n            r#\"\n            SELECT\n                p.id, p.user_id, p.title, p.slug, p.content, p.excerpt,\n                p.published, p.view_count, p.created_at, p.updated_at,\n                u.username as author,\n                COALESCE(ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL), '{}') as \"tags!: Vec<String>\",\n                COUNT(DISTINCT c.id) as \"comment_count!\"\n            FROM posts p\n            JOIN users u ON p.user_id = u.id\n            LEFT JOIN post_tags pt ON p.id = pt.post_id\n            LEFT JOIN tags t ON pt.tag_id = t.id\n            LEFT JOIN comments c ON p.id = c.post_id\n            WHERE p.published = COALESCE($1, p.published)\n            GROUP BY p.id, u.username\n            ORDER BY p.created_at DESC\n            LIMIT $2 OFFSET $3\n            \"#,\n            query.published,\n            query.limit,\n            offset\n        )\n        .fetch_all(&pool)\n        .await?\n    };\n\n    Ok(Json(posts))\n}\n\npub async fn get_post(\n    State(pool): State<PgPool>,\n    Path(slug): Path<String>,\n) -> Result<Json<PostWithAuthor>, ApiError> {\n    // Increment view count\n    sqlx::query!(\"UPDATE posts SET view_count = view_count + 1 WHERE slug = $1\", slug)\n        .execute(&pool)\n        .await?;\n\n    let post = sqlx::query_as!(\n        PostWithAuthor,\n        r#\"\n        SELECT\n            p.id, p.user_id, p.title, p.slug, p.content, p.excerpt,\n            p.published, p.view_count, p.created_at, p.updated_at,\n            u.username as author,\n            COALESCE(ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL), '{}') as \"tags!: Vec<String>\",\n            COUNT(DISTINCT c.id) as \"comment_count!\"\n        FROM posts p\n        JOIN users u ON p.user_id = u.id\n        LEFT JOIN post_tags pt ON p.id = pt.post_id\n        LEFT JOIN tags t ON pt.tag_id = t.id\n        LEFT JOIN comments c ON p.id = c.post_id\n        WHERE p.slug = $1\n        GROUP BY p.id, u.username\n        \"#,\n        slug\n    )\n    .fetch_one(&pool)\n    .await?;\n\n    Ok(Json(post))\n}\n\npub async fn search_posts(\n    State(pool): State<PgPool>,\n    Query(query): Query<SearchQuery>,\n) -> Result<Json<Vec<PostWithAuthor>>, ApiError> {\n    let posts = sqlx::query_as!(\n        PostWithAuthor,\n        r#\"\n        SELECT\n            p.id, p.user_id, p.title, p.slug, p.content, p.excerpt,\n            p.published, p.view_count, p.created_at, p.updated_at,\n            u.username as author,\n            COALESCE(ARRAY_AGG(t.name) FILTER (WHERE t.name IS NOT NULL), '{}') as \"tags!: Vec<String>\",\n            COUNT(DISTINCT c.id) as \"comment_count!\"\n        FROM posts p\n        JOIN users u ON p.user_id = u.id\n        LEFT JOIN post_tags pt ON p.id = pt.post_id\n        LEFT JOIN tags t ON pt.tag_id = t.id\n        LEFT JOIN comments c ON p.id = c.post_id\n        WHERE p.search_vector @@ plainto_tsquery('english', $1)\n          AND p.published = true\n        GROUP BY p.id, u.username\n        ORDER BY ts_rank(p.search_vector, plainto_tsquery('english', $1)) DESC\n        LIMIT 20\n        \"#,\n        query.q\n    )\n    .fetch_all(&pool)\n    .await?;\n\n    Ok(Json(posts))\n}\n\n#[derive(Deserialize)]\npub struct SearchQuery {\n    pub q: String,\n}\n\nfn slugify(s: &str) -> String {\n    s.to_lowercase()\n        .chars()\n        .map(|c| if c.is_alphanumeric() { c } else { '-' })\n        .collect::<String>()\n        .split('-')\n        .filter(|s| !s.is_empty())\n        .collect::<Vec<&str>>()\n        .join(\"-\")\n}\n\npub async fn create_post(\n    State(pool): State<PgPool>,\n    Path(user_id): Path<i32>,\n    Json(create): Json<CreatePost>,\n) -> Result<(StatusCode, Json<Post>), ApiError> {\n    let slug = slugify(&create.title);\n\n    let mut tx = pool.begin().await?;\n\n    // Create post\n    let post = sqlx::query_as!(\n        Post,\n        r#\"\n        INSERT INTO posts (user_id, title, slug, content, excerpt, published)\n        VALUES ($1, $2, $3, $4, $5, $6)\n        RETURNING *\n        \"#,\n        user_id,\n        create.title,\n        slug,\n        create.content,\n        create.excerpt,\n        create.published\n    )\n    .fetch_one(&mut *tx)\n    .await?;\n\n    // Add tags\n    for tag_name in create.tags {\n        let tag_slug = slugify(&tag_name);\n        let tag = sqlx::query!(\n            \"INSERT INTO tags (name, slug) VALUES ($1, $2) ON CONFLICT (slug) DO UPDATE SET name = $1 RETURNING id\",\n            tag_name,\n            tag_slug\n        )\n        .fetch_one(&mut *tx)\n        .await?;\n\n        sqlx::query!(\n            \"INSERT INTO post_tags (post_id, tag_id) VALUES ($1, $2)\",\n            post.id,\n            tag.id\n        )\n        .execute(&mut *tx)\n        .await?;\n    }\n\n    tx.commit().await?;\n\n    Ok((StatusCode::CREATED, Json(post)))\n}\n```\n\n### src/handlers/stats.rs\n\n```rust\nuse axum::{extract::State, Json};\nuse sqlx::PgPool;\n\nuse crate::{models::Stats, errors::ApiError};\n\npub async fn get_stats(State(pool): State<PgPool>) -> Result<Json<Stats>, ApiError> {\n    let stats = sqlx::query!(\n        r#\"\n        SELECT\n            (SELECT COUNT(*) FROM users) as \"total_users!\",\n            (SELECT COUNT(*) FROM posts) as \"total_posts!\",\n            (SELECT COUNT(*) FROM posts WHERE published = true) as \"published_posts!\",\n            (SELECT COUNT(*) FROM posts WHERE published = false) as \"draft_posts!\",\n            (SELECT COUNT(*) FROM comments) as \"total_comments!\",\n            (SELECT COUNT(*) FROM tags) as \"total_tags!\"\n        \"#\n    )\n    .fetch_one(&pool)\n    .await?;\n\n    Ok(Json(Stats {\n        total_users: stats.total_users,\n        total_posts: stats.total_posts,\n        published_posts: stats.published_posts,\n        draft_posts: stats.draft_posts,\n        total_comments: stats.total_comments,\n        total_tags: stats.total_tags,\n    }))\n}\n```\n\n### src/main.rs\n\n```rust\nmod models;\nmod errors;\nmod handlers;\n\nuse axum::{\n    routing::{get, post},\n    Router,\n};\nuse sqlx::postgres::PgPoolOptions;\nuse std::env;\n\n#[tokio::main]\nasync fn main() -> Result<(), Box<dyn std::error::Error>> {\n    dotenvy::dotenv().ok();\n\n    let database_url = env::var(\"DATABASE_URL\")?;\n\n    let pool = PgPoolOptions::new()\n        .max_connections(5)\n        .connect(&database_url)\n        .await?;\n\n    println!(\"✅ Connected to database\");\n\n    let app = Router::new()\n        .route(\"/\", get(|| async { \"Full-Stack Blog API\" }))\n        .route(\"/posts\", get(handlers::posts::list_posts))\n        .route(\"/posts/search\", get(handlers::posts::search_posts))\n        .route(\"/posts/{slug}\", get(handlers::posts::get_post))\n        .route(\"/users/{user_id}/posts\", post(handlers::posts::create_post))\n        .route(\"/stats\", get(handlers::stats::get_stats))\n        .with_state(pool);\n\n    let listener = tokio::net::TcpListener::bind(\"0.0.0.0:3000\").await?;\n\n    println!(\"🚀 Server running on http://localhost:3000\");\n    println!(\"\\n📚 Endpoints:\");\n    println!(\"  GET  /posts\");\n    println!(\"  GET  /posts?tag=rust&published=true\");\n    println!(\"  GET  /posts/{{slug}}\");\n    println!(\"  GET  /posts/search?q=rust\");\n    println!(\"  POST /users/{{user_id}}/posts\");\n    println!(\"  GET  /stats\");\n\n    axum::serve(listener, app).await?;\n\n    Ok(())\n}\n```\n\n## Testing\n\n```bash\n# List all published posts\ncurl \"http://localhost:3000/posts?published=true\"\n\n# Filter by tag\ncurl \"http://localhost:3000/posts?tag=rust\"\n\n# Get single post\ncurl http://localhost:3000/posts/getting-started-rust\n\n# Search\ncurl \"http://localhost:3000/posts/search?q=axum\"\n\n# Get stats\ncurl http://localhost:3000/stats\n\n# Create post\ncurl -X POST http://localhost:3000/users/1/posts \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"My New Post\",\n    \"content\": \"This is the full content...\",\n    \"excerpt\": \"A brief summary\",\n    \"published\": true,\n    \"tags\": [\"Rust\", \"Tutorial\"]\n  }'\n```\n\n## Challenge Extensions\n\nAdd these features yourself:\n\n1. **User endpoints** - List users, get user profile\n2. **Comment endpoints** - Add, list, delete comments\n3. **Update/delete posts** - PUT and DELETE for posts\n4. **Popular posts** - Endpoint for most viewed posts\n5. **Trending tags** - Tags ordered by post count\n6. **Related posts** - Posts with similar tags\n\n## Key Takeaways\n\n- ✅ Complete full-stack application with database\n- ✅ Complex queries with joins and aggregations\n- ✅ Many-to-many relationships (posts and tags)\n- ✅ Full-text search\n- ✅ View counting and statistics\n- ✅ Proper error handling\n- ✅ Transaction management\n- ✅ Production-ready patterns\n\n**Next Module**: Authentication & Security!\n\n---\n\n**Progress**: Module 13 complete! (67/90+ lessons total)\n"
           }
         }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-13",
+          "title": "Module 13 Quiz: Database Integration",
+          "description": "Assessment quiz for Module module-13",
+          "passingScore": 80,
+          "estimatedMinutes": 15,
+          "questions": [
+            {
+              "id": "rust-quiz-module-13-q1",
+              "type": "multiple-choice",
+              "question": "Which crate provides async, type-safe database access?",
+              "options": [
+                "diesel",
+                "sqlx",
+                "postgres",
+                "rusqlite"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q2",
+              "type": "multiple-choice",
+              "question": "What does `query!` macro do?",
+              "options": [
+                "Runs query at runtime",
+                "Validates SQL at compile time",
+                "Generates random queries",
+                "Formats SQL strings"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q3",
+              "type": "multiple-choice",
+              "question": "What is a connection pool?",
+              "options": [
+                "Database table",
+                "Reusable database connections",
+                "SQL query",
+                "Migration tool"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q4",
+              "type": "multiple-choice",
+              "question": "Which method expects exactly one row?",
+              "options": [
+                "fetch_all",
+                "fetch_optional",
+                "fetch_one",
+                "execute"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q5",
+              "type": "multiple-choice",
+              "question": "What SQL command creates a table?",
+              "options": [
+                "INSERT TABLE",
+                "CREATE TABLE",
+                "NEW TABLE",
+                "MAKE TABLE"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q6",
+              "type": "multiple-choice",
+              "question": "What is a foreign key?",
+              "options": [
+                "Primary encryption key",
+                "Reference to another table",
+                "Unique identifier",
+                "Index type"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q7",
+              "type": "multiple-choice",
+              "question": "What is a JOIN used for?",
+              "options": [
+                "Combining tables",
+                "Deleting data",
+                "Creating indexes",
+                "Encrypting data"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q8",
+              "type": "multiple-choice",
+              "question": "What does SERIAL in PostgreSQL do?",
+              "options": [
+                "Stores strings",
+                "Auto-increments integers",
+                "Creates timestamps",
+                "Defines boolean"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q9",
+              "type": "multiple-choice",
+              "question": "Which is correct for parameterized queries?",
+              "options": [
+                "`\"SELECT * FROM users WHERE id = {}\"",
+                "`\"SELECT * FROM users WHERE id = $1\"`",
+                "`\"SELECT * FROM users WHERE id = %s\"`",
+                "`\"SELECT * FROM users WHERE id = ?\"`"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-13-q10",
+              "type": "multiple-choice",
+              "question": "What tool manages database migrations in SQLx?",
+              "options": [
+                "cargo migrate",
+                "sqlx migrate",
+                "diesel migrate",
+                "psql migrate"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
+        }
       ]
     },
     {
@@ -942,6 +2179,157 @@
             "format": "markdown",
             "body": "# Module 14: Authentication & Security\n\n# Lesson 5: Practice Project — Complete Authentication System\n\n## Project Overview\n\nBuild a production-ready authentication system with:\n- User registration with email verification\n- Login with JWT tokens\n- Role-based access control (RBAC)\n- Password reset functionality\n- Refresh tokens\n- Rate limiting\n- Audit logging\n- Complete blog API with authorization\n\nThis integrates everything from Module 14!\n\n## Project Setup\n\n```bash\ncargo new secure_blog_api\ncd secure_blog_api\n```\n\n### Dependencies\n\n```toml\n[package]\nname = \"secure_blog_api\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\naxum = \"0.8.x\"\ntokio = { version = \"1.x\", features = [\"full\"] }\nsqlx = { version = \"0.8.x\", features = [\"runtime-tokio\", \"postgres\", \"chrono\", \"uuid\"] }\nserde = { version = \"1.0\", features = [\"derive\"] }\nserde_json = \"1.0\"\nchrono = { version = \"0.4\", features = [\"serde\"] }\ndotenvy = \"0.15\"\nargon2 = \"0.5\"\njsonwebtoken = \"9\"\nuuid = { version = \"1.0\", features = [\"v4\", \"serde\"] }\ntower-http = { version = \"0.5\", features = [\"cors\", \"trace\"] }\nrand = \"0.8\"\n```\n\n### Database Schema\n\nCreate migration:\n\n```bash\nsqlx database create\nsqlx migrate add complete_auth_system\n```\n\nEdit migration file:\n\n```sql\n-- Users table\nCREATE TABLE users (\n    id SERIAL PRIMARY KEY,\n    username VARCHAR(50) UNIQUE NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL,\n    password_hash VARCHAR(255) NOT NULL,\n    email_verified BOOLEAN DEFAULT FALSE,\n    failed_login_attempts INTEGER DEFAULT 0,\n    locked_until TIMESTAMP,\n    created_at TIMESTAMP DEFAULT NOW(),\n    updated_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Roles\nCREATE TABLE roles (\n    id SERIAL PRIMARY KEY,\n    name VARCHAR(50) UNIQUE NOT NULL\n);\n\n-- User roles junction\nCREATE TABLE user_roles (\n    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\n    role_id INTEGER REFERENCES roles(id) ON DELETE CASCADE,\n    PRIMARY KEY (user_id, role_id)\n);\n\n-- Posts\nCREATE TABLE posts (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    title VARCHAR(255) NOT NULL,\n    slug VARCHAR(255) UNIQUE NOT NULL,\n    content TEXT NOT NULL,\n    published BOOLEAN DEFAULT FALSE,\n    created_at TIMESTAMP DEFAULT NOW(),\n    updated_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Refresh tokens\nCREATE TABLE refresh_tokens (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    token VARCHAR(255) UNIQUE NOT NULL,\n    expires_at TIMESTAMP NOT NULL,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Email verification tokens\nCREATE TABLE email_verification_tokens (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    token VARCHAR(255) UNIQUE NOT NULL,\n    expires_at TIMESTAMP NOT NULL,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Password reset tokens\nCREATE TABLE password_reset_tokens (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n    token VARCHAR(255) UNIQUE NOT NULL,\n    expires_at TIMESTAMP NOT NULL,\n    used BOOLEAN DEFAULT FALSE,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Audit log\nCREATE TABLE audit_log (\n    id SERIAL PRIMARY KEY,\n    user_id INTEGER REFERENCES users(id),\n    action VARCHAR(100) NOT NULL,\n    resource_type VARCHAR(50),\n    resource_id INTEGER,\n    ip_address VARCHAR(45),\n    details JSONB,\n    created_at TIMESTAMP DEFAULT NOW()\n);\n\n-- Indexes\nCREATE INDEX idx_users_email ON users(email);\nCREATE INDEX idx_users_username ON users(username);\nCREATE INDEX idx_posts_user_id ON posts(user_id);\nCREATE INDEX idx_posts_slug ON posts(slug);\nCREATE INDEX idx_posts_published ON posts(published);\nCREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);\nCREATE INDEX idx_refresh_tokens_user_id ON refresh_tokens(user_id);\nCREATE INDEX idx_audit_log_user_id ON audit_log(user_id);\nCREATE INDEX idx_audit_log_created_at ON audit_log(created_at);\n\n-- Insert default roles\nINSERT INTO roles (name) VALUES ('admin'), ('editor'), ('user');\n\n-- Insert test admin user (password: Admin123!)\nINSERT INTO users (username, email, password_hash, email_verified)\nVALUES (\n    'admin',\n    'admin@example.com',\n    '$argon2id$v=19$m=19456,t=2,p=1$...',  -- Hash of 'Admin123!'\n    true\n);\n\nINSERT INTO user_roles (user_id, role_id)\nSELECT 1, id FROM roles WHERE name = 'admin';\n```\n\nRun migration:\n\n```bash\nsqlx migrate run\n```\n\n## Project Structure\n\n```\nsrc/\n├── main.rs\n├── config.rs\n├── models/\n│   ├── mod.rs\n│   ├── user.rs\n│   ├── post.rs\n│   └── claims.rs\n├── handlers/\n│   ├── mod.rs\n│   ├── auth.rs\n│   ├── posts.rs\n│   └── admin.rs\n├── middleware/\n│   ├── mod.rs\n│   ├── auth.rs\n│   └── rate_limit.rs\n├── utils/\n│   ├── mod.rs\n│   ├── password.rs\n│   ├── jwt.rs\n│   ├── audit.rs\n│   └── email.rs\n└── errors.rs\n```\n\n## Key Components\n\n### src/config.rs\n\n```rust\nuse serde::Deserialize;\n\n#[derive(Clone, Debug)]\npub struct Config {\n    pub database_url: String,\n    pub jwt_secret: String,\n    pub jwt_expiration_hours: i64,\n    pub refresh_token_days: i64,\n    pub server_host: String,\n    pub server_port: u16,\n}\n\nimpl Config {\n    pub fn from_env() -> Result<Self, Box<dyn std::error::Error>> {\n        dotenvy::dotenv().ok();\n\n        let jwt_secret = std::env::var(\"JWT_SECRET\")?;\n        if jwt_secret.len() < 32 {\n            return Err(\"JWT_SECRET must be at least 32 characters\".into());\n        }\n\n        Ok(Self {\n            database_url: std::env::var(\"DATABASE_URL\")?,\n            jwt_secret,\n            jwt_expiration_hours: std::env::var(\"JWT_EXPIRATION_HOURS\")\n                .unwrap_or_else(|_| \"1\".to_string())\n                .parse()?,\n            refresh_token_days: std::env::var(\"REFRESH_TOKEN_DAYS\")\n                .unwrap_or_else(|_| \"30\".to_string())\n                .parse()?,\n            server_host: std::env::var(\"SERVER_HOST\")\n                .unwrap_or_else(|_| \"0.0.0.0\".to_string()),\n            server_port: std::env::var(\"SERVER_PORT\")\n                .unwrap_or_else(|_| \"3000\".to_string())\n                .parse()?,\n        })\n    }\n}\n```\n\n### src/utils/password.rs\n\n```rust\nuse argon2::{\n    password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},\n    Argon2,\n};\n\npub fn hash_password(password: &str) -> Result<String, argon2::password_hash::Error> {\n    let salt = SaltString::generate(&mut OsRng);\n    let argon2 = Argon2::default();\n    let password_hash = argon2.hash_password(password.as_bytes(), &salt)?.to_string();\n    Ok(password_hash)\n}\n\npub fn verify_password(password: &str, hash: &str) -> Result<bool, argon2::password_hash::Error> {\n    let parsed_hash = PasswordHash::new(hash)?;\n    let argon2 = Argon2::default();\n    match argon2.verify_password(password.as_bytes(), &parsed_hash) {\n        Ok(()) => Ok(true),\n        Err(argon2::password_hash::Error::Password) => Ok(false),\n        Err(e) => Err(e),\n    }\n}\n\npub fn validate_password(password: &str) -> Result<(), String> {\n    if password.len() < 8 {\n        return Err(\"Password must be at least 8 characters\".into());\n    }\n    if !password.chars().any(|c| c.is_uppercase()) {\n        return Err(\"Password must contain uppercase letter\".into());\n    }\n    if !password.chars().any(|c| c.is_lowercase()) {\n        return Err(\"Password must contain lowercase letter\".into());\n    }\n    if !password.chars().any(|c| c.is_numeric()) {\n        return Err(\"Password must contain number\".into());\n    }\n    Ok(())\n}\n```\n\n### src/utils/jwt.rs\n\n```rust\nuse chrono::{Duration, Utc};\nuse jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};\nuse serde::{Deserialize, Serialize};\n\n#[derive(Debug, Serialize, Deserialize)]\npub struct Claims {\n    pub sub: String,\n    pub exp: usize,\n    pub iat: usize,\n    pub user_id: i32,\n    pub username: String,\n    pub roles: Vec<String>,\n}\n\npub fn create_jwt(\n    user_id: i32,\n    username: String,\n    roles: Vec<String>,\n    secret: &str,\n    expiration_hours: i64,\n) -> Result<String, jsonwebtoken::errors::Error> {\n    let now = Utc::now();\n    let expiration = now + Duration::hours(expiration_hours);\n\n    let claims = Claims {\n        sub: user_id.to_string(),\n        exp: expiration.timestamp() as usize,\n        iat: now.timestamp() as usize,\n        user_id,\n        username,\n        roles,\n    };\n\n    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret.as_bytes()))\n}\n\npub fn verify_jwt(token: &str, secret: &str) -> Result<Claims, jsonwebtoken::errors::Error> {\n    let token_data = decode::<Claims>(\n        token,\n        &DecodingKey::from_secret(secret.as_bytes()),\n        &Validation::default(),\n    )?;\n\n    Ok(token_data.claims)\n}\n```\n\n### src/handlers/auth.rs (Complete)\n\n```rust\nuse axum::{extract::State, http::StatusCode, Json};\nuse chrono::{Duration, Utc};\nuse serde::{Deserialize, Serialize};\nuse sqlx::PgPool;\nuse uuid::Uuid;\n\nuse crate::{\n    config::Config,\n    errors::ApiError,\n    models::user::User,\n    utils::{audit, jwt, password},\n};\n\n#[derive(Deserialize)]\npub struct RegisterRequest {\n    pub username: String,\n    pub email: String,\n    pub password: String,\n}\n\n#[derive(Serialize)]\npub struct RegisterResponse {\n    pub user: UserResponse,\n    pub message: String,\n}\n\n#[derive(Serialize)]\npub struct UserResponse {\n    pub id: i32,\n    pub username: String,\n    pub email: String,\n    pub email_verified: bool,\n}\n\npub async fn register(\n    State(pool): State<PgPool>,\n    Json(req): Json<RegisterRequest>,\n) -> Result<(StatusCode, Json<RegisterResponse>), ApiError> {\n    // Validate password\n    password::validate_password(&req.password)\n        .map_err(|e| ApiError::BadRequest(e))?;\n\n    // Hash password\n    let password_hash = password::hash_password(&req.password)\n        .map_err(|_| ApiError::InternalError(\"Failed to hash password\".into()))?;\n\n    // Insert user\n    let user = sqlx::query_as!(\n        User,\n        r#\"\n        INSERT INTO users (username, email, password_hash)\n        VALUES ($1, $2, $3)\n        RETURNING id, username, email, password_hash, email_verified,\n                  failed_login_attempts, locked_until, created_at, updated_at\n        \"#,\n        req.username,\n        req.email,\n        password_hash\n    )\n    .fetch_one(&pool)\n    .await\n    .map_err(|e| match e {\n        sqlx::Error::Database(db_err) if db_err.is_unique_violation() => {\n            ApiError::BadRequest(\"Username or email already exists\".into())\n        }\n        _ => ApiError::from(e),\n    })?;\n\n    // Assign default 'user' role\n    sqlx::query!(\n        \"INSERT INTO user_roles (user_id, role_id) SELECT $1, id FROM roles WHERE name = 'user'\",\n        user.id\n    )\n    .execute(&pool)\n    .await?;\n\n    // Create email verification token\n    let verification_token = Uuid::new_v4().to_string();\n    let expires_at = Utc::now() + Duration::hours(24);\n\n    sqlx::query!(\n        \"INSERT INTO email_verification_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)\",\n        user.id,\n        verification_token,\n        expires_at.naive_utc()\n    )\n    .execute(&pool)\n    .await?;\n\n    // In production: Send email with verification link\n    // send_verification_email(&user.email, &verification_token).await?;\n\n    Ok((\n        StatusCode::CREATED,\n        Json(RegisterResponse {\n            user: UserResponse {\n                id: user.id,\n                username: user.username,\n                email: user.email,\n                email_verified: user.email_verified,\n            },\n            message: \"Registration successful. Please verify your email.\".to_string(),\n        }),\n    ))\n}\n\n#[derive(Deserialize)]\npub struct LoginRequest {\n    pub username: String,\n    pub password: String,\n}\n\n#[derive(Serialize)]\npub struct LoginResponse {\n    pub access_token: String,\n    pub refresh_token: String,\n    pub user: UserResponse,\n}\n\npub async fn login(\n    State(pool): State<PgPool>,\n    State(config): State<Config>,\n    Json(req): Json<LoginRequest>,\n) -> Result<Json<LoginResponse>, ApiError> {\n    // Get user\n    let user = sqlx::query_as!(\n        User,\n        \"SELECT * FROM users WHERE username = $1\",\n        req.username\n    )\n    .fetch_optional(&pool)\n    .await?\n    .ok_or_else(|| ApiError::Unauthorized(\"Invalid credentials\".into()))?;\n\n    // Check if account is locked\n    if let Some(locked_until) = user.locked_until {\n        if locked_until.and_utc() > Utc::now() {\n            return Err(ApiError::Forbidden(\"Account is locked\".into()));\n        }\n    }\n\n    // Verify password\n    let is_valid = password::verify_password(&req.password, &user.password_hash)\n        .map_err(|_| ApiError::InternalError(\"Password verification failed\".into()))?;\n\n    if !is_valid {\n        // Increment failed attempts\n        let new_attempts = user.failed_login_attempts + 1;\n        let locked_until = if new_attempts >= 5 {\n            Some(Utc::now() + Duration::minutes(15))\n        } else {\n            None\n        };\n\n        sqlx::query!(\n            \"UPDATE users SET failed_login_attempts = $1, locked_until = $2 WHERE id = $3\",\n            new_attempts,\n            locked_until.map(|dt| dt.naive_utc()),\n            user.id\n        )\n        .execute(&pool)\n        .await?;\n\n        return Err(ApiError::Unauthorized(\"Invalid credentials\".into()));\n    }\n\n    // Reset failed attempts on successful login\n    sqlx::query!(\n        \"UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = $1\",\n        user.id\n    )\n    .execute(&pool)\n    .await?;\n\n    // Get user roles\n    let roles = sqlx::query!(\n        r#\"\n        SELECT r.name FROM roles r\n        JOIN user_roles ur ON r.id = ur.role_id\n        WHERE ur.user_id = $1\n        \"#,\n        user.id\n    )\n    .fetch_all(&pool)\n    .await?\n    .into_iter()\n    .map(|r| r.name)\n    .collect();\n\n    // Create JWT\n    let access_token = jwt::create_jwt(\n        user.id,\n        user.username.clone(),\n        roles,\n        &config.jwt_secret,\n        config.jwt_expiration_hours,\n    )\n    .map_err(|_| ApiError::InternalError(\"Failed to create token\".into()))?;\n\n    // Create refresh token\n    let refresh_token = Uuid::new_v4().to_string();\n    let expires_at = Utc::now() + Duration::days(config.refresh_token_days);\n\n    sqlx::query!(\n        \"INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)\",\n        user.id,\n        refresh_token,\n        expires_at.naive_utc()\n    )\n    .execute(&pool)\n    .await?;\n\n    Ok(Json(LoginResponse {\n        access_token,\n        refresh_token,\n        user: UserResponse {\n            id: user.id,\n            username: user.username,\n            email: user.email,\n            email_verified: user.email_verified,\n        },\n    }))\n}\n```\n\n### src/middleware/auth.rs\n\n```rust\nuse axum::{\n    extract::{Request, State},\n    http::{header, StatusCode},\n    middleware::Next,\n    response::Response,\n};\n\nuse crate::{config::Config, models::user::CurrentUser, utils::jwt};\n\npub async fn auth_middleware(\n    State(config): State<Config>,\n    mut req: Request,\n    next: Next,\n) -> Result<Response, StatusCode> {\n    let token = req\n        .headers()\n        .get(header::AUTHORIZATION)\n        .and_then(|h| h.to_str().ok())\n        .and_then(|h| h.strip_prefix(\"Bearer \"))\n        .ok_or(StatusCode::UNAUTHORIZED)?;\n\n    let claims = jwt::verify_jwt(token, &config.jwt_secret).map_err(|_| StatusCode::UNAUTHORIZED)?;\n\n    req.extensions_mut().insert(CurrentUser {\n        user_id: claims.user_id,\n        username: claims.username,\n        roles: claims.roles,\n    });\n\n    Ok(next.run(req).await)\n}\n\npub async fn require_role(\n    role: String,\n    Extension(user): Extension<CurrentUser>,\n    req: Request,\n    next: Next,\n) -> Result<Response, StatusCode> {\n    if user.has_role(&role) {\n        Ok(next.run(req).await)\n    } else {\n        Err(StatusCode::FORBIDDEN)\n    }\n}\n```\n\n## Testing the Complete System\n\n```bash\n# 1. Register\ncurl -X POST http://localhost:3000/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"SecurePass123\"\n  }'\n\n# 2. Login\nLOGIN_RESPONSE=$(curl -X POST http://localhost:3000/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"username\": \"testuser\",\n    \"password\": \"SecurePass123\"\n  }')\n\nTOKEN=$(echo $LOGIN_RESPONSE | jq -r '.access_token')\nREFRESH=$(echo $LOGIN_RESPONSE | jq -r '.refresh_token')\n\n# 3. Access protected route\ncurl http://localhost:3000/posts \\\n  -H \"Authorization: Bearer $TOKEN\"\n\n# 4. Create post (requires authentication)\ncurl -X POST http://localhost:3000/posts \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"My First Post\",\n    \"content\": \"This is the content\"\n  }'\n\n# 5. Refresh access token\ncurl -X POST http://localhost:3000/auth/refresh \\\n  -H \"Content-Type: application/json\" \\\n  -d \"{\\\"refresh_token\\\": \\\"$REFRESH\\\"}\"\n\n# 6. Admin endpoint (will fail for non-admin)\ncurl http://localhost:3000/admin/users \\\n  -H \"Authorization: Bearer $TOKEN\"\n```\n\n## Key Features Implemented\n\n✅ User registration with validation\n✅ Secure password hashing (Argon2)\n✅ Email verification tokens\n✅ Login with JWT\n✅ Refresh tokens (30-day expiry)\n✅ Role-based access control\n✅ Account lockout after failed attempts\n✅ Password reset functionality\n✅ Audit logging\n✅ Rate limiting\n✅ CORS configuration\n✅ Input validation\n✅ SQL injection prevention\n✅ Authorization checks\n\n## Challenge Extensions\n\nAdd these features:\n\n1. **Email service integration** - Actually send verification emails\n2. **Two-factor authentication (2FA)** - TOTP codes\n3. **OAuth integration** - Login with Google/GitHub\n4. **Session management** - View active sessions, logout all devices\n5. **API key authentication** - For programmatic access\n6. **Webhook notifications** - Security events\n\n## Key Takeaways\n\n- ✅ Complete production-ready auth system\n- ✅ Multiple layers of security\n- ✅ Proper password handling\n- ✅ JWT with refresh tokens\n- ✅ Role-based authorization\n- ✅ Account protection (lockout, rate limiting)\n- ✅ Audit logging for security\n- ✅ Environment-based configuration\n- ✅ Database-backed everything (persistent)\n\n**Module 14 Complete!** You now have a solid understanding of authentication and security in Rust web applications.\n\n---\n\n**Progress**: Module 14 complete! (72/90+ lessons total)\n"
           }
+        }
+      ],
+      "quizzes": [
+        {
+          "id": "rust-quiz-module-14",
+          "title": "Module 14 Quiz: Authentication & Security",
+          "description": "Assessment quiz for Module module-14",
+          "passingScore": 80,
+          "estimatedMinutes": 15,
+          "questions": [
+            {
+              "id": "rust-quiz-module-14-q1",
+              "type": "multiple-choice",
+              "question": "Which hashing algorithm is recommended for passwords?",
+              "options": [
+                "MD5",
+                "SHA1",
+                "Argon2",
+                "Base64"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q2",
+              "type": "multiple-choice",
+              "question": "What does JWT stand for?",
+              "options": [
+                "Java Web Token",
+                "JSON Web Token",
+                "JavaScript Web Transfer",
+                "Joint Web Technology"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q3",
+              "type": "multiple-choice",
+              "question": "Which part of JWT contains user data?",
+              "options": [
+                "Header",
+                "Payload",
+                "Signature",
+                "Expiration"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q4",
+              "type": "multiple-choice",
+              "question": "What does RBAC stand for?",
+              "options": [
+                "Role-Based Access Control",
+                "Rust-Based Authentication Code",
+                "Remote Backend Access Control",
+                "Registered Base Access Code"
+              ],
+              "correctAnswer": 0,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q5",
+              "type": "multiple-choice",
+              "question": "What HTTP status code indicates insufficient permissions?",
+              "options": [
+                "401 Unauthorized",
+                "403 Forbidden",
+                "404 Not Found",
+                "500 Internal Server Error"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q6",
+              "type": "multiple-choice",
+              "question": "What is SQL injection?",
+              "options": [
+                "Database optimization",
+                "Malicious SQL in user input",
+                "SQL migration",
+                "Database backup"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q7",
+              "type": "multiple-choice",
+              "question": "How should passwords be stored?",
+              "options": [
+                "Plain text",
+                "Base64 encoded",
+                "Hashed with salt",
+                "Encrypted"
+              ],
+              "correctAnswer": 2,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q8",
+              "type": "multiple-choice",
+              "question": "What is a refresh token used for?",
+              "options": [
+                "Refreshing the page",
+                "Getting new access tokens",
+                "Deleting sessions",
+                "Logging out"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q9",
+              "type": "multiple-choice",
+              "question": "Which prevents brute-force attacks?",
+              "options": [
+                "Long passwords only",
+                "Rate limiting",
+                "Encryption",
+                "Caching"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            },
+            {
+              "id": "rust-quiz-module-14-q10",
+              "type": "multiple-choice",
+              "question": "What does OWASP focus on?",
+              "options": [
+                "Database design",
+                "Web security",
+                "UI design",
+                "Performance"
+              ],
+              "correctAnswer": 1,
+              "explanation": "",
+              "points": 2
+            }
+          ]
         }
       ]
     },
@@ -1126,8 +2514,12 @@
     }
   ],
   "metadata": {
-    "version": "1.0.0",
+    "version": "2.1.0",
     "lastUpdated": "2025-11-14",
-    "author": "Code Tutor"
+    "author": "Code Tutor",
+    "interactiveElements": {
+      "totalQuizzes": 8,
+      "totalQuizQuestions": 90
+    }
   }
 }

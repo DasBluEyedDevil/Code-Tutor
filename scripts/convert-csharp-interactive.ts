@@ -475,7 +475,13 @@ async function convertCSharpCourse(sourceDir: string, outputPath: string) {
     for (const file of lessonFiles) {
       const filePath = path.join(modulePath, file);
       try {
-        const content = await fs.readFile(filePath, 'utf-8');
+        let content = await fs.readFile(filePath, 'utf-8');
+
+        // Fix common JSON issues in source files
+        // Issue: Invalid escape sequence \\ followed by space (e.g., Module13/Lesson05.json)
+        content = content.replace(/\\\\ \n/g, ' \n');  // Remove backslash before space-newline
+        content = content.replace(/\\">\\\\ /g, '\\"');  // Remove trailing backslash-space after quotes
+
         const legacyLesson: LegacyLesson = JSON.parse(content);
 
         const lesson = convertLesson(legacyLesson, moduleNum);

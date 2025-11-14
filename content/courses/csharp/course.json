@@ -7232,6 +7232,141 @@
           ]
         },
         {
+          "id": "lesson-13-05",
+          "title": "Event Handling (@onclick, @onchange)",
+          "moduleId": "module-13",
+          "order": 5,
+          "estimatedMinutes": 15,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Events are like doorbells:\n\nUser clicks button = Someone rings doorbell\nYour C# method runs = You answer the door\n\nBlazor events:\n• @onclick - Button clicks, div clicks\n• @onchange - Input value changes\n• @oninput - Every keystroke\n• @onsubmit - Form submission\n• @onmouseover - Mouse hover\n\nEvent handling:\n1. User interacts (click, type, hover)\n2. Browser fires event\n3. Blazor calls your C# method\n4. Method updates state\n5. UI re-renders automatically!\n\nThink: Events = 'User does something → Your C# code responds!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// CLICK EVENTS\n<button @onclick=\"HandleClick\">Click Me</button>\n<button @onclick=\"() => count++\">Increment</button>\n<button @onclick=\"@(() => DoWork(5))\">Pass Parameter</button>\n\n@code {\n    private void HandleClick() {\n        Console.WriteLine(\"Button clicked!\");\n    }\n    \n    private void DoWork(int value) {\n        Console.WriteLine($\"Working with {value}\");\n    }\n}\n\n// CHANGE EVENTS\n<input @onchange=\"HandleNameChange\" />\n<select @onchange=\"HandleCategoryChange\">\n    <option>Category 1</option>\n</select>\n\n@code {\n    private void HandleNameChange(ChangeEventArgs e) {\n        string newValue = e.Value.ToString();\n        Console.WriteLine($\"Name changed to: {newValue}\");\n    }\n}\n\n// INPUT EVENTS (every keystroke)\n<input @oninput=\"HandleInput\" />\n<p>You typed: @currentInput</p>\n\n@code {\n    private string currentInput = \"\";\n    \n    private void HandleInput(ChangeEventArgs e) {\n        currentInput = e.Value.ToString();\n    }\n}\n\n// KEYBOARD EVENTS\n<input @onkeydown=\"HandleKeyDown\" @onkeyup=\"HandleKeyUp\" />\n\n@code {\n    private void HandleKeyDown(KeyboardEventArgs e) {\n        if (e.Key == \"Enter\") {\n            Console.WriteLine(\"Enter pressed!\");\n        }\n    }\n}\n\n// MOUSE EVENTS\n<div @onmouseover=\"() => isHovered = true\" \n     @onmouseout=\"() => isHovered = false\"\n     class=\"@(isHovered ? \\\"highlight\\\" : \\\"\\\")\">\n    Hover over me!\n</div>\n\n// FORM SUBMIT\n<EditForm Model=\"@person\" OnValidSubmit=\"HandleSubmit\">\n    <button type=\"submit\">Submit</button>\n</EditForm>\n\n@code {\n    private Person person = new();\n    \n    private void HandleSubmit() {\n        Console.WriteLine(\"Form submitted!\");\n    }\n}",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`@onclick=\"MethodName\"`**: Calls C# method on click. No parentheses if no parameters. For lambda: @onclick=\"() => code\". Event fires, method runs, UI updates.\n\n**`ChangeEventArgs`**: Event argument object. Use e.Value for new value. Different types: KeyboardEventArgs, MouseEventArgs, FocusEventArgs, etc.\n\n**`@oninput vs @onchange`**: @oninput fires on every keystroke. @onchange fires when input loses focus (blur). Use @oninput for live updates, @onchange for final value.\n\n**`Event with parameters`**: Use lambda to pass parameters: @onclick=\"() => Delete(item.Id)\". Or: @onclick=\"@(() => Process(item))\". Lambda wraps method call."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-13-05-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create an interactive task manager with events!\n\n1. TaskManager component:\n   - Input for task name (@oninput updates as you type)\n   - Button \"Add Task\" (@onclick)\n   - List of tasks\n   - Each task has:\n     - Checkbox (@onchange to mark complete)\n     - Delete button (@onclick)\n   - Show count of total and completed tasks\n\n2. Events to handle:\n   - Input change (live preview)\n   - Add task (button click)\n   - Toggle complete (checkbox change)\n   - Delete task (button click)\n\n3. Print component structure!",
+              "starterCode": "// TaskManager.razor\n<div class=\"task-manager\">\n    <h3>Task Manager</h3>\n    \n    <div class=\"input-group\">\n        <input \n            @oninput=\"HandleTaskInput\" \n            @onkeydown=\"HandleKeyPress\"\n            placeholder=\"Enter task name\" />\n        <button @onclick=\"AddTask\">Add Task</button>\n    </div>\n    \n    <p>Preview: @currentTaskName</p>\n    \n    <ul>\n        @foreach (var task in tasks)\n        {\n            <li>\n                <input \n                    type=\"checkbox\" \n                    checked=\"@task.IsCompleted\"\n                    @onchange=\"() => ToggleTask(task.Id)\" />\n                <span class=\"@(task.IsCompleted ? \\\"completed\\\" : \\\"\\\")\">@task.Name</span>\n                <button @onclick=\"() => DeleteTask(task.Id)\">Delete</button>\n            </li>\n        }\n    </ul>\n    \n    <p>Total: @tasks.Count | Completed: @tasks.Count(t => t.IsCompleted)</p>\n</div>\n\n@code {\n    // Implement task management\n}",
+              "solution": "Console.WriteLine(@\"\n// TaskManager.razor\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\n<div class=\"\"task-manager\"\">\n    <h3>📝 Task Manager</h3>\n    \n    <div class=\"\"input-group mb-3\"\">\n        <input \n            class=\"\"form-control\"\"\n            @bind=\"\"currentTaskName\"\"\n            @onkeydown=\"\"HandleKeyPress\"\"\n            placeholder=\"\"Enter task name\"\" />\n        <button class=\"\"btn btn-primary\"\" @onclick=\"\"AddTask\"\">Add Task</button>\n    </div>\n    \n    <div class=\"\"alert alert-info\"\">\n        Preview: @(string.IsNullOrEmpty(currentTaskName) ? \"\"(empty)\"\" : currentTaskName)\n    </div>\n    \n    <ul class=\"\"list-group\"\">\n        @foreach (var task in tasks)\n        {\n            <li class=\"\"list-group-item\"\">\n                <input \n                    type=\"\"checkbox\"\" \n                    checked=\"\"@task.IsCompleted\"\"\n                    @onchange=\"\"() => ToggleTask(task.Id)\"\" />\n                <span class=\"\"@(task.IsCompleted ? \\\"\"text-decoration-line-through\\\"\" : \"\"\"\")\"\">\n                    @task.Name\n                </span>\n                <button \n                    class=\"\"btn btn-sm btn-danger float-end\"\" \n                    @onclick=\"\"() => DeleteTask(task.Id)\"\">Delete</button>\n            </li>\n        }\n    </ul>\n    \n    <div class=\"\"mt-3\"\">\n        <strong>Total: @tasks.Count</strong> | \n        <strong>Completed: @tasks.Count(t => t.IsCompleted)</strong> |\n        <strong>Remaining: @tasks.Count(t => !t.IsCompleted)</strong>\n    </div>\n</div>\n\n@code {\n    private class TaskItem {\n        public int Id { get; set; }\n        public string Name { get; set; } = \"\"\"\";\n        public bool IsCompleted { get; set; }\n    }\n    \n    private List<TaskItem> tasks = new();\n    private string currentTaskName = \"\"\"\";\n    private int nextId = 1;\n    \n    private void AddTask() {\n        if (!string.IsNullOrWhiteSpace(currentTaskName)) {\n            tasks.Add(new TaskItem { \n                Id = nextId++, \n                Name = currentTaskName, \n                IsCompleted = false \n            });\n            currentTaskName = \"\"\"\";\n            Console.WriteLine($\"\"Task added! Total: {tasks.Count}\"\");\n        }\n    }\n    \n    private void HandleKeyPress(KeyboardEventArgs e) {\n        if (e.Key == \"\"Enter\"\") {\n            AddTask();\n        }\n    }\n    \n    private void ToggleTask(int taskId) {\n        var task = tasks.FirstOrDefault(t => t.Id == taskId);\n        if (task != null) {\n            task.IsCompleted = !task.IsCompleted;\n            Console.WriteLine($\"\"{task.Name}: {(task.IsCompleted ? \\\"\"Completed\\\"\" : \\\"\"Incomplete\\\"\")}\"\");\n        }\n    }\n    \n    private void DeleteTask(int taskId) {\n        var task = tasks.FirstOrDefault(t => t.Id == taskId);\n        if (task != null) {\n            tasks.Remove(task);\n            Console.WriteLine($\"\"Deleted: {task.Name}\"\");\n        }\n    }\n}\n\"\");\n\nConsole.WriteLine(@\"\n=== EVENTS DEMONSTRATED ===\");\nConsole.WriteLine(\"✓ @bind - Two-way binding for input\");\nConsole.WriteLine(\"✓ @onkeydown - Enter key to add task\");\nConsole.WriteLine(\"✓ @onclick - Add and Delete buttons\");\nConsole.WriteLine(\"✓ @onchange - Checkbox toggle\");\nConsole.WriteLine(\"✓ Lambda with parameters: () => DeleteTask(id)\");\nConsole.WriteLine(\"\\n✓ All events → C# methods → UI updates!\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain \"TaskManager\"",
+                  "expectedOutput": "TaskManager",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"TaskManager\""
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain \"@onclick\"",
+                  "expectedOutput": "@onclick",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@onclick\""
+                },
+                {
+                  "id": "test-3",
+                  "description": "Output should contain \"@onchange\"",
+                  "expectedOutput": "@onchange",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@onchange\""
+                },
+                {
+                  "id": "test-4",
+                  "description": "Output should contain \"@bind\"",
+                  "expectedOutput": "@bind",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@bind\""
+                },
+                {
+                  "id": "test-5",
+                  "description": "Output should contain \"ToggleTask\"",
+                  "expectedOutput": "ToggleTask",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ToggleTask\""
+                },
+                {
+                  "id": "test-6",
+                  "description": "Output should contain \"DeleteTask\"",
+                  "expectedOutput": "DeleteTask",
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DeleteTask\""
+                }
+              ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "@onclick for buttons. @onchange for checkbox. @bind for two-way input binding. @onkeydown to detect Enter key. Use lambdas to pass parameters: () => Method(id)."
+                },
+                {
+                  "level": 2,
+                  "text": "Event propagation: @onclick on parent and child? Both fire! Use @onclick:stopPropagation to prevent bubbling. Or handle in only one place."
+                },
+                {
+                  "level": 3,
+                  "text": "Async event handlers: Can use async methods! '@onclick=\"HandleClickAsync\"' with 'private async Task HandleClickAsync()'. Blazor awaits automatically."
+                },
+                {
+                  "level": 4,
+                  "text": "Event args: Different events have different args! ChangeEventArgs for input/select, MouseEventArgs for mouse, KeyboardEventArgs for keyboard. Check e.Key, e.Button, etc."
+                },
+                {
+                  "level": 5,
+                  "text": "Lambda scope: Variables in lambda must be in scope! '@onclick=\"() => Delete(item.Id)\"' in foreach works. Outside foreach, 'item' not available!"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Event propagation",
+                  "consequence": "@onclick on parent and child? Both fire! Use @onclick:stopPropagation to prevent bubbling. Or handle in only one place.",
+                  "correction": "Review the correct syntax and best practices for this concept."
+                },
+                {
+                  "mistake": "Async event handlers",
+                  "consequence": "Can use async methods! '@onclick=\"HandleClickAsync\"' with 'private async Task HandleClickAsync()'. Blazor awaits automatically.",
+                  "correction": "Review the correct syntax and best practices for this concept."
+                },
+                {
+                  "mistake": "Event args",
+                  "consequence": "Different events have different args! ChangeEventArgs for input/select, MouseEventArgs for mouse, KeyboardEventArgs for keyboard. Check e.Key, e.Button, etc.",
+                  "correction": "Review the correct syntax and best practices for this concept."
+                },
+                {
+                  "mistake": "Lambda scope",
+                  "consequence": "Variables in lambda must be in scope! '@onclick=\"() => Delete(item.Id)\"' in foreach works. Outside foreach, 'item' not available!",
+                  "correction": "Review the correct syntax and best practices for this concept."
+                }
+              ]
+            }
+          ]
+        },
+        {
           "id": "lesson-13-06",
           "title": "Data Binding (@bind Directive)",
           "moduleId": "module-13",
