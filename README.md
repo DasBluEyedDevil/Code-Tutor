@@ -37,62 +37,49 @@ Code-Tutor/
 
 ## 🚀 Quick Start
 
-> **Note:** Docker is **optional**! You can use the platform without it to view all course content.  
+> **Important:** Docker Desktop is **required** for Code-Tutor to work properly.  
 > **Having issues?** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
 ### Prerequisites
 
 - **Node.js** 18+ and npm 9+ ([Download](https://nodejs.org))
+- **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop)) - **Required**
 - **Git**
-- **Docker Desktop** (Optional - only for running code exercises)
 
-### Easiest Setup (2 Steps)
+### Quick Setup (3 Steps)
 
-1. **Clone and install:**
+1. **Install Docker Desktop:**
+   - Download and install from: https://www.docker.com/products/docker-desktop
+   - Start Docker Desktop and wait for it to fully start
+   - You should see the whale icon in your system tray
+
+2. **Clone and install:**
    ```bash
    git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
    cd Code-Tutor
    npm install
    ```
 
-2. **Start everything:**
+3. **Start everything:**
    ```bash
+   # Start Docker containers
+   docker-compose up -d
+   
+   # Start the application
    npm run dev
    ```
 
-3. **Open browser:** http://localhost:3000
-
-That's it! The platform is now running with all 7 courses ready to explore.
-
-### Alternative: Manual Start
-
-If `npm run dev` doesn't work, use two terminals:
-
-**Terminal 1 - API Server:**
-```bash
-cd apps/api
-npm install
-npm run dev
-```
-
-**Terminal 2 - Web App:**
-```bash
-cd apps/web
-npm install  
-npm run dev
-```
-
-Then open: http://localhost:3000
+4. **Open browser:** http://localhost:3000
 
 ### Windows Users: One-Click Start
 
-Use the included startup script:
+Use the included startup script (handles Docker check automatically):
 
 ```powershell
 .\start.ps1
 ```
 
-This automatically checks dependencies and starts everything!
+Or double-click: **`START.bat`**
 
 ## 📚 Development
 
