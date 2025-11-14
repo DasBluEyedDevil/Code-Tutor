@@ -191,7 +191,7 @@ function htmlToMarkdown(html: string | undefined): string {
   md = md.replace(/<p>(.*?)<\/p>/g, '$1\n\n');
   md = md.replace(/<strong>(.*?)<\/strong>/g, '**$1**');
   md = md.replace(/<code>(.*?)<\/code>/g, '`$1`');
-  md = md.replace(/<pre><code>(.*?)<\/code><\/pre>/gs, '```\n$1\n```\n');
+  md = md.replace(/<pre><code>([\s\S]*?)<\/code><\/pre>/g, '```\n$1\n```\n');
   md = md.replace(/<li>(.*?)<\/li>/g, '- $1\n');
   md = md.replace(/<ul>/g, '\n');
   md = md.replace(/<\/ul>/g, '\n');
@@ -340,6 +340,7 @@ function convertQuizQuestion(q: QuizQuestionLegacy, moduleId: string, quizIndex:
       description: htmlToMarkdown(q.question),
       code: q.code || '',
       language: 'python',
+      correctAnswer: String(q.correct_answer),
       correctOutput: String(q.correct_answer),
       explanation: htmlToMarkdown(q.explanation)
     };
