@@ -460,10 +460,26 @@ async function convertKotlinInteractive(sourceDir: string, outputPath: string) {
     if (partNumber > 5) difficulty = 'advanced';
     else if (partNumber > 3) difficulty = 'intermediate';
 
+    // Module titles based on actual content
+    const partTitles: Record<number, { title: string; description: string }> = {
+      1: { title: 'The Absolute Basics', description: 'Introduction to Kotlin fundamentals and basic syntax' },
+      2: { title: 'Controlling the Flow', description: 'Control structures, loops, and program flow' },
+      3: { title: 'Object-Oriented Programming', description: 'Classes, objects, and OOP principles in Kotlin' },
+      4: { title: 'Advanced Kotlin', description: 'Advanced features including lambdas, generics, and collections' },
+      5: { title: 'Backend Development with Ktor', description: 'Building web applications and APIs with Ktor framework' },
+      6: { title: 'Android Development', description: 'Building Android apps with Kotlin and Jetpack Compose' },
+      7: { title: 'Professional Development & Deployment', description: 'Testing, optimization, and deployment strategies' }
+    };
+
+    const partInfo = partTitles[partNumber] || {
+      title: `Part ${partNumber}: Kotlin Fundamentals`,
+      description: `Learn Kotlin programming - Part ${partNumber}`
+    };
+
     modules.push({
       id: `module-${String(partNumber).padStart(2, '0')}`,
-      title: `Part ${partNumber}: Kotlin Fundamentals`,
-      description: `Learn Kotlin programming - Part ${partNumber}`,
+      title: partInfo.title,
+      description: partInfo.description,
       difficulty,
       estimatedHours,
       lessons,
