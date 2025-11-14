@@ -9,6 +9,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
 import { Settings } from './components/Settings'
+import { CommandPalette, useCommandActions } from './components/CommandPalette'
 import { SkipToContent } from './components/SkipToContent'
 import { useReducedMotion } from './hooks/useReducedMotion'
 import { useMonacoSetup } from './hooks/useMonacoSetup'
@@ -25,6 +26,13 @@ function AppContent() {
   const { toasts, removeToast } = useToastStore()
   const { shortcuts, isHelpOpen, toggleHelp, setHelpOpen, registerShortcuts } = useKeyboardStore()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false)
+
+  // Get default command actions
+  const commandActions = useCommandActions({
+    onOpenSettings: () => setIsSettingsOpen(true),
+    onOpenShortcuts: () => setHelpOpen(true),
+  })
 
   // Register global keyboard shortcuts
   useEffect(() => {
@@ -52,11 +60,18 @@ function AppContent() {
         action: () => setIsSettingsOpen(true),
       },
       {
+        key: 'k',
+        ctrl: true,
+        description: 'Open command palette',
+        action: () => setIsCommandPaletteOpen(true),
+      },
+      {
         key: 'Escape',
         description: 'Close dialogs',
         action: () => {
           setHelpOpen(false)
           setIsSettingsOpen(false)
+          setIsCommandPaletteOpen(false)
         },
       },
     ])
@@ -102,6 +117,11 @@ function AppContent() {
         shortcuts={shortcuts}
       />
       <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        actions={commandActions}
+      />
     </>
   )
 }
