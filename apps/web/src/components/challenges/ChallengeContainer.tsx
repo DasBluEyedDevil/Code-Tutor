@@ -12,6 +12,7 @@ import { TrueFalseChallenge } from './TrueFalseChallenge'
 import { CodeOutputChallenge } from './CodeOutputChallenge'
 import { FreeCodingChallenge } from './FreeCodingChallenge'
 import { CodeCompletionChallenge } from './CodeCompletionChallenge'
+import { ConceptualChallenge } from './ConceptualChallenge'
 
 /**
  * ChallengeContainer Component
@@ -168,7 +169,7 @@ export function ChallengeContainer({
   const handleFreeCodingComplete = async (
     code: string,
     hintsUsed: number,
-    testResults: TestResult[]
+    _testResults: TestResult[]
   ) => {
     if (challenge.type !== 'FREE_CODING') return
 
@@ -202,7 +203,7 @@ export function ChallengeContainer({
   const handleCodeCompletionComplete = async (
     code: string,
     hintsUsed: number,
-    testResults: TestResult[]
+    _testResults: TestResult[]
   ) => {
     if (challenge.type !== 'CODE_COMPLETION') return
 
@@ -211,6 +212,26 @@ export function ChallengeContainer({
       lessonId,
       userAnswer: code,
       hintsUsed,
+    }
+
+    try {
+      await submitChallenge(submission)
+    } catch (err) {
+      console.error('Submission failed:', err)
+    }
+  }
+
+  /**
+   * Handle Conceptual challenge completion
+   */
+  const handleConceptualComplete = async (passed: boolean) => {
+    if (challenge.type !== 'CONCEPTUAL') return
+
+    const submission: ChallengeSubmission = {
+      challengeId: challenge.id,
+      lessonId,
+      userAnswer: passed,
+      hintsUsed: 0,
     }
 
     try {
@@ -268,13 +289,11 @@ export function ChallengeContainer({
         )
 
       case 'CONCEPTUAL':
-        // Conceptual challenges are typically free-form and don't have automated validation
         return (
-          <div className="p-8 text-center border rounded-lg bg-gray-50 dark:bg-gray-800">
-            <p className="text-gray-600 dark:text-gray-400">
-              Conceptual challenge component not yet implemented.
-            </p>
-          </div>
+          <ConceptualChallenge
+            challenge={challenge}
+            onComplete={handleConceptualComplete}
+          />
         )
 
       default:
