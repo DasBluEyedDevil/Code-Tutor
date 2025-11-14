@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { Course, Module, Lesson, Exercise, TestCase } from '../apps/web/src/types/content'
+import { Course, Module, Lesson, Exercise } from '../apps/web/src/types/content'
 
 /**
  * Content Import and Migration Tool
@@ -86,7 +86,8 @@ export function markdownLessonToCourseLesson(
       id: `example-${exampleId++}`,
       language,
       code: code.trim(),
-      explanation: `Code example in ${language}`
+      explanation: `Code example in ${language}`,
+      runnable: true
     })
   }
 
@@ -104,38 +105,49 @@ export function markdownLessonToCourseLesson(
       const exerciseData = JSON.parse(exerciseMatch[1])
       exercises.push({
         id: `exercise-${exerciseId++}`,
+        type: exerciseData.type || 'coding',
         title: exerciseData.title || 'Practice Exercise',
         instructions: exerciseData.instructions || '',
+        difficulty: exerciseData.difficulty || 'beginner',
+        estimatedMinutes: exerciseData.estimatedMinutes || 10,
         starterCode: exerciseData.starterCode || '',
         solution: exerciseData.solution || '',
         hints: exerciseData.hints || [],
-        testCases: exerciseData.testCases || []
+        testCases: exerciseData.testCases || [],
+        validationRules: exerciseData.validationRules || {}
       })
     } catch (e) {
       console.warn(`Failed to parse exercise in ${markdown.filePath}:`, e)
     }
   }
 
+  const metadata = markdown.metadata || {}
+
   return {
     id: `lesson-${index + 1}`,
     title: markdown.title,
-    description: markdown.metadata.description || `Learn about ${markdown.title}`,
-    type: (markdown.metadata.type as any) || 'lesson',
-    difficulty: (markdown.metadata.difficulty as any) || 'beginner',
-    estimatedMinutes: parseInt(markdown.metadata.estimatedMinutes || '15'),
+    type: (metadata.type as any) || 'reading',
+    order: index,
+    estimatedMinutes: parseInt(metadata.estimatedMinutes || '15'),
+    difficulty: (metadata.difficulty as any) || 'beginner',
+    tags: metadata.tags ? metadata.tags.split(',').map((s: string) => s.trim()) : [],
     content: {
+      format: 'markdown' as const,
       body,
-      codeExamples,
-      keyTakeaways: markdown.metadata.keyTakeaways?.split(',').map((s: string) => s.trim()) || []
+      codeExamples
     },
     exercises: exercises.length > 0 ? exercises : [{
       id: 'default-exercise',
+      type: 'coding' as const,
       title: 'Practice Exercise',
       instructions: 'Try the concepts you learned in this lesson.',
+      difficulty: 'beginner' as const,
+      estimatedMinutes: 10,
       starterCode: '',
       solution: '',
       hints: [],
-      testCases: []
+      testCases: [],
+      validationRules: {}
     }]
   }
 }
@@ -193,42 +205,70 @@ export async function importFromMarkdown(config: ImportConfig): Promise<Course> 
   let moduleIndex = 0
 
   for (const [moduleName, lessons] of moduleMap) {
+    const moduleLessons = lessons.map((lesson, index) => markdownLessonToCourseLesson(lesson, index))
+    const totalMinutes = moduleLessons.reduce((sum, lesson) => sum + lesson.estimatedMinutes, 0)
+
     const module: Module = {
       id: `module-${moduleIndex + 1}`,
       title: moduleName.replace(/^\d+-/, '').replace(/-/g, ' '),
       description: `${moduleName} module`,
-      lessons: lessons.map((lesson, index) => markdownLessonToCourseLesson(lesson, index)),
-      order: moduleIndex
+      order: moduleIndex,
+      estimatedHours: Math.ceil(totalMinutes / 60),
+      prerequisites: [],
+      lessons: moduleLessons
     }
 
     modules.push(module)
     moduleIndex++
   }
 
+  // Calculate total hours and outcomes
+  const totalMinutes = modules.reduce((sum, mod) => sum + (mod.estimatedHours * 60), 0)
+  const totalHours = Math.ceil(totalMinutes / 60)
+
   // Create course
-  const course: Course = {
+  return {
     courseMetadata: {
       id: config.language,
-      displayName: config.language.charAt(0).toUpperCase() + config.language.slice(1),
-      description: `Complete ${config.language} course`,
       language: config.language,
       version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      author: 'Code Tutor',
-      tags: [config.language, 'programming', 'tutorial']
+      displayName: config.language.charAt(0).toUpperCase() + config.language.slice(1),
+      description: `Complete ${config.language} course`,
+      totalModules: modules.length,
+      estimatedHours: totalHours,
+      difficulty: 'beginner-to-advanced' as const,
+      prerequisites: [],
+      learningOutcomes: [
+        `Master ${config.language} fundamentals`,
+        'Build real-world projects',
+        'Write clean, efficient code'
+      ],
+      icon: '📚',
+      color: '#3B82F6'
     },
     languageConfig: {
-      executor: config.language as any,
+      executionEngine: config.language,
+      compilerOptions: {
+        version: '1.0.0',
+        flags: []
+      },
       editorSettings: {
         defaultTemplate: getDefaultTemplate(config.language),
+        fileExtension: getFileExtension(config.language),
         monacoLanguageId: getMonacoLanguageId(config.language),
-        fileExtension: getFileExtension(config.language)
+        tabSize: 4,
+        insertSpaces: true
+      },
+      sandboxConstraints: {
+        maxExecutionTimeMs: 5000,
+        maxMemoryMB: 128,
+        maxOutputChars: 10000,
+        allowedPackages: [],
+        blockedPackages: []
       }
     },
     modules
   }
-
-  return course
 }
 
 /**
