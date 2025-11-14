@@ -9,6 +9,7 @@ import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
 import { SkipToContent } from './components/SkipToContent'
+import { useReducedMotion } from './hooks/useReducedMotion'
 
 // Lazy load route components for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'))
@@ -93,7 +94,8 @@ function AppContent() {
 }
 
 function App() {
-  const { theme } = useThemeStore()
+  const { theme, getEffectiveMotionPreference } = useThemeStore()
+  const systemPrefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -102,6 +104,15 @@ function App() {
       document.documentElement.classList.remove('dark')
     }
   }, [theme])
+
+  useEffect(() => {
+    const shouldReduceMotion = getEffectiveMotionPreference(systemPrefersReducedMotion)
+    if (shouldReduceMotion) {
+      document.documentElement.classList.add('reduce-motion')
+    } else {
+      document.documentElement.classList.remove('reduce-motion')
+    }
+  }, [systemPrefersReducedMotion, getEffectiveMotionPreference])
 
   return (
     <ErrorBoundary>
