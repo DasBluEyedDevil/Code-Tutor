@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { ChevronRight, Home, Play, CheckCircle2, Lightbulb, ChevronLeft, AlertCircle, Terminal } from 'lucide-react'
+import { ChevronRight, Home, Play, CheckCircle2, Lightbulb, ChevronLeft, AlertCircle, Terminal, BookOpen, Code2 } from 'lucide-react'
 import Editor from '@monaco-editor/react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -36,6 +36,7 @@ export default function LessonPage() {
   const [isRunning, setIsRunning] = useState(false)
   const [showHints, setShowHints] = useState(false)
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0)
+  const [mobileTab, setMobileTab] = useState<'content' | 'editor'>('content')
 
   const { theme } = useThemeStore()
   const { markLessonComplete, updateLessonProgress, getLessonProgress } = useProgressStore()
@@ -261,9 +262,39 @@ export default function LessonPage() {
       </header>
 
       <div id="main-content" tabIndex={-1} className="container mx-auto px-4 py-8 relative z-10">
+        {/* Mobile Tab Bar */}
+        <div className="lg:hidden mb-6 sticky top-[73px] z-20 bg-background/95 backdrop-blur-sm -mx-4 px-4 pb-4 border-b">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setMobileTab('content')}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                mobileTab === 'content'
+                  ? 'bg-primary text-primary-foreground shadow-lg'
+                  : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
+              style={{ minHeight: '44px', minWidth: '44px' }}
+            >
+              <BookOpen className="w-5 h-5" />
+              <span>Content</span>
+            </button>
+            <button
+              onClick={() => setMobileTab('editor')}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+                mobileTab === 'editor'
+                  ? 'bg-primary text-primary-foreground shadow-lg'
+                  : 'bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
+              style={{ minHeight: '44px', minWidth: '44px' }}
+            >
+              <Code2 className="w-5 h-5" />
+              <span>Editor</span>
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Lesson Content */}
-          <div className="space-y-6">
+          <div className={`space-y-6 ${mobileTab === 'content' ? 'block' : 'hidden lg:block'}`}>
             <div className="animate-fade-in">
               <h1 className="text-3xl font-bold mb-3">{currentLesson.title}</h1>
               <div className="flex items-center gap-2 flex-wrap">
@@ -360,8 +391,8 @@ export default function LessonPage() {
           </div>
 
           {/* Right: Code Editor */}
-          <div className="space-y-4">
-            <Card className="overflow-hidden sticky top-24 animate-fade-in-up shine border-primary/20 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300" style={{ animationDelay: '100ms' }}>
+          <div className={`space-y-4 ${mobileTab === 'editor' ? 'block' : 'hidden lg:block'}`}>
+            <Card className="overflow-hidden lg:sticky lg:top-24 animate-fade-in-up shine border-primary/20 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300" style={{ animationDelay: '100ms' }}>
               <div className="bg-gradient-to-r from-secondary/70 to-secondary/30 px-4 py-3 flex justify-between items-center border-b border-primary/10">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-muted-foreground" />
@@ -380,7 +411,7 @@ export default function LessonPage() {
               </div>
 
               <Editor
-                height="400px"
+                height="500px"
                 language={course.languageConfig.editorSettings.monacoLanguageId}
                 value={code}
                 onChange={(value) => setCode(value || '')}
