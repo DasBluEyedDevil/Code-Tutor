@@ -51,7 +51,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-28 text-center animate-fade-in relative z-10">
+      <section id="main-content" tabIndex={-1} className="container mx-auto px-4 py-20 md:py-28 text-center animate-fade-in relative z-10">
         <Badge variant="info" className="mb-6 text-sm px-4 py-1.5 shadow-lg animate-bounce-subtle">
           7 Programming Languages • Real-Time Execution
         </Badge>

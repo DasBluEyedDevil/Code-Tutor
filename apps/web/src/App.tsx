@@ -8,6 +8,7 @@ import { LoadingSpinner } from './components/Loading'
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts'
 import { useKeyboardStore } from './stores/keyboardStore'
 import { KeyboardShortcutsHelp } from './components/KeyboardShortcutsHelp'
+import { SkipToContent } from './components/SkipToContent'
 
 // Lazy load route components for code splitting
 const LandingPage = lazy(() => import('./pages/LandingPage'))
@@ -53,6 +54,7 @@ function AppContent() {
 
   return (
     <>
+      <SkipToContent />
       <Suspense
         fallback={
           <div className="min-h-screen flex items-center justify-center bg-background">
