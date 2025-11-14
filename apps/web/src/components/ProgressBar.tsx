@@ -1,3 +1,5 @@
+import { memo, useMemo } from 'react'
+
 interface ProgressBarProps {
   value: number
   max?: number
@@ -6,14 +8,17 @@ interface ProgressBarProps {
   variant?: 'default' | 'success' | 'warning'
 }
 
-export function ProgressBar({
+export const ProgressBar = memo(function ProgressBar({
   value,
   max = 100,
   showLabel = false,
   size = 'md',
   variant = 'default',
 }: ProgressBarProps) {
-  const percentage = Math.min(Math.round((value / max) * 100), 100)
+  const percentage = useMemo(() =>
+    Math.min(Math.round((value / max) * 100), 100),
+    [value, max]
+  )
 
   const heights = {
     sm: 'h-1',
@@ -40,4 +45,4 @@ export function ProgressBar({
       )}
     </div>
   )
-}
+})
