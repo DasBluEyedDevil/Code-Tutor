@@ -186,9 +186,15 @@ export default function LessonPage() {
   const currentExercise = currentLesson.exercises[currentExerciseIndex]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Animated Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-10 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-green-500/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }}></div>
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-card sticky top-0 z-10">
+      <header className="border-b glass sticky top-0 z-10 shine">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Link to="/" className="hover:text-foreground">
@@ -204,7 +210,7 @@ export default function LessonPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Lesson Content */}
           <div className="space-y-6">
@@ -241,7 +247,7 @@ export default function LessonPage() {
             {currentLesson.content.codeExamples.map((example, idx) => (
               <Card
                 key={example.id}
-                className="overflow-hidden animate-fade-in-up"
+                className="overflow-hidden animate-fade-in-up shine border-primary/10 hover:border-primary/30 hover:shadow-lg transition-all duration-300"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
                 <div className="bg-secondary/50 px-4 py-2.5 flex items-center gap-2">
@@ -264,10 +270,10 @@ export default function LessonPage() {
 
             {/* Exercise Instructions */}
             {currentExercise && (
-              <Card className="animate-fade-in-up">
+              <Card className="animate-fade-in-up shine border-primary/20 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
                 <CardContent className="pt-6">
                   <div className="flex items-start gap-3 mb-4">
-                    <div className="bg-primary/10 p-2 rounded-lg">
+                    <div className="bg-gradient-to-br from-primary/20 to-primary/5 p-2 rounded-lg shadow-lg">
                       <AlertCircle className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1">
@@ -304,8 +310,8 @@ export default function LessonPage() {
 
           {/* Right: Code Editor */}
           <div className="space-y-4">
-            <Card className="overflow-hidden sticky top-24 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
-              <div className="bg-secondary/50 px-4 py-3 flex justify-between items-center border-b">
+            <Card className="overflow-hidden sticky top-24 animate-fade-in-up shine border-primary/20 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300" style={{ animationDelay: '100ms' }}>
+              <div className="bg-gradient-to-r from-secondary/70 to-secondary/30 px-4 py-3 flex justify-between items-center border-b border-primary/10">
                 <div className="flex items-center gap-2">
                   <Terminal className="w-4 h-4 text-muted-foreground" />
                   <span className="text-sm font-medium">Code Editor</span>
