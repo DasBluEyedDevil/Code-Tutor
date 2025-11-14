@@ -1,137 +1,128 @@
 # Quick Troubleshooting Guide
 
-## Current Issue: Docker Error
+## Current Issue: Docker Required
 
-You're seeing: `unable to get image 'code-tutor-python-executor'`
-
-**Good News:** Docker is **optional**! The platform works fine without it.
+Code-Tutor **requires** Docker to function properly. The code execution feature is a core part of the learning platform.
 
 ---
 
 ## ✅ What's Working
 
-Based on your output:
+Based on typical setup:
 - ✅ Node.js is installed
-- ✅ Dependencies are installed
-- ✅ Web app is running on http://localhost:3000
+- ✅ Dependencies are installed  
+- ✅ Web app can start on http://localhost:3000
+- ✅ All 7 courses are imported
 
 ---
 
-## ⚠️ What's Not Working
+## ⚠️ What Needs Docker
 
-- ❌ Docker executors (but they're optional for now!)
-
----
-
-## Quick Fixes
-
-### Option 1: Run Without Code Execution (Easiest)
-
-The platform will work perfectly for viewing all the course content you just imported!
-
-**Just start the API server:**
-
-1. Open a **new terminal**
-2. Run:
-   ```bash
-   cd apps/api
-   npm run dev
-   ```
-
-3. Keep the web terminal running
-4. Open http://localhost:3000 in your browser
-
-**That's it!** You can now browse all 7 courses you imported.
+- ⚠️ Code execution (required for interactive learning)
+- ⚠️ Running exercises
+- ⚠️ Testing student code
+- ⚠️ All 7 language executors
 
 ---
 
-### Option 2: Fix Docker (For Code Execution)
+## Quick Fix: Install Docker
 
-If you want to run code examples:
+### Step 1: Install Docker Desktop
 
-1. **Install Docker Desktop:**
-   - Download from: https://www.docker.com/products/docker-desktop
-   - Install and restart your computer
+1. **Download:**
+   - Windows: https://www.docker.com/products/docker-desktop
+   - Download and run the installer
 
-2. **Start Docker Desktop:**
-   - Open Docker Desktop from Start menu
-   - Wait until it says "Docker Desktop is running"
-   - You'll see a whale icon in your system tray
+2. **Install:**
+   - Follow the installation wizard
+   - Restart your computer when prompted
 
-3. **Build the executor images:**
-   ```bash
-   cd apps/executors/python
-   docker build -t code-tutor-python-executor .
-   cd ../../..
-   ```
+3. **Start Docker Desktop:**
+   - Open from Start menu
+   - Wait until you see "Docker Desktop is running"
+   - Check the whale icon in your system tray
 
-4. **Start the executors:**
-   ```bash
-   docker-compose up -d
-   ```
+### Step 2: Build the Executors
 
----
+```bash
+cd C:\Users\dasbl\WebstormProjects\Code-Tutor
+docker-compose build
+```
 
-### Option 3: Use the Startup Script
+This will take 5-10 minutes the first time.
 
-I created a script that handles everything:
+### Step 3: Start Everything
 
+```bash
+# Start Docker containers
+docker-compose up -d
+
+# Start the application
+npm run dev
+```
+
+Or just run:
 ```bash
 .\start.ps1
 ```
 
-This will:
-- Check if everything is installed
-- Start the API server
-- Start the web app
-- Optionally start Docker executors if available
+---
+
+## Detailed Docker Setup
+
+See **[DOCKER_SETUP.md](./DOCKER_SETUP.md)** for complete Docker installation and configuration guide.
 
 ---
 
 ## Current Status Checklist
 
-Based on your terminal output:
+Make sure you have:
 
-- [x] Node.js installed
-- [x] Dependencies installed  
-- [x] Web app running on port 3000
-- [ ] API server running on port 3001 ← **Start this!**
-- [ ] Docker running (optional)
-- [ ] Executors running (optional)
+- [ ] Node.js installed
+- [ ] Dependencies installed (`npm install`)
+- [ ] **Docker Desktop installed and running** ← **Required!**
+- [ ] Executors built (`docker-compose build`)
+- [ ] Executors started (`docker-compose up -d`)
+- [ ] API server running on port 3001
+- [ ] Web app running on port 3000
 
 ---
 
-## What You Can Do Right Now
+## Quick Start Commands
 
-### 1. Start the API (Required)
+### Full Setup from Scratch
 
-**New terminal:**
 ```bash
-cd C:\Users\dasbl\WebstormProjects\Code-Tutor\apps\api
+# 1. Install dependencies
+npm install
+
+# 2. Build Docker images (first time only, takes 5-10 min)
+docker-compose build
+
+# 3. Start everything
+.\start.ps1
+```
+
+### Already Set Up?
+
+```bash
+.\start.ps1
+```
+
+Or manually:
+```bash
+# Terminal 1
+docker-compose up -d
+
+# Terminal 2  
+cd apps/api
+npm run dev
+
+# Terminal 3
+cd apps/web
 npm run dev
 ```
 
-You should see:
-```
-🚀 API server running on http://localhost:3001
-📚 Courses endpoint: http://localhost:3001/api/courses
-```
-
-### 2. Open the Browser
-
-Go to: **http://localhost:3000**
-
-You should see:
-- Landing page with 7 programming languages
-- All your imported courses ready to view!
-
-### 3. Browse Courses
-
-You can now:
-- ✅ View all course content
-- ✅ Read lessons
-- ✅ See code examples
-- ❌ Run code (needs Docker)
 
 ---
 
