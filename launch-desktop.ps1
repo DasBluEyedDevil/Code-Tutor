@@ -57,6 +57,10 @@ Write-Host ""
 # Launch the desktop app
 Write-Host "🚀 Launching Code Tutor..." -ForegroundColor Green
 Write-Host ""
+Write-Host "Note: The app will check for installed programming language runtimes" -ForegroundColor Cyan
+Write-Host "      (Python, Java, Rust, .NET, Kotlin, Dart) on startup." -ForegroundColor Cyan
+Write-Host "      You'll be notified if any are missing." -ForegroundColor Cyan
+Write-Host ""
 npm run start:desktop
 
 Read-Host "Press Enter to exit"

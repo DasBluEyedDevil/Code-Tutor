@@ -58,6 +58,10 @@ echo.
 :: Launch the desktop app
 echo [INFO] Launching Code Tutor...
 echo.
+echo Note: The app will check for installed programming language runtimes
+echo       (Python, Java, Rust, .NET, Kotlin, Dart) on startup.
+echo       You'll be notified if any are missing.
+echo.
 call npm run start:desktop
 
 pause
