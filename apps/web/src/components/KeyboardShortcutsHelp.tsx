@@ -1,6 +1,8 @@
 import { X } from 'lucide-react'
 import { Button } from './Button'
 import { formatShortcut, type KeyboardShortcut } from '../hooks/useKeyboardShortcuts'
+import { useFocusTrap } from '../hooks/useFocusTrap'
+import { useFocusReturn } from '../hooks/useFocusReturn'
 import { clsx } from 'clsx'
 
 interface KeyboardShortcutsHelpProps {
@@ -10,6 +12,9 @@ interface KeyboardShortcutsHelpProps {
 }
 
 export function KeyboardShortcutsHelp({ isOpen, onClose, shortcuts }: KeyboardShortcutsHelpProps) {
+  const dialogRef = useFocusTrap<HTMLDivElement>(isOpen)
+  useFocusReturn()
+
   if (!isOpen) return null
 
   // Group shortcuts by category (inferred from description)
@@ -33,6 +38,7 @@ export function KeyboardShortcutsHelp({ isOpen, onClose, shortcuts }: KeyboardSh
 
       {/* Modal */}
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="shortcuts-title"

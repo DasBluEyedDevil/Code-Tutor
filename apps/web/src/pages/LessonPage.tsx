@@ -210,7 +210,7 @@ export default function LessonPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div id="main-content" tabIndex={-1} className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left: Lesson Content */}
           <div className="space-y-6">

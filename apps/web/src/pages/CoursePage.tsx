@@ -100,7 +100,7 @@ export default function CoursePage() {
       </header>
 
       {/* Course Info */}
-      <div className="container mx-auto px-4 py-8 relative z-10">
+      <div id="main-content" tabIndex={-1} className="container mx-auto px-4 py-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card hover className="animate-fade-in-up shine border-blue-500/20 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300" style={{ animationDelay: '0ms' }}>
             <CardContent className="pt-6">
