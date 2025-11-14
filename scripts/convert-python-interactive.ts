@@ -15,6 +15,31 @@ import * as path from 'path';
 // Type Definitions
 // ============================================================================
 
+// OLD FORMAT (Modules 1-4)
+interface OldFormatLesson {
+  title: string;
+  estimated_time: string;
+  concept: string;
+  code_example?: {
+    language: string;
+    code: string;
+    output: string;
+  };
+  syntax_breakdown?: string;
+  exercise: {
+    instructions: string;
+    starter_code: string;
+    hint: string;
+  };
+  solution: {
+    code: string;
+    explanation: string;
+    common_mistakes?: string;
+  };
+  key_takeaways: string;
+}
+
+// NEW FORMAT (Modules 5-14)
 interface LegacyPythonLesson {
   lesson_id: string;
   title: string;
@@ -358,6 +383,115 @@ function convertQuizQuestion(q: QuizQuestionLegacy, moduleId: string, quizIndex:
   };
 }
 
+function convertOldFormatLesson(
+  lesson: OldFormatLesson,
+  moduleNumber: number,
+  lessonNumber: number
+): InteractiveLesson {
+  const contentSections: ContentSection[] = [];
+
+  // Add concept section
+  if (lesson.concept) {
+    contentSections.push({
+      type: 'THEORY',
+      title: 'Understanding the Concept',
+      content: htmlToMarkdown(lesson.concept)
+    });
+  }
+
+  // Add code example
+  if (lesson.code_example) {
+    contentSections.push({
+      type: 'EXAMPLE',
+      title: 'Code Example',
+      content: `**Expected Output:**\n\`\`\`\n${lesson.code_example.output}\n\`\`\``,
+      code: lesson.code_example.code,
+      language: 'python'
+    });
+  }
+
+  // Add syntax breakdown
+  if (lesson.syntax_breakdown) {
+    contentSections.push({
+      type: 'THEORY',
+      title: 'Syntax Breakdown',
+      content: htmlToMarkdown(lesson.syntax_breakdown)
+    });
+  }
+
+  // Add key takeaways
+  if (lesson.key_takeaways) {
+    contentSections.push({
+      type: 'KEY_POINT',
+      title: 'Key Takeaways',
+      content: htmlToMarkdown(lesson.key_takeaways)
+    });
+  }
+
+  // Convert exercise to challenge
+  const challenges: FreeCodingChallenge[] = [];
+  if (lesson.exercise) {
+    const hints: Hint[] = [];
+    if (lesson.exercise.hint) {
+      hints.push({
+        level: 1,
+        text: htmlToMarkdown(lesson.exercise.hint)
+      });
+    }
+
+    // Parse common mistakes from solution
+    const commonMistakes: CommonMistake[] = [];
+    if (lesson.solution.common_mistakes) {
+      // Extract list items from HTML
+      const mistakeText = htmlToMarkdown(lesson.solution.common_mistakes);
+      const lines = mistakeText.split('\n').filter(l => l.trim());
+      lines.forEach(line => {
+        if (line.includes('❌') || line.includes('Wrong')) {
+          commonMistakes.push({
+            mistake: line.replace(/^-\s*/, '').trim(),
+            consequence: 'This will cause an error',
+            correction: 'Review the correct syntax in the examples'
+          });
+        }
+      });
+    }
+
+    challenges.push({
+      type: 'FREE_CODING',
+      id: `module-${String(moduleNumber).padStart(2, '0')}-lesson-${String(lessonNumber).padStart(2, '0')}-challenge-1`,
+      title: 'Practice Exercise',
+      description: htmlToMarkdown(lesson.exercise.instructions),
+      instructions: htmlToMarkdown(lesson.exercise.instructions),
+      starterCode: lesson.exercise.starter_code || '# Write your code here\n',
+      solution: lesson.solution.code || '',
+      language: 'python',
+      testCases: [
+        {
+          description: 'Code runs without errors',
+          expectedOutput: '',
+          isVisible: true
+        }
+      ],
+      hints: hints.length > 0 ? hints : undefined,
+      commonMistakes: commonMistakes.length > 0 ? commonMistakes : undefined,
+      difficulty: 'beginner'
+    });
+  }
+
+  const estimatedMinutes = parseInt(lesson.estimated_time) || 30;
+
+  return {
+    id: `module-${String(moduleNumber).padStart(2, '0')}-lesson-${String(lessonNumber).padStart(2, '0')}`,
+    title: lesson.title,
+    moduleId: `module-${String(moduleNumber).padStart(2, '0')}`,
+    order: lessonNumber,
+    estimatedMinutes,
+    difficulty: 'beginner',
+    contentSections,
+    challenges
+  };
+}
+
 function convertLesson(lesson: LegacyPythonLesson): InteractiveLesson {
   const contentSections = convertContentBlocks(lesson.content_blocks);
 
@@ -467,8 +601,20 @@ async function convertPythonInteractive(sourceDir: string, outputPath: string) {
     for (const file of lessonFiles) {
       try {
         const content = await fs.readFile(path.join(modulePath, file), 'utf-8');
-        const legacyLesson: LegacyPythonLesson = JSON.parse(content);
-        const lesson = convertLesson(legacyLesson);
+        const rawLesson = JSON.parse(content);
+
+        let lesson: InteractiveLesson;
+
+        // Detect format: new format has content_blocks, old format has concept/exercise
+        if (rawLesson.content_blocks) {
+          // New format (modules 5-14)
+          lesson = convertLesson(rawLesson as LegacyPythonLesson);
+        } else {
+          // Old format (modules 1-4)
+          const lessonNumber = parseInt(file.match(/lesson_(\d+)\.json/)?.[1] || '1');
+          lesson = convertOldFormatLesson(rawLesson as OldFormatLesson, moduleNumber, lessonNumber);
+        }
+
         lessons.push(lesson);
         moduleChallenges += lesson.challenges.length;
       } catch (error: any) {
@@ -490,10 +636,33 @@ async function convertPythonInteractive(sourceDir: string, outputPath: string) {
       totalQuestions += quiz.questions.length;
     }
 
+    // Module titles based on actual content
+    const moduleTitles: Record<number, { title: string; description: string }> = {
+      1: { title: 'The Absolute Basics', description: 'Introduction to programming and Python fundamentals' },
+      2: { title: 'Variables', description: 'Understanding variables and data storage' },
+      3: { title: 'Boolean Logic', description: 'Making decisions with True and False' },
+      4: { title: 'Loops', description: 'Repeating actions with while and for loops' },
+      5: { title: 'Lists & Tuples', description: 'Working with ordered collections' },
+      6: { title: 'Functions', description: 'Creating reusable code blocks' },
+      7: { title: 'Dictionaries', description: 'Managing key-value pairs' },
+      8: { title: 'Exception Handling', description: 'Handling errors gracefully' },
+      9: { title: 'File I/O', description: 'Reading and writing files' },
+      10: { title: 'Modules & Packages', description: 'Organizing and reusing code' },
+      11: { title: 'Classes & Objects (OOP)', description: 'Object-oriented programming fundamentals' },
+      12: { title: 'Decorators', description: 'Advanced function modification techniques' },
+      13: { title: 'HTTP & Web APIs', description: 'Working with web services' },
+      14: { title: 'Sharing Your Work', description: 'Project planning and deployment' }
+    };
+
+    const moduleInfo = moduleTitles[moduleNumber] || {
+      title: `Module ${moduleNumber}`,
+      description: `Python programming fundamentals - Module ${moduleNumber}`
+    };
+
     modules.push({
       id: `module-${String(moduleNumber).padStart(2, '0')}`,
-      title: `Module ${moduleNumber}`,
-      description: `Python programming fundamentals - Module ${moduleNumber}`,
+      title: moduleInfo.title,
+      description: moduleInfo.description,
       difficulty,
       estimatedHours,
       lessons,
