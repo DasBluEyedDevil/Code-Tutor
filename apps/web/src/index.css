@@ -208,4 +208,48 @@
       0 0 20px rgba(59, 130, 246, 0.6),
       0 0 30px rgba(59, 130, 246, 0.4);
   }
+
+  /* Reduced motion support */
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reduce-motion .animate-float,
+  .reduce-motion .animate-bounce-subtle,
+  .reduce-motion .animate-pulse-glow,
+  .reduce-motion .animate-gradient {
+    animation: none !important;
+  }
+
+  .reduce-motion .shine::before {
+    display: none !important;
+  }
+
+  /* Also respect system preference */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    .animate-float,
+    .animate-bounce-subtle,
+    .animate-pulse-glow,
+    .animate-gradient {
+      animation: none !important;
+    }
+
+    .shine::before {
+      display: none !important;
+    }
+  }
 }

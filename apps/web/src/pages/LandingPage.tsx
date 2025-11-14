@@ -28,10 +28,10 @@ export default function LandingPage() {
       </div>
 
       {/* Header */}
-      <header className="border-b glass sticky top-0 z-50 shine">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+      <header className="border-b glass sticky top-0 z-50 shine" role="banner">
+        <nav className="container mx-auto px-4 py-4 flex justify-between items-center" aria-label="Main navigation">
           <div className="flex items-center gap-2 animate-scale-in">
-            <div className="bg-gradient-to-br from-primary via-blue-500 to-purple-500 p-2 rounded-lg shadow-lg animate-gradient">
+            <div className="bg-gradient-to-br from-primary via-blue-500 to-purple-500 p-2 rounded-lg shadow-lg animate-gradient" aria-hidden="true">
               <Code2 className="w-6 h-6 text-white" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent animate-gradient">
@@ -42,15 +42,16 @@ export default function LandingPage() {
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             className="rounded-full hover:scale-110 transition-transform"
           >
-            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {theme === 'dark' ? <Sun className="w-5 h-5" aria-hidden="true" /> : <Moon className="w-5 h-5" aria-hidden="true" />}
           </Button>
-        </div>
+        </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-28 text-center animate-fade-in relative z-10">
+      <section id="main-content" tabIndex={-1} className="container mx-auto px-4 py-20 md:py-28 text-center animate-fade-in relative z-10">
         <Badge variant="info" className="mb-6 text-sm px-4 py-1.5 shadow-lg animate-bounce-subtle">
           7 Programming Languages • Real-Time Execution
         </Badge>
