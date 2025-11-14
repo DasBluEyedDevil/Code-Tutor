@@ -91,16 +91,98 @@ export async function startApiServer(server: Express) {
     }
   });
 
-  // GET /api/progress - Get user progress (stub for now)
-  server.get('/api/progress', async (req, res) => {
-    // For desktop app, we'll store progress locally
-    res.json({ message: 'Progress tracking coming soon' });
+  // Progress tracking implementation
+  const progressFilePath = path.join(app.getPath('userData'), 'progress.json');
+
+  async function readProgress(): Promise<any> {
+    try {
+      const data = await fs.readFile(progressFilePath, 'utf-8');
+      return JSON.parse(data);
+    } catch {
+      return {};
+    }
+  }
+
+  async function writeProgress(data: any): Promise<void> {
+    await fs.writeFile(progressFilePath, JSON.stringify(data, null, 2));
+  }
+
+  // GET /api/progress/:userId? - Get user progress
+  server.get('/api/progress/:userId?', async (req, res) => {
+    try {
+      const userId = req.params.userId || 'default';
+      const allProgress = await readProgress();
+      const userProgress = allProgress[userId] || {};
+      res.json(userProgress);
+    } catch (error: any) {
+      console.error('Error reading progress:', error);
+      res.status(500).json({ error: 'Failed to read progress' });
+    }
   });
 
-  // POST /api/progress - Save user progress (stub for now)
+  // POST /api/progress - Save user progress
   server.post('/api/progress', async (req, res) => {
-    res.json({ success: true });
+    try {
+      const { courseId, moduleId, lessonId, userId = 'default', ...progressData } = req.body;
+
+      if (!courseId || !moduleId || !lessonId) {
+        return res.status(400).json({
+          error: 'courseId, moduleId, and lessonId are required'
+        });
+      }
+
+      const allProgress = await readProgress();
+
+      if (!allProgress[userId]) {
+        allProgress[userId] = {};
+      }
+      if (!allProgress[userId][courseId]) {
+        allProgress[userId][courseId] = {};
+      }
+      if (!allProgress[userId][courseId][moduleId]) {
+        allProgress[userId][courseId][moduleId] = {};
+      }
+
+      allProgress[userId][courseId][moduleId][lessonId] = {
+        ...allProgress[userId][courseId][moduleId][lessonId],
+        ...progressData,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      await writeProgress(allProgress);
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error('Error saving progress:', error);
+      res.status(500).json({ error: 'Failed to save progress' });
+    }
+  });
+
+  // Auth routes (simplified for desktop - single user)
+  server.post('/api/auth/register', async (req, res) => {
+    // Desktop app doesn't need real auth - return dummy token
+    res.json({
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' },
+      token: 'desktop-user-token'
+    });
+  });
+
+  server.post('/api/auth/login', async (req, res) => {
+    // Desktop app doesn't need real auth - return dummy token
+    res.json({
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' },
+      token: 'desktop-user-token'
+    });
+  });
+
+  server.get('/api/auth/verify', async (req, res) => {
+    // Always valid for desktop app
+    res.json({
+      valid: true,
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' }
+    });
   });
 
   console.log('API routes registered');
+  console.log(`Progress file: ${progressFilePath}`);
 }
