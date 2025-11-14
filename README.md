@@ -37,58 +37,62 @@ Code-Tutor/
 
 ## 🚀 Quick Start
 
+> **Note:** Docker is **optional**! You can use the platform without it to view all course content.  
+> **Having issues?** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
+
 ### Prerequisites
 
-- **Node.js** 18+ and npm 9+
-- **Docker** and Docker Compose
+- **Node.js** 18+ and npm 9+ ([Download](https://nodejs.org))
 - **Git**
+- **Docker Desktop** (Optional - only for running code exercises)
 
-### Installation
+### Easiest Setup (2 Steps)
 
-1. **Clone the repository:**
+1. **Clone and install:**
    ```bash
    git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
    cd Code-Tutor
-   ```
-
-2. **Install dependencies:**
-   ```bash
    npm install
    ```
 
-3. **Set up environment variables:**
+2. **Start everything:**
    ```bash
-   # Frontend
-   cp apps/web/.env.example apps/web/.env
-
-   # Backend
-   cp apps/api/.env.example apps/api/.env
-   ```
-
-4. **Start the Python executor:**
-   ```bash
-   docker-compose up -d python-executor
-   ```
-
-5. **Start the backend API:**
-   ```bash
-   cd apps/api
-   npm install
    npm run dev
    ```
 
-6. **Start the frontend:**
-   ```bash
-   # In a new terminal
-   cd apps/web
-   npm install
-   npm run dev
-   ```
+3. **Open browser:** http://localhost:3000
 
-7. **Open your browser:**
-   ```
-   http://localhost:3000
-   ```
+That's it! The platform is now running with all 7 courses ready to explore.
+
+### Alternative: Manual Start
+
+If `npm run dev` doesn't work, use two terminals:
+
+**Terminal 1 - API Server:**
+```bash
+cd apps/api
+npm install
+npm run dev
+```
+
+**Terminal 2 - Web App:**
+```bash
+cd apps/web
+npm install  
+npm run dev
+```
+
+Then open: http://localhost:3000
+
+### Windows Users: One-Click Start
+
+Use the included startup script:
+
+```powershell
+.\start.ps1
+```
+
+This automatically checks dependencies and starts everything!
 
 ## 📚 Development
 
@@ -314,6 +318,17 @@ See [UNIFIED_PLATFORM_PLAN.md](./UNIFIED_PLATFORM_PLAN.md) for the comprehensive
 - [ ] Documentation
 - [ ] Beta testing
 - [ ] Public launch
+
+## 📦 Packaging & Distribution
+
+Want to share Code-Tutor as a standalone app? See [PACKAGING_GUIDE.md](./PACKAGING_GUIDE.md) for options:
+
+- **Electron Desktop App** - Single `.exe` installer, no Node.js required (~150 MB)
+- **PKG Binary** - Standalone executable (~50 MB)  
+- **Portable ZIP** - Just extract and run (~200 MB, requires Node.js)
+- **Docker Container** - Fully containerized app
+
+The easiest option is Electron, which packages everything into a professional desktop application.
 
 ## 🤝 Contributing
 
