@@ -10,6 +10,7 @@ import { HintsPanel } from './HintsPanel'
 import { TestResultsPanel } from './TestResultsPanel'
 import { CommonMistakesPanel } from './CommonMistakesPanel'
 import { getEditorOptions } from '../../utils/monacoConfig'
+import { validateChallenge } from '../../api/content'
 
 /**
  * FreeCodingChallenge Component
@@ -79,26 +80,13 @@ export function FreeCodingChallenge({
     setHasRunTests(true)
 
     try {
-      // Call backend validation API
-      const response = await fetch('/api/challenges/validate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          challenge,
-          userSubmission: {
-            userAnswer: code,
-            hintsUsed,
-          },
-        }),
+      // Call validation via Electron IPC
+      const result = await validateChallenge(challenge, {
+        challengeId: challenge.id,
+        userAnswer: code,
+        hintsUsed,
       })
 
-      if (!response.ok) {
-        throw new Error(`Validation failed: ${response.statusText}`)
-      }
-
-      const result = await response.json()
       const results = result.testResults || []
 
       setTestResults(results)

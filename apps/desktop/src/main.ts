@@ -1,10 +1,10 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import * as path from 'path';
-import express from 'express';
-import cors from 'cors';
-import { startApiServer } from './api-server';
+import * as fs from 'fs/promises';
 import { executeCode } from './executors';
 import { checkAllRuntimes, RuntimeInfo } from './runtime-installer';
+import { validateChallenge, validateVisibleTestCases } from './challenge-validator';
+import type { Challenge, ChallengeSubmission } from './types';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling
 if (require('electron-squirrel-startup')) {
@@ -12,7 +12,6 @@ if (require('electron-squirrel-startup')) {
 }
 
 let mainWindow: BrowserWindow | null = null;
-let apiPort = 3001;
 
 // Create the browser window
 function createWindow() {
@@ -111,50 +110,260 @@ function showRuntimeDialog(runtimes: RuntimeInfo[]) {
   });
 }
 
-// Start the embedded API server
-async function startServer() {
-  const server = express();
-  server.use(cors());
-  server.use(express.json());
+// Get the content directory based on whether app is packaged
+function getContentPath() {
+  if (app.isPackaged) {
+    return path.join(process.resourcesPath, 'content');
+  }
+  return path.join(__dirname, '../../../content');
+}
 
-  // Mount API routes
-  await startApiServer(server);
+// Progress file management
+const getProgressFilePath = () => path.join(app.getPath('userData'), 'progress.json');
 
-  // Health check
-  server.get('/health', (req, res) => {
-    res.json({ status: 'ok', mode: 'desktop' });
-  });
+async function readProgress(): Promise<any> {
+  try {
+    const data = await fs.readFile(getProgressFilePath(), 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    return {};
+  }
+}
 
-  // Start listening
-  return new Promise<void>((resolve, reject) => {
-    const serverInstance = server.listen(apiPort, () => {
-      console.log(`API server running on http://localhost:${apiPort}`);
-      resolve();
-    }).on('error', (err: NodeJS.ErrnoException) => {
-      if (err.code === 'EADDRINUSE') {
-        console.log(`Port ${apiPort} in use, trying ${apiPort + 1}`);
-        apiPort++;
-        serverInstance.close();
-        // Try next port
-        server.listen(apiPort, () => {
-          console.log(`API server running on http://localhost:${apiPort}`);
-          resolve();
-        });
-      } else {
-        reject(err);
+async function writeProgress(data: any): Promise<void> {
+  await fs.writeFile(getProgressFilePath(), JSON.stringify(data, null, 2));
+}
+
+// Setup all IPC handlers for the desktop app
+function setupIpcHandlers() {
+  const contentPath = getContentPath();
+  console.log('📁 Content path:', contentPath);
+  console.log('💾 Progress file:', getProgressFilePath());
+
+  // Get all courses
+  ipcMain.handle('get-courses', async () => {
+    try {
+      const coursesDir = path.join(contentPath, 'courses');
+      const languages = await fs.readdir(coursesDir);
+
+      const courses = [];
+      for (const language of languages) {
+        const courseJsonPath = path.join(coursesDir, language, 'course.json');
+        try {
+          const stats = await fs.stat(courseJsonPath);
+          if (stats.isFile()) {
+            const courseData = await fs.readFile(courseJsonPath, 'utf-8');
+            const course = JSON.parse(courseData);
+            courses.push({
+              id: course.id,
+              language: course.language,
+              title: course.title,
+              description: course.description,
+              difficulty: course.difficulty,
+              estimatedHours: course.estimatedHours,
+              moduleCount: course.modules?.length || 0
+            });
+          }
+        } catch (err) {
+          console.warn(`No course.json found for ${language}`);
+        }
       }
-    });
+
+      return { success: true, courses };
+    } catch (error: any) {
+      console.error('Error fetching courses:', error);
+      return { success: false, error: error.message };
+    }
   });
+
+  // Get specific course
+  ipcMain.handle('get-course', async (event, { language }) => {
+    try {
+      const courseJsonPath = path.join(contentPath, 'courses', language, 'course.json');
+      const courseData = await fs.readFile(courseJsonPath, 'utf-8');
+      const course = JSON.parse(courseData);
+      return { success: true, course };
+    } catch (error: any) {
+      console.error(`Error fetching course ${language}:`, error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  // Execute code
+  ipcMain.handle('execute-code', async (event, { language, code }) => {
+    try {
+      if (!language || !code) {
+        return {
+          success: false,
+          error: 'Missing required fields: language and code'
+        };
+      }
+      const result = await executeCode(language, code);
+      return { success: true, result };
+    } catch (error: any) {
+      console.error('Execution error:', error);
+      return {
+        success: false,
+        error: error.message || 'Execution failed'
+      };
+    }
+  });
+
+  // Validate challenge
+  ipcMain.handle('validate-challenge', async (event, { challenge, userSubmission }) => {
+    try {
+      if (!challenge || !userSubmission) {
+        return {
+          success: false,
+          error: 'Missing required fields: challenge and userSubmission'
+        };
+      }
+
+      if (!challenge.type) {
+        return {
+          success: false,
+          error: 'Invalid challenge: missing type field'
+        };
+      }
+
+      if (!userSubmission.challengeId || userSubmission.userAnswer === undefined) {
+        return {
+          success: false,
+          error: 'Invalid submission: missing challengeId or userAnswer'
+        };
+      }
+
+      const validationResult = await validateChallenge(challenge, userSubmission);
+      return { success: true, result: validationResult };
+    } catch (error: any) {
+      console.error('Validation error:', error);
+      return {
+        success: false,
+        error: error.message || 'Validation failed'
+      };
+    }
+  });
+
+  // Validate visible test cases only
+  ipcMain.handle('validate-visible-tests', async (event, { code, language, testCases }) => {
+    try {
+      if (!code || !language || !testCases) {
+        return {
+          success: false,
+          error: 'Missing required fields: code, language, and testCases'
+        };
+      }
+
+      const validationResult = await validateVisibleTestCases(code, language, testCases);
+      return { success: true, result: validationResult };
+    } catch (error: any) {
+      console.error('Visible test validation error:', error);
+      return {
+        success: false,
+        error: error.message || 'Validation failed'
+      };
+    }
+  });
+
+  // Get progress
+  ipcMain.handle('get-progress', async (event, { userId = 'default' }) => {
+    try {
+      const allProgress = await readProgress();
+      const userProgress = allProgress[userId] || {};
+      return { success: true, progress: userProgress };
+    } catch (error: any) {
+      console.error('Error reading progress:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  // Save progress
+  ipcMain.handle('save-progress', async (event, { courseId, moduleId, lessonId, userId = 'default', progressData }) => {
+    try {
+      if (!courseId || !moduleId || !lessonId) {
+        return {
+          success: false,
+          error: 'courseId, moduleId, and lessonId are required'
+        };
+      }
+
+      const allProgress = await readProgress();
+
+      if (!allProgress[userId]) {
+        allProgress[userId] = {};
+      }
+      if (!allProgress[userId][courseId]) {
+        allProgress[userId][courseId] = {};
+      }
+      if (!allProgress[userId][courseId][moduleId]) {
+        allProgress[userId][courseId][moduleId] = {};
+      }
+
+      allProgress[userId][courseId][moduleId][lessonId] = {
+        ...allProgress[userId][courseId][moduleId][lessonId],
+        ...progressData,
+        lastUpdated: new Date().toISOString(),
+      };
+
+      await writeProgress(allProgress);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error saving progress:', error);
+      return { success: false, error: error.message };
+    }
+  });
+
+  // Auth handlers (simplified for desktop - single user)
+  ipcMain.handle('auth-register', async () => {
+    return {
+      success: true,
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' },
+      token: 'desktop-user-token'
+    };
+  });
+
+  ipcMain.handle('auth-login', async () => {
+    return {
+      success: true,
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' },
+      token: 'desktop-user-token'
+    };
+  });
+
+  ipcMain.handle('auth-verify', async () => {
+    return {
+      success: true,
+      valid: true,
+      user: { id: '1', email: 'user@localhost', name: 'Desktop User' }
+    };
+  });
+
+  // Check runtimes
+  ipcMain.handle('check-runtimes', async () => {
+    try {
+      const runtimes = await checkAllRuntimes();
+      return { success: true, runtimes };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.message || 'Failed to check runtimes'
+      };
+    }
+  });
+
+  console.log('✅ All IPC handlers registered');
 }
 
 // App lifecycle
 app.on('ready', async () => {
   try {
+    console.log('🚀 Starting Code Tutor Desktop Application...');
+
+    // Setup IPC handlers first
+    setupIpcHandlers();
+
     // Check programming language runtimes
     const runtimes = await checkRuntimes();
-
-    // Start the API server
-    await startServer();
 
     // Create the window
     createWindow();
@@ -163,6 +372,8 @@ app.on('ready', async () => {
     if (mainWindow) {
       showRuntimeDialog(runtimes);
     }
+
+    console.log('✅ Application started successfully');
   } catch (error) {
     console.error('Failed to start application:', error);
     app.quit();
@@ -178,31 +389,5 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
-  }
-});
-
-// Handle code execution via IPC (alternative to HTTP)
-ipcMain.handle('execute-code', async (event, { language, code }) => {
-  try {
-    const result = await executeCode(language, code);
-    return { success: true, result };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Execution failed'
-    };
-  }
-});
-
-// Handle runtime check via IPC
-ipcMain.handle('check-runtimes', async () => {
-  try {
-    const runtimes = await checkAllRuntimes();
-    return { success: true, runtimes };
-  } catch (error: any) {
-    return {
-      success: false,
-      error: error.message || 'Failed to check runtimes'
-    };
   }
 });

@@ -120,8 +120,7 @@ export default function LessonPage() {
       // Track code execution
       incrementCodeRuns()
 
-      const currentExercise = currentLesson?.exercises[currentExerciseIndex]
-      const result = await executeCode(language, code, currentExercise?.testCases)
+      const result = await executeCode(language, code)
 
       if (result.success) {
         setOutput(`✓ Success!\n\nOutput:\n${result.output}`)
