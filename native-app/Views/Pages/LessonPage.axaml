@@ -176,8 +176,28 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Practice Challenges Section (Phase 2) -->
-                    <!-- This will be implemented in Phase 2: Interactive Learning Features -->
+                    <!-- Practice Challenges Section -->
+                    <StackPanel IsVisible="{Binding HasChallenges}" Spacing="24">
+                        <Border Classes="page-header" CornerRadius="8" Padding="16">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource LightbulbIcon}"
+                                         Width="24" Height="24"
+                                         Foreground="{DynamicResource AccentBrush}" />
+                                <TextBlock Text="Practice Challenges"
+                                          Classes="h3"
+                                          Foreground="{DynamicResource AccentBrush}" />
+                            </StackPanel>
+                        </Border>
+
+                        <ItemsControl ItemsSource="{Binding Challenges}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding}"
+                                                   Margin="0,0,0,24" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
 
                 </StackPanel>
 
