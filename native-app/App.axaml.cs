@@ -61,8 +61,25 @@ public partial class App : Application
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            // Log error but don't crash the app
-            Console.WriteLine($"Database initialization failed: {ex.Message}");
+            // Log error using ErrorHandlerService with fallback to Console
+            try
+            {
+                var errorHandler = _serviceProvider?.GetService<IErrorHandlerService>();
+                if (errorHandler != null)
+                {
+                    await errorHandler.HandleErrorAsync(ex, "Failed to initialize database. The application may not function correctly.");
+                }
+                else
+                {
+                    // Fallback if ErrorHandlerService is not available
+                    Console.WriteLine($"Database initialization failed: {ex.Message}");
+                }
+            }
+            catch
+            {
+                // Last resort fallback
+                Console.WriteLine($"Database initialization failed: {ex.Message}");
+            }
         }
     }
 
@@ -95,11 +112,11 @@ public partial class App : Application
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();
 
-        // Page ViewModels (Transient so each navigation creates a new instance)
-        services.AddTransient<LandingPageViewModel>();
-        services.AddTransient<CoursePageViewModel>();
-        services.AddTransient<LessonPageViewModel>();
-        services.AddTransient<NotFoundPageViewModel>();
+        // Page ViewModels (Scoped to match service lifetime - prevents DbContext disposal issues)
+        services.AddScoped<LandingPageViewModel>();
+        services.AddScoped<CoursePageViewModel>();
+        services.AddScoped<LessonPageViewModel>();
+        services.AddScoped<NotFoundPageViewModel>();
     }
 
     /// <summary>
