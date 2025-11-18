@@ -1,0 +1,208 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CodeTutor.Native.ViewModels.Pages"
+             xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             x:Class="CodeTutor.Native.Views.Pages.LessonPage"
+             x:DataType="vm:LessonPageViewModel">
+
+    <Design.DataContext>
+        <vm:LessonPageViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header with Breadcrumb -->
+        <Border Grid.Row="0" Classes="page-header">
+            <Grid ColumnDefinitions="Auto,*" Margin="32,16">
+                <Button Grid.Column="0"
+                       Command="{Binding GoBackCommand}"
+                       Classes="icon-button"
+                       ToolTip.Tip="Back to course">
+                    <PathIcon Data="{StaticResource BackIcon}"
+                             Width="20" Height="20" />
+                </Button>
+
+                <StackPanel Grid.Column="1"
+                           Spacing="4"
+                           Margin="16,0,0,0">
+                    <TextBlock Text="{Binding Breadcrumb}"
+                              Classes="caption"
+                              Opacity="0.6" />
+                    <TextBlock Classes="h2"
+                              Text="{Binding Lesson.Title}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="64,32" MaxWidth="1000" Spacing="32">
+
+                <!-- Loading State -->
+                <Border IsVisible="{Binding IsLoading}"
+                       Classes="loading-container">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True"
+                                    Width="200"
+                                    Classes="primary-progress" />
+                        <TextBlock Text="Loading lesson..."
+                                  HorizontalAlignment="Center"
+                                  Classes="body" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Error State -->
+                <Border IsVisible="{Binding HasError}"
+                       Classes="error-container">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="{Binding ErrorMessage}"
+                                  Classes="body"
+                                  Foreground="{DynamicResource ErrorBrush}" />
+                        <Button Content="Retry"
+                               Command="{Binding RetryLoadCommand}"
+                               Classes="primary" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Lesson Content -->
+                <StackPanel Spacing="24" IsVisible="{Binding !IsLoading}">
+
+                    <!-- Lesson Overview -->
+                    <Border Classes="info-card" IsVisible="{Binding !!Lesson.Content.Overview}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource InfoIcon}"
+                                         Width="20" Height="20"
+                                         Foreground="{DynamicResource AccentBrush}" />
+                                <TextBlock Text="Overview"
+                                          Classes="h4"
+                                          Foreground="{DynamicResource AccentBrush}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Lesson.Content.Overview}"
+                                      Classes="body"
+                                      TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Main Content (Markdown) -->
+                    <Border Classes="content-card">
+                        <md:MarkdownScrollViewer Markdown="{Binding LessonContent}"
+                                                MaxWidth="1000"
+                                                VerticalScrollBarVisibility="Disabled" />
+                    </Border>
+
+                    <!-- Code Examples -->
+                    <ItemsControl ItemsSource="{Binding Lesson.Content.CodeExamples}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Classes="code-example-card" Margin="0,0,0,16">
+                                    <StackPanel Spacing="12">
+                                        <!-- Example Title -->
+                                        <TextBlock Text="{Binding Title}"
+                                                  Classes="h4"
+                                                  IsVisible="{Binding !!Title}" />
+
+                                        <!-- Example Description -->
+                                        <TextBlock Text="{Binding Description}"
+                                                  Classes="body"
+                                                  Opacity="0.8"
+                                                  TextWrapping="Wrap"
+                                                  IsVisible="{Binding !!Description}" />
+
+                                        <!-- Code Block -->
+                                        <Border Classes="code-block"
+                                               Background="{DynamicResource CodeBackgroundBrush}"
+                                               CornerRadius="8"
+                                               Padding="16">
+                                            <SelectableTextBlock Text="{Binding Code}"
+                                                               FontFamily="Cascadia Code,Consolas,Courier New"
+                                                               FontSize="13"
+                                                               TextWrapping="NoWrap" />
+                                        </Border>
+
+                                        <!-- Expected Output -->
+                                        <Border Classes="output-block"
+                                               IsVisible="{Binding !!ExpectedOutput}">
+                                            <StackPanel Spacing="8">
+                                                <TextBlock Text="Expected Output:"
+                                                          Classes="caption"
+                                                          Opacity="0.7" />
+                                                <Border Background="{DynamicResource OutputBackgroundBrush}"
+                                                       CornerRadius="4"
+                                                       Padding="12">
+                                                    <SelectableTextBlock Text="{Binding ExpectedOutput}"
+                                                                       FontFamily="Cascadia Code,Consolas,Courier New"
+                                                                       FontSize="12"
+                                                                       Foreground="{DynamicResource SuccessBrush}" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Key Takeaways -->
+                    <Border Classes="success-card" IsVisible="{Binding !!Lesson.Content.KeyTakeaways}">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <PathIcon Data="{StaticResource CheckCircleIcon}"
+                                         Width="20" Height="20"
+                                         Foreground="{DynamicResource SuccessBrush}" />
+                                <TextBlock Text="Key Takeaways"
+                                          Classes="h4"
+                                          Foreground="{DynamicResource SuccessBrush}" />
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding Lesson.Content.KeyTakeaways}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4">
+                                            <PathIcon Data="{StaticResource CheckIcon}"
+                                                     Width="16" Height="16"
+                                                     Foreground="{DynamicResource SuccessBrush}"
+                                                     VerticalAlignment="Top"
+                                                     Margin="0,2,0,0" />
+                                            <TextBlock Text="{Binding}"
+                                                      Classes="body"
+                                                      TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Practice Challenges Section (Phase 2) -->
+                    <!-- This will be implemented in Phase 2: Interactive Learning Features -->
+
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Actions -->
+        <Border Grid.Row="2" Classes="page-footer">
+            <Grid ColumnDefinitions="*,Auto" Margin="32,16">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+                    <Button Content="Previous Lesson"
+                           Classes="secondary"
+                           IsVisible="False" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                    <Button Content="Mark as Complete"
+                           Command="{Binding MarkCompleteCommand}"
+                           Classes="success" />
+                    <Button Content="Next Lesson"
+                           Classes="primary"
+                           IsVisible="False" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>
