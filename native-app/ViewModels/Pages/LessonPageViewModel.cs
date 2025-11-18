@@ -1,9 +1,11 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using CodeTutor.Native.Models;
 using CodeTutor.Native.Services;
+using CodeTutor.Native.ViewModels.Challenges;
 
 namespace CodeTutor.Native.ViewModels.Pages;
 
@@ -15,6 +17,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigationService;
     private readonly IProgressService _progressService;
+    private readonly IChallengeFactory _challengeFactory;
 
     private string _courseId = string.Empty;
     private string _moduleId = string.Empty;
@@ -28,11 +31,13 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     public LessonPageViewModel(
         ICourseService courseService,
         INavigationService navigationService,
-        IProgressService progressService)
+        IProgressService progressService,
+        IChallengeFactory challengeFactory)
     {
         _courseService = courseService;
         _navigationService = navigationService;
         _progressService = progressService;
+        _challengeFactory = challengeFactory;
 
         // Commands
         GoBackCommand = ReactiveCommand.Create(GoBack);
@@ -67,6 +72,10 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
     public string Breadcrumb => $"{_courseId} / {_moduleId} / {_lessonId}";
+
+    public ObservableCollection<ChallengeViewModelBase> Challenges { get; } = new();
+
+    public bool HasChallenges => Challenges.Count > 0;
 
     public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
     public ReactiveCommand<Unit, Unit> RetryLoadCommand { get; }
@@ -109,6 +118,24 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
 
             Lesson = lesson;
             LessonContent = lesson.Content.Body;
+
+            // Load challenges
+            Challenges.Clear();
+            foreach (var challenge in lesson.Exercises)
+            {
+                try
+                {
+                    var viewModel = _challengeFactory.CreateViewModel(challenge);
+                    Challenges.Add(viewModel);
+                }
+                catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+                {
+                    // Log error but continue loading other challenges
+                    System.Diagnostics.Debug.WriteLine($"Failed to create challenge ViewModel: {ex.Message}");
+                }
+            }
+
+            this.RaisePropertyChanged(nameof(HasChallenges));
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {

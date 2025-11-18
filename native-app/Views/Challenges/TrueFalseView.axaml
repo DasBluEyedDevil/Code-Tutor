@@ -1,0 +1,102 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CodeTutor.Native.ViewModels.Challenges"
+             x:Class="CodeTutor.Native.Views.Challenges.TrueFalseView"
+             x:DataType="vm:TrueFalseViewModel">
+
+    <Border Classes="content-card" Padding="24">
+        <StackPanel Spacing="20">
+
+            <!-- Challenge Header -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="{Binding Challenge.Title}"
+                          Classes="h3" />
+                <TextBlock Text="{Binding Challenge.Description}"
+                          Classes="body"
+                          TextWrapping="Wrap"
+                          Opacity="0.8" />
+            </StackPanel>
+
+            <!-- Statement -->
+            <TextBlock Text="{Binding Statement}"
+                      Classes="h4"
+                      TextWrapping="Wrap"
+                      Margin="0,8" />
+
+            <!-- True/False Buttons -->
+            <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
+                <Button Content="True"
+                       Command="{Binding SelectTrueCommand}"
+                       Width="150"
+                       Height="60"
+                       Classes="success"
+                       FontSize="18"
+                       FontWeight="Bold" />
+
+                <Button Content="False"
+                       Command="{Binding SelectFalseCommand}"
+                       Width="150"
+                       Height="60"
+                       Classes="secondary"
+                       FontSize="18"
+                       FontWeight="Bold" />
+            </StackPanel>
+
+            <!-- Selected Answer Display -->
+            <TextBlock IsVisible="{Binding !!SelectedAnswer}"
+                      Text="{Binding SelectedAnswer, StringFormat='Selected: {0}'}"
+                      Classes="body"
+                      HorizontalAlignment="Center"
+                      Opacity="0.7" />
+
+            <!-- Hint Section -->
+            <Border IsVisible="{Binding !!CurrentHint}"
+                   Classes="info-card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Hint:"
+                              Classes="h4"
+                              Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="{Binding CurrentHint}"
+                              Classes="body"
+                              TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+                <Button Content="Submit Answer"
+                       Command="{Binding SubmitCommand}"
+                       Classes="primary" />
+
+                <Button Content="Show Hint"
+                       Command="{Binding ShowHintCommand}"
+                       IsVisible="{Binding HasMoreHints}"
+                       Classes="secondary" />
+
+                <Button Content="Try Again"
+                       Command="{Binding ResetCommand}"
+                       IsVisible="{Binding HasSubmitted}"
+                       Classes="secondary" />
+            </StackPanel>
+
+            <!-- Result -->
+            <Border IsVisible="{Binding !!Result}"
+                   Classes="success-card">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{Binding Result.IsCorrect, StringFormat='Result: {0}'}"
+                              Classes="h4" />
+                    <TextBlock Text="{Binding Result.Feedback}"
+                              Classes="body"
+                              TextWrapping="Wrap" />
+                    <TextBlock Classes="body">
+                        <Run Text="Score: " />
+                        <Run Text="{Binding Result.Score}" FontWeight="Bold" />
+                        <Run Text=" / " />
+                        <Run Text="{Binding Result.MaxScore}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>
