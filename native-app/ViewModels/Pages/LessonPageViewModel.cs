@@ -81,14 +81,16 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             _lessonId = navParam.LessonId;
 
             this.RaisePropertyChanged(nameof(Breadcrumb));
-            LoadLessonAsync();
+            // Fire-and-forget is intentional - errors will be shown in UI via ErrorMessage
+            _ = LoadLessonAsync();
         }
     }
 
     public void OnNavigatedBack()
     {
         // Refresh lesson when navigating back
-        LoadLessonAsync();
+        // Fire-and-forget is intentional - errors will be shown in UI via ErrorMessage
+        _ = LoadLessonAsync();
     }
 
     private async Task LoadLessonAsync()
@@ -108,7 +110,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             Lesson = lesson;
             LessonContent = lesson.Content.Body;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             ErrorMessage = $"Failed to load lesson: {ex.Message}";
         }
@@ -125,7 +127,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             await _progressService.SaveProgressAsync(_courseId, _moduleId, _lessonId, 100, true);
             GoBack();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             ErrorMessage = $"Failed to save progress: {ex.Message}";
         }

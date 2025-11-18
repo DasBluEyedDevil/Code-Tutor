@@ -28,9 +28,9 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Create main window with navigation
+            // Get navigation service and main window view model from DI
             var navigationService = _serviceProvider.GetRequiredService<INavigationService>();
-            var mainWindowViewModel = new MainWindowViewModel(navigationService);
+            var mainWindowViewModel = _serviceProvider.GetRequiredService<MainWindowViewModel>();
 
             desktop.MainWindow = new MainWindow
             {
@@ -52,7 +52,10 @@ public partial class App : Application
         services.AddSingleton<IProgressService, ProgressService>();
         services.AddSingleton<INavigationService, NavigationService>();
 
-        // ViewModels (Transient so each navigation creates a new instance)
+        // Main Window ViewModel
+        services.AddSingleton<MainWindowViewModel>();
+
+        // Page ViewModels (Transient so each navigation creates a new instance)
         services.AddTransient<LandingPageViewModel>();
         services.AddTransient<CoursePageViewModel>();
         services.AddTransient<LessonPageViewModel>();
