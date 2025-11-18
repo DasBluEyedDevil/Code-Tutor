@@ -2,7 +2,9 @@ using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using CodeTutor.Native.Data;
 using CodeTutor.Native.Services;
 using CodeTutor.Native.ViewModels;
 using CodeTutor.Native.ViewModels.Pages;
@@ -19,12 +21,15 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
         // Configure dependency injection
         var services = new ServiceCollection();
         ConfigureServices(services);
         _serviceProvider = services.BuildServiceProvider();
+
+        // Initialize database
+        await InitializeDatabaseAsync();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -44,12 +49,38 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
+    private async System.Threading.Tasks.Task InitializeDatabaseAsync()
+    {
+        try
+        {
+            var databaseService = _serviceProvider?.GetRequiredService<IDatabaseService>();
+            if (databaseService != null)
+            {
+                await databaseService.InitializeAsync();
+            }
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            // Log error but don't crash the app
+            Console.WriteLine($"Database initialization failed: {ex.Message}");
+        }
+    }
+
     private void ConfigureServices(ServiceCollection services)
     {
+        // Database
+        services.AddDbContext<CodeTutorDbContext>(options =>
+        {
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dbPath = System.IO.Path.Combine(appDataPath, "CodeTutor", "CodeTutor.db");
+            options.UseSqlite($"Data Source={dbPath}");
+        });
+
         // Services
+        services.AddSingleton<IDatabaseService, DatabaseService>();
         services.AddSingleton<ICourseService, CourseService>();
         services.AddSingleton<ICodeExecutor, CodeExecutor>();
-        services.AddSingleton<IProgressService, ProgressService>();
+        services.AddScoped<IProgressService, ProgressService>();
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IChallengeValidationService, ChallengeValidationService>();
         services.AddSingleton<IChallengeFactory, ChallengeFactory>();

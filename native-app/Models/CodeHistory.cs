@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CodeTutor.Native.Models;
 
 /// <summary>
-/// Represents user progress for a specific lesson or challenge
+/// Represents auto-saved code history for a challenge
 /// Entity model for Entity Framework Core
 /// </summary>
-[Table("Progress")]
-public class UserProgress
+[Table("CodeHistory")]
+public class CodeHistory
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,23 +27,14 @@ public class UserProgress
     [Required]
     public string LessonId { get; set; } = string.Empty;
 
-    public string? ChallengeId { get; set; }
+    [Required]
+    public string ChallengeId { get; set; } = string.Empty;
 
-    public int Score { get; set; }
+    [Required]
+    public string Code { get; set; } = string.Empty;
 
-    public int MaxScore { get; set; } = 100;
-
-    public int HintsUsed { get; set; }
-
-    public int Attempts { get; set; }
-
-    public bool Completed { get; set; }
-
-    public DateTime? CompletedAt { get; set; }
-
-    public DateTime FirstAttemptAt { get; set; } = DateTime.UtcNow;
-
-    public DateTime LastAttemptAt { get; set; } = DateTime.UtcNow;
+    [Required]
+    public DateTime SavedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation property
     public User? User { get; set; }
