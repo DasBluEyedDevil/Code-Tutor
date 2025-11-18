@@ -53,6 +53,8 @@ public partial class App : Application
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IChallengeValidationService, ChallengeValidationService>();
         services.AddSingleton<IChallengeFactory, ChallengeFactory>();
+        services.AddSingleton<ITextMateRegistryService, TextMateRegistryService>();
+        services.AddSingleton<IEditorConfigurationService, EditorConfigurationService>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();
@@ -63,4 +65,9 @@ public partial class App : Application
         services.AddTransient<LessonPageViewModel>();
         services.AddTransient<NotFoundPageViewModel>();
     }
+
+    /// <summary>
+    /// Expose service provider for controls that need DI
+    /// </summary>
+    public IServiceProvider? Services => _serviceProvider;
 }
