@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:CodeTutor.Native.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             x:Class="CodeTutor.Native.Views.Pages.CoursePage"
+             x:DataType="vm:CoursePageViewModel">
+
+    <Design.DataContext>
+        <vm:CoursePageViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Header with Breadcrumb -->
+        <Border Grid.Row="0" Classes="page-header">
+            <Grid ColumnDefinitions="Auto,*" Margin="32,16">
+                <Button Grid.Column="0"
+                       Command="{Binding GoBackCommand}"
+                       Classes="icon-button"
+                       ToolTip.Tip="Back to courses">
+                    <PathIcon Data="{StaticResource BackIcon}"
+                             Width="20" Height="20" />
+                </Button>
+
+                <StackPanel Grid.Column="1"
+                           Spacing="8"
+                           Margin="16,0,0,0">
+                    <TextBlock Classes="h2"
+                              Text="{Binding Course.Title}" />
+                    <TextBlock Classes="body"
+                              Text="{Binding Course.Description}"
+                              Opacity="0.7" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="32" Spacing="24">
+
+                <!-- Loading State -->
+                <Border IsVisible="{Binding IsLoading}"
+                       Classes="loading-container">
+                    <StackPanel Spacing="16" HorizontalAlignment="Center">
+                        <ProgressBar IsIndeterminate="True"
+                                    Width="200"
+                                    Classes="primary-progress" />
+                        <TextBlock Text="Loading course..."
+                                  HorizontalAlignment="Center"
+                                  Classes="body" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Error State -->
+                <Border IsVisible="{Binding HasError}"
+                       Classes="error-container">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="{Binding ErrorMessage}"
+                                  Classes="body"
+                                  Foreground="{DynamicResource ErrorBrush}" />
+                        <Button Content="Retry"
+                               Command="{Binding RetryLoadCommand}"
+                               Classes="primary" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Modules List -->
+                <ItemsControl ItemsSource="{Binding Modules}"
+                             IsVisible="{Binding !IsLoading}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Classes="module-card" Margin="0,0,0,16">
+                                <StackPanel Spacing="16">
+
+                                    <!-- Module Header -->
+                                    <Button Classes="module-header-button"
+                                           Command="{Binding ToggleExpandCommand}"
+                                           HorizontalContentAlignment="Stretch">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <StackPanel Grid.Column="0" Spacing="8">
+                                                <TextBlock Text="{Binding Title}"
+                                                          Classes="h3" />
+                                                <TextBlock Text="{Binding Description}"
+                                                          Classes="body"
+                                                          Opacity="0.7"
+                                                          TextWrapping="Wrap" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1"
+                                                       VerticalAlignment="Center"
+                                                       Spacing="8">
+                                                <!-- Progress -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock Text="{Binding CompletedLessons}"
+                                                              Classes="body" />
+                                                    <TextBlock Text="/"
+                                                              Classes="body"
+                                                              Opacity="0.5" />
+                                                    <TextBlock Text="{Binding TotalLessons}"
+                                                              Classes="body"
+                                                              Opacity="0.5" />
+                                                </StackPanel>
+
+                                                <!-- Expand Icon -->
+                                                <PathIcon Data="{StaticResource ChevronDownIcon}"
+                                                         Width="16" Height="16">
+                                                    <PathIcon.RenderTransform>
+                                                        <RotateTransform Angle="{Binding IsExpanded, Converter={StaticResource BoolToAngleConverter}}" />
+                                                    </PathIcon.RenderTransform>
+                                                </PathIcon>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+
+                                    <!-- Progress Bar -->
+                                    <ProgressBar Value="{Binding ProgressPercentage}"
+                                                Maximum="100"
+                                                Classes="module-progress"
+                                                Height="4" />
+
+                                    <!-- Lessons List (Expanded) -->
+                                    <ItemsControl ItemsSource="{Binding Lessons}"
+                                                 IsVisible="{Binding IsExpanded}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Classes="lesson-item"
+                                                       Command="{Binding $parent[ItemsControl].((vm:CoursePageViewModel)DataContext).SelectLessonCommand}"
+                                                       CommandParameter="{Binding}"
+                                                       HorizontalContentAlignment="Stretch"
+                                                       Margin="0,4">
+                                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                                        <!-- Completion Indicator -->
+                                                        <PathIcon Grid.Column="0"
+                                                                 Data="{Binding IsCompleted, Converter={StaticResource BoolToCheckIconConverter}}"
+                                                                 Width="20" Height="20"
+                                                                 Foreground="{Binding IsCompleted, Converter={StaticResource BoolToSuccessBrushConverter}}"
+                                                                 Margin="0,0,12,0" />
+
+                                                        <!-- Lesson Title -->
+                                                        <TextBlock Grid.Column="1"
+                                                                  Text="{Binding Title}"
+                                                                  Classes="body"
+                                                                  VerticalAlignment="Center" />
+
+                                                        <!-- Arrow Icon -->
+                                                        <PathIcon Grid.Column="2"
+                                                                 Data="{StaticResource ChevronRightIcon}"
+                                                                 Width="16" Height="16"
+                                                                 Opacity="0.5" />
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>
