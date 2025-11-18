@@ -86,6 +86,8 @@ public partial class App : Application
         services.AddSingleton<IChallengeFactory, ChallengeFactory>();
         services.AddSingleton<ITextMateRegistryService, TextMateRegistryService>();
         services.AddSingleton<IEditorConfigurationService, EditorConfigurationService>();
+        services.AddScoped<IAutoSaveService, AutoSaveService>();
+        services.AddSingleton<ISettingsService, SettingsService>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();

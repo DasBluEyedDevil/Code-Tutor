@@ -24,7 +24,7 @@ public class ProgressService : IProgressService
         _logger = logger;
     }
 
-    public async Task SaveProgressAsync(string courseId, string moduleId, string lessonId, int score, bool completed)
+    public async Task SaveProgressAsync(string courseId, string moduleId, string lessonId, int score, bool completed, int hintsUsed = 0)
     {
         try
         {
@@ -49,6 +49,7 @@ public class ProgressService : IProgressService
                     ChallengeId = null,
                     Score = score,
                     MaxScore = 100,
+                    HintsUsed = hintsUsed,
                     Attempts = 1,
                     Completed = completed,
                     CompletedAt = completed ? DateTime.UtcNow : null,
@@ -62,6 +63,7 @@ public class ProgressService : IProgressService
             {
                 // Update existing progress
                 progress.Score = Math.Max(progress.Score, score);
+                progress.HintsUsed = Math.Max(progress.HintsUsed, hintsUsed);
                 progress.Attempts++;
                 progress.Completed = completed;
                 progress.CompletedAt = completed && progress.CompletedAt == null ? DateTime.UtcNow : progress.CompletedAt;
@@ -72,8 +74,8 @@ public class ProgressService : IProgressService
 
             await _dbContext.SaveChangesAsync();
 
-            _logger?.LogInformation("Saved progress for {Course}/{Module}/{Lesson}: Score={Score}, Completed={Completed}",
-                courseId, moduleId, lessonId, score, completed);
+            _logger?.LogInformation("Saved progress for {Course}/{Module}/{Lesson}: Score={Score}, Completed={Completed}, Hints={Hints}",
+                courseId, moduleId, lessonId, score, completed, hintsUsed);
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
@@ -145,6 +147,34 @@ public class ProgressService : IProgressService
         {
             _logger?.LogError(ex, "Failed to get course progress percentage for {Course}", courseId);
             return 0;
+        }
+    }
+
+    public async Task IncrementHintUsageAsync(string courseId, string moduleId, string lessonId, string? challengeId = null)
+    {
+        try
+        {
+            var progress = await _dbContext.Progress
+                .FirstOrDefaultAsync(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ModuleId == moduleId &&
+                    p.LessonId == lessonId &&
+                    p.ChallengeId == challengeId);
+
+            if (progress != null)
+            {
+                progress.HintsUsed++;
+                _dbContext.Progress.Update(progress);
+                await _dbContext.SaveChangesAsync();
+
+                _logger?.LogInformation("Incremented hint usage for {Course}/{Module}/{Lesson}/{Challenge}",
+                    courseId, moduleId, lessonId, challengeId ?? "N/A");
+            }
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to increment hint usage");
         }
     }
 }
