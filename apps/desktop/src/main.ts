@@ -32,14 +32,14 @@ function createWindow() {
   });
 
   // Load the frontend
-  if (app.isPackaged) {
-    // Production: load from built files
-    mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'));
-  } else {
-    // Development: load from file (we'll build it first)
-    const webPath = path.join(__dirname, '../../../web/dist/index.html');
-    mainWindow.loadFile(webPath);
-  }
+    if (app.isPackaged) {
+        // Production: load from built files in resources/app/web/dist
+        mainWindow.loadFile(path.join(__dirname, '../web/dist/index.html'));
+    } else {
+        // Development: load from apps/web/dist
+        const webPath = path.join(__dirname, '../../web/dist/index.html');
+        mainWindow.loadFile(webPath);
+    }
 
   // Open DevTools in development
   if (!app.isPackaged) {
