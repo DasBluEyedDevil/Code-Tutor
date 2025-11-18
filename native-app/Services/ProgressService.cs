@@ -1,124 +1,150 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using CodeTutor.Native.Data;
 using CodeTutor.Native.Models;
 
 namespace CodeTutor.Native.Services;
 
 /// <summary>
-/// Simple file-based progress service (will be replaced with SQLite in Phase 4)
+/// SQLite-based progress service using Entity Framework Core
 /// </summary>
 public class ProgressService : IProgressService
 {
-    private readonly string _progressFilePath;
-    private Dictionary<string, UserProgress> _progressCache = new();
-    private const string DefaultUserId = "default-user";
+    private readonly CodeTutorDbContext _dbContext;
+    private readonly ILogger<ProgressService>? _logger;
+    private const string DefaultUserId = "00000000-0000-0000-0000-000000000001";
 
-    public ProgressService()
+    public ProgressService(CodeTutorDbContext dbContext, ILogger<ProgressService>? logger = null)
     {
-        var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        var codeTutorPath = Path.Combine(appDataPath, "CodeTutor");
-        Directory.CreateDirectory(codeTutorPath);
-        _progressFilePath = Path.Combine(codeTutorPath, "progress.json");
-
-        LoadProgressAsync().Wait();
+        _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task SaveProgressAsync(string courseId, string moduleId, string lessonId, int score, bool completed)
     {
-        var key = $"{courseId}/{moduleId}/{lessonId}";
-
-        if (!_progressCache.ContainsKey(key))
+        try
         {
-            _progressCache[key] = new UserProgress
+            // Find existing progress record
+            var progress = await _dbContext.Progress
+                .FirstOrDefaultAsync(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ModuleId == moduleId &&
+                    p.LessonId == lessonId &&
+                    p.ChallengeId == null);
+
+            if (progress == null)
             {
-                UserId = DefaultUserId,
-                CourseId = courseId,
-                ModuleId = moduleId,
-                LessonId = lessonId,
-                Score = score,
-                Completed = completed,
-                FirstAttemptAt = DateTime.UtcNow,
-                LastAttemptAt = DateTime.UtcNow
-            };
+                // Create new progress record
+                progress = new UserProgress
+                {
+                    UserId = DefaultUserId,
+                    CourseId = courseId,
+                    ModuleId = moduleId,
+                    LessonId = lessonId,
+                    ChallengeId = null,
+                    Score = score,
+                    MaxScore = 100,
+                    Attempts = 1,
+                    Completed = completed,
+                    CompletedAt = completed ? DateTime.UtcNow : null,
+                    FirstAttemptAt = DateTime.UtcNow,
+                    LastAttemptAt = DateTime.UtcNow
+                };
+
+                _dbContext.Progress.Add(progress);
+            }
+            else
+            {
+                // Update existing progress
+                progress.Score = Math.Max(progress.Score, score);
+                progress.Attempts++;
+                progress.Completed = completed;
+                progress.CompletedAt = completed && progress.CompletedAt == null ? DateTime.UtcNow : progress.CompletedAt;
+                progress.LastAttemptAt = DateTime.UtcNow;
+
+                _dbContext.Progress.Update(progress);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            _logger?.LogInformation("Saved progress for {Course}/{Module}/{Lesson}: Score={Score}, Completed={Completed}",
+                courseId, moduleId, lessonId, score, completed);
         }
-        else
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            var progress = _progressCache[key];
-            progress.Score = Math.Max(progress.Score, score);
-            progress.Completed = completed;
-            progress.LastAttemptAt = DateTime.UtcNow;
+            _logger?.LogError(ex, "Failed to save progress for {Course}/{Module}/{Lesson}",
+                courseId, moduleId, lessonId);
+            throw;
         }
-
-        await SaveToDiskAsync();
     }
 
-    public Task<UserProgress?> GetLessonProgressAsync(string courseId, string moduleId, string lessonId)
+    public async Task<UserProgress?> GetLessonProgressAsync(string courseId, string moduleId, string lessonId)
     {
-        var key = $"{courseId}/{moduleId}/{lessonId}";
-        _progressCache.TryGetValue(key, out var progress);
-        return Task.FromResult(progress);
+        try
+        {
+            return await _dbContext.Progress
+                .FirstOrDefaultAsync(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ModuleId == moduleId &&
+                    p.LessonId == lessonId &&
+                    p.ChallengeId == null);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to get progress for {Course}/{Module}/{Lesson}",
+                courseId, moduleId, lessonId);
+            return null;
+        }
     }
 
-    public Task<List<UserProgress>> GetModuleProgressAsync(string courseId, string moduleId)
+    public async Task<List<UserProgress>> GetModuleProgressAsync(string courseId, string moduleId)
     {
-        var progress = _progressCache.Values
-            .Where(p => p.CourseId == courseId && p.ModuleId == moduleId)
-            .ToList();
-
-        return Task.FromResult(progress);
+        try
+        {
+            return await _dbContext.Progress
+                .Where(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ModuleId == moduleId &&
+                    p.ChallengeId == null)
+                .OrderBy(p => p.LessonId)
+                .ToListAsync();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to get progress for {Course}/{Module}",
+                courseId, moduleId);
+            return new List<UserProgress>();
+        }
     }
 
     public async Task<int> GetCourseProgressPercentageAsync(string courseId)
     {
-        var courseProgress = _progressCache.Values
-            .Where(p => p.CourseId == courseId && p.ChallengeId == null)
-            .ToList();
+        try
+        {
+            var courseProgress = await _dbContext.Progress
+                .Where(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ChallengeId == null)
+                .ToListAsync();
 
-        if (courseProgress.Count == 0)
+            if (courseProgress.Count == 0)
+                return 0;
+
+            var completed = courseProgress.Count(p => p.Completed);
+            return (completed * 100) / courseProgress.Count;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to get course progress percentage for {Course}", courseId);
             return 0;
-
-        var completed = courseProgress.Count(p => p.Completed);
-        return (completed * 100) / courseProgress.Count;
-    }
-
-    private async Task LoadProgressAsync()
-    {
-        if (!File.Exists(_progressFilePath))
-        {
-            _progressCache = new Dictionary<string, UserProgress>();
-            return;
-        }
-
-        try
-        {
-            var json = await File.ReadAllTextAsync(_progressFilePath);
-            _progressCache = JsonSerializer.Deserialize<Dictionary<string, UserProgress>>(json)
-                ?? new Dictionary<string, UserProgress>();
-        }
-        catch
-        {
-            _progressCache = new Dictionary<string, UserProgress>();
-        }
-    }
-
-    private async Task SaveToDiskAsync()
-    {
-        try
-        {
-            var json = JsonSerializer.Serialize(_progressCache, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-
-            await File.WriteAllTextAsync(_progressFilePath, json);
-        }
-        catch
-        {
-            // Ignore save errors for now
         }
     }
 }
