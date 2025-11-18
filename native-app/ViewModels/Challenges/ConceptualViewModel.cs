@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using ReactiveUI;
 using CodeTutor.Native.Models.Challenges;
@@ -12,16 +13,19 @@ public class ConceptualViewModel : ChallengeViewModelBase
 {
     private readonly ConceptualChallenge _challenge;
     private readonly IChallengeValidationService _validationService;
+    private readonly IErrorHandlerService _errorHandler;
     private string _answer = string.Empty;
     private bool _showSampleAnswer;
 
     public ConceptualViewModel(
         ConceptualChallenge challenge,
-        IChallengeValidationService validationService)
+        IChallengeValidationService validationService,
+        IErrorHandlerService errorHandler)
         : base(challenge)
     {
         _challenge = challenge;
         _validationService = validationService;
+        _errorHandler = errorHandler;
 
         SubmitCommand = ReactiveCommand.Create(Submit,
             this.WhenAnyValue(x => x.Answer, x => x.HasSubmitted,

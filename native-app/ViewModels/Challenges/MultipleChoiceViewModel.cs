@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using ReactiveUI;
 using CodeTutor.Native.Models.Challenges;
@@ -12,15 +13,18 @@ public class MultipleChoiceViewModel : ChallengeViewModelBase
 {
     private readonly MultipleChoiceChallenge _challenge;
     private readonly IChallengeValidationService _validationService;
+    private readonly IErrorHandlerService _errorHandler;
     private int? _selectedOption;
 
     public MultipleChoiceViewModel(
         MultipleChoiceChallenge challenge,
-        IChallengeValidationService validationService)
+        IChallengeValidationService validationService,
+        IErrorHandlerService errorHandler)
         : base(challenge)
     {
         _challenge = challenge;
         _validationService = validationService;
+        _errorHandler = errorHandler;
 
         SubmitCommand = ReactiveCommand.Create(Submit,
             this.WhenAnyValue(x => x.SelectedOption, x => x.HasSubmitted,

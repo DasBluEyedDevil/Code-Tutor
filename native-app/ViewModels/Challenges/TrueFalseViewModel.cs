@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using ReactiveUI;
 using CodeTutor.Native.Models.Challenges;
@@ -12,15 +13,18 @@ public class TrueFalseViewModel : ChallengeViewModelBase
 {
     private readonly TrueFalseChallenge _challenge;
     private readonly IChallengeValidationService _validationService;
+    private readonly IErrorHandlerService _errorHandler;
     private bool? _selectedAnswer;
 
     public TrueFalseViewModel(
         TrueFalseChallenge challenge,
-        IChallengeValidationService validationService)
+        IChallengeValidationService validationService,
+        IErrorHandlerService errorHandler)
         : base(challenge)
     {
         _challenge = challenge;
         _validationService = validationService;
+        _errorHandler = errorHandler;
 
         SelectTrueCommand = ReactiveCommand.Create(() => SelectedAnswer = true,
             this.WhenAnyValue(x => x.HasSubmitted, submitted => !submitted));

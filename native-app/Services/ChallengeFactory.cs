@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using CodeTutor.Native.Models.Challenges;
 using CodeTutor.Native.ViewModels.Challenges;
 
@@ -9,27 +10,28 @@ namespace CodeTutor.Native.Services;
 /// </summary>
 public class ChallengeFactory : IChallengeFactory
 {
-    private readonly IChallengeValidationService _validationService;
-    private readonly ICodeExecutor _codeExecutor;
+    private readonly IServiceProvider _serviceProvider;
 
-    public ChallengeFactory(
-        IChallengeValidationService validationService,
-        ICodeExecutor codeExecutor)
+    public ChallengeFactory(IServiceProvider serviceProvider)
     {
-        _validationService = validationService;
-        _codeExecutor = codeExecutor;
+        _serviceProvider = serviceProvider;
     }
 
     public ChallengeViewModelBase CreateViewModel(Challenge challenge)
     {
+        // Resolve singleton services
+        var validationService = _serviceProvider.GetRequiredService<IChallengeValidationService>();
+        var codeExecutor = _serviceProvider.GetRequiredService<ICodeExecutor>();
+        var errorHandler = _serviceProvider.GetRequiredService<IErrorHandlerService>();
+
         return challenge switch
         {
-            MultipleChoiceChallenge mc => new MultipleChoiceViewModel(mc, _validationService),
-            TrueFalseChallenge tf => new TrueFalseViewModel(tf, _validationService),
-            CodeOutputChallenge co => new CodeOutputViewModel(co, _validationService, _codeExecutor),
-            FreeCodingChallenge fc => new FreeCodingViewModel(fc, _validationService),
-            CodeCompletionChallenge cc => new CodeCompletionViewModel(cc, _validationService),
-            ConceptualChallenge con => new ConceptualViewModel(con, _validationService),
+            MultipleChoiceChallenge mc => new MultipleChoiceViewModel(mc, validationService, errorHandler),
+            TrueFalseChallenge tf => new TrueFalseViewModel(tf, validationService, errorHandler),
+            CodeOutputChallenge co => new CodeOutputViewModel(co, validationService, codeExecutor, errorHandler),
+            FreeCodingChallenge fc => new FreeCodingViewModel(fc, validationService, errorHandler),
+            CodeCompletionChallenge cc => new CodeCompletionViewModel(cc, validationService, errorHandler),
+            ConceptualChallenge con => new ConceptualViewModel(con, validationService, errorHandler),
             _ => throw new NotSupportedException($"Challenge type '{challenge.Type}' is not supported.")
         };
     }
