@@ -1,190 +1,263 @@
-# Quick Troubleshooting Guide
+# Troubleshooting Guide - Code Tutor Desktop App
 
-## Current Issue: Docker Required
+## Quick Overview
 
-Code-Tutor **requires** Docker to function properly. The code execution feature is a core part of the learning platform.
-
----
-
-## ✅ What's Working
-
-Based on typical setup:
-- ✅ Node.js is installed
-- ✅ Dependencies are installed  
-- ✅ Web app can start on http://localhost:3000
-- ✅ All 7 courses are imported
+Code Tutor is a **desktop application** that runs code using your **local language runtimes**. No Docker required!
 
 ---
 
-## ⚠️ What Needs Docker
+## ✅ What You Need
 
-- ⚠️ Code execution (required for interactive learning)
-- ⚠️ Running exercises
-- ⚠️ Testing student code
-- ⚠️ All 7 language executors
+- ✅ Node.js 18+ installed
+- ✅ npm dependencies installed (`npm install`)
+- ✅ Language runtimes installed (Python, Java, Rust, etc.) for the languages you want to learn
 
 ---
 
-## Quick Fix: Install Docker
+## 🚀 Quick Start
 
-### Step 1: Install Docker Desktop
+### Launch the Desktop App
 
-1. **Download:**
-   - Windows: https://www.docker.com/products/docker-desktop
-   - Download and run the installer
-
-2. **Install:**
-   - Follow the installation wizard
-   - Restart your computer when prompted
-
-3. **Start Docker Desktop:**
-   - Open from Start menu
-   - Wait until you see "Docker Desktop is running"
-   - Check the whale icon in your system tray
-
-### Step 2: Build the Executors
-
+**Windows:**
 ```bash
-cd C:\Users\dasbl\WebstormProjects\Code-Tutor
-docker-compose build
+.\launch-desktop.bat
+```
+Or:
+```powershell
+.\launch-desktop.ps1
 ```
 
-This will take 5-10 minutes the first time.
-
-### Step 3: Start Everything
-
+**macOS/Linux:**
 ```bash
-# Start Docker containers
-docker-compose up -d
-
-# Start the application
-npm run dev
+./launch-desktop.sh
 ```
 
-Or just run:
+**Or use npm:**
 ```bash
-.\start.ps1
+npm run start:desktop
 ```
 
 ---
 
-## Detailed Docker Setup
+## Common Issues
 
-See **[DOCKER_SETUP.md](./DOCKER_SETUP.md)** for complete Docker installation and configuration guide.
+### Issue 1: "Language runtime not found"
 
----
+**Problem:** You're trying to run code for a language that isn't installed on your system.
 
-## Current Status Checklist
+**Solution:** Install the language runtime:
 
-Make sure you have:
+- **Python:** https://www.python.org/downloads/
+- **Java:** https://adoptium.net/
+- **Rust:** https://www.rust-lang.org/tools/install
+- **.NET (C#):** https://dotnet.microsoft.com/download
+- **Node.js (JavaScript):** https://nodejs.org
+- **Dart/Flutter:** https://flutter.dev/docs/get-started/install
 
-- [ ] Node.js installed
-- [ ] Dependencies installed (`npm install`)
-- [ ] **Docker Desktop installed and running** ← **Required!**
-- [ ] Executors built (`docker-compose build`)
-- [ ] Executors started (`docker-compose up -d`)
-- [ ] API server running on port 3001
-- [ ] Web app running on port 3000
+After installation, restart the desktop app.
 
----
+### Issue 2: "Port 3001 already in use"
 
-## Quick Start Commands
+**Problem:** Another application is using port 3001.
 
-### Full Setup from Scratch
+**Solution:**
 
+**Windows:**
 ```bash
-# 1. Install dependencies
-npm install
-
-# 2. Build Docker images (first time only, takes 5-10 min)
-docker-compose build
-
-# 3. Start everything
-.\start.ps1
+netstat -ano | findstr :3001
+taskkill /PID <PID> /F
 ```
 
-### Already Set Up?
-
+**macOS/Linux:**
 ```bash
-.\start.ps1
+lsof -ti:3001 | xargs kill -9
 ```
 
-Or manually:
+Or change the port in `apps/desktop/src/api-server.ts`.
+
+### Issue 3: Desktop app won't start
+
+**Problem:** Dependencies aren't built or there's an issue with the build.
+
+**Solution:**
+
+1. **Clean install:**
+   ```bash
+   rm -rf node_modules apps/web/node_modules apps/desktop/node_modules
+   npm install
+   ```
+
+2. **Build the desktop app:**
+   ```bash
+   npm run build:desktop
+   ```
+
+3. **Try starting again:**
+   ```bash
+   npm run start:desktop
+   ```
+
+### Issue 4: "Cannot find course content"
+
+**Problem:** Course content isn't being loaded.
+
+**Solution:** Ensure the `content/courses/` directory exists and contains course files:
+
 ```bash
-# Terminal 1
-docker-compose up -d
-
-# Terminal 2  
-cd apps/api
-npm run dev
-
-# Terminal 3
-cd apps/web
-npm run dev
+ls content/courses/
 ```
 
+You should see directories for: `python`, `java`, `kotlin`, `rust`, `csharp`, `javascript`, `dart`
+
+### Issue 5: Code execution errors
+
+**Problem:** Code runs but produces unexpected errors.
+
+**Solutions:**
+
+1. **Check language version:**
+   ```bash
+   # Python
+   python --version
+
+   # Java
+   java -version
+
+   # Rust
+   rustc --version
+
+   # .NET
+   dotnet --version
+
+   # Node.js
+   node --version
+
+   # Dart
+   dart --version
+   ```
+
+2. **Ensure minimum versions:**
+   - Python 3.8+
+   - Java 17+
+   - Rust 1.70+
+   - .NET 6.0+
+   - Node.js 18+
+   - Dart 3.0+
+
+3. **Check PATH:** Make sure language runtimes are in your system PATH.
 
 ---
 
 ## Testing Your Setup
 
-### Test 1: Check if API is running
+### Test 1: Check if the app starts
 
-Open: http://localhost:3001/health
+Run the desktop launcher:
+```bash
+npm run start:desktop
+```
 
-Should return:
-```json
-{
-  "status": "ok",
-  "timestamp": "..."
+You should see:
+```
+✓ Built in XXms
+Desktop app starting...
+Embedded server running on http://localhost:3001
+```
+
+And the desktop window should open automatically.
+
+### Test 2: Check available languages
+
+In the desktop app, go to the language selection page. The app will show which languages are available based on installed runtimes.
+
+### Test 3: Run a simple program
+
+Try running a "Hello World" program in any installed language:
+
+**Python:**
+```python
+print("Hello, World!")
+```
+
+**Java:**
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
 }
 ```
 
-### Test 2: Check if courses are loaded
+If it runs successfully, your setup is working!
 
-Open: http://localhost:3001/api/courses
+---
 
-Should return list of all 7 courses!
+## Building Installers
 
-### Test 3: Check the web app
+### Create distributable installers
 
-Open: http://localhost:3000
+```bash
+npm run dist:desktop
+```
 
-Should show the Code Tutor landing page.
+Or use the helper scripts:
+
+**Windows:**
+```bash
+.\build-installers.bat
+```
+
+**macOS/Linux:**
+```bash
+./build-installers.sh
+```
+
+Installers will be created in `apps/desktop/dist-electron/`.
 
 ---
 
 ## npm Warnings (Safe to Ignore)
 
-These warnings are safe to ignore for now:
+These warnings are safe to ignore:
 
 ```
 npm warn Unknown project config "auto-install-peers"
 npm warn Unknown project config "hoist"
 ```
 
-These are just workspace configuration warnings that don't affect functionality.
-
-The security warnings about esbuild are also non-critical for development.
+These are workspace configuration warnings that don't affect functionality.
 
 ---
 
-## Next Steps
+## Development Mode
 
-### Minimal Setup (No Docker):
+### Running in development
 
-1. ✅ Keep web server running (you already have this)
-2. ⏳ Start API server (run the command above)
-3. ✅ Browse to http://localhost:3000
-4. 🎉 Enjoy all 7 courses!
+```bash
+# Start in dev mode (watches for changes)
+npm run start:desktop
 
-### Full Setup (With Docker):
+# Build without installers
+npm run build:desktop
 
-1. Install Docker Desktop
-2. Start Docker Desktop
-3. Build executor images
-4. Run `docker-compose up -d`
-5. Now code execution works!
+# Build with installers
+npm run dist:desktop
+```
+
+### Checking logs
+
+The desktop app logs to the console where you started it. Check for any error messages there.
+
+### Debugging
+
+To open DevTools in the desktop app:
+- **Windows/Linux:** Press `Ctrl+Shift+I`
+- **macOS:** Press `Cmd+Option+I`
+
+Or add this to your development code:
+```javascript
+mainWindow.webContents.openDevTools();
+```
 
 ---
 
@@ -192,47 +265,54 @@ The security warnings about esbuild are also non-critical for development.
 
 **Check these:**
 
-1. **Is port 3000 already in use?**
+1. **Node.js version:**
    ```bash
-   netstat -ano | findstr :3000
+   node --version  # Should be 18.0.0 or higher
    ```
 
-2. **Is port 3001 already in use?**
+2. **npm version:**
    ```bash
-   netstat -ano | findstr :3001
+   npm --version  # Should be 9.0.0 or higher
    ```
 
-3. **Do you have the .env files?**
+3. **Dependencies installed:**
    ```bash
-   ls apps/web/.env
-   ls apps/api/.env
-   ```
-
-4. **Are dependencies actually installed?**
-   ```bash
-   ls apps/api/node_modules
+   ls node_modules
    ls apps/web/node_modules
+   ls apps/desktop/node_modules
+   ```
+
+4. **Build output exists:**
+   ```bash
+   ls apps/web/dist
+   ls apps/desktop/dist
    ```
 
 ---
 
-## TL;DR - Start Right Now
+## Getting Help
 
-**Two terminals:**
+**Found a bug?** Open an issue on GitHub:
+https://github.com/DasBluEyedDevil/Code-Tutor/issues
 
-Terminal 1 (Already running):
+**Need help?** Check the documentation:
+- [QUICK_START.md](./QUICK_START.md) - Getting started guide
+- [DESKTOP_APP_README.md](./DESKTOP_APP_README.md) - Desktop app details
+- [PACKAGING_GUIDE.md](./PACKAGING_GUIDE.md) - Creating installers
+- [DISTRIBUTION.md](./DISTRIBUTION.md) - Distribution guide
+
+---
+
+## TL;DR - Quick Start
+
+**Just want to start coding?**
+
 ```bash
-cd apps/web
-npm run dev
-```
+# Install dependencies (first time only)
+npm install
 
-Terminal 2 (Run this now):
-```bash
-cd apps/api  
-npm run dev
+# Launch the app
+npm run start:desktop
 ```
-
-Then open: **http://localhost:3000**
 
 **Done!** 🎉
-
