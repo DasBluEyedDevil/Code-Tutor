@@ -33,4 +33,9 @@ public interface IProgressService
     /// Increment hint usage count for a lesson/challenge
     /// </summary>
     Task IncrementHintUsageAsync(string courseId, string moduleId, string lessonId, string? challengeId = null);
+
+    /// <summary>
+    /// Save progress for a specific challenge within a lesson
+    /// </summary>
+    Task SaveChallengeProgressAsync(string courseId, string moduleId, string lessonId, string challengeId, int score, bool completed, int hintsUsed = 0);
 }

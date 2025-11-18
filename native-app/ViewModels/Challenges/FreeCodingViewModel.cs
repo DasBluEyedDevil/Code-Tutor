@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -13,17 +14,20 @@ public class FreeCodingViewModel : ChallengeViewModelBase
 {
     private readonly FreeCodingChallenge _challenge;
     private readonly IChallengeValidationService _validationService;
+    private readonly IErrorHandlerService _errorHandler;
     private string _code;
     private bool _isValidating;
     private bool _showSolution;
 
     public FreeCodingViewModel(
         FreeCodingChallenge challenge,
-        IChallengeValidationService validationService)
+        IChallengeValidationService validationService,
+        IErrorHandlerService errorHandler)
         : base(challenge)
     {
         _challenge = challenge;
         _validationService = validationService;
+        _errorHandler = errorHandler;
         _code = challenge.StarterCode;
 
         SubmitCommand = ReactiveCommand.CreateFromTask(SubmitAsync,
@@ -71,13 +75,13 @@ public class FreeCodingViewModel : ChallengeViewModelBase
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            // Handle validation error
+            await _errorHandler.HandleErrorAsync(ex, "Challenge validation", showToUser: false);
             Result = new ChallengeResult
             {
                 IsCorrect = false,
                 Score = 0,
                 MaxScore = _challenge.Points,
-                Feedback = $"Validation error: {ex.Message}"
+                Feedback = $"Validation error: {_errorHandler.GetUserFriendlyMessage(ex)}"
             };
         }
         finally

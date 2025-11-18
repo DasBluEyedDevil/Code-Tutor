@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -14,6 +15,7 @@ public class CodeOutputViewModel : ChallengeViewModelBase
     private readonly CodeOutputChallenge _challenge;
     private readonly IChallengeValidationService _validationService;
     private readonly ICodeExecutor _codeExecutor;
+    private readonly IErrorHandlerService _errorHandler;
     private string _userOutput = string.Empty;
     private string _actualOutput = string.Empty;
     private bool _isRunning;
@@ -21,12 +23,14 @@ public class CodeOutputViewModel : ChallengeViewModelBase
     public CodeOutputViewModel(
         CodeOutputChallenge challenge,
         IChallengeValidationService validationService,
-        ICodeExecutor codeExecutor)
+        ICodeExecutor codeExecutor,
+        IErrorHandlerService errorHandler)
         : base(challenge)
     {
         _challenge = challenge;
         _validationService = validationService;
         _codeExecutor = codeExecutor;
+        _errorHandler = errorHandler;
 
         RunCodeCommand = ReactiveCommand.CreateFromTask(RunCodeAsync,
             this.WhenAnyValue(x => x.IsRunning, x => x.AllowRun,
@@ -82,7 +86,8 @@ public class CodeOutputViewModel : ChallengeViewModelBase
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            ActualOutput = $"Execution failed: {ex.Message}";
+            await _errorHandler.HandleErrorAsync(ex, "Code execution", showToUser: false);
+            ActualOutput = $"Execution failed: {_errorHandler.GetUserFriendlyMessage(ex)}";
         }
         finally
         {
