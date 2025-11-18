@@ -12,7 +12,7 @@ public interface IProgressService
     /// <summary>
     /// Save progress for a lesson
     /// </summary>
-    Task SaveProgressAsync(string courseId, string moduleId, string lessonId, int score, bool completed);
+    Task SaveProgressAsync(string courseId, string moduleId, string lessonId, int score, bool completed, int hintsUsed = 0);
 
     /// <summary>
     /// Get progress for a specific lesson
@@ -28,4 +28,9 @@ public interface IProgressService
     /// Get overall course progress percentage
     /// </summary>
     Task<int> GetCourseProgressPercentageAsync(string courseId);
+
+    /// <summary>
+    /// Increment hint usage count for a lesson/challenge
+    /// </summary>
+    Task IncrementHintUsageAsync(string courseId, string moduleId, string lessonId, string? challengeId = null);
 }
