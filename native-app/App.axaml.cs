@@ -88,6 +88,8 @@ public partial class App : Application
         services.AddSingleton<IEditorConfigurationService, EditorConfigurationService>();
         services.AddScoped<IAutoSaveService, AutoSaveService>();
         services.AddSingleton<ISettingsService, SettingsService>();
+        services.AddScoped<IAchievementService, AchievementService>();
+        services.AddScoped<IStreakService, StreakService>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();
