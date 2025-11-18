@@ -11,8 +11,9 @@ namespace CodeTutor.Native.Services;
 public class NavigationService : INavigationService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly Stack<ViewModelBase> _navigationStack = new();
+    private readonly Stack<(ViewModelBase ViewModel, IServiceScope Scope)> _navigationStack = new();
     private ViewModelBase? _currentViewModel;
+    private IServiceScope? _currentScope;
 
     public NavigationService(IServiceProvider serviceProvider)
     {
@@ -43,14 +44,17 @@ public class NavigationService : INavigationService
 
     public void NavigateTo<TViewModel>(object? parameter) where TViewModel : ViewModelBase
     {
-        // Push current view model to stack if it exists
-        if (CurrentViewModel != null)
+        // Push current view model and scope to stack if they exist
+        if (CurrentViewModel != null && _currentScope != null)
         {
-            _navigationStack.Push(CurrentViewModel);
+            _navigationStack.Push((CurrentViewModel, _currentScope));
         }
 
-        // Create new view model instance
-        var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
+        // Create new scope for the new ViewModel and its dependencies
+        _currentScope = _serviceProvider.CreateScope();
+
+        // Get view model from the new scope
+        var viewModel = _currentScope.ServiceProvider.GetRequiredService<TViewModel>();
 
         // If view model supports parameters, set it
         if (parameter != null && viewModel is INavigableViewModel navigable)
@@ -68,8 +72,13 @@ public class NavigationService : INavigationService
             return;
         }
 
-        var previousViewModel = _navigationStack.Pop();
+        // Dispose current scope before navigating back
+        _currentScope?.Dispose();
+
+        // Pop previous view model and scope
+        var (previousViewModel, previousScope) = _navigationStack.Pop();
         CurrentViewModel = previousViewModel;
+        _currentScope = previousScope;
 
         // Notify view model it's being navigated back to
         if (previousViewModel is INavigableViewModel navigable)
@@ -80,7 +89,12 @@ public class NavigationService : INavigationService
 
     public void ClearHistory()
     {
-        _navigationStack.Clear();
+        // Dispose all scopes in the navigation stack
+        while (_navigationStack.Count > 0)
+        {
+            var (_, scope) = _navigationStack.Pop();
+            scope?.Dispose();
+        }
     }
 }
 
