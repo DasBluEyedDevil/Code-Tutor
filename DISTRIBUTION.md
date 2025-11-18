@@ -27,7 +27,9 @@ Code Tutor Desktop is a standalone application for interactive coding tutorials 
 
 ### For End Users
 
-1. Download the appropriate installer for your platform
+**Note:** Installer files must be built from source using the build scripts below. Pre-built installers are not included in the repository.
+
+1. Build the installer for your platform (see "Building from Source" below)
 2. Run the installer and follow the prompts
 3. Launch "Code Tutor" from your applications menu
 4. Select a programming language and start learning!
@@ -93,20 +95,22 @@ Code Tutor can run code locally if you have the programming languages installed:
 
 #### Option 1: Full Installer (Recommended)
 
-1. Download `Code-Tutor-Setup-1.0.0.exe`
-2. Double-click the installer
-3. Choose installation directory (default: `C:\Program Files\Code Tutor`)
-4. Select additional options:
+1. Build the installer using `build-installers.bat` (see "Building from Source" below)
+2. Locate `Code-Tutor-Setup-1.0.0.exe` in `apps\desktop\dist-electron\`
+3. Double-click the installer
+4. Choose installation directory (default: `C:\Program Files\Code Tutor`)
+5. Select additional options:
    - ☑ Create desktop shortcut
    - ☑ Add to Start Menu
-5. Click "Install" and wait for completion
-6. Launch from Start Menu or desktop shortcut
+6. Click "Install" and wait for completion
+7. Launch from Start Menu or desktop shortcut
 
 #### Option 2: Portable Version
 
-1. Download `Code-Tutor-1.0.0-win-portable.exe`
-2. Run directly from any location (no installation required)
-3. App data stored in the same directory
+1. Build the portable version using `build-installers.bat` (see "Building from Source" below)
+2. Locate `Code-Tutor-1.0.0-win-portable.exe` in `apps\desktop\dist-electron\`
+3. Run directly from any location (no installation required)
+4. App data stored in the same directory
 
 **Uninstall (Windows):**
 - Settings > Apps > Code Tutor > Uninstall
@@ -116,11 +120,12 @@ Code Tutor can run code locally if you have the programming languages installed:
 
 ### macOS Installation
 
-1. Download `Code-Tutor-1.0.0.dmg`
-2. Double-click the DMG file
-3. Drag "Code Tutor" to the Applications folder
-4. Eject the DMG
-5. Launch from Applications or Spotlight
+1. Build the installer using `./build-installers.sh` (see "Building from Source" below)
+2. Locate `Code-Tutor-1.0.0.dmg` in `apps/desktop/dist-electron/`
+3. Double-click the DMG file
+4. Drag "Code Tutor" to the Applications folder
+5. Eject the DMG
+6. Launch from Applications or Spotlight
 
 **First Launch Note:**
 If you see a security warning:
@@ -128,7 +133,7 @@ If you see a security warning:
 2. Click "Open Anyway" next to Code Tutor warning
 3. Confirm to open the application
 
-**Alternative:** Download `Code-Tutor-1.0.0-mac.zip` for a zip archive
+**Alternative:** The build also creates `Code-Tutor-1.0.0-mac.zip` as a zip archive
 
 **Uninstall (macOS):**
 - Drag Code Tutor from Applications to Trash
@@ -140,14 +145,15 @@ If you see a security warning:
 
 #### Option 1: AppImage (Universal)
 
-1. Download `Code-Tutor-1.0.0.AppImage`
-2. Make it executable:
+1. Build the installer using `./build-installers.sh` (see "Building from Source" below)
+2. Locate `Code-Tutor-1.0.0.AppImage` in `apps/desktop/dist-electron/`
+3. Make it executable:
    ```bash
-   chmod +x Code-Tutor-1.0.0.AppImage
+   chmod +x apps/desktop/dist-electron/Code-Tutor-1.0.0.AppImage
    ```
-3. Run directly:
+4. Run directly:
    ```bash
-   ./Code-Tutor-1.0.0.AppImage
+   ./apps/desktop/dist-electron/Code-Tutor-1.0.0.AppImage
    ```
 
 **Optional:** Integrate with desktop environment:
@@ -168,8 +174,9 @@ EOF
 
 For Ubuntu, Debian, Linux Mint, Pop!_OS:
 ```bash
-# Download the .deb file
-sudo dpkg -i code-tutor-desktop_1.0.0_amd64.deb
+# Build the installer using ./build-installers.sh (see "Building from Source" below)
+# Then install the .deb file
+sudo dpkg -i apps/desktop/dist-electron/code-tutor-desktop_1.0.0_amd64.deb
 
 # Install dependencies if needed
 sudo apt-get install -f
@@ -247,6 +254,8 @@ build-installers.bat
 ---
 
 ## Distribution Files
+
+**Note:** These files are created in `apps/desktop/dist-electron/` when you run the build scripts. They are not included in the repository.
 
 ### Windows
 
