@@ -17,88 +17,85 @@
 
 A modern learning platform that teaches **Java, Python, Kotlin, Rust, C#, Flutter, and JavaScript/TypeScript** through interactive lessons, real-time code execution, and progress tracking.
 
-Available as both a **desktop application** and **web-based platform**.
+Available as a **standalone desktop application** that works offline using your local language runtimes.
 
 ## 🌟 Features
 
 - **7 Programming Languages** in one platform
 - **Interactive Code Editor** powered by Monaco Editor (VS Code's engine)
-- **Real-time Code Execution** with sandboxed Docker containers
-- **Progress Tracking** with localStorage and backend sync
+- **Real-time Code Execution** using your local language runtimes
+- **Progress Tracking** with automatic progress saving
 - **Markdown Lessons** with syntax highlighting
 - **Dark/Light Theme** support
 - **Concept-First Pedagogy** - understand concepts before jargon
-- **Offline-Capable** Progressive Web App (planned)
+- **Fully Offline** - works completely offline once installed
 
 ## 🏗️ Architecture
 
 ```
 Code-Tutor/
 ├── apps/
-│   ├── web/              # React + TypeScript frontend
-│   ├── api/              # Node.js/Express backend
-│   └── executors/
-│       ├── python/       # Python executor (Flask)
-│       ├── javascript/   # JavaScript/TS executor (Node.js)
-│       └── java/         # Java executor (Spark Java)
+│   ├── desktop/          # Electron desktop application
+│   │   ├── src/
+│   │   │   ├── main.ts          # Electron main process
+│   │   │   ├── executors.ts     # Local code execution
+│   │   │   └── api-server.ts    # Embedded Express server
+│   │   └── package.json
+│   └── web/              # React + TypeScript frontend (bundled into desktop)
 ├── content/
-│   └── courses/
-│       └── python/       # Python course content
-├── packages/             # Shared packages
-└── tools/
-    ├── content-migrator/ # Migration CLI tool
-    └── content-validator/# Validation script
+│   └── courses/          # Course content for all 7 languages
+│       ├── python/
+│       ├── java/
+│       ├── kotlin/
+│       ├── rust/
+│       ├── csharp/
+│       ├── javascript/
+│       └── dart/
+└── scripts/              # Content management tools
 ```
 
 ## 🚀 Quick Start
 
-> **Important:** Docker Desktop is **required** for Code-Tutor to work properly.  
+> **Simple!** Just double-click the launcher script to start the desktop app.
 > **Having issues?** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
 
 ### Prerequisites
 
-- **Node.js** 18+ and npm 9+ ([Download](https://nodejs.org))
-- **Docker Desktop** ([Download](https://www.docker.com/products/docker-desktop)) - **Required**
-- **Git**
+- **Language Runtimes:** Install the programming languages you want to learn:
+  - Python 3.x ([Download](https://www.python.org/downloads/))
+  - Java 17+ ([Download](https://adoptium.net/))
+  - Kotlin (included with Java)
+  - Rust ([Download](https://www.rust-lang.org/tools/install))
+  - .NET 6+ ([Download](https://dotnet.microsoft.com/download))
+  - Node.js 18+ ([Download](https://nodejs.org))
+  - Dart/Flutter ([Download](https://flutter.dev/docs/get-started/install))
 
-### Quick Setup (3 Steps)
+### Quick Setup (2 Steps)
 
-1. **Install Docker Desktop:**
-   - Download and install from: https://www.docker.com/products/docker-desktop
-   - Start Docker Desktop and wait for it to fully start
-   - You should see the whale icon in your system tray
-
-2. **Clone and install:**
+1. **Clone and install:**
    ```bash
    git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
    cd Code-Tutor
    npm install
    ```
 
-3. **Start everything:**
-   ```bash
-   # Start Docker containers
-   docker-compose up -d
-   
-   # Start the application
-   npm run dev
-   ```
+2. **Launch the app:**
+   - **Windows:** Double-click `launch-desktop.bat` or `launch-desktop.ps1`
+   - **macOS/Linux:** Run `./launch-desktop.sh`
+   - **Or use npm:** `npm run start:desktop`
 
-4. **Open browser:** http://localhost:3000
-
-### Windows Users: One-Click Start
-
-Use the included startup script (handles Docker check automatically):
-
-```powershell
-.\start.ps1
-```
-
-Or double-click: **`START.bat`**
+The desktop app will automatically open in a new window!
 
 ## 📚 Development
 
 ### Project Structure
+
+#### Desktop App (`apps/desktop/`)
+- **Framework:** Electron 28
+- **Backend:** Embedded Express server
+- **Execution:** Local language runtime spawning
+- **Runtime Detection:** Automatic detection of installed languages
+- **Builder:** electron-builder for cross-platform installers
 
 #### Frontend (`apps/web/`)
 - **Framework:** React 18 + TypeScript + Vite
@@ -108,57 +105,34 @@ Or double-click: **`START.bat`**
 - **Routing:** React Router
 - **Markdown:** react-markdown with syntax highlighting
 
-#### Backend (`apps/api/`)
-- **Framework:** Express + TypeScript
-- **Database:** PostgreSQL (planned) / JSON files (current)
-- **Auth:** JWT-based authentication
-- **APIs:**
-  - `/api/courses` - Course content
-  - `/api/execute` - Code execution dispatcher
-  - `/api/progress` - Progress tracking
-  - `/api/auth` - Authentication
-
-#### Executors (`apps/executors/`)
-Each language has its own sandboxed executor service:
-- **Python:** Flask + Docker ✅ (port 4000)
-- **Java:** Spark Java + JDK 17 + Docker ✅ (port 4001)
-- **Kotlin:** Kotlin Compiler + JVM + Docker ✅ (port 4002)
-- **Rust:** Actix-web + rustc + Docker ✅ (port 4003)
-- **C#:** ASP.NET Core + Roslyn + Docker ✅ (port 4004)
-- **JavaScript/TypeScript:** Node.js + VM2 + Docker ✅ (port 4005)
-- **Dart/Flutter:** Dart SDK + Shelf + Docker ✅ (port 4007)
-
-### Running Development Services
-
-#### All services at once:
-```bash
-npm run dev
-```
-
-#### Individual services:
-```bash
-# Frontend only
-npm run dev:web
-
-# Backend only
-npm run dev:api
-
-# Python executor only
-docker-compose up python-executor
-```
-
-### Building for Production
+### Running in Development
 
 ```bash
-# Build all workspaces
-npm run build
+# Start the desktop app in development mode
+npm run start:desktop
 
-# Build frontend
-cd apps/web && npm run build
+# Build the desktop app (no installers)
+npm run build:desktop
 
-# Build backend
-cd apps/api && npm run build
+# Build desktop app with installers (.exe, .dmg, .AppImage)
+npm run dist:desktop
 ```
+
+### Building Installers
+
+```bash
+# Build installers for your current platform
+npm run dist:desktop
+
+# Or use the helper scripts:
+# Windows:
+.\build-installers.bat
+
+# macOS/Linux:
+./build-installers.sh
+```
+
+This creates platform-specific installers in `apps/desktop/dist-electron/`
 
 ## 🎨 Adding New Content
 
@@ -197,41 +171,6 @@ cd apps/api && npm run build
 
 See `content/courses/python/` for examples.
 
-## 🐳 Docker Services
-
-### Python Executor
-
-Build and run:
-```bash
-cd apps/executors/python
-docker build -t code-tutor-python-executor .
-docker run -p 4000:4000 code-tutor-python-executor
-```
-
-Or use docker-compose:
-```bash
-docker-compose up python-executor
-```
-
-### Testing the Executor
-
-```bash
-curl -X POST http://localhost:4000/execute \
-  -H "Content-Type: application/json" \
-  -d '{
-    "code": "print(\"Hello, World!\")"
-  }'
-```
-
-Expected response:
-```json
-{
-  "success": true,
-  "output": "Hello, World!\n",
-  "error": null
-}
-```
-
 ## 🧪 Testing
 
 ```bash
@@ -241,8 +180,8 @@ npm test
 # Run frontend tests
 cd apps/web && npm test
 
-# Run backend tests
-cd apps/api && npm test
+# Test the desktop app
+npm run start:desktop
 ```
 
 ## 📖 Course Content
@@ -323,14 +262,21 @@ See [UNIFIED_PLATFORM_PLAN.md](./UNIFIED_PLATFORM_PLAN.md) for the comprehensive
 
 ## 📦 Packaging & Distribution
 
-Want to share Code-Tutor as a standalone app? See [PACKAGING_GUIDE.md](./PACKAGING_GUIDE.md) for options:
+Want to create installable packages of Code-Tutor? See [PACKAGING_GUIDE.md](./PACKAGING_GUIDE.md) and [DISTRIBUTION.md](./DISTRIBUTION.md) for details.
 
-- **Electron Desktop App** - Single `.exe` installer, no Node.js required (~150 MB)
-- **PKG Binary** - Standalone executable (~50 MB)  
-- **Portable ZIP** - Just extract and run (~200 MB, requires Node.js)
-- **Docker Container** - Fully containerized app
+The desktop app can be packaged as:
 
-The easiest option is Electron, which packages everything into a professional desktop application.
+- **Windows:** `.exe` installer (NSIS) and portable `.exe`
+- **macOS:** `.dmg` disk image and `.zip` archive
+- **Linux:** `.AppImage`, `.deb`, and `.rpm` packages
+
+**Create installers:**
+```bash
+npm run dist:desktop
+# Or use: build-installers.bat (Windows) / build-installers.sh (Linux/macOS)
+```
+
+Installers are created in `apps/desktop/dist-electron/` and include everything needed to run Code-Tutor, including the course content.
 
 ## 🤝 Contributing
 
