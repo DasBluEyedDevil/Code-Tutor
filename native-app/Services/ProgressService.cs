@@ -177,4 +177,65 @@ public class ProgressService : IProgressService
             _logger?.LogError(ex, "Failed to increment hint usage");
         }
     }
+
+    public async Task SaveChallengeProgressAsync(string courseId, string moduleId, string lessonId, string challengeId, int score, bool completed, int hintsUsed = 0)
+    {
+        try
+        {
+            // Find existing progress record for this challenge
+            var progress = await _dbContext.Progress
+                .FirstOrDefaultAsync(p =>
+                    p.UserId == DefaultUserId &&
+                    p.CourseId == courseId &&
+                    p.ModuleId == moduleId &&
+                    p.LessonId == lessonId &&
+                    p.ChallengeId == challengeId);
+
+            if (progress == null)
+            {
+                // Create new progress record
+                progress = new UserProgress
+                {
+                    UserId = DefaultUserId,
+                    CourseId = courseId,
+                    ModuleId = moduleId,
+                    LessonId = lessonId,
+                    ChallengeId = challengeId,
+                    Score = score,
+                    MaxScore = 100,
+                    HintsUsed = hintsUsed,
+                    Attempts = 1,
+                    Completed = completed,
+                    CompletedAt = completed ? DateTime.UtcNow : null,
+                    FirstAttemptAt = DateTime.UtcNow,
+                    LastAttemptAt = DateTime.UtcNow
+                };
+
+                _dbContext.Progress.Add(progress);
+            }
+            else
+            {
+                // Update existing progress - keep best score
+                progress.Score = Math.Max(progress.Score, score);
+                progress.HintsUsed = Math.Max(progress.HintsUsed, hintsUsed);
+                progress.Attempts++;
+                progress.Completed = completed || progress.Completed; // Once completed, stays completed
+                progress.CompletedAt = completed && progress.CompletedAt == null ? DateTime.UtcNow : progress.CompletedAt;
+                progress.LastAttemptAt = DateTime.UtcNow;
+
+                _dbContext.Progress.Update(progress);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            _logger?.LogInformation("Saved challenge progress for {Course}/{Module}/{Lesson}/{Challenge}: Score={Score}, Completed={Completed}, Hints={Hints}",
+                courseId, moduleId, lessonId, challengeId, score, completed, hintsUsed);
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to save challenge progress for {Course}/{Module}/{Lesson}/{Challenge}",
+                courseId, moduleId, lessonId, challengeId);
+            throw;
+        }
+    }
 }

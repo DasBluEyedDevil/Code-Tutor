@@ -17,6 +17,7 @@ public class CoursePageViewModel : ViewModelBase, INavigableViewModel
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigationService;
     private readonly IProgressService _progressService;
+    private readonly IErrorHandlerService _errorHandler;
 
     private string _courseId = string.Empty;
     private Course? _course;
@@ -26,11 +27,13 @@ public class CoursePageViewModel : ViewModelBase, INavigableViewModel
     public CoursePageViewModel(
         ICourseService courseService,
         INavigationService navigationService,
-        IProgressService progressService)
+        IProgressService progressService,
+        IErrorHandlerService errorHandler)
     {
         _courseService = courseService;
         _navigationService = navigationService;
         _progressService = progressService;
+        _errorHandler = errorHandler;
 
         // Commands
         SelectLessonCommand = ReactiveCommand.Create<LessonInfo>(SelectLesson);
@@ -108,7 +111,8 @@ public class CoursePageViewModel : ViewModelBase, INavigableViewModel
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            ErrorMessage = $"Failed to load course: {ex.Message}";
+            await _errorHandler.HandleErrorAsync(ex, "Course loading", showToUser: false);
+            ErrorMessage = $"Failed to load course: {_errorHandler.GetUserFriendlyMessage(ex)}";
         }
         finally
         {
