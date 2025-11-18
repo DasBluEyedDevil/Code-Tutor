@@ -1,0 +1,47 @@
+{
+  "extends": null,
+  "appId": "com.codetutor.app",
+  "productName": "Code Tutor",
+  "directories": {
+    "output": "dist-electron"
+  },
+  "files": [
+    "dist/**/*",
+    "../web/dist/**/*",
+    "../api/dist/**/*",
+    "../../content/**/*",
+    "package.json"
+  ],
+  "extraResources": [
+    {
+      "from": "../../content",
+      "to": "content",
+      "filter": ["**/*"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "zip",
+        "arch": ["x64"]
+      }
+    ],
+    "sign": null,
+    "verifyUpdateCodeSignature": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Code Tutor"
+  }
+}
