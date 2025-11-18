@@ -30,8 +30,8 @@ public class LandingPageViewModel : ViewModelBase
         SelectCourseCommand = ReactiveCommand.Create<CourseInfo>(SelectCourse);
         RetryLoadCommand = ReactiveCommand.CreateFromTask(LoadCoursesAsync);
 
-        // Load courses on initialization
-        LoadCoursesAsync();
+        // Load courses on initialization (fire-and-forget is intentional here)
+        _ = LoadCoursesAsync();
     }
 
     public ObservableCollection<CourseInfo> Courses { get; } = new();
@@ -68,7 +68,7 @@ public class LandingPageViewModel : ViewModelBase
                 Courses.Add(course);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             ErrorMessage = $"Failed to load courses: {ex.Message}";
         }

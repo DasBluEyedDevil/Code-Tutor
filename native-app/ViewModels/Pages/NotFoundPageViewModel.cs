@@ -16,9 +16,11 @@ public class NotFoundPageViewModel : ViewModelBase
         _navigationService = navigationService;
 
         GoHomeCommand = ReactiveCommand.Create(GoHome);
+        GoBackCommand = ReactiveCommand.Create(() => _navigationService.GoBack());
     }
 
     public ReactiveCommand<Unit, Unit> GoHomeCommand { get; }
+    public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
 
     private void GoHome()
     {

@@ -69,14 +69,16 @@ public class CoursePageViewModel : ViewModelBase, INavigableViewModel
         if (parameter is string courseId)
         {
             _courseId = courseId;
-            LoadCourseAsync();
+            // Fire-and-forget is intentional - errors will be shown in UI via ErrorMessage
+            _ = LoadCourseAsync();
         }
     }
 
     public void OnNavigatedBack()
     {
         // Refresh course progress when navigating back
-        LoadCourseAsync();
+        // Fire-and-forget is intentional - errors will be shown in UI via ErrorMessage
+        _ = LoadCourseAsync();
     }
 
     private async Task LoadCourseAsync()
@@ -104,7 +106,7 @@ public class CoursePageViewModel : ViewModelBase, INavigableViewModel
                 Modules.Add(moduleVm);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             ErrorMessage = $"Failed to load course: {ex.Message}";
         }
@@ -208,9 +210,9 @@ public class ModuleViewModel : ViewModelBase
             CompletedLessons = Lessons.Count(l => l.IsCompleted);
             this.RaisePropertyChanged(nameof(ProgressPercentage));
         }
-        catch
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            // Ignore progress load errors
+            // Ignore progress load errors - progress is optional
         }
     }
 }

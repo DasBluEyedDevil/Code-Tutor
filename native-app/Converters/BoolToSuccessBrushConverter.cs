@@ -14,18 +14,10 @@ public class BoolToSuccessBrushConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is bool boolValue && boolValue)
-        {
-            // Return success color
-            return Application.Current?.FindResource("SuccessBrush") as IBrush
-                   ?? new SolidColorBrush(Color.Parse("#4EC9B0"));
-        }
-        else
-        {
-            // Return muted color
-            return Application.Current?.FindResource("MutedTextBrush") as IBrush
-                   ?? new SolidColorBrush(Color.Parse("#808080"));
-        }
+        // True = SuccessBrush (completed), False = MutedTextBrush (not completed)
+        return (value is bool boolValue && boolValue)
+            ? Application.Current?.FindResource("SuccessBrush") as IBrush ?? new SolidColorBrush(Color.Parse("#4EC9B0"))
+            : Application.Current?.FindResource("MutedTextBrush") as IBrush ?? new SolidColorBrush(Color.Parse("#808080"));
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
