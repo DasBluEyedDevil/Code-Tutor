@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CodeTutor.Native.ViewModels.Challenges"
+             x:Class="CodeTutor.Native.Views.Challenges.MultipleChoiceView"
+             x:DataType="vm:MultipleChoiceViewModel">
+
+    <Border Classes="content-card" Padding="24">
+        <StackPanel Spacing="20">
+
+            <!-- Challenge Header -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="{Binding Challenge.Title}"
+                          Classes="h3" />
+                <TextBlock Text="{Binding Challenge.Description}"
+                          Classes="body"
+                          TextWrapping="Wrap"
+                          Opacity="0.8" />
+            </StackPanel>
+
+            <!-- Question -->
+            <TextBlock Text="{Binding Question}"
+                      Classes="body"
+                      FontWeight="Medium"
+                      TextWrapping="Wrap" />
+
+            <!-- Options -->
+            <ItemsControl ItemsSource="{Binding Options}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <RadioButton GroupName="MultipleChoice"
+                                    Content="{Binding}"
+                                    IsChecked="{Binding $parent[ItemsControl].((vm:MultipleChoiceViewModel)DataContext).SelectedOption,
+                                               Converter={StaticResource IndexToBoolConverter},
+                                               ConverterParameter={Binding $index}}"
+                                    IsEnabled="{Binding $parent[ItemsControl].((vm:MultipleChoiceViewModel)DataContext).HasSubmitted,
+                                               Converter={StaticResource InverseBoolConverter}}"
+                                    Margin="0,8"
+                                    Classes="option-radio" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Hint Section -->
+            <Border IsVisible="{Binding !!CurrentHint}"
+                   Classes="info-card">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Hint:"
+                              Classes="h4"
+                              Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="{Binding CurrentHint}"
+                              Classes="body"
+                              TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!-- Actions -->
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="Submit Answer"
+                       Command="{Binding SubmitCommand}"
+                       Classes="primary" />
+
+                <Button Content="Show Hint"
+                       Command="{Binding ShowHintCommand}"
+                       IsVisible="{Binding HasMoreHints}"
+                       Classes="secondary" />
+
+                <Button Content="Try Again"
+                       Command="{Binding ResetCommand}"
+                       IsVisible="{Binding HasSubmitted}"
+                       Classes="secondary" />
+            </StackPanel>
+
+            <!-- Result -->
+            <Border IsVisible="{Binding !!Result}"
+                   Classes="{Binding Result.IsCorrect, Converter={StaticResource BoolToResultCardClassConverter}}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="{Binding Result.IsCorrect, Converter={StaticResource BoolToResultTextConverter}}"
+                              Classes="h4" />
+                    <TextBlock Text="{Binding Result.Feedback}"
+                              Classes="body"
+                              TextWrapping="Wrap" />
+                    <TextBlock Classes="body">
+                        <Run Text="Score: " />
+                        <Run Text="{Binding Result.Score}" FontWeight="Bold" />
+                        <Run Text=" / " />
+                        <Run Text="{Binding Result.MaxScore}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </Border>
+</UserControl>

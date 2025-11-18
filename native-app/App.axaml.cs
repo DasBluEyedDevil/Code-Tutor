@@ -51,6 +51,8 @@ public partial class App : Application
         services.AddSingleton<ICodeExecutor, CodeExecutor>();
         services.AddSingleton<IProgressService, ProgressService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IChallengeValidationService, ChallengeValidationService>();
+        services.AddSingleton<IChallengeFactory, ChallengeFactory>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();
