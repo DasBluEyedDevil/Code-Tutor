@@ -1,6 +1,9 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Microsoft.Extensions.Logging;
 
 namespace CodeTutor.Native.Services;
@@ -31,15 +34,12 @@ public class ErrorHandlerService : IErrorHandlerService
             // Log the exception
             LogError(exception, userMessage);
 
-            // In a real implementation, you would show a dialog/notification to the user
-            // For now, we just ensure it's logged
+            // Show error dialog to user if requested
             if (showToUser)
             {
                 var friendlyMessage = GetUserFriendlyMessage(exception);
                 _logger?.LogWarning("User-facing error: {Message}", friendlyMessage);
-
-                // TODO: Show error dialog to user
-                // await ShowErrorDialogAsync(friendlyMessage);
+                await ShowErrorDialogAsync(friendlyMessage, userMessage);
             }
         }
         catch (Exception ex)
@@ -114,6 +114,67 @@ public class ErrorHandlerService : IErrorHandlerService
             // If we can't write to log file, fail silently
             // Last resort: write to console
             Console.WriteLine(message);
+        }
+    }
+
+    private async Task ShowErrorDialogAsync(string friendlyMessage, string? context = null)
+    {
+        try
+        {
+            // Get the main window from the application
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            var mainWindow = desktop.MainWindow;
+            if (mainWindow == null)
+                return;
+
+            var title = context ?? "Error";
+
+            // Show message box on UI thread
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                var messageBox = new Window
+                {
+                    Title = title,
+                    Width = 450,
+                    Height = 200,
+                    CanResize = false,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                var okButton = new Button
+                {
+                    Content = "OK",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    Padding = new Thickness(30, 8)
+                };
+
+                okButton.Click += (s, e) => messageBox.Close();
+
+                messageBox.Content = new StackPanel
+                {
+                    Margin = new Thickness(20),
+                    Spacing = 15,
+                    Children =
+                    {
+                        new TextBlock
+                        {
+                            Text = friendlyMessage,
+                            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                            FontSize = 14
+                        },
+                        okButton
+                    }
+                };
+
+                await messageBox.ShowDialog(mainWindow);
+            });
+        }
+        catch (Exception ex)
+        {
+            // If dialog fails, just log it
+            _logger?.LogError(ex, "Failed to show error dialog");
         }
     }
 }
