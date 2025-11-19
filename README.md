@@ -70,21 +70,44 @@ Code-Tutor/
     └── UX_UI_IMPROVEMENTS.md          - UX guidelines
 ```
 
-## 🚀 Quick Start
+## 📦 Installation
+
+### Windows Installer (Recommended)
+
+**For End Users - Just want to use the app?**
+
+1. **Download the installer** from the [Releases page](https://github.com/DasBluEyedDevil/Code-Tutor/releases)
+2. **Run `CodeTutor-Setup-1.0.0.exe`**
+3. **Follow the installation wizard**
+4. **Launch from desktop shortcut** or Start Menu
+
+That's it! The installer bundles everything you need - no .NET installation required.
+
+**Optional**: Install language runtimes for code execution
+- **Python 3.x** - https://www.python.org/downloads/
+- **Node.js 18+** - https://nodejs.org
+- **Java 17+** - https://adoptium.net/
+- **Rust** - https://www.rust-lang.org/tools/install
+
+The installer will detect which languages you have installed and show a warning if any are missing.
+
+---
+
+## 🚀 Quick Start (For Developers)
 
 ### Prerequisites
 
 1. **Install .NET 8.0 SDK**
    - Download from: https://dotnet.microsoft.com/download/dotnet/8.0
 
-2. **Install Language Runtimes** (for the languages you want to learn):
+2. **Install Language Runtimes** (optional, for testing code execution):
    - **Python 3.x** - https://www.python.org/downloads/
    - **Java 17+** - https://adoptium.net/
    - **.NET 8.0** - https://dotnet.microsoft.com/download
    - **Node.js 18+** - https://nodejs.org
    - **Rust** - https://www.rust-lang.org/tools/install
 
-### Running the App
+### Running from Source
 
 ```bash
 # Clone the repository
@@ -98,21 +121,27 @@ dotnet restore native-app/CodeTutor.Native.csproj
 dotnet run --project native-app/CodeTutor.Native.csproj
 ```
 
-### Building for Distribution
+### Building the Installer
 
-```bash
-# Build release version
-dotnet build native-app/CodeTutor.Native.csproj -c Release
+**Windows** (creates installer .exe):
+```batch
+# Double-click or run:
+build-installer.bat
 
-# Publish self-contained executable (Windows)
-dotnet publish native-app/CodeTutor.Native.csproj -c Release -r win-x64 --self-contained
-
-# Publish self-contained executable (macOS)
-dotnet publish native-app/CodeTutor.Native.csproj -c Release -r osx-x64 --self-contained
-
-# Publish self-contained executable (Linux)
-dotnet publish native-app/CodeTutor.Native.csproj -c Release -r linux-x64 --self-contained
+# Or with PowerShell:
+.\build-installer.ps1
 ```
+
+This creates a complete Windows installer with:
+- Self-contained .exe (no .NET installation required)
+- Start Menu shortcuts
+- Desktop shortcut (optional)
+- Uninstaller
+- Runtime detection (Python, Node, Java)
+
+**Output**: `dist/CodeTutor-Setup-1.0.0.exe`
+
+**See BUILD.md for detailed build instructions including Linux and macOS.**
 
 ## 🧪 Running Tests
 
