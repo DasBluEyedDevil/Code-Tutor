@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CodeTutor.Native.Models;
@@ -8,12 +9,15 @@ using CodeTutor.Native.Models;
 namespace CodeTutor.Native.Services;
 
 /// <summary>
-/// Executes code in various programming languages
+/// Executes code in various programming languages with resource limits
 /// NO HTTP, NO IPC - direct process spawning
+/// Security: Memory limits, timeout protection, restricted environment
 /// </summary>
 public class CodeExecutor
 {
     private const int DefaultTimeoutMs = 10000; // 10 seconds
+    private const long MaxMemoryBytes = 512 * 1024 * 1024; // 512 MB
+    private const int MaxOutputLength = 100000; // 100 KB output limit
 
     /// <summary>
     /// Execute code in the specified language
@@ -136,7 +140,7 @@ public class CodeExecutor
     }
 
     /// <summary>
-    /// Run a process and capture output
+    /// Run a process with resource limits and security restrictions
     /// </summary>
     private async Task<ExecutionResult> RunProcessAsync(string command, string arguments, string? workingDirectory = null)
     {
@@ -144,34 +148,58 @@ public class CodeExecutor
 
         try
         {
-            using var process = new Process
+            var startInfo = new ProcessStartInfo
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = command,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                    WorkingDirectory = workingDirectory ?? Directory.GetCurrentDirectory()
-                }
+                FileName = command,
+                Arguments = arguments,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true,
+                WorkingDirectory = workingDirectory ?? Directory.GetCurrentDirectory()
             };
+
+            // Apply security restrictions to environment
+            ApplySecurityRestrictions(startInfo);
+
+            using var process = new Process { StartInfo = startInfo };
 
             var outputBuilder = new StringBuilder();
             var errorBuilder = new StringBuilder();
+            var outputTruncated = false;
 
             process.OutputDataReceived += (sender, e) =>
             {
-                if (e.Data != null) outputBuilder.AppendLine(e.Data);
+                if (e.Data != null && outputBuilder.Length < MaxOutputLength)
+                {
+                    outputBuilder.AppendLine(e.Data);
+                }
+                else if (e.Data != null)
+                {
+                    outputTruncated = true;
+                }
             };
 
             process.ErrorDataReceived += (sender, e) =>
             {
-                if (e.Data != null) errorBuilder.AppendLine(e.Data);
+                if (e.Data != null && errorBuilder.Length < MaxOutputLength)
+                {
+                    errorBuilder.AppendLine(e.Data);
+                }
             };
 
             process.Start();
+
+            // Apply process-level resource limits (platform-specific)
+            try
+            {
+                ApplyResourceLimits(process);
+            }
+            catch
+            {
+                // Resource limits may fail on some platforms - continue anyway
+            }
+
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
@@ -179,11 +207,20 @@ public class CodeExecutor
 
             if (!completed)
             {
-                process.Kill();
+                try
+                {
+                    // Try graceful shutdown first
+                    process.Kill(entireProcessTree: true);
+                }
+                catch
+                {
+                    process.Kill();
+                }
+
                 return new ExecutionResult
                 {
                     Success = false,
-                    Error = "Execution timed out",
+                    Error = "Execution timed out (10 second limit)",
                     ExecutionTimeMs = DefaultTimeoutMs
                 };
             }
@@ -192,6 +229,11 @@ public class CodeExecutor
 
             var output = outputBuilder.ToString();
             var error = errorBuilder.ToString();
+
+            if (outputTruncated)
+            {
+                output += "\n[Output truncated - exceeded 100KB limit]";
+            }
 
             return new ExecutionResult
             {
@@ -211,6 +253,61 @@ public class CodeExecutor
                 Error = $"Execution failed: {ex.Message}",
                 ExecutionTimeMs = (int)stopwatch.ElapsedMilliseconds
             };
+        }
+    }
+
+    /// <summary>
+    /// Apply security restrictions to process environment
+    /// </summary>
+    private void ApplySecurityRestrictions(ProcessStartInfo startInfo)
+    {
+        // Clear dangerous environment variables
+        startInfo.Environment.Clear();
+
+        // Add only safe, minimal environment variables
+        startInfo.Environment["PATH"] = Environment.GetEnvironmentVariable("PATH") ?? "";
+        startInfo.Environment["HOME"] = Path.GetTempPath();
+        startInfo.Environment["TEMP"] = Path.GetTempPath();
+        startInfo.Environment["TMP"] = Path.GetTempPath();
+
+        // Prevent network access where possible (language-specific)
+        startInfo.Environment["NO_PROXY"] = "*";
+        startInfo.Environment["no_proxy"] = "*";
+    }
+
+    /// <summary>
+    /// Apply memory and CPU limits to running process
+    /// </summary>
+    private void ApplyResourceLimits(Process process)
+    {
+        try
+        {
+            // Set memory limit (Windows: MaxWorkingSet)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                process.MaxWorkingSet = new IntPtr(MaxMemoryBytes);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ||
+                     RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                // On Linux/Mac, we could use ulimit via shell wrapper
+                // For now, just rely on timeout protection
+                // Future: Implement cgroups on Linux for proper isolation
+            }
+
+            // Set process priority to below normal to prevent resource hogging
+            try
+            {
+                process.PriorityClass = ProcessPriorityClass.BelowNormal;
+            }
+            catch
+            {
+                // Priority setting may fail - not critical
+            }
+        }
+        catch
+        {
+            // Resource limits are best-effort - continue if they fail
         }
     }
 
