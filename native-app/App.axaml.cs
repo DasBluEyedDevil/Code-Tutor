@@ -32,6 +32,10 @@ public partial class App : Application
         // Initialize database
         await InitializeDatabaseAsync();
 
+        // Initialize runtimes (background check)
+        var runtimeService = _serviceProvider.GetRequiredService<IRuntimeService>();
+        _ = runtimeService.CheckRuntimesAsync();
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Get navigation service and main window view model from DI
@@ -201,6 +205,7 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddScoped<IAchievementService, AchievementService>();
         services.AddScoped<IStreakService, StreakService>();
+        services.AddSingleton<IRuntimeService, RuntimeService>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();

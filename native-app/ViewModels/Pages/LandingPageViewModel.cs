@@ -16,15 +16,18 @@ public class LandingPageViewModel : ViewModelBase
 {
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigationService;
+    private readonly IRuntimeService _runtimeService;
     private bool _isLoading;
     private string _errorMessage = string.Empty;
 
     public LandingPageViewModel(
         ICourseService courseService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IRuntimeService runtimeService)
     {
         _courseService = courseService;
         _navigationService = navigationService;
+        _runtimeService = runtimeService;
 
         // Commands
         SelectCourseCommand = ReactiveCommand.Create<CourseInfo>(SelectCourse);
@@ -61,10 +64,14 @@ public class LandingPageViewModel : ViewModelBase
         try
         {
             var courses = await _courseService.GetCoursesAsync();
+            
+            // Ensure runtimes are checked
+            await _runtimeService.CheckRuntimesAsync();
 
             Courses.Clear();
             foreach (var course in courses.OrderBy(c => c.Language))
             {
+                course.IsRuntimeAvailable = _runtimeService.IsRuntimeAvailable(course.Language);
                 Courses.Add(course);
             }
         }

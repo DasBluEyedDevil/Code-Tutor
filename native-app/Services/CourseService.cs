@@ -189,6 +189,112 @@ public class CourseService : ICourseService
             return null;
         }
     }
+
+    public async Task<LessonReference?> GetNextLessonAsync(string courseId, string moduleId, string lessonId)
+    {
+        try
+        {
+            var course = await GetCourseAsync(courseId);
+            if (course == null) return null;
+
+            var moduleIndex = course.Modules.FindIndex(m => m.Id == moduleId);
+            if (moduleIndex == -1) return null;
+
+            var module = course.Modules[moduleIndex];
+            var lessonIndex = module.Lessons.FindIndex(l => l.Id == lessonId);
+            if (lessonIndex == -1) return null;
+
+            // Check if there is a next lesson in the same module
+            if (lessonIndex + 1 < module.Lessons.Count)
+            {
+                var nextLesson = module.Lessons[lessonIndex + 1];
+                return new LessonReference
+                {
+                    CourseId = courseId,
+                    ModuleId = moduleId,
+                    LessonId = nextLesson.Id,
+                    Title = nextLesson.Title
+                };
+            }
+
+            // Check if there is a next module
+            if (moduleIndex + 1 < course.Modules.Count)
+            {
+                var nextModule = course.Modules[moduleIndex + 1];
+                if (nextModule.Lessons.Count > 0)
+                {
+                    var nextLesson = nextModule.Lessons[0];
+                    return new LessonReference
+                    {
+                        CourseId = courseId,
+                        ModuleId = nextModule.Id,
+                        LessonId = nextLesson.Id,
+                        Title = nextLesson.Title
+                    };
+                }
+            }
+
+            return null;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Error retrieving next lesson for {CourseId}/{ModuleId}/{LessonId}", courseId, moduleId, lessonId);
+            return null;
+        }
+    }
+
+    public async Task<LessonReference?> GetPreviousLessonAsync(string courseId, string moduleId, string lessonId)
+    {
+        try
+        {
+            var course = await GetCourseAsync(courseId);
+            if (course == null) return null;
+
+            var moduleIndex = course.Modules.FindIndex(m => m.Id == moduleId);
+            if (moduleIndex == -1) return null;
+
+            var module = course.Modules[moduleIndex];
+            var lessonIndex = module.Lessons.FindIndex(l => l.Id == lessonId);
+            if (lessonIndex == -1) return null;
+
+            // Check if there is a previous lesson in the same module
+            if (lessonIndex - 1 >= 0)
+            {
+                var prevLesson = module.Lessons[lessonIndex - 1];
+                return new LessonReference
+                {
+                    CourseId = courseId,
+                    ModuleId = moduleId,
+                    LessonId = prevLesson.Id,
+                    Title = prevLesson.Title
+                };
+            }
+
+            // Check if there is a previous module
+            if (moduleIndex - 1 >= 0)
+            {
+                var prevModule = course.Modules[moduleIndex - 1];
+                if (prevModule.Lessons.Count > 0)
+                {
+                    var prevLesson = prevModule.Lessons[prevModule.Lessons.Count - 1];
+                    return new LessonReference
+                    {
+                        CourseId = courseId,
+                        ModuleId = prevModule.Id,
+                        LessonId = prevLesson.Id,
+                        Title = prevLesson.Title
+                    };
+                }
+            }
+
+            return null;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Error retrieving previous lesson for {CourseId}/{ModuleId}/{LessonId}", courseId, moduleId, lessonId);
+            return null;
+        }
+    }
 }
 
 /// <summary>
@@ -203,4 +309,5 @@ public class CourseInfo
     public string Difficulty { get; set; } = string.Empty;
     public int EstimatedHours { get; set; }
     public int ModuleCount { get; set; }
+    public bool IsRuntimeAvailable { get; set; } = true;
 }

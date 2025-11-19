@@ -23,4 +23,14 @@ public interface ICourseService
     /// Get a specific lesson from a course
     /// </summary>
     Task<Lesson?> GetLessonAsync(string courseId, string moduleId, string lessonId);
+
+    /// <summary>
+    /// Get the next lesson in the course
+    /// </summary>
+    Task<LessonReference?> GetNextLessonAsync(string courseId, string moduleId, string lessonId);
+
+    /// <summary>
+    /// Get the previous lesson in the course
+    /// </summary>
+    Task<LessonReference?> GetPreviousLessonAsync(string courseId, string moduleId, string lessonId);
 }

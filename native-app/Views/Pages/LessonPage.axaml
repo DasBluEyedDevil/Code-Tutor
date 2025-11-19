@@ -209,20 +209,70 @@
             <Grid ColumnDefinitions="*,Auto" Margin="32,16">
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
                     <Button Content="Previous Lesson"
+                           Command="{Binding PreviousLessonCommand}"
                            Classes="secondary"
-                           IsVisible="False" />
+                           IsVisible="{Binding HasPreviousLesson}" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
                     <Button Content="Mark as Complete"
                            Command="{Binding MarkCompleteCommand}"
-                           Classes="success" />
+                           Classes="success"
+                           IsVisible="{Binding !IsLessonCompleted}" />
                     <Button Content="Next Lesson"
+                           Command="{Binding NextLessonCommand}"
                            Classes="primary"
-                           IsVisible="False" />
+                           IsVisible="{Binding HasNextLesson}" />
                 </StackPanel>
             </Grid>
         </Border>
+
+        <!-- Completion Overlay -->
+        <Grid Grid.Row="0" Grid.RowSpan="3"
+              Background="#CC000000"
+              IsVisible="{Binding IsLessonCompleted}">
+            <Border Background="{DynamicResource SurfaceBrush}"
+                    BorderBrush="{DynamicResource SuccessBrush}"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Padding="48"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MaxWidth="500"
+                    BoxShadow="0 8 32 0 #66000000">
+                <StackPanel Spacing="24">
+                    <PathIcon Data="{StaticResource CheckCircleIcon}"
+                              Width="64" Height="64"
+                              Foreground="{DynamicResource SuccessBrush}"
+                              HorizontalAlignment="Center" />
+
+                    <TextBlock Text="Lesson Completed!"
+                               Classes="h2"
+                               HorizontalAlignment="Center"
+                               Foreground="{DynamicResource SuccessBrush}" />
+
+                    <TextBlock Text="Great job! You've mastered this lesson."
+                               Classes="body"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Opacity="0.8" />
+
+                    <StackPanel Spacing="16" Margin="0,16,0,0">
+                        <Button Content="Continue to Next Lesson"
+                                Command="{Binding NextLessonCommand}"
+                                Classes="primary"
+                                HorizontalAlignment="Center"
+                                Classes.large="True"
+                                IsVisible="{Binding HasNextLesson}" />
+
+                        <Button Content="Back to Course"
+                                Command="{Binding GoToCourseCommand}"
+                                Classes="secondary"
+                                HorizontalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
 
     </Grid>
 </UserControl>
