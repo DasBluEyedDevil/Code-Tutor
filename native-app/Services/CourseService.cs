@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using CodeTutor.Native.Models;
 
 namespace CodeTutor.Native.Services;
@@ -11,20 +12,34 @@ namespace CodeTutor.Native.Services;
 /// Service for loading and managing courses from JSON files
 /// NO HTTP, NO IPC - direct file I/O
 /// </summary>
-public class CourseService
+public class CourseService : ICourseService
 {
     private readonly string _contentPath;
     private readonly Dictionary<string, Course> _cachedCourses = new();
+    private readonly IErrorHandlerService? _errorHandler;
+    private readonly ILogger<CourseService>? _logger;
+    private bool _contentDirectoryValid;
 
-    public CourseService()
+    public CourseService(IErrorHandlerService? errorHandler = null, ILogger<CourseService>? logger = null)
     {
+        _errorHandler = errorHandler;
+        _logger = logger;
+
         // Get content directory - bundled with the app
         var baseDir = AppDomain.CurrentDomain.BaseDirectory;
         _contentPath = Path.Combine(baseDir, "Content", "courses");
 
-        if (!Directory.Exists(_contentPath))
+        _contentDirectoryValid = Directory.Exists(_contentPath);
+
+        if (!_contentDirectoryValid)
         {
-            throw new DirectoryNotFoundException($"Content directory not found: {_contentPath}");
+            var errorMessage = $"Content directory not found: {_contentPath}";
+            _logger?.LogError(errorMessage);
+            _errorHandler?.LogError(
+                new DirectoryNotFoundException(errorMessage),
+                "CourseService Initialization"
+            );
+            // Don't throw - allow app to start with degraded functionality
         }
     }
 
@@ -34,36 +49,53 @@ public class CourseService
     public async Task<List<CourseInfo>> GetCoursesAsync()
     {
         var courses = new List<CourseInfo>();
-        var languages = Directory.GetDirectories(_contentPath);
 
-        foreach (var languageDir in languages)
+        if (!_contentDirectoryValid)
         {
-            var courseJsonPath = Path.Combine(languageDir, "course.json");
-            if (!File.Exists(courseJsonPath)) continue;
+            _logger?.LogWarning("Content directory is invalid - returning empty course list");
+            return courses;
+        }
 
-            try
+        try
+        {
+            var languages = Directory.GetDirectories(_contentPath);
+
+            foreach (var languageDir in languages)
             {
-                var json = await File.ReadAllTextAsync(courseJsonPath);
-                var course = JsonSerializer.Deserialize<Course>(json);
+                var courseJsonPath = Path.Combine(languageDir, "course.json");
+                if (!File.Exists(courseJsonPath)) continue;
 
-                if (course != null)
+                try
                 {
-                    courses.Add(new CourseInfo
+                    var json = await File.ReadAllTextAsync(courseJsonPath);
+                    var course = JsonSerializer.Deserialize<Course>(json);
+
+                    if (course != null)
                     {
-                        Id = course.Id,
-                        Language = course.Language,
-                        Title = course.Title,
-                        Description = course.Description,
-                        Difficulty = course.Difficulty,
-                        EstimatedHours = course.EstimatedHours,
-                        ModuleCount = course.Modules.Count
-                    });
+                        courses.Add(new CourseInfo
+                        {
+                            Id = course.Id,
+                            Language = course.Language,
+                            Title = course.Title,
+                            Description = course.Description,
+                            Difficulty = course.Difficulty,
+                            EstimatedHours = course.EstimatedHours,
+                            ModuleCount = course.Modules.Count
+                        });
+                    }
+                }
+                catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+                {
+                    _logger?.LogError(ex, "Failed to load course from {Path}", courseJsonPath);
+                    _errorHandler?.LogError(ex, $"Failed to load course from {Path.GetFileName(languageDir)}");
+                    // Continue loading other courses
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to load course from {courseJsonPath}: {ex.Message}");
-            }
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to enumerate course directories");
+            _errorHandler?.LogError(ex, "Failed to load courses");
         }
 
         return courses;
@@ -74,6 +106,12 @@ public class CourseService
     /// </summary>
     public async Task<Course?> GetCourseAsync(string language)
     {
+        if (!_contentDirectoryValid)
+        {
+            _logger?.LogWarning("Content directory is invalid - cannot load course {Language}", language);
+            return null;
+        }
+
         // Check cache first
         if (_cachedCourses.TryGetValue(language, out var cached))
         {
@@ -83,6 +121,7 @@ public class CourseService
         var courseJsonPath = Path.Combine(_contentPath, language, "course.json");
         if (!File.Exists(courseJsonPath))
         {
+            _logger?.LogWarning("Course file not found: {Path}", courseJsonPath);
             return null;
         }
 
@@ -94,13 +133,21 @@ public class CourseService
             if (course != null)
             {
                 _cachedCourses[language] = course;
+                _logger?.LogInformation("Loaded course {Language} with {ModuleCount} modules", language, course.Modules.Count);
             }
 
             return course;
         }
-        catch (Exception ex)
+        catch (JsonException jsonEx)
         {
-            Console.WriteLine($"Failed to load course {language}: {ex.Message}");
+            _logger?.LogError(jsonEx, "Invalid JSON in course file {Path}", courseJsonPath);
+            _errorHandler?.LogError(jsonEx, $"Failed to parse course '{language}' - file may be corrupt");
+            return null;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to load course {Language}", language);
+            _errorHandler?.LogError(ex, $"Failed to load course '{language}'");
             return null;
         }
     }
@@ -110,18 +157,37 @@ public class CourseService
     /// </summary>
     public async Task<Lesson?> GetLessonAsync(string language, string moduleId, string lessonId)
     {
-        var course = await GetCourseAsync(language);
-        if (course == null) return null;
-
-        foreach (var module in course.Modules)
+        try
         {
-            if (module.Id == moduleId)
+            var course = await GetCourseAsync(language);
+            if (course == null)
             {
-                return module.Lessons.Find(l => l.Id == lessonId);
+                _logger?.LogWarning("Cannot find lesson - course {Language} not loaded", language);
+                return null;
             }
-        }
 
-        return null;
+            foreach (var module in course.Modules)
+            {
+                if (module.Id == moduleId)
+                {
+                    var lesson = module.Lessons.Find(l => l.Id == lessonId);
+                    if (lesson != null)
+                    {
+                        _logger?.LogDebug("Found lesson {LessonId} in module {ModuleId}", lessonId, moduleId);
+                        return lesson;
+                    }
+                }
+            }
+
+            _logger?.LogWarning("Lesson not found: {Language}/{ModuleId}/{LessonId}", language, moduleId, lessonId);
+            return null;
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Error retrieving lesson {Language}/{ModuleId}/{LessonId}", language, moduleId, lessonId);
+            _errorHandler?.LogError(ex, $"Failed to load lesson");
+            return null;
+        }
     }
 }
 
