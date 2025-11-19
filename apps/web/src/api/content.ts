@@ -1,20 +1,64 @@
 import { Course } from '../types/content'
+import type { Challenge, TestCase, ValidationResponse } from '../types/interactive'
+
+// Electron API response types
+interface ElectronResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+}
+
+interface ExecutionResult {
+  success: boolean
+  output?: string
+  error?: string
+  exitCode?: number
+}
+
+interface ProgressData {
+  [courseId: string]: {
+    [moduleId: string]: {
+      [lessonId: string]: {
+        completed: boolean
+        lastAccessed: string
+        score?: number
+      }
+    }
+  }
+}
+
+interface AuthResult {
+  success: boolean
+  user?: {
+    id: string
+    email: string
+    name: string
+  }
+  token?: string
+}
+
+interface RuntimeCheckResult {
+  python: boolean
+  node: boolean
+  java?: boolean
+  rust?: boolean
+}
 
 // Type definitions for Electron API
 declare global {
   interface Window {
     electronAPI?: {
-      getCourses: () => Promise<any>
-      getCourse: (language: string) => Promise<any>
-      executeCode: (language: string, code: string) => Promise<any>
-      validateChallenge: (challenge: any, userSubmission: any) => Promise<any>
-      validateVisibleTests: (code: string, language: string, testCases: any[]) => Promise<any>
-      getProgress: (userId?: string) => Promise<any>
-      saveProgress: (courseId: string, moduleId: string, lessonId: string, progressData: any, userId?: string) => Promise<any>
-      register: (email: string, password: string, name: string) => Promise<any>
-      login: (email: string, password: string) => Promise<any>
-      verifyAuth: () => Promise<any>
-      checkRuntimes: () => Promise<any>
+      getCourses: () => Promise<ElectronResponse<Course[]>>
+      getCourse: (language: string) => Promise<ElectronResponse<Course>>
+      executeCode: (language: string, code: string) => Promise<ElectronResponse<ExecutionResult>>
+      validateChallenge: (challenge: Challenge, userSubmission: unknown) => Promise<ElectronResponse<ValidationResponse>>
+      validateVisibleTests: (code: string, language: string, testCases: TestCase[]) => Promise<ElectronResponse<ValidationResponse>>
+      getProgress: (userId?: string) => Promise<ElectronResponse<ProgressData>>
+      saveProgress: (courseId: string, moduleId: string, lessonId: string, progressData: Record<string, unknown>, userId?: string) => Promise<ElectronResponse<void>>
+      register: (email: string, password: string, name: string) => Promise<ElectronResponse<AuthResult>>
+      login: (email: string, password: string) => Promise<ElectronResponse<AuthResult>>
+      verifyAuth: () => Promise<ElectronResponse<AuthResult>>
+      checkRuntimes: () => Promise<ElectronResponse<RuntimeCheckResult>>
     }
     isElectron?: boolean
   }
@@ -24,31 +68,20 @@ declare global {
 const isElectron = typeof window !== 'undefined' && window.isElectron === true
 
 // Helper to ensure Electron API response format
-async function invokeElectron<T>(fn: () => Promise<any>): Promise<T> {
+async function invokeElectron<T>(fn: () => Promise<ElectronResponse<T>>): Promise<T> {
   const response = await fn()
   if (response.success === false) {
     throw new Error(response.error || 'Operation failed')
   }
-  // For responses that have a nested result/data field, unwrap it
-  if (response.result !== undefined) {
-    return response.result
+  // For responses that have a data field, unwrap it
+  if (response.data !== undefined) {
+    return response.data
   }
-  if (response.course !== undefined) {
-    return response.course
-  }
-  if (response.courses !== undefined) {
-    return response.courses
-  }
-  if (response.progress !== undefined) {
-    return response.progress
-  }
-  if (response.runtimes !== undefined) {
-    return response.runtimes
-  }
-  return response
+  // Fallback: return response as-is (for legacy format)
+  return response as unknown as T
 }
 
-export async function fetchCourses(): Promise<any[]> {
+export async function fetchCourses(): Promise<Course[]> {
   if (isElectron && window.electronAPI) {
     return invokeElectron(() => window.electronAPI!.getCourses())
   }
@@ -65,28 +98,28 @@ export async function fetchCourse(language: string): Promise<Course> {
 export async function executeCode(
   language: string,
   code: string
-): Promise<any> {
+): Promise<ExecutionResult> {
   if (isElectron && window.electronAPI) {
     return invokeElectron(() => window.electronAPI!.executeCode(language, code))
   }
   throw new Error('This application only runs in Electron desktop mode')
 }
 
-export async function validateChallenge(challenge: any, userSubmission: any): Promise<any> {
+export async function validateChallenge(challenge: Challenge, userSubmission: unknown): Promise<ValidationResponse> {
   if (isElectron && window.electronAPI) {
     return invokeElectron(() => window.electronAPI!.validateChallenge(challenge, userSubmission))
   }
   throw new Error('This application only runs in Electron desktop mode')
 }
 
-export async function validateVisibleTests(code: string, language: string, testCases: any[]): Promise<any> {
+export async function validateVisibleTests(code: string, language: string, testCases: TestCase[]): Promise<ValidationResponse> {
   if (isElectron && window.electronAPI) {
     return invokeElectron(() => window.electronAPI!.validateVisibleTests(code, language, testCases))
   }
   throw new Error('This application only runs in Electron desktop mode')
 }
 
-export async function getProgress(userId?: string): Promise<any> {
+export async function getProgress(userId?: string): Promise<ProgressData> {
   if (isElectron && window.electronAPI) {
     return invokeElectron(() => window.electronAPI!.getProgress(userId))
   }
@@ -97,7 +130,7 @@ export async function saveProgress(
   courseId: string,
   moduleId: string,
   lessonId: string,
-  data: any,
+  data: Record<string, unknown>,
   userId?: string
 ): Promise<void> {
   if (isElectron && window.electronAPI) {
