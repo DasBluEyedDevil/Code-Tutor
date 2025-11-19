@@ -77,8 +77,20 @@
                             <Button Classes="course-card"
                                    Command="{Binding $parent[ItemsControl].((vm:LandingPageViewModel)DataContext).SelectCourseCommand}"
                                    CommandParameter="{Binding}"
+                                   IsEnabled="{Binding IsRuntimeAvailable}"
                                    Margin="8">
                                 <StackPanel Spacing="16" Padding="24">
+                                    <!-- Runtime Warning -->
+                                    <Border Background="{DynamicResource ErrorBrush}"
+                                            CornerRadius="4"
+                                            Padding="8"
+                                            IsVisible="{Binding !IsRuntimeAvailable}">
+                                         <StackPanel Orientation="Horizontal" Spacing="8">
+                                             <PathIcon Data="{StaticResource AlertIcon}" Foreground="White" Width="16" Height="16"/>
+                                             <TextBlock Text="Runtime Not Found" Foreground="White" Classes="caption" FontWeight="Bold"/>
+                                         </StackPanel>
+                                    </Border>
+
                                     <!-- Course Icon/Language -->
                                     <Border Classes="course-icon"
                                            CornerRadius="8"

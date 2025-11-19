@@ -32,6 +32,10 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     private string _errorMessage = string.Empty;
     private string _lessonContent = string.Empty;
     private DateTime _lessonStartTime;
+    private bool _isLessonCompleted;
+
+    private LessonReference? _nextLesson;
+    private LessonReference? _previousLesson;
 
     public LessonPageViewModel(
         ICourseService courseService,
@@ -54,6 +58,9 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
         GoBackCommand = ReactiveCommand.Create(GoBack);
         RetryLoadCommand = ReactiveCommand.CreateFromTask(LoadLessonAsync);
         MarkCompleteCommand = ReactiveCommand.CreateFromTask(MarkLessonCompleteAsync);
+        NextLessonCommand = ReactiveCommand.Create(NavigateToNextLesson);
+        PreviousLessonCommand = ReactiveCommand.Create(NavigateToPreviousLesson);
+        GoToCourseCommand = ReactiveCommand.Create(GoBack);
     }
 
     public Lesson? Lesson
@@ -74,6 +81,12 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
         set => this.RaiseAndSetIfChanged(ref _isLoading, value);
     }
 
+    public bool IsLessonCompleted
+    {
+        get => _isLessonCompleted;
+        set => this.RaiseAndSetIfChanged(ref _isLessonCompleted, value);
+    }
+
     public string ErrorMessage
     {
         get => _errorMessage;
@@ -88,9 +101,35 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
 
     public bool HasChallenges => Challenges.Count > 0;
 
+    public LessonReference? NextLesson
+    {
+        get => _nextLesson;
+        set 
+        {
+            this.RaiseAndSetIfChanged(ref _nextLesson, value);
+            this.RaisePropertyChanged(nameof(HasNextLesson));
+        }
+    }
+
+    public LessonReference? PreviousLesson
+    {
+        get => _previousLesson;
+        set 
+        {
+            this.RaiseAndSetIfChanged(ref _previousLesson, value);
+            this.RaisePropertyChanged(nameof(HasPreviousLesson));
+        }
+    }
+
+    public bool HasNextLesson => NextLesson != null;
+    public bool HasPreviousLesson => PreviousLesson != null;
+
     public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
     public ReactiveCommand<Unit, Unit> RetryLoadCommand { get; }
     public ReactiveCommand<Unit, Unit> MarkCompleteCommand { get; }
+    public ReactiveCommand<Unit, Unit> NextLessonCommand { get; }
+    public ReactiveCommand<Unit, Unit> PreviousLessonCommand { get; }
+    public ReactiveCommand<Unit, Unit> GoToCourseCommand { get; }
 
     public void OnNavigatedTo(object parameter)
     {
@@ -99,6 +138,12 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             _courseId = navParam.CourseId;
             _moduleId = navParam.ModuleId;
             _lessonId = navParam.LessonId;
+
+            // Reset state
+            IsLessonCompleted = false;
+            Lesson = null;
+            LessonContent = string.Empty;
+            Challenges.Clear();
 
             this.RaisePropertyChanged(nameof(Breadcrumb));
             // Fire-and-forget is intentional - errors will be shown in UI via ErrorMessage
@@ -117,6 +162,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     {
         IsLoading = true;
         ErrorMessage = string.Empty;
+        IsLessonCompleted = false;
 
         try
         {
@@ -130,6 +176,10 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             Lesson = lesson;
             LessonContent = lesson.Content.Body;
             _lessonStartTime = DateTime.UtcNow;
+
+            // Load navigation info
+            NextLesson = await _courseService.GetNextLessonAsync(_courseId, _moduleId, _lessonId);
+            PreviousLesson = await _courseService.GetPreviousLessonAsync(_courseId, _moduleId, _lessonId);
 
             // Load challenges
             Challenges.Clear();
@@ -197,12 +247,39 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             // Check for achievements
             await _achievementService.CheckAchievementsAsync();
 
-            GoBack();
+            // Show completion overlay instead of going back immediately
+            IsLessonCompleted = true;
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             await _errorHandler.HandleErrorAsync(ex, "Lesson completion", showToUser: false);
             ErrorMessage = $"Failed to save progress: {_errorHandler.GetUserFriendlyMessage(ex)}";
+        }
+    }
+
+    private void NavigateToNextLesson()
+    {
+        if (NextLesson != null)
+        {
+            _navigationService.NavigateTo<LessonPageViewModel>(new LessonNavigationParameter
+            {
+                CourseId = NextLesson.CourseId,
+                ModuleId = NextLesson.ModuleId,
+                LessonId = NextLesson.LessonId
+            });
+        }
+    }
+
+    private void NavigateToPreviousLesson()
+    {
+        if (PreviousLesson != null)
+        {
+            _navigationService.NavigateTo<LessonPageViewModel>(new LessonNavigationParameter
+            {
+                CourseId = PreviousLesson.CourseId,
+                ModuleId = PreviousLesson.ModuleId,
+                LessonId = PreviousLesson.LessonId
+            });
         }
     }
 
