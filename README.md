@@ -1,311 +1,225 @@
-# Code Tutor - Unified Training Platform
+# Code Tutor - Native Desktop Application
 
-> Master multiple programming languages in one unified platform with interactive lessons and real-time code execution.
+> Master multiple programming languages with an interactive, cross-platform native desktop application.
 
-## 🖥️ **Desktop App Available!**
+## 🖥️ Native C#/Avalonia Desktop App
 
-**Want a simple double-click experience?** Code Tutor is now available as a **standalone desktop application**!
+Code Tutor is a **production-ready native desktop application** built with C# and Avalonia UI for superior performance and a true native experience.
 
-- ✅ **No Docker required** - uses your local language runtimes
-- ✅ **One-click launch** - just double-click the launcher script
-- ✅ **Works offline** - everything runs on your machine
-- ✅ **Cross-platform** - Windows, macOS, and Linux
-
-**Get Started:** See **[QUICK_START.md](./QUICK_START.md)** for the desktop app
-
----
-
-A modern learning platform that teaches **Java, Python, Kotlin, Rust, C#, Flutter, and JavaScript/TypeScript** through interactive lessons, real-time code execution, and progress tracking.
-
-Available as a **standalone desktop application** that works offline using your local language runtimes.
+- ✅ **True Native App** - C#/.NET 8.0 with Avalonia UI (not Electron)
+- ✅ **Cross-Platform** - Windows, macOS, and Linux
+- ✅ **Local Code Execution** - uses your installed language runtimes
+- ✅ **Works Offline** - everything runs locally
+- ✅ **Low Memory Footprint** - native performance
+- ✅ **Modern UI** - Beautiful dark/light themes with smooth animations
 
 ## 🌟 Features
 
-- **7 Programming Languages** in one platform
-- **Interactive Code Editor** powered by Monaco Editor (VS Code's engine)
-- **Real-time Code Execution** using your local language runtimes
-- **Progress Tracking** with automatic progress saving
-- **Markdown Lessons** with syntax highlighting
-- **Dark/Light Theme** support
-- **Concept-First Pedagogy** - understand concepts before jargon
-- **Fully Offline** - works completely offline once installed
+### Learning Platform
+- **5 Programming Languages** - Python, JavaScript, Java, C#, Rust
+- **6 Challenge Types** - Multiple Choice, True/False, Free Coding, Code Output, Code Completion, Conceptual
+- **Interactive Code Editor** - Syntax highlighting with TextMate grammar support
+- **Real-time Code Execution** - Execute code locally with resource limits for safety
+- **Educational Guidance** - Hints, common mistakes, solutions, and bonus challenges
+
+### User Experience
+- **Progress Tracking** - SQLite database persists your learning journey
+- **Achievement System** - Earn achievements as you complete challenges
+- **Streak Tracking** - Build daily coding streaks
+- **Dark/Light Themes** - Comfortable coding in any lighting
+- **Responsive UI** - Smooth animations and intuitive navigation
+
+### Security & Safety
+- **Resource Limits** - Memory limited to 512 MB, output capped at 100 KB
+- **Execution Timeout** - 10-second timeout with process tree termination
+- **Environment Restrictions** - Whitelisted environment variables only
+- **CPU Priority Control** - Runs user code at below-normal priority
 
 ## 🏗️ Architecture
 
 ```
 Code-Tutor/
-├── apps/
-│   ├── desktop/          # Electron desktop application
-│   │   ├── src/
-│   │   │   ├── main.ts          # Electron main process
-│   │   │   ├── executors.ts     # Local code execution
-│   │   │   └── api-server.ts    # Embedded Express server
-│   │   └── package.json
-│   └── web/              # React + TypeScript frontend (bundled into desktop)
-├── content/
-│   └── courses/          # Course content for all 7 languages
-│       ├── python/
-│       ├── java/
-│       ├── kotlin/
-│       ├── rust/
-│       ├── csharp/
-│       ├── javascript/
-│       └── dart/
-└── scripts/              # Content management tools
+├── native-app/                # Native C#/Avalonia desktop app (PRODUCTION)
+│   ├── Services/              # 15 production services
+│   │   ├── CodeExecutor.cs           - Secure code execution
+│   │   ├── ChallengeValidationService.cs  - Multi-language validation
+│   │   ├── ProgressService.cs        - Progress tracking
+│   │   ├── AchievementService.cs     - Gamification
+│   │   └── ...                       - 11 more services
+│   ├── ViewModels/            # MVVM ViewModels with ReactiveUI
+│   ├── Views/                 # Avalonia XAML views
+│   ├── Models/                # Data models
+│   ├── Controls/              # Custom controls
+│   ├── Themes/                # Dark/Light themes
+│   └── Data/                  # SQLite database context
+│
+├── native-app.Tests/          # Unit tests (102 tests, 90% coverage)
+│   ├── Unit/                  # Service tests
+│   ├── ViewModels/            # ViewModel tests
+│   └── Integration/           # Integration tests
+│
+├── content/courses/           # Course content (JSON)
+│   ├── python/
+│   ├── javascript/
+│   ├── java/
+│   ├── csharp/
+│   └── rust/
+│
+└── docs/                      # Documentation
+    ├── INTERACTIVE_CONTENT_SCHEMA.md  - Content structure
+    └── UX_UI_IMPROVEMENTS.md          - UX guidelines
 ```
 
 ## 🚀 Quick Start
 
-> **Simple!** Just double-click the launcher script to start the desktop app.
-> **Having issues?** See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md)
-
 ### Prerequisites
 
-- **Language Runtimes:** Install the programming languages you want to learn:
-  - Python 3.x ([Download](https://www.python.org/downloads/))
-  - Java 17+ ([Download](https://adoptium.net/))
-  - Kotlin (included with Java)
-  - Rust ([Download](https://www.rust-lang.org/tools/install))
-  - .NET 6+ ([Download](https://dotnet.microsoft.com/download))
-  - Node.js 18+ ([Download](https://nodejs.org))
-  - Dart/Flutter ([Download](https://flutter.dev/docs/get-started/install))
+1. **Install .NET 8.0 SDK**
+   - Download from: https://dotnet.microsoft.com/download/dotnet/8.0
 
-### Quick Setup (2 Steps)
+2. **Install Language Runtimes** (for the languages you want to learn):
+   - **Python 3.x** - https://www.python.org/downloads/
+   - **Java 17+** - https://adoptium.net/
+   - **.NET 8.0** - https://dotnet.microsoft.com/download
+   - **Node.js 18+** - https://nodejs.org
+   - **Rust** - https://www.rust-lang.org/tools/install
 
-1. **Clone and install:**
-   ```bash
-   git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
-   cd Code-Tutor
-   npm install
-   ```
-
-2. **Launch the app:**
-   - **Windows:** Double-click `launch-desktop.bat` or `launch-desktop.ps1`
-   - **macOS/Linux:** Run `./launch-desktop.sh`
-   - **Or use npm:** `npm run start:desktop`
-
-The desktop app will automatically open in a new window!
-
-## 📚 Development
-
-### Project Structure
-
-#### Desktop App (`apps/desktop/`)
-- **Framework:** Electron 28
-- **Backend:** Embedded Express server
-- **Execution:** Local language runtime spawning
-- **Runtime Detection:** Automatic detection of installed languages
-- **Builder:** electron-builder for cross-platform installers
-
-#### Frontend (`apps/web/`)
-- **Framework:** React 18 + TypeScript + Vite
-- **Styling:** Tailwind CSS
-- **State:** Zustand
-- **Editor:** Monaco Editor
-- **Routing:** React Router
-- **Markdown:** react-markdown with syntax highlighting
-
-### Running in Development
+### Running the App
 
 ```bash
-# Start the desktop app in development mode
-npm run start:desktop
+# Clone the repository
+git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
+cd Code-Tutor
 
-# Build the desktop app (no installers)
-npm run build:desktop
+# Restore NuGet packages
+dotnet restore native-app/CodeTutor.Native.csproj
 
-# Build desktop app with installers (.exe, .dmg, .AppImage)
-npm run dist:desktop
+# Run the application
+dotnet run --project native-app/CodeTutor.Native.csproj
 ```
 
-### Building Installers
+### Building for Distribution
 
 ```bash
-# Build installers for your current platform
-npm run dist:desktop
+# Build release version
+dotnet build native-app/CodeTutor.Native.csproj -c Release
 
-# Or use the helper scripts:
-# Windows:
-.\build-installers.bat
+# Publish self-contained executable (Windows)
+dotnet publish native-app/CodeTutor.Native.csproj -c Release -r win-x64 --self-contained
 
-# macOS/Linux:
-./build-installers.sh
+# Publish self-contained executable (macOS)
+dotnet publish native-app/CodeTutor.Native.csproj -c Release -r osx-x64 --self-contained
+
+# Publish self-contained executable (Linux)
+dotnet publish native-app/CodeTutor.Native.csproj -c Release -r linux-x64 --self-contained
 ```
 
-This creates platform-specific installers in `apps/desktop/dist-electron/`
-
-## 🎨 Adding New Content
-
-### Creating a New Course
-
-1. Create course directory:
-   ```bash
-   mkdir -p content/courses/your-language/modules/module-00/lessons
-   ```
-
-2. Create `course.json`:
-   ```json
-   {
-     "courseMetadata": {
-       "id": "your-language",
-       "language": "YourLanguage",
-       "displayName": "Your Language Course",
-       "description": "Learn Your Language",
-       ...
-     },
-     "modules": [...],
-     "languageConfig": {...}
-   }
-   ```
-
-3. Add lesson content as markdown files
-
-4. Update language selection in `apps/web/src/pages/LandingPage.tsx`
-
-### Creating a New Lesson
-
-1. Add lesson object to module in `course.json`
-2. Create markdown file: `lesson-XX-YY.md`
-3. Add exercises with starter code and test cases
-4. Add hints and solutions
-
-See `content/courses/python/` for examples.
-
-## 🧪 Testing
+## 🧪 Running Tests
 
 ```bash
 # Run all tests
-npm test
+dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj
 
-# Run frontend tests
-cd apps/web && npm test
+# Run with coverage
+dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj --collect:"XPlat Code Coverage"
 
-# Test the desktop app
-npm run start:desktop
+# Run specific test category
+dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj --filter Category=Services
 ```
 
-## 📖 Course Content
+**Test Coverage**: 102 tests, 90% service coverage
 
-### Current Status
+## 📚 Supported Languages & Features
 
-| Language | Status | Lessons | Executors |
-|----------|--------|---------|-----------|
-| Python | 🟢 Started | 3/73 | ✅ Complete |
-| Java | 🟡 Planned | 0/20 | ✅ Complete |
-| Kotlin | 🟡 Planned | 0/29 | ✅ Complete |
-| Rust | 🟡 Planned | 0/60 | ✅ Complete |
-| C# | 🟡 Planned | 0/26 | ✅ Complete |
-| JavaScript/TS | 🟡 Planned | 0/40 | ✅ Complete |
-| Flutter/Dart | 🟡 Planned | 0/95 | ✅ Complete |
+| Language   | Code Execution | Syntax Highlighting | Test Cases | Input Mocking |
+|------------|----------------|---------------------|------------|---------------|
+| Python     | ✅ python3      | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| JavaScript | ✅ node         | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| Java       | ✅ javac + java | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| C#         | ✅ dotnet       | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| Rust       | ✅ rustc        | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
 
-### Migration Status
+## 🎯 Challenge Types
 
-Content is being migrated from individual repos:
-- [Java Training Course](https://github.com/DasBluEyedDevil/Java-Training-Course)
-- [Python Training Course](https://github.com/DasBluEyedDevil/Python-Training-Course)
-- [Kotlin Training Course](https://github.com/DasBluEyedDevil/Kotlin-Training-Course)
-- [Rust Training Course](https://github.com/DasBluEyedDevil/Rust-Training-Course)
-- [C# Training Course](https://github.com/DasBluEyedDevil/CSharp-Training-Course)
-- [Flutter Training Course](https://github.com/DasBluEyedDevil/Flutter-Training-Course)
+1. **Multiple Choice** - Select the correct answer from options
+2. **True/False** - Determine if statements are true or false
+3. **Free Coding** - Write code from scratch with test validation
+4. **Code Output** - Predict what code will output
+5. **Code Completion** - Fill in missing code segments
+6. **Conceptual** - Short-answer conceptual questions
 
-## 🗺️ Roadmap
+## 🛡️ Security Features
 
-See [UNIFIED_PLATFORM_PLAN.md](./UNIFIED_PLATFORM_PLAN.md) for the comprehensive plan.
+The Code Tutor app implements multiple layers of security for safe code execution:
 
-### Phase 1: Foundation ✅ (Complete)
-- [x] React frontend with Monaco Editor
-- [x] Node.js backend API
-- [x] Python executor service
-- [x] Sample Python course content
-- [x] Progress tracking
+- **Memory Limits**: 512 MB maximum per execution
+- **Output Limits**: 100 KB maximum output (prevents log spam)
+- **Execution Timeout**: 10-second limit with process tree termination
+- **Environment Restrictions**: Whitelisted environment variables only (PATH, HOME, TEMP)
+- **Network Restrictions**: NO_PROXY set to limit network access
+- **CPU Priority**: Below-normal priority to prevent system impact
+- **Process Isolation**: Spawned processes run in isolated context
 
-### Phase 2: Migration Tools & Executors ✅ (Complete)
-**Tools:**
-- [x] Content migration CLI
-- [x] Content validator script
+## 📖 Technology Stack
 
-**All 7 Language Executors:**
-- [x] Python executor (Flask + Docker)
-- [x] Java executor (Spark Java + JDK 17)
-- [x] Kotlin executor (Kotlin Compiler + JVM)
-- [x] Rust executor (Actix-web + rustc)
-- [x] C# executor (ASP.NET Core + Roslyn)
-- [x] JavaScript/TypeScript executor (Node.js + VM2)
-- [x] Dart/Flutter executor (Dart SDK + Shelf)
+- **Framework**: .NET 8.0
+- **UI**: Avalonia UI 11.1.0 (cross-platform XAML)
+- **MVVM**: ReactiveUI 19.5.31
+- **Database**: Entity Framework Core 8.0 + SQLite
+- **Syntax Highlighting**: TextMateSharp 1.0.56
+- **Testing**: xUnit 2.6.2 + Moq 4.20.70 + FluentAssertions 6.12.0
 
-### Phase 3: Content Migration 🚧 (Next)
-**Content to Migrate:**
-- [ ] Migrate Python course (70 remaining lessons)
-- [ ] Migrate Kotlin course (29 lessons)
-- [ ] Migrate Java course (20 lessons)
-- [ ] Migrate C# course (26 lessons)
-- [ ] Migrate Flutter course (95 lessons)
-- [ ] Migrate Rust course (60 lessons)
-- [ ] Create JavaScript/TypeScript course (40 lessons)
+## 📝 Development
 
-### Phase 4: Advanced Features (Weeks 11-14)
-- [ ] User authentication (full implementation)
-- [ ] PostgreSQL database
-- [ ] Progress analytics dashboard
-- [ ] Achievement/badge system
-- [ ] Code sharing
-- [ ] Search across courses
-- [ ] Bookmarks and notes
+### Architecture Pattern: MVVM
 
-### Phase 5: Polish & Launch (Weeks 15-18)
-- [ ] Testing and QA
-- [ ] Performance optimization
-- [ ] Accessibility (WCAG 2.1 AA)
-- [ ] Documentation
-- [ ] Beta testing
-- [ ] Public launch
+The app follows the **Model-View-ViewModel** pattern:
 
-## 📦 Packaging & Distribution
+- **Models** - Data entities (Challenge, Course, UserProgress, Achievement)
+- **Views** - Avalonia XAML UI (CoursePage, LessonPage, Challenge Views)
+- **ViewModels** - Presentation logic with ReactiveUI (CoursePageViewModel, etc.)
+- **Services** - Business logic layer (15 services with dependency injection)
 
-Want to create installable packages of Code-Tutor? See [PACKAGING_GUIDE.md](./PACKAGING_GUIDE.md) and [DISTRIBUTION.md](./DISTRIBUTION.md) for details.
+### Dependency Injection
 
-The desktop app can be packaged as:
+All services are registered in `App.axaml.cs` with appropriate lifetimes:
 
-- **Windows:** `.exe` installer (NSIS) and portable `.exe`
-- **macOS:** `.dmg` disk image and `.zip` archive
-- **Linux:** `.AppImage`, `.deb`, and `.rpm` packages
+- **Singleton**: Database, Settings, Navigation, Error Handler
+- **Scoped**: Progress, Achievement, Streak tracking
+- **Transient**: Code execution, validation, factories
 
-**Create installers:**
-```bash
-npm run dist:desktop
-# Or use: build-installers.bat (Windows) / build-installers.sh (Linux/macOS)
-```
+### Database Schema
 
-Installers are created in `apps/desktop/dist-electron/` and include everything needed to run Code-Tutor, including the course content.
+SQLite database with Entity Framework Core:
+
+- **Users** - User accounts
+- **UserProgress** - Lesson completion tracking
+- **Achievements** - Achievement definitions and unlocks
+- **Streaks** - Daily streak tracking
+- **CodeHistory** - Code submission history
+- **Statistics** - Learning analytics
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](./CONTRIBUTING.md) (coming soon).
-
-### Ways to Contribute
-
-1. **Add course content** - Write lessons, exercises, and tutorials
-2. **Build language executors** - Implement executors for new languages
-3. **Improve UI/UX** - Enhance the user interface and experience
-4. **Fix bugs** - Help squash bugs and improve stability
-5. **Write documentation** - Improve guides and tutorials
+Contributions are welcome! Please see `native-app/SETUP.md` for development setup instructions.
 
 ## 📄 License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+MIT License - see LICENSE file for details
 
-## 🙏 Acknowledgments
+## 🎓 Educational Philosophy
 
-- **Monaco Editor** - Microsoft's VS Code editor component
-- **React** - Facebook's UI library
-- **Express** - Node.js web framework
-- All the original course content from individual repositories
+Code Tutor follows a **concept-first pedagogy**:
 
-## 📞 Contact
-
-- **GitHub:** [@DasBluEyedDevil](https://github.com/DasBluEyedDevil)
-- **Issues:** [GitHub Issues](https://github.com/DasBluEyedDevil/Code-Tutor/issues)
+1. **Conceptual Understanding** - Learn the "why" before the "how"
+2. **Hands-On Practice** - Write real code immediately
+3. **Immediate Feedback** - Instant validation with detailed explanations
+4. **Progressive Complexity** - Build skills incrementally
+5. **Common Mistakes** - Learn from typical errors
+6. **Bonus Challenges** - Push beyond basics for mastery
 
 ---
 
-Built with ❤️ for developers learning multiple programming languages.
+**Production Version**: v1.0
+**Status**: ✅ Production Ready
+**Platform**: Native C#/Avalonia Desktop Application
