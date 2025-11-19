@@ -242,8 +242,119 @@ public class ChallengeValidationService : IChallengeValidationService
 
     private string InjectInput(string language, string code, string input)
     {
-        // This is a simplified implementation
-        // In production, you'd want proper stdin handling
-        return code;
+        // For test cases with input, we need to simulate stdin
+        // We do this by prepending code that provides the input values
+
+        var inputLines = input.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+        return language.ToLowerInvariant() switch
+        {
+            "python" => InjectPythonInput(code, inputLines),
+            "javascript" or "js" => InjectJavaScriptInput(code, inputLines),
+            "java" => InjectJavaInput(code, inputLines),
+            "csharp" or "cs" => InjectCSharpInput(code, inputLines),
+            "rust" => InjectRustInput(code, inputLines),
+            _ => code // Fallback: return original code
+        };
+    }
+
+    private string InjectPythonInput(string code, string[] inputLines)
+    {
+        // Replace input() calls with hardcoded values
+        // Simple approach: create a mock input function
+        var mockInput = "# Mock input for testing\n" +
+                       $"_test_inputs = {System.Text.Json.JsonSerializer.Serialize(inputLines)}\n" +
+                       "_test_input_index = 0\n" +
+                       "def input(prompt=''):\n" +
+                       "    global _test_input_index\n" +
+                       "    if _test_input_index < len(_test_inputs):\n" +
+                       "        val = _test_inputs[_test_input_index]\n" +
+                       "        _test_input_index += 1\n" +
+                       "        return val\n" +
+                       "    return ''\n\n";
+
+        return mockInput + code;
+    }
+
+    private string InjectJavaScriptInput(string code, string[] inputLines)
+    {
+        // Mock readline/prompt functionality
+        var inputsJson = System.Text.Json.JsonSerializer.Serialize(inputLines);
+        var mockReadline = $"// Mock input for testing\n" +
+                          $"const _testInputs = {inputsJson};\n" +
+                          "let _testInputIndex = 0;\n" +
+                          "const readline = () => {\n" +
+                          "  if (_testInputIndex < _testInputs.length) {\n" +
+                          "    return _testInputs[_testInputIndex++];\n" +
+                          "  }\n" +
+                          "  return '';\n" +
+                          "};\n\n";
+
+        return mockReadline + code;
+    }
+
+    private string InjectJavaInput(string code, string[] inputLines)
+    {
+        // For Java, we need to mock Scanner input
+        var inputsJoined = string.Join("\\n", inputLines);
+        var mockScanner = $"// Mock Scanner for testing\n" +
+                         "import java.io.ByteArrayInputStream;\n" +
+                         "import java.util.Scanner;\n" +
+                         "class MockInput {{\n" +
+                         $"    static final String INPUT = \"{inputsJoined}\";\n" +
+                         "    static Scanner getScanner() {{\n" +
+                         "        return new Scanner(new ByteArrayInputStream(INPUT.getBytes()));\n" +
+                         "    }}\n" +
+                         "}}\n\n";
+
+        // Replace Scanner(System.in) with MockInput.getScanner()
+        var modifiedCode = code.Replace("new Scanner(System.in)", "MockInput.getScanner()");
+
+        return mockScanner + modifiedCode;
+    }
+
+    private string InjectCSharpInput(string code, string[] inputLines)
+    {
+        // Mock Console.ReadLine() for C#
+        var inputsJson = System.Text.Json.JsonSerializer.Serialize(inputLines);
+        var mockConsole = $"// Mock Console.ReadLine for testing\n" +
+                         "using System;\n" +
+                         "using System.Linq;\n" +
+                         "class MockConsole {{\n" +
+                         $"    static string[] inputs = {inputsJson};\n" +
+                         "    static int index = 0;\n" +
+                         "    public static string ReadLine() {{\n" +
+                         "        return index < inputs.Length ? inputs[index++] : \"\";\n" +
+                         "    }}\n" +
+                         "}}\n\n";
+
+        // Replace Console.ReadLine() with MockConsole.ReadLine()
+        var modifiedCode = code.Replace("Console.ReadLine()", "MockConsole.ReadLine()");
+
+        return mockConsole + modifiedCode;
+    }
+
+    private string InjectRustInput(string code, string[] inputLines)
+    {
+        // For Rust, mock stdin reading
+        var inputsJoined = string.Join("\\n", inputLines);
+        var mockStdin = $"// Mock stdin for testing\n" +
+                       "use std::io::{{self, BufRead}};\n" +
+                       $"const TEST_INPUT: &str = \"{inputsJoined}\";\n" +
+                       "fn read_line() -> String {{\n" +
+                       "    static mut INDEX: usize = 0;\n" +
+                       "    let lines: Vec<&str> = TEST_INPUT.lines().collect();\n" +
+                       "    unsafe {{\n" +
+                       "        if INDEX < lines.len() {{\n" +
+                       "            let line = lines[INDEX].to_string();\n" +
+                       "            INDEX += 1;\n" +
+                       "            line\n" +
+                       "        }} else {{\n" +
+                       "            String::new()\n" +
+                       "        }}\n" +
+                       "    }}\n" +
+                       "}}\n\n";
+
+        return mockStdin + code;
     }
 }
