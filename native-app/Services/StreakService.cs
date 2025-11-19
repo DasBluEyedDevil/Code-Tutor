@@ -193,7 +193,7 @@ public class StreakService : IStreakService
             var currentStreak = await GetCurrentStreakAsync();
             var longestStreak = await GetLongestStreakAsync();
 
-            // Update current streak statistic
+            // Update or create current streak statistic
             var currentStreakStat = await _dbContext.Statistics
                 .FirstOrDefaultAsync(s => s.UserId == DefaultUserId && s.StatName == "CurrentStreak");
 
@@ -203,8 +203,21 @@ public class StreakService : IStreakService
                 currentStreakStat.LastUpdated = DateTime.UtcNow;
                 _dbContext.Statistics.Update(currentStreakStat);
             }
+            else
+            {
+                // Initialize missing statistic record
+                currentStreakStat = new Statistic
+                {
+                    UserId = DefaultUserId,
+                    StatName = "CurrentStreak",
+                    StatValue = currentStreak,
+                    LastUpdated = DateTime.UtcNow
+                };
+                _dbContext.Statistics.Add(currentStreakStat);
+                _logger?.LogWarning("CurrentStreak statistic was missing - initialized with value {Value}", currentStreak);
+            }
 
-            // Update longest streak statistic
+            // Update or create longest streak statistic
             var longestStreakStat = await _dbContext.Statistics
                 .FirstOrDefaultAsync(s => s.UserId == DefaultUserId && s.StatName == "LongestStreak");
 
@@ -213,6 +226,19 @@ public class StreakService : IStreakService
                 longestStreakStat.StatValue = Math.Max(longestStreakStat.StatValue, longestStreak);
                 longestStreakStat.LastUpdated = DateTime.UtcNow;
                 _dbContext.Statistics.Update(longestStreakStat);
+            }
+            else
+            {
+                // Initialize missing statistic record
+                longestStreakStat = new Statistic
+                {
+                    UserId = DefaultUserId,
+                    StatName = "LongestStreak",
+                    StatValue = longestStreak,
+                    LastUpdated = DateTime.UtcNow
+                };
+                _dbContext.Statistics.Add(longestStreakStat);
+                _logger?.LogWarning("LongestStreak statistic was missing - initialized with value {Value}", longestStreak);
             }
 
             await _dbContext.SaveChangesAsync();
