@@ -1,5 +1,6 @@
 using System;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.EntityFrameworkCore;
@@ -61,25 +62,117 @@ public partial class App : Application
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
-            // Log error using ErrorHandlerService with fallback to Console
+            // Log error using ErrorHandlerService with fallback to user-visible message box
             try
             {
                 var errorHandler = _serviceProvider?.GetService<IErrorHandlerService>();
                 if (errorHandler != null)
                 {
-                    await errorHandler.HandleErrorAsync(ex, "Failed to initialize database. The application may not function correctly.");
+                    await errorHandler.HandleErrorAsync(ex, "Failed to initialize database", showToUser: true);
                 }
                 else
                 {
-                    // Fallback if ErrorHandlerService is not available
-                    Console.WriteLine($"Database initialization failed: {ex.Message}");
+                    // Fallback: Show message box if ErrorHandlerService unavailable
+                    await ShowCriticalErrorDialogAsync(
+                        "Database Initialization Failed",
+                        $"Code Tutor could not initialize its database.\n\n" +
+                        $"Error: {ex.Message}\n\n" +
+                        $"The application may not function correctly. Please check file permissions " +
+                        $"in your AppData folder or contact support."
+                    );
                 }
             }
-            catch
+            catch (Exception innerEx)
             {
-                // Last resort fallback
-                Console.WriteLine($"Database initialization failed: {ex.Message}");
+                // Last resort: Show basic error dialog
+                await ShowCriticalErrorDialogAsync(
+                    "Critical Startup Error",
+                    $"Code Tutor encountered a critical error during startup.\n\n" +
+                    $"Database Error: {ex.Message}\n" +
+                    $"Handler Error: {innerEx.Message}\n\n" +
+                    $"Please restart the application or contact support."
+                );
             }
+        }
+    }
+
+    /// <summary>
+    /// Shows a critical error dialog using bare Avalonia controls (no dependencies)
+    /// Used when ErrorHandlerService is unavailable during startup
+    /// </summary>
+    private async System.Threading.Tasks.Task ShowCriticalErrorDialogAsync(string title, string message)
+    {
+        try
+        {
+            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            var mainWindow = desktop.MainWindow;
+
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                var errorWindow = new Window
+                {
+                    Title = title,
+                    Width = 500,
+                    Height = 300,
+                    CanResize = false,
+                    WindowStartupLocation = mainWindow != null
+                        ? WindowStartupLocation.CenterOwner
+                        : WindowStartupLocation.CenterScreen,
+                    Background = Avalonia.Media.Brushes.White
+                };
+
+                var okButton = new Button
+                {
+                    Content = "OK",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    Padding = new Thickness(40, 10),
+                    Margin = new Thickness(0, 20, 0, 0)
+                };
+
+                okButton.Click += (s, e) => errorWindow.Close();
+
+                errorWindow.Content = new StackPanel
+                {
+                    Margin = new Thickness(20),
+                    Spacing = 15,
+                    Children =
+                    {
+                        new TextBlock
+                        {
+                            Text = "⚠️ Critical Error",
+                            FontSize = 18,
+                            FontWeight = Avalonia.Media.FontWeight.Bold,
+                            Foreground = Avalonia.Media.Brushes.Red
+                        },
+                        new TextBlock
+                        {
+                            Text = message,
+                            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                            FontSize = 13,
+                            Foreground = Avalonia.Media.Brushes.Black
+                        },
+                        okButton
+                    }
+                };
+
+                if (mainWindow != null)
+                {
+                    await errorWindow.ShowDialog(mainWindow);
+                }
+                else
+                {
+                    errorWindow.Show();
+                    // Give user time to read the error
+                    await System.Threading.Tasks.Task.Delay(5000);
+                }
+            });
+        }
+        catch
+        {
+            // Absolute last resort - write to console
+            Console.WriteLine($"[CRITICAL ERROR] {title}: {message}");
         }
     }
 
@@ -93,7 +186,8 @@ public partial class App : Application
             options.UseSqlite($"Data Source={dbPath}");
         });
 
-        // Services
+        // Services (Register ErrorHandlerService first so other services can use it)
+        services.AddSingleton<IErrorHandlerService, ErrorHandlerService>();
         services.AddSingleton<IDatabaseService, DatabaseService>();
         services.AddSingleton<ICourseService, CourseService>();
         services.AddSingleton<ICodeExecutor, CodeExecutor>();
@@ -107,7 +201,6 @@ public partial class App : Application
         services.AddSingleton<ISettingsService, SettingsService>();
         services.AddScoped<IAchievementService, AchievementService>();
         services.AddScoped<IStreakService, StreakService>();
-        services.AddSingleton<IErrorHandlerService, ErrorHandlerService>();
 
         // Main Window ViewModel
         services.AddSingleton<MainWindowViewModel>();
