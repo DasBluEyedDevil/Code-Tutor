@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using CodeTutor.Native.ViewModels;
+using CodeTutor.Native.ViewModels.Pages;
 
 namespace CodeTutor.Native.Services;
 
@@ -11,13 +13,15 @@ namespace CodeTutor.Native.Services;
 public class NavigationService : INavigationService
 {
     private readonly IServiceProvider _serviceProvider;
+    private readonly IErrorHandlerService? _errorHandler;
     private readonly Stack<(ViewModelBase ViewModel, IServiceScope Scope)> _navigationStack = new();
     private ViewModelBase? _currentViewModel;
     private IServiceScope? _currentScope;
 
-    public NavigationService(IServiceProvider serviceProvider)
+    public NavigationService(IServiceProvider serviceProvider, IErrorHandlerService? errorHandler = null)
     {
         _serviceProvider = serviceProvider;
+        _errorHandler = errorHandler;
     }
 
     public ViewModelBase? CurrentViewModel
@@ -53,13 +57,43 @@ public class NavigationService : INavigationService
         // Create new scope for the new ViewModel and its dependencies
         _currentScope = _serviceProvider.CreateScope();
 
-        // Get view model from the new scope
-        var viewModel = _currentScope.ServiceProvider.GetRequiredService<TViewModel>();
+        ViewModelBase viewModel;
 
-        // If view model supports parameters, set it
-        if (parameter != null && viewModel is INavigableViewModel navigable)
+        try
         {
-            navigable.OnNavigatedTo(parameter);
+            // Get view model from the new scope
+            viewModel = _currentScope.ServiceProvider.GetRequiredService<TViewModel>();
+
+            // If view model supports parameters, set it
+            if (parameter != null && viewModel is INavigableViewModel navigable)
+            {
+                navigable.OnNavigatedTo(parameter);
+            }
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            // Log the error
+            _errorHandler?.LogError(ex, $"Failed to resolve ViewModel: {typeof(TViewModel).Name}");
+
+            // Fallback to NotFoundPageViewModel if the requested ViewModel fails to resolve
+            // Avoid infinite recursion by checking if we're already trying to show NotFound
+            if (typeof(TViewModel) != typeof(NotFoundPageViewModel))
+            {
+                try
+                {
+                    viewModel = _currentScope.ServiceProvider.GetRequiredService<NotFoundPageViewModel>();
+                    _errorHandler?.LogWarning($"Navigated to NotFoundPage due to ViewModel resolution failure", "Navigation");
+                }
+                catch
+                {
+                    // If even NotFoundPageViewModel fails, rethrow original exception
+                    throw;
+                }
+            }
+            else
+            {
+                throw; // Can't recover if NotFoundPageViewModel itself fails
+            }
         }
 
         CurrentViewModel = viewModel;

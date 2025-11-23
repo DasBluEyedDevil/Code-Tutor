@@ -28,11 +28,11 @@
                 <StackPanel Grid.Column="1"
                            Spacing="4"
                            Margin="16,0,0,0">
-                    <TextBlock Text="{Binding Breadcrumb}"
+                    <TextBlock Text="{Binding Breadcrumb, FallbackValue='Loading...'}"
                               Classes="caption"
                               Opacity="0.6" />
                     <TextBlock Classes="h2"
-                              Text="{Binding Lesson.Title}" />
+                              Text="{Binding Lesson.Title, FallbackValue='Loading...'}" />
                 </StackPanel>
             </Grid>
         </Border>
@@ -58,7 +58,7 @@
                 <Border IsVisible="{Binding HasError}"
                        Classes="error-container">
                     <StackPanel Spacing="16">
-                        <TextBlock Text="{Binding ErrorMessage}"
+                        <TextBlock Text="{Binding ErrorMessage, FallbackValue='An error occurred'}"
                                   Classes="body"
                                   Foreground="{DynamicResource ErrorBrush}" />
                         <Button Content="Retry"
@@ -81,7 +81,7 @@
                                           Classes="h4"
                                           Foreground="{DynamicResource AccentBrush}" />
                             </StackPanel>
-                            <TextBlock Text="{Binding Lesson.Content.Overview}"
+                            <TextBlock Text="{Binding Lesson.Content.Overview, FallbackValue=''}"
                                       Classes="body"
                                       TextWrapping="Wrap" />
                         </StackPanel>
