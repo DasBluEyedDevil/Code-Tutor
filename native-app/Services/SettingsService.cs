@@ -119,6 +119,8 @@ public class SettingsService : ISettingsService
 
     private AppSettings LoadSettings()
     {
+        // Used during construction - synchronous is acceptable here
+        // For runtime reloads, use LoadSettingsAsync
         try
         {
             if (File.Exists(_settingsFilePath))
@@ -139,6 +141,37 @@ public class SettingsService : ISettingsService
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {
             _logger?.LogError(ex, "Failed to load settings, using defaults");
+            return new AppSettings();
+        }
+    }
+
+    /// <summary>
+    /// Asynchronously reload settings from disk
+    /// Use this method for runtime reloads to avoid blocking the UI thread
+    /// </summary>
+    public async Task<AppSettings> LoadSettingsAsync()
+    {
+        try
+        {
+            if (File.Exists(_settingsFilePath))
+            {
+                var json = await File.ReadAllTextAsync(_settingsFilePath);
+                var settings = JsonSerializer.Deserialize<AppSettings>(json);
+
+                if (settings != null)
+                {
+                    _currentSettings = settings;
+                    _logger?.LogInformation("Settings loaded asynchronously from {Path}", _settingsFilePath);
+                    return settings;
+                }
+            }
+
+            _logger?.LogInformation("No settings file found, using defaults");
+            return new AppSettings();
+        }
+        catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
+        {
+            _logger?.LogError(ex, "Failed to load settings asynchronously, using defaults");
             return new AppSettings();
         }
     }

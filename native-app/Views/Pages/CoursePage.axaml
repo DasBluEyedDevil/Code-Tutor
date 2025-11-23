@@ -28,9 +28,9 @@
                            Spacing="8"
                            Margin="16,0,0,0">
                     <TextBlock Classes="h2"
-                              Text="{Binding Course.Title}" />
+                              Text="{Binding Course.Title, FallbackValue='Loading...'}" />
                     <TextBlock Classes="body"
-                              Text="{Binding Course.Description}"
+                              Text="{Binding Course.Description, FallbackValue='Please wait...'}"
                               Opacity="0.7" />
                 </StackPanel>
             </Grid>
@@ -80,9 +80,9 @@
                                            HorizontalContentAlignment="Stretch">
                                         <Grid ColumnDefinitions="*,Auto">
                                             <StackPanel Grid.Column="0" Spacing="8">
-                                                <TextBlock Text="{Binding Title}"
+                                                <TextBlock Text="{Binding Title, FallbackValue='Module'}"
                                                           Classes="h3" />
-                                                <TextBlock Text="{Binding Description}"
+                                                <TextBlock Text="{Binding Description, FallbackValue=''}"
                                                           Classes="body"
                                                           Opacity="0.7"
                                                           TextWrapping="Wrap" />
@@ -93,12 +93,12 @@
                                                        Spacing="8">
                                                 <!-- Progress -->
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <TextBlock Text="{Binding CompletedLessons}"
+                                                    <TextBlock Text="{Binding CompletedLessons, FallbackValue='0'}"
                                                               Classes="body" />
                                                     <TextBlock Text="/"
                                                               Classes="body"
                                                               Opacity="0.5" />
-                                                    <TextBlock Text="{Binding TotalLessons}"
+                                                    <TextBlock Text="{Binding TotalLessons, FallbackValue='0'}"
                                                               Classes="body"
                                                               Opacity="0.5" />
                                                 </StackPanel>
@@ -140,7 +140,7 @@
 
                                                         <!-- Lesson Title -->
                                                         <TextBlock Grid.Column="1"
-                                                                  Text="{Binding Title}"
+                                                                  Text="{Binding Title, FallbackValue='Lesson'}"
                                                                   Classes="body"
                                                                   VerticalAlignment="Center" />
 
