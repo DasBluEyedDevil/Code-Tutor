@@ -70,7 +70,7 @@ public class TextMateRegistryService : ITextMateRegistryService
         }
 
         // Return default dark theme
-        return _registryOptions.GetTheme(ThemeName.DarkPlus);
+        return _registryOptions.GetTheme(ThemeName.DarkPlus.ToString());
     }
 
     private void LoadBuiltInThemes()
@@ -79,10 +79,10 @@ public class TextMateRegistryService : ITextMateRegistryService
         {
             // TextMateSharp comes with built-in themes
             // We'll use the built-in themes from the RegistryOptions
-            _themes["vs-dark"] = _registryOptions.GetTheme(ThemeName.DarkPlus);
-            _themes["vs-light"] = _registryOptions.GetTheme(ThemeName.LightPlus);
-            _themes["dark"] = _registryOptions.GetTheme(ThemeName.Dark);
-            _themes["light"] = _registryOptions.GetTheme(ThemeName.Light);
+            _themes["vs-dark"] = _registryOptions.GetTheme(ThemeName.DarkPlus.ToString());
+            _themes["vs-light"] = _registryOptions.GetTheme(ThemeName.LightPlus.ToString());
+            _themes["dark"] = _registryOptions.GetTheme(ThemeName.Dark.ToString());
+            _themes["light"] = _registryOptions.GetTheme(ThemeName.Light.ToString());
         }
         catch (Exception ex) when (ex is not OutOfMemoryException && ex is not StackOverflowException)
         {

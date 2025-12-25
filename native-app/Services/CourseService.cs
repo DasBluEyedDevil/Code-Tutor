@@ -46,7 +46,7 @@ public class CourseService : ICourseService
     /// <summary>
     /// Get all available courses
     /// </summary>
-    public async Task<List<CourseInfo>> GetCoursesAsync()
+    public async Task<IEnumerable<CourseInfo>> GetCoursesAsync()
     {
         var courses = new List<CourseInfo>();
 

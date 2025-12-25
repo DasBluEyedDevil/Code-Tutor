@@ -70,12 +70,32 @@
                        Classes="secondary" />
             </StackPanel>
 
-            <!-- Result -->
-            <Border IsVisible="{Binding !!Result}"
-                   Classes="{Binding Result.IsCorrect, Converter={StaticResource BoolToResultCardClassConverter}}">
+            <!-- Result - Success -->
+            <Border IsVisible="{Binding Result.IsCorrect}"
+                   Classes="success-card">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="{Binding Result.IsCorrect, Converter={StaticResource BoolToResultTextConverter}}"
-                              Classes="h4" />
+                    <TextBlock Text="Correct!"
+                              Classes="h4"
+                              Foreground="{DynamicResource SuccessBrush}" />
+                    <TextBlock Text="{Binding Result.Feedback}"
+                              Classes="body"
+                              TextWrapping="Wrap" />
+                    <TextBlock Classes="body">
+                        <Run Text="Score: " />
+                        <Run Text="{Binding Result.Score}" FontWeight="Bold" />
+                        <Run Text=" / " />
+                        <Run Text="{Binding Result.MaxScore}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <!-- Result - Error -->
+            <Border IsVisible="{Binding Result.IsIncorrect}"
+                   Classes="error-container">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="Incorrect"
+                              Classes="h4"
+                              Foreground="{DynamicResource ErrorBrush}" />
                     <TextBlock Text="{Binding Result.Feedback}"
                               Classes="body"
                               TextWrapping="Wrap" />

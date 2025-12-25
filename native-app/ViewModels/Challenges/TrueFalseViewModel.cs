@@ -26,10 +26,10 @@ public class TrueFalseViewModel : ChallengeViewModelBase
         _validationService = validationService;
         _errorHandler = errorHandler;
 
-        SelectTrueCommand = ReactiveCommand.Create(() => SelectedAnswer = true,
+        SelectTrueCommand = ReactiveCommand.Create(() => { SelectedAnswer = true; },
             this.WhenAnyValue(x => x.HasSubmitted, submitted => !submitted));
 
-        SelectFalseCommand = ReactiveCommand.Create(() => SelectedAnswer = false,
+        SelectFalseCommand = ReactiveCommand.Create(() => { SelectedAnswer = false; },
             this.WhenAnyValue(x => x.HasSubmitted, submitted => !submitted));
 
         SubmitCommand = ReactiveCommand.Create(Submit,

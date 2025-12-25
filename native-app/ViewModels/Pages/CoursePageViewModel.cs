@@ -154,7 +154,7 @@ public class ModuleViewModel : ViewModelBase
         _courseId = courseId;
         _progressService = progressService;
 
-        ToggleExpandCommand = ReactiveCommand.Create(() => IsExpanded = !IsExpanded);
+        ToggleExpandCommand = ReactiveCommand.Create(() => { IsExpanded = !IsExpanded; });
 
         // Build lesson info list
         foreach (var lesson in module.Lessons)
