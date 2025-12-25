@@ -5,7 +5,7 @@
 #define MyAppVersion "{{VERSION}}"
 #define MyAppPublisher "Code Tutor"
 #define MyAppURL "https://github.com/DasBluEyedDevil/Code-Tutor"
-#define MyAppExeName "CodeTutor.Native.exe"
+#define MyAppExeName "CodeTutor.exe"
 
 [Setup]
 AppId={{A5B6C7D8-1234-5678-90AB-CDEF12345678}

@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
+using CodeTutor.Native.Models;
 using CodeTutor.Native.Models.Challenges;
 using CodeTutor.Native.Services;
 
@@ -34,7 +35,7 @@ public class CodeCompletionViewModel : ChallengeViewModelBase
             this.WhenAnyValue(x => x.IsValidating, x => x.Code,
                 (validating, code) => !validating && !string.IsNullOrWhiteSpace(code)));
 
-        ShowSolutionCommand = ReactiveCommand.Create(() => ShowSolution = true);
+        ShowSolutionCommand = ReactiveCommand.Create(() => { ShowSolution = true; });
     }
 
     public string Language => _challenge.Language;

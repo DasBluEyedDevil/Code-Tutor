@@ -12,12 +12,13 @@ namespace CodeTutor.Native.Converters;
 /// </summary>
 public class BoolToSuccessBrushConverter : IValueConverter
 {
+    private static readonly SolidColorBrush SuccessBrush = new(Color.Parse("#4EC9B0"));
+    private static readonly SolidColorBrush MutedBrush = new(Color.Parse("#808080"));
+
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         // True = SuccessBrush (completed), False = MutedTextBrush (not completed)
-        return (value is bool boolValue && boolValue)
-            ? Application.Current?.FindResource("SuccessBrush") as IBrush ?? new SolidColorBrush(Color.Parse("#4EC9B0"))
-            : Application.Current?.FindResource("MutedTextBrush") as IBrush ?? new SolidColorBrush(Color.Parse("#808080"));
+        return (value is bool boolValue && boolValue) ? SuccessBrush : MutedBrush;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

@@ -31,7 +31,7 @@ public class ConceptualViewModel : ChallengeViewModelBase
             this.WhenAnyValue(x => x.Answer, x => x.HasSubmitted,
                 (ans, submitted) => !string.IsNullOrWhiteSpace(ans) && !submitted));
 
-        ShowSampleAnswerCommand = ReactiveCommand.Create(() => ShowSampleAnswer = true);
+        ShowSampleAnswerCommand = ReactiveCommand.Create(() => { ShowSampleAnswer = true; });
     }
 
     public string Question => _challenge.Question;

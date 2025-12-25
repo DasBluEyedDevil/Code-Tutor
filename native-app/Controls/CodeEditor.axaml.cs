@@ -15,7 +15,7 @@ namespace CodeTutor.Native.Controls;
 /// </summary>
 public partial class CodeEditor : UserControl
 {
-    private TextEditor.TextMate.Installation? _textMateInstallation;
+    private TextMate.Installation? _textMateInstallation;
     private readonly ITextMateRegistryService? _registryService;
     private readonly IEditorConfigurationService? _configService;
 
@@ -26,7 +26,7 @@ public partial class CodeEditor : UserControl
         AvaloniaProperty.Register<CodeEditor, string>(nameof(Language), "text");
 
     public static readonly StyledProperty<bool> IsReadOnlyProperty =
-        AvaloniaProperty.Register<CodeEditor, string>(nameof(IsReadOnly), false);
+        AvaloniaProperty.Register<CodeEditor, bool>(nameof(IsReadOnly), false);
 
     public CodeEditor()
     {

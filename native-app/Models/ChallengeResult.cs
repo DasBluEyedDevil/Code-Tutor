@@ -8,6 +8,7 @@ namespace CodeTutor.Native.Models;
 public class ChallengeResult
 {
     public bool IsCorrect { get; set; }
+    public bool IsIncorrect => !IsCorrect;
     public int Score { get; set; }
     public int MaxScore { get; set; }
     public string? Feedback { get; set; }

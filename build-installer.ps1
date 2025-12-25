@@ -118,7 +118,7 @@ Write-Host "  [OK] Copied documentation" -ForegroundColor Green
 Write-Host ""
 
 # Get published exe size
-$ExePath = Join-Path $PublishDir "CodeTutor.Native.exe"
+$ExePath = Join-Path $PublishDir "CodeTutor.exe"
 if (Test-Path $ExePath) {
     $ExeSize = (Get-Item $ExePath).Length / 1MB
     Write-Host "  [INFO] Executable size: $([math]::Round($ExeSize, 2)) MB" -ForegroundColor Cyan

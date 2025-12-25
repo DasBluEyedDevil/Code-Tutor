@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -9,7 +11,7 @@ namespace CodeTutor.Native.Controls;
 /// <summary>
 /// Common Mistakes Panel - displays common coding errors and how to fix them
 /// </summary>
-public partial class CommonMistakesPanel : UserControl
+public partial class CommonMistakesPanel : UserControl, INotifyPropertyChanged
 {
     public static readonly StyledProperty<List<CommonMistake>?> CommonMistakesProperty =
         AvaloniaProperty.Register<CommonMistakesPanel, List<CommonMistake>?>(nameof(CommonMistakes));
@@ -19,6 +21,8 @@ public partial class CommonMistakesPanel : UserControl
 
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<CommonMistakesPanel, string>(nameof(Title), defaultValue: "Common Mistakes");
+
+    public new event PropertyChangedEventHandler? PropertyChanged;
 
     public List<CommonMistake>? CommonMistakes
     {
@@ -46,7 +50,12 @@ public partial class CommonMistakesPanel : UserControl
         DataContext = this;
 
         // Update header when CommonMistakes changes
-        this.GetObservable(CommonMistakesProperty).Subscribe(_ => this.RaisePropertyChanged(nameof(Header)));
+        this.GetObservable(CommonMistakesProperty).Subscribe(_ => OnPropertyChanged(nameof(Header)));
+    }
+
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     private void InitializeComponent()
