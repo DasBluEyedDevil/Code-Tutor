@@ -64,7 +64,8 @@
                 </Border>
 
                 <!-- Courses Grid -->
-                <ItemsControl ItemsSource="{Binding Courses}"
+                <ItemsControl x:Name="CoursesControl"
+                             ItemsSource="{Binding Courses}"
                              IsVisible="{Binding !IsLoading}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -75,7 +76,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Classes="course-card"
-                                   Command="{Binding $parent[ItemsControl].((vm:LandingPageViewModel)DataContext).SelectCourseCommand}"
+                                   Command="{Binding #CoursesControl.DataContext.SelectCourseCommand}"
                                    CommandParameter="{Binding}"
                                    IsEnabled="{Binding IsRuntimeAvailable}"
                                    Margin="8">

@@ -16,8 +16,17 @@ public class ViewLocator : IDataTemplate
         if (data is null)
             return null;
 
-        var name = data.GetType().FullName!.Replace("ViewModel", "");
-        var viewName = name.Replace(".ViewModels.", ".Views.");
+        var fullName = data.GetType().FullName!;
+
+        // First replace the namespace, then remove "ViewModel" suffix from class name
+        // Order matters! If we remove "ViewModel" first, it corrupts "ViewModels" namespace
+        var viewName = fullName.Replace(".ViewModels.", ".Views.");
+
+        // Only remove "ViewModel" from the end (the class name suffix)
+        if (viewName.EndsWith("ViewModel"))
+        {
+            viewName = viewName.Substring(0, viewName.Length - "ViewModel".Length);
+        }
 
         var type = Type.GetType(viewName);
 

@@ -67,7 +67,8 @@
                 </Border>
 
                 <!-- Modules List -->
-                <ItemsControl ItemsSource="{Binding Modules}"
+                <ItemsControl x:Name="ModulesControl"
+                             ItemsSource="{Binding Modules}"
                              IsVisible="{Binding !IsLoading}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -126,7 +127,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Button Classes="lesson-item"
-                                                       Command="{Binding $parent[ItemsControl].((vm:CoursePageViewModel)DataContext).SelectLessonCommand}"
+                                                       Command="{Binding #ModulesControl.DataContext.SelectLessonCommand}"
                                                        CommandParameter="{Binding}"
                                                        HorizontalContentAlignment="Stretch"
                                                        Margin="0,4">

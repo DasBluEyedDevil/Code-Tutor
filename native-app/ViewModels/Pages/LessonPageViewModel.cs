@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Text;
 using System.Threading.Tasks;
 using ReactiveUI;
 using CodeTutor.Native.Models;
@@ -174,7 +176,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
             }
 
             Lesson = lesson;
-            LessonContent = lesson.Content.Body;
+            LessonContent = BuildMarkdownContent(lesson.ContentSections);
             _lessonStartTime = DateTime.UtcNow;
 
             // Load navigation info
@@ -183,7 +185,7 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
 
             // Load challenges
             Challenges.Clear();
-            foreach (var challenge in lesson.Exercises)
+            foreach (var challenge in lesson.Challenges)
             {
                 try
                 {
@@ -334,5 +336,65 @@ public class LessonPageViewModel : ViewModelBase, INavigableViewModel
     private void GoBack()
     {
         _navigationService.GoBack();
+    }
+
+    private static string BuildMarkdownContent(List<ContentSection> sections)
+    {
+        var sb = new StringBuilder();
+
+        foreach (var section in sections)
+        {
+            switch (section.Type.ToUpperInvariant())
+            {
+                case "THEORY":
+                    if (!string.IsNullOrEmpty(section.Title))
+                    {
+                        sb.AppendLine($"## {section.Title}");
+                        sb.AppendLine();
+                    }
+                    sb.AppendLine(section.Content);
+                    sb.AppendLine();
+                    break;
+
+                case "EXAMPLE":
+                    if (!string.IsNullOrEmpty(section.Title))
+                    {
+                        sb.AppendLine($"### {section.Title}");
+                        sb.AppendLine();
+                    }
+                    if (!string.IsNullOrEmpty(section.Code))
+                    {
+                        sb.AppendLine($"```{section.Language ?? ""}");
+                        sb.AppendLine(section.Code);
+                        sb.AppendLine("```");
+                        sb.AppendLine();
+                    }
+                    if (!string.IsNullOrEmpty(section.Content))
+                    {
+                        sb.AppendLine(section.Content);
+                        sb.AppendLine();
+                    }
+                    break;
+
+                case "KEY_POINT":
+                    sb.AppendLine("---");
+                    sb.AppendLine();
+                    sb.AppendLine("### 📝 Key Takeaways");
+                    sb.AppendLine();
+                    sb.AppendLine(section.Content);
+                    sb.AppendLine();
+                    break;
+
+                default:
+                    if (!string.IsNullOrEmpty(section.Content))
+                    {
+                        sb.AppendLine(section.Content);
+                        sb.AppendLine();
+                    }
+                    break;
+            }
+        }
+
+        return sb.ToString();
     }
 }

@@ -1,18 +1,34 @@
 {
-  "id": "csharp",
-  "language": "csharp",
-  "title": "C# Programming",
-  "description": "Master C# and .NET development from fundamentals to advanced concepts, including object-oriented programming, LINQ, async/await, and modern C# features.",
-  "difficulty": "advanced",
-  "estimatedHours": 26,
-  "prerequisites": [],
+  "courseMetadata": {
+    "id": "csharp",
+    "language": "csharp",
+    "version": "2.0.0",
+    "displayName": "C# Programming",
+    "description": "Master C# and .NET development from fundamentals to advanced concepts, including object-oriented programming, LINQ, async/await, and modern C# features.",
+    "totalModules": 14,
+    "estimatedHours": 26,
+    "difficulty": "beginner-to-advanced",
+    "prerequisites": [],
+    "learningOutcomes": [
+      "Write clean, efficient C# code following best practices",
+      "Build console applications and understand the .NET runtime",
+      "Master object-oriented programming with classes and inheritance",
+      "Use LINQ for powerful data querying and transformation",
+      "Implement asynchronous programming with async/await",
+      "Handle errors gracefully with exception handling",
+      "Work with files, collections, and modern C# features"
+    ],
+    "icon": "csharp",
+    "color": "#512BD4"
+  },
   "modules": [
     {
       "id": "module-01",
       "title": "Getting Started with C#",
       "description": "Introduction to programming, C#, and .NET. Learn basic syntax, output, comments, and your first programs.",
-      "difficulty": "beginner",
+      "order": 1,
       "estimatedHours": 2,
+      "prerequisites": [],
       "lessons": [
         {
           "id": "lesson-01-01",
@@ -55,15 +71,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Hello\"",
                   "expectedOutput": "Hello",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Hello\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"World\"",
                   "expectedOutput": "World",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"World\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -107,8 +129,7 @@
                   "consequence": "WriteLine not Writeline! Computer doesn't autocorrect spelling errors.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -149,6 +170,8 @@
               "solution": "// Display your name\nConsole.WriteLine(\"Alex\");\n\n// Display your favorite language\nConsole.WriteLine(\"My favorite language is C#\");\n\n// Display what you want to build\nConsole.WriteLine(\"I want to build a video game!\");",
               "language": "csharp",
               "testCases": [],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -183,8 +206,7 @@
                   "consequence": "This is a common error that can cause problems.",
                   "correction": "Review the lesson content and examples carefully."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -229,9 +251,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"About Me\"",
                   "expectedOutput": "About Me",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"About Me\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -266,8 +292,7 @@
                   "consequence": "This is a common error that can cause problems.",
                   "correction": "Review the lesson content and examples carefully."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -308,6 +333,8 @@
               "solution": "// Top of the face - the eyes\nConsole.WriteLine(\"  ^   ^  \");\n\n// The nose (simple dot)\nConsole.WriteLine(\"    .    \");\n\n// The mouth (happy smile)\nConsole.WriteLine(\"   ---   \");",
               "language": "csharp",
               "testCases": [],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -342,8 +369,7 @@
                   "consequence": "// Display text is not helpful. // Display welcome message to user is better!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -388,9 +414,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"Hello\"",
                   "expectedOutput": "Hello",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Hello\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -425,8 +455,7 @@
                   "consequence": "Console.WriteLine(Hello + World); won't work – they need quotes!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         }
@@ -436,8 +465,11 @@
       "id": "module-02",
       "title": "Variables and Data Types",
       "description": "Master variables, data types (int, string, bool, double), type conversion, and working with numbers and text.",
-      "difficulty": "beginner",
+      "order": 2,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-01"
+      ],
       "lessons": [
         {
           "id": "lesson-02-01",
@@ -480,9 +512,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"favorite\"",
                   "expectedOutput": "favorite",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"favorite\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -517,8 +553,7 @@
                   "consequence": "'favoriteGame' and 'favoritegame' are different! C# is case-sensitive!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -563,21 +598,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Quantity\"",
                   "expectedOutput": "Quantity",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Quantity\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Price\"",
                   "expectedOutput": "Price",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Price\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Total\"",
                   "expectedOutput": "Total",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -612,8 +655,7 @@
                   "consequence": "Console.WriteLine(Total: + total) is wrong. Use \"Total: \" with quotes!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -658,21 +700,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Status\"",
                   "expectedOutput": "Status",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Status\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"true\"",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"true\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"false\"",
                   "expectedOutput": "false",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"false\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -707,8 +757,7 @@
                   "consequence": "bool can ONLY hold true or false, nothing else!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -753,15 +802,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Area\"",
                   "expectedOutput": "Area",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Area\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Perimeter\"",
                   "expectedOutput": "Perimeter",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Perimeter\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -796,8 +851,7 @@
                   "consequence": "2 * length + 2 * width works, but 2 * (length + width) is clearer!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -842,21 +896,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Level\"",
                   "expectedOutput": "Level",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Level\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"XP\"",
                   "expectedOutput": "XP",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"XP\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Coins\"",
                   "expectedOutput": "Coins",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Coins\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -891,8 +953,7 @@
                   "consequence": "The first ADDS 5, the second REPLACES with 5!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         }
@@ -902,8 +963,11 @@
       "id": "module-03",
       "title": "Control Flow",
       "description": "Learn decision-making with if/else statements, switch cases, logical operators, and conditional logic.",
-      "difficulty": "beginner",
+      "order": 3,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-02"
+      ],
       "lessons": [
         {
           "id": "lesson-03-01",
@@ -946,9 +1010,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"Thank you for visiting\"",
                   "expectedOutput": "Thank you for visiting",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Thank you for visiting\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -992,8 +1060,7 @@
                   "consequence": "if (age >= 13); is WRONG! No semicolon before the { }",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1038,9 +1105,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"mode\"",
                   "expectedOutput": "mode",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"mode\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1084,8 +1155,7 @@
                   "consequence": "If you check score >= 70 BEFORE score >= 90, a score of 95 will hit 'C' first and stop!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1126,6 +1196,8 @@
               "solution": "// Set up variables\nint age = 16;\nbool hasParent = true;\nbool hasTicket = true;\n\n// Write your if-else chain with logical operators\nif (age >= 18 && hasTicket)\n{\n    Console.WriteLine(\"Welcome! Enjoy the movie.\");\n}\nelse if (age < 18 && hasParent && hasTicket)\n{\n    Console.WriteLine(\"Welcome with your parent!\");\n}\nelse if (!hasTicket)\n{\n    Console.WriteLine(\"Please purchase a ticket first.\");\n}\nelse\n{\n    Console.WriteLine(\"Sorry, you need a parent to attend.\");\n}",
               "language": "csharp",
               "testCases": [],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1169,8 +1241,7 @@
                   "consequence": "!hasTicket is true when hasTicket is FALSE. It reads as 'if does NOT have ticket'.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1211,6 +1282,8 @@
               "solution": "// Variables\nstring operation = \"+\";\nint num1 = 10;\nint num2 = 5;\n\n// Write your switch statement here\nswitch (operation)\n{\n    case \"+\":\n        Console.WriteLine(num1 + num2);\n        break;\n    case \"-\":\n        Console.WriteLine(num1 - num2);\n        break;\n    case \"*\":\n        Console.WriteLine(num1 * num2);\n        break;\n    case \"/\":\n        Console.WriteLine(num1 / num2);\n        break;\n    default:\n        Console.WriteLine(\"Unknown operation\");\n        break;\n}",
               "language": "csharp",
               "testCases": [],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1254,8 +1327,7 @@
                   "consequence": "You can't do case (x > 5): ! Switch only checks EQUALITY. Use if-else for conditions.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1300,15 +1372,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Health\"",
                   "expectedOutput": "Health",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Health\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Energy\"",
                   "expectedOutput": "Energy",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Energy\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1352,8 +1430,7 @@
                   "consequence": "Nested ternaries get VERY hard to read. If you have 3+ levels, use if-else instead for clarity!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         }
@@ -1363,8 +1440,11 @@
       "id": "module-04",
       "title": "Loops and Iteration",
       "description": "Master for loops, while loops, do-while loops, nested loops, and the foreach statement.",
-      "difficulty": "beginner",
+      "order": 4,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-03"
+      ],
       "lessons": [
         {
           "id": "lesson-04-01",
@@ -1407,9 +1487,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"Liftoff\"",
                   "expectedOutput": "Liftoff",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Liftoff\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1453,8 +1537,7 @@
                   "consequence": "for (int i = 0; i < 10; ) with no i++ creates an infinite loop! i never changes so i < 10 is always true.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1499,9 +1582,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"Password\"",
                   "expectedOutput": "Password",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Password\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1545,8 +1632,7 @@
                   "consequence": "If your condition checks 'count', make sure you're changing COUNT inside the loop, not some other variable!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1591,9 +1677,13 @@
                   "id": "test-1",
                   "description": "Output should contain \"Rolling\"",
                   "expectedOutput": "Rolling",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Rolling\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1637,8 +1727,7 @@
                   "consequence": "Use it when you MUST run the code at least once. Menus, user prompts, 'try again?' scenarios are perfect!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1679,6 +1768,8 @@
               "solution": "// Number analyzer\nfor (int i = 1; i <= 20; i++)\n{\n    // Skip even numbers\n    if (i % 2 == 0)\n    {\n        continue;\n    }\n    \n    // Break at 15\n    if (i == 15)\n    {\n        break;\n    }\n    \n    // Display the number\n    Console.WriteLine(i);\n}",
               "language": "csharp",
               "testCases": [],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1722,8 +1813,7 @@
                   "consequence": "Putting continue before important code means that code gets skipped! Place your continue checks carefully.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1768,27 +1858,37 @@
                   "id": "test-1",
                   "description": "Output should contain \"Mon\"",
                   "expectedOutput": "Mon",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Mon\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Tue\"",
                   "expectedOutput": "Tue",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Tue\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Wed\"",
                   "expectedOutput": "Wed",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Wed\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"month\"",
                   "expectedOutput": "month",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"month\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1832,8 +1932,7 @@
                   "consequence": "Triangle: for (i=1; i<=5; i++) { for (j=1; j<=i; j++) } gives increasing. for (j=1; j<=5-i; j++) gives decreasing. Easy to get backwards!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         }
@@ -1843,8 +1942,11 @@
       "id": "module-05",
       "title": "Collections",
       "description": "Work with arrays, Lists, Dictionaries, and other collection types for managing groups of data.",
-      "difficulty": "beginner",
+      "order": 5,
       "estimatedHours": 1,
+      "prerequisites": [
+        "module-04"
+      ],
       "lessons": [
         {
           "id": "lesson-05-01",
@@ -1887,15 +1989,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Day\"",
                   "expectedOutput": "Day",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Day\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Average\"",
                   "expectedOutput": "Average",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Average\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -1939,8 +2047,7 @@
                   "consequence": "You CAN'T change array size after creation! array.Length = 10; doesn't work. Create a new array if you need different size.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -1985,15 +2092,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"inventory\"",
                   "expectedOutput": "inventory",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"inventory\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Item\"",
                   "expectedOutput": "Item",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Item\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2037,8 +2150,7 @@
                   "consequence": "If you remove items, the Count changes! Always loop with i < list.Count, not a hardcoded number.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -2083,15 +2195,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"hello\"",
                   "expectedOutput": "hello",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"hello\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"hola\"",
                   "expectedOutput": "hola",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"hola\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2135,8 +2253,7 @@
                   "consequence": "Dictionary<string> is WRONG! Need TWO types: Dictionary<TKey, TValue> like Dictionary<string, int>.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
@@ -2181,33 +2298,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"GRADE BOOK\"",
                   "expectedOutput": "GRADE BOOK",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"GRADE BOOK\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Total\"",
                   "expectedOutput": "Total",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Average\"",
                   "expectedOutput": "Average",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Average\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Highest\"",
                   "expectedOutput": "Highest",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Highest\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"Lowest\"",
                   "expectedOutput": "Lowest",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Lowest\""
                 }
               ],
+              "difficulty": "beginner",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2251,8 +2380,7 @@
                   "consequence": "Arrays need Array.Sort(array). Lists use array.Sort(). Different syntax for same operation!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         }
@@ -2262,8 +2390,11 @@
       "id": "module-06",
       "title": "Methods and Functions",
       "description": "Create reusable code with methods, parameters, return values, method overloading, and scope.",
-      "difficulty": "beginner",
+      "order": 6,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-05"
+      ],
       "lessons": [
         {
           "id": "lesson-06-01",
@@ -2306,15 +2437,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Toyota\"",
                   "expectedOutput": "Toyota",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Toyota\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Honda\"",
                   "expectedOutput": "Honda",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Honda\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2358,8 +2495,7 @@
                   "consequence": "Class names should be PascalCase (Player, Car, not player, car). This is convention, not a requirement, but follow it!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2404,15 +2540,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Car created\"",
                   "expectedOutput": "Car created",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Car created\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Toyota\"",
                   "expectedOutput": "Toyota",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Toyota\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2456,8 +2598,7 @@
                   "consequence": "Common to use lowercase parameter names (string name) and assign to PascalCase fields (Name = name). Don't confuse them!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2502,15 +2643,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Balance\"",
                   "expectedOutput": "Balance",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Balance\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Alice\"",
                   "expectedOutput": "Alice",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Alice\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2554,8 +2701,7 @@
                   "consequence": "The parameter is just 'value', not 'this.value'. It's a special keyword in the set accessor.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2600,21 +2746,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"attacks\"",
                   "expectedOutput": "attacks",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"attacks\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"healed\"",
                   "expectedOutput": "healed",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"healed\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"spell\"",
                   "expectedOutput": "spell",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"spell\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2658,8 +2812,7 @@
                   "consequence": "int result = calc.Add(5, 3); stores the result. calc.Add(5, 3); without storing throws away the return value!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2704,21 +2857,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Alice\"",
                   "expectedOutput": "Alice",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Alice\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Bob\"",
                   "expectedOutput": "Bob",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Bob\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"salary\"",
                   "expectedOutput": "salary",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"salary\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2762,8 +2923,7 @@
                   "consequence": "'public static void Method() { this.field = 5; }' is ERROR! Static methods are class-level, no 'this' instance exists!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2808,15 +2968,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Login\"",
                   "expectedOutput": "Login",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Login\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"password\"",
                   "expectedOutput": "password",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"password\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2860,8 +3026,7 @@
                   "consequence": "You'll learn about protected with inheritance. For now, use private (internal) and public (external interface) only.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -2906,15 +3071,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Total\"",
                   "expectedOutput": "Total",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Max Speed\"",
                   "expectedOutput": "Max Speed",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Max Speed\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -2958,8 +3129,7 @@
                   "consequence": "Use static for shared data (counters, constants) or utility methods (Math.Sqrt). Use instance for object-specific data (each player's score).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         }
@@ -2969,8 +3139,11 @@
       "id": "module-07",
       "title": "Object-Oriented Programming Basics",
       "description": "Introduction to classes, objects, properties, constructors, and the fundamentals of OOP.",
-      "difficulty": "beginner",
+      "order": 7,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-06"
+      ],
       "lessons": [
         {
           "id": "lesson-07-01",
@@ -3013,21 +3186,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"eating\"",
                   "expectedOutput": "eating",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"eating\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Woof\"",
                   "expectedOutput": "Woof",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Woof\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Meow\"",
                   "expectedOutput": "Meow",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Meow\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3071,8 +3252,7 @@
                   "consequence": "Derived class can't access PRIVATE members of base class! Use protected or public in base class if derived class needs access.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3117,21 +3297,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Circle\"",
                   "expectedOutput": "Circle",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Circle\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Rectangle\"",
                   "expectedOutput": "Rectangle",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Rectangle\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Area\"",
                   "expectedOutput": "Area",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Area\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3175,8 +3363,7 @@
                   "consequence": "If you do 'Dog dog = new Dog()', polymorphism works but isn't as useful. Store in base type: 'Animal animal = new Dog()' to leverage polymorphism fully.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3221,15 +3408,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Salary\"",
                   "expectedOutput": "Salary",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Salary\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"ID\"",
                   "expectedOutput": "ID",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ID\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3273,8 +3466,7 @@
                   "consequence": "Use abstract class when you have SOME shared implementation. Use interface (next lesson) when you have NO implementation, just a contract.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3319,15 +3511,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Playing\"",
                   "expectedOutput": "Playing",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Playing\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Recording\"",
                   "expectedOutput": "Recording",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Recording\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3371,8 +3569,7 @@
                   "consequence": "C# uses ':' for BOTH inheritance and interfaces. 'class C : IDrawable' implements the interface (colon, not 'implements' keyword).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3417,21 +3614,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Roar\"",
                   "expectedOutput": "Roar",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Roar\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Squawk\"",
                   "expectedOutput": "Squawk",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Squawk\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Feeding\"",
                   "expectedOutput": "Feeding",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Feeding\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3475,8 +3680,7 @@
                   "consequence": "Don't inherit just to reuse code! Use composition (has-a) or helper classes instead. Inherit when there's true IS-A relationship.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         }
@@ -3486,8 +3690,11 @@
       "id": "module-08",
       "title": "Advanced OOP Concepts",
       "description": "Explore inheritance, polymorphism, abstract classes, interfaces, and advanced object-oriented patterns.",
-      "difficulty": "beginner",
+      "order": 8,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-07"
+      ],
       "lessons": [
         {
           "id": "lesson-08-01",
@@ -3530,15 +3737,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Result\"",
                   "expectedOutput": "Result",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Result\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Error\"",
                   "expectedOutput": "Error",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Error\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3582,8 +3795,7 @@
                   "consequence": "If you catch FormatException but the error is IndexOutOfRangeException, your catch won't run! Use general Exception catch as fallback.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3628,21 +3840,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Balance\"",
                   "expectedOutput": "Balance",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Balance\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Error\"",
                   "expectedOutput": "Error",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Error\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Transaction complete\"",
                   "expectedOutput": "Transaction complete",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Transaction complete\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3686,8 +3906,7 @@
                   "consequence": "Creating 'new InvalidAgeException()' without 'throw' does nothing! Must use 'throw new InvalidAgeException()' to actually throw it.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3732,15 +3951,21 @@
                   "id": "test-1",
                   "description": "Output should contain \"Added\"",
                   "expectedOutput": "Added",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Added\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Total\"",
                   "expectedOutput": "Total",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3784,8 +4009,7 @@
                   "consequence": "'using System;' IMPORTS a namespace (at top of file). 'namespace MyApp { }' DEFINES a namespace (wraps your code). Don't confuse them!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3830,21 +4054,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Journal\"",
                   "expectedOutput": "Journal",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Journal\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"saved\"",
                   "expectedOutput": "saved",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"saved\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Days until\"",
                   "expectedOutput": "Days until",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Days until\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3888,8 +4120,7 @@
                   "consequence": "Calling File.ReadAllText() on non-existent file throws exception! Always check 'if (File.Exists(path))' first, or use try/catch.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -3934,21 +4165,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"JSON\"",
                   "expectedOutput": "JSON",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"JSON\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Saved\"",
                   "expectedOutput": "Saved",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Saved\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Loaded books\"",
                   "expectedOutput": "Loaded books",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Loaded books\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -3992,8 +4231,7 @@
                   "consequence": "Different packages might need different versions of same dependency! NuGet usually resolves this, but sometimes you get conflicts. Check package compatibility.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         }
@@ -4003,8 +4241,11 @@
       "id": "module-09",
       "title": "Exception Handling",
       "description": "Learn to handle errors gracefully with try-catch blocks, custom exceptions, and error handling best practices.",
-      "difficulty": "beginner",
+      "order": 9,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-08"
+      ],
       "lessons": [
         {
           "id": "lesson-09-01",
@@ -4047,21 +4288,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Greater than 20\"",
                   "expectedOutput": "Greater than 20",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Greater than 20\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Divisible by 5\"",
                   "expectedOutput": "Divisible by 5",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Divisible by 5\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Top 3\"",
                   "expectedOutput": "Top 3",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Top 3\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4105,8 +4354,7 @@
                   "consequence": "LINQ doesn't modify the original! 'list.Where(...)' returns a NEW sequence. Original list is unchanged. Use .ToList() to get a new list.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4151,21 +4399,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Query created\"",
                   "expectedOutput": "Query created",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Query created\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"cherry\"",
                   "expectedOutput": "cherry",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"cherry\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Long fruits\"",
                   "expectedOutput": "Long fruits",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Long fruits\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4209,8 +4465,7 @@
                   "consequence": "IEnumerable<T> has .Count() METHOD (executes query!). List<T> has .Count PROPERTY (instant). Using .Count() on large IEnumerable can be slow!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4255,21 +4510,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"under $50\"",
                   "expectedOutput": "under $50",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"under $50\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Electronics in stock\"",
                   "expectedOutput": "Electronics in stock",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Electronics in stock\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Out of stock\"",
                   "expectedOutput": "Out of stock",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Out of stock\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4313,8 +4576,7 @@
                   "consequence": "If object property could be null, check first! 'x => x.Name.StartsWith(\"A\")' crashes if Name is null. Use: 'x => x.Name != null && x.Name.StartsWith(\"A\")'.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4359,21 +4621,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Product names\"",
                   "expectedOutput": "Product names",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Product names\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Discounted prices\"",
                   "expectedOutput": "Discounted prices",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Discounted prices\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Affordable products\"",
                   "expectedOutput": "Affordable products",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Affordable products\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4417,8 +4687,7 @@
                   "consequence": "When doing math with prices, use 'm' suffix: '0.9m' not '0.9'. Otherwise you get double (less precise for money!).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4463,27 +4732,37 @@
                   "id": "test-1",
                   "description": "Output should contain \"Total students\"",
                   "expectedOutput": "Total students",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total students\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Average grade\"",
                   "expectedOutput": "Average grade",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Average grade\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Highest\"",
                   "expectedOutput": "Highest",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Highest\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Math average\"",
                   "expectedOutput": "Math average",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Math average\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4527,8 +4806,7 @@
                   "consequence": "'.Average()' on empty collection throws exception! Check '.Any()' first, or use default: 'list.Any() ? list.Average() : 0'.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         }
@@ -4538,8 +4816,11 @@
       "id": "module-10",
       "title": "Asynchronous Programming",
       "description": "Master async/await, Tasks, asynchronous operations, and building responsive applications.",
-      "difficulty": "beginner",
+      "order": 10,
       "estimatedHours": 1,
+      "prerequisites": [
+        "module-09"
+      ],
       "lessons": [
         {
           "id": "lesson-10-01",
@@ -4582,27 +4863,37 @@
                   "id": "test-1",
                   "description": "Output should contain \"Brewing\"",
                   "expectedOutput": "Brewing",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Brewing\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Toasting\"",
                   "expectedOutput": "Toasting",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Toasting\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Doing other tasks\"",
                   "expectedOutput": "Doing other tasks",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Doing other tasks\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"ready\"",
                   "expectedOutput": "ready",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ready\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4646,8 +4937,7 @@
                   "consequence": "Async doesn't mean parallel! In single-threaded context, it's about not blocking. Tasks run concurrently (interleaved), but might not be truly parallel.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4692,27 +4982,37 @@
                   "id": "test-1",
                   "description": "Output should contain \"Loading\"",
                   "expectedOutput": "Loading",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Loading\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Processing\"",
                   "expectedOutput": "Processing",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Processing\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Saving\"",
                   "expectedOutput": "Saving",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Saving\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Pipeline result\"",
                   "expectedOutput": "Pipeline result",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Pipeline result\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4756,8 +5056,7 @@
                   "consequence": "In UI/ASP.NET apps, using '.Result' or '.Wait()' on Task can cause DEADLOCK! Always use 'await'. Blocking on async code is dangerous.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4802,21 +5101,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Downloading\"",
                   "expectedOutput": "Downloading",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Downloading\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"complete\"",
                   "expectedOutput": "complete",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"complete\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Total downloaded\"",
                   "expectedOutput": "Total downloaded",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Total downloaded\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4860,8 +5167,7 @@
                   "consequence": "WhenAny returns the TASK, not the result! Must await again: 'Task<int> firstTask = await Task.WhenAny(t1, t2); int result = await firstTask;'.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         },
@@ -4906,21 +5212,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Processing file\"",
                   "expectedOutput": "Processing file",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Processing file\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Progress\"",
                   "expectedOutput": "Progress",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Progress\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"cancelled\"",
                   "expectedOutput": "cancelled",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"cancelled\""
                 }
               ],
+              "difficulty": "intermediate",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -4964,8 +5278,7 @@
                   "consequence": "Don't catch and ignore this! It's expected behavior. Catch it only to clean up or log, then let it propagate (or handle gracefully).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "intermediate"
+              ]
             }
           ]
         }
@@ -4975,8 +5288,11 @@
       "id": "module-11",
       "title": "LINQ and Query Expressions",
       "description": "Learn Language Integrated Query (LINQ) for querying collections, filtering, sorting, and data transformation.",
-      "difficulty": "beginner",
+      "order": 11,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-10"
+      ],
       "lessons": [
         {
           "id": "lesson-11-01",
@@ -5019,21 +5335,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"API endpoints\"",
                   "expectedOutput": "API endpoints",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"API endpoints\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"available\"",
                   "expectedOutput": "available",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"available\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"/api/\"",
                   "expectedOutput": "/api/",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"/api/\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5077,8 +5401,7 @@
                   "consequence": "Query params auto-bind to handler parameters! ?a=5&b=3 with (int a, int b) works automatically. Wrong type (string when expecting int) = 400 Bad Request.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5123,21 +5446,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"Book Library\"",
                   "expectedOutput": "Book Library",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Book Library\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Ready\"",
                   "expectedOutput": "Ready",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Ready\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Endpoints\"",
                   "expectedOutput": "Endpoints",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Endpoints\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5181,8 +5512,7 @@
                   "consequence": "Just returning 'null' gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. HTTP status codes matter for API consumers!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5227,33 +5557,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"Task API\"",
                   "expectedOutput": "Task API",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Task API\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"CRUD Endpoints\"",
                   "expectedOutput": "CRUD Endpoints",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CRUD Endpoints\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"POST\"",
                   "expectedOutput": "POST",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"POST\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"PUT\"",
                   "expectedOutput": "PUT",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"PUT\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"DELETE\"",
                   "expectedOutput": "DELETE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DELETE\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5297,8 +5639,7 @@
                   "consequence": "Same route with different methods is FINE! GET /api/tasks and POST /api/tasks are different endpoints. Method matters, not just URL!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5343,21 +5684,29 @@
                   "id": "test-1",
                   "description": "Output should contain \"DI-based\"",
                   "expectedOutput": "DI-based",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DI-based\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Todo API\"",
                   "expectedOutput": "Todo API",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Todo API\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Ready\"",
                   "expectedOutput": "Ready",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Ready\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5401,8 +5750,7 @@
                   "consequence": "If you inject IService but didn't register it, you get runtime error: 'Unable to resolve service'. Must register in builder.Services first!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5447,39 +5795,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"Product API\"",
                   "expectedOutput": "Product API",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Product API\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"status codes\"",
                   "expectedOutput": "status codes",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"status codes\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"200\"",
                   "expectedOutput": "200",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"200\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"201\"",
                   "expectedOutput": "201",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"201\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"400\"",
                   "expectedOutput": "400",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"400\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"404\"",
                   "expectedOutput": "404",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"404\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5523,8 +5885,7 @@
                   "consequence": "Don't 'return null' - it gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. Status codes communicate meaning!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         }
@@ -5534,8 +5895,11 @@
       "id": "module-12",
       "title": "File I/O and Serialization",
       "description": "Work with files, streams, reading/writing data, and JSON serialization/deserialization.",
-      "difficulty": "beginner",
+      "order": 12,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-11"
+      ],
       "lessons": [
         {
           "id": "lesson-12-01",
@@ -5578,39 +5942,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"SIMULATING\"",
                   "expectedOutput": "SIMULATING",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"SIMULATING\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"SEARCHING\"",
                   "expectedOutput": "SEARCHING",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"SEARCHING\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"WHY\"",
                   "expectedOutput": "WHY",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"WHY\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"BAD\"",
                   "expectedOutput": "BAD",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BAD\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"SOLUTION\"",
                   "expectedOutput": "SOLUTION",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"SOLUTION\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"DATABASE\"",
                   "expectedOutput": "DATABASE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DATABASE\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5654,8 +6032,7 @@
                   "consequence": "If app crashes mid-write to file, file is corrupted! Databases use transactions: changes are all-or-nothing (atomic). Crash? Database rolls back, stays consistent!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5700,39 +6077,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"ORM TRANSLATION\"",
                   "expectedOutput": "ORM TRANSLATION",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ORM TRANSLATION\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"C# LINQ\"",
                   "expectedOutput": "C# LINQ",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"C# LINQ\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"SQL\"",
                   "expectedOutput": "SQL",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"SQL\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"WHY\"",
                   "expectedOutput": "WHY",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"WHY\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"BETTER\"",
                   "expectedOutput": "BETTER",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BETTER\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"Type Safety\"",
                   "expectedOutput": "Type Safety",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Type Safety\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5776,8 +6167,7 @@
                   "consequence": "ORM can cause N+1 query problem! Loading 100 customers, then customer.Orders for each = 101 queries! Use .Include() to eager load (next lessons).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5822,39 +6212,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"ENTITY FRAMEWORK\"",
                   "expectedOutput": "ENTITY FRAMEWORK",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ENTITY FRAMEWORK\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"CREATE\"",
                   "expectedOutput": "CREATE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CREATE\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"READ\"",
                   "expectedOutput": "READ",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"READ\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"UPDATE\"",
                   "expectedOutput": "UPDATE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"UPDATE\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"DELETE\"",
                   "expectedOutput": "DELETE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DELETE\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"SQL\"",
                   "expectedOutput": "SQL",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"SQL\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -5898,8 +6302,7 @@
                   "consequence": "EnsureCreated() creates DB but CAN'T update schema! Use Migrations in real apps. EnsureCreated() is only for learning/testing!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -5944,33 +6347,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"CODE-FIRST\"",
                   "expectedOutput": "CODE-FIRST",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CODE-FIRST\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Authors\"",
                   "expectedOutput": "Authors",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Authors\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"BlogPosts\"",
                   "expectedOutput": "BlogPosts",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BlogPosts\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Relationship\"",
                   "expectedOutput": "Relationship",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Relationship\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"BENEFITS\"",
                   "expectedOutput": "BENEFITS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BENEFITS\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6014,8 +6429,7 @@
                   "consequence": "Can't modify schema after creation! Use Migrations in real apps. EnsureCreated() is learning/testing only. No schema updates possible!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6060,39 +6474,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"CHANGE TRACKING\"",
                   "expectedOutput": "CHANGE TRACKING",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CHANGE TRACKING\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Added\"",
                   "expectedOutput": "Added",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Added\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Modified\"",
                   "expectedOutput": "Modified",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Modified\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Deleted\"",
                   "expectedOutput": "Deleted",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Deleted\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"RESPONSIBILITIES\"",
                   "expectedOutput": "RESPONSIBILITIES",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"RESPONSIBILITIES\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"Dispose\"",
                   "expectedOutput": "Dispose",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Dispose\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6136,8 +6564,7 @@
                   "consequence": "SaveChanges() can be called multiple times, but creates multiple transactions. Batch changes, call SaveChanges() ONCE at end!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6182,39 +6609,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"MIGRATIONS\"",
                   "expectedOutput": "MIGRATIONS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"MIGRATIONS\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"BULK OPERATIONS\"",
                   "expectedOutput": "BULK OPERATIONS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BULK OPERATIONS\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"ExecuteUpdate\"",
                   "expectedOutput": "ExecuteUpdate",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ExecuteUpdate\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"ExecuteDelete\"",
                   "expectedOutput": "ExecuteDelete",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ExecuteDelete\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"dotnet ef\"",
                   "expectedOutput": "dotnet ef",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"dotnet ef\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"FASTER\"",
                   "expectedOutput": "FASTER",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"FASTER\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6258,8 +6699,7 @@
                   "consequence": "SetProperty takes TWO lambdas: property selector AND value expression. 's => s.SetProperty(e => e.Price, e => e.Price * 1.1)'. Easy to forget second lambda!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         }
@@ -6269,8 +6709,11 @@
       "id": "module-13",
       "title": "Generics and Advanced Types",
       "description": "Understand generic types, constraints, delegates, events, and advanced C# type system features.",
-      "difficulty": "beginner",
+      "order": 13,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-12"
+      ],
       "lessons": [
         {
           "id": "lesson-13-01",
@@ -6313,27 +6756,37 @@
                   "id": "test-1",
                   "description": "Output should contain \"BLAZOR COMPONENT\"",
                   "expectedOutput": "BLAZOR COMPONENT",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BLAZOR COMPONENT\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"Welcome to Blazor\"",
                   "expectedOutput": "Welcome to Blazor",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Welcome to Blazor\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"@code\"",
                   "expectedOutput": "@code",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@code\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"GreetUser\"",
                   "expectedOutput": "GreetUser",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"GreetUser\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6377,8 +6830,7 @@
                   "consequence": "Component files must start with uppercase letter! Counter.razor (correct), counter.razor (wrong). This is C# convention.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6423,39 +6875,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"STATIC SSR\"",
                   "expectedOutput": "STATIC SSR",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"STATIC SSR\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"INTERACTIVE SERVER\"",
                   "expectedOutput": "INTERACTIVE SERVER",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"INTERACTIVE SERVER\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"WEBASSEMBLY\"",
                   "expectedOutput": "WEBASSEMBLY",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"WEBASSEMBLY\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"AUTO\"",
                   "expectedOutput": "AUTO",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"AUTO\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"COMPARISON\"",
                   "expectedOutput": "COMPARISON",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"COMPARISON\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \".NET 8\"",
                   "expectedOutput": ".NET 8",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \".NET 8\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6499,8 +6965,7 @@
                   "consequence": "Can use different modes for different components! Product list (Static), shopping cart (Server), image editor (WASM). Mix and match!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6545,33 +7010,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"ProductCard\"",
                   "expectedOutput": "ProductCard",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ProductCard\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"ProductList\"",
                   "expectedOutput": "ProductList",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ProductList\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"[Parameter]\"",
                   "expectedOutput": "[Parameter]",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"[Parameter]\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"EventCallback\"",
                   "expectedOutput": "EventCallback",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"EventCallback\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"InStock\"",
                   "expectedOutput": "InStock",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"InStock\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6615,8 +7092,7 @@
                   "consequence": "Alert.razor must contain component named Alert. Filename and component name MUST match exactly (case-sensitive!).",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6661,39 +7137,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"CustomButton\"",
                   "expectedOutput": "CustomButton",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CustomButton\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"ButtonGroup\"",
                   "expectedOutput": "ButtonGroup",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ButtonGroup\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"[Parameter]\"",
                   "expectedOutput": "[Parameter]",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"[Parameter]\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Color\"",
                   "expectedOutput": "Color",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Color\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"IsDisabled\"",
                   "expectedOutput": "IsDisabled",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"IsDisabled\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"OnClick\"",
                   "expectedOutput": "OnClick",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"OnClick\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6737,8 +7227,7 @@
                   "consequence": "Set default in property initializer or constructor, NOT in OnInitialized! Property initializer: 'public string Color { get; set; } = \"primary\";'.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6783,39 +7272,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"TaskManager\"",
                   "expectedOutput": "TaskManager",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"TaskManager\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"@onclick\"",
                   "expectedOutput": "@onclick",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@onclick\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"@onchange\"",
                   "expectedOutput": "@onchange",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@onchange\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"@bind\"",
                   "expectedOutput": "@bind",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@bind\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"ToggleTask\"",
                   "expectedOutput": "ToggleTask",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ToggleTask\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"DeleteTask\"",
                   "expectedOutput": "DeleteTask",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DeleteTask\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6859,8 +7362,7 @@
                   "consequence": "Variables in lambda must be in scope! '@onclick=\"() => Delete(item.Id)\"' in foreach works. Outside foreach, 'item' not available!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -6905,33 +7407,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"ProfileEditor\"",
                   "expectedOutput": "ProfileEditor",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ProfileEditor\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"@bind\"",
                   "expectedOutput": "@bind",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@bind\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"@bind:event\"",
                   "expectedOutput": "@bind:event",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"@bind:event\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Live Preview\"",
                   "expectedOutput": "Live Preview",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Live Preview\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"two-way\"",
                   "expectedOutput": "two-way",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"two-way\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -6975,8 +7489,7 @@
                   "consequence": "For @bind-Count, need Count AND CountChanged (exact naming!). If mismatch, binding won't work. Convention: Property + PropertyChanged.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -7021,33 +7534,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"QuickGrid\"",
                   "expectedOutput": "QuickGrid",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"QuickGrid\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"PropertyColumn\"",
                   "expectedOutput": "PropertyColumn",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"PropertyColumn\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"TemplateColumn\"",
                   "expectedOutput": "TemplateColumn",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"TemplateColumn\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Pagination\"",
                   "expectedOutput": "Pagination",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Pagination\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"Sortable\"",
                   "expectedOutput": "Sortable",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Sortable\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7091,8 +7616,7 @@
                   "consequence": "Must create PaginationState instance and pass to both QuickGrid AND Paginator! If mismatch, pagination breaks. Same instance for both!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         }
@@ -7102,8 +7626,11 @@
       "id": "module-14",
       "title": "Modern C# Features",
       "description": "Explore modern C# features including nullable reference types, pattern matching, records, and C# 10+ enhancements.",
-      "difficulty": "beginner",
+      "order": 14,
       "estimatedHours": 2,
+      "prerequisites": [
+        "module-13"
+      ],
       "lessons": [
         {
           "id": "lesson-14-01",
@@ -7146,39 +7673,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"API\"",
                   "expectedOutput": "API",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"API\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"BACKEND\"",
                   "expectedOutput": "BACKEND",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"BACKEND\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"Blazor\"",
                   "expectedOutput": "Blazor",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Blazor\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"FRONTEND\"",
                   "expectedOutput": "FRONTEND",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"FRONTEND\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"HttpClient\"",
                   "expectedOutput": "HttpClient",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"HttpClient\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"FULL-STACK\"",
                   "expectedOutput": "FULL-STACK",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"FULL-STACK\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7222,8 +7763,7 @@
                   "consequence": "HttpClient methods are async! Must use 'await'. Forgetting await = code continues before response arrives (race condition!). Always await HTTP calls!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -7268,39 +7808,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"CRUD\"",
                   "expectedOutput": "CRUD",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CRUD\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"CREATE\"",
                   "expectedOutput": "CREATE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CREATE\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"READ\"",
                   "expectedOutput": "READ",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"READ\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"UPDATE\"",
                   "expectedOutput": "UPDATE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"UPDATE\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"DELETE\"",
                   "expectedOutput": "DELETE",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"DELETE\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"EditForm\"",
                   "expectedOutput": "EditForm",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"EditForm\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7344,8 +7898,7 @@
                   "consequence": "EditForm needs validation! Add DataAnnotations: [Required], [StringLength], etc. Or use OnInvalidSubmit to handle errors. Validate before API call!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -7390,39 +7943,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"git init\"",
                   "expectedOutput": "git init",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"git init\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"git add\"",
                   "expectedOutput": "git add",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"git add\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"git commit\"",
                   "expectedOutput": "git commit",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"git commit\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"branch\"",
                   "expectedOutput": "branch",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"branch\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"merge\"",
                   "expectedOutput": "merge",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"merge\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"push\"",
                   "expectedOutput": "push",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"push\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7466,8 +8033,7 @@
                   "consequence": "NEVER commit passwords, API keys, connection strings! Use .gitignore for appsettings.json. Use environment variables or Azure Key Vault.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -7512,33 +8078,45 @@
                   "id": "test-1",
                   "description": "Output should contain \"Azure\"",
                   "expectedOutput": "Azure",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Azure\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"deployment\"",
                   "expectedOutput": "deployment",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"deployment\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"App Service\"",
                   "expectedOutput": "App Service",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"App Service\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"Configuration\"",
                   "expectedOutput": "Configuration",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Configuration\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"Monitoring\"",
                   "expectedOutput": "Monitoring",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"Monitoring\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7582,8 +8160,7 @@
                   "consequence": "Azure costs money! Start with B1 or F1 (free). Monitor costs in Cost Management. Scale down when not needed. Don't leave expensive resources running!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         },
@@ -7628,39 +8205,53 @@
                   "id": "test-1",
                   "description": "Output should contain \"ROADMAP\"",
                   "expectedOutput": "ROADMAP",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"ROADMAP\""
                 },
                 {
                   "id": "test-2",
                   "description": "Output should contain \"MASTERED\"",
                   "expectedOutput": "MASTERED",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"MASTERED\""
                 },
                 {
                   "id": "test-3",
                   "description": "Output should contain \"PROJECTS\"",
                   "expectedOutput": "PROJECTS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"PROJECTS\""
                 },
                 {
                   "id": "test-4",
                   "description": "Output should contain \"RESOURCES\"",
                   "expectedOutput": "RESOURCES",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"RESOURCES\""
                 },
                 {
                   "id": "test-5",
                   "description": "Output should contain \"GOALS\"",
                   "expectedOutput": "GOALS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"GOALS\""
                 },
                 {
                   "id": "test-6",
                   "description": "Output should contain \"CONGRATULATIONS\"",
                   "expectedOutput": "CONGRATULATIONS",
-                  "isVisible": true
+                  "isVisible": true,
+                  "testType": "contains",
+                  "customMessage": "Expected output to contain \"CONGRATULATIONS\""
                 }
               ],
+              "difficulty": "advanced",
+              "estimatedMinutes": 10,
               "hints": [
                 {
                   "level": 1,
@@ -7704,12 +8295,47 @@
                   "consequence": "Join communities! Pair programming, code reviews, discussions teach more than solo study. Connect with other developers!",
                   "correction": "Review the correct syntax and best practices for this concept."
                 }
-              ],
-              "difficulty": "advanced"
+              ]
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  "languageConfig": {
+    "executionEngine": "dotnet",
+    "compilerOptions": {
+      "version": "8.0",
+      "flags": [
+        "--optimize",
+        "--nullable",
+        "enable"
+      ]
+    },
+    "editorSettings": {
+      "defaultTemplate": "using System;\n\n",
+      "fileExtension": ".cs",
+      "monacoLanguageId": "csharp",
+      "tabSize": 4,
+      "insertSpaces": true
+    },
+    "sandboxConstraints": {
+      "maxExecutionTimeMs": 5000,
+      "maxMemoryMB": 256,
+      "maxOutputChars": 10000,
+      "allowedPackages": [
+        "System",
+        "System.Collections.Generic",
+        "System.Linq",
+        "System.Threading.Tasks",
+        "System.IO",
+        "System.Text"
+      ],
+      "blockedPackages": [
+        "System.Diagnostics.Process",
+        "System.Reflection",
+        "System.Runtime.InteropServices"
+      ]
+    }
+  }
 }

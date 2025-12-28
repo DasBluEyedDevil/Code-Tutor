@@ -29,10 +29,10 @@
                     <DataTemplate>
                         <RadioButton GroupName="MultipleChoice"
                                     Content="{Binding}"
-                                    IsChecked="{Binding $parent[ItemsControl].((vm:MultipleChoiceViewModel)DataContext).SelectedOption,
+                                    IsChecked="{Binding $parent[ItemsControl].DataContext.SelectedOption,
                                                Converter={StaticResource IndexToBoolConverter},
                                                ConverterParameter={Binding $index}}"
-                                    IsEnabled="{Binding $parent[ItemsControl].((vm:MultipleChoiceViewModel)DataContext).HasSubmitted,
+                                    IsEnabled="{Binding $parent[ItemsControl].DataContext.HasSubmitted,
                                                Converter={StaticResource InverseBoolConverter}}"
                                     Margin="0,8"
                                     Classes="option-radio" />

@@ -54,42 +54,39 @@ public class Lesson
     [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
-    [JsonPropertyName("content")]
-    public LessonContent Content { get; set; } = new();
+    [JsonPropertyName("moduleId")]
+    public string ModuleId { get; set; } = string.Empty;
 
-    [JsonPropertyName("exercises")]
-    public List<Challenge> Exercises { get; set; } = new();
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
+
+    [JsonPropertyName("estimatedMinutes")]
+    public int EstimatedMinutes { get; set; }
+
+    [JsonPropertyName("difficulty")]
+    public string Difficulty { get; set; } = string.Empty;
+
+    [JsonPropertyName("contentSections")]
+    public List<ContentSection> ContentSections { get; set; } = new();
+
+    [JsonPropertyName("challenges")]
+    public List<Challenge> Challenges { get; set; } = new();
 }
 
-public class LessonContent
+public class ContentSection
 {
-    [JsonPropertyName("body")]
-    public string Body { get; set; } = string.Empty;
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
 
-    [JsonPropertyName("overview")]
-    public string? Overview { get; set; }
-
-    [JsonPropertyName("keyTakeaways")]
-    public List<string>? KeyTakeaways { get; set; }
-
-    [JsonPropertyName("codeExamples")]
-    public List<CodeExample> CodeExamples { get; set; } = new();
-}
-
-public class CodeExample
-{
     [JsonPropertyName("title")]
     public string Title { get; set; } = string.Empty;
 
-    [JsonPropertyName("description")]
-    public string? Description { get; set; }
+    [JsonPropertyName("content")]
+    public string Content { get; set; } = string.Empty;
 
     [JsonPropertyName("code")]
-    public string Code { get; set; } = string.Empty;
+    public string? Code { get; set; }
 
-    [JsonPropertyName("expectedOutput")]
-    public string? ExpectedOutput { get; set; }
-
-    [JsonPropertyName("explanation")]
-    public string? Explanation { get; set; }
+    [JsonPropertyName("language")]
+    public string? Language { get; set; }
 }

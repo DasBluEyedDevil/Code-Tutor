@@ -56,7 +56,6 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Code runs without errors",
                   "expectedOutput": "",
                   "isVisible": true
@@ -131,7 +130,6 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Displays 42 (the result of 15 + 27)",
                   "expectedOutput": "42",
                   "isVisible": true
@@ -206,7 +204,6 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Only the first message is displayed",
                   "expectedOutput": "I am learning JavaScript!",
                   "isVisible": true
@@ -290,7 +287,6 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Code creates variables and displays them",
                   "expectedOutput": "",
                   "isVisible": true
@@ -365,7 +361,6 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Displays a formatted profile message",
                   "expectedOutput": "",
                   "isVisible": true
@@ -449,10 +444,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Works for age 18 or above",
                   "expectedOutput": "You can vote!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let age = 18; if (age >= 18) { console.log('You can vote!'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -524,10 +521,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Correctly handles age 15",
                   "expectedOutput": "You can watch G, PG, and PG-13 movies",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let age = 15; if (age < 13) { console.log('You can watch G and PG movies'); } else if (age < 17) { console.log('You can watch G, PG, and PG-13 movies'); } else { console.log('You can watch all movies including R-rated'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -599,10 +598,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Detects matching passwords",
                   "expectedOutput": "Passwords match!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let password = 'abc'; let confirmPassword = 'abc'; if (password === confirmPassword) { console.log('Passwords match!'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -674,10 +675,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Compares correctly",
                   "expectedOutput": "You are 18!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let userAge = '18'; if (Number(userAge) === 18) { console.log('You are 18!'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -749,10 +752,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Grants access for employee with keycard",
                   "expectedOutput": "Access Granted",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let isEmployee = true; let hasKeycard = true; let securityLevel = 1; if ((isEmployee && hasKeycard) || securityLevel === 3) { console.log('Access Granted'); } else { console.log('Access Denied'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -833,10 +838,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Displays 7 x 1 = 7",
                   "expectedOutput": "7 x 1 = 7",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "for (let i = 1; i <= 10; i++) { console.log('7 x ' + i + ' = ' + (7 * i)); }"
+                  ]
                 }
               ],
               "hints": [
@@ -908,10 +915,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Keeps guessing until correct",
                   "expectedOutput": "Guess: 1 - Wrong!\nGuess: 2 - Wrong!\nGuess: 3 - Correct!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let target = 3; let guess = 1; let output = ''; while (guess !== target) { output += 'Guess: ' + guess + ' - Wrong!\\n'; guess++; } console.log(output + 'Guess: ' + guess + ' - Correct!');"
+                  ]
                 }
               ],
               "hints": [
@@ -983,10 +992,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Finds first number divisible by 7",
                   "expectedOutput": "First number divisible by 7: 7",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "for (let i = 1; i <= 50; i++) { if (i % 7 === 0) { console.log('First number divisible by 7: ' + i); break; } }"
+                  ]
                 }
               ],
               "hints": [
@@ -1058,10 +1069,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Converts 0°C correctly",
                   "expectedOutput": "0°C is 32°F",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let celsiusTemps = [0]; for (let celsius of celsiusTemps) { let fahrenheit = (celsius * 9/5) + 32; console.log(celsius + '°C is ' + fahrenheit + '°F'); }"
+                  ]
                 }
               ],
               "hints": [
@@ -1142,10 +1155,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Displays first score",
                   "expectedOutput": "85",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let scores = [85, 92, 78, 95, 88]; console.log(scores[0]);"
+                  ]
                 }
               ],
               "hints": [
@@ -1217,10 +1232,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Builds todo list correctly",
                   "expectedOutput": "3",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let todos = []; todos.push('Buy groceries'); todos.push('Clean room'); todos.unshift('URGENT: Pay bills'); console.log(todos.length);"
+                  ]
                 }
               ],
               "hints": [
@@ -1292,10 +1309,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Finds first top student",
                   "expectedOutput": "Bob",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let students = [{name: 'Alice', grade: 85}, {name: 'Bob', grade: 92}]; let top = students.find(s => s.grade >= 90); console.log(top.name);"
+                  ]
                 }
               ],
               "hints": [
@@ -1367,10 +1386,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Creates book object correctly",
                   "expectedOutput": "Harry Potter",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let book = {title: 'Harry Potter', author: 'J.K. Rowling', pages: 300, isRead: false}; console.log(book.title);"
+                  ]
                 }
               ],
               "hints": [
@@ -1442,10 +1463,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Counts products correctly",
                   "expectedOutput": "2",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let inventory = {laptop: 1200, mouse: 30}; console.log(Object.keys(inventory).length);"
+                  ]
                 }
               ],
               "hints": [
@@ -1526,10 +1549,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Converts 0°C correctly",
                   "expectedOutput": "32",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "function celsiusToFahrenheit(celsius) { return (celsius * 9/5) + 32; } console.log(celsiusToFahrenheit(0));"
+                  ]
                 }
               ],
               "hints": [
@@ -1601,10 +1626,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Square function works",
                   "expectedOutput": "25",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "const square = x => x * x; console.log(square(5));"
+                  ]
                 }
               ],
               "hints": [
@@ -1676,10 +1703,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Returns 'A' for 95",
                   "expectedOutput": "A",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "function calculateGrade(score) { if (score >= 90) return 'A'; if (score >= 80) return 'B'; if (score >= 70) return 'C'; if (score >= 60) return 'D'; return 'F'; } console.log(calculateGrade(95));"
+                  ]
                 }
               ],
               "hints": [
@@ -1751,10 +1780,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Calculates total correctly",
                   "expectedOutput": "98",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "function calculateTotal() { let price = 100; let tax = 0.08; let discount = 0; if (price > 50) { discount = 10; } let total = price - discount + (price * tax); return total; } console.log(calculateTotal());"
+                  ]
                 }
               ],
               "hints": [
@@ -1835,10 +1866,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Changes heading text on click",
                   "expectedOutput": "Hello, JavaScript!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let heading = {textContent: 'Welcome'}; let button = {addEventListener: function(event, callback) { callback(); }}; button.addEventListener('click', function() { heading.textContent = 'Hello, JavaScript!'; }); console.log(heading.textContent);"
+                  ]
                 }
               ],
               "hints": [
@@ -1910,10 +1943,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Updates both elements correctly",
                   "expectedOutput": "2",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let container = {children: {length: 2}}; let title = {textContent: 'Original'}; let description = {textContent: 'Original'}; title.textContent = 'Updated Title'; description.textContent = 'Updated description'; console.log(container.children.length);"
+                  ]
                 }
               ],
               "hints": [
@@ -1985,10 +2020,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Finds active item correctly",
                   "expectedOutput": "About",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let activeItem = {textContent: 'About', className: 'item active'}; console.log(activeItem.textContent);"
+                  ]
                 }
               ],
               "hints": [
@@ -2060,10 +2097,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Toggles class and updates text",
                   "expectedOutput": "Click Me!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let box = {classList: {toggle: function(c) { this.highlighted = !this.highlighted; }, contains: function(c) { return this.highlighted; }, highlighted: false}, textContent: ''}; box.addEventListener = function(e, cb) { cb(); cb(); }; box.addEventListener('click', function() { box.classList.toggle('highlighted'); if (box.classList.contains('highlighted')) { box.textContent = 'Highlighted!'; } else { box.textContent = 'Click Me!'; } }); console.log(box.textContent);"
+                  ]
                 }
               ],
               "hints": [
@@ -2135,10 +2174,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Validates empty username",
                   "expectedOutput": "Username required",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let message = {textContent: ''}; let username = ''; let email = 'test@test.com'; if (username === '') { message.textContent = 'Username required'; } else if (!email.includes('@')) { message.textContent = 'Invalid email'; } else { message.textContent = 'Success!'; } console.log(message.textContent);"
+                  ]
                 }
               ],
               "hints": [
@@ -2219,10 +2260,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Countdown works correctly",
                   "expectedOutput": "3\n2\n1\n0\nLiftoff!",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let count = 3; let output = ''; while (count >= 0) { output += count + '\\n'; count--; } output += 'Liftoff!'; console.log(output.trim());"
+                  ]
                 }
               ],
               "hints": [
@@ -2294,10 +2337,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Returns a number",
                   "expectedOutput": "4",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "function rollDice() { return Promise.resolve(4); } rollDice().then(result => console.log(result));"
+                  ]
                 }
               ],
               "hints": [
@@ -2369,10 +2414,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Uses async/await correctly",
                   "expectedOutput": "",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "async function loadUserData() { try { let user = {name: 'Alice', id: 1}; console.log('User:', user.name); let posts = [{}, {}]; console.log('Posts:', posts.length); return posts; } catch (error) { console.log('Error:', error); } } loadUserData();"
+                  ]
                 }
               ],
               "hints": [
@@ -2444,10 +2491,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Fetches and parses data",
                   "expectedOutput": "John",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "async function getRandomUser() { let data = {results: [{name: {first: 'John'}}]}; return data.results[0].name.first; } getRandomUser().then(name => console.log(name));"
+                  ]
                 }
               ],
               "hints": [
@@ -2528,16 +2577,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should calculate area correctly",
                   "expectedOutput": "50",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "calculateArea(10, 5)"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should work with decimal numbers",
                   "expectedOutput": "30",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "calculateArea(7.5, 4)"
+                  ]
                 }
               ],
               "hints": [
@@ -2609,16 +2662,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should create typed variables",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "typeof username === 'string' && typeof age === 'number' && typeof isStudent === 'boolean'"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should calculate average correctly",
                   "expectedOutput": "85",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let grades = [85, 92, 78]; let sum = 0; for (let g of grades) sum += g; sum / grades.length"
+                  ]
                 }
               ],
               "hints": [
@@ -2690,16 +2747,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should create book objects with interface",
                   "expectedOutput": "Test",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let b = { title: 'Test', author: 'Author', pages: 100, isRead: true }; b.title"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should handle optional isbn",
                   "expectedOutput": "200",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let b = { title: 'Book', author: 'Writer', pages: 200, isRead: false }; b.pages"
+                  ]
                 }
               ],
               "hints": [
@@ -2771,16 +2832,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should validate strict mode is enabled",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "validateConfig({ target: 'ES2024', strict: true, outDir: './dist' })"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should detect when strict mode is disabled",
                   "expectedOutput": "false",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "validateConfig({ target: 'ES2024', strict: false, outDir: './dist' })"
+                  ]
                 }
               ],
               "hints": [
@@ -2852,16 +2917,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should return full name",
                   "expectedOutput": "Jane Doe",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "getFullName({ firstName: 'Jane', lastName: 'Doe' })"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should work with different names",
                   "expectedOutput": "John Smith",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "getFullName({ firstName: 'John', lastName: 'Smith' })"
+                  ]
                 }
               ],
               "hints": [
@@ -2942,16 +3011,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should return system info",
                   "expectedOutput": "linux",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "getSystemInfo().platform"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should read config asynchronously",
                   "expectedOutput": "Config from test.config",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "readConfig('test.config').then(d => d)"
+                  ]
                 }
               ],
               "hints": [
@@ -3023,16 +3096,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should return all todos",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let todos = [{ id: 1, task: 'Test', completed: false }]; todos.length"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should filter completed todos",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let todos = [{ id: 1, task: 'A', completed: true }, { id: 2, task: 'B', completed: false }]; todos.filter(t => t.completed).length"
+                  ]
                 }
               ],
               "hints": [
@@ -3104,16 +3181,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should extract post ID from params",
                   "expectedOutput": "123",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let params = { postId: '123' }; params.postId"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should parse query parameters",
                   "expectedOutput": "10",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let query = { search: 'test', limit: '10' }; query.limit"
+                  ]
                 }
               ],
               "hints": [
@@ -3185,16 +3266,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should validate title exists",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let body = { title: 'Test' }; body.title ? true : false"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should detect missing title",
                   "expectedOutput": "false",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let body = { content: 'Test' }; body.title ? true : false"
+                  ]
                 }
               ],
               "hints": [
@@ -3266,16 +3351,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should find task by id",
                   "expectedOutput": "Test",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let tasks = [{ id: 1, title: 'Test' }]; tasks.find(t => t.id === 1).title"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should validate task has title",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let task = { title: 'Test' }; task.title ? true : false"
+                  ]
                 }
               ],
               "hints": [
@@ -3356,16 +3445,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should insert user with ID",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let db = []; let u = { id: 1, name: 'Test', email: 'test@example.com' }; db.push(u); db[0].id"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should find user by email",
                   "expectedOutput": "Alice",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let db = [{ id: 1, name: 'Alice', email: 'alice@example.com' }]; db.find(u => u.email === 'alice@example.com').name"
+                  ]
                 }
               ],
               "hints": [
@@ -3437,16 +3530,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should create book with generated ID",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let books = []; let book = { id: 1, title: 'Test' }; books.push(book); books[0].id"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should find book by id",
                   "expectedOutput": "Test",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let books = [{ id: 1, title: 'Test' }]; books.find(b => b.id === 1).title"
+                  ]
                 }
               ],
               "hints": [
@@ -3518,16 +3615,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Schema has Product model",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let schema = { models: { Product: { fields: { id: { type: 'Int' } } } } }; console.log('Product' in schema.models);"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Product has required name field",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let model = { fields: { name: { type: 'String', required: true } } }; console.log(model.fields.name.required);"
+                  ]
                 }
               ],
               "hints": [
@@ -3599,16 +3700,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Creates migration with timestamp",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let migrations = []; let m = { id: Date.now() + '_init', name: 'init' }; migrations.push(m); console.log(migrations.length);"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Tracks applied migrations",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let applied = new Set(); applied.add('123_init'); console.log(applied.has('123_init'));"
+                  ]
                 }
               ],
               "hints": [
@@ -3680,16 +3785,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Author has multiple books",
                   "expectedOutput": "2",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let books = [{ id: 1, authorId: 1 }, { id: 2, authorId: 1 }]; let authorBooks = books.filter(b => b.authorId === 1); console.log(authorBooks.length);"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Many-to-many with arrays",
                   "expectedOutput": "2",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let book = { id: 1, categories: [1, 2] }; console.log(book.categories.length);"
+                  ]
                 }
               ],
               "hints": [
@@ -3770,16 +3879,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should concatenate names",
                   "expectedOutput": "John Doe",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let first = 'John'; let last = 'Doe'; first + ' ' + last"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should check adult status",
                   "expectedOutput": "Adult",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let age = 20; age >= 18 ? 'Adult' : 'Minor'"
+                  ]
                 }
               ],
               "hints": [
@@ -3851,10 +3964,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should use props in template",
                   "expectedOutput": "<h2>Test</h2><p>By Bob</p>",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let post = { title: 'Test', author: 'Bob' }; `<h2>${post.title}</h2><p>By ${post.author}</p>`"
+                  ]
                 }
               ],
               "hints": [
@@ -3926,16 +4041,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should increment count",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let count = 0; count = count + 1; count"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should decrement count",
                   "expectedOutput": "4",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let count = 5; count = count - 1; count"
+                  ]
                 }
               ],
               "hints": [
@@ -4007,16 +4126,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should handle increment",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let count = 0; count++; count"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should track history",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let history = []; history.push('+1'); history.length"
+                  ]
                 }
               ],
               "hints": [
@@ -4088,16 +4211,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should show different UI when logged in",
                   "expectedOutput": "Welcome",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let isLoggedIn = true; isLoggedIn ? 'Welcome' : 'Login'"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should show login when logged out",
                   "expectedOutput": "Login",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let isLoggedIn = false; isLoggedIn ? 'Welcome' : 'Login'"
+                  ]
                 }
               ],
               "hints": [
@@ -4169,16 +4296,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should set up interval",
                   "expectedOutput": "number",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let id = setInterval(() => {}, 1000); typeof id"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should clean up interval",
                   "expectedOutput": "cleaned",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let id = setInterval(() => {}, 1000); clearInterval(id); 'cleaned'"
+                  ]
                 }
               ],
               "hints": [
@@ -4259,10 +4390,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should simulate complete flow",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let users = [{ id: 1, name: 'Test' }]; users.length"
+                  ]
                 }
               ],
               "hints": [
@@ -4334,16 +4467,20 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should detect same origin",
                   "expectedOutput": "true",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let same = 'http://localhost:3000'; same === same"
+                  ]
                 },
                 {
-                  "id": "test-2",
                   "description": "Should detect different ports",
                   "expectedOutput": "false",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "'http://localhost:3000' === 'http://localhost:4000'"
+                  ]
                 }
               ],
               "hints": [
@@ -4415,10 +4552,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should fetch and return users",
                   "expectedOutput": "Array of 3 users",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "await fetchUsers(); // Returns array"
+                  ]
                 }
               ],
               "hints": [
@@ -4490,10 +4629,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should fetch posts",
                   "expectedOutput": "2",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "database.findAll().length"
+                  ]
                 }
               ],
               "hints": [
@@ -4574,10 +4715,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should track commits",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "let commits = []; commits.push({ id: 1, msg: 'Test' }); commits.length"
+                  ]
                 }
               ],
               "hints": [
@@ -4649,10 +4792,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should use PORT from environment",
                   "expectedOutput": "8080",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "process.env.PORT = 8080; process.env.PORT || 3000"
+                  ]
                 }
               ],
               "hints": [
@@ -4724,10 +4869,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should use correct API URL for environment",
                   "expectedOutput": "https://my-api.onrender.com (in production)",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "const API = import.meta.env.VITE_API_URL; API"
+                  ]
                 }
               ],
               "hints": [
@@ -4799,10 +4946,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should detect missing required variables",
                   "expectedOutput": "false (missing JWT_SECRET)",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "delete process.env.JWT_SECRET; config.validate()"
+                  ]
                 }
               ],
               "hints": [
@@ -4874,10 +5023,12 @@
               "language": "javascript",
               "testCases": [
                 {
-                  "id": "test-1",
                   "description": "Should track errors",
                   "expectedOutput": "1",
-                  "isVisible": true
+                  "isVisible": true,
+                  "inputs": [
+                    "monitor.logError(new Error('Test')); monitor.errors.length"
+                  ]
                 }
               ],
               "hints": [
@@ -4909,5 +5060,14 @@
         }
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "version": "2.0.0",
+    "lastUpdated": "2025-11-14",
+    "author": "Code Tutor",
+    "interactiveElements": {
+      "totalLessons": 62,
+      "totalChallenges": 62
+    }
+  }
 }

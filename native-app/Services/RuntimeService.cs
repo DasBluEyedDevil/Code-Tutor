@@ -25,11 +25,28 @@ public class RuntimeService : IRuntimeService
 
     public async Task<Dictionary<string, bool>> CheckRuntimesAsync()
     {
-        _availability["python"] = await CheckCommandAsync("python3", "--version") || await CheckCommandAsync("python", "--version");
+        // Check Python (try both python and python3)
+        _availability["python"] = await CheckCommandAsync("python", "--version") || await CheckCommandAsync("python3", "--version");
+
+        // Check JavaScript/Node
         _availability["javascript"] = await CheckCommandAsync("node", "--version");
+
+        // Check Java (java -version writes to stderr but exits 0 on success)
         _availability["java"] = await CheckCommandAsync("java", "-version");
+
+        // Check Rust
         _availability["rust"] = await CheckCommandAsync("rustc", "--version");
+
+        // Check C#/.NET
         _availability["csharp"] = await CheckCommandAsync("dotnet", "--version");
+
+        // Check Dart/Flutter
+        var dartAvailable = await CheckCommandAsync("dart", "--version");
+        _availability["dart"] = dartAvailable;
+        _availability["flutter"] = dartAvailable || await CheckCommandAsync("flutter", "--version");
+
+        // Check Kotlin
+        _availability["kotlin"] = await CheckCommandAsync("kotlinc", "-version");
 
         _checked = true;
         return _availability;
