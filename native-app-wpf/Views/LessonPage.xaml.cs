@@ -46,21 +46,8 @@ public partial class LessonPage : UserControl
         // Add challenges
         foreach (var challenge in _lesson.Challenges)
         {
-            var challengeText = new TextBlock
-            {
-                Text = $"Challenge: {challenge.Title}",
-                Style = (Style)FindResource("SubheadingText"),
-                Margin = new Thickness(0, 24, 0, 8)
-            };
-            ContentPanel.Children.Add(challengeText);
-
-            var descText = new TextBlock
-            {
-                Text = challenge.Description,
-                Style = (Style)FindResource("BodyText"),
-                Margin = new Thickness(0, 0, 0, 16)
-            };
-            ContentPanel.Children.Add(descText);
+            var challengeControl = new Controls.CodingChallenge(challenge);
+            ContentPanel.Children.Add(challengeControl);
         }
     }
 
