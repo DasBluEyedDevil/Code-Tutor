@@ -1,8 +1,82 @@
 <UserControl x:Class="CodeTutor.Wpf.Views.LessonPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <TextBlock Text="Lesson Page - Loading..."
-               Style="{StaticResource BodyText}"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center" />
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Lesson Header -->
+        <Border Grid.Row="0"
+                Background="{StaticResource BackgroundMediumBrush}"
+                Padding="40,24">
+            <StackPanel>
+                <TextBlock x:Name="LessonTitle"
+                           Style="{StaticResource HeadingText}" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <TextBlock x:Name="LessonTime"
+                               Style="{StaticResource CaptionText}" />
+                    <TextBlock x:Name="LessonDifficulty"
+                               Style="{StaticResource CaptionText}"
+                               Margin="16,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Lesson Content -->
+        <ScrollViewer Grid.Row="1"
+                      Style="{StaticResource DarkScrollViewer}"
+                      Padding="40,32">
+            <StackPanel x:Name="ContentPanel" MaxWidth="800">
+                <!-- Content sections will be added dynamically -->
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Navigation -->
+        <Border Grid.Row="2"
+                Background="{StaticResource BackgroundMediumBrush}"
+                Padding="40,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="PrevButton"
+                        Grid.Column="0"
+                        Style="{StaticResource SecondaryButton}"
+                        Click="PrevButton_Click"
+                        HorizontalAlignment="Left"
+                        Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&lt;- " />
+                        <TextBlock Text="Previous" />
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="CompleteButton"
+                        Grid.Column="1"
+                        Style="{StaticResource PrimaryButton}"
+                        Click="CompleteButton_Click">
+                    <TextBlock Text="Mark Complete" />
+                </Button>
+
+                <Button x:Name="NextButton"
+                        Grid.Column="2"
+                        Style="{StaticResource PrimaryButton}"
+                        Click="NextButton_Click"
+                        HorizontalAlignment="Right"
+                        Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Next" />
+                        <TextBlock Text=" -&gt;" />
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>
