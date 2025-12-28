@@ -1,4 +1,6 @@
+using System.Windows;
 using System.Windows.Controls;
+using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
 
 namespace CodeTutor.Wpf.Views;
@@ -13,5 +15,23 @@ public partial class LandingPage : UserControl
         InitializeComponent();
         _courseService = courseService;
         _navigation = navigation;
+        Loaded += LandingPage_Loaded;
+    }
+
+    private async void LandingPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        LoadingText.Visibility = Visibility.Visible;
+        var courses = await _courseService.GetAllCoursesAsync();
+        CourseList.ItemsSource = courses;
+        LoadingText.Visibility = Visibility.Collapsed;
+    }
+
+    private void CourseCard_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is Course course)
+        {
+            var coursePage = new CoursePage(_courseService, _navigation, course);
+            _navigation.NavigateTo(coursePage, course);
+        }
     }
 }
