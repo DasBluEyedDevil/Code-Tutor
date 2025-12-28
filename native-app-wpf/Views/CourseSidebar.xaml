@@ -1,0 +1,71 @@
+<UserControl x:Class="CodeTutor.Wpf.Views.CourseSidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ScrollViewer Style="{StaticResource DarkScrollViewer}">
+        <StackPanel Margin="12">
+            <!-- Back Button -->
+            <Button Style="{StaticResource GhostButton}"
+                    Click="BackButton_Click"
+                    Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&lt;- " />
+                    <TextBlock Text="All Courses" />
+                </StackPanel>
+            </Button>
+
+            <!-- Course Title -->
+            <TextBlock x:Name="CourseTitle"
+                       Style="{StaticResource SubheadingText}"
+                       TextWrapping="Wrap"
+                       Margin="8,0,0,16" />
+
+            <!-- Modules List -->
+            <ItemsControl x:Name="ModulesList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,4">
+                            <!-- Module Header -->
+                            <Button Style="{StaticResource SidebarItemButton}"
+                                    Click="ModuleHeader_Click"
+                                    Tag="{Binding}"
+                                    HorizontalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Title}"
+                                               Style="{StaticResource CaptionText}"
+                                               TextWrapping="Wrap" />
+                                    <TextBlock x:Name="ExpandIcon"
+                                               Grid.Column="1"
+                                               Text="v"
+                                               Style="{StaticResource CaptionText}" />
+                                </Grid>
+                            </Button>
+
+                            <!-- Lessons (Expandable) -->
+                            <ItemsControl ItemsSource="{Binding Lessons}"
+                                          x:Name="LessonsList"
+                                          Margin="16,4,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource SidebarItemButton}"
+                                                Click="LessonItem_Click"
+                                                Tag="{Binding}"
+                                                HorizontalAlignment="Stretch">
+                                            <TextBlock Text="{Binding Title}"
+                                                       Style="{StaticResource CaptionText}"
+                                                       TextWrapping="Wrap" />
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
