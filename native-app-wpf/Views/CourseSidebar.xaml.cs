@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
@@ -10,6 +11,7 @@ public partial class CourseSidebar : UserControl
     private readonly Course _course;
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
+    private readonly Dictionary<string, bool> _expandedModules = new();
 
     public CourseSidebar(Course course, ICourseService courseService, INavigationService navigation)
     {
@@ -20,6 +22,11 @@ public partial class CourseSidebar : UserControl
 
         CourseTitle.Text = course.Title;
         ModulesList.ItemsSource = course.Modules;
+
+        foreach (var module in course.Modules)
+        {
+            _expandedModules[module.Id] = true;
+        }
     }
 
     private void BackButton_Click(object sender, RoutedEventArgs e)
@@ -29,7 +36,37 @@ public partial class CourseSidebar : UserControl
 
     private void ModuleHeader_Click(object sender, RoutedEventArgs e)
     {
-        // Toggle expand/collapse could be added here
+        if (sender is Button button && button.Tag is Module module)
+        {
+            _expandedModules[module.Id] = !_expandedModules[module.Id];
+
+            // Find the lessons panel within the parent and toggle visibility
+            var parent = button.Parent as StackPanel;
+            if (parent != null)
+            {
+                foreach (var child in parent.Children)
+                {
+                    if (child is ItemsControl lessonsPanel)
+                    {
+                        lessonsPanel.Visibility = _expandedModules[module.Id]
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
+                    }
+                }
+            }
+
+            // Update chevron
+            if (button.Content is Grid grid)
+            {
+                foreach (var child in grid.Children)
+                {
+                    if (child is TextBlock chevron && chevron.Name == "ExpandIcon")
+                    {
+                        chevron.Text = _expandedModules[module.Id] ? "\u25BC" : "\u25B6";
+                    }
+                }
+            }
+        }
     }
 
     private void LessonItem_Click(object sender, RoutedEventArgs e)
