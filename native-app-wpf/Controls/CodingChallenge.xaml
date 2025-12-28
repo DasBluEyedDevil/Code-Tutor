@@ -88,6 +88,39 @@
                 </StackPanel>
             </Border>
 
+            <!-- Test Results Panel -->
+            <Border x:Name="TestResultsPanel"
+                    Background="{StaticResource BackgroundDarkBrush}"
+                    BorderBrush="{StaticResource BorderDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="12"
+                    Margin="0,8,0,0"
+                    Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Test Results:"
+                               Style="{StaticResource CaptionText}"
+                               Margin="0,0,0,8" />
+                    <ItemsControl x:Name="TestResultsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Margin="0,2">
+                                    <TextBlock Text="{Binding Status}"
+                                               Foreground="{Binding Color}"
+                                               FontFamily="Segoe UI Symbol"
+                                               Margin="0,0,8,0" />
+                                    <TextBlock Text="{Binding Description}"
+                                               Style="{StaticResource CaptionText}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="TestSummary"
+                               Style="{StaticResource BodyText}"
+                               Margin="0,8,0,0" />
+                </StackPanel>
+            </Border>
+
             <!-- Hint Panel -->
             <Border x:Name="HintPanel"
                     Background="#1A1F2A"

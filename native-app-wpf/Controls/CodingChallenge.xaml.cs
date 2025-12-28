@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
@@ -60,6 +62,7 @@ public partial class CodingChallenge : UserControl
         try
         {
             OutputPanel.Visibility = Visibility.Visible;
+            TestResultsPanel.Visibility = Visibility.Collapsed;
             OutputText.Text = "Running...";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
 
@@ -69,6 +72,12 @@ public partial class CodingChallenge : UserControl
             {
                 OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
                 OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+
+                // Run test case validation if test cases exist
+                if (_challenge.TestCases != null && _challenge.TestCases.Count > 0)
+                {
+                    ValidateTestCases(result.Output);
+                }
             }
             else
             {
@@ -81,6 +90,41 @@ public partial class CodingChallenge : UserControl
             OutputText.Text = $"Execution failed: {ex.Message}";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
         }
+    }
+
+    private void ValidateTestCases(string actualOutput)
+    {
+        var results = new List<object>();
+        int passed = 0;
+        int total = 0;
+
+        foreach (var testCase in _challenge.TestCases)
+        {
+            if (!testCase.IsVisible) continue;
+            total++;
+
+            bool testPassed = string.IsNullOrEmpty(testCase.ExpectedOutput) ||
+                              actualOutput.Contains(testCase.ExpectedOutput.Trim());
+
+            if (testPassed) passed++;
+
+            results.Add(new
+            {
+                Description = testCase.Description,
+                Status = testPassed ? "\u2713" : "\u2717",
+                Color = testPassed
+                    ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
+                    : (System.Windows.Media.Brush)FindResource("AccentRedBrush")
+            });
+        }
+
+        TestResultsPanel.Visibility = Visibility.Visible;
+        TestResultsList.ItemsSource = results;
+
+        TestSummary.Text = $"{passed}/{total} tests passed";
+        TestSummary.Foreground = passed == total
+            ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
+            : (System.Windows.Media.Brush)FindResource("AccentRedBrush");
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)
@@ -122,6 +166,7 @@ public partial class CodingChallenge : UserControl
     {
         CodeEditor.Text = _originalCode;
         OutputPanel.Visibility = Visibility.Collapsed;
+        TestResultsPanel.Visibility = Visibility.Collapsed;
         HintPanel.Visibility = Visibility.Collapsed;
         _currentHintIndex = 0;
 
