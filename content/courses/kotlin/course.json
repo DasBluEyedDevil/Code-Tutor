@@ -390,6 +390,12 @@
                   "description": "Prints 'Hello, World!'",
                   "expectedOutput": "Hello, World!",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output contains correct punctuation",
+                  "expectedOutput": "Hello, World!",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -408,19 +414,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Forgetting the comma after Hello",
+                  "consequence": "Incorrect output",
+                  "correction": "Include the comma: Hello, World!"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Using print instead of println",
+                  "consequence": "No newline at end",
+                  "correction": "Use println() for line output"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
+                  "mistake": "Forgetting quotes around the string",
                   "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "correction": "Wrap text in double quotes"
                 }
               ],
               "difficulty": "beginner"
@@ -604,6 +610,12 @@
                   "description": "Prints the number 25",
                   "expectedOutput": "25",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Variable value is an integer",
+                  "expectedOutput": "25",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -622,9 +634,9 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Printing the variable name as a string",
+                  "consequence": "Prints 'age' instead of 25",
+                  "correction": "Print the variable without quotes: println(age)"
                 },
                 {
                   "mistake": "Using var when val would suffice",
@@ -632,9 +644,9 @@
                   "correction": "Prefer val for immutable values"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Forgetting to assign a value",
+                  "consequence": "Compilation error",
+                  "correction": "Variables must be initialized: val age = 25"
                 }
               ],
               "difficulty": "beginner"
@@ -654,6 +666,18 @@
                   "description": "Prints greeting with name",
                   "expectedOutput": "Hello, Alice!",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses string interpolation correctly",
+                  "expectedOutput": "Hello, Alice!",
+                  "isVisible": false
+                },
+                {
+                  "id": "test-3",
+                  "description": "Includes exclamation mark",
+                  "expectedOutput": "Hello, Alice!",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -672,14 +696,14 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Forgetting the dollar sign",
+                  "consequence": "Prints literal 'name' instead of variable value",
+                  "correction": "Use $name to interpolate the variable"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Using concatenation instead of templates",
+                  "consequence": "Works but less idiomatic",
+                  "correction": "Prefer string templates: \"Hello, $name!\""
                 },
                 {
                   "mistake": "Incorrect string interpolation",
@@ -836,6 +860,12 @@
                   "description": "Prints 30",
                   "expectedOutput": "30",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Sum of 10 and 20 equals 30",
+                  "expectedOutput": "30",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -854,19 +884,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "String concatenation instead of addition",
+                  "consequence": "Prints '1020' instead of 30",
+                  "correction": "Use arithmetic + with Int values"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Printing expression instead of result",
+                  "consequence": "Syntax error or wrong output",
+                  "correction": "Calculate first, then print: println(a + b)"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Using wrong operator",
+                  "consequence": "Wrong calculation",
+                  "correction": "Use + for addition"
                 }
               ],
               "difficulty": "intermediate"
@@ -1129,6 +1159,12 @@
                   "description": "Prints 'Welcome!'",
                   "expectedOutput": "Welcome!",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Function is called from main",
+                  "expectedOutput": "Welcome!",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1147,19 +1183,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Forgetting parentheses when calling function",
+                  "consequence": "Function reference instead of call",
+                  "correction": "Use greet() with parentheses to call the function"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Defining function inside main",
+                  "consequence": "Nested functions are less common",
+                  "correction": "Define greet() outside of main()"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Forgetting to call the function",
+                  "consequence": "No output",
+                  "correction": "Add greet() inside main() to call the function"
                 }
               ],
               "difficulty": "intermediate"
@@ -1267,6 +1303,12 @@
                   "description": "Prints 25 (5 squared)",
                   "expectedOutput": "25",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Function correctly squares the input",
+                  "expectedOutput": "25",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1285,19 +1327,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Forgetting the return statement",
+                  "consequence": "Function returns Unit instead of Int",
+                  "correction": "Use return n * n to return the result"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Using addition instead of multiplication",
+                  "consequence": "Returns n + n instead of n * n",
+                  "correction": "Square means multiply by itself: n * n"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Printing instead of returning",
+                  "consequence": "Function does not return a value",
+                  "correction": "Use return to give back a value"
                 }
               ],
               "difficulty": "intermediate"
@@ -1317,6 +1359,12 @@
                   "description": "Prints 42",
                   "expectedOutput": "42",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Function multiplies 6 and 7 correctly",
+                  "expectedOutput": "42",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1335,19 +1383,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using wrong operator",
+                  "consequence": "Returns a + b instead of a * b",
+                  "correction": "Use * for multiplication"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Mixing up parameter order",
+                  "consequence": "Can cause issues with non-commutative operations",
+                  "correction": "Multiplication is commutative, but keep order consistent"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Forgetting the return statement",
+                  "consequence": "Function returns Unit instead of Int",
+                  "correction": "Use return a * b"
                 }
               ],
               "difficulty": "intermediate"
@@ -1608,6 +1656,12 @@
                   "description": "For age 20, prints 'Adult'",
                   "expectedOutput": "Adult",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Age 20 is >= 18, so Adult",
+                  "expectedOutput": "Adult",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1626,19 +1680,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using > instead of >=",
+                  "consequence": "Age 18 would be classified as Minor",
+                  "correction": "Use >= for 18 and older"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Forgetting the else branch",
+                  "consequence": "No output for minors",
+                  "correction": "Always include an else for the alternative case"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Reversed condition logic",
+                  "consequence": "Adult and Minor are swapped",
+                  "correction": "Check if age >= 18 for Adult"
                 }
               ],
               "difficulty": "intermediate"
@@ -1658,6 +1712,12 @@
                   "description": "For score 85, prints 'B'",
                   "expectedOutput": "B",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Score 85 falls in B range (80-89)",
+                  "expectedOutput": "B",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1676,19 +1736,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Checking conditions in wrong order",
+                  "consequence": "Lower grades match before higher ones",
+                  "correction": "Check from highest (90+) to lowest"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Using wrong comparison operators",
+                  "consequence": "Boundary scores get wrong grades",
+                  "correction": "Use >= for inclusive boundaries"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Missing else branch for F grade",
+                  "consequence": "No output for scores below 60",
+                  "correction": "Include else for scores below 60"
                 }
               ],
               "difficulty": "intermediate"
@@ -1807,6 +1867,12 @@
                   "description": "Prints 'Can drive' for age 17 with license",
                   "expectedOutput": "Can drive",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Both conditions must be true to drive",
+                  "expectedOutput": "Can drive",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1825,19 +1891,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using || instead of &&",
+                  "consequence": "Only one condition needs to be true",
+                  "correction": "Use && to require BOTH conditions"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Comparing boolean with == true",
+                  "consequence": "Redundant comparison",
+                  "correction": "Use hasLicense directly in condition"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Wrong age threshold",
+                  "consequence": "Incorrect driving age check",
+                  "correction": "Driving age is typically 16+"
                 }
               ],
               "difficulty": "intermediate"
@@ -1963,6 +2029,12 @@
                   "description": "For day 6, prints 'Weekend'",
                   "expectedOutput": "Weekend",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Saturday (day 6) is a weekend day",
+                  "expectedOutput": "Weekend",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -1981,19 +2053,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Forgetting else branch",
+                  "consequence": "Invalid days not handled",
+                  "correction": "Include else for values outside 1-7"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Using 0..4 instead of 1..5",
+                  "consequence": "Wrong weekday range",
+                  "correction": "Days 1-5 are weekdays, 6-7 are weekend"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Using if-else instead of when",
+                  "consequence": "Less readable code",
+                  "correction": "When is more elegant for multiple branches"
                 }
               ],
               "difficulty": "intermediate"
@@ -2112,6 +2184,12 @@
                   "description": "Prints numbers 1-10",
                   "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Each number on separate line",
+                  "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -2130,19 +2208,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using until instead of ..",
+                  "consequence": "Excludes 10 from output",
+                  "correction": "1..10 includes 10, 1 until 10 excludes it"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Starting from 0 instead of 1",
+                  "consequence": "Prints 0-9 instead of 1-10",
+                  "correction": "Start range at 1 for 1-10"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Using print instead of println",
+                  "consequence": "Numbers appear on same line",
+                  "correction": "Use println for newline after each number"
                 }
               ],
               "difficulty": "intermediate"
@@ -2162,6 +2240,12 @@
                   "description": "Prints 15",
                   "expectedOutput": "15",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Sum 1+2+3+4+5 equals 15",
+                  "expectedOutput": "15",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -2180,19 +2264,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using val instead of var for sum",
+                  "consequence": "Cannot reassign immutable variable",
+                  "correction": "Use var for sum since it changes"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Printing inside the loop",
+                  "consequence": "Prints multiple partial sums",
+                  "correction": "Print after the loop completes"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Forgetting to add to sum",
+                  "consequence": "Sum stays 0",
+                  "correction": "Use sum += i or sum = sum + i"
                 }
               ],
               "difficulty": "intermediate"
@@ -2404,6 +2488,12 @@
                   "description": "Prints 9",
                   "expectedOutput": "9",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Maximum of [3,7,2,9,4] is 9",
+                  "expectedOutput": "9",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -2422,19 +2512,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using max() instead of maxOrNull()",
+                  "consequence": "max() is deprecated",
+                  "correction": "Use maxOrNull() which handles empty lists safely"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Manual loop instead of built-in function",
+                  "consequence": "More code than necessary",
+                  "correction": "Kotlin has built-in maxOrNull() for this"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Sorting entire list for max",
+                  "consequence": "O(n log n) instead of O(n)",
+                  "correction": "maxOrNull() is more efficient"
                 }
               ],
               "difficulty": "intermediate"
@@ -2454,6 +2544,12 @@
                   "description": "Prints list of even numbers",
                   "expectedOutput": "[2, 4, 6, 8, 10]",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Even numbers from 1-10",
+                  "expectedOutput": "[2, 4, 6, 8, 10]",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -2472,19 +2568,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using wrong modulo condition",
+                  "consequence": "Filters odd numbers instead of even",
+                  "correction": "Even check: it % 2 == 0"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Forgetting 'it' in lambda",
+                  "consequence": "Reference to wrong variable",
+                  "correction": "Use it % 2 == 0 in single-param lambda"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Manual loop instead of filter",
+                  "consequence": "More verbose code",
+                  "correction": "Kotlin filter is more idiomatic"
                 }
               ],
               "difficulty": "intermediate"
@@ -4016,6 +4112,12 @@
                   "description": "Lambda should add 5 and 3",
                   "expectedOutput": "8",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Lambda returns sum of inputs",
+                  "expectedOutput": "8",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -4038,19 +4140,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Using return in lambda",
+                  "consequence": "Unexpected behavior or error",
+                  "correction": "Lambdas implicitly return last expression"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Missing type declarations",
+                  "consequence": "Type inference may fail",
+                  "correction": "Specify types: { a: Int, b: Int -> ... }"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
+                  "mistake": "Wrong arrow syntax",
                   "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "correction": "Use -> not => in Kotlin lambdas"
                 }
               ],
               "difficulty": "intermediate"
@@ -4126,6 +4228,12 @@
                   "description": "Should filter odd numbers and double them",
                   "expectedOutput": "[2, 6, 10, 14, 18]",
                   "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Odd numbers 1,3,5,7,9 doubled are 2,6,10,14,18",
+                  "expectedOutput": "[2, 6, 10, 14, 18]",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -4148,19 +4256,19 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting null safety operators",
-                  "consequence": "NullPointerException",
-                  "correction": "Use ?. for safe calls, ?: for elvis operator"
+                  "mistake": "Wrong order of operations",
+                  "consequence": "Filter after map gives wrong result",
+                  "correction": "Filter first, then map for correct output"
                 },
                 {
-                  "mistake": "Using var when val would suffice",
-                  "consequence": "Unnecessary mutability",
-                  "correction": "Prefer val for immutable values"
+                  "mistake": "Filtering even instead of odd",
+                  "consequence": "Wrong numbers selected",
+                  "correction": "Odd: it % 2 != 0, Even: it % 2 == 0"
                 },
                 {
-                  "mistake": "Incorrect string interpolation",
-                  "consequence": "Syntax error",
-                  "correction": "Use $variable or ${expression}"
+                  "mistake": "Not chaining operations",
+                  "consequence": "More verbose code",
+                  "correction": "Chain: numbers.filter{...}.map{...}"
                 }
               ],
               "difficulty": "intermediate"
