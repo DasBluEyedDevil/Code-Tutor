@@ -201,6 +201,17 @@
               "type": "KEY_POINT",
               "title": "Variable Naming Rules",
               "content": "You can name variables almost anything, BUT:\n\n✓ DO:\n- Use descriptive names: 'playerScore' not 'x'\n- Start with a lowercase letter: 'score', 'myAge'\n- Use camelCase for multiple words: 'highScore', 'userName'\n\n✗ DON'T:\n- Use spaces: 'my age' is WRONG, use 'myAge'\n- Start with a number: '2cool' is WRONG, use 'cool2'\n- Use special characters: 'score$' is usually wrong\n- Use Java keywords: 'int', 'class', 'public' are reserved\n\nGood names: age, playerScore, userName, totalCost\nBad names: a, x, asdfghjkl, thing123"
+            },
+            {
+              "type": "THEORY",
+              "title": "The var Keyword (Java 10+)",
+              "content": "Starting with Java 10, you can use 'var' for LOCAL VARIABLE TYPE INFERENCE.\n\nInstead of writing the type explicitly:\n\nString name = \"Alice\";\nint age = 25;\nArrayList<String> names = new ArrayList<String>();\n\nYou can let Java figure out the type:\n\nvar name = \"Alice\";          // Java knows it's a String\nvar age = 25;                 // Java knows it's an int\nvar names = new ArrayList<String>();  // Java knows the type!\n\nWHY USE var?\n1. Less typing (especially for long type names)\n2. Cleaner code when the type is obvious\n3. Required for some advanced features (like anonymous classes)\n\nWHEN TO USE var:\n✓ When the type is obvious from the right side\n✓ For complex generic types: var map = new HashMap<String, List<Integer>>();\n✓ In for-each loops: for (var item : list) { ... }\n\nWHEN NOT TO USE var:\n✗ When the type isn't obvious: var result = getResult();  // What type is this?\n✗ For method parameters or return types (not allowed)\n✗ For class fields (not allowed)\n\nIMPORTANT: var is NOT like JavaScript's var - the type is still fixed at compile time!\nvar age = 25;\nage = \"hello\";  // ERROR! age is still an int"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using var in Practice",
+              "code": "public class VarExample {\n    public static void main(String[] args) {\n        // Instead of: String message = \"Hello, World!\";\n        var message = \"Hello, World!\";\n        \n        // Instead of: int count = 10;\n        var count = 10;\n        \n        // Instead of: double price = 19.99;\n        var price = 19.99;\n        \n        // Especially useful for complex types:\n        // Instead of: ArrayList<String> names = new ArrayList<String>();\n        var names = new ArrayList<String>();\n        names.add(\"Alice\");\n        names.add(\"Bob\");\n        \n        // In for-each loops:\n        for (var name : names) {\n            System.out.println(name);\n        }\n        \n        // With Map:\n        var scores = new HashMap<String, Integer>();\n        scores.put(\"Alice\", 95);\n        scores.put(\"Bob\", 87);\n        \n        for (var entry : scores.entrySet()) {\n            System.out.println(entry.getKey() + \": \" + entry.getValue());\n        }\n    }\n}",
+              "language": "java"
             }
           ],
           "challenges": [
@@ -477,6 +488,167 @@
                 }
               ],
               "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "epoch-0-lesson-5",
+          "title": "Lesson 0.5: Switch Expressions & Pattern Matching (Java 17+)",
+          "moduleId": "module-01",
+          "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Clunky Switch Statements",
+              "content": "Traditional switch statements in Java are verbose and error-prone:\n\nString dayType;\nswitch (day) {\n    case \"MONDAY\":\n    case \"TUESDAY\":\n    case \"WEDNESDAY\":\n    case \"THURSDAY\":\n    case \"FRIDAY\":\n        dayType = \"Weekday\";\n        break;  // Easy to forget!\n    case \"SATURDAY\":\n    case \"SUNDAY\":\n        dayType = \"Weekend\";\n        break;\n    default:\n        dayType = \"Unknown\";\n        break;\n}\n\nProblems:\n1. Must remember 'break' or fall-through bugs occur\n2. Can't return values directly from switch\n3. Very verbose for simple mappings\n4. No compile-time exhaustiveness checking\n\nJava 14-17 introduced SWITCH EXPRESSIONS to fix all of this!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Switch Expressions with Arrow Syntax",
+              "content": "Modern Java uses the arrow (->) syntax for cleaner switches:\n\n// Old way (statement):\nswitch (day) {\n    case \"MONDAY\":\n        System.out.println(\"Start of week\");\n        break;\n    // ... more cases\n}\n\n// New way (expression with arrows):\nString dayType = switch (day) {\n    case \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\" -> \"Weekday\";\n    case \"SATURDAY\", \"SUNDAY\" -> \"Weekend\";\n    default -> \"Unknown\";\n};\n\nBenefits:\n- No break needed (no fall-through)\n- Multiple cases can share one arrow\n- Returns a value directly\n- Much more concise!\n\nArrow rules:\n- Use -> for single expression or block\n- No fall-through between cases\n- Must cover all possibilities (exhaustive)"
+            },
+            {
+              "type": "THEORY",
+              "title": "Switch Expressions with yield",
+              "content": "When you need multiple statements in a case, use a block with 'yield':\n\nint numLetters = switch (day) {\n    case \"MONDAY\", \"FRIDAY\", \"SUNDAY\" -> 6;\n    case \"TUESDAY\" -> 7;\n    case \"THURSDAY\", \"SATURDAY\" -> 8;\n    case \"WEDNESDAY\" -> {\n        System.out.println(\"Middle of week!\");\n        yield 9;  // 'yield' returns the value from the block\n    }\n    default -> throw new IllegalArgumentException(\"Invalid day: \" + day);\n};\n\nKey points:\n- Use { } blocks when you need multiple statements\n- Use 'yield' (not 'return') to provide the value\n- 'yield' is only used in switch expressions, not statements"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Pattern Matching for instanceof (Java 16+)",
+              "content": "Traditional instanceof checking is repetitive:\n\n// Old way:\nif (obj instanceof String) {\n    String s = (String) obj;  // Repetitive cast!\n    System.out.println(s.length());\n}\n\n// New way with pattern matching:\nif (obj instanceof String s) {\n    // 's' is already a String - no cast needed!\n    System.out.println(s.length());\n}\n\nThe pattern 'String s' both:\n1. Tests if obj is a String\n2. Creates variable s with the String type\n\nMore examples:\n\n// With negation\nif (!(obj instanceof String s)) {\n    return;  // obj is not a String\n}\n// Here 's' is in scope and is a String\nSystem.out.println(s.toUpperCase());\n\n// In complex conditions\nif (obj instanceof String s && s.length() > 5) {\n    System.out.println(\"Long string: \" + s);\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Pattern Matching in Switch (Java 21+)",
+              "content": "Java 21 brings pattern matching to switch expressions:\n\n// Type patterns in switch\nString describe(Object obj) {\n    return switch (obj) {\n        case Integer i -> \"Integer: \" + i;\n        case Long l -> \"Long: \" + l;\n        case Double d -> \"Double: \" + d;\n        case String s -> \"String of length \" + s.length();\n        case null -> \"It's null!\";\n        default -> \"Unknown type\";\n    };\n}\n\n// With guards (when clause)\nString categorize(Object obj) {\n    return switch (obj) {\n        case Integer i when i < 0 -> \"Negative number\";\n        case Integer i when i == 0 -> \"Zero\";\n        case Integer i -> \"Positive number: \" + i;\n        case String s when s.isEmpty() -> \"Empty string\";\n        case String s -> \"String: \" + s;\n        case null -> \"null value\";\n        default -> \"Something else\";\n    };\n}\n\nKey features:\n- Type patterns: case Integer i -> ...\n- Guards: case Integer i when i > 0 -> ...\n- Null handling: case null -> ...\n- Record patterns: case Point(int x, int y) -> ..."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Modern Switch and Pattern Matching in Action",
+              "code": "public class ModernJavaDemo {\n    public static void main(String[] args) {\n        // Switch expression with arrow syntax\n        String day = \"WEDNESDAY\";\n        String activity = switch (day) {\n            case \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\" -> \"Work\";\n            case \"SATURDAY\" -> \"Relax\";\n            case \"SUNDAY\" -> \"Prepare for week\";\n            default -> \"Unknown\";\n        };\n        System.out.println(day + \": \" + activity);\n        \n        // Pattern matching for instanceof\n        Object[] items = {\"Hello\", 42, 3.14, true};\n        for (Object item : items) {\n            if (item instanceof String s) {\n                System.out.println(\"String with \" + s.length() + \" chars\");\n            } else if (item instanceof Integer n) {\n                System.out.println(\"Integer: \" + n);\n            } else if (item instanceof Double d) {\n                System.out.println(\"Double: \" + d);\n            } else {\n                System.out.println(\"Other: \" + item);\n            }\n        }\n        \n        // Pattern matching in switch (Java 21+)\n        for (Object item : items) {\n            String description = switch (item) {\n                case String s when s.length() > 10 -> \"Long string\";\n                case String s -> \"String: \" + s;\n                case Integer i when i < 0 -> \"Negative\";\n                case Integer i -> \"Positive: \" + i;\n                case Double d -> \"Double: \" + d;\n                case Boolean b -> \"Boolean: \" + b;\n                case null -> \"null\";\n                default -> \"Unknown\";\n            };\n            System.out.println(description);\n        }\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When to Use Modern Switch Features",
+              "content": "USE SWITCH EXPRESSIONS WHEN:\n- Assigning a value based on multiple conditions\n- Mapping one value to another\n- Replacing if-else-if chains\n\nUSE PATTERN MATCHING instanceof WHEN:\n- You need to check type AND use the value\n- Processing heterogeneous collections\n- Simplifying type-checking code\n\nUSE PATTERN MATCHING IN SWITCH WHEN:\n- Processing different types differently\n- Combining type checks with value conditions\n- Working with sealed classes/interfaces\n\nBEST PRACTICES:\n- Always handle all cases (be exhaustive)\n- Use guards (when) for additional conditions\n- Handle null explicitly when needed\n- Prefer switch expressions over statements for assignments"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-0-lesson-5-switch-basic",
+              "title": "Basic Switch Expression",
+              "description": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.\n\nTest: getSeason(7) should return \"Summer\"",
+              "instructions": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.",
+              "starterCode": "// Basic Switch Expression\n// Write your code below\n\npublic class Solution {\n    public static String getSeason(int month) {\n        // Use switch expression here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getSeason(7));\n    }\n}",
+              "solution": "// Solution: Basic Switch Expression\npublic class Solution {\n    public static String getSeason(int month) {\n        return switch (month) {\n            case 12, 1, 2 -> \"Winter\";\n            case 3, 4, 5 -> \"Spring\";\n            case 6, 7, 8 -> \"Summer\";\n            case 9, 10, 11 -> \"Fall\";\n            default -> \"Unknown\";\n        };\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getSeason(7));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-0-lesson-5-switch-basic-test-1",
+                  "description": "Should return 'Summer'",
+                  "expectedOutput": "Summer",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use the syntax: return switch (month) { case 1, 2 -> \"value\"; };"
+                },
+                {
+                  "level": 2,
+                  "text": "Multiple cases can share one arrow: case 12, 1, 2 -> \"Winter\""
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting semicolon after the switch expression",
+                  "consequence": "Compilation error",
+                  "correction": "Switch expressions need ; at the end when used in a statement"
+                },
+                {
+                  "mistake": "Using break with arrow syntax",
+                  "consequence": "Compilation error",
+                  "correction": "Arrow syntax doesn't use break - the arrow implies no fall-through"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-0-lesson-5-pattern-instanceof",
+              "title": "Pattern Matching for instanceof",
+              "description": "Create a method describe(Object obj) that returns:\n- \"String: [value]\" if it's a String\n- \"Number: [value]\" if it's an Integer\n- \"Unknown\" for anything else\n\nUse pattern matching for instanceof.\n\nTest: describe(\"Hello\") should return \"String: Hello\"",
+              "instructions": "Create a method describe(Object obj) that returns:\n- \"String: [value]\" if it's a String\n- \"Number: [value]\" if it's an Integer\n- \"Unknown\" for anything else\n\nUse pattern matching for instanceof.",
+              "starterCode": "// Pattern Matching for instanceof\n// Write your code below\n\npublic class Solution {\n    public static String describe(Object obj) {\n        // Use pattern matching instanceof here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(describe(\"Hello\"));\n    }\n}",
+              "solution": "// Solution: Pattern Matching for instanceof\npublic class Solution {\n    public static String describe(Object obj) {\n        if (obj instanceof String s) {\n            return \"String: \" + s;\n        } else if (obj instanceof Integer n) {\n            return \"Number: \" + n;\n        } else {\n            return \"Unknown\";\n        }\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(describe(\"Hello\"));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-0-lesson-5-pattern-instanceof-test-1",
+                  "description": "Should return 'String: Hello'",
+                  "expectedOutput": "String: Hello",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Pattern matching: if (obj instanceof String s) - s is now a String"
+                },
+                {
+                  "level": 2,
+                  "text": "You don't need to cast after the pattern match - the variable is already the correct type"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Casting after instanceof with pattern matching",
+                  "consequence": "Unnecessary code",
+                  "correction": "The pattern variable is already the correct type"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-0-lesson-5-switch-yield",
+              "title": "Switch Expression with yield",
+              "description": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.\n\nTest: getGrade(95) should print \"Excellent!\" and return \"A\"",
+              "instructions": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.",
+              "starterCode": "// Switch Expression with yield\n// Write your code below\n\npublic class Solution {\n    public static String getGrade(int score) {\n        // Use switch expression with yield here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getGrade(95));\n    }\n}",
+              "solution": "// Solution: Switch Expression with yield\npublic class Solution {\n    public static String getGrade(int score) {\n        return switch (score / 10) {\n            case 10, 9 -> {\n                System.out.println(\"Excellent!\");\n                yield \"A\";\n            }\n            case 8 -> \"B\";\n            case 7 -> \"C\";\n            case 6 -> \"D\";\n            default -> \"F\";\n        };\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getGrade(95));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-0-lesson-5-switch-yield-test-1",
+                  "description": "Should print 'Excellent!' then 'A'",
+                  "expectedOutput": "Excellent!\nA",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Divide score by 10 to get a single digit for the switch"
+                },
+                {
+                  "level": 2,
+                  "text": "Use { } block with yield for multiple statements: case 9 -> { print(); yield \"A\"; }"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using return instead of yield in switch expression block",
+                  "consequence": "Compilation error",
+                  "correction": "Use yield to return a value from a switch expression block"
+                }
+              ],
+              "difficulty": "intermediate"
             }
           ]
         }
@@ -2418,6 +2590,162 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "epoch-2-lesson-7",
+          "title": "Lesson 2.7: Records - Immutable Data Classes (Java 16+)",
+          "moduleId": "module-03",
+          "order": 7,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Too Much Boilerplate",
+              "content": "How much code does it take to create a simple data class in Java?\n\npublic class Person {\n    private final String name;\n    private final int age;\n    \n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n    \n    public String getName() { return name; }\n    public int getAge() { return age; }\n    \n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        Person person = (Person) o;\n        return age == person.age && Objects.equals(name, person.name);\n    }\n    \n    @Override\n    public int hashCode() {\n        return Objects.hash(name, age);\n    }\n    \n    @Override\n    public String toString() {\n        return \"Person[name=\" + name + \", age=\" + age + \"]\";\n    }\n}\n\nThat's over 25 lines for a simple class with just 2 fields!\n\nJava 16 introduced RECORDS to solve this problem."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Records: One Line = Complete Data Class",
+              "content": "A record is a special kind of class designed to hold immutable data.\n\nThe entire Person class above can be written as:\n\npublic record Person(String name, int age) {}\n\nThat's it! ONE LINE!\n\nWhat you get automatically:\n- Private final fields for each component\n- A constructor that takes all components\n- Accessor methods: name() and age() (not getName/getAge)\n- equals() that compares all components\n- hashCode() based on all components\n- toString() that shows all components\n\nUsage:\nPerson alice = new Person(\"Alice\", 30);\nSystem.out.println(alice.name());   // Alice\nSystem.out.println(alice.age());    // 30\nSystem.out.println(alice);          // Person[name=Alice, age=30]"
+            },
+            {
+              "type": "THEORY",
+              "title": "Record Syntax and Features",
+              "content": "BASIC RECORD:\npublic record Point(int x, int y) {}\n\nRECORD WITH COMPACT CONSTRUCTOR:\nRecords can have a compact constructor for validation:\n\npublic record Person(String name, int age) {\n    public Person {\n        // Compact constructor - no parameters needed\n        if (age < 0) {\n            throw new IllegalArgumentException(\"Age cannot be negative\");\n        }\n        if (name == null || name.isBlank()) {\n            throw new IllegalArgumentException(\"Name is required\");\n        }\n        // Fields are automatically assigned after this block\n    }\n}\n\nRECORD WITH METHODS:\npublic record Rectangle(int width, int height) {\n    // You can add methods to records!\n    public int area() {\n        return width * height;\n    }\n    \n    public int perimeter() {\n        return 2 * (width + height);\n    }\n}\n\nRECORD WITH STATIC MEMBERS:\npublic record Temperature(double celsius) {\n    public static Temperature freezing() {\n        return new Temperature(0);\n    }\n    \n    public static Temperature boiling() {\n        return new Temperature(100);\n    }\n    \n    public double fahrenheit() {\n        return celsius * 9/5 + 32;\n    }\n}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Records are Immutable",
+              "content": "Records are IMMUTABLE by design:\n\nPerson alice = new Person(\"Alice\", 30);\nalice.age = 31;  // COMPILE ERROR! No setter exists\n\nTo \"change\" a record, create a new one:\n\nPerson olderAlice = new Person(alice.name(), alice.age() + 1);\n\nWHY IMMUTABILITY?\n1. Thread-safe by default (no synchronization needed)\n2. Can be used as map keys safely\n3. Easy to reason about (no unexpected changes)\n4. Functional programming friendly\n\nRECORD RESTRICTIONS:\n- Cannot extend other classes (implicitly extend Record)\n- Cannot be extended (implicitly final)\n- All fields are final (cannot be changed)\n- Cannot declare instance fields (only components)\n\nRECORDS CAN:\n- Implement interfaces\n- Have static fields and methods\n- Have instance methods\n- Override accessor methods (rarely needed)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Records in Action",
+              "code": "// Define a simple record\npublic record Student(String name, int grade, double gpa) {\n    // Compact constructor for validation\n    public Student {\n        if (grade < 1 || grade > 12) {\n            throw new IllegalArgumentException(\"Grade must be 1-12\");\n        }\n        if (gpa < 0.0 || gpa > 4.0) {\n            throw new IllegalArgumentException(\"GPA must be 0.0-4.0\");\n        }\n    }\n    \n    // Custom method\n    public boolean isHonorRoll() {\n        return gpa >= 3.5;\n    }\n}\n\n// Using the record\npublic class Main {\n    public static void main(String[] args) {\n        // Create records\n        var alice = new Student(\"Alice\", 10, 3.8);\n        var bob = new Student(\"Bob\", 11, 3.2);\n        \n        // Access components\n        System.out.println(alice.name());  // Alice\n        System.out.println(alice.gpa());   // 3.8\n        \n        // Use custom methods\n        System.out.println(alice.isHonorRoll());  // true\n        System.out.println(bob.isHonorRoll());    // false\n        \n        // Automatic toString\n        System.out.println(alice);  // Student[name=Alice, grade=10, gpa=3.8]\n        \n        // Automatic equals\n        var aliceCopy = new Student(\"Alice\", 10, 3.8);\n        System.out.println(alice.equals(aliceCopy));  // true\n        \n        // Use in collections\n        var students = List.of(alice, bob);\n        for (var student : students) {\n            System.out.println(student.name() + \": \" + student.gpa());\n        }\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Records",
+              "content": "USE RECORDS FOR:\n- Data Transfer Objects (DTOs)\n- API response/request objects\n- Value objects (Money, Coordinate, Range)\n- Configuration objects\n- Tuple-like groupings of data\n- Immutable data holders\n\nRECORD EXAMPLES:\n\n// API Response\nrecord ApiResponse<T>(T data, String message, int status) {}\n\n// Geographic coordinates\nrecord Coordinate(double latitude, double longitude) {\n    public double distanceTo(Coordinate other) {\n        // Calculate distance...\n    }\n}\n\n// Money with currency\nrecord Money(BigDecimal amount, String currency) {\n    public Money add(Money other) {\n        if (!currency.equals(other.currency)) {\n            throw new IllegalArgumentException(\"Currency mismatch\");\n        }\n        return new Money(amount.add(other.amount), currency);\n    }\n}\n\nDON'T USE RECORDS FOR:\n- Entities that need to change (use regular classes)\n- Classes that need inheritance hierarchies\n- Classes with complex initialization logic\n- JPA/Hibernate entities (they need no-arg constructors)"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-7-record-basic",
+              "title": "Create a Simple Record",
+              "description": "Create a record named 'Book' with:\n- String title\n- String author\n- int pages\n\nIn main, create a Book with title \"1984\", author \"Orwell\", pages 328.\nPrint the book's title using the accessor method.\n\nExpected output: 1984",
+              "instructions": "Create a record named 'Book' with:\n- String title\n- String author\n- int pages\n\nIn main, create a Book with title \"1984\", author \"Orwell\", pages 328.\nPrint the book's title using the accessor method.\n\nExpected output: 1984",
+              "starterCode": "// Create a Simple Record\n// Write your code below\n\npublic class Solution {\n    public static void main(String[] args) {\n        \n    }\n}",
+              "solution": "// Solution: Create a Simple Record\n// Define the Book record\nrecord Book(String title, String author, int pages) {}\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Create a Book record instance\n        Book book = new Book(\"1984\", \"Orwell\", 328);\n        \n        // Access and print the title\n        System.out.println(book.title());\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-7-record-basic-test-1",
+                  "description": "Should print '1984'",
+                  "expectedOutput": "1984",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Records are declared with the syntax: record Name(Type field1, Type field2) {}"
+                },
+                {
+                  "level": 2,
+                  "text": "Record accessor methods don't use 'get' prefix - just use book.title() not book.getTitle()"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using getTitle() instead of title()",
+                  "consequence": "Method not found error",
+                  "correction": "Records use component name as accessor: title() not getTitle()"
+                },
+                {
+                  "mistake": "Trying to modify record fields",
+                  "consequence": "Compilation error",
+                  "correction": "Records are immutable - create a new record instead"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-7-record-method",
+              "title": "Record with Custom Method",
+              "description": "Create a record 'Rectangle' with:\n- int width\n- int height\n- A method area() that returns width * height\n\nIn main, create a Rectangle(5, 10) and print its area.\n\nExpected output: 50",
+              "instructions": "Create a record 'Rectangle' with:\n- int width\n- int height\n- A method area() that returns width * height\n\nIn main, create a Rectangle(5, 10) and print its area.\n\nExpected output: 50",
+              "starterCode": "// Record with Custom Method\n// Write your code below\n\npublic class Solution {\n    public static void main(String[] args) {\n        \n    }\n}",
+              "solution": "// Solution: Record with Custom Method\n// Define the Rectangle record with custom method\nrecord Rectangle(int width, int height) {\n    public int area() {\n        return width * height;\n    }\n}\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Create a Rectangle\n        Rectangle rect = new Rectangle(5, 10);\n        \n        // Print the area\n        System.out.println(rect.area());\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-7-record-method-test-1",
+                  "description": "Should print '50'",
+                  "expectedOutput": "50",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "You can add methods inside the record body: record Name(fields) { methods here }"
+                },
+                {
+                  "level": 2,
+                  "text": "Inside the method, you can access components directly: width * height"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Declaring width and height as fields inside the record",
+                  "consequence": "Duplicate field error",
+                  "correction": "Components are already fields - just use them in methods"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-7-record-validation",
+              "title": "Record with Validation",
+              "description": "Create a record 'Age' with:\n- int years\n- Validation: throw IllegalArgumentException if years < 0\n\nIn main, create Age(25) and print its years.\n\nExpected output: 25",
+              "instructions": "Create a record 'Age' with:\n- int years\n- Validation: throw IllegalArgumentException if years < 0\n\nIn main, create Age(25) and print its years.\n\nExpected output: 25",
+              "starterCode": "// Record with Validation\n// Write your code below\n\npublic class Solution {\n    public static void main(String[] args) {\n        \n    }\n}",
+              "solution": "// Solution: Record with Validation\n// Define the Age record with compact constructor validation\nrecord Age(int years) {\n    public Age {\n        if (years < 0) {\n            throw new IllegalArgumentException(\"Age cannot be negative\");\n        }\n    }\n}\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Create a valid Age\n        Age age = new Age(25);\n        \n        // Print the years\n        System.out.println(age.years());\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-7-record-validation-test-1",
+                  "description": "Should print '25'",
+                  "expectedOutput": "25",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use a compact constructor: public Age { validation here }"
+                },
+                {
+                  "level": 2,
+                  "text": "Compact constructors don't need parameters - they implicitly receive the components"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Writing full constructor with parameters",
+                  "consequence": "More verbose than needed",
+                  "correction": "Use compact constructor: public Age { } without parameters"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
@@ -3265,6 +3593,303 @@
                 }
               ],
               "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "epoch-3-lesson-6",
+          "title": "Lesson 3.6: Lambda Expressions - Functions as Data (Java 8+)",
+          "moduleId": "module-04",
+          "order": 6,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Passing Behavior Around",
+              "content": "Imagine you want to sort a list of names by length instead of alphabetically:\n\n// Traditional way: Create a whole class just to pass behavior\nclass LengthComparator implements Comparator<String> {\n    public int compare(String a, String b) {\n        return a.length() - b.length();\n    }\n}\nCollections.sort(names, new LengthComparator());\n\n// Or use anonymous class (still verbose)\nCollections.sort(names, new Comparator<String>() {\n    public int compare(String a, String b) {\n        return a.length() - b.length();\n    }\n});\n\nThat's A LOT of code just to say: \"sort by length\"!\n\nJava 8 introduced LAMBDA EXPRESSIONS to pass behavior in a concise way:\n\nCollections.sort(names, (a, b) -> a.length() - b.length());\n\nOne line instead of 5+!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Lambda Syntax Explained",
+              "content": "A lambda is an anonymous function you can pass around:\n\n(parameters) -> expression\n  or\n(parameters) -> { statements; }\n\nEXAMPLES:\n\n// No parameters\n() -> System.out.println(\"Hello\")\n\n// One parameter (parentheses optional)\nx -> x * 2\n(x) -> x * 2\n\n// Two parameters\n(a, b) -> a + b\n\n// With types (optional)\n(String s) -> s.length()\n(int a, int b) -> a + b\n\n// Multi-line with braces (must use return)\n(a, b) -> {\n    int sum = a + b;\n    return sum * 2;\n}\n\nKEY RULES:\n1. Types are usually inferred (don't need to specify)\n2. Single expression: no braces, implicit return\n3. Multiple statements: need braces and explicit return"
+            },
+            {
+              "type": "THEORY",
+              "title": "Functional Interfaces",
+              "content": "Lambdas can only be used where a FUNCTIONAL INTERFACE is expected.\n\nA functional interface has exactly ONE abstract method:\n\n@FunctionalInterface\ninterface Calculator {\n    int calculate(int a, int b);  // ONE abstract method\n}\n\n// Use lambda to implement it\nCalculator add = (a, b) -> a + b;\nCalculator multiply = (a, b) -> a * b;\n\nSystem.out.println(add.calculate(5, 3));      // 8\nSystem.out.println(multiply.calculate(5, 3)); // 15\n\nCOMMON BUILT-IN FUNCTIONAL INTERFACES:\n\n1. Predicate<T> - takes T, returns boolean\n   Predicate<String> isEmpty = s -> s.isEmpty();\n\n2. Function<T, R> - takes T, returns R\n   Function<String, Integer> length = s -> s.length();\n\n3. Consumer<T> - takes T, returns nothing\n   Consumer<String> printer = s -> System.out.println(s);\n\n4. Supplier<T> - takes nothing, returns T\n   Supplier<Double> random = () -> Math.random();\n\n5. Comparator<T> - takes two T, returns int\n   Comparator<String> byLength = (a, b) -> a.length() - b.length();"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Method References",
+              "content": "When a lambda just calls an existing method, use a method reference:\n\n// Lambda that calls a method\nlist.forEach(s -> System.out.println(s));\n\n// Method reference (cleaner!)\nlist.forEach(System.out::println);\n\nFOUR TYPES OF METHOD REFERENCES:\n\n1. Static method: ClassName::staticMethod\n   Function<String, Integer> parse = Integer::parseInt;\n   // Same as: s -> Integer.parseInt(s)\n\n2. Instance method of a particular object: object::method\n   String prefix = \"Hello, \";\n   Function<String, String> greeter = prefix::concat;\n   // Same as: s -> prefix.concat(s)\n\n3. Instance method of an arbitrary object: ClassName::method\n   Function<String, String> upper = String::toUpperCase;\n   // Same as: s -> s.toUpperCase()\n\n4. Constructor reference: ClassName::new\n   Supplier<ArrayList<String>> listMaker = ArrayList::new;\n   // Same as: () -> new ArrayList<String>()\n\nMethod references are cleaner when the lambda just delegates to a method."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Lambdas in Action",
+              "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class LambdaDemo {\n    public static void main(String[] args) {\n        // Lambda as Comparator\n        List<String> names = new ArrayList<>(List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\"));\n        names.sort((a, b) -> a.length() - b.length());\n        System.out.println(names); // [Bob, Dan, Alice, Charlie]\n        \n        // Lambda with forEach\n        names.forEach(name -> System.out.println(\"Hello, \" + name));\n        \n        // Method reference\n        names.forEach(System.out::println);\n        \n        // Predicate - filter condition\n        Predicate<String> startsWithA = s -> s.startsWith(\"A\");\n        System.out.println(startsWithA.test(\"Alice\")); // true\n        System.out.println(startsWithA.test(\"Bob\"));   // false\n        \n        // Function - transform\n        Function<String, Integer> getLength = String::length;\n        System.out.println(getLength.apply(\"Hello\")); // 5\n        \n        // Consumer - action\n        Consumer<String> shout = s -> System.out.println(s.toUpperCase() + \"!\");\n        shout.accept(\"hello\"); // HELLO!\n        \n        // Custom functional interface\n        Calculator add = (a, b) -> a + b;\n        Calculator multiply = (a, b) -> a * b;\n        System.out.println(operate(10, 5, add));      // 15\n        System.out.println(operate(10, 5, multiply)); // 50\n    }\n    \n    @FunctionalInterface\n    interface Calculator {\n        int calculate(int a, int b);\n    }\n    \n    static int operate(int a, int b, Calculator calc) {\n        return calc.calculate(a, b);\n    }\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-6-lambda-basic",
+              "title": "Basic Lambda Expression",
+              "description": "Create a list of names and sort it by length (shortest first) using a lambda.\n\nList: [\"Charlie\", \"Bob\", \"Alice\", \"Dan\"]\n\nPrint the first name after sorting.\n\nExpected output: Bob",
+              "instructions": "Create a list of names and sort it by length (shortest first) using a lambda.\n\nList: [\"Charlie\", \"Bob\", \"Alice\", \"Dan\"]\n\nPrint the first name after sorting.",
+              "starterCode": "import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Create and sort the list\n    }\n}",
+              "solution": "import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<String> names = new ArrayList<>(List.of(\"Charlie\", \"Bob\", \"Alice\", \"Dan\"));\n        names.sort((a, b) -> a.length() - b.length());\n        System.out.println(names.get(0));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-6-lambda-basic-test-1",
+                  "description": "Should print 'Bob'",
+                  "expectedOutput": "Bob",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use list.sort((a, b) -> comparison) with a lambda"
+                },
+                {
+                  "level": 2,
+                  "text": "Compare lengths: a.length() - b.length() for ascending order"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using Arrays.asList() which returns fixed-size list",
+                  "consequence": "UnsupportedOperationException when sorting",
+                  "correction": "Wrap with new ArrayList<>() to make it mutable"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-6-method-ref",
+              "title": "Method Reference",
+              "description": "Create a list of names and use forEach with a method reference to print each name.\n\nList: [\"Alice\", \"Bob\"]\n\nExpected output:\nAlice\nBob",
+              "instructions": "Create a list of names and use forEach with a method reference to print each name.\n\nList: [\"Alice\", \"Bob\"]",
+              "starterCode": "import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        // Use forEach with method reference\n    }\n}",
+              "solution": "import java.util.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<String> names = List.of(\"Alice\", \"Bob\");\n        names.forEach(System.out::println);\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-6-method-ref-test-1",
+                  "description": "Should print names",
+                  "expectedOutput": "Alice\nBob",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Method reference syntax: ClassName::methodName or object::methodName"
+                },
+                {
+                  "level": 2,
+                  "text": "System.out::println is a method reference to the println method"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using System.out.println() with parentheses in method reference",
+                  "consequence": "Compilation error",
+                  "correction": "Use System.out::println (double colon, no parentheses)"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "epoch-3-lesson-7",
+          "title": "Lesson 3.7: Streams - Functional Collection Processing (Java 8+)",
+          "moduleId": "module-04",
+          "order": 7,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Verbose Collection Processing",
+              "content": "Traditional way to filter and transform a list:\n\n// Get names longer than 3 characters, convert to uppercase\nList<String> names = List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\");\nList<String> result = new ArrayList<>();\n\nfor (String name : names) {\n    if (name.length() > 3) {           // Filter\n        result.add(name.toUpperCase());  // Transform\n    }\n}\n// result: [ALICE, CHARLIE]\n\nProblems:\n1. Very verbose (5+ lines for simple operation)\n2. Mixes what we want with how to do it\n3. Hard to parallelize\n4. Lots of mutable state\n\nWith STREAMS:\n\nList<String> result = names.stream()\n    .filter(name -> name.length() > 3)\n    .map(String::toUpperCase)\n    .collect(Collectors.toList());\n\nCleaner, more readable, and easily parallelizable!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Stream Pipeline Structure",
+              "content": "A stream pipeline has three parts:\n\n1. SOURCE - Where data comes from\n   list.stream()           // From collection\n   Arrays.stream(array)    // From array\n   Stream.of(a, b, c)      // From values\n   Stream.iterate(0, n -> n + 1)  // Generated\n\n2. INTERMEDIATE OPERATIONS - Transform the stream (lazy!)\n   .filter(predicate)      // Keep matching elements\n   .map(function)          // Transform each element\n   .sorted()               // Sort elements\n   .distinct()             // Remove duplicates\n   .limit(n)               // Take first n\n   .skip(n)                // Skip first n\n\n3. TERMINAL OPERATION - Produce result (triggers processing)\n   .collect(Collectors.toList())  // To list\n   .forEach(consumer)      // Do something with each\n   .count()                // Count elements\n   .findFirst()            // Get first (Optional)\n   .reduce(identity, accumulator)  // Combine to one\n   .anyMatch(predicate)    // Any match?\n   .allMatch(predicate)    // All match?\n\nKEY: Streams are LAZY - nothing happens until terminal operation!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Common Stream Operations",
+              "content": "FILTER - Keep elements matching condition\nList<Integer> evens = numbers.stream()\n    .filter(n -> n % 2 == 0)\n    .collect(Collectors.toList());\n\nMAP - Transform each element\nList<Integer> lengths = names.stream()\n    .map(String::length)\n    .collect(Collectors.toList());\n\nSORTED - Sort elements\nList<String> sorted = names.stream()\n    .sorted()  // Natural order\n    .collect(Collectors.toList());\n\nList<String> byLength = names.stream()\n    .sorted(Comparator.comparing(String::length))\n    .collect(Collectors.toList());\n\nDISTINCT - Remove duplicates\nList<Integer> unique = numbers.stream()\n    .distinct()\n    .collect(Collectors.toList());\n\nLIMIT and SKIP - Pagination\nList<String> page = names.stream()\n    .skip(10)      // Skip first 10\n    .limit(5)      // Take next 5\n    .collect(Collectors.toList());\n\nFLATMAP - Flatten nested streams\nList<String> allWords = sentences.stream()\n    .flatMap(s -> Arrays.stream(s.split(\" \")))\n    .collect(Collectors.toList());"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Collectors and Terminal Operations",
+              "content": "COLLECTING TO DIFFERENT TYPES:\n\n// To List\nList<String> list = stream.collect(Collectors.toList());\n\n// To Set (removes duplicates)\nSet<String> set = stream.collect(Collectors.toSet());\n\n// To Map\nMap<String, Integer> map = names.stream()\n    .collect(Collectors.toMap(\n        name -> name,        // Key mapper\n        String::length       // Value mapper\n    ));\n\n// Joining strings\nString joined = names.stream()\n    .collect(Collectors.joining(\", \")); // \"Alice, Bob, Charlie\"\n\n// Grouping\nMap<Integer, List<String>> byLength = names.stream()\n    .collect(Collectors.groupingBy(String::length));\n\nOTHER TERMINAL OPERATIONS:\n\n// Count\nlong count = stream.count();\n\n// Sum, average, max, min (for numbers)\nint sum = numbers.stream().mapToInt(Integer::intValue).sum();\nOptionalDouble avg = numbers.stream().mapToInt(Integer::intValue).average();\n\n// Reduce to single value\nOptional<String> concat = names.stream()\n    .reduce((a, b) -> a + b);\n\n// Any/All/None match\nboolean anyLong = names.stream().anyMatch(s -> s.length() > 10);\nboolean allShort = names.stream().allMatch(s -> s.length() < 20);"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Stream Pipeline Examples",
+              "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class StreamDemo {\n    public static void main(String[] args) {\n        List<String> names = List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\", \"Eve\");\n        \n        // Filter and collect\n        List<String> longNames = names.stream()\n            .filter(n -> n.length() > 3)\n            .collect(Collectors.toList());\n        System.out.println(longNames); // [Alice, Charlie]\n        \n        // Map and collect\n        List<Integer> lengths = names.stream()\n            .map(String::length)\n            .collect(Collectors.toList());\n        System.out.println(lengths); // [5, 3, 7, 3, 3]\n        \n        // Filter, map, collect\n        List<String> upperLong = names.stream()\n            .filter(n -> n.length() > 3)\n            .map(String::toUpperCase)\n            .collect(Collectors.toList());\n        System.out.println(upperLong); // [ALICE, CHARLIE]\n        \n        // Find first matching\n        Optional<String> firstLong = names.stream()\n            .filter(n -> n.length() > 3)\n            .findFirst();\n        firstLong.ifPresent(System.out::println); // Alice\n        \n        // Count\n        long count = names.stream()\n            .filter(n -> n.length() == 3)\n            .count();\n        System.out.println(\"3-letter names: \" + count); // 3\n        \n        // Sum with mapToInt\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5);\n        int sum = numbers.stream()\n            .mapToInt(Integer::intValue)\n            .sum();\n        System.out.println(\"Sum: \" + sum); // 15\n        \n        // Join strings\n        String joined = names.stream()\n            .collect(Collectors.joining(\", \"));\n        System.out.println(joined); // Alice, Bob, Charlie, Dan, Eve\n        \n        // Group by length\n        Map<Integer, List<String>> byLength = names.stream()\n            .collect(Collectors.groupingBy(String::length));\n        System.out.println(byLength); // {3=[Bob, Dan, Eve], 5=[Alice], 7=[Charlie]}\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "THEORY",
+              "title": "Best Practices for Streams",
+              "content": "DO:\n- Use streams for transforming collections\n- Chain operations for readability\n- Use method references when possible\n- Use parallel streams for CPU-intensive operations on large data\n\nDON'T:\n- Use streams for simple loops (overkill)\n- Modify external state in stream operations\n- Reuse streams (they can only be consumed once)\n- Use parallel streams for I/O operations\n\nPARALLEL STREAMS:\nList<String> result = names.parallelStream()\n    .filter(n -> n.length() > 3)\n    .map(String::toUpperCase)\n    .collect(Collectors.toList());\n\nNote: Parallel streams split work across CPU cores.\nOnly use for CPU-bound operations on large datasets!\n\nWHEN TO USE STREAMS:\n- Filtering, mapping, reducing collections\n- When you want declarative, readable code\n- When operations can be parallelized\n\nWHEN NOT TO USE:\n- Simple iteration with side effects\n- When performance is critical and data is small\n- When you need to modify the original collection"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-7-stream-filter",
+              "title": "Filter with Streams",
+              "description": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only even numbers\n2. Collect to a list\n3. Print the first element\n\nExpected output: 2",
+              "instructions": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only even numbers\n2. Collect to a list\n3. Print the first element",
+              "starterCode": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\n        // Use stream to filter and collect\n    }\n}",
+              "solution": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\n        List<Integer> evens = numbers.stream()\n            .filter(n -> n % 2 == 0)\n            .collect(Collectors.toList());\n        System.out.println(evens.get(0));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-7-stream-filter-test-1",
+                  "description": "Should print '2'",
+                  "expectedOutput": "2",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use .filter(n -> n % 2 == 0) to keep even numbers"
+                },
+                {
+                  "level": 2,
+                  "text": "End with .collect(Collectors.toList()) to get a List"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to import Collectors",
+                  "consequence": "Cannot find symbol error",
+                  "correction": "Add import java.util.stream.Collectors"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-7-stream-map",
+              "title": "Map with Streams",
+              "description": "Given a list of names [\"alice\", \"bob\", \"charlie\"], use streams to:\n1. Convert each name to uppercase\n2. Collect to a list\n3. Print the result\n\nExpected output: [ALICE, BOB, CHARLIE]",
+              "instructions": "Given a list of names [\"alice\", \"bob\", \"charlie\"], use streams to:\n1. Convert each name to uppercase\n2. Collect to a list\n3. Print the result",
+              "starterCode": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<String> names = List.of(\"alice\", \"bob\", \"charlie\");\n        // Use stream to map and collect\n    }\n}",
+              "solution": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<String> names = List.of(\"alice\", \"bob\", \"charlie\");\n        List<String> upper = names.stream()\n            .map(String::toUpperCase)\n            .collect(Collectors.toList());\n        System.out.println(upper);\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-7-stream-map-test-1",
+                  "description": "Should print '[ALICE, BOB, CHARLIE]'",
+                  "expectedOutput": "[ALICE, BOB, CHARLIE]",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use .map() to transform each element"
+                },
+                {
+                  "level": 2,
+                  "text": "String::toUpperCase is a method reference for s -> s.toUpperCase()"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using map(String.toUpperCase())",
+                  "consequence": "Compilation error",
+                  "correction": "Use method reference String::toUpperCase or lambda s -> s.toUpperCase()"
+                }
+              ],
+              "difficulty": "beginner"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-7-stream-sum",
+              "title": "Sum with Streams",
+              "description": "Given a list of numbers [1, 2, 3, 4, 5], use streams to calculate and print the sum.\n\nExpected output: 15",
+              "instructions": "Given a list of numbers [1, 2, 3, 4, 5], use streams to calculate and print the sum.",
+              "starterCode": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5);\n        // Use stream to calculate sum\n    }\n}",
+              "solution": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5);\n        int sum = numbers.stream()\n            .mapToInt(Integer::intValue)\n            .sum();\n        System.out.println(sum);\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-7-stream-sum-test-1",
+                  "description": "Should print '15'",
+                  "expectedOutput": "15",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use .mapToInt() to convert to IntStream which has a .sum() method"
+                },
+                {
+                  "level": 2,
+                  "text": "Integer::intValue extracts the int value from Integer objects"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Trying to call .sum() on a regular Stream",
+                  "consequence": "Method not found error",
+                  "correction": "Convert to IntStream first with mapToInt()"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-3-lesson-7-stream-chain",
+              "title": "Chaining Stream Operations",
+              "description": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only numbers greater than 5\n2. Multiply each by 2\n3. Collect to a list\n4. Print the result\n\nExpected output: [12, 14, 16, 18, 20]",
+              "instructions": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only numbers greater than 5\n2. Multiply each by 2\n3. Collect to a list\n4. Print the result",
+              "starterCode": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\n        // Chain filter, map, and collect\n    }\n}",
+              "solution": "import java.util.*;\nimport java.util.stream.*;\n\npublic class Solution {\n    public static void main(String[] args) {\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);\n        List<Integer> result = numbers.stream()\n            .filter(n -> n > 5)\n            .map(n -> n * 2)\n            .collect(Collectors.toList());\n        System.out.println(result);\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-3-lesson-7-stream-chain-test-1",
+                  "description": "Should print '[12, 14, 16, 18, 20]'",
+                  "expectedOutput": "[12, 14, 16, 18, 20]",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Chain operations: .filter().map().collect()"
+                },
+                {
+                  "level": 2,
+                  "text": "Filter comes before map to avoid transforming elements we don't need"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Putting map before filter",
+                  "consequence": "Works but less efficient",
+                  "correction": "Filter first to reduce the number of elements to transform"
+                }
+              ],
+              "difficulty": "intermediate"
             }
           ]
         }
