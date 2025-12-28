@@ -12,6 +12,7 @@ public partial class LessonPage : UserControl
     private readonly Lesson _lesson;
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
+    private readonly IProgressService _progressService = new ProgressService();
 
     public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation)
     {
@@ -23,6 +24,16 @@ public partial class LessonPage : UserControl
 
         LoadLesson();
         SetupNavigation();
+        CheckCompletionStatus();
+    }
+
+    private async void CheckCompletionStatus()
+    {
+        if (await _progressService.IsLessonCompleteAsync(_lesson.Id))
+        {
+            CompleteButton.Content = new TextBlock { Text = "Completed" };
+            CompleteButton.IsEnabled = false;
+        }
     }
 
     private void LoadLesson()
@@ -147,9 +158,9 @@ public partial class LessonPage : UserControl
         }
     }
 
-    private void CompleteButton_Click(object sender, RoutedEventArgs e)
+    private async void CompleteButton_Click(object sender, RoutedEventArgs e)
     {
-        // Mark lesson as complete (could integrate with progress tracking later)
+        await _progressService.MarkLessonCompleteAsync(_lesson.Id);
         CompleteButton.Content = new TextBlock { Text = "Completed" };
         CompleteButton.IsEnabled = false;
     }
