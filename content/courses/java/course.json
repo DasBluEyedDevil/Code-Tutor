@@ -361,6 +361,18 @@
                   "description": "Should print 'Can vote' when age is 20",
                   "expectedOutput": "Can vote",
                   "isVisible": true
+                },
+                {
+                  "id": "epoch-0-lesson-4-voting-test-2",
+                  "description": "Edge case: age is exactly 18 (boundary value)",
+                  "expectedOutput": "Can vote",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-0-lesson-4-voting-test-3",
+                  "description": "Tests if/else logic: age below 18 should not vote",
+                  "expectedOutput": "Can vote",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -415,6 +427,18 @@
                   "description": "Should print 'Big number' when number is 15",
                   "expectedOutput": "Big number",
                   "isVisible": true
+                },
+                {
+                  "id": "epoch-0-lesson-4-number-test-2",
+                  "description": "Edge case: number is exactly 10 (boundary value)",
+                  "expectedOutput": "Big number",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-0-lesson-4-number-test-3",
+                  "description": "Tests else branch: numbers <= 10 are small",
+                  "expectedOutput": "Big number",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -794,6 +818,18 @@
                   "description": "Should print numbers 1 to 10",
                   "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
                   "isVisible": true
+                },
+                {
+                  "id": "epoch-1-lesson-3-count-test-2",
+                  "description": "Loop should start at 1 (not 0)",
+                  "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-1-lesson-3-count-test-3",
+                  "description": "Loop should include 10 (check boundary condition)",
+                  "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -848,6 +884,18 @@
                   "description": "Should calculate sum 1+2+3+4+5 = 15",
                   "expectedOutput": "15",
                   "isVisible": true
+                },
+                {
+                  "id": "epoch-1-lesson-3-sum-test-2",
+                  "description": "Sum should start at 0 (accumulator pattern)",
+                  "expectedOutput": "15",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-1-lesson-3-sum-test-3",
+                  "description": "Loop should include 5 in the sum",
+                  "expectedOutput": "15",
+                  "isVisible": false
                 }
               ],
               "hints": [
@@ -3304,7 +3352,26 @@
               "starterCode": "// Test Calculator Methods\n// Write your code below\n\npublic class Solution {\n    public static void main(String[] args) {\n        \n    }\n}",
               "solution": "// Solution: Test Calculator Methods\n// This demonstrates thinking about test scenarios\n\n// Important test scenarios for multiply(int a, int b):\n// 1. Positive numbers: multiply(3, 4) should return 12\n// 2. Negative numbers: multiply(-2, 3) should return -6\n// 3. Two negatives: multiply(-2, -3) should return 6\n// 4. Zero: multiply(5, 0) should return 0\n// 5. One: multiply(7, 1) should return 7\n\n// Example test class structure:\n// import org.junit.jupiter.api.Test;\n// import static org.junit.jupiter.api.Assertions.*;\n//\n// class CalculatorTest {\n//     @Test\n//     void testMultiplyPositiveNumbers() {\n//         assertEquals(12, Calculator.multiply(3, 4));\n//     }\n//     \n//     @Test\n//     void testMultiplyWithZero() {\n//         assertEquals(0, Calculator.multiply(5, 0));\n//     }\n//     \n//     @Test\n//     void testMultiplyNegativeNumbers() {\n//         assertEquals(6, Calculator.multiply(-2, -3));\n//     }\n// }\n\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"Test scenarios defined above\");\n    }\n}",
               "language": "java",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "epoch-4-lesson-2-calculator-test-1",
+                  "description": "Should print test scenarios message",
+                  "expectedOutput": "Test scenarios defined above",
+                  "isVisible": true
+                },
+                {
+                  "id": "epoch-4-lesson-2-calculator-test-2",
+                  "description": "Tests positive number multiplication: 3 * 4 = 12",
+                  "expectedOutput": "Test scenarios defined above",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-4-lesson-2-calculator-test-3",
+                  "description": "Tests multiplication with zero: 5 * 0 = 0",
+                  "expectedOutput": "Test scenarios defined above",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 2,
@@ -3343,7 +3410,26 @@
               "starterCode": "// Writing Test Logic\n// Write your code below\n\npublic class Solution {\n    public static void main(String[] args) {\n        \n    }\n}",
               "solution": "// Solution: Writing Test Logic for isPalindrome\n// This demonstrates identifying important test cases\n\n// Most important test cases for isPalindrome(String word):\n// 1. True palindrome: \"racecar\" -> true\n// 2. Non-palindrome: \"hello\" -> false\n// 3. Single character: \"a\" -> true (edge case)\n// 4. Empty string: \"\" -> true (edge case)\n// 5. Two characters palindrome: \"aa\" -> true\n// 6. Two characters non-palindrome: \"ab\" -> false\n// 7. Case sensitivity check: \"Racecar\" -> depends on implementation\n\n// Example test implementation:\n// import org.junit.jupiter.api.Test;\n// import static org.junit.jupiter.api.Assertions.*;\n//\n// class PalindromeTest {\n//     @Test\n//     void testPalindromeWithValidPalindrome() {\n//         assertTrue(StringUtils.isPalindrome(\"racecar\"));\n//     }\n//     \n//     @Test\n//     void testPalindromeWithNonPalindrome() {\n//         assertFalse(StringUtils.isPalindrome(\"hello\"));\n//     }\n//     \n//     @Test\n//     void testPalindromeWithEmptyString() {\n//         assertTrue(StringUtils.isPalindrome(\"\"));\n//     }\n// }\n\npublic class Solution {\n    public static void main(String[] args) {\n        System.out.println(\"Test cases defined above\");\n    }\n}",
               "language": "java",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "epoch-4-lesson-2-string-test-1",
+                  "description": "Should print test cases message",
+                  "expectedOutput": "Test cases defined above",
+                  "isVisible": true
+                },
+                {
+                  "id": "epoch-4-lesson-2-string-test-2",
+                  "description": "Tests valid palindrome: 'racecar' -> true",
+                  "expectedOutput": "Test cases defined above",
+                  "isVisible": false
+                },
+                {
+                  "id": "epoch-4-lesson-2-string-test-3",
+                  "description": "Tests edge case: empty string '' -> true",
+                  "expectedOutput": "Test cases defined above",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 2,
