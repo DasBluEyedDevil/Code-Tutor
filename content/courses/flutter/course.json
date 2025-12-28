@@ -1788,6 +1788,300 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "1.8",
+          "title": "Module 1, Lesson 8: Dart 3 Modern Features",
+          "moduleId": "module-01",
+          "order": 8,
+          "estimatedMinutes": 75,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Welcome to Modern Dart!",
+              "content": "\nDart 3 (released in 2023) introduced powerful new features that make your code cleaner, safer, and more expressive. In this lesson, you'll learn three game-changing features:\n\n- **Records**: Group multiple values together without creating a class\n- **Pattern Matching**: Destructure data and match complex conditions elegantly\n- **Sealed Classes**: Create type-safe hierarchies with exhaustive switching\n\nThese features work together to make Dart feel more modern and reduce boilerplate code.\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Part 1: Records - Lightweight Data Grouping",
+              "content": "\n### What Are Records?\n\n**Conceptual First:**\nImagine you want to return two values from a function - like a person's name AND their age. Before Dart 3, you had to either:\n- Create a whole class just for two values (overkill!)\n- Use a List or Map (loses type safety)\n- Return multiple values awkwardly\n\n**Records** solve this elegantly! They're like lightweight, immutable containers for multiple values.\n\n**Jargon:**\n- **Record**: A fixed-size, immutable collection of values\n- **Positional fields**: Fields accessed by position ($1, $2, etc.)\n- **Named fields**: Fields accessed by name\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Anonymous Records (Positional Fields)",
+              "code": "void main() {\n  // Create a record with two values\n  (String, int) person = ('Alice', 30);\n  \n  // Access by position (1-indexed with $ prefix)\n  print('Name: ${person.$1}');  // Alice\n  print('Age: ${person.$2}');   // 30\n  \n  // Records with more values\n  (String, String, int, bool) employee = ('Bob', 'Engineering', 5, true);\n  print('${employee.$1} works in ${employee.$2}');\n  print('Years: ${employee.$3}, Active: ${employee.$4}');\n  \n  // Records are immutable - this won't compile:\n  // person.$1 = 'Charlie';  // Error!\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Named Records (Named Fields)",
+              "code": "void main() {\n  // Named fields for clarity\n  ({String name, int age}) person = (name: 'Alice', age: 30);\n  \n  // Access by name - much more readable!\n  print('Name: ${person.name}');\n  print('Age: ${person.age}');\n  \n  // Mix positional and named fields\n  (String, {int age, String city}) profile = (\n    'Charlie',\n    age: 25,\n    city: 'New York',\n  );\n  \n  print('${profile.$1} is ${profile.age} years old');\n  print('Lives in ${profile.city}');\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Records as Function Return Types",
+              "code": "// Return multiple values elegantly!\n(String, int) getUserInfo() {\n  // Imagine fetching from database\n  return ('Alice', 30);\n}\n\n// Named fields version - even clearer\n({String name, int age, String email}) fetchUser() {\n  return (\n    name: 'Bob',\n    age: 25,\n    email: 'bob@example.com',\n  );\n}\n\n// Return success/error with data\n(bool success, String? data, String? error) fetchData() {\n  try {\n    // Simulate API call\n    return (true, 'Data loaded!', null);\n  } catch (e) {\n    return (false, null, e.toString());\n  }\n}\n\nvoid main() {\n  // Using positional record\n  var info = getUserInfo();\n  print('${info.$1} is ${info.$2} years old');\n  \n  // Using named record\n  var user = fetchUser();\n  print('${user.name}: ${user.email}');\n  \n  // Handling result record\n  var result = fetchData();\n  if (result.$1) {\n    print('Success: ${result.$2}');\n  } else {\n    print('Error: ${result.$3}');\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Part 2: Pattern Matching - Destructuring Made Easy",
+              "content": "\n### What Is Pattern Matching?\n\n**Conceptual First:**\nImagine opening a gift box. Instead of saying \"get the box, then look inside, then check what's there,\" you just say \"if it's a book, read it; if it's a toy, play with it.\"\n\n**Pattern matching** lets you inspect data structure and extract values in one elegant step. It's like X-ray vision for your data!\n\n**Jargon:**\n- **Destructuring**: Breaking apart a data structure into its components\n- **Pattern**: A template that data is matched against\n- **Guard clause**: An additional condition with `when`\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Destructuring Records",
+              "code": "void main() {\n  // Create a record\n  var person = ('Alice', 30);\n  \n  // Destructure into variables - no more $1, $2!\n  var (name, age) = person;\n  print('Name: $name, Age: $age');\n  \n  // Named record destructuring\n  var user = (name: 'Bob', age: 25, city: 'NYC');\n  var (:name, :age, :city) = user;  // Shorthand!\n  print('$name ($age) from $city');\n  \n  // Swap values elegantly\n  var a = 1;\n  var b = 2;\n  (a, b) = (b, a);  // Swap!\n  print('a: $a, b: $b');  // a: 2, b: 1\n  \n  // Ignore values with _\n  var data = ('important', 'skip this', 42);\n  var (important, _, number) = data;\n  print('$important: $number');\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Destructuring Lists and Maps",
+              "code": "void main() {\n  // List destructuring\n  var numbers = [1, 2, 3, 4, 5];\n  var [first, second, ...rest] = numbers;\n  print('First: $first');       // 1\n  print('Second: $second');     // 2\n  print('Rest: $rest');         // [3, 4, 5]\n  \n  // Get first and last\n  var [head, ..., tail] = numbers;\n  print('Head: $head, Tail: $tail');  // 1, 5\n  \n  // Map destructuring\n  var person = {'name': 'Alice', 'age': 30};\n  var {'name': userName, 'age': userAge} = person;\n  print('$userName is $userAge');\n  \n  // Nested destructuring\n  var nested = [1, [2, 3], 4];\n  var [a, [b, c], d] = nested;\n  print('$a, $b, $c, $d');  // 1, 2, 3, 4\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Switch with Patterns",
+              "code": "String describeValue(Object value) {\n  return switch (value) {\n    // Match specific values\n    0 => 'zero',\n    1 => 'one',\n    \n    // Match types with binding\n    int n when n < 0 => 'negative integer: $n',\n    int n when n > 100 => 'large integer: $n',\n    int n => 'integer: $n',\n    \n    // Match strings\n    String s when s.isEmpty => 'empty string',\n    String s when s.length > 10 => 'long string',\n    String s => 'string: $s',\n    \n    // Match lists\n    [] => 'empty list',\n    [var single] => 'single element: $single',\n    [var first, ...var rest] => 'list starting with $first',\n    \n    // Match records\n    (int x, int y) => 'point at ($x, $y)',\n    \n    // Catch-all\n    _ => 'something else: $value',\n  };\n}\n\nvoid main() {\n  print(describeValue(0));           // zero\n  print(describeValue(-5));          // negative integer: -5\n  print(describeValue(150));         // large integer: 150\n  print(describeValue('hello'));     // string: hello\n  print(describeValue([]));          // empty list\n  print(describeValue([1, 2, 3]));   // list starting with 1\n  print(describeValue((10, 20)));    // point at (10, 20)\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "If-Case Pattern Matching",
+              "code": "void processData(Object data) {\n  // If-case for conditional pattern matching\n  if (data case int n when n > 0) {\n    print('Positive integer: $n');\n  }\n  \n  if (data case String s when s.startsWith('Hello')) {\n    print('Greeting: $s');\n  }\n  \n  // Match and extract from records\n  if (data case (String name, int age) when age >= 18) {\n    print('$name is an adult');\n  }\n  \n  // Match list patterns\n  if (data case [var first, _, var last]) {\n    print('Three elements: first=$first, last=$last');\n  }\n}\n\nvoid main() {\n  processData(42);                    // Positive integer: 42\n  processData('Hello, World!');       // Greeting: Hello, World!\n  processData(('Alice', 25));         // Alice is an adult\n  processData([1, 2, 3]);             // Three elements: first=1, last=3\n  processData(-5);                    // (no output - doesn't match)\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Part 3: Sealed Classes - Exhaustive Type Hierarchies",
+              "content": "\n### What Are Sealed Classes?\n\n**Conceptual First:**\nImagine a traffic light. It can ONLY be red, yellow, or green - nothing else. If you handle all three cases, you've covered everything possible.\n\n**Sealed classes** let you define a closed set of types. The compiler then ensures you handle ALL cases - no more forgotten edge cases!\n\n**Jargon:**\n- **Sealed class**: A class that can only be extended within the same file\n- **Exhaustive switch**: A switch that handles all possible subtypes\n- **Algebraic data types (ADTs)**: Types representing one of several possible variants\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sealed Class Basics",
+              "code": "// Define a sealed class hierarchy\nsealed class Shape {}\n\nclass Circle extends Shape {\n  final double radius;\n  Circle(this.radius);\n}\n\nclass Rectangle extends Shape {\n  final double width;\n  final double height;\n  Rectangle(this.width, this.height);\n}\n\nclass Triangle extends Shape {\n  final double base;\n  final double height;\n  Triangle(this.base, this.height);\n}\n\n// The compiler KNOWS all possible shapes!\ndouble calculateArea(Shape shape) {\n  // Exhaustive switch - compiler ensures all cases covered\n  return switch (shape) {\n    Circle(radius: var r) => 3.14159 * r * r,\n    Rectangle(width: var w, height: var h) => w * h,\n    Triangle(base: var b, height: var h) => 0.5 * b * h,\n    // No default needed - all cases covered!\n  };\n}\n\nvoid main() {\n  var shapes = [\n    Circle(5),\n    Rectangle(4, 6),\n    Triangle(3, 4),\n  ];\n  \n  for (var shape in shapes) {\n    print('Area: ${calculateArea(shape).toStringAsFixed(2)}');\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sealed Classes for State Management",
+              "code": "// Perfect for representing UI states!\nsealed class AuthState {}\n\nclass AuthInitial extends AuthState {}\n\nclass AuthLoading extends AuthState {}\n\nclass AuthSuccess extends AuthState {\n  final String userName;\n  final String token;\n  AuthSuccess({required this.userName, required this.token});\n}\n\nclass AuthError extends AuthState {\n  final String message;\n  AuthError(this.message);\n}\n\n// Build UI based on state - compiler checks all cases!\nString buildUI(AuthState state) {\n  return switch (state) {\n    AuthInitial() => 'Welcome! Please log in.',\n    AuthLoading() => 'Loading... Please wait.',\n    AuthSuccess(userName: var name) => 'Welcome back, $name!',\n    AuthError(message: var msg) => 'Error: $msg',\n  };\n}\n\nvoid main() {\n  var states = [\n    AuthInitial(),\n    AuthLoading(),\n    AuthSuccess(userName: 'Alice', token: 'abc123'),\n    AuthError('Invalid password'),\n  ];\n  \n  for (var state in states) {\n    print(buildUI(state));\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sealed Classes for API Results",
+              "code": "// Model API responses safely\nsealed class ApiResult<T> {}\n\nclass ApiSuccess<T> extends ApiResult<T> {\n  final T data;\n  ApiSuccess(this.data);\n}\n\nclass ApiError<T> extends ApiResult<T> {\n  final int statusCode;\n  final String message;\n  ApiError(this.statusCode, this.message);\n}\n\nclass ApiLoading<T> extends ApiResult<T> {}\n\n// Simulate API call\nApiResult<List<String>> fetchUsers() {\n  // Simulate different outcomes\n  var random = DateTime.now().second % 3;\n  \n  return switch (random) {\n    0 => ApiSuccess(['Alice', 'Bob', 'Charlie']),\n    1 => ApiError(404, 'Users not found'),\n    _ => ApiLoading(),\n  };\n}\n\n// Handle all cases exhaustively\nvoid displayResult(ApiResult<List<String>> result) {\n  switch (result) {\n    case ApiSuccess(data: var users):\n      print('Found ${users.length} users:');\n      for (var user in users) {\n        print('  - $user');\n      }\n    case ApiError(statusCode: var code, message: var msg):\n      print('Error $code: $msg');\n    case ApiLoading():\n      print('Loading...');\n  }\n}\n\nvoid main() {\n  var result = fetchUsers();\n  displayResult(result);\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Combining All Three Features",
+              "code": "import 'dart:math';\n\n// Sealed class for operations\nsealed class MathOperation {}\n\nclass Add extends MathOperation {\n  final num a, b;\n  Add(this.a, this.b);\n}\n\nclass Subtract extends MathOperation {\n  final num a, b;\n  Subtract(this.a, this.b);\n}\n\nclass Multiply extends MathOperation {\n  final num a, b;\n  Multiply(this.a, this.b);\n}\n\nclass Divide extends MathOperation {\n  final num a, b;\n  Divide(this.a, this.b);\n}\n\n// Record for results\ntypedef CalcResult = ({num result, String description});\n\n// Pattern matching with sealed classes\nCalcResult calculate(MathOperation op) {\n  return switch (op) {\n    Add(a: var x, b: var y) => (\n      result: x + y,\n      description: '$x + $y',\n    ),\n    Subtract(a: var x, b: var y) => (\n      result: x - y,\n      description: '$x - $y',\n    ),\n    Multiply(a: var x, b: var y) => (\n      result: x * y,\n      description: '$x * $y',\n    ),\n    Divide(a: var x, b: var y) when y != 0 => (\n      result: x / y,\n      description: '$x / $y',\n    ),\n    Divide(a: var x, b: _) => (\n      result: double.nan,\n      description: '$x / 0 (undefined)',\n    ),\n  };\n}\n\nvoid main() {\n  var operations = [\n    Add(10, 5),\n    Subtract(10, 3),\n    Multiply(4, 7),\n    Divide(20, 4),\n    Divide(10, 0),  // Edge case!\n  ];\n  \n  for (var op in operations) {\n    // Destructure the result record\n    var (:result, :description) = calculate(op);\n    print('$description = $result');\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When to Use Each Feature",
+              "content": "\n### Records\n- **Use when**: Returning multiple values from functions\n- **Use when**: Grouping related data without creating a class\n- **Use when**: Creating lightweight, immutable data structures\n\n### Pattern Matching\n- **Use when**: Extracting values from complex data structures\n- **Use when**: Replacing verbose if-else chains\n- **Use when**: Type-checking and casting in one step\n\n### Sealed Classes\n- **Use when**: Modeling a fixed set of states (UI state, API results)\n- **Use when**: You want exhaustive switch checking\n- **Use when**: Creating type-safe state machines\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Quiz",
+              "content": "\n### Question 1\nWhat is the correct way to access the second field of an anonymous record?\n\nA) `record[1]`\nB) `record.$2`\nC) `record.second`\nD) `record[2]`\n\n### Question 2\nWhat does the `when` keyword do in pattern matching?\n\nA) Creates a new variable\nB) Adds a guard condition to the pattern\nC) Matches any value\nD) Defines a default case\n\n### Question 3\nWhat makes sealed classes special?\n\nA) They can be extended from anywhere\nB) They enable exhaustive switch statements\nC) They are always abstract\nD) They cannot have constructors\n\n### Question 4\nHow do you destructure a named record `(name: 'Alice', age: 30)`?\n\nA) `var (name, age) = record;`\nB) `var {name, age} = record;`\nC) `var (:name, :age) = record;`\nD) `var [name, age] = record;`\n\n"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Answer Key",
+              "content": "\n**Question 1: B** - Anonymous record fields are accessed with `$1`, `$2`, etc. (1-indexed with $ prefix).\n\n**Question 2: B** - The `when` keyword adds a guard condition that must be true for the pattern to match.\n\n**Question 3: B** - Sealed classes can only be extended in the same library, enabling the compiler to ensure switch statements handle all cases.\n\n**Question 4: C** - Named record fields are destructured with `:name` syntax, which creates a variable with the same name as the field.\n\n"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Summary",
+              "content": "\nIn this lesson, you learned Dart 3's modern features:\n\n**Records:**\n- Create lightweight, immutable data groupings\n- Access positional fields with `$1`, `$2`\n- Access named fields by name\n- Perfect for returning multiple values from functions\n\n**Pattern Matching:**\n- Destructure records, lists, and maps elegantly\n- Use `switch` expressions with pattern cases\n- Add guard clauses with `when`\n- Use `if-case` for conditional matching\n\n**Sealed Classes:**\n- Define closed type hierarchies\n- Enable exhaustive switch statements\n- Perfect for state management\n- Compiler catches missing cases\n\nThese features work together to make your Dart code cleaner, safer, and more expressive!\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What's Next?",
+              "content": "\nCongratulations on completing **Module 1**! You now have a comprehensive understanding of modern Dart programming, including:\n\n- Variables and data types\n- Control flow (if/else, loops)\n- Functions\n- Collections (Lists, Maps)\n- Mini-project experience\n- **Dart 3 modern features**\n\nIn **Module 2**, you'll apply all this knowledge to build actual Flutter apps with visual user interfaces!\n\nYou're ready to create beautiful, modern Flutter applications!\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "1.8-challenge-0",
+              "title": "Records Practice",
+              "description": "Create a function that returns a person's full details as a named record and destructure it.",
+              "instructions": "1. Create a function `getPersonDetails()` that returns a named record with name, age, and email fields\n2. Call the function and destructure the result\n3. Print each field on a separate line",
+              "starterCode": "// Dart 3 Records Practice\n// Create a function that returns a named record\n\nvoid main() {\n  // TODO: Call getPersonDetails() and destructure the result\n  // TODO: Print each field\n}",
+              "solution": "// Solution: Records Practice\n\n// Function returning a named record\n({String name, int age, String email}) getPersonDetails() {\n  return (\n    name: 'Alice Johnson',\n    age: 28,\n    email: 'alice@example.com',\n  );\n}\n\nvoid main() {\n  // Call and destructure the record\n  var (:name, :age, :email) = getPersonDetails();\n  \n  // Print each field\n  print('Name: $name');\n  print('Age: $age');\n  print('Email: $email');\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Function returns a named record with correct fields",
+                  "expectedOutput": "Name: Alice Johnson",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Age field is correctly destructured",
+                  "expectedOutput": "Age: 28",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Email field is correctly destructured",
+                  "expectedOutput": "Email: alice@example.com",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use ({Type field1, Type field2}) syntax for named record types."
+                },
+                {
+                  "level": 2,
+                  "text": "Destructure named records with var (:field1, :field2) = record;"
+                },
+                {
+                  "level": 3,
+                  "text": "Return the record as (field1: value1, field2: value2)"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using $1, $2 with named records",
+                  "consequence": "Compilation error - named fields use their names",
+                  "correction": "Access named fields by name: record.name, not record.$1"
+                },
+                {
+                  "mistake": "Forgetting the colon in destructuring",
+                  "consequence": "Creates new variables instead of matching fields",
+                  "correction": "Use (:name, :age) not (name, age) for named records"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "1.8-challenge-1",
+              "title": "Pattern Matching with Switch",
+              "description": "Create a function that uses pattern matching to describe different data types.",
+              "instructions": "1. Create a function `describe(Object value)` that returns a String\n2. Use switch expression with patterns to handle: integers (positive/negative/zero), strings (empty/short/long), lists (empty/single/multiple), and a default case\n3. Test with various inputs",
+              "starterCode": "// Pattern Matching Practice\n\nString describe(Object value) {\n  // TODO: Use switch expression with patterns\n  return '';\n}\n\nvoid main() {\n  print(describe(42));\n  print(describe(-5));\n  print(describe('hello'));\n  print(describe([1, 2, 3]));\n}",
+              "solution": "// Solution: Pattern Matching with Switch\n\nString describe(Object value) {\n  return switch (value) {\n    // Integer patterns\n    0 => 'zero',\n    int n when n < 0 => 'negative: $n',\n    int n => 'positive: $n',\n    \n    // String patterns\n    String s when s.isEmpty => 'empty string',\n    String s when s.length <= 5 => 'short string: $s',\n    String s => 'long string: $s',\n    \n    // List patterns\n    [] => 'empty list',\n    [var single] => 'single element: $single',\n    [var first, ...] => 'list starting with: $first',\n    \n    // Default\n    _ => 'unknown: $value',\n  };\n}\n\nvoid main() {\n  print(describe(42));          // positive: 42\n  print(describe(-5));          // negative: -5\n  print(describe(0));           // zero\n  print(describe('hello'));     // short string: hello\n  print(describe(''));          // empty string\n  print(describe([1, 2, 3]));   // list starting with: 1\n  print(describe([]));          // empty list\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Correctly identifies positive integers",
+                  "expectedOutput": "positive: 42",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Correctly identifies negative integers",
+                  "expectedOutput": "negative: -5",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Correctly handles list patterns",
+                  "expectedOutput": "list starting with: 1",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'when' for guard conditions in patterns"
+                },
+                {
+                  "level": 2,
+                  "text": "Order matters - put specific cases before general ones"
+                },
+                {
+                  "level": 3,
+                  "text": "Use '...' for rest patterns in lists"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Putting general patterns before specific ones",
+                  "consequence": "Specific patterns never match",
+                  "correction": "Put 'int n when n < 0' before 'int n'"
+                },
+                {
+                  "mistake": "Forgetting the => in switch expressions",
+                  "consequence": "Syntax error",
+                  "correction": "Use => for expression bodies in switch expressions"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "1.8-challenge-2",
+              "title": "Sealed Classes for Weather States",
+              "description": "Create a sealed class hierarchy for weather conditions and a function to get weather advice.",
+              "instructions": "1. Create a sealed class `Weather` with subclasses: Sunny (temperature), Rainy (intensity), Snowy (inches)\n2. Create a function `getAdvice(Weather weather)` using exhaustive switch\n3. Return appropriate advice for each weather type",
+              "starterCode": "// Sealed Classes Practice\n\n// TODO: Define sealed class Weather and its subclasses\n\nString getAdvice(Weather weather) {\n  // TODO: Use exhaustive switch\n  return '';\n}\n\nvoid main() {\n  var conditions = [\n    Sunny(85),\n    Rainy('heavy'),\n    Snowy(6),\n  ];\n  \n  for (var weather in conditions) {\n    print(getAdvice(weather));\n  }\n}",
+              "solution": "// Solution: Sealed Classes for Weather States\n\nsealed class Weather {}\n\nclass Sunny extends Weather {\n  final int temperature;\n  Sunny(this.temperature);\n}\n\nclass Rainy extends Weather {\n  final String intensity;  // 'light', 'moderate', 'heavy'\n  Rainy(this.intensity);\n}\n\nclass Snowy extends Weather {\n  final int inches;\n  Snowy(this.inches);\n}\n\nString getAdvice(Weather weather) {\n  return switch (weather) {\n    Sunny(temperature: var temp) when temp > 90 => \n      'Very hot ($temp F)! Stay hydrated and seek shade.',\n    Sunny(temperature: var temp) when temp > 70 => \n      'Nice day ($temp F)! Perfect for outdoor activities.',\n    Sunny(temperature: var temp) => \n      'Cool but sunny ($temp F). Bring a light jacket.',\n    Rainy(intensity: 'heavy') => \n      'Heavy rain! Stay indoors or bring an umbrella.',\n    Rainy(intensity: 'light') => \n      'Light rain. A jacket should be enough.',\n    Rainy(intensity: var i) => \n      '$i rain. Consider an umbrella.',\n    Snowy(inches: var in) when in > 6 => \n      'Heavy snow ($in inches)! Roads may be dangerous.',\n    Snowy(inches: var in) => \n      'Light snow ($in inches). Drive carefully.',\n  };\n}\n\nvoid main() {\n  var conditions = [\n    Sunny(85),\n    Sunny(95),\n    Rainy('heavy'),\n    Rainy('light'),\n    Snowy(6),\n    Snowy(12),\n  ];\n  \n  for (var weather in conditions) {\n    print(getAdvice(weather));\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Sunny weather returns temperature-based advice",
+                  "expectedOutput": "Nice day (85 F)! Perfect for outdoor activities.",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Heavy rain returns umbrella advice",
+                  "expectedOutput": "Heavy rain! Stay indoors or bring an umbrella.",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Heavy snow returns driving warning",
+                  "expectedOutput": "Heavy snow (12 inches)! Roads may be dangerous.",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'sealed class' to define the base class"
+                },
+                {
+                  "level": 2,
+                  "text": "Subclasses use 'extends' just like regular inheritance"
+                },
+                {
+                  "level": 3,
+                  "text": "Destructure properties in switch cases: Sunny(temperature: var temp)"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Adding a default case to sealed class switch",
+                  "consequence": "Defeats the purpose of exhaustive checking",
+                  "correction": "Handle all subclasses explicitly instead"
+                },
+                {
+                  "mistake": "Forgetting to handle all cases",
+                  "consequence": "Compiler error due to non-exhaustive switch",
+                  "correction": "Add cases for all subclasses of the sealed class"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
@@ -8227,7 +8521,7 @@
               "type": "THEORY",
               "title": "Step 4: Main App Setup",
               "content": "\n**lib/main.dart:**\n\n",
-              "code": "import 'package:flutter/material.dart';\nimport 'package:hive_flutter/hive_flutter.dart';\nimport 'package:workmanager/workmanager.dart';\nimport 'models/user_profile.dart';\nimport 'screens/home_screen.dart';\nimport 'screens/profile_screen.dart';\nimport 'services/database_service.dart';\n\n// Background task callback\n@pragma('vm:entry-point')\nvoid callbackDispatcher() {\n  Workmanager().executeTask((task, inputData) async {\n    switch (task) {\n      case 'dailyReminder':\n        // In real app: trigger local notification\n        print('⏰ Daily workout reminder!');\n        break;\n      case 'syncData':\n        // In real app: sync to cloud\n        print('☁️ Syncing workout data...');\n        break;\n    }\n\n    return Future.value(true);\n  });\n}\n\nvoid main() async {\n  WidgetsFlutterBinding.ensureInitialized();\n\n  // Initialize Hive\n  await Hive.initFlutter();\n  Hive.registerAdapter(UserProfileAdapter());\n  await Hive.openBox<UserProfile>('profile');\n  await Hive.openBox('settings');\n\n  // Initialize SQLite\n  await DatabaseService().database;\n\n  // Initialize Workmanager\n  await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);\n\n  // Register daily reminder (8 AM every day)\n  await Workmanager().registerPeriodicTask(\n    'daily-reminder',\n    'dailyReminder',\n    frequency: Duration(hours: 24),\n    initialDelay: _calculateDelayUntil8AM(),\n  );\n\n  runApp(FitnessTrackerApp());\n}\n\nDuration _calculateDelayUntil8AM() {\n  final now = DateTime.now();\n  var next8AM = DateTime(now.year, now.month, now.day, 8, 0);\n\n  if (now.isAfter(next8AM)) {\n    next8AM = next8AM.add(Duration(days: 1));\n  }\n\n  return next8AM.difference(now);\n}\n\nclass FitnessTrackerApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Fitness Tracker',\n      debugShowCheckedModeBanner: false,\n      theme: ThemeData(\n        primarySwatch: Colors.blue,\n        useMaterial3: true,\n      ),\n      darkTheme: ThemeData.dark(useMaterial3: true),\n      home: HomeScreen(),\n    );\n  }\n}",
+              "code": "import 'package:flutter/material.dart';\nimport 'package:hive_flutter/hive_flutter.dart';\nimport 'package:workmanager/workmanager.dart';\nimport 'models/user_profile.dart';\nimport 'screens/home_screen.dart';\nimport 'screens/profile_screen.dart';\nimport 'services/database_service.dart';\n\n// Background task callback\n@pragma('vm:entry-point')\nvoid callbackDispatcher() {\n  Workmanager().executeTask((task, inputData) async {\n    switch (task) {\n      case 'dailyReminder':\n        // In real app: trigger local notification\n        print('⏰ Daily workout reminder!');\n        break;\n      case 'syncData':\n        // In real app: sync to cloud\n        print('☁️ Syncing workout data...');\n        break;\n    }\n\n    return Future.value(true);\n  });\n}\n\nvoid main() async {\n  WidgetsFlutterBinding.ensureInitialized();\n\n  // Initialize Hive\n  await Hive.initFlutter();\n  Hive.registerAdapter(UserProfileAdapter());\n  await Hive.openBox<UserProfile>('profile');\n  await Hive.openBox('settings');\n\n  // Initialize SQLite\n  await DatabaseService().database;\n\n  // Initialize Workmanager\n  await Workmanager().initialize(callbackDispatcher, isInDebugMode: true);\n\n  // Register daily reminder (8 AM every day)\n  await Workmanager().registerPeriodicTask(\n    'daily-reminder',\n    'dailyReminder',\n    frequency: Duration(hours: 24),\n    initialDelay: _calculateDelayUntil8AM(),\n  );\n\n  runApp(FitnessTrackerApp());\n}\n\nDuration _calculateDelayUntil8AM() {\n  final now = DateTime.now();\n  var next8AM = DateTime(now.year, now.month, now.day, 8, 0);\n\n  if (now.isAfter(next8AM)) {\n    next8AM = next8AM.add(Duration(days: 1));\n  }\n\n  return next8AM.difference(now);\n}\n\nclass FitnessTrackerApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Fitness Tracker',\n      debugShowCheckedModeBanner: false,\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),\n        useMaterial3: true,\n      ),\n      darkTheme: ThemeData.dark(useMaterial3: true),\n      home: HomeScreen(),\n    );\n  }\n}",
               "language": "dart"
             },
             {
