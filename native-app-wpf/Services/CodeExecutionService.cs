@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,8 +21,10 @@ public class CodeExecutionService : ICodeExecutionService
         return language.ToLower() switch
         {
             "python" => await ExecutePythonAsync(code),
-            "javascript" => await ExecuteJavaScriptAsync(code),
-            "csharp" => await ExecuteCSharpAsync(code),
+            "javascript" or "js" => await ExecuteJavaScriptAsync(code),
+            "csharp" or "c#" => await ExecuteCSharpAsync(code),
+            "java" => await ExecuteJavaAsync(code),
+            "kotlin" => await ExecuteKotlinAsync(code),
             _ => new ExecutionResult(false, "", $"Language '{language}' not supported")
         };
     }
@@ -82,6 +85,64 @@ public class CodeExecutionService : ICodeExecutionService
         finally
         {
             File.Delete(csharpFile);
+        }
+    }
+
+    private async Task<ExecutionResult> ExecuteJavaAsync(string code)
+    {
+        // Extract class name from code (assumes public class Main or similar)
+        var className = "Main";
+        var classMatch = Regex.Match(code, @"public\s+class\s+(\w+)");
+        if (classMatch.Success)
+        {
+            className = classMatch.Groups[1].Value;
+        }
+
+        var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+
+        try
+        {
+            Directory.CreateDirectory(tempDir);
+            var javaFile = Path.Combine(tempDir, $"{className}.java");
+            await File.WriteAllTextAsync(javaFile, code);
+
+            // Compile
+            var compileResult = await RunProcessAsync("javac", javaFile);
+            if (!compileResult.Success)
+            {
+                return new ExecutionResult(false, "", compileResult.Error);
+            }
+
+            // Run
+            var result = await RunProcessAsync("java", $"-cp \"{tempDir}\" {className}");
+            return result;
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+            {
+                try { Directory.Delete(tempDir, true); } catch { /* ignore cleanup errors */ }
+            }
+        }
+    }
+
+    private async Task<ExecutionResult> ExecuteKotlinAsync(string code)
+    {
+        var tempFile = Path.GetTempFileName();
+        var kotlinFile = Path.ChangeExtension(tempFile, ".kts");
+        File.Move(tempFile, kotlinFile);
+
+        await File.WriteAllTextAsync(kotlinFile, code);
+
+        try
+        {
+            // Kotlin script mode (.kts files run directly)
+            var result = await RunProcessAsync("kotlinc", $"-script \"{kotlinFile}\"");
+            return result;
+        }
+        finally
+        {
+            File.Delete(kotlinFile);
         }
     }
 
