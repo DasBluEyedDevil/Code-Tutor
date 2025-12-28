@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
@@ -20,10 +21,17 @@ public partial class LandingPage : UserControl
 
     private async void LandingPage_Loaded(object sender, RoutedEventArgs e)
     {
-        LoadingText.Visibility = Visibility.Visible;
-        var courses = await _courseService.GetAllCoursesAsync();
-        CourseList.ItemsSource = courses;
-        LoadingText.Visibility = Visibility.Collapsed;
+        try
+        {
+            LoadingText.Visibility = Visibility.Visible;
+            var courses = await _courseService.GetAllCoursesAsync();
+            CourseList.ItemsSource = courses;
+            LoadingText.Visibility = Visibility.Collapsed;
+        }
+        catch (Exception ex)
+        {
+            LoadingText.Text = $"Failed to load courses: {ex.Message}";
+        }
     }
 
     private void CourseCard_Click(object sender, RoutedEventArgs e)

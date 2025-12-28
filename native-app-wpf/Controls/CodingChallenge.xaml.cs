@@ -1,3 +1,4 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
@@ -33,20 +34,28 @@ public partial class CodingChallenge : UserControl
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
     {
-        OutputPanel.Visibility = Visibility.Visible;
-        OutputText.Text = "Running...";
-        OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
-
-        var result = await _executionService.ExecuteAsync(CodeEditor.Text, _challenge.Language);
-
-        if (result.Success)
+        try
         {
-            OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
+            OutputPanel.Visibility = Visibility.Visible;
+            OutputText.Text = "Running...";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+
+            var result = await _executionService.ExecuteAsync(CodeEditor.Text, _challenge.Language);
+
+            if (result.Success)
+            {
+                OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
+                OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+            }
+            else
+            {
+                OutputText.Text = string.IsNullOrEmpty(result.Error) ? result.Output : result.Error;
+                OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            OutputText.Text = string.IsNullOrEmpty(result.Error) ? result.Output : result.Error;
+            OutputText.Text = $"Execution failed: {ex.Message}";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
         }
     }

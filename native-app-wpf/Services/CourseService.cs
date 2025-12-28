@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,7 +19,7 @@ public interface ICourseService
 public class CourseService : ICourseService
 {
     private readonly string _contentPath;
-    private readonly Dictionary<string, Course> _courseCache = new();
+    private readonly ConcurrentDictionary<string, Course> _courseCache = new();
 
     public CourseService()
     {
@@ -42,11 +44,14 @@ public class CourseService : ICourseService
                     var course = JsonSerializer.Deserialize<Course>(json);
                     if (course != null)
                     {
-                        _courseCache[course.Id] = course;
+                        _courseCache.TryAdd(course.Id, course);
                         courses.Add(course);
                     }
                 }
-                catch { /* Skip invalid courses */ }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to load course from {dir}: {ex.Message}");
+                }
             }
         }
 
