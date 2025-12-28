@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
+using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace CodeTutor.Wpf.Controls;
 
@@ -25,11 +26,33 @@ public partial class CodingChallenge : UserControl
         Instructions.Text = challenge.Instructions;
         CodeEditor.Text = challenge.StarterCode;
 
+        // Set syntax highlighting based on language
+        var highlighting = GetHighlightingForLanguage(challenge.Language);
+        if (highlighting != null)
+        {
+            CodeEditor.SyntaxHighlighting = highlighting;
+        }
+
         // Hide hint button if no hints available
         if (challenge.Hints == null || challenge.Hints.Count == 0)
         {
             HintButton.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private static IHighlightingDefinition? GetHighlightingForLanguage(string language)
+    {
+        var langLower = language.ToLower();
+        return langLower switch
+        {
+            "python" => HighlightingManager.Instance.GetDefinition("Python"),
+            "javascript" or "js" => HighlightingManager.Instance.GetDefinition("JavaScript"),
+            "csharp" or "c#" => HighlightingManager.Instance.GetDefinition("C#"),
+            "java" => HighlightingManager.Instance.GetDefinition("Java"),
+            "kotlin" => HighlightingManager.Instance.GetDefinition("Java"), // Close enough
+            "dart" or "flutter" => HighlightingManager.Instance.GetDefinition("C#"), // Close enough
+            _ => null
+        };
     }
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
