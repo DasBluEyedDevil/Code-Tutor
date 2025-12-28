@@ -1,12 +1,14 @@
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
+using CodeTutor.Wpf.Services;
 
 namespace CodeTutor.Wpf.Controls;
 
 public partial class CodingChallenge : UserControl
 {
     private readonly Challenge _challenge;
+    private readonly ICodeExecutionService _executionService;
     private int _currentHintIndex = 0;
     private readonly string _originalCode;
 
@@ -15,6 +17,7 @@ public partial class CodingChallenge : UserControl
         InitializeComponent();
         _challenge = challenge;
         _originalCode = challenge.StarterCode;
+        _executionService = new CodeExecutionService();
 
         ChallengeTitle.Text = challenge.Title;
         Description.Text = challenge.Description;
@@ -28,12 +31,24 @@ public partial class CodingChallenge : UserControl
         }
     }
 
-    private void RunCode_Click(object sender, RoutedEventArgs e)
+    private async void RunCode_Click(object sender, RoutedEventArgs e)
     {
         OutputPanel.Visibility = Visibility.Visible;
-        OutputText.Text = "Code execution coming soon...\n\nYour code:\n" + CodeEditor.Text;
+        OutputText.Text = "Running...";
+        OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
 
-        // Code execution will be implemented in Task 10
+        var result = await _executionService.ExecuteAsync(CodeEditor.Text, _challenge.Language);
+
+        if (result.Success)
+        {
+            OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
+            OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+        }
+        else
+        {
+            OutputText.Text = string.IsNullOrEmpty(result.Error) ? result.Output : result.Error;
+            OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+        }
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)
