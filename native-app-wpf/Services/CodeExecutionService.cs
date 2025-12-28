@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeTutor.Wpf.Services;
@@ -81,9 +82,24 @@ public class CodeExecutionService : ICodeExecutionService
             if (process == null)
                 return new ExecutionResult(false, "", "Failed to start process");
 
-            var output = await process.StandardOutput.ReadToEndAsync();
-            var error = await process.StandardError.ReadToEndAsync();
-            await process.WaitForExitAsync();
+            // Read streams concurrently to avoid deadlock
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorTask = process.StandardError.ReadToEndAsync();
+
+            // Add timeout (30 seconds)
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            try
+            {
+                await process.WaitForExitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                process.Kill(true);
+                return new ExecutionResult(false, "", "Execution timed out after 30 seconds");
+            }
+
+            var output = await outputTask;
+            var error = await errorTask;
 
             return new ExecutionResult(
                 process.ExitCode == 0,
