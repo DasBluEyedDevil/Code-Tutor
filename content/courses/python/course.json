@@ -4324,7 +4324,7 @@
             {
               "type": "KEY_POINT",
               "title": "Key Takeaways",
-              "content": "- **Don't reinvent the wheel** - Use existing packages for common tasks\n- **requests** - Best HTTP library (APIs, web scraping)\n- **pandas** - Data analysis and Excel/CSV manipulation\n- **Flask/FastAPI** - Web frameworks for APIs and websites\n- **beautifulsoup4** - HTML/XML parsing for web scraping\n- **pytest** - Modern testing framework\n- **Check PyPI** (pypi.org) for packages. 400,000+ available!\n- **Always use virtual environments** when installing packages"
+              "content": "- **Don't reinvent the wheel** - Use existing packages for common tasks\n- **requests** - Best HTTP library for sync code (APIs, web scraping)\n- **httpx** - Modern HTTP library with async support (use for async code)\n- **pandas** - Data analysis and Excel/CSV manipulation\n- **Flask/FastAPI** - Web frameworks for APIs and websites\n- **beautifulsoup4** - HTML/XML parsing for web scraping\n- **pytest** - Modern testing framework\n- **Check PyPI** (pypi.org) for packages. 400,000+ available!\n- **Always use virtual environments** when installing packages\n- **Pro tip**: For async applications, prefer httpx over requests"
             }
           ],
           "challenges": [
@@ -5368,15 +5368,456 @@
     },
     {
       "id": "module-13",
+      "title": "Asynchronous Python",
+      "description": "Writing concurrent code with async/await",
+      "difficulty": "advanced",
+      "estimatedHours": 4,
+      "lessons": [
+        {
+          "id": "13_01",
+          "title": "Why Async Matters",
+          "moduleId": "module-13",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Understanding Blocking vs Non-Blocking I/O",
+              "content": "**The Problem: Waiting Around**\n\nImagine you're a waiter at a restaurant. With **synchronous** (blocking) code:\n- You take an order from table 1\n- You walk to the kitchen and WAIT there until the food is ready\n- Only then do you go to table 2\n- Meanwhile, tables 3, 4, 5... are all waiting!\n\nWith **asynchronous** (non-blocking) code:\n- You take an order from table 1, send it to kitchen\n- While kitchen cooks, you take orders from table 2, 3, 4...\n- When food is ready, you deliver it\n- Everyone gets served faster!\n\n**In programming terms:**\n- **Blocking I/O**: Your program WAITS for network/file operations\n- **Non-blocking I/O**: Your program does OTHER work while waiting\n\n**Common blocking operations:**\n- Network requests (API calls, downloading files)\n- File I/O (reading/writing large files)\n- Database queries\n- User input\n\n**The key insight:**\nMost of your program's time is spent WAITING, not computing. Async lets you use that waiting time productively."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Synchronous vs Asynchronous Comparison",
+              "content": "**Sync approach:**\n```python\nimport time\n\ndef fetch_data(url):\n    time.sleep(1)  # Simulate network delay\n    return f\"Data from {url}\"\n\n# Takes 3 seconds total (1 + 1 + 1)\nresult1 = fetch_data(\"url1\")\nresult2 = fetch_data(\"url2\")\nresult3 = fetch_data(\"url3\")\n```\n\n**Async approach:**\n```python\nimport asyncio\n\nasync def fetch_data(url):\n    await asyncio.sleep(1)  # Non-blocking wait\n    return f\"Data from {url}\"\n\n# Takes ~1 second total (all run concurrently)\nresults = await asyncio.gather(\n    fetch_data(\"url1\"),\n    fetch_data(\"url2\"),\n    fetch_data(\"url3\")\n)\n```\n\n**Key differences:**\n- `async def` creates a coroutine\n- `await` pauses execution without blocking\n- `asyncio.gather()` runs multiple coroutines concurrently",
+              "code": "import time\n\n# Simulating synchronous approach\nprint(\"=== Synchronous (Blocking) ===\")\n\ndef sync_fetch(url):\n    \"\"\"Simulates a blocking network request\"\"\"\n    print(f\"  Fetching {url}...\")\n    time.sleep(0.5)  # Blocking wait\n    return f\"Data from {url}\"\n\nstart = time.time()\nresults = []\nfor url in [\"api/users\", \"api/posts\", \"api/comments\"]:\n    results.append(sync_fetch(url))\nend = time.time()\n\nprint(f\"  Results: {results}\")\nprint(f\"  Total time: {end - start:.2f}s (sequential)\\n\")\n\n# Simulating async approach (conceptual)\nprint(\"=== Asynchronous (Non-blocking) Concept ===\")\nprint(\"  With async, all 3 requests run concurrently\")\nprint(\"  Total time would be ~0.5s instead of 1.5s\")\nprint(\"  3x faster for I/O-bound operations!\\n\")\n\n# Show the pattern\nprint(\"=== The Async Pattern ===\")\nasync_code = '''\nimport asyncio\n\nasync def fetch(url):\n    await asyncio.sleep(0.5)  # Non-blocking\n    return f\"Data from {url}\"\n\nasync def main():\n    # Run all 3 concurrently\n    results = await asyncio.gather(\n        fetch(\"api/users\"),\n        fetch(\"api/posts\"),\n        fetch(\"api/comments\")\n    )\n    return results\n\n# Run the async code\nresults = asyncio.run(main())\n'''\nprint(async_code)",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When Async Helps vs When It Doesn't",
+              "content": "**Async is GREAT for I/O-bound tasks:**\n- API calls and web requests\n- Database queries\n- File operations\n- WebSocket connections\n- Any operation where you're WAITING for external systems\n\n**Async does NOT help CPU-bound tasks:**\n- Mathematical computations\n- Image processing\n- Data crunching\n- Machine learning training\n\n**Why?** Async is about using wait time efficiently. If there's no waiting (pure computation), there's no time to reclaim.\n\n**Rule of thumb:**\n- **I/O-bound** (waiting) -> Use `async/await`\n- **CPU-bound** (computing) -> Use `multiprocessing`\n- **Mixed** -> Combine both approaches"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_01-challenge-1",
+              "title": "Identify Blocking Operations",
+              "description": "Look at the code below and identify which operations are blocking (would benefit from async).",
+              "instructions": "Add comments to identify which operations are blocking I/O operations that would benefit from async, and which are CPU-bound operations that would not.",
+              "starterCode": "# Identify which operations would benefit from async\n\nimport time\n\ndef process_data():\n    # Operation 1: Read a file\n    with open('data.txt') as f:\n        data = f.read()\n    \n    # Operation 2: Calculate statistics\n    total = sum(range(1000000))\n    \n    # Operation 3: Make API request\n    # response = requests.get('https://api.example.com/data')\n    \n    # Operation 4: Sort a large list\n    sorted_data = sorted(range(100000), reverse=True)\n    \n    # Operation 5: Save to database\n    # db.save(data)\n    \n    return total\n\n# TODO: Add comments above each operation:\n# - \"BLOCKING I/O - async would help\" for I/O operations\n# - \"CPU-BOUND - async won't help\" for computation",
+              "solution": "# Identify which operations would benefit from async\n\nimport time\n\ndef process_data():\n    # Operation 1: Read a file\n    # BLOCKING I/O - async would help (use aiofiles)\n    with open('data.txt') as f:\n        data = f.read()\n    \n    # Operation 2: Calculate statistics\n    # CPU-BOUND - async won't help (use multiprocessing)\n    total = sum(range(1000000))\n    \n    # Operation 3: Make API request\n    # BLOCKING I/O - async would help (use httpx or aiohttp)\n    # response = requests.get('https://api.example.com/data')\n    \n    # Operation 4: Sort a large list\n    # CPU-BOUND - async won't help (pure computation)\n    sorted_data = sorted(range(100000), reverse=True)\n    \n    # Operation 5: Save to database\n    # BLOCKING I/O - async would help (use async DB driver)\n    # db.save(data)\n    \n    return total\n\n# Summary:\n# - File I/O: Blocking (async helps)\n# - API requests: Blocking (async helps)\n# - Database: Blocking (async helps)\n# - Sorting/math: CPU-bound (async doesn't help)\n\nprint(\"I/O-bound operations benefit from async:\")\nprint(\"  - File reading/writing\")\nprint(\"  - Network requests\")\nprint(\"  - Database queries\")\nprint(\"\\nCPU-bound operations need multiprocessing:\")\nprint(\"  - Calculations\")\nprint(\"  - Sorting\")\nprint(\"  - Data processing\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "I/O operations involve waiting for external resources (files, network, database). CPU operations are pure computation."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Thinking async speeds up all code",
+                  "consequence": "No performance improvement for CPU-bound tasks",
+                  "correction": "Async only helps when waiting for I/O operations"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "13_02",
+          "title": "async/await Basics",
+          "moduleId": "module-13",
+          "order": 2,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Understanding Coroutines",
+              "content": "**What is a coroutine?**\n\nA coroutine is a special function that can pause and resume its execution. When you write `async def`, you're creating a coroutine function.\n\n**Key concepts:**\n\n1. **`async def`** - Declares a coroutine function\n   ```python\n   async def my_function():\n       return \"Hello\"\n   ```\n\n2. **Coroutine object** - What you get when you CALL an async function\n   ```python\n   coro = my_function()  # Creates coroutine object\n   # Does NOT run the function yet!\n   ```\n\n3. **`await`** - Actually runs the coroutine and waits for result\n   ```python\n   result = await my_function()  # NOW it runs\n   ```\n\n**Important:** You can only use `await` inside an `async def` function!\n\n**The mental model:**\n- Regular function: Runs to completion, returns value\n- Coroutine: Can pause at `await`, let other code run, then resume"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Your First Async Function",
+              "content": "**Basic async function:**\n```python\nimport asyncio\n\nasync def greet(name):\n    await asyncio.sleep(1)  # Pause 1 second (non-blocking)\n    return f\"Hello, {name}!\"\n\n# Running the coroutine\nresult = asyncio.run(greet(\"Alice\"))\nprint(result)  # Hello, Alice!\n```\n\n**Key points:**\n- `asyncio.run()` starts the event loop and runs a coroutine\n- `await asyncio.sleep()` pauses without blocking\n- The function returns normally after awaiting",
+              "code": "import asyncio\n\n# Define an async function (coroutine)\nasync def greet(name):\n    \"\"\"Async greeting with simulated delay\"\"\"\n    print(f\"  Starting to greet {name}...\")\n    await asyncio.sleep(0.5)  # Non-blocking pause\n    print(f\"  Finished greeting {name}!\")\n    return f\"Hello, {name}!\"\n\nasync def fetch_user_data(user_id):\n    \"\"\"Simulates fetching user data from API\"\"\"\n    print(f\"  Fetching user {user_id}...\")\n    await asyncio.sleep(0.3)  # Simulate network delay\n    return {\"id\": user_id, \"name\": f\"User_{user_id}\"}\n\n# The main async function\nasync def main():\n    print(\"=== Basic Async Function ===\")\n    \n    # Await a single coroutine\n    greeting = await greet(\"Alice\")\n    print(f\"  Result: {greeting}\\n\")\n    \n    print(\"=== Calling Multiple Async Functions ===\")\n    \n    # These run sequentially (one after another)\n    user1 = await fetch_user_data(1)\n    user2 = await fetch_user_data(2)\n    print(f\"  User 1: {user1}\")\n    print(f\"  User 2: {user2}\\n\")\n    \n    print(\"=== What NOT to Do ===\")\n    print(\"  # This creates a coroutine but doesn't run it:\")\n    print(\"  coro = greet('Bob')  # Just creates object\")\n    print(\"  # Must use: result = await coro\")\n\n# Run the async code\nprint(\"Starting async program...\\n\")\nasyncio.run(main())\nprint(\"\\nAsync program complete!\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Golden Rules",
+              "content": "**Cannot call async function directly:**\n```python\nasync def get_data():\n    return \"data\"\n\n# WRONG - creates coroutine object, doesn't run\nresult = get_data()  # <coroutine object>\n\n# RIGHT - use await (inside async function)\nresult = await get_data()\n\n# RIGHT - use asyncio.run() (from regular code)\nresult = asyncio.run(get_data())\n```\n\n**await only works inside async def:**\n```python\n# WRONG - SyntaxError\ndef regular_function():\n    result = await get_data()  # Error!\n\n# RIGHT\nasync def async_function():\n    result = await get_data()  # Works!\n```\n\n**The entry point:**\nUse `asyncio.run(main())` to start your async code from regular Python."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_02-challenge-1",
+              "title": "Convert Sync to Async",
+              "description": "Convert the synchronous function to an async function.",
+              "instructions": "Convert the `fetch_weather` function to be async. Use `await asyncio.sleep()` instead of `time.sleep()`, and properly run it with `asyncio.run()`.",
+              "starterCode": "import time\n\n# Synchronous version\ndef fetch_weather(city):\n    \"\"\"Fetches weather data (simulated)\"\"\"\n    print(f\"Fetching weather for {city}...\")\n    time.sleep(1)  # Simulate API call\n    return {\"city\": city, \"temp\": 72, \"condition\": \"sunny\"}\n\n# TODO: Convert to async version\n# async def fetch_weather_async(city):\n#     ...\n\n# Test the sync version\nresult = fetch_weather(\"New York\")\nprint(f\"Result: {result}\")\n\n# TODO: Test the async version\n# result = asyncio.run(fetch_weather_async(\"New York\"))",
+              "solution": "import asyncio\n\n# Async version of fetch_weather\nasync def fetch_weather_async(city):\n    \"\"\"Fetches weather data asynchronously (simulated)\"\"\"\n    print(f\"Fetching weather for {city}...\")\n    await asyncio.sleep(1)  # Non-blocking sleep\n    return {\"city\": city, \"temp\": 72, \"condition\": \"sunny\"}\n\n# Main async function to demonstrate\nasync def main():\n    print(\"=== Async Weather Fetch ===\")\n    \n    # Single fetch\n    result = await fetch_weather_async(\"New York\")\n    print(f\"Result: {result}\\n\")\n    \n    # Multiple fetches (still sequential for now)\n    print(\"Fetching multiple cities...\")\n    cities = [\"London\", \"Tokyo\", \"Paris\"]\n    for city in cities:\n        weather = await fetch_weather_async(city)\n        print(f\"  {weather}\")\n\n# Run the async code\nprint(\"Starting async weather app...\\n\")\nasyncio.run(main())\nprint(\"\\nDone!\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Replace `def` with `async def`, `time.sleep()` with `await asyncio.sleep()`, and use `asyncio.run()` to execute."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to import asyncio",
+                  "consequence": "NameError: name 'asyncio' is not defined",
+                  "correction": "Add `import asyncio` at the top"
+                },
+                {
+                  "mistake": "Calling async function without await",
+                  "consequence": "Returns coroutine object instead of result",
+                  "correction": "Use `await` or `asyncio.run()`"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "13_03",
+          "title": "The Event Loop",
+          "moduleId": "module-13",
+          "order": 3,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "How the Event Loop Works",
+              "content": "**The Event Loop: The Conductor of Async Code**\n\nThink of the event loop as a conductor in an orchestra:\n- It coordinates all the async tasks\n- Decides which task runs next\n- Handles switching between paused tasks\n\n**How it works:**\n1. You submit coroutines to the event loop\n2. Event loop runs them until they hit `await`\n3. When one pauses, it runs another\n4. When awaited operation completes, it resumes that coroutine\n\n**Key functions:**\n- `asyncio.run(coro)` - Create loop, run coroutine, close loop\n- `asyncio.gather(*coros)` - Run multiple coroutines concurrently\n- `asyncio.create_task(coro)` - Schedule coroutine to run soon\n\n**Important:** There's only ONE event loop per thread. All async operations share it."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Running Coroutines Concurrently",
+              "content": "**Sequential vs Concurrent execution:**\n\n**Sequential (slow):**\n```python\nresult1 = await fetch(url1)  # Wait 1s\nresult2 = await fetch(url2)  # Wait 1s\nresult3 = await fetch(url3)  # Wait 1s\n# Total: 3 seconds\n```\n\n**Concurrent with gather (fast):**\n```python\nresults = await asyncio.gather(\n    fetch(url1),\n    fetch(url2),\n    fetch(url3)\n)\n# Total: ~1 second (all run at once)\n```",
+              "code": "import asyncio\nimport time\n\nasync def fetch_data(name, delay):\n    \"\"\"Simulates an async operation with variable delay\"\"\"\n    print(f\"  [{name}] Starting...\")\n    await asyncio.sleep(delay)\n    print(f\"  [{name}] Done after {delay}s!\")\n    return f\"{name}_result\"\n\nasync def main():\n    print(\"=== Sequential Execution ===\")\n    start = time.time()\n    \n    # Each await blocks until complete\n    r1 = await fetch_data(\"Task1\", 0.5)\n    r2 = await fetch_data(\"Task2\", 0.5)\n    r3 = await fetch_data(\"Task3\", 0.5)\n    \n    print(f\"  Results: {[r1, r2, r3]}\")\n    print(f\"  Time: {time.time() - start:.2f}s\\n\")\n    \n    print(\"=== Concurrent with asyncio.gather() ===\")\n    start = time.time()\n    \n    # All tasks run concurrently!\n    results = await asyncio.gather(\n        fetch_data(\"TaskA\", 0.5),\n        fetch_data(\"TaskB\", 0.5),\n        fetch_data(\"TaskC\", 0.5)\n    )\n    \n    print(f\"  Results: {results}\")\n    print(f\"  Time: {time.time() - start:.2f}s (3x faster!)\\n\")\n    \n    print(\"=== Using asyncio.create_task() ===\")\n    start = time.time()\n    \n    # Create tasks (they start running immediately)\n    task1 = asyncio.create_task(fetch_data(\"TaskX\", 0.3))\n    task2 = asyncio.create_task(fetch_data(\"TaskY\", 0.5))\n    task3 = asyncio.create_task(fetch_data(\"TaskZ\", 0.4))\n    \n    # Do other work while tasks run...\n    print(\"  [Main] Tasks started, doing other work...\")\n    await asyncio.sleep(0.1)\n    print(\"  [Main] Other work done, waiting for tasks...\")\n    \n    # Collect results\n    results = [await task1, await task2, await task3]\n    print(f\"  Results: {results}\")\n    print(f\"  Time: {time.time() - start:.2f}s\")\n\nprint(\"Event Loop Demo\\n\")\nasyncio.run(main())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "One Event Loop Per Thread",
+              "content": "**Critical concept:** Each thread has exactly one event loop.\n\n**Common patterns:**\n\n```python\n# Pattern 1: asyncio.run() - creates new loop, runs, closes\nasyncio.run(main())  # Most common\n\n# Pattern 2: asyncio.gather() - run multiple coroutines\nawait asyncio.gather(coro1, coro2, coro3)\n\n# Pattern 3: asyncio.create_task() - schedule for later\ntask = asyncio.create_task(my_coro())\n# ... do other things ...\nresult = await task\n```\n\n**gather() vs create_task():**\n- `gather()`: Wait for ALL results together\n- `create_task()`: Fire-and-forget, collect results later\n\n**When to use which:**\n- Need all results at once -> `gather()`\n- Need to do work while tasks run -> `create_task()`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_03-challenge-1",
+              "title": "Run Coroutines Concurrently",
+              "description": "Use asyncio.gather() to run multiple fetch operations concurrently.",
+              "instructions": "Complete the `fetch_all_users` function to fetch all user IDs concurrently using `asyncio.gather()`. The function should return a list of all user data.",
+              "starterCode": "import asyncio\n\nasync def fetch_user(user_id):\n    \"\"\"Simulates fetching a user from API\"\"\"\n    await asyncio.sleep(0.5)  # Simulate network delay\n    return {\"id\": user_id, \"name\": f\"User_{user_id}\"}\n\nasync def fetch_all_users(user_ids):\n    \"\"\"Fetch all users concurrently\"\"\"\n    # TODO: Use asyncio.gather() to fetch all users at once\n    # Return a list of user data dictionaries\n    pass\n\nasync def main():\n    user_ids = [1, 2, 3, 4, 5]\n    print(f\"Fetching {len(user_ids)} users...\")\n    \n    users = await fetch_all_users(user_ids)\n    \n    print(\"\\nResults:\")\n    for user in users:\n        print(f\"  {user}\")\n\nasyncio.run(main())",
+              "solution": "import asyncio\nimport time\n\nasync def fetch_user(user_id):\n    \"\"\"Simulates fetching a user from API\"\"\"\n    print(f\"  Fetching user {user_id}...\")\n    await asyncio.sleep(0.5)  # Simulate network delay\n    return {\"id\": user_id, \"name\": f\"User_{user_id}\"}\n\nasync def fetch_all_users(user_ids):\n    \"\"\"Fetch all users concurrently using asyncio.gather()\"\"\"\n    # Create coroutines for each user\n    coroutines = [fetch_user(uid) for uid in user_ids]\n    \n    # Run all concurrently and collect results\n    results = await asyncio.gather(*coroutines)\n    \n    return results\n\nasync def main():\n    user_ids = [1, 2, 3, 4, 5]\n    print(f\"Fetching {len(user_ids)} users concurrently...\")\n    \n    start = time.time()\n    users = await fetch_all_users(user_ids)\n    elapsed = time.time() - start\n    \n    print(f\"\\nResults (took {elapsed:.2f}s):\")\n    for user in users:\n        print(f\"  {user}\")\n    \n    print(f\"\\nNote: 5 users in {elapsed:.2f}s instead of 2.5s!\")\n\nasyncio.run(main())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Create a list of coroutines with list comprehension, then use `await asyncio.gather(*coroutines)` to run them all."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting the * in gather(*coroutines)",
+                  "consequence": "TypeError: gather() takes no positional arguments",
+                  "correction": "Use * to unpack the list: asyncio.gather(*coroutines)"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13_04",
+          "title": "Async Context Managers",
+          "moduleId": "module-13",
+          "order": 4,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Resource Cleanup in Async Code",
+              "content": "**The Problem: Cleaning Up Async Resources**\n\nJust like regular code needs `with` statements for proper cleanup, async code needs `async with` for async resources.\n\n**Regular context manager:**\n```python\nwith open('file.txt') as f:\n    data = f.read()\n# File automatically closed\n```\n\n**Async context manager:**\n```python\nasync with aiofiles.open('file.txt') as f:\n    data = await f.read()\n# File automatically closed\n```\n\n**Why async context managers?**\n- Some resources need async setup/teardown\n- Network connections, database connections, file handles\n- Ensures cleanup even if errors occur\n\n**Common async context managers:**\n- `aiofiles.open()` - Async file I/O\n- `httpx.AsyncClient()` - HTTP connection pooling\n- `asyncpg.create_pool()` - PostgreSQL connections\n- Database sessions and transactions"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using async with for File I/O",
+              "content": "**aiofiles library:**\n```python\nimport aiofiles\n\nasync with aiofiles.open('data.txt', 'r') as f:\n    content = await f.read()\n\nasync with aiofiles.open('output.txt', 'w') as f:\n    await f.write('Hello, World!')\n```\n\n**Why use aiofiles instead of regular open()?**\n- Regular file I/O blocks the event loop\n- aiofiles uses thread pool for non-blocking file access\n- Allows other coroutines to run during file operations",
+              "code": "import asyncio\n\n# Note: In real code, you'd use aiofiles library\n# pip install aiofiles\n\n# Simulating async file operations\nclass AsyncFile:\n    \"\"\"Simulates aiofiles behavior for demonstration\"\"\"\n    \n    def __init__(self, filename, mode='r'):\n        self.filename = filename\n        self.mode = mode\n        self.content = \"\"\n    \n    async def __aenter__(self):\n        \"\"\"Async context manager entry\"\"\"\n        print(f\"  Opening {self.filename}...\")\n        await asyncio.sleep(0.1)  # Simulate async open\n        return self\n    \n    async def __aexit__(self, exc_type, exc_val, exc_tb):\n        \"\"\"Async context manager exit - cleanup\"\"\"\n        print(f\"  Closing {self.filename}...\")\n        await asyncio.sleep(0.05)  # Simulate async close\n        return False\n    \n    async def read(self):\n        await asyncio.sleep(0.1)  # Simulate async read\n        return f\"Content of {self.filename}\"\n    \n    async def write(self, data):\n        await asyncio.sleep(0.1)  # Simulate async write\n        self.content = data\n        print(f\"  Wrote: {data[:50]}...\")\n\nasync def demo_async_file():\n    print(\"=== Async File Reading ===\")\n    \n    async with AsyncFile('data.txt', 'r') as f:\n        content = await f.read()\n        print(f\"  Read: {content}\")\n    \n    print(\"\\n=== Async File Writing ===\")\n    \n    async with AsyncFile('output.txt', 'w') as f:\n        await f.write(\"Hello from async Python!\")\n    \n    print(\"\\n=== Real aiofiles usage would look like ===\")\n    code = '''\n    import aiofiles\n    \n    async def read_file(path):\n        async with aiofiles.open(path, 'r') as f:\n            return await f.read()\n    \n    async def write_file(path, content):\n        async with aiofiles.open(path, 'w') as f:\n            await f.write(content)\n    '''\n    print(code)\n\nasyncio.run(demo_async_file())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Always Properly Close Async Resources",
+              "content": "**Best practices for async resources:**\n\n1. **Always use `async with` when available:**\n   ```python\n   async with resource as r:\n       await r.do_something()\n   # Automatically cleaned up\n   ```\n\n2. **For HTTP clients, reuse connections:**\n   ```python\n   async with httpx.AsyncClient() as client:\n       # Reuse this client for multiple requests\n       r1 = await client.get(url1)\n       r2 = await client.get(url2)\n   ```\n\n3. **Database connections should be pooled:**\n   ```python\n   async with database.pool.acquire() as conn:\n       result = await conn.fetch(query)\n   ```\n\n**Why cleanup matters:**\n- Unclosed connections leak memory\n- Too many open files causes errors\n- Database connections are limited\n- Network sockets are limited"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_04-challenge-1",
+              "title": "Async File Processing",
+              "description": "Create an async function that processes multiple files concurrently.",
+              "instructions": "Complete the `process_files` function that reads multiple files concurrently and returns their contents. Use the provided AsyncFileReader class.",
+              "starterCode": "import asyncio\n\nclass AsyncFileReader:\n    \"\"\"Simulates async file reading\"\"\"\n    \n    def __init__(self, filename):\n        self.filename = filename\n    \n    async def __aenter__(self):\n        await asyncio.sleep(0.2)  # Simulate open\n        return self\n    \n    async def __aexit__(self, *args):\n        await asyncio.sleep(0.1)  # Simulate close\n    \n    async def read(self):\n        await asyncio.sleep(0.3)  # Simulate read\n        return f\"Content of {self.filename}\"\n\nasync def read_file(filename):\n    \"\"\"Read a single file asynchronously\"\"\"\n    # TODO: Use async with to read the file\n    pass\n\nasync def process_files(filenames):\n    \"\"\"Read multiple files concurrently\"\"\"\n    # TODO: Use asyncio.gather to read all files\n    pass\n\nasync def main():\n    files = [\"file1.txt\", \"file2.txt\", \"file3.txt\"]\n    contents = await process_files(files)\n    for content in contents:\n        print(content)\n\nasyncio.run(main())",
+              "solution": "import asyncio\nimport time\n\nclass AsyncFileReader:\n    \"\"\"Simulates async file reading\"\"\"\n    \n    def __init__(self, filename):\n        self.filename = filename\n    \n    async def __aenter__(self):\n        print(f\"  Opening {self.filename}...\")\n        await asyncio.sleep(0.2)  # Simulate open\n        return self\n    \n    async def __aexit__(self, *args):\n        print(f\"  Closing {self.filename}...\")\n        await asyncio.sleep(0.1)  # Simulate close\n    \n    async def read(self):\n        await asyncio.sleep(0.3)  # Simulate read\n        return f\"Content of {self.filename}\"\n\nasync def read_file(filename):\n    \"\"\"Read a single file asynchronously\"\"\"\n    async with AsyncFileReader(filename) as f:\n        content = await f.read()\n        return content\n\nasync def process_files(filenames):\n    \"\"\"Read multiple files concurrently\"\"\"\n    # Create coroutines for each file\n    coroutines = [read_file(f) for f in filenames]\n    \n    # Run all concurrently\n    results = await asyncio.gather(*coroutines)\n    \n    return results\n\nasync def main():\n    files = [\"file1.txt\", \"file2.txt\", \"file3.txt\"]\n    \n    print(\"Processing files concurrently...\")\n    start = time.time()\n    \n    contents = await process_files(files)\n    \n    elapsed = time.time() - start\n    print(f\"\\nResults (took {elapsed:.2f}s):\")\n    for content in contents:\n        print(f\"  {content}\")\n\nasyncio.run(main())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use `async with AsyncFileReader(filename) as f:` to open files, then `await f.read()` to read content."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using regular 'with' instead of 'async with'",
+                  "consequence": "TypeError or blocking behavior",
+                  "correction": "Always use 'async with' for async context managers"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13_05",
+          "title": "Async HTTP with httpx",
+          "moduleId": "module-13",
+          "order": 5,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "httpx vs requests Library",
+              "content": "**The Problem with requests:**\n\nThe popular `requests` library is synchronous. Each request blocks until complete.\n\n```python\nimport requests\n\n# This blocks for each request\nr1 = requests.get(url1)  # Wait 1s\nr2 = requests.get(url2)  # Wait 1s\nr3 = requests.get(url3)  # Wait 1s\n# Total: 3 seconds\n```\n\n**httpx: The async alternative**\n\n```python\nimport httpx\n\nasync with httpx.AsyncClient() as client:\n    # All requests run concurrently\n    r1, r2, r3 = await asyncio.gather(\n        client.get(url1),\n        client.get(url2),\n        client.get(url3)\n    )\n# Total: ~1 second\n```\n\n**Why httpx?**\n- Supports both sync and async\n- HTTP/2 support\n- Modern Python API\n- Connection pooling built-in\n- Similar API to requests (easy migration)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Making Concurrent HTTP Requests",
+              "content": "**Basic httpx usage:**\n```python\nimport httpx\n\n# Sync usage (like requests)\nresponse = httpx.get('https://api.example.com/data')\n\n# Async usage\nasync with httpx.AsyncClient() as client:\n    response = await client.get('https://api.example.com/data')\n```\n\n**Connection pooling with AsyncClient:**\nAlways use `async with` to manage the client lifecycle!",
+              "code": "import asyncio\n\n# Simulating httpx behavior (real httpx requires installation)\n# pip install httpx\n\nclass MockAsyncClient:\n    \"\"\"Simulates httpx.AsyncClient for demonstration\"\"\"\n    \n    async def __aenter__(self):\n        print(\"  [Client] Connection pool opened\")\n        return self\n    \n    async def __aexit__(self, *args):\n        print(\"  [Client] Connection pool closed\")\n    \n    async def get(self, url):\n        print(f\"  GET {url}\")\n        await asyncio.sleep(0.3)  # Simulate network\n        return MockResponse(url, 200)\n    \n    async def post(self, url, json=None):\n        print(f\"  POST {url}\")\n        await asyncio.sleep(0.3)\n        return MockResponse(url, 201, json)\n\nclass MockResponse:\n    def __init__(self, url, status_code, data=None):\n        self.url = url\n        self.status_code = status_code\n        self._data = data or {\"source\": url}\n    \n    def json(self):\n        return self._data\n    \n    @property\n    def text(self):\n        return str(self._data)\n\nasync def demo_async_http():\n    print(\"=== Async HTTP Requests ===\")\n    \n    async with MockAsyncClient() as client:\n        # Single request\n        response = await client.get(\"https://api.example.com/users\")\n        print(f\"  Status: {response.status_code}\")\n        print(f\"  Data: {response.json()}\\n\")\n        \n        # Multiple concurrent requests\n        print(\"=== Concurrent Requests ===\")\n        responses = await asyncio.gather(\n            client.get(\"https://api.example.com/users\"),\n            client.get(\"https://api.example.com/posts\"),\n            client.get(\"https://api.example.com/comments\")\n        )\n        \n        for r in responses:\n            print(f\"  {r.url}: {r.status_code}\")\n    \n    print(\"\\n=== Real httpx usage ===\")\n    code = '''\n    import httpx\n    import asyncio\n    \n    async def fetch_all():\n        async with httpx.AsyncClient() as client:\n            responses = await asyncio.gather(\n                client.get(\"https://api.github.com/users/python\"),\n                client.get(\"https://api.github.com/users/django\"),\n                client.get(\"https://api.github.com/users/fastapi\")\n            )\n            return [r.json() for r in responses]\n    \n    users = asyncio.run(fetch_all())\n    '''\n    print(code)\n\nasyncio.run(demo_async_http())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Connection Pooling with AsyncClient",
+              "content": "**Always use `async with httpx.AsyncClient()`:**\n\n```python\n# GOOD - connections are pooled and reused\nasync with httpx.AsyncClient() as client:\n    for url in urls:\n        response = await client.get(url)\n\n# BAD - creates new connection for each request\nfor url in urls:\n    async with httpx.AsyncClient() as client:\n        response = await client.get(url)\n```\n\n**Benefits of connection pooling:**\n- Reuses TCP connections (faster)\n- Reduces server load\n- Automatic connection management\n- Proper cleanup on exit\n\n**Timeouts and limits:**\n```python\nasync with httpx.AsyncClient(\n    timeout=10.0,\n    limits=httpx.Limits(max_connections=100)\n) as client:\n    ...\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_05-challenge-1",
+              "title": "Fetch Multiple URLs Concurrently",
+              "description": "Create an async function to fetch multiple URLs and return their responses.",
+              "instructions": "Complete the `fetch_urls` function that takes a list of URLs and fetches them all concurrently. Return a list of response data.",
+              "starterCode": "import asyncio\n\n# Mock client for demonstration\nclass MockClient:\n    async def __aenter__(self): return self\n    async def __aexit__(self, *args): pass\n    \n    async def get(self, url):\n        await asyncio.sleep(0.2)\n        return MockResponse(url)\n\nclass MockResponse:\n    def __init__(self, url):\n        self.url = url\n        self.status_code = 200\n    \n    def json(self):\n        return {\"url\": self.url, \"data\": \"sample\"}\n\nasync def fetch_urls(urls):\n    \"\"\"Fetch all URLs concurrently and return list of JSON data\"\"\"\n    # TODO: Use async with MockClient() as client\n    # TODO: Use asyncio.gather to fetch all URLs\n    # TODO: Return list of response.json() for each response\n    pass\n\nasync def main():\n    urls = [\n        \"https://api.example.com/users\",\n        \"https://api.example.com/posts\",\n        \"https://api.example.com/comments\"\n    ]\n    \n    results = await fetch_urls(urls)\n    for result in results:\n        print(result)\n\nasyncio.run(main())",
+              "solution": "import asyncio\nimport time\n\n# Mock client for demonstration\nclass MockClient:\n    async def __aenter__(self):\n        print(\"  Client opened\")\n        return self\n    \n    async def __aexit__(self, *args):\n        print(\"  Client closed\")\n    \n    async def get(self, url):\n        print(f\"  Fetching {url}...\")\n        await asyncio.sleep(0.2)\n        return MockResponse(url)\n\nclass MockResponse:\n    def __init__(self, url):\n        self.url = url\n        self.status_code = 200\n    \n    def json(self):\n        return {\"url\": self.url, \"data\": \"sample\"}\n\nasync def fetch_urls(urls):\n    \"\"\"Fetch all URLs concurrently and return list of JSON data\"\"\"\n    async with MockClient() as client:\n        # Create list of coroutines\n        coroutines = [client.get(url) for url in urls]\n        \n        # Fetch all concurrently\n        responses = await asyncio.gather(*coroutines)\n        \n        # Extract JSON from each response\n        return [response.json() for response in responses]\n\nasync def main():\n    urls = [\n        \"https://api.example.com/users\",\n        \"https://api.example.com/posts\",\n        \"https://api.example.com/comments\"\n    ]\n    \n    print(\"Fetching URLs concurrently...\")\n    start = time.time()\n    \n    results = await fetch_urls(urls)\n    \n    elapsed = time.time() - start\n    print(f\"\\nResults (took {elapsed:.2f}s):\")\n    for result in results:\n        print(f\"  {result}\")\n\nasyncio.run(main())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Create coroutines with [client.get(url) for url in urls], then use await asyncio.gather(*coroutines)."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not using async with for the client",
+                  "consequence": "Connection pool not properly managed",
+                  "correction": "Always use async with httpx.AsyncClient() as client:"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13_06",
+          "title": "Error Handling in Async",
+          "moduleId": "module-13",
+          "order": 6,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "How Exceptions Propagate in Async Code",
+              "content": "**Exceptions in async code work similarly to sync code:**\n\n```python\nasync def might_fail():\n    raise ValueError(\"Oops!\")\n\ntry:\n    await might_fail()\nexcept ValueError as e:\n    print(f\"Caught: {e}\")\n```\n\n**But with concurrent tasks, it's trickier:**\n\nWith `asyncio.gather()`, if one task fails:\n- By default, ALL tasks are cancelled\n- First exception is raised\n\n**Solution: `return_exceptions=True`**\n```python\nresults = await asyncio.gather(\n    task1(),\n    task2(),  # This might fail\n    task3(),\n    return_exceptions=True\n)\n# results = [result1, ValueError(...), result3]\n```\n\nNow exceptions are returned as values instead of raised!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Handling Errors with TaskGroup and wait_for",
+              "content": "**Python 3.11+ TaskGroup:**\n```python\nasync with asyncio.TaskGroup() as tg:\n    tg.create_task(task1())\n    tg.create_task(task2())\n# All tasks complete or all are cancelled on error\n```\n\n**Timeouts with wait_for:**\n```python\ntry:\n    result = await asyncio.wait_for(slow_task(), timeout=5.0)\nexcept asyncio.TimeoutError:\n    print(\"Task took too long!\")\n```",
+              "code": "import asyncio\n\nasync def successful_task(name):\n    await asyncio.sleep(0.2)\n    return f\"{name} completed\"\n\nasync def failing_task(name):\n    await asyncio.sleep(0.1)\n    raise ValueError(f\"{name} failed!\")\n\nasync def slow_task():\n    await asyncio.sleep(5)  # Very slow\n    return \"Finally done\"\n\nasync def main():\n    print(\"=== gather() Default Behavior ===\")\n    try:\n        results = await asyncio.gather(\n            successful_task(\"Task1\"),\n            failing_task(\"Task2\"),\n            successful_task(\"Task3\")\n        )\n    except ValueError as e:\n        print(f\"  Caught exception: {e}\")\n        print(\"  (Other tasks were cancelled)\\n\")\n    \n    print(\"=== gather() with return_exceptions=True ===\")\n    results = await asyncio.gather(\n        successful_task(\"TaskA\"),\n        failing_task(\"TaskB\"),\n        successful_task(\"TaskC\"),\n        return_exceptions=True\n    )\n    \n    for i, result in enumerate(results):\n        if isinstance(result, Exception):\n            print(f\"  Task {i}: ERROR - {result}\")\n        else:\n            print(f\"  Task {i}: {result}\")\n    \n    print(\"\\n=== Timeout with wait_for() ===\")\n    try:\n        # This will timeout after 0.5 seconds\n        result = await asyncio.wait_for(\n            slow_task(),\n            timeout=0.5\n        )\n    except asyncio.TimeoutError:\n        print(\"  Task timed out after 0.5s!\")\n    \n    print(\"\\n=== Individual Error Handling ===\")\n    \n    async def safe_fetch(url):\n        \"\"\"Wrapper that handles errors gracefully\"\"\"\n        try:\n            await asyncio.sleep(0.1)\n            if \"bad\" in url:\n                raise ConnectionError(f\"Failed to connect to {url}\")\n            return {\"url\": url, \"data\": \"success\"}\n        except ConnectionError as e:\n            return {\"url\": url, \"error\": str(e)}\n    \n    urls = [\"good.com\", \"bad.com\", \"also-good.com\"]\n    results = await asyncio.gather(*[safe_fetch(url) for url in urls])\n    \n    for result in results:\n        if \"error\" in result:\n            print(f\"  FAIL: {result['url']} - {result['error']}\")\n        else:\n            print(f\"  OK: {result['url']}\")\n\nasyncio.run(main())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "gather() with return_exceptions=True",
+              "content": "**When to use `return_exceptions=True`:**\n\n1. **When you want ALL tasks to complete** (even if some fail)\n2. **When you need to handle each error individually**\n3. **When failures are expected** (like network requests)\n\n**Pattern for handling mixed results:**\n```python\nresults = await asyncio.gather(*tasks, return_exceptions=True)\n\nsuccesses = []\nerrors = []\n\nfor result in results:\n    if isinstance(result, Exception):\n        errors.append(result)\n    else:\n        successes.append(result)\n\nprint(f\"{len(successes)} succeeded, {len(errors)} failed\")\n```\n\n**Best practice:** Wrap individual tasks in try/except for graceful handling."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_06-challenge-1",
+              "title": "Handle Timeout in Async Operation",
+              "description": "Use asyncio.wait_for to implement timeout handling for a slow operation.",
+              "instructions": "Complete the `fetch_with_timeout` function that attempts to fetch data but times out after a specified duration. Return None if timeout occurs.",
+              "starterCode": "import asyncio\n\nasync def slow_api_call(delay):\n    \"\"\"Simulates a slow API that takes 'delay' seconds\"\"\"\n    await asyncio.sleep(delay)\n    return {\"status\": \"success\", \"data\": \"result\"}\n\nasync def fetch_with_timeout(delay, timeout):\n    \"\"\"Fetch data with timeout. Return None if timeout occurs.\"\"\"\n    # TODO: Use asyncio.wait_for with timeout\n    # TODO: Handle TimeoutError and return None\n    pass\n\nasync def main():\n    # This should succeed (0.5s delay, 1s timeout)\n    result1 = await fetch_with_timeout(0.5, 1.0)\n    print(f\"Result 1: {result1}\")\n    \n    # This should timeout (2s delay, 0.5s timeout)\n    result2 = await fetch_with_timeout(2.0, 0.5)\n    print(f\"Result 2: {result2}\")\n\nasyncio.run(main())",
+              "solution": "import asyncio\n\nasync def slow_api_call(delay):\n    \"\"\"Simulates a slow API that takes 'delay' seconds\"\"\"\n    print(f\"  API call starting (will take {delay}s)...\")\n    await asyncio.sleep(delay)\n    return {\"status\": \"success\", \"data\": \"result\"}\n\nasync def fetch_with_timeout(delay, timeout):\n    \"\"\"Fetch data with timeout. Return None if timeout occurs.\"\"\"\n    try:\n        result = await asyncio.wait_for(\n            slow_api_call(delay),\n            timeout=timeout\n        )\n        return result\n    except asyncio.TimeoutError:\n        print(f\"  Timeout after {timeout}s!\")\n        return None\n\nasync def main():\n    print(\"=== Test 1: Should succeed ===\")\n    result1 = await fetch_with_timeout(0.5, 1.0)\n    print(f\"Result 1: {result1}\\n\")\n    \n    print(\"=== Test 2: Should timeout ===\")\n    result2 = await fetch_with_timeout(2.0, 0.5)\n    print(f\"Result 2: {result2}\\n\")\n    \n    print(\"=== Test 3: Multiple with gather ===\")\n    results = await asyncio.gather(\n        fetch_with_timeout(0.2, 1.0),\n        fetch_with_timeout(0.3, 1.0),\n        fetch_with_timeout(5.0, 0.5),  # This will timeout\n    )\n    \n    for i, r in enumerate(results):\n        status = \"SUCCESS\" if r else \"TIMEOUT\"\n        print(f\"  Task {i+1}: {status}\")\n\nasyncio.run(main())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use try/except asyncio.TimeoutError around asyncio.wait_for(coroutine, timeout=timeout)"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Catching generic Exception instead of TimeoutError",
+                  "consequence": "Hiding other errors",
+                  "correction": "Specifically catch asyncio.TimeoutError"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13_07",
+          "title": "Mini-Project: Async Web Scraper",
+          "moduleId": "module-13",
+          "order": 7,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Practical Async Patterns",
+              "content": "**Building a real async application:**\n\nWhen scraping websites or making many API calls, you need:\n\n1. **Rate limiting** - Don't overwhelm servers\n2. **Error handling** - Network fails, sites go down\n3. **Concurrency control** - Limit parallel requests\n4. **Progress tracking** - Know what's happening\n\n**The Semaphore pattern:**\n```python\nsemaphore = asyncio.Semaphore(10)  # Max 10 concurrent\n\nasync def limited_fetch(url):\n    async with semaphore:\n        return await fetch(url)\n```\n\n**Rate limiting with delays:**\n```python\nasync def polite_fetch(url):\n    result = await fetch(url)\n    await asyncio.sleep(0.5)  # Be nice to servers!\n    return result\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Async Scraper with Rate Limiting",
+              "content": "**Key components:**\n1. Semaphore for concurrency control\n2. Error handling for each request\n3. Progress tracking\n4. Respectful delays between requests",
+              "code": "import asyncio\nimport time\nfrom dataclasses import dataclass\nfrom typing import List, Optional\n\n@dataclass\nclass FetchResult:\n    url: str\n    success: bool\n    data: Optional[str] = None\n    error: Optional[str] = None\n\nclass AsyncScraper:\n    \"\"\"Async web scraper with rate limiting and error handling\"\"\"\n    \n    def __init__(self, max_concurrent: int = 5, delay: float = 0.1):\n        self.semaphore = asyncio.Semaphore(max_concurrent)\n        self.delay = delay\n        self.completed = 0\n        self.total = 0\n    \n    async def fetch_one(self, url: str) -> FetchResult:\n        \"\"\"Fetch a single URL with rate limiting\"\"\"\n        async with self.semaphore:  # Limit concurrency\n            try:\n                # Simulate network request\n                await asyncio.sleep(0.2 + (hash(url) % 10) / 100)\n                \n                # Simulate occasional failures\n                if \"fail\" in url:\n                    raise ConnectionError(f\"Failed to connect to {url}\")\n                \n                self.completed += 1\n                print(f\"  [{self.completed}/{self.total}] Fetched {url}\")\n                \n                # Be respectful - add delay between requests\n                await asyncio.sleep(self.delay)\n                \n                return FetchResult(\n                    url=url,\n                    success=True,\n                    data=f\"Content from {url}\"\n                )\n            \n            except Exception as e:\n                self.completed += 1\n                print(f\"  [{self.completed}/{self.total}] FAILED {url}: {e}\")\n                return FetchResult(\n                    url=url,\n                    success=False,\n                    error=str(e)\n                )\n    \n    async def fetch_all(self, urls: List[str]) -> List[FetchResult]:\n        \"\"\"Fetch all URLs concurrently with rate limiting\"\"\"\n        self.total = len(urls)\n        self.completed = 0\n        \n        print(f\"\\nStarting fetch of {self.total} URLs...\")\n        print(f\"Max concurrent: {self.semaphore._value}\")\n        print(f\"Delay between requests: {self.delay}s\\n\")\n        \n        # Create tasks for all URLs\n        tasks = [self.fetch_one(url) for url in urls]\n        \n        # Run all with concurrency control\n        results = await asyncio.gather(*tasks)\n        \n        return results\n\nasync def main():\n    print(\"=== Async Web Scraper Demo ===\")\n    \n    # Sample URLs (some will fail)\n    urls = [\n        \"https://example.com/page1\",\n        \"https://example.com/page2\",\n        \"https://fail.com/page\",  # Will fail\n        \"https://example.com/page3\",\n        \"https://example.com/page4\",\n        \"https://fail.com/other\",  # Will fail\n        \"https://example.com/page5\",\n        \"https://example.com/page6\",\n    ]\n    \n    # Create scraper with limits\n    scraper = AsyncScraper(\n        max_concurrent=3,  # Only 3 at a time\n        delay=0.1  # 100ms between requests\n    )\n    \n    start = time.time()\n    results = await scraper.fetch_all(urls)\n    elapsed = time.time() - start\n    \n    # Summary\n    successes = [r for r in results if r.success]\n    failures = [r for r in results if not r.success]\n    \n    print(f\"\\n=== Results ===\")\n    print(f\"Total time: {elapsed:.2f}s\")\n    print(f\"Successful: {len(successes)}\")\n    print(f\"Failed: {len(failures)}\")\n    \n    if failures:\n        print(f\"\\nFailed URLs:\")\n        for f in failures:\n            print(f\"  - {f.url}: {f.error}\")\n\nprint(\"Async Scraper with Rate Limiting\\n\")\nasyncio.run(main())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Be Respectful - Add Delays Between Requests",
+              "content": "**Web scraping etiquette:**\n\n1. **Rate limit your requests**\n   - Use semaphores to limit concurrent connections\n   - Add delays between requests\n\n2. **Handle errors gracefully**\n   - Sites go down, connections fail\n   - Don't crash on individual failures\n\n3. **Respect robots.txt**\n   - Check if scraping is allowed\n   - Some sites block scrapers\n\n4. **Identify yourself**\n   - Set a proper User-Agent header\n   - Include contact info if possible\n\n**Good scraper pattern:**\n```python\nclass RespectfulScraper:\n    def __init__(self):\n        self.semaphore = asyncio.Semaphore(5)\n        self.delay = 1.0  # 1 second between requests\n    \n    async def fetch(self, url):\n        async with self.semaphore:\n            try:\n                result = await self.client.get(url)\n                await asyncio.sleep(self.delay)\n                return result\n            except Exception as e:\n                return None\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13_07-challenge-1",
+              "title": "Build URL Fetcher with Error Handling",
+              "description": "Create an async URL fetcher that handles errors gracefully and reports results.",
+              "instructions": "Complete the `URLFetcher` class that fetches multiple URLs concurrently, handles errors gracefully, and returns both successful and failed results.",
+              "starterCode": "import asyncio\nfrom dataclasses import dataclass\nfrom typing import List, Tuple\n\n@dataclass\nclass Result:\n    url: str\n    success: bool\n    content: str = \"\"\n    error: str = \"\"\n\nclass URLFetcher:\n    def __init__(self, max_concurrent: int = 3):\n        self.semaphore = asyncio.Semaphore(max_concurrent)\n    \n    async def fetch_one(self, url: str) -> Result:\n        \"\"\"Fetch a single URL. Handle errors gracefully.\"\"\"\n        # TODO: Use semaphore for rate limiting\n        # TODO: Simulate fetch with asyncio.sleep(0.2)\n        # TODO: Simulate failure if 'error' in url\n        # TODO: Return Result with success/failure info\n        pass\n    \n    async def fetch_all(self, urls: List[str]) -> Tuple[List[Result], List[Result]]:\n        \"\"\"Fetch all URLs. Return (successes, failures).\"\"\"\n        # TODO: Use asyncio.gather to fetch all\n        # TODO: Separate results into successes and failures\n        pass\n\nasync def main():\n    urls = [\n        \"https://api.example.com/data\",\n        \"https://error.example.com/fail\",\n        \"https://api.example.com/users\",\n        \"https://api.example.com/posts\",\n        \"https://error.example.com/broken\",\n    ]\n    \n    fetcher = URLFetcher(max_concurrent=2)\n    successes, failures = await fetcher.fetch_all(urls)\n    \n    print(f\"Successes: {len(successes)}\")\n    print(f\"Failures: {len(failures)}\")\n\nasyncio.run(main())",
+              "solution": "import asyncio\nfrom dataclasses import dataclass\nfrom typing import List, Tuple\n\n@dataclass\nclass Result:\n    url: str\n    success: bool\n    content: str = \"\"\n    error: str = \"\"\n\nclass URLFetcher:\n    def __init__(self, max_concurrent: int = 3):\n        self.semaphore = asyncio.Semaphore(max_concurrent)\n    \n    async def fetch_one(self, url: str) -> Result:\n        \"\"\"Fetch a single URL. Handle errors gracefully.\"\"\"\n        async with self.semaphore:\n            try:\n                print(f\"  Fetching {url}...\")\n                await asyncio.sleep(0.2)  # Simulate network delay\n                \n                # Simulate failure for URLs containing 'error'\n                if 'error' in url:\n                    raise ConnectionError(f\"Failed to connect to {url}\")\n                \n                return Result(\n                    url=url,\n                    success=True,\n                    content=f\"Data from {url}\"\n                )\n            \n            except Exception as e:\n                return Result(\n                    url=url,\n                    success=False,\n                    error=str(e)\n                )\n    \n    async def fetch_all(self, urls: List[str]) -> Tuple[List[Result], List[Result]]:\n        \"\"\"Fetch all URLs. Return (successes, failures).\"\"\"\n        # Fetch all concurrently\n        results = await asyncio.gather(\n            *[self.fetch_one(url) for url in urls]\n        )\n        \n        # Separate into successes and failures\n        successes = [r for r in results if r.success]\n        failures = [r for r in results if not r.success]\n        \n        return successes, failures\n\nasync def main():\n    urls = [\n        \"https://api.example.com/data\",\n        \"https://error.example.com/fail\",\n        \"https://api.example.com/users\",\n        \"https://api.example.com/posts\",\n        \"https://error.example.com/broken\",\n    ]\n    \n    print(\"=== URL Fetcher Demo ===\")\n    print(f\"Fetching {len(urls)} URLs with max 2 concurrent...\\n\")\n    \n    fetcher = URLFetcher(max_concurrent=2)\n    successes, failures = await fetcher.fetch_all(urls)\n    \n    print(f\"\\n=== Results ===\")\n    print(f\"Successes: {len(successes)}\")\n    for r in successes:\n        print(f\"  OK: {r.url}\")\n    \n    print(f\"\\nFailures: {len(failures)}\")\n    for r in failures:\n        print(f\"  FAIL: {r.url} - {r.error}\")\n\nasyncio.run(main())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use `async with self.semaphore:` to limit concurrency. Wrap the fetch logic in try/except to catch errors."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not using the semaphore",
+                  "consequence": "No rate limiting, may overwhelm server",
+                  "correction": "Always wrap fetch logic in async with self.semaphore:"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-14",
       "title": "HTTP & Web APIs",
       "description": "Working with web services",
       "difficulty": "advanced",
       "estimatedHours": 4,
       "lessons": [
         {
-          "id": "13_01",
+          "id": "14_01",
           "title": "HTTP Basics and the Requests Library",
-          "moduleId": "module-13",
+          "moduleId": "module-14",
           "order": 1,
           "estimatedMinutes": 35,
           "difficulty": "advanced",
@@ -5408,7 +5849,7 @@
             {
               "type": "KEY_POINT",
               "title": "Key Takeaways",
-              "content": "- **HTTP methods: GET (read), POST (create), PUT (update), DELETE (remove)**\n- **requests library makes HTTP easy** - requests.get(), .post(), etc.\n- **Always handle errors** - Network can fail, use try/except\n- **response.json() parses JSON** - Most APIs return JSON\n- **Use sessions for multiple requests** - Faster, maintains headers\n- **Set timeouts** - Prevent hanging: timeout=10\n- **Check response.ok or status_code** - Don't assume success\n- **Type hints improve API clients** - Clear interfaces and documentation"
+              "content": "- **HTTP methods: GET (read), POST (create), PUT (update), DELETE (remove)**\n- **requests library makes HTTP easy** - requests.get(), .post(), etc.\n- **Always handle errors** - Network can fail, use try/except\n- **response.json() parses JSON** - Most APIs return JSON\n- **Use sessions for multiple requests** - Faster, maintains headers\n- **Set timeouts** - Prevent hanging: timeout=10\n- **Check response.ok or status_code** - Don't assume success\n- **Type hints improve API clients** - Clear interfaces and documentation\n- **For async: use httpx instead** - Drop-in replacement with `async with httpx.AsyncClient() as client: await client.get(url)` - same API as requests but supports async/await"
             }
           ],
           "challenges": [
@@ -5457,9 +5898,9 @@
           ]
         },
         {
-          "id": "13_02",
+          "id": "14_02",
           "title": "Building REST APIs with Flask",
-          "moduleId": "module-13",
+          "moduleId": "module-14",
           "order": 2,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
@@ -5540,9 +5981,9 @@
           ]
         },
         {
-          "id": "13_03",
+          "id": "14_03",
           "title": "Database Integration with SQLite",
-          "moduleId": "module-13",
+          "moduleId": "module-14",
           "order": 3,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
@@ -5623,9 +6064,9 @@
           ]
         },
         {
-          "id": "13_04",
+          "id": "14_04",
           "title": "Authentication and API Security",
-          "moduleId": "module-13",
+          "moduleId": "module-14",
           "order": 4,
           "estimatedMinutes": 45,
           "difficulty": "advanced",
@@ -5860,20 +6301,231 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "14_07",
+          "title": "Data Validation with Pydantic",
+          "moduleId": "module-14",
+          "order": 7,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Data Validation Matters",
+              "content": "**The Problem: Garbage In, Garbage Out**\n\nAPIs receive data from users, and users make mistakes:\n- Wrong data types (string instead of number)\n- Missing required fields\n- Invalid formats (bad email, wrong date)\n- Malicious input (SQL injection, XSS)\n\n**Pydantic solves this:**\n- Automatic type validation\n- Clear error messages\n- Data conversion (str to int)\n- Default values\n- Complex nested structures\n\n**Pydantic v2 (2023+):**\n- 5-50x faster than v1\n- Better error messages\n- Stricter validation\n- New syntax features"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Pydantic BaseModel Basics",
+              "content": "```python\nfrom pydantic import BaseModel, Field, EmailStr\nfrom datetime import datetime\nfrom typing import Optional\n\nclass User(BaseModel):\n    name: str\n    email: EmailStr\n    age: int = Field(ge=0, le=150)  # 0-150\n    is_active: bool = True\n    created_at: datetime = Field(default_factory=datetime.now)\n    bio: Optional[str] = None\n\n# Valid data - works!\nuser = User(name=\"Alice\", email=\"alice@example.com\", age=25)\nprint(user.model_dump())  # Convert to dict\n\n# Invalid data - raises ValidationError\ntry:\n    bad_user = User(name=\"Bob\", email=\"not-an-email\", age=-5)\nexcept ValidationError as e:\n    print(e.errors())  # Detailed error info\n```",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Field Validators and Constraints",
+              "content": "**Built-in constraints:**\n```python\nfrom pydantic import Field\n\nclass Product(BaseModel):\n    name: str = Field(min_length=1, max_length=100)\n    price: float = Field(gt=0)  # greater than 0\n    quantity: int = Field(ge=0)  # >= 0\n    sku: str = Field(pattern=r'^[A-Z]{3}-\\d{4}$')  # regex\n```\n\n**Custom validators:**\n```python\nfrom pydantic import field_validator\n\nclass User(BaseModel):\n    username: str\n    \n    @field_validator('username')\n    @classmethod\n    def username_alphanumeric(cls, v):\n        if not v.isalnum():\n            raise ValueError('must be alphanumeric')\n        return v.lower()  # normalize\n```\n\n**Pydantic v2 syntax:**\n- `model_dump()` replaces `.dict()`\n- `model_validate()` replaces `.parse_obj()`\n- `@field_validator` replaces `@validator`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14_07-challenge",
+              "title": "Create a Product Model",
+              "description": "Create a Pydantic model for product data with validation.",
+              "instructions": "Create a Product model with: name (1-100 chars), price (> 0), category (from enum), and optional description.",
+              "starterCode": "from pydantic import BaseModel, Field\nfrom enum import Enum\nfrom typing import Optional\n\nclass Category(Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    FOOD = \"food\"\n\n# TODO: Create Product model\n# - name: str, 1-100 characters\n# - price: float, must be > 0\n# - category: Category enum\n# - description: Optional[str], max 500 chars\n\n# Test your model\ntry:\n    product = Product(\n        name=\"Laptop\",\n        price=999.99,\n        category=Category.ELECTRONICS\n    )\n    print(f\"Valid product: {product.name}\")\nexcept Exception as e:\n    print(f\"Error: {e}\")",
+              "solution": "from pydantic import BaseModel, Field, ValidationError\nfrom enum import Enum\nfrom typing import Optional\n\nclass Category(Enum):\n    ELECTRONICS = \"electronics\"\n    CLOTHING = \"clothing\"\n    FOOD = \"food\"\n\nclass Product(BaseModel):\n    name: str = Field(min_length=1, max_length=100)\n    price: float = Field(gt=0)\n    category: Category\n    description: Optional[str] = Field(default=None, max_length=500)\n\n# Test valid product\nproduct = Product(\n    name=\"Laptop\",\n    price=999.99,\n    category=Category.ELECTRONICS,\n    description=\"Powerful laptop\"\n)\nprint(f\"Valid: {product.model_dump()}\")\n\n# Test invalid product\ntry:\n    bad = Product(name=\"\", price=-10, category=\"invalid\")\nexcept ValidationError as e:\n    print(f\"Validation errors: {len(e.errors())} issues found\")",
+              "language": "python",
+              "testCases": [{"id": "test-1", "description": "Valid product creates successfully", "expectedOutput": "", "isVisible": true}],
+              "hints": [{"level": 1, "text": "Use Field(min_length=1, max_length=100) for string constraints and Field(gt=0) for positive numbers"}],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14_08",
+          "title": "Modern APIs with FastAPI",
+          "moduleId": "module-14",
+          "order": 8,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "FastAPI vs Flask",
+              "content": "**Why FastAPI?**\n\n| Feature | Flask | FastAPI |\n|---------|-------|----------|\n| Speed | Moderate | Very Fast |\n| Async | Manual | Built-in |\n| Validation | Manual | Automatic (Pydantic) |\n| Docs | Manual | Auto-generated |\n| Type Hints | Optional | Required |\n\n**FastAPI advantages:**\n- Automatic OpenAPI/Swagger docs\n- Request/response validation\n- Async-first design\n- Modern Python (3.8+)\n- Excellent IDE support\n\n**When to use Flask:**\n- Simple apps\n- Existing Flask knowledge\n- Lots of Flask extensions needed\n\n**When to use FastAPI:**\n- New APIs\n- Need auto-documentation\n- High performance required\n- Async operations"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "FastAPI Hello World",
+              "content": "```python\nfrom fastapi import FastAPI\nfrom pydantic import BaseModel\n\napp = FastAPI()\n\nclass Item(BaseModel):\n    name: str\n    price: float\n\n@app.get(\"/\")\ndef read_root():\n    return {\"message\": \"Hello World\"}\n\n@app.get(\"/items/{item_id}\")\ndef read_item(item_id: int, q: str = None):\n    return {\"item_id\": item_id, \"query\": q}\n\n@app.post(\"/items/\")\ndef create_item(item: Item):\n    return {\"name\": item.name, \"price\": item.price}\n\n# Run with: uvicorn main:app --reload\n# Docs at: http://localhost:8000/docs\n```\n\n**Key differences from Flask:**\n- Type hints are required\n- Pydantic models for request bodies\n- Path parameters typed in function signature\n- Auto-docs at /docs endpoint",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Auto-Generated Documentation",
+              "content": "**FastAPI auto-generates:**\n\n1. **Swagger UI** at `/docs`\n   - Interactive API explorer\n   - Try endpoints directly\n   - See request/response schemas\n\n2. **ReDoc** at `/redoc`\n   - Beautiful documentation\n   - Good for sharing\n\n3. **OpenAPI JSON** at `/openapi.json`\n   - Machine-readable spec\n   - Import into Postman\n   - Generate client code\n\n**Everything comes from your code:**\n- Type hints → Parameter types\n- Pydantic models → Request/response schemas\n- Docstrings → Descriptions\n- Function names → Operation IDs"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14_08-challenge",
+              "title": "Create a Simple FastAPI App",
+              "description": "Build a basic FastAPI application with CRUD operations.",
+              "instructions": "Create a FastAPI app with endpoints to list, create, and get items by ID.",
+              "starterCode": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\nfrom typing import List\n\napp = FastAPI(title=\"My First API\")\n\n# In-memory storage\nitems = {}\n\nclass Item(BaseModel):\n    name: str\n    price: float\n\n# TODO: Add these endpoints:\n# GET / - return {\"status\": \"ok\"}\n# GET /items - return list of all items\n# GET /items/{item_id} - return single item or 404\n# POST /items - create new item, return it with id\n\nprint(\"FastAPI app created!\")\nprint(\"Run with: uvicorn main:app --reload\")\nprint(\"Docs at: http://localhost:8000/docs\")",
+              "solution": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel\nfrom typing import List, Dict\n\napp = FastAPI(title=\"My First API\")\n\n# In-memory storage\nitems: Dict[int, dict] = {}\nnext_id = 1\n\nclass Item(BaseModel):\n    name: str\n    price: float\n\nclass ItemResponse(BaseModel):\n    id: int\n    name: str\n    price: float\n\n@app.get(\"/\")\ndef root():\n    return {\"status\": \"ok\"}\n\n@app.get(\"/items\", response_model=List[ItemResponse])\ndef list_items():\n    return [ItemResponse(id=id, **item) for id, item in items.items()]\n\n@app.get(\"/items/{item_id}\", response_model=ItemResponse)\ndef get_item(item_id: int):\n    if item_id not in items:\n        raise HTTPException(status_code=404, detail=\"Item not found\")\n    return ItemResponse(id=item_id, **items[item_id])\n\n@app.post(\"/items\", response_model=ItemResponse, status_code=201)\ndef create_item(item: Item):\n    global next_id\n    items[next_id] = item.model_dump()\n    response = ItemResponse(id=next_id, **items[next_id])\n    next_id += 1\n    return response\n\nprint(\"FastAPI app created!\")\nprint(\"Endpoints: GET /, GET /items, GET /items/{id}, POST /items\")",
+              "language": "python",
+              "testCases": [{"id": "test-1", "description": "App structure is correct", "expectedOutput": "", "isVisible": true}],
+              "hints": [{"level": 1, "text": "Use @app.get() and @app.post() decorators. Raise HTTPException(status_code=404) for not found."}],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14_09",
+          "title": "FastAPI Routes and Models",
+          "moduleId": "module-14",
+          "order": 9,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Path and Query Parameters",
+              "content": "**Path parameters** - part of the URL:\n```python\n@app.get(\"/users/{user_id}\")\ndef get_user(user_id: int):  # Automatically validated as int\n    return {\"user_id\": user_id}\n```\n\n**Query parameters** - after the ?:\n```python\n@app.get(\"/items/\")\ndef list_items(\n    skip: int = 0,\n    limit: int = 10,\n    search: str = None\n):\n    # /items/?skip=10&limit=5&search=laptop\n    return {\"skip\": skip, \"limit\": limit, \"search\": search}\n```\n\n**Combining both:**\n```python\n@app.get(\"/users/{user_id}/items/\")\ndef get_user_items(\n    user_id: int,  # Path param\n    skip: int = 0,  # Query param\n    limit: int = 10  # Query param\n):\n    pass\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Request and Response Models",
+              "content": "```python\nfrom pydantic import BaseModel\nfrom typing import Optional\n\n# Request model (what client sends)\nclass UserCreate(BaseModel):\n    email: str\n    password: str\n    name: Optional[str] = None\n\n# Response model (what we return)\nclass UserResponse(BaseModel):\n    id: int\n    email: str\n    name: Optional[str]\n    # Note: no password!\n\n@app.post(\"/users/\", response_model=UserResponse)\ndef create_user(user: UserCreate):\n    # user is validated UserCreate\n    # Return is validated against UserResponse\n    db_user = create_user_in_db(user)\n    return db_user  # Password filtered out!\n```\n\n**Benefits:**\n- Input validated automatically\n- Output filtered (no password leak)\n- Docs show correct schemas",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Nested Models and Lists",
+              "content": "**Nested Pydantic models:**\n```python\nclass Address(BaseModel):\n    street: str\n    city: str\n    country: str = \"USA\"\n\nclass User(BaseModel):\n    name: str\n    addresses: List[Address]  # List of nested models\n\n# Request body:\n{\n    \"name\": \"Alice\",\n    \"addresses\": [\n        {\"street\": \"123 Main\", \"city\": \"Boston\"},\n        {\"street\": \"456 Oak\", \"city\": \"NYC\"}\n    ]\n}\n```\n\n**Response with list:**\n```python\nfrom typing import List\n\n@app.get(\"/users/\", response_model=List[UserResponse])\ndef list_users():\n    return get_all_users()  # Returns list\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14_09-challenge",
+              "title": "Build a Blog API",
+              "description": "Create models and endpoints for a blog with posts and comments.",
+              "instructions": "Create Pydantic models for Post and Comment, with endpoints to create posts and add comments to posts.",
+              "starterCode": "from fastapi import FastAPI\nfrom pydantic import BaseModel\nfrom typing import List, Optional\nfrom datetime import datetime\n\napp = FastAPI()\n\n# TODO: Create models:\n# - PostCreate: title, content\n# - PostResponse: id, title, content, created_at, comments\n# - CommentCreate: text, author\n# - CommentResponse: id, text, author, created_at\n\n# TODO: Create endpoints:\n# POST /posts - create post\n# GET /posts/{post_id} - get post with comments\n# POST /posts/{post_id}/comments - add comment\n\nposts = {}\nnext_id = 1\n\nprint(\"Blog API structure created\")",
+              "solution": "from fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\nfrom datetime import datetime\n\napp = FastAPI(title=\"Blog API\")\n\n# Models\nclass CommentCreate(BaseModel):\n    text: str = Field(min_length=1)\n    author: str\n\nclass CommentResponse(BaseModel):\n    id: int\n    text: str\n    author: str\n    created_at: datetime\n\nclass PostCreate(BaseModel):\n    title: str = Field(min_length=1, max_length=200)\n    content: str\n\nclass PostResponse(BaseModel):\n    id: int\n    title: str\n    content: str\n    created_at: datetime\n    comments: List[CommentResponse] = []\n\n# Storage\nposts = {}\nnext_post_id = 1\nnext_comment_id = 1\n\n@app.post(\"/posts\", response_model=PostResponse, status_code=201)\ndef create_post(post: PostCreate):\n    global next_post_id\n    new_post = {\n        \"id\": next_post_id,\n        \"title\": post.title,\n        \"content\": post.content,\n        \"created_at\": datetime.now(),\n        \"comments\": []\n    }\n    posts[next_post_id] = new_post\n    next_post_id += 1\n    return new_post\n\n@app.get(\"/posts/{post_id}\", response_model=PostResponse)\ndef get_post(post_id: int):\n    if post_id not in posts:\n        raise HTTPException(404, \"Post not found\")\n    return posts[post_id]\n\n@app.post(\"/posts/{post_id}/comments\", response_model=CommentResponse)\ndef add_comment(post_id: int, comment: CommentCreate):\n    global next_comment_id\n    if post_id not in posts:\n        raise HTTPException(404, \"Post not found\")\n    new_comment = {\n        \"id\": next_comment_id,\n        \"text\": comment.text,\n        \"author\": comment.author,\n        \"created_at\": datetime.now()\n    }\n    posts[post_id][\"comments\"].append(new_comment)\n    next_comment_id += 1\n    return new_comment\n\nprint(\"Blog API ready!\")",
+              "language": "python",
+              "testCases": [{"id": "test-1", "description": "Models and endpoints defined", "expectedOutput": "", "isVisible": true}],
+              "hints": [{"level": 1, "text": "Create separate models for Create (input) and Response (output). Include datetime for timestamps."}],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14_10",
+          "title": "FastAPI Advanced Patterns",
+          "moduleId": "module-14",
+          "order": 10,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Dependency Injection",
+              "content": "**What is Dependency Injection?**\n\nInstead of creating dependencies inside functions, you *inject* them:\n\n```python\nfrom fastapi import Depends\n\n# Dependency function\ndef get_db():\n    db = DatabaseSession()\n    try:\n        yield db  # Provide to endpoint\n    finally:\n        db.close()  # Cleanup after\n\n# Use the dependency\n@app.get(\"/users/\")\ndef get_users(db: Session = Depends(get_db)):\n    return db.query(User).all()\n```\n\n**Benefits:**\n- Reusable logic (auth, db, logging)\n- Automatic cleanup\n- Easy testing (swap dependencies)\n- Clear separation of concerns"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Authentication Dependency",
+              "content": "```python\nfrom fastapi import Depends, HTTPException, Header\n\nasync def verify_token(authorization: str = Header(...)):\n    \"\"\"Verify JWT token from Authorization header\"\"\"\n    if not authorization.startswith(\"Bearer \"):\n        raise HTTPException(401, \"Invalid auth header\")\n    \n    token = authorization.split(\" \")[1]\n    try:\n        payload = jwt.decode(token, SECRET_KEY)\n        return payload[\"user_id\"]\n    except jwt.JWTError:\n        raise HTTPException(401, \"Invalid token\")\n\n@app.get(\"/me/\")\ndef get_current_user(user_id: int = Depends(verify_token)):\n    # Only runs if token is valid!\n    return {\"user_id\": user_id}\n\n@app.get(\"/admin/\")\ndef admin_only(\n    user_id: int = Depends(verify_token),\n    is_admin: bool = Depends(check_admin)\n):\n    # Multiple dependencies!\n    return {\"admin\": True}\n```",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Background Tasks and Middleware",
+              "content": "**Background tasks** - run after response:\n```python\nfrom fastapi import BackgroundTasks\n\ndef send_email(email: str, message: str):\n    # Slow operation\n    time.sleep(5)\n    print(f\"Sent to {email}\")\n\n@app.post(\"/signup/\")\ndef signup(email: str, background: BackgroundTasks):\n    create_user(email)\n    background.add_task(send_email, email, \"Welcome!\")\n    return {\"status\": \"created\"}  # Returns immediately\n```\n\n**Middleware** - runs on every request:\n```python\nfrom fastapi.middleware.cors import CORSMiddleware\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"http://localhost:3000\"],\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"]\n)\n\n@app.middleware(\"http\")\nasync def log_requests(request, call_next):\n    start = time.time()\n    response = await call_next(request)\n    duration = time.time() - start\n    print(f\"{request.method} {request.url} - {duration:.2f}s\")\n    return response\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14_10-challenge",
+              "title": "Create Auth Dependency",
+              "description": "Build a dependency that validates API keys.",
+              "instructions": "Create a dependency function that checks for a valid API key in the X-API-Key header.",
+              "starterCode": "from fastapi import FastAPI, Depends, HTTPException, Header\n\napp = FastAPI()\n\n# Valid API keys (in real app, store in database)\nVALID_API_KEYS = {\"key123\", \"key456\"}\n\n# TODO: Create dependency function\ndef verify_api_key(x_api_key: str = Header(...)):\n    # Check if key is valid\n    # Raise HTTPException(403) if invalid\n    # Return the key if valid\n    pass\n\n@app.get(\"/public/\")\ndef public_endpoint():\n    return {\"message\": \"Anyone can see this\"}\n\n# TODO: Add protected endpoint that uses verify_api_key\n@app.get(\"/protected/\")\ndef protected_endpoint():\n    pass\n\nprint(\"API Key auth demo\")",
+              "solution": "from fastapi import FastAPI, Depends, HTTPException, Header\n\napp = FastAPI()\n\nVALID_API_KEYS = {\"key123\", \"key456\"}\n\ndef verify_api_key(x_api_key: str = Header(...)):\n    \"\"\"Dependency to verify API key\"\"\"\n    if x_api_key not in VALID_API_KEYS:\n        raise HTTPException(\n            status_code=403,\n            detail=\"Invalid API key\"\n        )\n    return x_api_key\n\n@app.get(\"/public/\")\ndef public_endpoint():\n    return {\"message\": \"Anyone can see this\"}\n\n@app.get(\"/protected/\")\ndef protected_endpoint(api_key: str = Depends(verify_api_key)):\n    return {\n        \"message\": \"Secret data!\",\n        \"authenticated_with\": api_key[:4] + \"...\"\n    }\n\n@app.get(\"/admin/\")\ndef admin_endpoint(api_key: str = Depends(verify_api_key)):\n    # Can reuse the same dependency\n    return {\"message\": \"Admin area\", \"key\": api_key}\n\nprint(\"API Key auth ready!\")\nprint(\"Test: curl -H 'X-API-Key: key123' localhost:8000/protected/\")",
+              "language": "python",
+              "testCases": [{"id": "test-1", "description": "Dependency validates API keys", "expectedOutput": "", "isVisible": true}],
+              "hints": [{"level": 1, "text": "Use Header(...) to require the header. Check if key is in VALID_API_KEYS set."}],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14_11",
+          "title": "Mini-Project: FastAPI CRUD API",
+          "moduleId": "module-14",
+          "order": 11,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Building a Complete API",
+              "content": "**Project: Task Management API**\n\nWe'll build the same API as the Flask project, but with FastAPI:\n\n**Features:**\n- Create, read, update, delete tasks\n- Filter by status (pending/completed)\n- Pagination\n- Input validation\n- Auto-generated docs\n\n**Structure:**\n```\napp/\n├── main.py          # FastAPI app\n├── models.py        # Pydantic models\n├── database.py      # DB connection\n└── routers/\n    └── tasks.py     # Task endpoints\n```\n\n**Comparison with Flask:**\n| Flask | FastAPI |\n|-------|----------|\n| `@app.route('/tasks', methods=['GET'])` | `@app.get('/tasks')` |\n| `request.get_json()` | `def create(task: TaskCreate)` |\n| Manual validation | Automatic via Pydantic |\n| No built-in docs | Swagger at /docs |"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Task API",
+              "content": "A full CRUD API with FastAPI including all endpoints, models, and proper error handling.",
+              "code": "from fastapi import FastAPI, HTTPException, Query\nfrom pydantic import BaseModel, Field\nfrom typing import List, Optional\nfrom datetime import datetime\nfrom enum import Enum\n\napp = FastAPI(\n    title=\"Task Management API\",\n    description=\"A complete CRUD API built with FastAPI\",\n    version=\"1.0.0\"\n)\n\n# Enums\nclass TaskStatus(str, Enum):\n    PENDING = \"pending\"\n    IN_PROGRESS = \"in_progress\"\n    COMPLETED = \"completed\"\n\n# Models\nclass TaskCreate(BaseModel):\n    title: str = Field(min_length=1, max_length=200)\n    description: Optional[str] = Field(default=None, max_length=1000)\n    status: TaskStatus = TaskStatus.PENDING\n\nclass TaskUpdate(BaseModel):\n    title: Optional[str] = Field(default=None, min_length=1, max_length=200)\n    description: Optional[str] = None\n    status: Optional[TaskStatus] = None\n\nclass TaskResponse(BaseModel):\n    id: int\n    title: str\n    description: Optional[str]\n    status: TaskStatus\n    created_at: datetime\n    updated_at: datetime\n\n# In-memory database\ntasks_db = {}\nnext_id = 1\n\n# Endpoints\n@app.get(\"/tasks\", response_model=List[TaskResponse])\ndef list_tasks(\n    status: Optional[TaskStatus] = None,\n    skip: int = Query(default=0, ge=0),\n    limit: int = Query(default=10, ge=1, le=100)\n):\n    \"\"\"List all tasks with optional filtering and pagination.\"\"\"\n    result = list(tasks_db.values())\n    \n    if status:\n        result = [t for t in result if t[\"status\"] == status]\n    \n    return result[skip:skip + limit]\n\n@app.get(\"/tasks/{task_id}\", response_model=TaskResponse)\ndef get_task(task_id: int):\n    \"\"\"Get a single task by ID.\"\"\"\n    if task_id not in tasks_db:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    return tasks_db[task_id]\n\n@app.post(\"/tasks\", response_model=TaskResponse, status_code=201)\ndef create_task(task: TaskCreate):\n    \"\"\"Create a new task.\"\"\"\n    global next_id\n    now = datetime.now()\n    new_task = {\n        \"id\": next_id,\n        \"title\": task.title,\n        \"description\": task.description,\n        \"status\": task.status,\n        \"created_at\": now,\n        \"updated_at\": now\n    }\n    tasks_db[next_id] = new_task\n    next_id += 1\n    return new_task\n\n@app.put(\"/tasks/{task_id}\", response_model=TaskResponse)\ndef update_task(task_id: int, task: TaskUpdate):\n    \"\"\"Update an existing task.\"\"\"\n    if task_id not in tasks_db:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    \n    existing = tasks_db[task_id]\n    update_data = task.model_dump(exclude_unset=True)\n    \n    for field, value in update_data.items():\n        existing[field] = value\n    \n    existing[\"updated_at\"] = datetime.now()\n    return existing\n\n@app.delete(\"/tasks/{task_id}\", status_code=204)\ndef delete_task(task_id: int):\n    \"\"\"Delete a task.\"\"\"\n    if task_id not in tasks_db:\n        raise HTTPException(status_code=404, detail=\"Task not found\")\n    del tasks_db[task_id]\n\n@app.get(\"/tasks/stats/summary\")\ndef get_stats():\n    \"\"\"Get task statistics.\"\"\"\n    all_tasks = list(tasks_db.values())\n    return {\n        \"total\": len(all_tasks),\n        \"pending\": len([t for t in all_tasks if t[\"status\"] == TaskStatus.PENDING]),\n        \"in_progress\": len([t for t in all_tasks if t[\"status\"] == TaskStatus.IN_PROGRESS]),\n        \"completed\": len([t for t in all_tasks if t[\"status\"] == TaskStatus.COMPLETED])\n    }\n\nprint(\"Task Management API\")\nprint(\"Run: uvicorn main:app --reload\")\nprint(\"Docs: http://localhost:8000/docs\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "FastAPI vs Flask Summary",
+              "content": "**What we gained with FastAPI:**\n\n1. **Automatic validation** - No manual checking\n2. **Type safety** - IDE catches errors\n3. **Auto documentation** - /docs always current\n4. **Cleaner code** - Less boilerplate\n5. **Better performance** - Async support\n\n**When to migrate:**\n- New project → Use FastAPI\n- Existing Flask → Keep if working\n- Need async → FastAPI\n- Need auto-docs → FastAPI\n\n**Learning path:**\n1. Flask basics (done!)\n2. FastAPI basics (this lesson)\n3. SQLAlchemy + FastAPI\n4. Authentication patterns\n5. Testing with pytest"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14_11-challenge",
+              "title": "Add Search to Task API",
+              "description": "Extend the Task API with search functionality.",
+              "instructions": "Add a search endpoint that finds tasks by title or description containing a search term.",
+              "starterCode": "from fastapi import FastAPI, Query\nfrom pydantic import BaseModel\nfrom typing import List, Optional\n\napp = FastAPI()\n\n# Sample data\ntasks = [\n    {\"id\": 1, \"title\": \"Learn Python\", \"description\": \"Complete the basics\"},\n    {\"id\": 2, \"title\": \"Build API\", \"description\": \"Create REST endpoints\"},\n    {\"id\": 3, \"title\": \"Write tests\", \"description\": \"Add pytest tests\"},\n]\n\nclass TaskResponse(BaseModel):\n    id: int\n    title: str\n    description: Optional[str]\n\n# TODO: Add search endpoint\n# GET /tasks/search?q=python\n# Should search in both title and description (case-insensitive)\n# Return matching tasks\n\n@app.get(\"/tasks/search\", response_model=List[TaskResponse])\ndef search_tasks(q: str = Query(min_length=1)):\n    # Your code here\n    pass\n\nprint(\"Search endpoint added!\")",
+              "solution": "from fastapi import FastAPI, Query\nfrom pydantic import BaseModel\nfrom typing import List, Optional\n\napp = FastAPI()\n\ntasks = [\n    {\"id\": 1, \"title\": \"Learn Python\", \"description\": \"Complete the basics\"},\n    {\"id\": 2, \"title\": \"Build API\", \"description\": \"Create REST endpoints\"},\n    {\"id\": 3, \"title\": \"Write tests\", \"description\": \"Add pytest tests\"},\n    {\"id\": 4, \"title\": \"Deploy app\", \"description\": \"Push to production\"},\n]\n\nclass TaskResponse(BaseModel):\n    id: int\n    title: str\n    description: Optional[str]\n\n@app.get(\"/tasks/search\", response_model=List[TaskResponse])\ndef search_tasks(\n    q: str = Query(min_length=1, description=\"Search term\"),\n    limit: int = Query(default=10, ge=1, le=50)\n):\n    \"\"\"Search tasks by title or description.\"\"\"\n    query = q.lower()\n    results = []\n    \n    for task in tasks:\n        title_match = query in task[\"title\"].lower()\n        desc_match = task[\"description\"] and query in task[\"description\"].lower()\n        \n        if title_match or desc_match:\n            results.append(task)\n    \n    return results[:limit]\n\n# Test the search\nprint(\"Search API ready!\")\nprint(\"Example: /tasks/search?q=python\")\nprint(\"Example: /tasks/search?q=test&limit=5\")",
+              "language": "python",
+              "testCases": [{"id": "test-1", "description": "Search finds matching tasks", "expectedOutput": "", "isVisible": true}],
+              "hints": [{"level": 1, "text": "Use .lower() for case-insensitive matching. Check if query is in title or description."}],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "module-14",
+      "id": "module-15",
       "title": "Sharing Your Work",
       "description": "Project planning and deployment",
       "difficulty": "advanced",
       "estimatedHours": 4,
       "lessons": [
         {
-          "id": "14_01",
+          "id": "15_01",
           "title": "Project Planning and Architecture",
-          "moduleId": "module-14",
+          "moduleId": "module-15",
           "order": 1,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
@@ -5954,9 +6606,9 @@
           ]
         },
         {
-          "id": "14_02",
+          "id": "15_02",
           "title": "Version Control with Git",
-          "moduleId": "module-14",
+          "moduleId": "module-15",
           "order": 2,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
@@ -6037,9 +6689,9 @@
           ]
         },
         {
-          "id": "14_03",
+          "id": "15_03",
           "title": "Testing Best Practices",
-          "moduleId": "module-14",
+          "moduleId": "module-15",
           "order": 3,
           "estimatedMinutes": 35,
           "difficulty": "advanced",
@@ -6113,9 +6765,9 @@
           ]
         },
         {
-          "id": "14_04",
+          "id": "15_04",
           "title": "Documentation and Code Quality",
-          "moduleId": "module-14",
+          "moduleId": "module-15",
           "order": 4,
           "estimatedMinutes": 35,
           "difficulty": "advanced",
@@ -6189,9 +6841,9 @@
           ]
         },
         {
-          "id": "14_05",
+          "id": "15_05",
           "title": "Deployment and Final Capstone Project",
-          "moduleId": "module-14",
+          "moduleId": "module-15",
           "order": 5,
           "estimatedMinutes": 45,
           "difficulty": "advanced",

@@ -1631,7 +1631,7 @@
         },
         {
           "id": "5.7",
-          "title": "Modern Array Methods (ES2023-2024)",
+          "title": "Modern Array Methods (ES2023-2025)",
           "moduleId": "module-05",
           "order": 7,
           "estimatedMinutes": 35,
@@ -1640,7 +1640,7 @@
             {
               "type": "ANALOGY",
               "title": "Understanding the Concept",
-              "content": "Remember how we learned about array methods like sort(), reverse(), and splice()? They all had one annoying problem: they MODIFY the original array. It's like editing a photo and accidentally saving over the original - you can't get it back!\n\nES2023-2024 introduced new 'non-mutating' versions of these methods. They're like making a copy before editing:\n\n- **toSorted()** - like sort(), but returns a NEW sorted array\n- **toReversed()** - like reverse(), but returns a NEW reversed array\n- **toSpliced()** - like splice(), but returns a NEW modified array\n- **at()** - access elements with negative indices (like Python!)\n- **Object.groupBy()** - group array items by a key (super useful!)\n\nThese methods are safer because they never change your original data. This is especially important in modern frameworks like React where you should never mutate state directly."
+              "content": "Remember how we learned about array methods like sort(), reverse(), and splice()? They all had one annoying problem: they MODIFY the original array. It's like editing a photo and accidentally saving over the original - you can't get it back!\n\nES2023-2025 introduced new 'non-mutating' versions of these methods. They're like making a copy before editing:\n\n- **toSorted()** - like sort(), but returns a NEW sorted array\n- **toReversed()** - like reverse(), but returns a NEW reversed array\n- **toSpliced()** - like splice(), but returns a NEW modified array\n- **with()** - like arr[i] = x, but returns a NEW array\n- **at()** - access elements with negative indices (like Python!)\n- **Object.groupBy()** - group array items by a key (super useful!)\n- **Map.groupBy()** - like Object.groupBy but with any key type\n\nThese methods are safer because they never change your original data. This is especially important in modern frameworks like React where you should never mutate state directly."
             },
             {
               "type": "EXAMPLE",
@@ -1667,14 +1667,26 @@
               "language": "javascript"
             },
             {
+              "type": "EXAMPLE",
+              "title": "Array.with() - Immutable Element Replacement",
+              "code": "// Array.with() replaces an element at an index and returns a NEW array\n// Like bracket assignment, but without mutating the original!\n\nlet colors = ['red', 'green', 'blue', 'yellow'];\n\n// OLD WAY: Mutates the original array!\ncolors[1] = 'purple';\nconsole.log(colors);  // ['red', 'purple', 'blue', 'yellow'] - Changed!\n\n// Reset\ncolors = ['red', 'green', 'blue', 'yellow'];\n\n// NEW WAY with .with() - Original preserved!\nlet newColors = colors.with(1, 'purple');\nconsole.log(newColors);  // ['red', 'purple', 'blue', 'yellow']\nconsole.log(colors);     // ['red', 'green', 'blue', 'yellow'] - Unchanged!\n\n// Works with negative indices too (like at())\nlet fruits = ['apple', 'banana', 'cherry'];\nlet updated = fruits.with(-1, 'cranberry');  // Replace last element\nconsole.log(updated);  // ['apple', 'banana', 'cranberry']\nconsole.log(fruits);   // ['apple', 'banana', 'cherry'] - Original safe!\n\n// Chain with other immutable methods\nlet numbers = [5, 2, 8, 1, 9];\nlet result = numbers\n  .with(0, 100)           // Replace first with 100\n  .toSorted((a, b) => a - b)  // Sort ascending\n  .toReversed();          // Reverse\nconsole.log(result);   // [100, 9, 8, 2, 1]\nconsole.log(numbers);  // [5, 2, 8, 1, 9] - Original untouched!\n\n// Practical: Update item in React state\n// React requires immutable updates - .with() is perfect!\nlet todos = [\n  { id: 1, text: 'Buy milk', done: false },\n  { id: 2, text: 'Clean room', done: false },\n  { id: 3, text: 'Exercise', done: false }\n];\n\n// Mark second todo as complete (immutably)\nlet indexToUpdate = 1;\nlet updatedTodos = todos.with(indexToUpdate, {\n  ...todos[indexToUpdate],\n  done: true\n});\nconsole.log(updatedTodos[1].done);  // true\nconsole.log(todos[1].done);         // false - Original unchanged!",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Map.groupBy() - Grouping with Complex Keys",
+              "code": "// Map.groupBy() is like Object.groupBy() but returns a Map\n// Why use Map? Keys can be ANY type (not just strings)!\n\nlet products = [\n  { name: 'Apple', category: 'Fruit', inStock: true },\n  { name: 'Banana', category: 'Fruit', inStock: false },\n  { name: 'Carrot', category: 'Vegetable', inStock: true },\n  { name: 'Milk', category: 'Dairy', inStock: true }\n];\n\n// Object.groupBy - Keys become strings\nlet objGrouped = Object.groupBy(products, p => p.inStock);\nconsole.log(objGrouped['true']);   // Works (string key)\nconsole.log(objGrouped[true]);     // undefined! Boolean converted to string\n\n// Map.groupBy - Keys keep their original type\nlet mapGrouped = Map.groupBy(products, p => p.inStock);\nconsole.log(mapGrouped.get(true));   // Products that are in stock\nconsole.log(mapGrouped.get(false));  // Products that are out of stock\n\n// Group by object reference (impossible with Object.groupBy!)\nlet categoryA = { name: 'Fruits' };\nlet categoryB = { name: 'Vegetables' };\n\nlet items = [\n  { product: 'Apple', cat: categoryA },\n  { product: 'Banana', cat: categoryA },\n  { product: 'Carrot', cat: categoryB }\n];\n\nlet byCategory = Map.groupBy(items, item => item.cat);\nconsole.log(byCategory.get(categoryA));  // Apple and Banana\nconsole.log(byCategory.get(categoryB));  // Carrot\n\n// Practical: Group DOM elements by their tag\n// (In browser) const elements = document.querySelectorAll('*');\n// const byTag = Map.groupBy([...elements], el => el.tagName);\n// console.log(byTag.get('DIV'));  // All div elements\n\n// Iterate over Map groups\nfor (let [key, items] of mapGrouped) {\n  console.log(`In stock: ${key}`, items.map(p => p.name));\n}\n// In stock: true ['Apple', 'Carrot', 'Milk']\n// In stock: false ['Banana']\n\n// Convert Map to Object if needed\nlet asObject = Object.fromEntries(mapGrouped);\nconsole.log(asObject);  // { true: [...], false: [...] }",
+              "language": "javascript"
+            },
+            {
               "type": "THEORY",
               "title": "Breaking Down the Syntax",
-              "content": "**at(index)**\n- Access elements with positive or negative indices\n- Negative indices count from the end (-1 = last, -2 = second to last)\n- Returns undefined if index is out of bounds\n```javascript\narray.at(0)   // First element\narray.at(-1)  // Last element\narray.at(-2)  // Second to last\n```\n\n**toSorted(compareFn)**\n- Returns a NEW sorted array\n- Original array is unchanged\n- Same comparison function as sort()\n```javascript\nconst sorted = array.toSorted((a, b) => a - b);  // Ascending numbers\nconst sorted = array.toSorted((a, b) => b - a);  // Descending numbers\nconst sorted = array.toSorted();  // Default string sort\n```\n\n**toReversed()**\n- Returns a NEW reversed array\n- Original array is unchanged\n- No arguments needed\n```javascript\nconst reversed = array.toReversed();\n```\n\n**toSpliced(start, deleteCount, ...items)**\n- Returns a NEW array with elements removed/added\n- Original array is unchanged\n- Same parameters as splice()\n```javascript\narray.toSpliced(1, 2)        // Remove 2 elements at index 1\narray.toSpliced(1, 0, 'a')   // Insert 'a' at index 1\narray.toSpliced(1, 1, 'a')   // Replace element at index 1 with 'a'\n```\n\n**Object.groupBy(array, keyFn)**\n- Groups array items into an object\n- keyFn returns the group key for each item\n- Returns an object where keys are group names, values are arrays\n```javascript\nObject.groupBy(items, item => item.category);\nObject.groupBy(numbers, n => n % 2 === 0 ? 'even' : 'odd');\n```\n\n**Why use non-mutating methods?**\n1. Safer - original data is preserved\n2. Predictable - easier to debug\n3. Functional programming style\n4. Required for React/Vue state management\n5. Enables method chaining without side effects"
+              "content": "**at(index)**\n- Access elements with positive or negative indices\n- Negative indices count from the end (-1 = last, -2 = second to last)\n- Returns undefined if index is out of bounds\n```javascript\narray.at(0)   // First element\narray.at(-1)  // Last element\narray.at(-2)  // Second to last\n```\n\n**toSorted(compareFn)**\n- Returns a NEW sorted array\n- Original array is unchanged\n- Same comparison function as sort()\n```javascript\nconst sorted = array.toSorted((a, b) => a - b);  // Ascending numbers\nconst sorted = array.toSorted((a, b) => b - a);  // Descending numbers\nconst sorted = array.toSorted();  // Default string sort\n```\n\n**toReversed()**\n- Returns a NEW reversed array\n- Original array is unchanged\n- No arguments needed\n```javascript\nconst reversed = array.toReversed();\n```\n\n**toSpliced(start, deleteCount, ...items)**\n- Returns a NEW array with elements removed/added\n- Original array is unchanged\n- Same parameters as splice()\n```javascript\narray.toSpliced(1, 2)        // Remove 2 elements at index 1\narray.toSpliced(1, 0, 'a')   // Insert 'a' at index 1\narray.toSpliced(1, 1, 'a')   // Replace element at index 1 with 'a'\n```\n\n**with(index, value)**\n- Returns a NEW array with element at index replaced\n- Supports negative indices (like at())\n- Original array is unchanged\n```javascript\narray.with(0, 'new')   // Replace first element\narray.with(-1, 'new')  // Replace last element\narray.with(2, 'new')   // Replace element at index 2\n```\n\n**Object.groupBy(array, keyFn)**\n- Groups array items into an object\n- keyFn returns the group key for each item\n- Returns an object where keys are group names, values are arrays\n```javascript\nObject.groupBy(items, item => item.category);\nObject.groupBy(numbers, n => n % 2 === 0 ? 'even' : 'odd');\n```\n\n**Map.groupBy(array, keyFn)**\n- Like Object.groupBy but returns a Map\n- Keys can be ANY type (not just strings)\n- Better for non-string keys like booleans, objects, or numbers\n```javascript\nMap.groupBy(items, item => item.inStock);  // Boolean keys work!\nMap.groupBy(items, item => item.category); // Object keys work!\n```\n\n**Why use non-mutating methods?**\n1. Safer - original data is preserved\n2. Predictable - easier to debug\n3. Functional programming style\n4. Required for React/Vue state management\n5. Enables method chaining without side effects"
             },
             {
               "type": "WARNING",
               "title": "Common Pitfalls",
-              "content": "Common mistakes:\n\n1. **Confusing at() with negative indexing on brackets:**\n   ```javascript\n   array[-1]    // undefined - doesn't work!\n   array.at(-1) // Last element - works!\n   ```\n\n2. **Forgetting toSorted/toReversed return new arrays:**\n   ```javascript\n   let nums = [3, 1, 2];\n   nums.toSorted();  // Returns [1, 2, 3] but you didn't save it!\n   console.log(nums);  // Still [3, 1, 2]\n   \n   // Correct:\n   let sorted = nums.toSorted();\n   ```\n\n3. **Using toSorted() without comparison for numbers:**\n   ```javascript\n   [10, 2, 1].toSorted()  // [1, 10, 2] - sorted as strings!\n   [10, 2, 1].toSorted((a, b) => a - b)  // [1, 2, 10] - correct!\n   ```\n\n4. **Object.groupBy returns null prototype object:**\n   ```javascript\n   let grouped = Object.groupBy(items, fn);\n   // grouped doesn't have standard Object methods like hasOwnProperty\n   // Use Object.keys(grouped) or 'key' in grouped instead\n   ```\n\n5. **Browser compatibility:**\n   - at(): Supported in all modern browsers (2022+)\n   - toSorted/toReversed/toSpliced: ES2023 (mid-2023+)\n   - Object.groupBy: ES2024 (late 2023+)\n   - Check compatibility if supporting older browsers!\n\n6. **Mixing up splice and toSpliced return values:**\n   ```javascript\n   // splice returns REMOVED elements\n   // toSpliced returns the NEW array\n   let arr = [1, 2, 3];\n   arr.splice(1, 1);      // Returns [2] (removed)\n   arr.toSpliced(1, 1);   // Returns [1, 3] (new array)\n   ```"
+              "content": "Common mistakes:\n\n1. **Confusing at() with negative indexing on brackets:**\n   ```javascript\n   array[-1]    // undefined - doesn't work!\n   array.at(-1) // Last element - works!\n   ```\n\n2. **Forgetting toSorted/toReversed/with return new arrays:**\n   ```javascript\n   let nums = [3, 1, 2];\n   nums.toSorted();  // Returns [1, 2, 3] but you didn't save it!\n   nums.with(0, 99); // Returns [99, 1, 2] but you didn't save it!\n   console.log(nums);  // Still [3, 1, 2]\n   \n   // Correct:\n   let sorted = nums.toSorted();\n   let updated = nums.with(0, 99);\n   ```\n\n3. **Using toSorted() without comparison for numbers:**\n   ```javascript\n   [10, 2, 1].toSorted()  // [1, 10, 2] - sorted as strings!\n   [10, 2, 1].toSorted((a, b) => a - b)  // [1, 2, 10] - correct!\n   ```\n\n4. **Object.groupBy returns null prototype object:**\n   ```javascript\n   let grouped = Object.groupBy(items, fn);\n   // grouped doesn't have standard Object methods like hasOwnProperty\n   // Use Object.keys(grouped) or 'key' in grouped instead\n   ```\n\n5. **Using Object.groupBy when you need non-string keys:**\n   ```javascript\n   // Object.groupBy converts keys to strings\n   Object.groupBy(items, x => x.active);  // Keys: 'true', 'false' (strings)\n   \n   // Map.groupBy preserves key types\n   Map.groupBy(items, x => x.active);     // Keys: true, false (booleans)\n   ```\n\n6. **Browser compatibility:**\n   - at(): Supported in all modern browsers (2022+)\n   - toSorted/toReversed/toSpliced/with: ES2023 (mid-2023+)\n   - Object.groupBy/Map.groupBy: ES2024 (late 2023+)\n   - Check compatibility if supporting older browsers!\n\n7. **Mixing up splice and toSpliced return values:**\n   ```javascript\n   // splice returns REMOVED elements\n   // toSpliced returns the NEW array\n   let arr = [1, 2, 3];\n   arr.splice(1, 1);      // Returns [2] (removed)\n   arr.toSpliced(1, 1);   // Returns [1, 3] (new array)\n   ```\n\n8. **with() throws RangeError for invalid index:**\n   ```javascript\n   let arr = [1, 2, 3];\n   arr.with(10, 'x');  // RangeError! Index out of bounds\n   arr.with(-10, 'x'); // RangeError! Index out of bounds\n   ```"
             }
           ],
           "challenges": [
@@ -1758,6 +1770,120 @@
                   "mistake": "Not handling potentially undefined groups",
                   "consequence": "Error if a status doesn't exist",
                   "correction": "Use optional chaining: byStatus.completed?.length ?? 0"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "5.8",
+          "title": "Modern Set Methods (ES2025)",
+          "moduleId": "module-05",
+          "order": 8,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Remember Sets from math class? A Set is a collection where every item is unique - no duplicates allowed!\n\nThink of it like a VIP guest list where each person can only be listed once. If you try to add 'Alice' twice, she's still only on the list once.\n\nES2025 introduces powerful new Set methods that let you combine, compare, and manipulate Sets - just like Venn diagrams!\n\n**New Set Methods:**\n- **union()** - Combine two sets (everyone in EITHER set)\n- **intersection()** - Find common items (everyone in BOTH sets)\n- **difference()** - Find what's unique to one set (in A but NOT in B)\n- **symmetricDifference()** - Find what's unique to either (in A OR B, but not both)\n- **isSubsetOf()** - Check if one set contains all items of another\n- **isSupersetOf()** - Check if set contains all items of another set\n- **isDisjointFrom()** - Check if sets have no common items"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating and Using Sets",
+              "code": "// Creating Sets\nlet fruits = new Set(['apple', 'banana', 'cherry']);\nlet moreFruits = new Set(['cherry', 'date', 'elderberry']);\n\n// Sets automatically remove duplicates\nlet numbers = new Set([1, 2, 2, 3, 3, 3]);\nconsole.log(numbers);  // Set { 1, 2, 3 } - duplicates removed!\n\n// Basic Set operations\nfruits.add('date');        // Add item\nfruits.delete('banana');   // Remove item\nfruits.has('apple');       // true - check if exists\nfruits.size;               // 3 - number of items\n\n// Convert to array\nlet fruitArray = [...fruits];  // ['apple', 'cherry', 'date']\n\n// Loop through a Set\nfor (let fruit of fruits) {\n  console.log(fruit);\n}\n\n// Remove duplicates from array (common pattern)\nlet dupes = [1, 2, 2, 3, 3, 3, 4];\nlet unique = [...new Set(dupes)];\nconsole.log(unique);  // [1, 2, 3, 4]",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "union() - Combining Sets",
+              "code": "// union() returns all unique items from BOTH sets\n// Like 'everyone invited to EITHER party'\n\nlet frontend = new Set(['Alice', 'Bob', 'Charlie']);\nlet backend = new Set(['Charlie', 'Diana', 'Eve']);\n\nlet allDevs = frontend.union(backend);\nconsole.log(allDevs);\n// Set { 'Alice', 'Bob', 'Charlie', 'Diana', 'Eve' }\n// Notice: Charlie appears only once (no duplicates)\n\n// Practical: Combine permission sets\nlet adminPerms = new Set(['read', 'write', 'delete', 'admin']);\nlet userPerms = new Set(['read', 'write']);\n\nlet combinedPerms = adminPerms.union(userPerms);\nconsole.log(combinedPerms);\n// Set { 'read', 'write', 'delete', 'admin' }\n\n// Works with any iterable\nlet setA = new Set([1, 2, 3]);\nlet setB = new Set([3, 4, 5]);\nconsole.log(setA.union(setB));  // Set { 1, 2, 3, 4, 5 }\n\n// OLD WAY (before ES2025):\nlet oldUnion = new Set([...setA, ...setB]);\nconsole.log(oldUnion);  // Same result, but more verbose",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "intersection() - Finding Common Items",
+              "code": "// intersection() returns items that exist in BOTH sets\n// Like 'people invited to BOTH parties'\n\nlet frontend = new Set(['Alice', 'Bob', 'Charlie']);\nlet backend = new Set(['Charlie', 'Diana', 'Eve']);\n\nlet fullStack = frontend.intersection(backend);\nconsole.log(fullStack);  // Set { 'Charlie' }\n// Only Charlie is in both teams!\n\n// Practical: Find common interests\nlet aliceHobbies = new Set(['reading', 'gaming', 'hiking', 'cooking']);\nlet bobHobbies = new Set(['gaming', 'music', 'hiking', 'sports']);\n\nlet commonHobbies = aliceHobbies.intersection(bobHobbies);\nconsole.log(commonHobbies);  // Set { 'gaming', 'hiking' }\n\n// Find users with both permissions\nlet canRead = new Set(['user1', 'user2', 'user3', 'admin']);\nlet canWrite = new Set(['user2', 'admin', 'editor']);\n\nlet canReadAndWrite = canRead.intersection(canWrite);\nconsole.log(canReadAndWrite);  // Set { 'user2', 'admin' }\n\n// OLD WAY (before ES2025):\nlet oldIntersection = new Set(\n  [...aliceHobbies].filter(x => bobHobbies.has(x))\n);\n// New way is much cleaner!",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "difference() - Finding Unique Items",
+              "code": "// difference() returns items in the first set but NOT in the second\n// Like 'people only invited to MY party, not yours'\n\nlet myFriends = new Set(['Alice', 'Bob', 'Charlie', 'Diana']);\nlet yourFriends = new Set(['Charlie', 'Diana', 'Eve', 'Frank']);\n\nlet onlyMyFriends = myFriends.difference(yourFriends);\nconsole.log(onlyMyFriends);  // Set { 'Alice', 'Bob' }\n\nlet onlyYourFriends = yourFriends.difference(myFriends);\nconsole.log(onlyYourFriends);  // Set { 'Eve', 'Frank' }\n// Order matters! A.difference(B) !== B.difference(A)\n\n// Practical: Find missing items\nlet required = new Set(['name', 'email', 'password', 'age']);\nlet provided = new Set(['name', 'email']);\n\nlet missing = required.difference(provided);\nconsole.log(missing);  // Set { 'password', 'age' }\nconsole.log('Missing fields:', [...missing].join(', '));\n// 'Missing fields: password, age'\n\n// Find items to remove from cart\nlet cartBefore = new Set(['apple', 'banana', 'cherry', 'date']);\nlet cartAfter = new Set(['apple', 'cherry']);\n\nlet removed = cartBefore.difference(cartAfter);\nconsole.log('Removed:', removed);  // Set { 'banana', 'date' }",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "symmetricDifference() - Items Unique to Either Set",
+              "code": "// symmetricDifference() returns items in EITHER set, but not BOTH\n// Like 'people invited to only one party, not both'\n\nlet teamA = new Set(['Alice', 'Bob', 'Charlie']);\nlet teamB = new Set(['Charlie', 'Diana', 'Eve']);\n\nlet exclusiveMembers = teamA.symmetricDifference(teamB);\nconsole.log(exclusiveMembers);\n// Set { 'Alice', 'Bob', 'Diana', 'Eve' }\n// Charlie is in BOTH, so excluded!\n\n// This is the same as union minus intersection\n// (A union B) - (A intersection B) = symmetricDifference\n\n// Practical: Find changes between two versions\nlet version1Features = new Set(['login', 'dashboard', 'profile']);\nlet version2Features = new Set(['login', 'dashboard', 'settings', 'notifications']);\n\nlet changes = version1Features.symmetricDifference(version2Features);\nconsole.log('Changed features:', changes);\n// Set { 'profile', 'settings', 'notifications' }\n// 'profile' was removed, 'settings' and 'notifications' were added\n\n// Find students who didn't attend both days\nlet day1Attendance = new Set(['Alice', 'Bob', 'Charlie']);\nlet day2Attendance = new Set(['Bob', 'Charlie', 'Diana']);\n\nlet inconsistent = day1Attendance.symmetricDifference(day2Attendance);\nconsole.log('Missed a day:', inconsistent);  // Alice and Diana",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Subset, Superset, and Disjoint Checks",
+              "code": "// isSubsetOf() - Check if ALL items exist in another set\nlet basic = new Set(['read']);\nlet standard = new Set(['read', 'write']);\nlet premium = new Set(['read', 'write', 'delete', 'admin']);\n\nconsole.log(basic.isSubsetOf(standard));    // true - 'read' is in standard\nconsole.log(standard.isSubsetOf(premium));  // true - 'read', 'write' in premium\nconsole.log(premium.isSubsetOf(basic));     // false - premium has more items\n\n// isSupersetOf() - Check if set CONTAINS all items of another\nconsole.log(premium.isSupersetOf(standard));  // true\nconsole.log(premium.isSupersetOf(basic));     // true\nconsole.log(basic.isSupersetOf(premium));     // false\n\n// isDisjointFrom() - Check if sets have NO common items\nlet cats = new Set(['whiskers', 'mittens', 'shadow']);\nlet dogs = new Set(['buddy', 'max', 'bella']);\nlet mixed = new Set(['whiskers', 'buddy']);\n\nconsole.log(cats.isDisjointFrom(dogs));   // true - no overlap\nconsole.log(cats.isDisjointFrom(mixed));  // false - 'whiskers' in both\n\n// Practical: Permission validation\nlet requiredPerms = new Set(['read', 'write']);\nlet userPerms = new Set(['read', 'write', 'comment']);\n\nif (requiredPerms.isSubsetOf(userPerms)) {\n  console.log('Access granted!');\n} else {\n  let missing = requiredPerms.difference(userPerms);\n  console.log('Missing permissions:', [...missing]);\n}",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "**Set Basics:**\n```javascript\nnew Set()              // Empty set\nnew Set([1, 2, 3])     // Set from array\nset.add(value)         // Add item (returns set)\nset.delete(value)      // Remove item (returns boolean)\nset.has(value)         // Check existence (returns boolean)\nset.size               // Number of items\nset.clear()            // Remove all items\n[...set]               // Convert to array\n```\n\n**New ES2025 Methods:**\n\n**set.union(otherSet)**\n- Returns new Set with all items from both\n- No duplicates\n- Original sets unchanged\n\n**set.intersection(otherSet)**\n- Returns new Set with items in BOTH sets\n- Only common elements\n\n**set.difference(otherSet)**\n- Returns items in set but NOT in otherSet\n- Order matters! A.difference(B) !== B.difference(A)\n\n**set.symmetricDifference(otherSet)**\n- Returns items in EITHER set but not BOTH\n- Same as (A union B) - (A intersection B)\n\n**set.isSubsetOf(otherSet)**\n- Returns true if ALL items are in otherSet\n- Empty set is subset of everything\n\n**set.isSupersetOf(otherSet)**\n- Returns true if set CONTAINS all items of otherSet\n- Opposite of isSubsetOf\n\n**set.isDisjointFrom(otherSet)**\n- Returns true if sets have NO common items\n- intersection would be empty"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes:\n\n1. **Forgetting Sets use reference equality for objects:**\n   ```javascript\n   let set = new Set();\n   set.add({ name: 'Alice' });\n   set.add({ name: 'Alice' });  // Added! Different object reference\n   console.log(set.size);  // 2 - both objects added!\n   ```\n\n2. **difference() order matters:**\n   ```javascript\n   let a = new Set([1, 2, 3]);\n   let b = new Set([2, 3, 4]);\n   a.difference(b);  // Set { 1 } - what's in A but not B\n   b.difference(a);  // Set { 4 } - what's in B but not A\n   // These are different!\n   ```\n\n3. **Browser compatibility:**\n   - Set methods (union, intersection, etc.): ES2025\n   - Check browser support before using in production\n   - Consider polyfills for older browser support\n\n4. **Sets don't have array methods:**\n   ```javascript\n   let set = new Set([1, 2, 3]);\n   set.map(x => x * 2);  // ERROR! Sets don't have map()\n   [...set].map(x => x * 2);  // [2, 4, 6] - convert first!\n   ```\n\n5. **Modifying set while iterating:**\n   ```javascript\n   let set = new Set([1, 2, 3]);\n   for (let item of set) {\n     set.delete(item);  // Works but can be confusing\n   }\n   // Better: collect items to delete, then delete after loop\n   ```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "5.8-challenge",
+              "title": "Practice Challenge: Set Operations",
+              "description": "You're building a team management system. Use Set methods to:\n\n1. Find developers who work on BOTH frontend AND backend (intersection)\n2. Find developers who ONLY work on frontend (difference)\n3. Combine all developers into one team (union)\n4. Check if the senior team is a subset of all developers",
+              "instructions": "Use the new Set methods: union(), intersection(), difference(), and isSubsetOf()",
+              "starterCode": "let frontendTeam = new Set(['Alice', 'Bob', 'Charlie', 'Diana']);\nlet backendTeam = new Set(['Charlie', 'Diana', 'Eve', 'Frank']);\nlet seniorDevs = new Set(['Alice', 'Eve']);\n\n// 1. Find full-stack developers (in BOTH teams)\nlet fullStack = // YOUR CODE HERE\nconsole.log('Full-stack:', [...fullStack]);\n\n// 2. Find frontend-only developers (in frontend but NOT backend)\nlet frontendOnly = // YOUR CODE HERE\nconsole.log('Frontend only:', [...frontendOnly]);\n\n// 3. Combine all developers\nlet allDevs = // YOUR CODE HERE\nconsole.log('All developers:', [...allDevs]);\n\n// 4. Check if all seniors are in the combined team\nlet allSeniorsIncluded = // YOUR CODE HERE\nconsole.log('All seniors included:', allSeniorsIncluded);",
+              "solution": "let frontendTeam = new Set(['Alice', 'Bob', 'Charlie', 'Diana']);\nlet backendTeam = new Set(['Charlie', 'Diana', 'Eve', 'Frank']);\nlet seniorDevs = new Set(['Alice', 'Eve']);\n\n// 1. Find full-stack developers (in BOTH teams)\nlet fullStack = frontendTeam.intersection(backendTeam);\nconsole.log('Full-stack:', [...fullStack]);  // ['Charlie', 'Diana']\n\n// 2. Find frontend-only developers (in frontend but NOT backend)\nlet frontendOnly = frontendTeam.difference(backendTeam);\nconsole.log('Frontend only:', [...frontendOnly]);  // ['Alice', 'Bob']\n\n// 3. Combine all developers\nlet allDevs = frontendTeam.union(backendTeam);\nconsole.log('All developers:', [...allDevs]);\n// ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank']\n\n// 4. Check if all seniors are in the combined team\nlet allSeniorsIncluded = seniorDevs.isSubsetOf(allDevs);\nconsole.log('All seniors included:', allSeniorsIncluded);  // true",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Full-stack developers found correctly",
+                  "expectedOutput": "Charlie",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Seniors are subset of all devs",
+                  "expectedOutput": "true",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "intersection() finds items in BOTH sets"
+                },
+                {
+                  "level": 2,
+                  "text": "difference(other) finds items in the set but NOT in other"
+                },
+                {
+                  "level": 3,
+                  "text": "isSubsetOf() returns true if all items exist in the other set"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using filter instead of Set methods",
+                  "consequence": "More verbose code",
+                  "correction": "Use intersection(), difference(), union() for cleaner code"
+                },
+                {
+                  "mistake": "Confusing difference order",
+                  "consequence": "Wrong results",
+                  "correction": "A.difference(B) gives items in A but not B"
                 }
               ],
               "difficulty": "intermediate"
@@ -3191,6 +3317,276 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "9.6",
+          "title": "Generics (The Swiss Army Knife Analogy)",
+          "moduleId": "module-09",
+          "order": 6,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine a Swiss Army knife:\n\nWithout versatility (specific tools):\n- You need a separate knife for cutting bread\n- A different knife for cutting rope\n- Another knife for cutting paper\n- Each tool only works with one material\n\nWith versatility (Swiss Army knife):\n- One tool that adapts to many uses\n- Same cutting motion, different materials\n- The knife works with whatever you give it\n- Still sharp and effective for each use\n\nGenerics in TypeScript work the same way. Instead of writing separate functions for numbers, strings, and objects, you write ONE function that works with ANY type you give it. The function adapts to the type, just like a Swiss Army knife adapts to the material."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "// TypeScript Generics - Flexible, Reusable Types\n\n// PROBLEM: Writing the same function for different types\nfunction getFirstNumber(arr: number[]): number | undefined {\n  return arr[0];\n}\n\nfunction getFirstString(arr: string[]): string | undefined {\n  return arr[0];\n}\n\n// We need a new function for every type! That's a lot of repetition.\n\n// SOLUTION: Generics - One function that works with ANY type\nfunction getFirst<T>(arr: T[]): T | undefined {\n  return arr[0];\n}\n\n// Now it works with any type!\nconsole.log(getFirst<number>([1, 2, 3]));           // 1\nconsole.log(getFirst<string>(['a', 'b', 'c']));    // 'a'\nconsole.log(getFirst<boolean>([true, false]));     // true\n\n// TypeScript can also INFER the type automatically!\nconsole.log(getFirst([10, 20, 30]));               // 10 (infers number)\nconsole.log(getFirst(['hello', 'world']));         // 'hello' (infers string)\n\n// GENERIC INTERFACES - Create flexible data structures\ninterface Box<T> {\n  contents: T;\n  label: string;\n}\n\nlet numberBox: Box<number> = { contents: 42, label: 'Answer' };\nlet stringBox: Box<string> = { contents: 'Hello', label: 'Greeting' };\n\nconsole.log('Number box:', numberBox.contents);    // 42\nconsole.log('String box:', stringBox.contents);    // 'Hello'\n\n// MULTIPLE TYPE PARAMETERS - Use more than one generic type\nfunction makePair<K, V>(key: K, value: V): { key: K; value: V } {\n  return { key, value };\n}\n\nlet pair1 = makePair<string, number>('age', 25);\nlet pair2 = makePair<number, boolean>(1, true);\nlet pair3 = makePair('name', 'Alice');  // Types inferred automatically\n\nconsole.log('Pair 1:', pair1);  // { key: 'age', value: 25 }\nconsole.log('Pair 2:', pair2);  // { key: 1, value: true }\nconsole.log('Pair 3:', pair3);  // { key: 'name', value: 'Alice' }\n\n// GENERIC CONSTRAINTS - Limit what types are allowed\ninterface Lengthable {\n  length: number;\n}\n\nfunction logLength<T extends Lengthable>(item: T): void {\n  console.log('Length:', item.length);\n}\n\nlogLength('Hello');           // 5 (strings have length)\nlogLength([1, 2, 3, 4]);      // 4 (arrays have length)\nlogLength({ length: 10 });    // 10 (object with length property)\n// logLength(42);             // ERROR: number doesn't have length!\n\n// GENERIC CLASSES - Reusable data structures\nclass Stack<T> {\n  private items: T[] = [];\n  \n  push(item: T): void {\n    this.items.push(item);\n  }\n  \n  pop(): T | undefined {\n    return this.items.pop();\n  }\n  \n  peek(): T | undefined {\n    return this.items[this.items.length - 1];\n  }\n}\n\nlet numberStack = new Stack<number>();\nnumberStack.push(1);\nnumberStack.push(2);\nnumberStack.push(3);\nconsole.log('Top of stack:', numberStack.peek());  // 3\nconsole.log('Popped:', numberStack.pop());         // 3\n\nlet stringStack = new Stack<string>();\nstringStack.push('first');\nstringStack.push('second');\nconsole.log('String stack top:', stringStack.peek());  // 'second'\n\n// REAL-WORLD EXAMPLE: API Response wrapper\ninterface ApiResponse<T> {\n  data: T;\n  status: number;\n  message: string;\n}\n\ninterface User {\n  id: number;\n  name: string;\n}\n\ninterface Product {\n  sku: string;\n  price: number;\n}\n\nlet userResponse: ApiResponse<User> = {\n  data: { id: 1, name: 'Alice' },\n  status: 200,\n  message: 'Success'\n};\n\nlet productResponse: ApiResponse<Product> = {\n  data: { sku: 'ABC123', price: 29.99 },\n  status: 200,\n  message: 'Success'\n};\n\nconsole.log('User:', userResponse.data.name);       // 'Alice'\nconsole.log('Product:', productResponse.data.sku);  // 'ABC123'",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "Let's break down generics in TypeScript:\n\n1. **Basic Generic Syntax**: `function name<T>(param: T): T`\n   - `<T>` declares a type parameter (T is just a convention)\n   - `T` is a placeholder for any type\n   - Common names: T (Type), K (Key), V (Value), E (Element)\n\n2. **Using Generic Functions**:\n   ```typescript\n   // Explicit type argument\n   getFirst<string>(['a', 'b']);\n   \n   // Type inference (TypeScript figures it out)\n   getFirst(['a', 'b']);  // Infers string\n   ```\n\n3. **Generic Interfaces**: `interface Box<T> { contents: T }`\n   - Create reusable shapes that work with any type\n   - Specify the type when using: `Box<number>`\n\n4. **Multiple Type Parameters**: `<K, V>`\n   - Use multiple placeholders for complex types\n   - Each can be different types\n\n5. **Generic Constraints**: `<T extends SomeType>`\n   - Limit which types can be used\n   - `extends` means \"must have these properties\"\n   - Ensures the generic type has required features\n\n6. **Generic Classes**: `class Container<T> { ... }`\n   - Create reusable data structures\n   - Type is specified when creating instances\n   - Methods work with the specified type\n\n7. **When to Use Generics**:\n   - Functions that work with multiple types\n   - Data structures (lists, stacks, maps)\n   - API wrappers and response types\n   - Utility functions (getFirst, filter, map)\n\n8. **Benefits of Generics**:\n   - Write once, use with many types\n   - Full type safety maintained\n   - Better code reuse\n   - Self-documenting code"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes with generics:\n\n1. **Using `any` instead of generics**:\n   ```typescript\n   // Bad - loses type safety\n   function getFirst(arr: any[]): any {\n     return arr[0];\n   }\n   \n   // Good - preserves type safety\n   function getFirst<T>(arr: T[]): T | undefined {\n     return arr[0];\n   }\n   ```\n\n2. **Forgetting type constraints**:\n   ```typescript\n   // Error - T might not have 'length'\n   function logLength<T>(item: T): void {\n     console.log(item.length);  // ERROR!\n   }\n   \n   // Fixed - constrain T to have length\n   function logLength<T extends { length: number }>(item: T): void {\n     console.log(item.length);  // OK\n   }\n   ```\n\n3. **Over-complicating with generics**:\n   - Don't use generics when a simple union type works\n   - `string | number` might be clearer than `T`\n   - Use generics when you need type relationships\n\n4. **Confusing generic syntax**:\n   - `<T>` goes after function name: `function name<T>(...)`\n   - `<T>` goes after interface name: `interface Name<T> {...}`\n   - Arrow functions: `const fn = <T>(x: T): T => x;`\n\n5. **Not specifying return types**:\n   ```typescript\n   // TypeScript infers, but explicit is clearer\n   function getFirst<T>(arr: T[]): T | undefined {\n     return arr[0];\n   }\n   ```\n\n6. **Naming conventions**:\n   - T, U, V for general types\n   - K for keys, V for values\n   - E for elements in collections\n   - More descriptive names also work: `TItem`, `TResponse`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "9.6-challenge",
+              "title": "Practice Challenge",
+              "description": "Create a generic function and interface:\n\n1. Create a generic function `wrapInArray<T>` that:\n   - Takes a single value of type T\n   - Returns an array containing just that value: [value]\n\n2. Create a generic interface `Result<T>` with:\n   - `success`: boolean\n   - `data`: T (the generic type)\n   - `error`: string | null\n\n3. Create a function `createSuccess<T>` that:\n   - Takes a data parameter of type T\n   - Returns a Result<T> with success: true, the data, and error: null\n\n4. Test with different types (string, number, object)",
+              "instructions": "Create a generic function and interface:\n\n1. Create a generic function `wrapInArray<T>` that:\n   - Takes a single value of type T\n   - Returns an array containing just that value: [value]\n\n2. Create a generic interface `Result<T>` with:\n   - `success`: boolean\n   - `data`: T (the generic type)\n   - `error`: string | null\n\n3. Create a function `createSuccess<T>` that:\n   - Takes a data parameter of type T\n   - Returns a Result<T> with success: true, the data, and error: null\n\n4. Test with different types (string, number, object)",
+              "starterCode": "// 1. Create the wrapInArray function\nfunction wrapInArray(value) {\n  return [value];\n}\n\n// 2. Create the Result interface\ninterface Result {\n  success: boolean;\n  data: any;\n  error: string | null;\n}\n\n// 3. Create the createSuccess function\nfunction createSuccess(data) {\n  return {\n    success: true,\n    data: data,\n    error: null\n  };\n}\n\n// 4. Test your code\nconsole.log(wrapInArray(42));\nconsole.log(wrapInArray('hello'));\nconsole.log(createSuccess({ id: 1, name: 'Alice' }));",
+              "solution": "// 1. Generic wrapInArray function\nfunction wrapInArray<T>(value: T): T[] {\n  return [value];\n}\n\n// 2. Generic Result interface\ninterface Result<T> {\n  success: boolean;\n  data: T;\n  error: string | null;\n}\n\n// 3. Generic createSuccess function\nfunction createSuccess<T>(data: T): Result<T> {\n  return {\n    success: true,\n    data: data,\n    error: null\n  };\n}\n\n// 4. Test with different types\nconsole.log(wrapInArray<number>(42));        // [42]\nconsole.log(wrapInArray<string>('hello'));   // ['hello']\nconsole.log(wrapInArray([1, 2, 3]));         // [[1, 2, 3]]\n\nlet userResult = createSuccess<{ id: number; name: string }>({ id: 1, name: 'Alice' });\nconsole.log('User result:', userResult);\n// { success: true, data: { id: 1, name: 'Alice' }, error: null }\n\nlet numberResult = createSuccess<number>(42);\nconsole.log('Number result:', numberResult);\n// { success: true, data: 42, error: null }",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "wrapInArray should wrap value in array",
+                  "expectedOutput": "[42]",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "createSuccess should create proper Result",
+                  "expectedOutput": "true",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For wrapInArray, add <T> after the function name, then use T for the parameter type and T[] for the return type."
+                },
+                {
+                  "level": 2,
+                  "text": "For the Result interface, add <T> after the interface name: interface Result<T>. Then use T for the data property type."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to add <T> to the function or interface",
+                  "consequence": "TypeScript won't recognize it as a generic type.",
+                  "correction": "Add <T> immediately after the function/interface name: function name<T>(...) or interface Name<T> {...}"
+                },
+                {
+                  "mistake": "Using 'any' instead of the generic type parameter",
+                  "consequence": "Loses type safety - the whole point of generics.",
+                  "correction": "Replace 'any' with 'T' (or your type parameter name) to maintain type relationships."
+                },
+                {
+                  "mistake": "Forgetting the return type annotation",
+                  "consequence": "While TypeScript can infer, explicit types make code clearer.",
+                  "correction": "Add return type: function wrapInArray<T>(value: T): T[] { ... }"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "9.7",
+          "title": "Utility Types (The Transformer Toolkit Analogy)",
+          "moduleId": "module-09",
+          "order": 7,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you have a photo editing app:\n\nWithout filters/presets:\n- You manually adjust every setting for each photo\n- Want black and white? Manually remove all colors\n- Want to resize? Calculate and enter dimensions\n- Repetitive and error-prone\n\nWith filters/presets (Utility Types):\n- One-click transformations\n- 'Black and White' filter instantly transforms any photo\n- 'Resize 50%' works on any image\n- Same transformation, different inputs\n\nTypeScript's utility types are like photo filters for your types. They take an existing type and transform it into something new. `Partial<User>` makes all fields optional, `Pick<User, 'name'>` extracts just one field - same transformation, different types!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "// TypeScript Utility Types - Transform Types Easily\n\n// Our base interface to transform\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  age: number;\n  isAdmin: boolean;\n}\n\n// 1. PARTIAL<T> - Makes all properties optional\ntype PartialUser = Partial<User>;\n// Same as: { id?: number; name?: string; email?: string; ... }\n\nfunction updateUser(id: number, updates: Partial<User>): void {\n  console.log(`Updating user ${id} with:`, updates);\n}\n\nupdateUser(1, { name: 'Alice' });           // Only update name\nupdateUser(2, { email: 'new@email.com' });  // Only update email\nupdateUser(3, { age: 30, isAdmin: true });  // Update multiple fields\n\n// 2. REQUIRED<T> - Makes all properties required (opposite of Partial)\ninterface OptionalConfig {\n  theme?: string;\n  language?: string;\n  fontSize?: number;\n}\n\ntype RequiredConfig = Required<OptionalConfig>;\n// Now all properties are required!\n\nlet config: RequiredConfig = {\n  theme: 'dark',\n  language: 'en',\n  fontSize: 14\n};\nconsole.log('Config:', config);\n\n// 3. PICK<T, Keys> - Select only specific properties\ntype UserPreview = Pick<User, 'id' | 'name'>;\n// Same as: { id: number; name: string }\n\nlet preview: UserPreview = {\n  id: 1,\n  name: 'Alice'\n};\nconsole.log('User preview:', preview);\n\n// 4. OMIT<T, Keys> - Remove specific properties\ntype UserWithoutEmail = Omit<User, 'email'>;\n// Same as: { id: number; name: string; age: number; isAdmin: boolean }\n\nlet publicUser: UserWithoutEmail = {\n  id: 1,\n  name: 'Alice',\n  age: 25,\n  isAdmin: false\n};\nconsole.log('Public user (no email):', publicUser);\n\n// 5. READONLY<T> - Makes all properties read-only\ntype ReadonlyUser = Readonly<User>;\n\nlet frozenUser: ReadonlyUser = {\n  id: 1,\n  name: 'Alice',\n  email: 'alice@example.com',\n  age: 25,\n  isAdmin: false\n};\n// frozenUser.name = 'Bob';  // ERROR: Cannot assign to 'name' because it is read-only\nconsole.log('Frozen user:', frozenUser.name);\n\n// 6. RECORD<Keys, Type> - Create object type with specific keys\ntype UserRoles = 'admin' | 'editor' | 'viewer';\ntype RolePermissions = Record<UserRoles, string[]>;\n\nlet permissions: RolePermissions = {\n  admin: ['read', 'write', 'delete', 'manage'],\n  editor: ['read', 'write'],\n  viewer: ['read']\n};\nconsole.log('Editor can:', permissions.editor);  // ['read', 'write']\n\n// 7. EXCLUDE<T, U> - Remove types from a union\ntype AllStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';\ntype ActiveStatus = Exclude<AllStatus, 'cancelled'>;\n// Same as: 'pending' | 'approved' | 'rejected'\n\nlet status: ActiveStatus = 'pending';  // OK\n// let status2: ActiveStatus = 'cancelled';  // ERROR!\nconsole.log('Active status:', status);\n\n// 8. EXTRACT<T, U> - Keep only matching types from a union\ntype StringOrNumber = string | number | boolean | null;\ntype OnlyStringOrNumber = Extract<StringOrNumber, string | number>;\n// Same as: string | number\n\nlet value: OnlyStringOrNumber = 'hello';  // OK\nvalue = 42;  // OK\n// value = true;  // ERROR: boolean not allowed\nconsole.log('Value:', value);\n\n// 9. NONNULLABLE<T> - Remove null and undefined\ntype MaybeString = string | null | undefined;\ntype DefinitelyString = NonNullable<MaybeString>;\n// Same as: string\n\nlet definite: DefinitelyString = 'I exist!';\n// let bad: DefinitelyString = null;  // ERROR!\nconsole.log('Definite value:', definite);\n\n// 10. RETURNTYPE<T> - Get the return type of a function\nfunction createUser(name: string, age: number) {\n  return { id: Date.now(), name, age, createdAt: new Date() };\n}\n\ntype CreatedUser = ReturnType<typeof createUser>;\n// Same as: { id: number; name: string; age: number; createdAt: Date }\n\nlet newUser: CreatedUser = createUser('Bob', 30);\nconsole.log('Created user type:', newUser);\n\n// COMBINING UTILITY TYPES - Chain them together!\ntype EditableUserFields = Partial<Pick<User, 'name' | 'email' | 'age'>>;\n// Only name, email, age - and all optional!\n\nfunction editProfile(updates: EditableUserFields): void {\n  console.log('Editing profile:', updates);\n}\n\neditProfile({ name: 'New Name' });  // Just name\neditProfile({ email: 'new@email.com', age: 26 });  // email and age\neditProfile({});  // Nothing - all optional!\n\nconsole.log('Utility types are powerful!');",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "Let's break down TypeScript utility types:\n\n1. **Partial<T>** - Make all properties optional\n   - Use for update functions where you only change some fields\n   - `Partial<User>` = `{ id?: number; name?: string; ... }`\n\n2. **Required<T>** - Make all properties required\n   - Opposite of Partial\n   - Useful when you have optional defaults but need complete objects\n\n3. **Pick<T, Keys>** - Select specific properties\n   - `Pick<User, 'id' | 'name'>` = only id and name\n   - Great for creating smaller types from larger ones\n\n4. **Omit<T, Keys>** - Remove specific properties\n   - `Omit<User, 'password'>` = User without password\n   - Good for public-facing types\n\n5. **Readonly<T>** - Make all properties read-only\n   - Prevents accidental mutations\n   - Good for config objects, constants\n\n6. **Record<Keys, Type>** - Create object with specific keys\n   - `Record<'a' | 'b', number>` = `{ a: number; b: number }`\n   - Great for lookup tables, maps\n\n7. **Exclude<T, U>** - Remove types from union\n   - `Exclude<'a' | 'b' | 'c', 'a'>` = `'b' | 'c'`\n\n8. **Extract<T, U>** - Keep only matching types\n   - `Extract<string | number | boolean, string | number>` = `string | number`\n\n9. **NonNullable<T>** - Remove null and undefined\n   - `NonNullable<string | null>` = `string`\n\n10. **ReturnType<T>** - Get function's return type\n    - `ReturnType<typeof myFunction>` = whatever the function returns\n\n11. **Combining Utility Types**:\n    - Chain them: `Partial<Pick<User, 'name' | 'email'>>`\n    - Read right-to-left: Pick first, then Partial"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes with utility types:\n\n1. **Wrong key names in Pick/Omit**:\n   ```typescript\n   // ERROR: 'username' doesn't exist in User\n   type Bad = Pick<User, 'username'>;\n   \n   // Correct: Use actual property names\n   type Good = Pick<User, 'name'>;\n   ```\n\n2. **Forgetting union syntax for multiple keys**:\n   ```typescript\n   // Wrong\n   type Bad = Pick<User, 'id', 'name'>;\n   \n   // Correct - use union type\n   type Good = Pick<User, 'id' | 'name'>;\n   ```\n\n3. **Confusing Exclude and Omit**:\n   - `Omit` removes properties from object types\n   - `Exclude` removes types from union types\n   ```typescript\n   // Omit for objects\n   type NoEmail = Omit<User, 'email'>;\n   \n   // Exclude for unions\n   type NoA = Exclude<'a' | 'b' | 'c', 'a'>;\n   ```\n\n4. **Not using typeof with ReturnType**:\n   ```typescript\n   // Wrong - myFunc is a value, not a type\n   type Bad = ReturnType<myFunc>;\n   \n   // Correct - use typeof to get the type\n   type Good = ReturnType<typeof myFunc>;\n   ```\n\n5. **Over-nesting utility types**:\n   ```typescript\n   // Hard to read\n   type Complex = Partial<Required<Readonly<Pick<Omit<User, 'id'>, 'name'>>>>;\n   \n   // Better - use intermediate types\n   type UserName = Pick<User, 'name'>;\n   type EditableName = Partial<UserName>;\n   ```\n\n6. **Thinking Readonly prevents all mutations**:\n   - Only prevents reassignment of properties\n   - Nested objects can still be mutated\n   - Use deep readonly libraries for nested protection"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "9.7-challenge",
+              "title": "Practice Challenge",
+              "description": "Practice using utility types with a Product interface:\n\n1. Create an interface `Product` with:\n   - id: number\n   - name: string\n   - price: number\n   - description: string\n   - inStock: boolean\n\n2. Create these type aliases using utility types:\n   - `ProductPreview`: Only id, name, and price (use Pick)\n   - `ProductUpdate`: All fields optional (use Partial)\n   - `ProductWithoutId`: Everything except id (use Omit)\n\n3. Create a function `displayPreview` that takes a ProductPreview and logs it\n\n4. Create a function `updateProduct` that takes an id and ProductUpdate\n\n5. Test both functions",
+              "instructions": "Practice using utility types with a Product interface:\n\n1. Create an interface `Product` with:\n   - id: number\n   - name: string\n   - price: number\n   - description: string\n   - inStock: boolean\n\n2. Create these type aliases using utility types:\n   - `ProductPreview`: Only id, name, and price (use Pick)\n   - `ProductUpdate`: All fields optional (use Partial)\n   - `ProductWithoutId`: Everything except id (use Omit)\n\n3. Create a function `displayPreview` that takes a ProductPreview and logs it\n\n4. Create a function `updateProduct` that takes an id and ProductUpdate\n\n5. Test both functions",
+              "starterCode": "// 1. Create the Product interface\ninterface Product {\n  // Add properties here\n}\n\n// 2. Create type aliases using utility types\ntype ProductPreview = Product;  // Fix this\ntype ProductUpdate = Product;   // Fix this\ntype ProductWithoutId = Product; // Fix this\n\n// 3. Create displayPreview function\nfunction displayPreview(product) {\n  console.log(`${product.name}: $${product.price}`);\n}\n\n// 4. Create updateProduct function\nfunction updateProduct(id, updates) {\n  console.log(`Updating product ${id}:`, updates);\n}\n\n// 5. Test the functions\nlet preview = { id: 1, name: 'Laptop', price: 999 };\ndisplayPreview(preview);\n\nupdateProduct(1, { price: 899 });",
+              "solution": "// 1. Product interface\ninterface Product {\n  id: number;\n  name: string;\n  price: number;\n  description: string;\n  inStock: boolean;\n}\n\n// 2. Type aliases using utility types\ntype ProductPreview = Pick<Product, 'id' | 'name' | 'price'>;\ntype ProductUpdate = Partial<Product>;\ntype ProductWithoutId = Omit<Product, 'id'>;\n\n// 3. displayPreview function with proper types\nfunction displayPreview(product: ProductPreview): void {\n  console.log(`${product.name}: $${product.price}`);\n}\n\n// 4. updateProduct function with proper types\nfunction updateProduct(id: number, updates: ProductUpdate): void {\n  console.log(`Updating product ${id}:`, updates);\n}\n\n// 5. Test the functions\nlet preview: ProductPreview = { id: 1, name: 'Laptop', price: 999 };\ndisplayPreview(preview);  // 'Laptop: $999'\n\nupdateProduct(1, { price: 899 });  // Just price\nupdateProduct(2, { name: 'New Name', inStock: true });  // Multiple fields\nupdateProduct(3, {});  // Empty update is valid with Partial\n\n// ProductWithoutId example - for creating new products\nlet newProduct: ProductWithoutId = {\n  name: 'Keyboard',\n  price: 79,\n  description: 'Mechanical keyboard',\n  inStock: true\n};\nconsole.log('New product (no id yet):', newProduct);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "displayPreview should show product info",
+                  "expectedOutput": "Laptop: $999",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "updateProduct should accept partial updates",
+                  "expectedOutput": "Updating product 1:",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For ProductPreview, use Pick<Product, 'id' | 'name' | 'price'> to select only those three properties."
+                },
+                {
+                  "level": 2,
+                  "text": "For ProductUpdate, use Partial<Product> to make all properties optional. For ProductWithoutId, use Omit<Product, 'id'>."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using comma instead of union for Pick keys",
+                  "consequence": "Syntax error - Pick expects a single union type for keys.",
+                  "correction": "Use: Pick<Product, 'id' | 'name' | 'price'> with pipe (|) between property names."
+                },
+                {
+                  "mistake": "Forgetting quotes around property names",
+                  "consequence": "TypeScript looks for variables named id, name, etc.",
+                  "correction": "Property names must be string literals: 'id' | 'name', not id | name."
+                },
+                {
+                  "mistake": "Confusing Omit and Exclude",
+                  "consequence": "Exclude is for union types, Omit is for object properties.",
+                  "correction": "Use Omit<Product, 'id'> to remove the id property from the Product object type."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "9.8",
+          "title": "Type Guards and Discriminated Unions (The Security Checkpoint Analogy)",
+          "moduleId": "module-09",
+          "order": 8,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine airport security checkpoints:\n\nWithout proper checks:\n- Anyone could go anywhere\n- Passengers and crew mixed together\n- No way to know who has what access\n- Chaos and security risks\n\nWith security checkpoints (Type Guards):\n- Check ID: 'Are you a passenger or crew member?'\n- Once verified as crew, you can access crew areas\n- Once verified as passenger, you go through different process\n- Each check NARROWS DOWN who you are\n\nType guards work the same way in TypeScript. When you have a value that could be multiple types (like `string | number`), a type guard checks which type it actually is. Once checked, TypeScript KNOWS the specific type and gives you the right autocomplete and safety!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "// Type Guards and Type Narrowing in TypeScript\n\n// BASIC TYPE GUARDS - Using typeof\nfunction formatValue(value: string | number): string {\n  // TypeScript doesn't know if value is string or number here\n  \n  if (typeof value === 'string') {\n    // Inside this block, TypeScript KNOWS value is a string!\n    return value.toUpperCase();  // String methods available\n  } else {\n    // Here, TypeScript KNOWS value is a number!\n    return value.toFixed(2);  // Number methods available\n  }\n}\n\nconsole.log(formatValue('hello'));  // 'HELLO'\nconsole.log(formatValue(42.567));   // '42.57'\n\n// TYPE GUARDS WITH ARRAYS - Using Array.isArray\nfunction processData(data: string | string[]): void {\n  if (Array.isArray(data)) {\n    // TypeScript knows: data is string[]\n    console.log('Array with', data.length, 'items');\n    data.forEach(item => console.log('  -', item));\n  } else {\n    // TypeScript knows: data is string\n    console.log('Single string:', data);\n  }\n}\n\nprocessData('hello');                    // Single string: hello\nprocessData(['apple', 'banana', 'cherry']); // Array with 3 items\n\n// DISCRIMINATED UNIONS - The 'kind' pattern\ninterface Circle {\n  kind: 'circle';  // Literal type - always exactly 'circle'\n  radius: number;\n}\n\ninterface Rectangle {\n  kind: 'rectangle';  // Literal type - always exactly 'rectangle'\n  width: number;\n  height: number;\n}\n\ninterface Triangle {\n  kind: 'triangle';  // Literal type\n  base: number;\n  height: number;\n}\n\n// Union of all shapes - the 'kind' property discriminates between them\ntype Shape = Circle | Rectangle | Triangle;\n\nfunction calculateArea(shape: Shape): number {\n  // Switch on the discriminant property 'kind'\n  switch (shape.kind) {\n    case 'circle':\n      // TypeScript knows: shape is Circle\n      return Math.PI * shape.radius ** 2;\n      \n    case 'rectangle':\n      // TypeScript knows: shape is Rectangle\n      return shape.width * shape.height;\n      \n    case 'triangle':\n      // TypeScript knows: shape is Triangle\n      return 0.5 * shape.base * shape.height;\n  }\n}\n\nlet circle: Circle = { kind: 'circle', radius: 5 };\nlet rect: Rectangle = { kind: 'rectangle', width: 10, height: 4 };\nlet tri: Triangle = { kind: 'triangle', base: 6, height: 8 };\n\nconsole.log('Circle area:', calculateArea(circle).toFixed(2));   // 78.54\nconsole.log('Rectangle area:', calculateArea(rect));              // 40\nconsole.log('Triangle area:', calculateArea(tri));                // 24\n\n// CUSTOM TYPE GUARDS - Using 'is' keyword\ninterface Dog {\n  breed: string;\n  bark(): void;\n}\n\ninterface Cat {\n  breed: string;\n  meow(): void;\n}\n\ntype Pet = Dog | Cat;\n\n// Custom type guard function - returns 'pet is Dog'\nfunction isDog(pet: Pet): pet is Dog {\n  return 'bark' in pet;  // Dogs have a bark method\n}\n\nfunction isCat(pet: Pet): pet is Cat {\n  return 'meow' in pet;  // Cats have a meow method\n}\n\nfunction makeNoise(pet: Pet): void {\n  if (isDog(pet)) {\n    // TypeScript knows: pet is Dog\n    pet.bark();\n  } else {\n    // TypeScript knows: pet is Cat\n    pet.meow();\n  }\n}\n\nlet myDog: Dog = {\n  breed: 'Golden Retriever',\n  bark() { console.log('Woof!'); }\n};\n\nlet myCat: Cat = {\n  breed: 'Siamese',\n  meow() { console.log('Meow!'); }\n};\n\nmakeNoise(myDog);  // Woof!\nmakeNoise(myCat);  // Meow!\n\n// 'IN' OPERATOR TYPE GUARD\ninterface Admin {\n  name: string;\n  privileges: string[];\n}\n\ninterface Employee {\n  name: string;\n  startDate: Date;\n}\n\ntype Staff = Admin | Employee;\n\nfunction printStaffInfo(staff: Staff): void {\n  console.log('Name:', staff.name);  // Both types have 'name'\n  \n  if ('privileges' in staff) {\n    // TypeScript knows: staff is Admin\n    console.log('Privileges:', staff.privileges.join(', '));\n  }\n  \n  if ('startDate' in staff) {\n    // TypeScript knows: staff is Employee\n    console.log('Start date:', staff.startDate.toDateString());\n  }\n}\n\nlet admin: Admin = { name: 'Alice', privileges: ['create', 'delete'] };\nlet employee: Employee = { name: 'Bob', startDate: new Date('2024-01-15') };\n\nprintStaffInfo(admin);     // Name: Alice, Privileges: create, delete\nprintStaffInfo(employee);  // Name: Bob, Start date: Mon Jan 15 2024\n\n// NULLISH TYPE GUARDS - Handling null and undefined\nfunction greet(name: string | null | undefined): string {\n  if (name === null || name === undefined) {\n    return 'Hello, stranger!';\n  }\n  // TypeScript knows: name is string\n  return `Hello, ${name.toUpperCase()}!`;\n}\n\nconsole.log(greet('alice'));     // Hello, ALICE!\nconsole.log(greet(null));        // Hello, stranger!\nconsole.log(greet(undefined));   // Hello, stranger!\n\n// EXHAUSTIVENESS CHECKING - Catch missing cases\ntype Color = 'red' | 'green' | 'blue';\n\nfunction getColorHex(color: Color): string {\n  switch (color) {\n    case 'red':\n      return '#FF0000';\n    case 'green':\n      return '#00FF00';\n    case 'blue':\n      return '#0000FF';\n    default:\n      // This should never happen if all cases are handled\n      const _exhaustiveCheck: never = color;\n      return _exhaustiveCheck;\n  }\n}\n\nconsole.log('Red hex:', getColorHex('red'));    // #FF0000\nconsole.log('Blue hex:', getColorHex('blue'));  // #0000FF",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "Let's break down type guards and discriminated unions:\n\n1. **typeof Type Guards**:\n   ```typescript\n   if (typeof value === 'string') {\n     // value is string here\n   }\n   ```\n   - Works for: string, number, boolean, function, object, undefined\n   - Most common type guard\n\n2. **Array.isArray Type Guard**:\n   ```typescript\n   if (Array.isArray(data)) {\n     // data is an array here\n   }\n   ```\n   - Specifically checks for arrays\n   - typeof returns 'object' for arrays!\n\n3. **Discriminated Unions**:\n   - Add a common property with literal types\n   - Usually called 'kind', 'type', or 'tag'\n   - Switch on this property to narrow types\n   ```typescript\n   interface A { kind: 'a'; propA: string }\n   interface B { kind: 'b'; propB: number }\n   type AB = A | B;\n   ```\n\n4. **Custom Type Guards** (type predicates):\n   ```typescript\n   function isDog(pet: Pet): pet is Dog {\n     return 'bark' in pet;\n   }\n   ```\n   - Return type: `paramName is Type`\n   - Returns boolean, but narrows type when true\n\n5. **'in' Operator**:\n   ```typescript\n   if ('propertyName' in object) {\n     // object has propertyName here\n   }\n   ```\n   - Checks if property exists\n   - Narrows type to those with that property\n\n6. **Nullish Checks**:\n   ```typescript\n   if (value !== null && value !== undefined) {\n     // value is non-nullable here\n   }\n   ```\n   - Removes null/undefined from type\n   - Also works: `if (value) { ... }` (for truthy check)\n\n7. **Exhaustiveness Checking**:\n   - Use `never` type in default case\n   - TypeScript errors if you forget a case\n   - Great for switch statements on unions"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes with type guards:\n\n1. **typeof null === 'object'**:\n   ```typescript\n   let value: object | null = null;\n   \n   // Wrong - null passes this check!\n   if (typeof value === 'object') {\n     // value could still be null here\n   }\n   \n   // Correct - check for null first\n   if (value !== null && typeof value === 'object') {\n     // value is definitely an object\n   }\n   ```\n\n2. **Forgetting to handle all union members**:\n   ```typescript\n   type Status = 'pending' | 'approved' | 'rejected';\n   \n   function handleStatus(status: Status): void {\n     if (status === 'pending') { ... }\n     if (status === 'approved') { ... }\n     // Forgot 'rejected'!\n   }\n   ```\n   Use exhaustiveness checking with `never`.\n\n3. **Wrong discriminant property type**:\n   ```typescript\n   // Wrong - 'type' is just string, not specific\n   interface Circle { type: string; radius: number }\n   \n   // Correct - literal type\n   interface Circle { type: 'circle'; radius: number }\n   ```\n\n4. **Type guard returns wrong thing**:\n   ```typescript\n   // Wrong - returns boolean, but no narrowing\n   function isDog(pet: Pet): boolean {\n     return 'bark' in pet;\n   }\n   \n   // Correct - 'pet is Dog' enables narrowing\n   function isDog(pet: Pet): pet is Dog {\n     return 'bark' in pet;\n   }\n   ```\n\n5. **Not understanding narrowing scope**:\n   - Type narrowing only works within the if block\n   - After the block, type reverts to original union\n   - Use early returns for cleaner code\n\n6. **Overcomplicating simple checks**:\n   ```typescript\n   // Overcomplicated\n   function isDefined<T>(value: T | undefined): value is T {\n     return value !== undefined;\n   }\n   \n   // Often simpler inline\n   if (value !== undefined) { ... }\n   ```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "Key points about type guards and discriminated unions:\n\n1. **Type guards narrow types** - They tell TypeScript which specific type a value is within a code block.\n\n2. **Use the right guard for the job**:\n   - `typeof` for primitives\n   - `Array.isArray()` for arrays\n   - `in` operator for property existence\n   - Custom guards for complex logic\n   - Discriminated unions for related types\n\n3. **Discriminated unions are powerful** - Add a `kind` property with literal types for type-safe switches.\n\n4. **Custom type guards use `is`** - Return type `param is Type` enables TypeScript narrowing.\n\n5. **Exhaustiveness checking** - Use `never` in default case to catch missing union members at compile time.\n\n6. **Narrowing is block-scoped** - Type is narrowed only within the if/else/switch block.\n\n7. **Combine with utility types** - Works great with `Exclude`, `Extract`, and other utility types."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "9.8-challenge",
+              "title": "Practice Challenge",
+              "description": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
+              "instructions": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
+              "starterCode": "// 1. Create the payment method interfaces\ninterface CreditCard {\n  // Add properties\n}\n\ninterface PayPal {\n  // Add properties\n}\n\ninterface BankTransfer {\n  // Add properties\n}\n\n// 2. Create the union type\ntype PaymentMethod = any;  // Fix this\n\n// 3. Create the processPayment function\nfunction processPayment(payment, amount) {\n  // Use switch statement on payment.kind\n  console.log('Processing payment of $' + amount);\n}\n\n// 4. Test with all payment types\nlet creditPayment = { kind: 'credit', cardNumber: '4111111111111234', cvv: '123' };\nlet paypalPayment = { kind: 'paypal', email: 'user@example.com' };\nlet bankPayment = { kind: 'bank', accountNumber: '12345678', routingNumber: '987654321' };\n\nprocessPayment(creditPayment, 100);\nprocessPayment(paypalPayment, 50);\nprocessPayment(bankPayment, 200);",
+              "solution": "// 1. Payment method interfaces with discriminant 'kind'\ninterface CreditCard {\n  kind: 'credit';\n  cardNumber: string;\n  cvv: string;\n}\n\ninterface PayPal {\n  kind: 'paypal';\n  email: string;\n}\n\ninterface BankTransfer {\n  kind: 'bank';\n  accountNumber: string;\n  routingNumber: string;\n}\n\n// 2. Union type of all payment methods\ntype PaymentMethod = CreditCard | PayPal | BankTransfer;\n\n// 3. Process payment with type-safe switch\nfunction processPayment(payment: PaymentMethod, amount: number): void {\n  console.log(`Processing payment of $${amount}`);\n  \n  switch (payment.kind) {\n    case 'credit':\n      // TypeScript knows: payment is CreditCard\n      let lastFour = payment.cardNumber.slice(-4);\n      console.log(`Processing credit card ending in ${lastFour}`);\n      break;\n      \n    case 'paypal':\n      // TypeScript knows: payment is PayPal\n      console.log(`Processing PayPal payment for ${payment.email}`);\n      break;\n      \n    case 'bank':\n      // TypeScript knows: payment is BankTransfer\n      let maskedAccount = payment.accountNumber.slice(-4);\n      console.log(`Processing bank transfer from account ${maskedAccount}`);\n      break;\n  }\n}\n\n// 4. Test with all payment types\nlet creditPayment: CreditCard = {\n  kind: 'credit',\n  cardNumber: '4111111111111234',\n  cvv: '123'\n};\n\nlet paypalPayment: PayPal = {\n  kind: 'paypal',\n  email: 'user@example.com'\n};\n\nlet bankPayment: BankTransfer = {\n  kind: 'bank',\n  accountNumber: '12345678',\n  routingNumber: '987654321'\n};\n\nprocessPayment(creditPayment, 100);\n// Processing payment of $100\n// Processing credit card ending in 1234\n\nprocessPayment(paypalPayment, 50);\n// Processing payment of $50\n// Processing PayPal payment for user@example.com\n\nprocessPayment(bankPayment, 200);\n// Processing payment of $200\n// Processing bank transfer from account 5678",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should process credit card payment",
+                  "expectedOutput": "credit card ending in",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should process PayPal payment",
+                  "expectedOutput": "PayPal payment for",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should process bank transfer",
+                  "expectedOutput": "bank transfer from account",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Each interface needs a 'kind' property with a literal type (in quotes): kind: 'credit', kind: 'paypal', kind: 'bank'"
+                },
+                {
+                  "level": 2,
+                  "text": "In the switch statement, after 'case \"credit\":', TypeScript knows payment is CreditCard, so you can access payment.cardNumber safely."
+                },
+                {
+                  "level": 3,
+                  "text": "Use payment.cardNumber.slice(-4) to get the last 4 digits of the card number for display."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using string type instead of literal types for 'kind'",
+                  "consequence": "TypeScript can't narrow the type in switch cases - 'kind: string' could be anything.",
+                  "correction": "Use literal types: kind: 'credit' (with quotes), not kind: string."
+                },
+                {
+                  "mistake": "Forgetting to handle all cases in the switch",
+                  "consequence": "Some payment types won't be processed correctly.",
+                  "correction": "Add a case for each payment kind: 'credit', 'paypal', and 'bank'."
+                },
+                {
+                  "mistake": "Trying to access payment.cardNumber before narrowing",
+                  "consequence": "TypeScript error - not all PaymentMethods have cardNumber.",
+                  "correction": "Access type-specific properties only inside the appropriate case block."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
@@ -4025,7 +4421,7 @@
     {
       "id": "module-12",
       "title": "Module 12: Building Modern Front-End with React 19",
-      "description": "Learn React 19's latest features including JSX, components, hooks (useState, useEffect), and the new React 19 hooks",
+      "description": "Learn React 19's latest features including JSX, components, hooks (useState, useEffect), and the new React 19 hooks. Setup: Use Vite (npm create vite@latest) - Create React App (CRA) is deprecated as of 2023",
       "difficulty": "advanced",
       "estimatedHours": 3,
       "lessons": [
@@ -4052,6 +4448,11 @@
               "type": "THEORY",
               "title": "Breaking Down the Syntax",
               "content": "JSX syntax guide:\n\n1. **JSX is JavaScript, not HTML**:\n   ```jsx\n   // This JSX:\n   const element = <h1>Hello</h1>;\n   \n   // Compiles to:\n   const element = React.createElement('h1', null, 'Hello');\n   ```\n\n2. **Embedding Expressions** with {}:\n   ```jsx\n   const name = 'Alice';\n   const element = <h1>Hello, {name}!</h1>;\n   \n   // Any JavaScript expression works:\n   <p>{2 + 2}</p>                    // 4\n   <p>{user.name.toUpperCase()}</p>  // ALICE\n   <p>{isLoggedIn ? 'Hi' : 'Please login'}</p>\n   ```\n\n3. **Attributes in JSX**:\n   ```jsx\n   // className not class\n   <div className=\"container\"></div>\n   \n   // htmlFor not for\n   <label htmlFor=\"email\">Email:</label>\n   \n   // camelCase event handlers\n   <button onClick={handleClick}>Click</button>\n   \n   // Style as object\n   <div style={{ color: 'red', fontSize: 16 }}></div>\n   ```\n\n4. **Self-Closing Tags**:\n   ```jsx\n   // Must include /\n   <img src=\"logo.png\" />\n   <br />\n   <input type=\"text\" />\n   ```\n\n5. **Children**:\n   ```jsx\n   // String children\n   <h1>Title</h1>\n   \n   // Expression children\n   <p>{user.name}</p>\n   \n   // Component children\n   <div>\n     <Header />\n     <Main />\n     <Footer />\n   </div>\n   ```\n\n6. **Fragments** (avoid extra divs):\n   ```jsx\n   // Shorthand\n   return (\n     <>\n       <h1>Title</h1>\n       <p>Text</p>\n     </>\n   );\n   \n   // Full syntax (needed for keys)\n   return (\n     <React.Fragment>\n       <h1>Title</h1>\n       <p>Text</p>\n     </React.Fragment>\n   );\n   ```\n\n7. **Comments in JSX**:\n   ```jsx\n   return (\n     <div>\n       {/* This is a comment */}\n       <h1>Title</h1>\n     </div>\n   );\n   ```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Setting Up a React Project (2025)",
+              "content": "**Modern React Project Setup:**\\n\\n```bash\\n# Create new React project with Vite (RECOMMENDED)\\nnpm create vite@latest my-app -- --template react\\ncd my-app\\nnpm install\\nnpm run dev\\n```\\n\\n**Why Vite over Create React App?**\\n- Create React App (CRA) is **deprecated** as of 2023\\n- Vite is 10-100x faster for development\\n- Native ES modules support\\n- Recommended by React documentation\\n\\n**Alternative: Next.js** (for full-stack React):\\n```bash\\nnpx create-next-app@latest my-app\\n```\\n\\nAlways use Vite or Next.js for new React projects in 2025!"
             },
             {
               "type": "WARNING",
@@ -5205,6 +5606,447 @@
                 }
               ],
               "difficulty": "beginner"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-15",
+      "title": "Module 15: Testing JavaScript with Vitest",
+      "description": "Learn to write reliable tests using Vitest, the modern test runner",
+      "difficulty": "intermediate",
+      "estimatedHours": 4,
+      "lessons": [
+        {
+          "id": "15.1",
+          "title": "Why Testing Matters",
+          "moduleId": "module-15",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Test Pyramid",
+              "content": "Testing is like quality control in manufacturing. Before shipping a product, you check it works.\n\nThe Test Pyramid has three levels:\n\n1. **Unit Tests** (base) - Test individual functions in isolation. Fast, many of these.\n2. **Integration Tests** (middle) - Test how components work together. Slower, fewer.\n3. **End-to-End Tests** (top) - Test full user workflows. Slowest, fewest.\n\nWhy this shape? Unit tests are cheap and fast. E2E tests are expensive and slow. A healthy codebase has many unit tests, some integration tests, and few E2E tests.\n\nWithout tests, every change is a gamble. With tests, you refactor with confidence."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Tests as Documentation",
+              "content": "// Tests document expected behavior better than comments\n\n// What does this function do? The test tells us:\ntest('calculateDiscount applies 10% off for orders over $100', () => {\n  expect(calculateDiscount(150)).toBe(15);\n  expect(calculateDiscount(50)).toBe(0);\n});\n\n// Now we know:\n// - Orders over $100 get 10% discount\n// - Orders $100 or less get no discount\n// This documentation never goes stale!",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "TDD: Test-Driven Development",
+              "content": "TDD flips the script: write tests BEFORE code.\n\n1. **Red** - Write a failing test for the feature you want\n2. **Green** - Write minimal code to make the test pass\n3. **Refactor** - Clean up the code, tests ensure it still works\n\nBenefits of TDD:\n- Forces you to think about requirements first\n- Produces testable, modular code by design\n- Builds a safety net as you code\n- Prevents over-engineering (only write what's needed)\n\nStart small: write one test, make it pass, repeat."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.1-challenge",
+              "title": "Identify Test Types",
+              "description": "Write comments identifying which type of test (unit, integration, or e2e) each scenario describes.",
+              "instructions": "For each test description, add a comment identifying if it's a unit test, integration test, or e2e test.",
+              "starterCode": "// Identify each test type: unit, integration, or e2e\n\n// Test 1: Check if formatPrice(10.5) returns '$10.50'\n// Type: ???\n\n// Test 2: Verify login form submits to API and stores token\n// Type: ???\n\n// Test 3: User can browse products, add to cart, and checkout\n// Type: ???\n\n// Test 4: Check if validateEmail returns false for 'invalid'\n// Type: ???\n\nconsole.log('Test 1: formatPrice - unit test');\nconsole.log('Test 2: login form + API - integration test');\nconsole.log('Test 3: full checkout flow - e2e test');\nconsole.log('Test 4: validateEmail - unit test');",
+              "solution": "// Identify each test type: unit, integration, or e2e\n\n// Test 1: Check if formatPrice(10.5) returns '$10.50'\n// Type: unit (tests single pure function)\n\n// Test 2: Verify login form submits to API and stores token\n// Type: integration (tests form + API + storage together)\n\n// Test 3: User can browse products, add to cart, and checkout\n// Type: e2e (tests complete user journey)\n\n// Test 4: Check if validateEmail returns false for 'invalid'\n// Type: unit (tests single pure function)\n\nconsole.log('Test 1: formatPrice - unit test');\nconsole.log('Test 2: login form + API - integration test');\nconsole.log('Test 3: full checkout flow - e2e test');\nconsole.log('Test 4: validateEmail - unit test');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Correctly identifies test types",
+                  "expectedOutput": "unit test",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Unit tests test ONE function. Integration tests test multiple components together. E2E tests simulate real user flows."
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.2",
+          "title": "Vitest Setup & First Test",
+          "moduleId": "module-15",
+          "order": 2,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Vitest?",
+              "content": "Vitest is a modern test runner built for speed:\n\n- **Fast** - Uses Vite's transform pipeline, runs tests in parallel\n- **Compatible** - Jest-compatible API (easy migration)\n- **Modern** - Native ESM, TypeScript support out of the box\n- **Integrated** - Works seamlessly with Vite projects\n\nInstallation:\n```bash\nnpm install -D vitest\n```\n\nAdd to package.json:\n```json\n{\n  \"scripts\": {\n    \"test\": \"vitest\",\n    \"test:run\": \"vitest run\"\n  }\n}\n```\n\n`vitest` watches for changes. `vitest run` runs once and exits."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Your First Test",
+              "content": "// math.js\nexport function add(a, b) {\n  return a + b;\n}\n\n// math.test.js\nimport { describe, it, expect } from 'vitest';\nimport { add } from './math.js';\n\ndescribe('add', () => {\n  it('adds two positive numbers', () => {\n    expect(add(2, 3)).toBe(5);\n  });\n\n  it('handles negative numbers', () => {\n    expect(add(-1, 1)).toBe(0);\n  });\n});\n\n// Run: npm test\n// Output: ✓ add > adds two positive numbers\n//         ✓ add > handles negative numbers",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "describe, it, expect",
+              "content": "Three core functions:\n\n**describe(name, fn)** - Groups related tests\n```javascript\ndescribe('Calculator', () => { ... });\n```\n\n**it(name, fn)** or **test(name, fn)** - Defines a single test\n```javascript\nit('should add numbers', () => { ... });\n```\n\n**expect(value)** - Creates an assertion\n```javascript\nexpect(result).toBe(expected);     // Strict equality\nexpect(arr).toEqual([1, 2, 3]);    // Deep equality\nexpect(fn).toThrow();              // Throws error\nexpect(value).toBeTruthy();        // Truthy check\n```\n\nNaming convention: Test names should read like sentences.\n\"it should calculate total with tax\" tells you exactly what's being tested."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.2-challenge",
+              "title": "Write Your First Tests",
+              "description": "Write tests for a multiply function using describe, it, and expect.",
+              "instructions": "Complete the test file for the multiply function. Test positive numbers, negative numbers, and zero.",
+              "starterCode": "// Simulating Vitest functions for this exercise\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// Function to test\nfunction multiply(a, b) {\n  return a * b;\n}\n\n// Write your tests below\ndescribe('multiply', () => {\n  it('multiplies two positive numbers', () => {\n    // YOUR CODE: expect multiply(3, 4) to be 12\n  });\n\n  it('handles negative numbers', () => {\n    // YOUR CODE: expect multiply(-2, 5) to be -10\n  });\n\n  it('returns zero when multiplied by zero', () => {\n    // YOUR CODE: expect multiply(100, 0) to be 0\n  });\n});",
+              "solution": "// Simulating Vitest functions for this exercise\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// Function to test\nfunction multiply(a, b) {\n  return a * b;\n}\n\n// Write your tests below\ndescribe('multiply', () => {\n  it('multiplies two positive numbers', () => {\n    expect(multiply(3, 4)).toBe(12);\n  });\n\n  it('handles negative numbers', () => {\n    expect(multiply(-2, 5)).toBe(-10);\n  });\n\n  it('returns zero when multiplied by zero', () => {\n    expect(multiply(100, 0)).toBe(0);\n  });\n});",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "All tests pass",
+                  "expectedOutput": "✓",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use expect(multiply(a, b)).toBe(expectedResult) pattern"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.3",
+          "title": "Testing Functions",
+          "moduleId": "module-15",
+          "order": 3,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Pure Functions & Testability",
+              "content": "Pure functions are easiest to test:\n- Same input always gives same output\n- No side effects (no API calls, no DOM, no randomness)\n\n```javascript\n// Pure - easy to test\nfunction calculateTax(price, rate) {\n  return price * rate;\n}\n\n// Impure - harder to test (depends on external state)\nfunction calculateTaxWithDate(price) {\n  const rate = new Date().getMonth() < 6 ? 0.08 : 0.1;\n  return price * rate;\n}\n```\n\nRefactor impure functions: inject dependencies instead of creating them inside."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Arrange-Act-Assert Pattern",
+              "content": "// AAA makes tests readable and consistent\n\nimport { describe, it, expect } from 'vitest';\nimport { applyDiscount } from './pricing.js';\n\ndescribe('applyDiscount', () => {\n  it('applies percentage discount correctly', () => {\n    // Arrange - set up test data\n    const price = 100;\n    const discountPercent = 20;\n\n    // Act - call the function\n    const result = applyDiscount(price, discountPercent);\n\n    // Assert - verify the result\n    expect(result).toBe(80);\n  });\n});",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "test.each for Multiple Cases",
+              "content": "Avoid repetitive tests with test.each:\n\n```javascript\nimport { describe, it, expect } from 'vitest';\n\ndescribe('isEven', () => {\n  it.each([\n    [2, true],\n    [3, false],\n    [0, true],\n    [-4, true],\n  ])('isEven(%i) returns %s', (input, expected) => {\n    expect(isEven(input)).toBe(expected);\n  });\n});\n```\n\nTest edge cases:\n- Empty inputs (null, undefined, '', [])\n- Boundary values (0, -1, MAX_INT)\n- Invalid inputs (wrong types)\n- Large inputs (performance)"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.3-challenge",
+              "title": "Test Edge Cases",
+              "description": "Write comprehensive tests for a validatePassword function including edge cases.",
+              "instructions": "Test the validatePassword function with valid passwords, short passwords, missing numbers, and edge cases.",
+              "starterCode": "// Simulating Vitest\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// Function to test: password must be 8+ chars with at least one number\nfunction validatePassword(password) {\n  if (!password || password.length < 8) return false;\n  return /\\d/.test(password);\n}\n\ndescribe('validatePassword', () => {\n  // Arrange-Act-Assert pattern\n  \n  it('returns true for valid password', () => {\n    // Arrange\n    const password = 'secure123';\n    // Act\n    const result = validatePassword(password);\n    // Assert\n    expect(result).toBe(true);\n  });\n\n  it('returns false for password without number', () => {\n    // YOUR CODE HERE\n  });\n\n  it('returns false for short password', () => {\n    // YOUR CODE HERE\n  });\n\n  it('returns false for empty string', () => {\n    // YOUR CODE HERE\n  });\n\n  it('returns false for null', () => {\n    // YOUR CODE HERE\n  });\n});",
+              "solution": "// Simulating Vitest\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// Function to test: password must be 8+ chars with at least one number\nfunction validatePassword(password) {\n  if (!password || password.length < 8) return false;\n  return /\\d/.test(password);\n}\n\ndescribe('validatePassword', () => {\n  it('returns true for valid password', () => {\n    const password = 'secure123';\n    const result = validatePassword(password);\n    expect(result).toBe(true);\n  });\n\n  it('returns false for password without number', () => {\n    const password = 'securepassword';\n    const result = validatePassword(password);\n    expect(result).toBe(false);\n  });\n\n  it('returns false for short password', () => {\n    const password = 'abc1';\n    const result = validatePassword(password);\n    expect(result).toBe(false);\n  });\n\n  it('returns false for empty string', () => {\n    const password = '';\n    const result = validatePassword(password);\n    expect(result).toBe(false);\n  });\n\n  it('returns false for null', () => {\n    const password = null;\n    const result = validatePassword(password);\n    expect(result).toBe(false);\n  });\n});",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "All tests pass",
+                  "expectedOutput": "✓",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Follow the Arrange-Act-Assert pattern for each test"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.4",
+          "title": "Mocking & Spies",
+          "moduleId": "module-15",
+          "order": 4,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Mock?",
+              "content": "Mocks replace real dependencies with controlled fakes.\n\nWhen to mock:\n- API calls (don't hit real servers in tests)\n- Databases (tests should be fast and isolated)\n- Time/dates (make tests deterministic)\n- External services (payment, email)\n\nWhen NOT to mock:\n- The code you're actually testing\n- Simple utility functions\n- When real behavior is fast and reliable\n\nOver-mocking makes tests brittle and less valuable. Mock at the boundaries, not everywhere."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "vi.fn() and vi.mock()",
+              "content": "import { vi, describe, it, expect } from 'vitest';\nimport { fetchUser } from './api.js';\nimport { getUserGreeting } from './greeting.js';\n\n// Mock the entire module\nvi.mock('./api.js', () => ({\n  fetchUser: vi.fn()\n}));\n\ndescribe('getUserGreeting', () => {\n  it('greets the user by name', async () => {\n    // Setup mock return value\n    fetchUser.mockResolvedValue({ name: 'Alice' });\n\n    const greeting = await getUserGreeting(1);\n\n    expect(greeting).toBe('Hello, Alice!');\n    expect(fetchUser).toHaveBeenCalledWith(1);\n  });\n\n  it('handles API errors gracefully', async () => {\n    fetchUser.mockRejectedValue(new Error('Network error'));\n\n    const greeting = await getUserGreeting(1);\n\n    expect(greeting).toBe('Hello, Guest!');\n  });\n});",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Spies vs Mocks",
+              "content": "**Spies** watch function calls without changing behavior:\n```javascript\nconst spy = vi.spyOn(console, 'log');\nmyFunction();\nexpect(spy).toHaveBeenCalledWith('expected message');\nspy.mockRestore(); // Restore original\n```\n\n**Mocks** replace the implementation:\n```javascript\nconst mockFn = vi.fn().mockReturnValue(42);\nexpect(mockFn()).toBe(42);\n```\n\nUseful mock methods:\n- `mockReturnValue(val)` - Always return val\n- `mockResolvedValue(val)` - Return Promise.resolve(val)\n- `mockRejectedValue(err)` - Return Promise.reject(err)\n- `mockImplementation(fn)` - Custom logic\n\nVerify calls:\n- `toHaveBeenCalled()` - Was it called?\n- `toHaveBeenCalledWith(args)` - With what?\n- `toHaveBeenCalledTimes(n)` - How many times?"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.4-challenge",
+              "title": "Mock an API Call",
+              "description": "Write tests using mocks to test a function that depends on an API call.",
+              "instructions": "Test the getWeatherMessage function by mocking the fetchWeather dependency. Test both success and error cases.",
+              "starterCode": "// Simulating Vitest mock functions\nconst vi = {\n  fn: () => {\n    const mock = (...args) => mock._returnValue;\n    mock._calls = [];\n    mock.mockReturnValue = (val) => { mock._returnValue = val; return mock; };\n    mock.mockResolvedValue = (val) => { mock._returnValue = Promise.resolve(val); return mock; };\n    mock.mockRejectedValue = (err) => { mock._returnValue = Promise.reject(err); return mock; };\n    return mock;\n  }\n};\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// The API function we'll mock\nlet fetchWeather = async (city) => {\n  // In reality this would call an API\n  return { temp: 72, condition: 'sunny' };\n};\n\n// Function to test\nasync function getWeatherMessage(city) {\n  try {\n    const weather = await fetchWeather(city);\n    return `It's ${weather.temp}°F and ${weather.condition} in ${city}`;\n  } catch (error) {\n    return `Weather unavailable for ${city}`;\n  }\n}\n\ndescribe('getWeatherMessage', () => {\n  it('returns formatted weather message on success', async () => {\n    // Mock fetchWeather to return controlled data\n    fetchWeather = vi.fn().mockResolvedValue({ temp: 75, condition: 'cloudy' });\n    \n    const message = await getWeatherMessage('Seattle');\n    \n    expect(message).toBe(\"It's 75°F and cloudy in Seattle\");\n  });\n\n  it('returns fallback message on API error', async () => {\n    // YOUR CODE: Mock fetchWeather to reject with an error\n    // Then call getWeatherMessage and verify the fallback message\n  });\n});",
+              "solution": "// Simulating Vitest mock functions\nconst vi = {\n  fn: () => {\n    const mock = (...args) => mock._returnValue;\n    mock._calls = [];\n    mock.mockReturnValue = (val) => { mock._returnValue = val; return mock; };\n    mock.mockResolvedValue = (val) => { mock._returnValue = Promise.resolve(val); return mock; };\n    mock.mockRejectedValue = (err) => { mock._returnValue = Promise.reject(err); return mock; };\n    return mock;\n  }\n};\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  ✓ ${name}`); }\n  catch (e) { console.log(`  ✗ ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); }\n});\n\n// The API function we'll mock\nlet fetchWeather = async (city) => {\n  return { temp: 72, condition: 'sunny' };\n};\n\n// Function to test\nasync function getWeatherMessage(city) {\n  try {\n    const weather = await fetchWeather(city);\n    return `It's ${weather.temp}°F and ${weather.condition} in ${city}`;\n  } catch (error) {\n    return `Weather unavailable for ${city}`;\n  }\n}\n\ndescribe('getWeatherMessage', () => {\n  it('returns formatted weather message on success', async () => {\n    fetchWeather = vi.fn().mockResolvedValue({ temp: 75, condition: 'cloudy' });\n    \n    const message = await getWeatherMessage('Seattle');\n    \n    expect(message).toBe(\"It's 75°F and cloudy in Seattle\");\n  });\n\n  it('returns fallback message on API error', async () => {\n    fetchWeather = vi.fn().mockRejectedValue(new Error('Network error'));\n    \n    const message = await getWeatherMessage('Seattle');\n    \n    expect(message).toBe('Weather unavailable for Seattle');\n  });\n});",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Both tests pass",
+                  "expectedOutput": "✓",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use mockRejectedValue to simulate an API error"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.5",
+          "title": "Testing Async Code",
+          "moduleId": "module-15",
+          "order": 5,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Async Testing Patterns",
+              "content": "Async code needs special handling in tests. Vitest provides several approaches:\n\n**Return a Promise:**\n```javascript\nit('fetches data', () => {\n  return fetchData().then(data => {\n    expect(data).toBeDefined();\n  });\n});\n```\n\n**Use async/await (preferred):**\n```javascript\nit('fetches data', async () => {\n  const data = await fetchData();\n  expect(data).toBeDefined();\n});\n```\n\n**Key rule:** Always await or return async operations. Forgotten awaits cause tests to pass incorrectly because assertions run after the test completes."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Controlling Time with vi.useFakeTimers()",
+              "content": "import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';\n\nfunction delayedGreeting(name, callback) {\n  setTimeout(() => callback(`Hello, ${name}!`), 1000);\n}\n\ndescribe('delayedGreeting', () => {\n  beforeEach(() => {\n    vi.useFakeTimers();  // Take control of time\n  });\n\n  afterEach(() => {\n    vi.restoreAllMocks();  // Clean up\n  });\n\n  it('calls callback after 1 second', () => {\n    const callback = vi.fn();\n\n    delayedGreeting('Alice', callback);\n    \n    expect(callback).not.toHaveBeenCalled();  // Not yet!\n    \n    vi.advanceTimersByTime(1000);  // Fast-forward 1 second\n    \n    expect(callback).toHaveBeenCalledWith('Hello, Alice!');\n  });\n});",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Testing Promise States",
+              "content": "Test all promise outcomes:\n\n```javascript\ndescribe('fetchUser', () => {\n  it('resolves with user data', async () => {\n    const user = await fetchUser(1);\n    expect(user.name).toBe('Alice');\n  });\n\n  it('rejects for invalid id', async () => {\n    await expect(fetchUser(-1)).rejects.toThrow('Invalid ID');\n  });\n\n  it('rejects with specific error type', async () => {\n    await expect(fetchUser(999))\n      .rejects\n      .toBeInstanceOf(NotFoundError);\n  });\n});\n```\n\nUseful matchers:\n- `resolves.toBe()` - Unwraps resolved value\n- `rejects.toThrow()` - Checks rejection\n- `vi.waitFor()` - Wait for condition to be true"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.5-challenge",
+              "title": "Test Async Functions",
+              "description": "Write tests for async functions including timer-based code.",
+              "instructions": "Complete the tests for the fetchUserData function and the debounce utility. Use async/await and fake timers.",
+              "starterCode": "// Simulating Vitest\nconst vi = {\n  fn: () => {\n    const mock = (...args) => { mock._calls.push(args); return mock._returnValue; };\n    mock._calls = [];\n    mock._returnValue = undefined;\n    mock.mockReturnValue = (val) => { mock._returnValue = val; return mock; };\n    return mock;\n  },\n  useFakeTimers: () => { global._fakeTime = 0; },\n  advanceTimersByTime: (ms) => {\n    global._fakeTime += ms;\n    global._pendingTimers?.forEach(t => {\n      if (t.time <= global._fakeTime && !t.called) {\n        t.called = true; t.fn();\n      }\n    });\n  },\n  restoreAllMocks: () => { global._pendingTimers = []; }\n};\nglobal._pendingTimers = [];\nconst originalSetTimeout = setTimeout;\nglobal.setTimeout = (fn, ms) => {\n  global._pendingTimers.push({ fn, time: (global._fakeTime || 0) + ms, called: false });\n};\n\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toHaveBeenCalled: () => { if (val._calls.length === 0) throw new Error('Expected function to be called'); },\n  not: { toHaveBeenCalled: () => { if (val._calls?.length > 0) throw new Error('Expected function not to be called'); } }\n});\nconst beforeEach = (fn) => fn();\nconst afterEach = (fn) => {};\n\n// Functions to test\nasync function fetchUserData(id) {\n  await new Promise(r => originalSetTimeout(r, 10));\n  if (id <= 0) throw new Error('Invalid ID');\n  return { id, name: 'Test User' };\n}\n\nfunction debounce(fn, delay) {\n  let timeoutId;\n  return (...args) => {\n    clearTimeout(timeoutId);\n    timeoutId = setTimeout(() => fn(...args), delay);\n  };\n}\n\ndescribe('fetchUserData', () => {\n  it('returns user data for valid id', async () => {\n    const user = await fetchUserData(1);\n    expect(user.name).toBe('Test User');\n  });\n\n  it('throws error for invalid id', async () => {\n    // YOUR CODE: Test that fetchUserData(0) throws 'Invalid ID'\n    try {\n      await fetchUserData(0);\n      throw new Error('Should have thrown');\n    } catch (e) {\n      expect(e.message).toBe('Invalid ID');\n    }\n  });\n});\n\ndescribe('debounce', () => {\n  beforeEach(() => {\n    vi.useFakeTimers();\n  });\n\n  it('delays function execution', () => {\n    const fn = vi.fn();\n    const debounced = debounce(fn, 500);\n\n    debounced();\n    expect(fn).not.toHaveBeenCalled();\n\n    // YOUR CODE: Advance time and verify fn was called\n    vi.advanceTimersByTime(500);\n    expect(fn).toHaveBeenCalled();\n  });\n});",
+              "solution": "// Simulating Vitest\nconst vi = {\n  fn: () => {\n    const mock = (...args) => { mock._calls.push(args); return mock._returnValue; };\n    mock._calls = [];\n    mock._returnValue = undefined;\n    mock.mockReturnValue = (val) => { mock._returnValue = val; return mock; };\n    return mock;\n  },\n  useFakeTimers: () => { global._fakeTime = 0; },\n  advanceTimersByTime: (ms) => {\n    global._fakeTime += ms;\n    global._pendingTimers?.forEach(t => {\n      if (t.time <= global._fakeTime && !t.called) {\n        t.called = true; t.fn();\n      }\n    });\n  },\n  restoreAllMocks: () => { global._pendingTimers = []; }\n};\nglobal._pendingTimers = [];\nconst originalSetTimeout = setTimeout;\nglobal.setTimeout = (fn, ms) => {\n  global._pendingTimers.push({ fn, time: (global._fakeTime || 0) + ms, called: false });\n};\n\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toHaveBeenCalled: () => { if (val._calls.length === 0) throw new Error('Expected function to be called'); },\n  not: { toHaveBeenCalled: () => { if (val._calls?.length > 0) throw new Error('Expected function not to be called'); } }\n});\nconst beforeEach = (fn) => fn();\nconst afterEach = (fn) => {};\n\n// Functions to test\nasync function fetchUserData(id) {\n  await new Promise(r => originalSetTimeout(r, 10));\n  if (id <= 0) throw new Error('Invalid ID');\n  return { id, name: 'Test User' };\n}\n\nfunction debounce(fn, delay) {\n  let timeoutId;\n  return (...args) => {\n    clearTimeout(timeoutId);\n    timeoutId = setTimeout(() => fn(...args), delay);\n  };\n}\n\ndescribe('fetchUserData', () => {\n  it('returns user data for valid id', async () => {\n    const user = await fetchUserData(1);\n    expect(user.name).toBe('Test User');\n  });\n\n  it('throws error for invalid id', async () => {\n    try {\n      await fetchUserData(0);\n      throw new Error('Should have thrown');\n    } catch (e) {\n      expect(e.message).toBe('Invalid ID');\n    }\n  });\n});\n\ndescribe('debounce', () => {\n  beforeEach(() => {\n    vi.useFakeTimers();\n  });\n\n  it('delays function execution', () => {\n    const fn = vi.fn();\n    const debounced = debounce(fn, 500);\n\n    debounced();\n    expect(fn).not.toHaveBeenCalled();\n\n    vi.advanceTimersByTime(500);\n    expect(fn).toHaveBeenCalled();\n  });\n});",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "All async tests pass",
+                  "expectedOutput": "\u2713",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use try/catch to test for thrown errors in async functions"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.6",
+          "title": "Testing DOM & Components",
+          "moduleId": "module-15",
+          "order": 6,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Testing Library Philosophy",
+              "content": "@testing-library focuses on testing behavior, not implementation:\n\n**Core principle:** Test the way users interact with your app.\n\nInstallation:\n```bash\nnpm install -D @testing-library/dom @testing-library/user-event\n```\n\nFor frameworks:\n```bash\nnpm install -D @testing-library/react  # React\nnpm install -D @testing-library/vue    # Vue\n```\n\nBad test (implementation detail):\n```javascript\nexpect(button.className).toContain('active');\n```\n\nGood test (user behavior):\n```javascript\nexpect(button).toHaveAttribute('aria-pressed', 'true');\n```\n\nUsers don't check class names. Test what they actually see and do."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "render, screen, and userEvent",
+              "content": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { Counter } from './Counter';\n\ndescribe('Counter', () => {\n  it('increments count when clicked', async () => {\n    // Arrange: render the component\n    render(<Counter initialCount={0} />);\n    const user = userEvent.setup();\n\n    // Act: find and click the button\n    const button = screen.getByRole('button', { name: /increment/i });\n    await user.click(button);\n\n    // Assert: check the displayed count\n    expect(screen.getByText('Count: 1')).toBeInTheDocument();\n  });\n\n  it('shows correct initial count', () => {\n    render(<Counter initialCount={5} />);\n    expect(screen.getByText('Count: 5')).toBeInTheDocument();\n  });\n});",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Screen Query Priority",
+              "content": "Use queries in this order (most to least preferred):\n\n1. **getByRole** - Best for accessibility\n   `screen.getByRole('button', { name: /submit/i })`\n\n2. **getByLabelText** - For form inputs\n   `screen.getByLabelText('Email')`\n\n3. **getByPlaceholderText** - When no label exists\n   `screen.getByPlaceholderText('Search...')`\n\n4. **getByText** - For non-interactive content\n   `screen.getByText('Welcome back!')`\n\n5. **getByTestId** - Last resort\n   `screen.getByTestId('custom-element')`\n\nQuery variants:\n- `getBy...` - Throws if not found (default)\n- `queryBy...` - Returns null if not found\n- `findBy...` - Async, waits for element\n- `getAllBy...` - Returns array of all matches"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.6-challenge",
+              "title": "Test a Form Component",
+              "description": "Write tests for a login form using testing-library patterns.",
+              "instructions": "Complete the tests for the LoginForm. Test form validation, user input, and submission.",
+              "starterCode": "// Simulating Testing Library\nconst screen = {\n  _elements: {},\n  getByRole: (role, options) => {\n    const key = `${role}-${options?.name || ''}`;\n    return screen._elements[key] || { click: () => {}, value: '' };\n  },\n  getByLabelText: (label) => screen._elements[label] || { value: '' },\n  getByText: (text) => screen._elements[text] || null,\n  queryByText: (text) => screen._elements[text] || null\n};\n\nconst render = (component) => {\n  // Simulate rendering\n  screen._elements = {\n    'textbox-': { value: '', _listeners: {} },\n    'Email': { value: '', _type: 'email', _listeners: {}, focus: () => {} },\n    'Password': { value: '', _type: 'password', _listeners: {} },\n    'button-/sign in/i': { click: () => {}, disabled: true }\n  };\n};\n\nconst userEvent = {\n  setup: () => ({\n    type: async (element, text) => { element.value = text; },\n    click: async (element) => { if (element.click) element.click(); }\n  })\n};\n\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toBeInTheDocument: () => { if (!val) throw new Error('Element not in document'); },\n  toHaveValue: (exp) => { if (val?.value !== exp) throw new Error(`Expected value ${exp}`); },\n  toBeDisabled: () => { if (!val?.disabled) throw new Error('Expected disabled'); }\n});\n\n// Component to test (simulated)\nfunction LoginForm({ onSubmit }) {\n  return `<form>\n    <label>Email<input type=\"email\"/></label>\n    <label>Password<input type=\"password\"/></label>\n    <button type=\"submit\">Sign In</button>\n  </form>`;\n}\n\ndescribe('LoginForm', () => {\n  it('renders email and password inputs', () => {\n    render(<LoginForm />);\n    \n    const emailInput = screen.getByLabelText('Email');\n    const passwordInput = screen.getByLabelText('Password');\n    \n    expect(emailInput).toBeInTheDocument();\n    expect(passwordInput).toBeInTheDocument();\n  });\n\n  it('allows user to type in inputs', async () => {\n    render(<LoginForm />);\n    const user = userEvent.setup();\n    \n    const emailInput = screen.getByLabelText('Email');\n    // YOUR CODE: Type 'test@example.com' into email input\n    await user.type(emailInput, 'test@example.com');\n    \n    expect(emailInput).toHaveValue('test@example.com');\n  });\n\n  it('has a submit button', () => {\n    render(<LoginForm />);\n    // YOUR CODE: Find the button by role with name 'Sign In'\n    const button = screen.getByRole('button', { name: /sign in/i });\n    expect(button).toBeInTheDocument();\n  });\n});",
+              "solution": "// Simulating Testing Library\nconst screen = {\n  _elements: {},\n  getByRole: (role, options) => {\n    const key = `${role}-${options?.name || ''}`;\n    return screen._elements[key] || { click: () => {}, value: '' };\n  },\n  getByLabelText: (label) => screen._elements[label] || { value: '' },\n  getByText: (text) => screen._elements[text] || null,\n  queryByText: (text) => screen._elements[text] || null\n};\n\nconst render = (component) => {\n  screen._elements = {\n    'textbox-': { value: '', _listeners: {} },\n    'Email': { value: '', _type: 'email', _listeners: {}, focus: () => {} },\n    'Password': { value: '', _type: 'password', _listeners: {} },\n    'button-/sign in/i': { click: () => {}, disabled: true }\n  };\n};\n\nconst userEvent = {\n  setup: () => ({\n    type: async (element, text) => { element.value = text; },\n    click: async (element) => { if (element.click) element.click(); }\n  })\n};\n\nconst describe = (name, fn) => { console.log(`describe: ${name}`); fn(); };\nconst it = async (name, fn) => {\n  try { await fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toBeInTheDocument: () => { if (!val) throw new Error('Element not in document'); },\n  toHaveValue: (exp) => { if (val?.value !== exp) throw new Error(`Expected value ${exp}`); },\n  toBeDisabled: () => { if (!val?.disabled) throw new Error('Expected disabled'); }\n});\n\nfunction LoginForm({ onSubmit }) {\n  return `<form>\n    <label>Email<input type=\"email\"/></label>\n    <label>Password<input type=\"password\"/></label>\n    <button type=\"submit\">Sign In</button>\n  </form>`;\n}\n\ndescribe('LoginForm', () => {\n  it('renders email and password inputs', () => {\n    render(<LoginForm />);\n    \n    const emailInput = screen.getByLabelText('Email');\n    const passwordInput = screen.getByLabelText('Password');\n    \n    expect(emailInput).toBeInTheDocument();\n    expect(passwordInput).toBeInTheDocument();\n  });\n\n  it('allows user to type in inputs', async () => {\n    render(<LoginForm />);\n    const user = userEvent.setup();\n    \n    const emailInput = screen.getByLabelText('Email');\n    await user.type(emailInput, 'test@example.com');\n    \n    expect(emailInput).toHaveValue('test@example.com');\n  });\n\n  it('has a submit button', () => {\n    render(<LoginForm />);\n    const button = screen.getByRole('button', { name: /sign in/i });\n    expect(button).toBeInTheDocument();\n  });\n});",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "All component tests pass",
+                  "expectedOutput": "\u2713",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use getByRole with { name: /pattern/i } for case-insensitive matching"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.7",
+          "title": "Code Coverage & CI",
+          "moduleId": "module-15",
+          "order": 7,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Understanding Code Coverage",
+              "content": "Code coverage measures how much of your code is executed by tests.\n\n**Coverage types:**\n- **Lines** - % of lines executed\n- **Statements** - % of statements executed\n- **Branches** - % of if/else paths taken\n- **Functions** - % of functions called\n\nEnable coverage in Vitest:\n```bash\nvitest run --coverage\n```\n\nOr in vitest.config.js:\n```javascript\nexport default defineConfig({\n  test: {\n    coverage: {\n      provider: 'v8',\n      reporter: ['text', 'html'],\n      exclude: ['node_modules', 'tests']\n    }\n  }\n});\n```\n\n**80% coverage** is a common target. 100% is often impractical and can lead to testing implementation details."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "GitHub Actions Workflow",
+              "content": "# .github/workflows/test.yml\nname: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Setup Node.js\n        uses: actions/setup-node@v4\n        with:\n          node-version: '20'\n          cache: 'npm'\n\n      - name: Install dependencies\n        run: npm ci\n\n      - name: Run tests with coverage\n        run: npm run test:coverage\n\n      - name: Check coverage threshold\n        run: |\n          npx vitest run --coverage --coverage.thresholds.lines=80",
+              "language": "yaml"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Coverage Best Practices",
+              "content": "**Do:**\n- Set coverage thresholds to prevent regression\n- Focus on critical paths (auth, payments, core logic)\n- Use coverage to find untested code, not prove quality\n- Review coverage reports in CI to catch gaps\n\n**Don't:**\n- Chase 100% coverage\n- Write tests just to increase numbers\n- Ignore uncovered code if it's dead code\n- Test trivial getters/setters\n\nConfigure thresholds in vitest.config.js:\n```javascript\ncoverage: {\n  thresholds: {\n    lines: 80,\n    branches: 75,\n    functions: 80,\n    statements: 80\n  }\n}\n```\n\nCI will fail if coverage drops below these thresholds."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.7-challenge",
+              "title": "Configure Coverage & CI",
+              "description": "Create a Vitest config with coverage settings and a GitHub Actions workflow.",
+              "instructions": "Complete the Vitest config to enable coverage with 80% thresholds, and fix the GitHub Actions workflow.",
+              "starterCode": "// vitest.config.js\n// Complete this configuration\nconst config = {\n  test: {\n    globals: true,\n    environment: 'jsdom',\n    coverage: {\n      provider: 'v8',\n      reporter: ['text', 'html', 'lcov'],\n      // YOUR CODE: Add exclude array for node_modules and test files\n      exclude: [],\n      // YOUR CODE: Add thresholds object with 80% for lines, branches, functions, statements\n      thresholds: {}\n    }\n  }\n};\n\n// Verify configuration\nconst coverage = config.test.coverage;\n\nif (coverage.exclude.includes('node_modules')) {\n  console.log('\\u2713 node_modules excluded');\n} else {\n  console.log('\\u2717 Add node_modules to exclude');\n}\n\nif (coverage.thresholds.lines === 80) {\n  console.log('\\u2713 Line coverage threshold set to 80%');\n} else {\n  console.log('\\u2717 Set lines threshold to 80');\n}\n\nif (coverage.thresholds.branches === 80) {\n  console.log('\\u2713 Branch coverage threshold set to 80%');\n} else {\n  console.log('\\u2717 Set branches threshold to 80');\n}\n\n// GitHub Actions workflow (as object for validation)\nconst workflow = {\n  name: 'Tests',\n  on: {\n    push: { branches: ['main'] },\n    pull_request: { branches: ['main'] }\n  },\n  jobs: {\n    test: {\n      'runs-on': 'ubuntu-latest',\n      steps: [\n        { uses: 'actions/checkout@v4' },\n        { name: 'Setup Node', uses: 'actions/setup-node@v4', with: { 'node-version': '20' } },\n        { name: 'Install', run: 'npm ci' },\n        { name: 'Test', run: 'npm run test:coverage' }\n      ]\n    }\n  }\n};\n\nconsole.log('\\u2713 GitHub Actions workflow configured');",
+              "solution": "// vitest.config.js\nconst config = {\n  test: {\n    globals: true,\n    environment: 'jsdom',\n    coverage: {\n      provider: 'v8',\n      reporter: ['text', 'html', 'lcov'],\n      exclude: ['node_modules', '**/*.test.js', '**/*.spec.js', 'tests/**'],\n      thresholds: {\n        lines: 80,\n        branches: 80,\n        functions: 80,\n        statements: 80\n      }\n    }\n  }\n};\n\n// Verify configuration\nconst coverage = config.test.coverage;\n\nif (coverage.exclude.includes('node_modules')) {\n  console.log('\\u2713 node_modules excluded');\n} else {\n  console.log('\\u2717 Add node_modules to exclude');\n}\n\nif (coverage.thresholds.lines === 80) {\n  console.log('\\u2713 Line coverage threshold set to 80%');\n} else {\n  console.log('\\u2717 Set lines threshold to 80');\n}\n\nif (coverage.thresholds.branches === 80) {\n  console.log('\\u2713 Branch coverage threshold set to 80%');\n} else {\n  console.log('\\u2717 Set branches threshold to 80');\n}\n\nconst workflow = {\n  name: 'Tests',\n  on: {\n    push: { branches: ['main'] },\n    pull_request: { branches: ['main'] }\n  },\n  jobs: {\n    test: {\n      'runs-on': 'ubuntu-latest',\n      steps: [\n        { uses: 'actions/checkout@v4' },\n        { name: 'Setup Node', uses: 'actions/setup-node@v4', with: { 'node-version': '20' } },\n        { name: 'Install', run: 'npm ci' },\n        { name: 'Test', run: 'npm run test:coverage' }\n      ]\n    }\n  }\n};\n\nconsole.log('\\u2713 GitHub Actions workflow configured');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Coverage configuration is correct",
+                  "expectedOutput": "\u2713 Line coverage threshold set to 80%",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The exclude array should contain 'node_modules' and test file patterns"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.8",
+          "title": "Mini-Project: Test Suite",
+          "moduleId": "module-15",
+          "order": 8,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Building a Complete Test Suite",
+              "content": "A real-world test suite should cover:\n\n1. **Happy paths** - Normal usage works correctly\n2. **Edge cases** - Empty inputs, boundaries, null values\n3. **Error cases** - Invalid input, failures handled gracefully\n4. **Integration** - Components work together\n\nFor a Todo app, test:\n- Adding todos (valid input, empty input)\n- Completing todos (toggle, already complete)\n- Deleting todos (exists, doesn't exist)\n- Filtering todos (all, active, completed)\n\nStructure your tests to match your app structure:\n```\nsrc/\n  todos.js\n  filters.js\ntests/\n  todos.test.js\n  filters.test.js\n  integration.test.js\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing a Todo Module",
+              "content": "import { describe, it, expect, beforeEach } from 'vitest';\nimport { createTodoStore } from './todos.js';\n\ndescribe('Todo Store', () => {\n  let store;\n\n  beforeEach(() => {\n    store = createTodoStore();  // Fresh store for each test\n  });\n\n  describe('addTodo', () => {\n    it('adds a new todo with correct properties', () => {\n      store.addTodo('Learn Vitest');\n      const todos = store.getTodos();\n      \n      expect(todos).toHaveLength(1);\n      expect(todos[0].text).toBe('Learn Vitest');\n      expect(todos[0].completed).toBe(false);\n      expect(todos[0].id).toBeDefined();\n    });\n\n    it('throws for empty text', () => {\n      expect(() => store.addTodo('')).toThrow('Todo text required');\n    });\n  });\n\n  describe('toggleTodo', () => {\n    it('toggles completed status', () => {\n      store.addTodo('Test');\n      const id = store.getTodos()[0].id;\n      \n      store.toggleTodo(id);\n      expect(store.getTodos()[0].completed).toBe(true);\n      \n      store.toggleTodo(id);\n      expect(store.getTodos()[0].completed).toBe(false);\n    });\n  });\n});",
+              "language": "javascript"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Test Organization Tips",
+              "content": "**Group related tests with describe:**\n```javascript\ndescribe('TodoStore', () => {\n  describe('addTodo', () => { /* add tests */ });\n  describe('deleteTodo', () => { /* delete tests */ });\n  describe('filterTodos', () => { /* filter tests */ });\n});\n```\n\n**Use beforeEach for setup:**\n```javascript\nbeforeEach(() => {\n  store = createTodoStore();\n  store.addTodo('Existing todo');\n});\n```\n\n**Name tests clearly:**\n- Bad: 'test 1', 'works'\n- Good: 'adds todo with unique id', 'returns empty array when no todos match filter'\n\n**Test one thing per test:**\nMultiple assertions are fine if they verify one behavior."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.8-challenge",
+              "title": "Build a Todo Test Suite",
+              "description": "Create a comprehensive test suite for a Todo application covering add, complete, delete, and filter operations.",
+              "instructions": "Complete the test suite for the TodoStore. Test adding todos, toggling completion, deleting todos, and filtering by status.",
+              "starterCode": "// Simulating Vitest\nconst describe = (name, fn) => { console.log(`\\ndescribe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toEqual: (exp) => { if (JSON.stringify(val) !== JSON.stringify(exp)) throw new Error(`Expected ${JSON.stringify(exp)}, got ${JSON.stringify(val)}`); },\n  toHaveLength: (exp) => { if (val?.length !== exp) throw new Error(`Expected length ${exp}, got ${val?.length}`); },\n  toBeDefined: () => { if (val === undefined) throw new Error('Expected defined'); },\n  toThrow: (msg) => { try { val(); throw new Error('Expected throw'); } catch (e) { if (msg && !e.message.includes(msg)) throw new Error(`Expected '${msg}'`); } }\n});\nlet _store;\nconst beforeEach = (fn) => { _store = fn(); };\n\n// TodoStore implementation\nfunction createTodoStore() {\n  let todos = [];\n  let nextId = 1;\n\n  return {\n    addTodo(text) {\n      if (!text || !text.trim()) throw new Error('Todo text required');\n      todos.push({ id: nextId++, text: text.trim(), completed: false });\n    },\n    getTodos() {\n      return [...todos];\n    },\n    toggleTodo(id) {\n      const todo = todos.find(t => t.id === id);\n      if (todo) todo.completed = !todo.completed;\n    },\n    deleteTodo(id) {\n      todos = todos.filter(t => t.id !== id);\n    },\n    getFiltered(filter) {\n      if (filter === 'active') return todos.filter(t => !t.completed);\n      if (filter === 'completed') return todos.filter(t => t.completed);\n      return [...todos];  // 'all'\n    }\n  };\n}\n\ndescribe('TodoStore', () => {\n  beforeEach(() => createTodoStore());\n\n  describe('addTodo', () => {\n    it('adds a todo with correct properties', () => {\n      const store = createTodoStore();\n      store.addTodo('Learn testing');\n      const todos = store.getTodos();\n      \n      expect(todos).toHaveLength(1);\n      expect(todos[0].text).toBe('Learn testing');\n      expect(todos[0].completed).toBe(false);\n    });\n\n    it('throws for empty text', () => {\n      const store = createTodoStore();\n      expect(() => store.addTodo('')).toThrow('required');\n    });\n\n    it('assigns unique ids', () => {\n      const store = createTodoStore();\n      store.addTodo('First');\n      store.addTodo('Second');\n      const todos = store.getTodos();\n      \n      // YOUR CODE: Verify ids are different\n      expect(todos[0].id).toBeDefined();\n      expect(todos[1].id).toBeDefined();\n      if (todos[0].id === todos[1].id) throw new Error('IDs should be unique');\n      console.log('    (ids are unique)');\n    });\n  });\n\n  describe('toggleTodo', () => {\n    it('toggles completed status', () => {\n      const store = createTodoStore();\n      store.addTodo('Test');\n      const id = store.getTodos()[0].id;\n      \n      store.toggleTodo(id);\n      // YOUR CODE: Verify completed is now true\n      expect(store.getTodos()[0].completed).toBe(true);\n    });\n\n    it('toggles back to false', () => {\n      const store = createTodoStore();\n      store.addTodo('Test');\n      const id = store.getTodos()[0].id;\n      \n      store.toggleTodo(id);\n      store.toggleTodo(id);\n      // YOUR CODE: Verify completed is back to false\n      expect(store.getTodos()[0].completed).toBe(false);\n    });\n  });\n\n  describe('deleteTodo', () => {\n    it('removes the specified todo', () => {\n      const store = createTodoStore();\n      store.addTodo('To delete');\n      store.addTodo('To keep');\n      const idToDelete = store.getTodos()[0].id;\n      \n      store.deleteTodo(idToDelete);\n      \n      // YOUR CODE: Verify only one todo remains with text 'To keep'\n      expect(store.getTodos()).toHaveLength(1);\n      expect(store.getTodos()[0].text).toBe('To keep');\n    });\n  });\n\n  describe('getFiltered', () => {\n    it('returns all todos for \"all\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('One');\n      store.addTodo('Two');\n      \n      expect(store.getFiltered('all')).toHaveLength(2);\n    });\n\n    it('returns only active todos for \"active\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('Active');\n      store.addTodo('Done');\n      store.toggleTodo(store.getTodos()[1].id);\n      \n      // YOUR CODE: Get filtered active and verify length is 1\n      const active = store.getFiltered('active');\n      expect(active).toHaveLength(1);\n      expect(active[0].text).toBe('Active');\n    });\n\n    it('returns only completed todos for \"completed\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('Active');\n      store.addTodo('Done');\n      store.toggleTodo(store.getTodos()[1].id);\n      \n      // YOUR CODE: Get filtered completed and verify\n      const completed = store.getFiltered('completed');\n      expect(completed).toHaveLength(1);\n      expect(completed[0].text).toBe('Done');\n    });\n  });\n});\n\nconsole.log('\\n--- Test Suite Complete ---');",
+              "solution": "// Simulating Vitest\nconst describe = (name, fn) => { console.log(`\\ndescribe: ${name}`); fn(); };\nconst it = (name, fn) => {\n  try { fn(); console.log(`  \\u2713 ${name}`); }\n  catch (e) { console.log(`  \\u2717 ${name}: ${e.message}`); }\n};\nconst expect = (val) => ({\n  toBe: (exp) => { if (val !== exp) throw new Error(`Expected ${exp}, got ${val}`); },\n  toEqual: (exp) => { if (JSON.stringify(val) !== JSON.stringify(exp)) throw new Error(`Expected ${JSON.stringify(exp)}, got ${JSON.stringify(val)}`); },\n  toHaveLength: (exp) => { if (val?.length !== exp) throw new Error(`Expected length ${exp}, got ${val?.length}`); },\n  toBeDefined: () => { if (val === undefined) throw new Error('Expected defined'); },\n  toThrow: (msg) => { try { val(); throw new Error('Expected throw'); } catch (e) { if (msg && !e.message.includes(msg)) throw new Error(`Expected '${msg}'`); } }\n});\nlet _store;\nconst beforeEach = (fn) => { _store = fn(); };\n\nfunction createTodoStore() {\n  let todos = [];\n  let nextId = 1;\n\n  return {\n    addTodo(text) {\n      if (!text || !text.trim()) throw new Error('Todo text required');\n      todos.push({ id: nextId++, text: text.trim(), completed: false });\n    },\n    getTodos() {\n      return [...todos];\n    },\n    toggleTodo(id) {\n      const todo = todos.find(t => t.id === id);\n      if (todo) todo.completed = !todo.completed;\n    },\n    deleteTodo(id) {\n      todos = todos.filter(t => t.id !== id);\n    },\n    getFiltered(filter) {\n      if (filter === 'active') return todos.filter(t => !t.completed);\n      if (filter === 'completed') return todos.filter(t => t.completed);\n      return [...todos];\n    }\n  };\n}\n\ndescribe('TodoStore', () => {\n  beforeEach(() => createTodoStore());\n\n  describe('addTodo', () => {\n    it('adds a todo with correct properties', () => {\n      const store = createTodoStore();\n      store.addTodo('Learn testing');\n      const todos = store.getTodos();\n      \n      expect(todos).toHaveLength(1);\n      expect(todos[0].text).toBe('Learn testing');\n      expect(todos[0].completed).toBe(false);\n    });\n\n    it('throws for empty text', () => {\n      const store = createTodoStore();\n      expect(() => store.addTodo('')).toThrow('required');\n    });\n\n    it('assigns unique ids', () => {\n      const store = createTodoStore();\n      store.addTodo('First');\n      store.addTodo('Second');\n      const todos = store.getTodos();\n      \n      expect(todos[0].id).toBeDefined();\n      expect(todos[1].id).toBeDefined();\n      if (todos[0].id === todos[1].id) throw new Error('IDs should be unique');\n      console.log('    (ids are unique)');\n    });\n  });\n\n  describe('toggleTodo', () => {\n    it('toggles completed status', () => {\n      const store = createTodoStore();\n      store.addTodo('Test');\n      const id = store.getTodos()[0].id;\n      \n      store.toggleTodo(id);\n      expect(store.getTodos()[0].completed).toBe(true);\n    });\n\n    it('toggles back to false', () => {\n      const store = createTodoStore();\n      store.addTodo('Test');\n      const id = store.getTodos()[0].id;\n      \n      store.toggleTodo(id);\n      store.toggleTodo(id);\n      expect(store.getTodos()[0].completed).toBe(false);\n    });\n  });\n\n  describe('deleteTodo', () => {\n    it('removes the specified todo', () => {\n      const store = createTodoStore();\n      store.addTodo('To delete');\n      store.addTodo('To keep');\n      const idToDelete = store.getTodos()[0].id;\n      \n      store.deleteTodo(idToDelete);\n      \n      expect(store.getTodos()).toHaveLength(1);\n      expect(store.getTodos()[0].text).toBe('To keep');\n    });\n  });\n\n  describe('getFiltered', () => {\n    it('returns all todos for \"all\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('One');\n      store.addTodo('Two');\n      \n      expect(store.getFiltered('all')).toHaveLength(2);\n    });\n\n    it('returns only active todos for \"active\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('Active');\n      store.addTodo('Done');\n      store.toggleTodo(store.getTodos()[1].id);\n      \n      const active = store.getFiltered('active');\n      expect(active).toHaveLength(1);\n      expect(active[0].text).toBe('Active');\n    });\n\n    it('returns only completed todos for \"completed\" filter', () => {\n      const store = createTodoStore();\n      store.addTodo('Active');\n      store.addTodo('Done');\n      store.toggleTodo(store.getTodos()[1].id);\n      \n      const completed = store.getFiltered('completed');\n      expect(completed).toHaveLength(1);\n      expect(completed[0].text).toBe('Done');\n    });\n  });\n});\n\nconsole.log('\\n--- Test Suite Complete ---');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "All todo tests pass",
+                  "expectedOutput": "Test Suite Complete",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Each test should create its own fresh store to avoid state leaking between tests"
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "intermediate"
             }
           ]
         }
