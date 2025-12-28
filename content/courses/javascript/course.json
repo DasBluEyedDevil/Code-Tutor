@@ -1504,6 +1504,265 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "5.6",
+          "title": "Safe Property Access (Optional Chaining and Nullish Coalescing)",
+          "moduleId": "module-05",
+          "order": 6,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're looking for a friend's phone number in an address book. The book has sections for each person, and each person might have contact info. But what if:\n\n- The person doesn't exist in the book?\n- The person exists but has no contact section?\n- The contact section exists but has no phone number?\n\nIn the old days, you'd have to check each step: 'Does the person exist? If yes, do they have contacts? If yes, is there a phone number?' This is tedious and error-prone.\n\n**Optional Chaining (?.)** is like saying 'give me the phone number if it exists at any level, otherwise just give me undefined - don't crash!'\n\n**Nullish Coalescing (??)** is like saying 'use this value, BUT if it's null or undefined, use this backup instead.' It's smarter than || because it respects valid falsy values like 0 or empty string."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Optional Chaining (?.) Examples",
+              "code": "// The problem: accessing nested properties that might not exist\nlet user = {\n  name: 'Alice',\n  address: {\n    city: 'New York'\n  }\n};\n\n// Old way - tedious and error-prone\nlet city;\nif (user && user.address && user.address.city) {\n  city = user.address.city;\n}\nconsole.log(city);  // 'New York'\n\n// With Optional Chaining - clean and safe!\nlet city2 = user?.address?.city;\nconsole.log(city2);  // 'New York'\n\n// When property doesn't exist\nlet user2 = { name: 'Bob' };  // No address!\nlet city3 = user2?.address?.city;\nconsole.log(city3);  // undefined (no error!)\n\n// Without ?. this would crash:\n// let city4 = user2.address.city;  // ERROR: Cannot read 'city' of undefined\n\n// Works with methods too!\nlet calculator = {\n  add: (a, b) => a + b\n};\nconsole.log(calculator.add?.(2, 3));       // 5\nconsole.log(calculator.subtract?.(5, 2));  // undefined (method doesn't exist)\n\n// Works with arrays!\nlet users = [{ name: 'Alice' }, { name: 'Bob' }];\nconsole.log(users?.[0]?.name);  // 'Alice'\nconsole.log(users?.[5]?.name);  // undefined (index 5 doesn't exist)\n\nlet noUsers = null;\nconsole.log(noUsers?.[0]?.name);  // undefined (noUsers is null)",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Nullish Coalescing (??) Examples",
+              "code": "// The problem with || for default values\nlet count = 0;\nlet displayCount = count || 'No count';  // 'No count' - WRONG!\n// We wanted 0, but || treats 0 as falsy\n\nlet username = '';\nlet displayName = username || 'Anonymous';  // 'Anonymous' - maybe WRONG!\n// What if empty string was intentional?\n\n// Nullish Coalescing only checks for null/undefined\nlet count2 = 0;\nlet displayCount2 = count2 ?? 'No count';  // 0 - CORRECT!\nconsole.log(displayCount2);  // 0\n\nlet username2 = '';\nlet displayName2 = username2 ?? 'Anonymous';  // '' - keeps empty string\nconsole.log(displayName2);  // ''\n\n// Only null and undefined trigger the default\nconsole.log(null ?? 'default');       // 'default'\nconsole.log(undefined ?? 'default');  // 'default'\nconsole.log(0 ?? 'default');          // 0\nconsole.log('' ?? 'default');         // ''\nconsole.log(false ?? 'default');      // false\n\n// Practical example: API response handling\nlet apiResponse = {\n  user: {\n    settings: {\n      theme: 'dark',\n      fontSize: 0,  // Valid setting!\n      notifications: null  // Not set\n    }\n  }\n};\n\nlet theme = apiResponse?.user?.settings?.theme ?? 'light';\nconsole.log(theme);  // 'dark'\n\nlet fontSize = apiResponse?.user?.settings?.fontSize ?? 16;\nconsole.log(fontSize);  // 0 (not 16! because 0 is a valid value)\n\nlet notifications = apiResponse?.user?.settings?.notifications ?? true;\nconsole.log(notifications);  // true (null triggers default)",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "**Optional Chaining (?.)**\n\nThree forms of optional chaining:\n\n1. **Property access**: obj?.property\n   - Returns undefined if obj is null/undefined\n   - Otherwise returns obj.property\n\n2. **Method calls**: obj.method?.(args)\n   - Returns undefined if method doesn't exist\n   - Otherwise calls the method\n\n3. **Array access**: arr?.[index]\n   - Returns undefined if arr is null/undefined\n   - Otherwise returns arr[index]\n\n**How it works:**\n```\nuser?.address?.city\n```\nis equivalent to:\n```\nuser != null ? (user.address != null ? user.address.city : undefined) : undefined\n```\n\n**Nullish Coalescing (??)**\n\nSyntax: `leftValue ?? rightValue`\n\n- Returns rightValue only if leftValue is null or undefined\n- Otherwise returns leftValue (even if it's 0, '', or false)\n\n**Comparison with ||:**\n\n| Expression | || result | ?? result |\n|------------|-----------|----------|\n| 0 \\|\\| 'default' | 'default' | - |\n| 0 ?? 'default' | - | 0 |\n| '' \\|\\| 'default' | 'default' | - |\n| '' ?? 'default' | - | '' |\n| null \\|\\| 'default' | 'default' | - |\n| null ?? 'default' | - | 'default' |\n| undefined \\|\\| 'default' | 'default' | - |\n| undefined ?? 'default' | - | 'default' |\n\n**Combining both:**\n```javascript\nconst value = obj?.deeply?.nested?.value ?? 'default';\n```\nThis safely navigates the object and provides a default if the value is null/undefined."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes:\n\n1. **Using ?. when not needed:**\n   ```javascript\n   let name = user?.name;  // If you KNOW user exists, just use user.name\n   ```\n   Only use ?. when the value might be null/undefined.\n\n2. **Confusing ?? with ||:**\n   ```javascript\n   let port = config.port || 3000;  // WRONG if port could be 0\n   let port = config.port ?? 3000;  // CORRECT\n   ```\n\n3. **Optional chaining doesn't help with undefined properties:**\n   ```javascript\n   let user = { name: undefined };\n   console.log(user?.name);  // undefined (as expected)\n   // ?. checks if user exists, not if user.name has a value\n   ```\n\n4. **Cannot use ?. for assignment:**\n   ```javascript\n   user?.address = 'NYC';  // SYNTAX ERROR!\n   // Optional chaining is for reading, not writing\n   ```\n\n5. **Mixing ?? with || or && without parentheses:**\n   ```javascript\n   let a = null || undefined ?? 'default';  // SYNTAX ERROR!\n   let a = (null || undefined) ?? 'default';  // OK: 'default'\n   ```\n   JavaScript requires parentheses when mixing ?? with || or &&.\n\n6. **Overusing optional chaining (code smell):**\n   ```javascript\n   data?.users?.[0]?.profile?.settings?.theme?.color?.hex\n   // If you need this many ?., your data structure might need rethinking\n   ```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "5.6-challenge-1",
+              "title": "Practice Challenge: Safe Data Access",
+              "description": "You're building a user profile display. The API sometimes returns incomplete data. Use optional chaining and nullish coalescing to safely access properties and provide defaults.\n\n1. Get the user's city (default: 'Unknown')\n2. Get the user's email (default: 'No email provided')\n3. Get the user's age (default: 'Age not specified') - careful with 0!\n4. Get the first hobby (default: 'No hobbies listed')",
+              "instructions": "Use optional chaining (?.) and nullish coalescing (??) to safely extract data with defaults.",
+              "starterCode": "// This API data might have missing fields\nlet userData = {\n  name: 'Alice',\n  age: 0,  // Just born!\n  address: {\n    street: '123 Main St'\n    // Note: no city!\n  },\n  // Note: no email!\n  hobbies: ['reading', 'coding']\n};\n\n// Extract data safely with defaults\nlet city = // YOUR CODE HERE\nlet email = // YOUR CODE HERE  \nlet age = // YOUR CODE HERE\nlet firstHobby = // YOUR CODE HERE\n\nconsole.log('City:', city);\nconsole.log('Email:', email);\nconsole.log('Age:', age);\nconsole.log('First hobby:', firstHobby);",
+              "solution": "let userData = {\n  name: 'Alice',\n  age: 0,\n  address: {\n    street: '123 Main St'\n  },\n  hobbies: ['reading', 'coding']\n};\n\nlet city = userData?.address?.city ?? 'Unknown';\nlet email = userData?.email ?? 'No email provided';\nlet age = userData?.age ?? 'Age not specified';\nlet firstHobby = userData?.hobbies?.[0] ?? 'No hobbies listed';\n\nconsole.log('City:', city);  // 'Unknown'\nconsole.log('Email:', email);  // 'No email provided'\nconsole.log('Age:', age);  // 0 (not 'Age not specified'!)\nconsole.log('First hobby:', firstHobby);  // 'reading'",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "City defaults to 'Unknown'",
+                  "expectedOutput": "Unknown",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Age preserves 0 (doesn't use default)",
+                  "expectedOutput": "0",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For city: userData?.address?.city ?? 'Unknown'"
+                },
+                {
+                  "level": 2,
+                  "text": "Remember: ?? only triggers on null/undefined, so age of 0 won't trigger the default!"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using || instead of ?? for age",
+                  "consequence": "Age of 0 would be replaced with the default string",
+                  "correction": "Use ?? to preserve falsy values like 0: userData?.age ?? 'default'"
+                },
+                {
+                  "mistake": "Not using ?. before array access",
+                  "consequence": "Would crash if hobbies array is null/undefined",
+                  "correction": "Use userData?.hobbies?.[0] to safely access array elements"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "5.6-challenge-2",
+              "title": "Practice Challenge: Safe Method Calls",
+              "description": "You have an object that may or may not have certain methods. Use optional chaining to safely call methods that might not exist.",
+              "instructions": "Safely call methods using optional chaining for method calls.",
+              "starterCode": "let calculator = {\n  add: (a, b) => a + b,\n  multiply: (a, b) => a * b\n  // Note: no subtract or divide methods!\n};\n\n// Safely call methods (return undefined if method doesn't exist)\nlet sum = // call add(5, 3)\nlet product = // call multiply(4, 2)\nlet difference = // call subtract(10, 4) - doesn't exist!\nlet quotient = // call divide(20, 5) - doesn't exist!\n\nconsole.log('Sum:', sum);\nconsole.log('Product:', product);\nconsole.log('Difference:', difference ?? 'Method not available');\nconsole.log('Quotient:', quotient ?? 'Method not available');",
+              "solution": "let calculator = {\n  add: (a, b) => a + b,\n  multiply: (a, b) => a * b\n};\n\nlet sum = calculator.add?.(5, 3);\nlet product = calculator.multiply?.(4, 2);\nlet difference = calculator.subtract?.(10, 4);\nlet quotient = calculator.divide?.(20, 5);\n\nconsole.log('Sum:', sum);  // 8\nconsole.log('Product:', product);  // 8\nconsole.log('Difference:', difference ?? 'Method not available');  // 'Method not available'\nconsole.log('Quotient:', quotient ?? 'Method not available');  // 'Method not available'",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Existing methods work correctly",
+                  "expectedOutput": "8",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Missing methods return undefined",
+                  "expectedOutput": "Method not available",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use method?.() syntax to safely call methods"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Putting ?. before the parentheses wrong",
+                  "consequence": "Syntax error",
+                  "correction": "Use calculator.method?.(args) not calculator.method.?(args)"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "5.7",
+          "title": "Modern Array Methods (ES2023-2024)",
+          "moduleId": "module-05",
+          "order": 7,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Remember how we learned about array methods like sort(), reverse(), and splice()? They all had one annoying problem: they MODIFY the original array. It's like editing a photo and accidentally saving over the original - you can't get it back!\n\nES2023-2024 introduced new 'non-mutating' versions of these methods. They're like making a copy before editing:\n\n- **toSorted()** - like sort(), but returns a NEW sorted array\n- **toReversed()** - like reverse(), but returns a NEW reversed array\n- **toSpliced()** - like splice(), but returns a NEW modified array\n- **at()** - access elements with negative indices (like Python!)\n- **Object.groupBy()** - group array items by a key (super useful!)\n\nThese methods are safer because they never change your original data. This is especially important in modern frameworks like React where you should never mutate state directly."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The at() Method - Negative Indexing",
+              "code": "// The old way to get the last element\nlet fruits = ['apple', 'banana', 'cherry', 'date'];\nlet last = fruits[fruits.length - 1];\nconsole.log(last);  // 'date'\n\n// With at() - so much cleaner!\nlet lastFruit = fruits.at(-1);\nconsole.log(lastFruit);  // 'date'\n\n// Negative indices count from the end\nconsole.log(fruits.at(0));   // 'apple' (first)\nconsole.log(fruits.at(1));   // 'banana' (second)\nconsole.log(fruits.at(-1));  // 'date' (last)\nconsole.log(fruits.at(-2));  // 'cherry' (second to last)\nconsole.log(fruits.at(-3));  // 'banana' (third to last)\n\n// Works with strings too!\nlet word = 'JavaScript';\nconsole.log(word.at(0));   // 'J'\nconsole.log(word.at(-1));  // 't'\nconsole.log(word.at(-2));  // 'p'\n\n// Practical: get the last item of a function result\nfunction getScores() {\n  return [85, 92, 78, 95, 88];\n}\nlet topScore = getScores().at(-1);\nconsole.log(topScore);  // 88\n\n// Compare: old way required intermediate variable or ugly syntax\nlet scores = getScores();\nlet oldWay = scores[scores.length - 1];  // More verbose",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Non-Mutating Sort and Reverse",
+              "code": "// THE PROBLEM: sort() and reverse() mutate the original array!\nlet numbers = [3, 1, 4, 1, 5, 9, 2, 6];\nlet sorted = numbers.sort((a, b) => a - b);\nconsole.log(sorted);   // [1, 1, 2, 3, 4, 5, 6, 9]\nconsole.log(numbers);  // [1, 1, 2, 3, 4, 5, 6, 9] - ORIGINAL CHANGED!\n\n// THE SOLUTION: toSorted() returns a NEW array\nlet numbers2 = [3, 1, 4, 1, 5, 9, 2, 6];\nlet sorted2 = numbers2.toSorted((a, b) => a - b);\nconsole.log(sorted2);   // [1, 1, 2, 3, 4, 5, 6, 9]\nconsole.log(numbers2);  // [3, 1, 4, 1, 5, 9, 2, 6] - ORIGINAL PRESERVED!\n\n// Same with reverse!\nlet letters = ['a', 'b', 'c', 'd'];\n\n// OLD: reverse() mutates\nlet reversed1 = letters.reverse();\nconsole.log(letters);  // ['d', 'c', 'b', 'a'] - original changed!\n\n// Reset and try toReversed()\nletters = ['a', 'b', 'c', 'd'];\nlet reversed2 = letters.toReversed();\nconsole.log(reversed2);  // ['d', 'c', 'b', 'a']\nconsole.log(letters);    // ['a', 'b', 'c', 'd'] - original preserved!\n\n// Practical: showing sorted data without affecting original\nlet products = [\n  { name: 'Laptop', price: 1000 },\n  { name: 'Mouse', price: 25 },\n  { name: 'Keyboard', price: 75 }\n];\n\n// Sort by price for display\nlet byPrice = products.toSorted((a, b) => a.price - b.price);\nconsole.log('Sorted by price:', byPrice.map(p => p.name));  // Mouse, Keyboard, Laptop\nconsole.log('Original order:', products.map(p => p.name));  // Laptop, Mouse, Keyboard",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Non-Mutating Splice with toSpliced()",
+              "code": "// splice() reminder: removes/adds elements AND mutates the array\nlet colors = ['red', 'green', 'blue', 'yellow'];\nlet removed = colors.splice(1, 2, 'purple');  // Remove 2 items at index 1, add 'purple'\nconsole.log(removed);  // ['green', 'blue'] (what was removed)\nconsole.log(colors);   // ['red', 'purple', 'yellow'] - MUTATED!\n\n// toSpliced() does the same but returns a NEW array\nlet colors2 = ['red', 'green', 'blue', 'yellow'];\nlet newColors = colors2.toSpliced(1, 2, 'purple');\nconsole.log(newColors);  // ['red', 'purple', 'yellow']\nconsole.log(colors2);    // ['red', 'green', 'blue', 'yellow'] - PRESERVED!\n\n// More examples:\nlet nums = [1, 2, 3, 4, 5];\n\n// Remove 2 items starting at index 1\nconsole.log(nums.toSpliced(1, 2));  // [1, 4, 5]\n\n// Remove 1 item at index 2, insert 'a', 'b'\nconsole.log(nums.toSpliced(2, 1, 'a', 'b'));  // [1, 2, 'a', 'b', 4, 5]\n\n// Insert without removing (delete count = 0)\nconsole.log(nums.toSpliced(2, 0, 'inserted'));  // [1, 2, 'inserted', 3, 4, 5]\n\n// Original is always unchanged\nconsole.log(nums);  // [1, 2, 3, 4, 5]\n\n// Practical: removing an item by index (common in React!)\nlet todoList = ['Buy milk', 'Clean room', 'Do homework', 'Exercise'];\nlet indexToRemove = 1;  // Remove 'Clean room'\n\n// Create new list without that item\nlet updatedList = todoList.toSpliced(indexToRemove, 1);\nconsole.log(updatedList);  // ['Buy milk', 'Do homework', 'Exercise']\nconsole.log(todoList);     // Original unchanged!",
+              "language": "javascript"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Object.groupBy() - Grouping Array Items",
+              "code": "// Object.groupBy() groups array items by a key you define\n// This is SUPER useful for organizing data!\n\nlet products = [\n  { name: 'Apple', category: 'Fruit', price: 1.50 },\n  { name: 'Banana', category: 'Fruit', price: 0.75 },\n  { name: 'Carrot', category: 'Vegetable', price: 0.50 },\n  { name: 'Broccoli', category: 'Vegetable', price: 1.25 },\n  { name: 'Milk', category: 'Dairy', price: 3.00 }\n];\n\n// Group by category\nlet byCategory = Object.groupBy(products, product => product.category);\n\nconsole.log(byCategory);\n// {\n//   Fruit: [{name: 'Apple', ...}, {name: 'Banana', ...}],\n//   Vegetable: [{name: 'Carrot', ...}, {name: 'Broccoli', ...}],\n//   Dairy: [{name: 'Milk', ...}]\n// }\n\n// Access a specific group\nconsole.log(byCategory.Fruit);  // All fruit products\nconsole.log(byCategory.Vegetable.length);  // 2 vegetables\n\n// Group numbers by even/odd\nlet numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];\nlet byEvenOdd = Object.groupBy(numbers, n => n % 2 === 0 ? 'even' : 'odd');\nconsole.log(byEvenOdd);\n// { odd: [1, 3, 5, 7, 9], even: [2, 4, 6, 8, 10] }\n\n// Group students by grade\nlet students = [\n  { name: 'Alice', score: 95 },\n  { name: 'Bob', score: 82 },\n  { name: 'Charlie', score: 78 },\n  { name: 'Diana', score: 91 },\n  { name: 'Eve', score: 65 }\n];\n\nlet byGrade = Object.groupBy(students, student => {\n  if (student.score >= 90) return 'A';\n  if (student.score >= 80) return 'B';\n  if (student.score >= 70) return 'C';\n  return 'D';\n});\n\nconsole.log(byGrade);\n// {\n//   A: [Alice, Diana],\n//   B: [Bob],\n//   C: [Charlie],\n//   D: [Eve]\n// }\nconsole.log('A students:', byGrade.A.map(s => s.name));  // ['Alice', 'Diana']",
+              "language": "javascript"
+            },
+            {
+              "type": "THEORY",
+              "title": "Breaking Down the Syntax",
+              "content": "**at(index)**\n- Access elements with positive or negative indices\n- Negative indices count from the end (-1 = last, -2 = second to last)\n- Returns undefined if index is out of bounds\n```javascript\narray.at(0)   // First element\narray.at(-1)  // Last element\narray.at(-2)  // Second to last\n```\n\n**toSorted(compareFn)**\n- Returns a NEW sorted array\n- Original array is unchanged\n- Same comparison function as sort()\n```javascript\nconst sorted = array.toSorted((a, b) => a - b);  // Ascending numbers\nconst sorted = array.toSorted((a, b) => b - a);  // Descending numbers\nconst sorted = array.toSorted();  // Default string sort\n```\n\n**toReversed()**\n- Returns a NEW reversed array\n- Original array is unchanged\n- No arguments needed\n```javascript\nconst reversed = array.toReversed();\n```\n\n**toSpliced(start, deleteCount, ...items)**\n- Returns a NEW array with elements removed/added\n- Original array is unchanged\n- Same parameters as splice()\n```javascript\narray.toSpliced(1, 2)        // Remove 2 elements at index 1\narray.toSpliced(1, 0, 'a')   // Insert 'a' at index 1\narray.toSpliced(1, 1, 'a')   // Replace element at index 1 with 'a'\n```\n\n**Object.groupBy(array, keyFn)**\n- Groups array items into an object\n- keyFn returns the group key for each item\n- Returns an object where keys are group names, values are arrays\n```javascript\nObject.groupBy(items, item => item.category);\nObject.groupBy(numbers, n => n % 2 === 0 ? 'even' : 'odd');\n```\n\n**Why use non-mutating methods?**\n1. Safer - original data is preserved\n2. Predictable - easier to debug\n3. Functional programming style\n4. Required for React/Vue state management\n5. Enables method chaining without side effects"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "Common mistakes:\n\n1. **Confusing at() with negative indexing on brackets:**\n   ```javascript\n   array[-1]    // undefined - doesn't work!\n   array.at(-1) // Last element - works!\n   ```\n\n2. **Forgetting toSorted/toReversed return new arrays:**\n   ```javascript\n   let nums = [3, 1, 2];\n   nums.toSorted();  // Returns [1, 2, 3] but you didn't save it!\n   console.log(nums);  // Still [3, 1, 2]\n   \n   // Correct:\n   let sorted = nums.toSorted();\n   ```\n\n3. **Using toSorted() without comparison for numbers:**\n   ```javascript\n   [10, 2, 1].toSorted()  // [1, 10, 2] - sorted as strings!\n   [10, 2, 1].toSorted((a, b) => a - b)  // [1, 2, 10] - correct!\n   ```\n\n4. **Object.groupBy returns null prototype object:**\n   ```javascript\n   let grouped = Object.groupBy(items, fn);\n   // grouped doesn't have standard Object methods like hasOwnProperty\n   // Use Object.keys(grouped) or 'key' in grouped instead\n   ```\n\n5. **Browser compatibility:**\n   - at(): Supported in all modern browsers (2022+)\n   - toSorted/toReversed/toSpliced: ES2023 (mid-2023+)\n   - Object.groupBy: ES2024 (late 2023+)\n   - Check compatibility if supporting older browsers!\n\n6. **Mixing up splice and toSpliced return values:**\n   ```javascript\n   // splice returns REMOVED elements\n   // toSpliced returns the NEW array\n   let arr = [1, 2, 3];\n   arr.splice(1, 1);      // Returns [2] (removed)\n   arr.toSpliced(1, 1);   // Returns [1, 3] (new array)\n   ```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "5.7-challenge-1",
+              "title": "Practice Challenge: Safe Array Operations",
+              "description": "You're building a leaderboard. Use modern array methods to sort and display scores WITHOUT modifying the original data.\n\n1. Display the top 3 scores (highest first) using toSorted()\n2. Get the last place score using at()\n3. Remove the player at index 2 using toSpliced() and show the new list",
+              "instructions": "Use toSorted(), at(), and toSpliced() to work with the data safely.",
+              "starterCode": "let players = [\n  { name: 'Alice', score: 850 },\n  { name: 'Bob', score: 920 },\n  { name: 'Charlie', score: 780 },\n  { name: 'Diana', score: 1050 },\n  { name: 'Eve', score: 890 }\n];\n\n// 1. Get top 3 players (sorted by score, highest first)\nlet top3 = // YOUR CODE HERE\nconsole.log('Top 3:', top3.map(p => p.name));\n\n// 2. Get the last place player using at()\nlet lastPlace = // YOUR CODE HERE\nconsole.log('Last place:', lastPlace.name);\n\n// 3. Remove player at index 2 (Charlie) using toSpliced()\nlet withoutCharlie = // YOUR CODE HERE\nconsole.log('Without Charlie:', withoutCharlie.map(p => p.name));\n\n// Verify original is unchanged\nconsole.log('Original:', players.map(p => p.name));",
+              "solution": "let players = [\n  { name: 'Alice', score: 850 },\n  { name: 'Bob', score: 920 },\n  { name: 'Charlie', score: 780 },\n  { name: 'Diana', score: 1050 },\n  { name: 'Eve', score: 890 }\n];\n\n// 1. Get top 3 players (sorted by score, highest first)\nlet top3 = players.toSorted((a, b) => b.score - a.score).slice(0, 3);\nconsole.log('Top 3:', top3.map(p => p.name));  // Diana, Bob, Eve\n\n// 2. Get the last place player using at()\nlet sorted = players.toSorted((a, b) => b.score - a.score);\nlet lastPlace = sorted.at(-1);\nconsole.log('Last place:', lastPlace.name);  // Charlie\n\n// 3. Remove player at index 2 (Charlie) using toSpliced()\nlet withoutCharlie = players.toSpliced(2, 1);\nconsole.log('Without Charlie:', withoutCharlie.map(p => p.name));\n\n// Verify original is unchanged\nconsole.log('Original:', players.map(p => p.name));",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Top 3 are correctly sorted",
+                  "expectedOutput": "Diana",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Original array is unchanged",
+                  "expectedOutput": "Alice",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For descending sort: toSorted((a, b) => b.score - a.score)"
+                },
+                {
+                  "level": 2,
+                  "text": "Chain .slice(0, 3) after toSorted() to get top 3"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using sort() instead of toSorted()",
+                  "consequence": "Original array gets mutated",
+                  "correction": "Always use toSorted() when you need to preserve the original"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "5.7-challenge-2",
+              "title": "Practice Challenge: Grouping Data",
+              "description": "You have a list of orders. Use Object.groupBy() to organize them by status, then calculate the total value for each status group.",
+              "instructions": "Group orders by status and calculate totals for each group.",
+              "starterCode": "let orders = [\n  { id: 1, product: 'Laptop', price: 1000, status: 'completed' },\n  { id: 2, product: 'Mouse', price: 25, status: 'pending' },\n  { id: 3, product: 'Keyboard', price: 75, status: 'completed' },\n  { id: 4, product: 'Monitor', price: 300, status: 'cancelled' },\n  { id: 5, product: 'Headphones', price: 150, status: 'pending' },\n  { id: 6, product: 'Webcam', price: 80, status: 'completed' }\n];\n\n// 1. Group orders by status\nlet byStatus = // YOUR CODE HERE\n\nconsole.log('Completed orders:', byStatus.completed?.length ?? 0);\nconsole.log('Pending orders:', byStatus.pending?.length ?? 0);\nconsole.log('Cancelled orders:', byStatus.cancelled?.length ?? 0);\n\n// 2. Calculate total value of completed orders\nlet completedTotal = // YOUR CODE HERE\nconsole.log('Completed orders total: $' + completedTotal);",
+              "solution": "let orders = [\n  { id: 1, product: 'Laptop', price: 1000, status: 'completed' },\n  { id: 2, product: 'Mouse', price: 25, status: 'pending' },\n  { id: 3, product: 'Keyboard', price: 75, status: 'completed' },\n  { id: 4, product: 'Monitor', price: 300, status: 'cancelled' },\n  { id: 5, product: 'Headphones', price: 150, status: 'pending' },\n  { id: 6, product: 'Webcam', price: 80, status: 'completed' }\n];\n\n// 1. Group orders by status\nlet byStatus = Object.groupBy(orders, order => order.status);\n\nconsole.log('Completed orders:', byStatus.completed?.length ?? 0);  // 3\nconsole.log('Pending orders:', byStatus.pending?.length ?? 0);  // 2\nconsole.log('Cancelled orders:', byStatus.cancelled?.length ?? 0);  // 1\n\n// 2. Calculate total value of completed orders\nlet completedTotal = byStatus.completed?.reduce((sum, order) => sum + order.price, 0) ?? 0;\nconsole.log('Completed orders total: $' + completedTotal);  // $1155",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Groups orders correctly",
+                  "expectedOutput": "3",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Calculates total correctly",
+                  "expectedOutput": "1155",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Object.groupBy(orders, order => order.status)"
+                },
+                {
+                  "level": 2,
+                  "text": "Use reduce() on byStatus.completed to sum prices"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not handling potentially undefined groups",
+                  "consequence": "Error if a status doesn't exist",
+                  "correction": "Use optional chaining: byStatus.completed?.length ?? 0"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
