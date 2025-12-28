@@ -58,10 +58,31 @@ public class CodeExecutionService : ICodeExecutionService
         }
     }
 
-    private Task<ExecutionResult> ExecuteCSharpAsync(string code)
+    private async Task<ExecutionResult> ExecuteCSharpAsync(string code)
     {
-        // C# execution requires dotnet-script or similar
-        return Task.FromResult(new ExecutionResult(false, "", "C# execution coming soon"));
+        // Check if dotnet-script is available
+        var checkResult = await RunProcessAsync("dotnet", "tool list -g");
+        if (!checkResult.Output.Contains("dotnet-script"))
+        {
+            return new ExecutionResult(false, "",
+                "C# execution requires dotnet-script. Install with: dotnet tool install -g dotnet-script");
+        }
+
+        var tempFile = Path.GetTempFileName();
+        var csharpFile = Path.ChangeExtension(tempFile, ".csx");
+        File.Move(tempFile, csharpFile);
+
+        await File.WriteAllTextAsync(csharpFile, code);
+
+        try
+        {
+            var result = await RunProcessAsync("dotnet-script", csharpFile);
+            return result;
+        }
+        finally
+        {
+            File.Delete(csharpFile);
+        }
     }
 
     private async Task<ExecutionResult> RunProcessAsync(string command, string arguments)
