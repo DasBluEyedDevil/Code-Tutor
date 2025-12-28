@@ -4,7 +4,7 @@
   "title": "C# Programming",
   "description": "Master C# and .NET development from fundamentals to advanced concepts, including object-oriented programming, LINQ, async/await, and modern C# features.",
   "difficulty": "advanced",
-  "estimatedHours": 26,
+  "estimatedHours": 27,
   "prerequisites": [],
   "modules": [
     {
@@ -931,6 +931,97 @@
                 }
               ],
               "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "lesson-02-06",
+          "title": "Nullable Reference Types",
+          "moduleId": "module-02",
+          "order": 6,
+          "estimatedMinutes": 15,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine a hotel front desk. In the old days, when you asked for 'the guest in room 101', they might say 'nobody's there' and you'd get confused. Now they have a system: if a room MIGHT be empty, it has a special tag.\n\nThat's NULLABLE REFERENCE TYPES! In modern C#, variables tell you upfront whether they might be 'null' (empty/nothing).\n\n- string name = 'Alice';  // PROMISE: This will NEVER be null!\n- string? nickname = null;  // MIGHT be null - the ? warns you!\n\nWhy does this matter? NullReferenceException is the #1 bug in C# programs! With nullable types:\n- Compiler WARNS you when you might hit a null\n- You're FORCED to check for null before using potentially null values\n- Fewer runtime crashes, more reliable code!\n\nThink of it as a 'Handle With Care' sticker on fragile packages - you know to be extra careful."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// Non-nullable - MUST have a value!\nstring firstName = \"Alice\";  // OK\nstring lastName = null;       // WARNING! Can't be null!\n\n// Nullable - CAN be null (use ? after type)\nstring? middleName = null;    // OK - ? means nullable\nstring? nickname = \"Ali\";     // Also OK - can have value\n\n// Compiler warns when you use nullable without checking\nstring? maybeName = GetNameFromDatabase();\nConsole.WriteLine(maybeName.Length);  // WARNING! might be null!\n\n// Safe ways to handle nullable:\n\n// 1. Null check with if\nif (maybeName != null)\n{\n    Console.WriteLine(maybeName.Length);  // Safe now!\n}\n\n// 2. Null-conditional operator ?.\nConsole.WriteLine(maybeName?.Length);  // Returns null if maybeName is null\n\n// 3. Null-coalescing operator ??\nstring displayName = maybeName ?? \"Unknown\";  // Use \"Unknown\" if null\n\n// 4. Null-forgiving operator ! (use carefully!)\nstring definitelyName = maybeName!;  // Trust me, it's not null!\n// WARNING: This can still crash if you're wrong!\n\n// Pattern matching (modern approach)\nif (maybeName is string actualName)\n{\n    Console.WriteLine($\"Name is: {actualName}\");\n}\nelse\n{\n    Console.WriteLine(\"No name provided\");\n}\n\n// Method returning nullable\nstring? FindUser(int id)\n{\n    if (id == 1) return \"Admin\";\n    return null;  // User not found\n}",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`string name`**: Non-nullable reference type. Compiler expects this to NEVER be null. You'll get warnings if you try to assign null.\n\n**`string? name`**: Nullable reference type. The ? says 'this might be null'. Compiler will warn you to check before using it.\n\n**`name?.Length`**: Null-conditional operator. If name is null, returns null instead of crashing. Safe way to access members!\n\n**`name ?? \"default\"`**: Null-coalescing operator. If name is null, use the value after ??. Great for providing fallback values.\n\n**`name!`**: Null-forgiving operator. Tells compiler 'I know this looks nullable, but trust me, it's not null'. Use sparingly - it bypasses safety checks!\n\n**`#nullable enable`**: Put at top of file to enable nullable reference types. In .NET 6+, it's enabled by default in new projects."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-02-06-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a user profile system with nullable handling!\n\n1. Create a non-nullable string 'username' (required)\n2. Create a nullable string 'bio' (optional)\n3. Create a nullable string 'website' (optional)\n4. Display username (always safe)\n5. Display bio using ?? to show 'No bio provided' if null\n6. Display website using ?. and ?? to safely get Length or show 'No website'",
+              "starterCode": "// Required field (non-nullable)\nstring username = \"CSharpDev2024\";\n\n// Optional fields (nullable)\nstring? bio = null;\nstring? website = \"https://example.com\";\n\n// Display username (always safe)\n\n// Display bio with fallback\n\n// Display website length safely",
+              "solution": "// Required field (non-nullable)\nstring username = \"CSharpDev2024\";\n\n// Optional fields (nullable)\nstring? bio = null;\nstring? website = \"https://example.com\";\n\n// Display username (always safe)\nConsole.WriteLine(\"Username: \" + username);\n\n// Display bio with fallback\nstring displayBio = bio ?? \"No bio provided\";\nConsole.WriteLine(\"Bio: \" + displayBio);\n\n// Display website length safely\nint? websiteLength = website?.Length;\nConsole.WriteLine(\"Website length: \" + (websiteLength?.ToString() ?? \"No website\"));\n\n// Alternative: Check with if\nif (website != null)\n{\n    Console.WriteLine(\"Website: \" + website);\n}\nelse\n{\n    Console.WriteLine(\"No website configured\");\n}",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain 'Username'",
+                  "expectedOutput": "Username",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain 'Bio'",
+                  "expectedOutput": "Bio",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Output should contain 'No bio provided' or similar",
+                  "expectedOutput": "No bio",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use ?? to provide fallback values: bio ?? 'No bio'. Use ?. for safe member access: website?.Length."
+                },
+                {
+                  "level": 2,
+                  "text": "Remember: string is non-nullable (must have value), string? is nullable (can be null). The ? makes the difference!"
+                },
+                {
+                  "level": 3,
+                  "text": "You can chain operators: website?.Length ?? 0 - gets length if website exists, otherwise 0."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Ignoring nullable warnings",
+                  "consequence": "Compiler warnings about possible null references help prevent NullReferenceException at runtime. Don't suppress them without good reason!",
+                  "correction": "Always handle nullable values with ?., ??, if-checks, or pattern matching."
+                },
+                {
+                  "mistake": "Overusing the ! operator",
+                  "consequence": "The null-forgiving operator (!) bypasses safety checks. If you're wrong, you'll get a NullReferenceException anyway!",
+                  "correction": "Only use ! when you KNOW for certain a value isn't null and the compiler just can't prove it."
+                },
+                {
+                  "mistake": "Forgetting ? on nullable types",
+                  "consequence": "Without ?, the compiler assumes the variable should never be null. You'll get warnings if you assign null to it.",
+                  "correction": "Add ? to types that might legitimately be null: string? optionalName = null;"
+                }
+              ],
+              "difficulty": "intermediate"
             }
           ]
         }
@@ -2356,6 +2447,97 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "lesson-05-05",
+          "title": "Collection Expressions (C# 12)",
+          "moduleId": "module-05",
+          "order": 5,
+          "estimatedMinutes": 15,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Remember how creating collections used to be confusing? Arrays use { }, Lists need new List<T>(), and each has different syntax. It's like every store having different payment systems!\n\nC# 12 introduces COLLECTION EXPRESSIONS - one universal syntax for ALL collections! Think of it like a universal remote that works with any TV.\n\nBefore: Different syntax everywhere!\n- int[] arr = new int[] { 1, 2, 3 };\n- List<int> list = new List<int> { 1, 2, 3 };\n- Span<int> span = stackalloc int[] { 1, 2, 3 };\n\nAfter: One syntax to rule them all!\n- int[] arr = [1, 2, 3];\n- List<int> list = [1, 2, 3];\n- Span<int> span = [1, 2, 3];\n\nThe square brackets [ ] work for arrays, lists, spans, and more! Plus you get the SPREAD operator (..) to combine collections!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// OLD WAY - verbose and inconsistent\nint[] oldArray = new int[] { 1, 2, 3, 4, 5 };\nList<int> oldList = new List<int> { 1, 2, 3, 4, 5 };\n\n// NEW WAY - Collection Expressions (C# 12)!\nint[] numbers = [1, 2, 3, 4, 5];\nList<int> scores = [95, 87, 92, 78, 88];\nstring[] names = [\"Alice\", \"Bob\", \"Charlie\"];\n\n// Empty collections\nint[] empty = [];\nList<string> emptyList = [];\n\n// SPREAD OPERATOR - combine collections!\nint[] first = [1, 2, 3];\nint[] second = [4, 5, 6];\nint[] combined = [..first, ..second];  // [1, 2, 3, 4, 5, 6]\n\n// Mix values and spreads\nint[] withExtra = [0, ..first, 4, 5];  // [0, 1, 2, 3, 4, 5]\n\n// Works with method calls too!\nvoid PrintNumbers(int[] nums)\n{\n    foreach (var n in nums)\n        Console.WriteLine(n);\n}\n\nPrintNumbers([10, 20, 30]);  // Pass inline!\n\n// Great for building collections conditionally\nint bonus = 100;\nList<int> allScores = [..scores, bonus];  // Add bonus to end\nConsole.WriteLine(string.Join(\", \", allScores));\n\n// Works with Span<T> for high-performance code\nSpan<int> span = [1, 2, 3, 4, 5];\nReadOnlySpan<char> chars = ['H', 'e', 'l', 'l', 'o'];",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`[1, 2, 3]`**: Square brackets with comma-separated values create a collection. The target type (int[], List<int>, etc.) determines what's created!\n\n**`[]`**: Empty brackets create an empty collection. Much cleaner than new List<int>() or Array.Empty<int>()!\n\n**`[..existing, newValue]`**: The SPREAD operator '..' expands a collection inline. Perfect for combining collections or adding elements.\n\n**`Target-typed`**: C# looks at what you're assigning to and creates the right type. 'int[] x = [1,2,3]' creates array, 'List<int> x = [1,2,3]' creates List!\n\n**`Inline passing`**: You can pass collections directly to methods: DoSomething([1, 2, 3]) - no need to declare a variable first!"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-05-05-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a playlist manager using collection expressions!\n\n1. Create a string[] 'rockSongs' with 3 rock songs using [ ]\n2. Create a string[] 'popSongs' with 3 pop songs using [ ]\n3. Create a combined 'allSongs' using spread operator to merge both\n4. Add 'Bonus Track' at the end of allSongs\n5. Create an empty List<string> 'favorites' using [ ]\n6. Display all songs using foreach",
+              "starterCode": "// Create rock songs array\n\n// Create pop songs array\n\n// Combine all songs with spread and add bonus\n\n// Create empty favorites list\n\n// Display all songs",
+              "solution": "// Create rock songs array\nstring[] rockSongs = [\"Bohemian Rhapsody\", \"Stairway to Heaven\", \"Back in Black\"];\n\n// Create pop songs array\nstring[] popSongs = [\"Billie Jean\", \"Like a Prayer\", \"Shake It Off\"];\n\n// Combine all songs with spread and add bonus\nstring[] allSongs = [..rockSongs, ..popSongs, \"Bonus Track\"];\n\n// Create empty favorites list\nList<string> favorites = [];\n\n// Display all songs\nConsole.WriteLine(\"All Songs:\");\nforeach (string song in allSongs)\n{\n    Console.WriteLine(\"  - \" + song);\n}\n\nConsole.WriteLine($\"Total: {allSongs.Length} songs\");\nConsole.WriteLine($\"Favorites: {favorites.Count} songs\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain 'All Songs'",
+                  "expectedOutput": "All Songs",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain 'Bonus Track'",
+                  "expectedOutput": "Bonus Track",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Output should contain 'Total'",
+                  "expectedOutput": "Total",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use square brackets for collections: string[] songs = [\"Song1\", \"Song2\"]. Use .. for spreading: [..array1, ..array2]."
+                },
+                {
+                  "level": 2,
+                  "text": "Empty collections use []: List<string> empty = []. The type is determined by what you assign to!"
+                },
+                {
+                  "level": 3,
+                  "text": "You can mix spread and values: [..existing, \"New Item\"] adds to the end of the spread collection."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using { } instead of [ ]",
+                  "consequence": "Collection expressions use SQUARE brackets [ ], not curly braces { }. This is a new syntax in C# 12!",
+                  "correction": "int[] nums = [1, 2, 3]; NOT int[] nums = {1, 2, 3};"
+                },
+                {
+                  "mistake": "Forgetting .. in spread operator",
+                  "consequence": "To spread a collection, you need two dots: [..array]. Single dot or no dot treats it as a single element.",
+                  "correction": "[..first, ..second] to combine collections"
+                },
+                {
+                  "mistake": "Using spread without target type",
+                  "consequence": "Collection expressions need a target type. 'var x = [1,2,3]' may not compile - use explicit type like 'int[] x = [1,2,3]'.",
+                  "correction": "Always specify the collection type or use in context where type is clear."
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     },
@@ -3575,6 +3757,182 @@
                   "mistake": "Inheritance for code reuse only",
                   "consequence": "Don't inherit just to reuse code! Use composition (has-a) or helper classes instead. Inherit when there's true IS-A relationship.",
                   "correction": "Review the correct syntax and best practices for this concept."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-07-06",
+          "title": "Records (C# 9+)",
+          "moduleId": "module-07",
+          "order": 6,
+          "estimatedMinutes": 15,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're filling out a government form. Once you write your name, address, and birthdate, you don't want anyone changing it - it's your official record!\n\nThat's what RECORDS are in C# - special classes designed to hold DATA that shouldn't change. They're perfect for:\n\n- Data transfer objects (DTOs)\n- Configuration values\n- API responses\n- Anything that represents 'facts' rather than 'things that do stuff'\n\nRecords give you:\n- Immutability by default (data can't change after creation)\n- Value-based equality (two records with same data are 'equal')\n- Automatic ToString(), Equals(), and GetHashCode()\n- Compact one-line syntax!\n\nThink of a class as a person (can change clothes, mood, etc.) vs a record as a passport (fixed facts about a person)."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// Traditional class - lots of boilerplate!\nclass PersonClass\n{\n    public string Name { get; set; }\n    public int Age { get; set; }\n    \n    public PersonClass(string name, int age)\n    {\n        Name = name;\n        Age = age;\n    }\n}\n\n// RECORD - one line does it all! (C# 9+)\npublic record Person(string Name, int Age);\n\n// Usage\nvar person1 = new Person(\"Alice\", 30);\nvar person2 = new Person(\"Alice\", 30);\n\n// Value-based equality - same data = equal!\nConsole.WriteLine(person1 == person2);  // True!\n\n// Automatic ToString()\nConsole.WriteLine(person1);  // Person { Name = Alice, Age = 30 }\n\n// With-expressions for copying with modifications\nvar olderPerson = person1 with { Age = 31 };\nConsole.WriteLine(olderPerson);  // Person { Name = Alice, Age = 31 }\n\n// Original unchanged (immutable)\nConsole.WriteLine(person1);  // Person { Name = Alice, Age = 30 }\n\n// More record examples\npublic record Point(int X, int Y);\npublic record Rectangle(Point TopLeft, Point BottomRight);\n\nvar point = new Point(10, 20);\nvar rect = new Rectangle(new Point(0, 0), new Point(100, 50));",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`public record Person(string Name, int Age);`**: This ONE line creates: a class with Name and Age properties, a constructor that sets them, ToString(), Equals(), GetHashCode(), and deconstructor!\n\n**`person1 == person2`**: Unlike classes (which compare references), records compare VALUES. Two records with identical data are equal, even if they're different objects in memory.\n\n**`person1 with { Age = 31 }`**: The 'with' expression creates a COPY with some properties changed. Original stays unchanged! This is how you 'modify' immutable data.\n\n**`Positional parameters`**: The (string Name, int Age) are called positional parameters. They become init-only properties and constructor parameters automatically.\n\n**`record vs record class vs record struct`**: 'record' and 'record class' are the same (reference types). 'record struct' (C# 10+) creates a value type record."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-07-06-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a simple product catalog using records!\n\n1. Create a record 'Product' with: string Name, decimal Price, string Category\n2. Create 3 products: 'Laptop' ($999.99, 'Electronics'), 'Coffee' ($12.99, 'Food'), 'Book' ($24.99, 'Books')\n3. Display all products using their automatic ToString()\n4. Create a discounted version of Laptop with price $899.99 using 'with'\n5. Compare two identical products to show value equality",
+              "starterCode": "// Define the Product record\n\n// Create products\n\n// Display products\n\n// Create discounted laptop using 'with'\n\n// Compare two identical products",
+              "solution": "// Define the Product record\npublic record Product(string Name, decimal Price, string Category);\n\n// Create products\nvar laptop = new Product(\"Laptop\", 999.99m, \"Electronics\");\nvar coffee = new Product(\"Coffee\", 12.99m, \"Food\");\nvar book = new Product(\"Book\", 24.99m, \"Books\");\n\n// Display products\nConsole.WriteLine(laptop);\nConsole.WriteLine(coffee);\nConsole.WriteLine(book);\n\n// Create discounted laptop using 'with'\nvar discountedLaptop = laptop with { Price = 899.99m };\nConsole.WriteLine(\"Discounted: \" + discountedLaptop);\n\n// Compare two identical products\nvar anotherCoffee = new Product(\"Coffee\", 12.99m, \"Food\");\nConsole.WriteLine(\"Are they equal? \" + (coffee == anotherCoffee));  // True!",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain 'Laptop'",
+                  "expectedOutput": "Laptop",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain 'Discounted'",
+                  "expectedOutput": "Discounted",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Output should contain 'True'",
+                  "expectedOutput": "True",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'public record Product(string Name, decimal Price, string Category);' for the one-line definition. Use 'm' suffix for decimal literals (999.99m)."
+                },
+                {
+                  "level": 2,
+                  "text": "For 'with' expressions, syntax is: var newRecord = oldRecord with { Property = newValue };. Original remains unchanged!"
+                },
+                {
+                  "level": 3,
+                  "text": "Records use value equality by default. Two records with identical property values are equal (==), unlike regular classes."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Trying to modify record properties directly",
+                  "consequence": "Record properties are init-only by default. Use 'with' expressions to create modified copies instead of trying to change properties.",
+                  "correction": "Use: var updated = original with { Property = newValue };"
+                },
+                {
+                  "mistake": "Forgetting decimal suffix 'm'",
+                  "consequence": "Decimal literals need the 'm' suffix (999.99m). Without it, C# treats them as double and causes type mismatch errors.",
+                  "correction": "Always use 'm' suffix for decimal values: 12.99m, 999.99m"
+                },
+                {
+                  "mistake": "Expecting reference equality",
+                  "consequence": "Records compare by VALUE, not reference. Two separate record objects with same data are equal (==).",
+                  "correction": "Understand that records are designed for value semantics - same data means equal."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-07-07",
+          "title": "Primary Constructors (C# 12)",
+          "moduleId": "module-07",
+          "order": 7,
+          "estimatedMinutes": 15,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine filling out a form for a new employee. The old way: create a blank form, THEN write name, THEN write department, THEN write salary. Tedious!\n\nThe new way: a smart form that asks for everything upfront and fills itself in!\n\nThat's PRIMARY CONSTRUCTORS in C# 12. Instead of:\n1. Declaring fields\n2. Writing a constructor\n3. Assigning each parameter to each field\n\nYou just put parameters right after the class name - and they're available throughout the class!\n\nBefore: 15 lines of boilerplate code\nAfter: 1 line with parameters in the class declaration\n\nThis is a HUGE productivity boost for classes that need initial data. Less typing, fewer bugs, cleaner code!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// OLD WAY - lots of boilerplate!\nclass PersonOld\n{\n    private readonly string _name;\n    private readonly int _age;\n    \n    public PersonOld(string name, int age)\n    {\n        _name = name;\n        _age = age;\n    }\n    \n    public void Introduce()\n    {\n        Console.WriteLine($\"Hi, I'm {_name}, {_age} years old.\");\n    }\n}\n\n// NEW WAY - Primary Constructor (C# 12)!\npublic class Person(string name, int age)\n{\n    // Parameters are available everywhere in the class!\n    public void Introduce()\n    {\n        Console.WriteLine($\"Hi, I'm {name}, {age} years old.\");\n    }\n    \n    public string GetName() => name;\n    public int GetAge() => age;\n}\n\n// Usage - same as before!\nvar person = new Person(\"Alice\", 30);\nperson.Introduce();  // Hi, I'm Alice, 30 years old.\n\n// Works with inheritance too!\npublic class Employee(string name, int age, string department) \n    : Person(name, age)  // Pass to base class\n{\n    public void ShowDepartment()\n    {\n        Console.WriteLine($\"{name} works in {department}\");\n    }\n}\n\nvar emp = new Employee(\"Bob\", 25, \"Engineering\");\nemp.Introduce();        // From Person\nemp.ShowDepartment();   // Bob works in Engineering",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`public class Person(string name, int age)`**: Parameters go right after the class name in parentheses. No need to declare fields or write constructor body!\n\n**`Parameters are captured`**: The parameters (name, age) are available in ALL instance members - methods, properties, initializers. They act like private fields.\n\n**`: Person(name, age)`**: In derived classes, pass primary constructor parameters to base class constructor using this syntax after the class declaration.\n\n**`No required fields`**: Parameters are captured but NOT automatically properties. If you need a public property, you still declare it: `public string Name { get; } = name;`\n\n**`Validation`**: You can still validate by using the parameters in field initializers: `private readonly string _name = name ?? throw new ArgumentNullException(nameof(name));`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-07-07-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a vehicle tracking system using primary constructors!\n\n1. Create a class 'Vehicle' with primary constructor: (string make, string model, int year)\n2. Add a method GetInfo() that returns a formatted string like 'Year Make Model'\n3. Create a derived class 'Car' with primary constructor: (string make, string model, int year, int doors)\n4. Pass make, model, year to base class Vehicle\n5. Add a method Describe() that uses GetInfo() and adds door count\n6. Create instances and test both classes",
+              "starterCode": "// Create Vehicle with primary constructor\n\n// Create Car that inherits from Vehicle\n\n// Test your classes",
+              "solution": "// Create Vehicle with primary constructor\npublic class Vehicle(string make, string model, int year)\n{\n    public string GetInfo()\n    {\n        return $\"{year} {make} {model}\";\n    }\n}\n\n// Create Car that inherits from Vehicle\npublic class Car(string make, string model, int year, int doors)\n    : Vehicle(make, model, year)\n{\n    public void Describe()\n    {\n        Console.WriteLine($\"{GetInfo()} with {doors} doors\");\n    }\n}\n\n// Test your classes\nvar vehicle = new Vehicle(\"Honda\", \"Civic\", 2024);\nConsole.WriteLine(vehicle.GetInfo());\n\nvar car = new Car(\"Toyota\", \"Camry\", 2023, 4);\ncar.Describe();",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain a year",
+                  "expectedOutput": "202",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain 'doors'",
+                  "expectedOutput": "doors",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Primary constructor syntax: class ClassName(Type param1, Type param2). Parameters are available throughout the class."
+                },
+                {
+                  "level": 2,
+                  "text": "For inheritance, use: class Derived(params) : Base(baseParams). Pass the needed parameters to the base constructor."
+                },
+                {
+                  "level": 3,
+                  "text": "Use string interpolation ($\"...\") to format strings with the constructor parameters."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to pass parameters to base class",
+                  "consequence": "When inheriting, you must explicitly pass required parameters to the base class primary constructor using : Base(params) syntax.",
+                  "correction": "class Car(string make, int year) : Vehicle(make, year)"
+                },
+                {
+                  "mistake": "Thinking parameters are public properties",
+                  "consequence": "Primary constructor parameters are captured privately. To expose them, create explicit properties.",
+                  "correction": "Add: public string Make { get; } = make;"
+                },
+                {
+                  "mistake": "Using primary constructors for mutable state",
+                  "consequence": "Parameters are captured by value at construction. They work best for initialization data, not frequently changing state.",
+                  "correction": "Use traditional fields/properties for mutable state."
                 }
               ],
               "difficulty": "intermediate"
