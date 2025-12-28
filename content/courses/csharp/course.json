@@ -148,7 +148,26 @@
               "starterCode": "// Display your name\nConsole.WriteLine(\"Your name here\");\n\n// Display your favorite language\n\n// Display what you want to build",
               "solution": "// Display your name\nConsole.WriteLine(\"Alex\");\n\n// Display your favorite language\nConsole.WriteLine(\"My favorite language is C#\");\n\n// Display what you want to build\nConsole.WriteLine(\"I want to build a video game!\");",
               "language": "csharp",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain at least 3 lines",
+                  "expectedOutput": "Console.WriteLine",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Program should display text output",
+                  "expectedOutput": "WriteLine",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Code should use proper C# syntax",
+                  "expectedOutput": ";",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 1,
@@ -307,7 +326,26 @@
               "starterCode": "// Create your ASCII art here!\n// Remember to add comments explaining each part!\n\nConsole.WriteLine(\"Add your art here\");",
               "solution": "// Top of the face - the eyes\nConsole.WriteLine(\"  ^   ^  \");\n\n// The nose (simple dot)\nConsole.WriteLine(\"    .    \");\n\n// The mouth (happy smile)\nConsole.WriteLine(\"   ---   \");",
               "language": "csharp",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code should include comments",
+                  "expectedOutput": "//",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should display ASCII art using Console.WriteLine",
+                  "expectedOutput": "Console.WriteLine",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Code should have multiple output statements",
+                  "expectedOutput": "WriteLine",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 1,
@@ -1125,7 +1163,26 @@
               "starterCode": "// Set up variables\nint age = 16;\nbool hasParent = true;\nbool hasTicket = true;\n\n// Write your if-else chain with logical operators",
               "solution": "// Set up variables\nint age = 16;\nbool hasParent = true;\nbool hasTicket = true;\n\n// Write your if-else chain with logical operators\nif (age >= 18 && hasTicket)\n{\n    Console.WriteLine(\"Welcome! Enjoy the movie.\");\n}\nelse if (age < 18 && hasParent && hasTicket)\n{\n    Console.WriteLine(\"Welcome with your parent!\");\n}\nelse if (!hasTicket)\n{\n    Console.WriteLine(\"Please purchase a ticket first.\");\n}\nelse\n{\n    Console.WriteLine(\"Sorry, you need a parent to attend.\");\n}",
               "language": "csharp",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should show correct message for minor with parent and ticket",
+                  "expectedOutput": "Welcome with your parent!",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Code should use logical AND operator",
+                  "expectedOutput": "&&",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Code should use the NOT operator for ticket check",
+                  "expectedOutput": "!hasTicket",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 1,
@@ -1210,7 +1267,26 @@
               "starterCode": "// Variables\nstring operation = \"+\";\nint num1 = 10;\nint num2 = 5;\n\n// Write your switch statement here",
               "solution": "// Variables\nstring operation = \"+\";\nint num1 = 10;\nint num2 = 5;\n\n// Write your switch statement here\nswitch (operation)\n{\n    case \"+\":\n        Console.WriteLine(num1 + num2);\n        break;\n    case \"-\":\n        Console.WriteLine(num1 - num2);\n        break;\n    case \"*\":\n        Console.WriteLine(num1 * num2);\n        break;\n    case \"/\":\n        Console.WriteLine(num1 / num2);\n        break;\n    default:\n        Console.WriteLine(\"Unknown operation\");\n        break;\n}",
               "language": "csharp",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Addition should output 15 (10 + 5)",
+                  "expectedOutput": "15",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Code should use switch statement",
+                  "expectedOutput": "switch",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Code should have break statements",
+                  "expectedOutput": "break",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 1,
@@ -1678,7 +1754,32 @@
               "starterCode": "// Number analyzer\nfor (int i = 1; i <= 20; i++)\n{\n    // Skip even numbers\n    \n    // Break at 15\n    \n    // Display the number\n}",
               "solution": "// Number analyzer\nfor (int i = 1; i <= 20; i++)\n{\n    // Skip even numbers\n    if (i % 2 == 0)\n    {\n        continue;\n    }\n    \n    // Break at 15\n    if (i == 15)\n    {\n        break;\n    }\n    \n    // Display the number\n    Console.WriteLine(i);\n}",
               "language": "csharp",
-              "testCases": [],
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should display odd numbers starting with 1",
+                  "expectedOutput": "1",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should include 13 (last odd number before 15)",
+                  "expectedOutput": "13",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Code should use continue to skip even numbers",
+                  "expectedOutput": "continue",
+                  "isVisible": false
+                },
+                {
+                  "id": "test-4",
+                  "description": "Code should use break to exit at 15",
+                  "expectedOutput": "break",
+                  "isVisible": false
+                }
+              ],
               "hints": [
                 {
                   "level": 1,
