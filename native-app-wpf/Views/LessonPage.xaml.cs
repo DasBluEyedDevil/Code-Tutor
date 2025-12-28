@@ -66,6 +66,17 @@ public partial class LessonPage : UserControl
 
     private UIElement? CreateSectionControl(ContentSection section)
     {
+        return section.Type?.ToUpperInvariant() switch
+        {
+            "THEORY" => new Controls.TheorySection(section),
+            "EXAMPLE" => new Controls.CodeExampleSection(section),
+            "KEY_POINT" => new Controls.KeyPointSection(section),
+            _ => CreateDefaultSection(section)
+        };
+    }
+
+    private UIElement CreateDefaultSection(ContentSection section)
+    {
         var container = new StackPanel { Margin = new Thickness(0, 0, 0, 24) };
 
         if (!string.IsNullOrEmpty(section.Title))
