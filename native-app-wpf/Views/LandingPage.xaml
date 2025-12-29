@@ -27,6 +27,21 @@
                                 Tag="{Binding}"
                                 Margin="0,0,16,16"
                                 IsEnabled="{Binding IsRuntimeAvailable}">
+                            <Button.ToolTip>
+                                <ToolTip Visibility="{Binding IsRuntimeAvailable, Converter={StaticResource InverseBoolToVisibility}}">
+                                    <StackPanel MaxWidth="250">
+                                        <TextBlock Text="Runtime Not Available"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource AccentOrangeBrush}" />
+                                        <TextBlock TextWrapping="Wrap"
+                                                   Margin="0,4,0,0">
+                                            <Run Text="The " />
+                                            <Run Text="{Binding Language}" FontWeight="SemiBold" />
+                                            <Run Text=" runtime is not installed on this system. Please install it to access this course." />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </ToolTip>
+                            </Button.ToolTip>
                             <Border Style="{StaticResource CardBorder}"
                                     Width="320" Height="200">
                                 <Grid>
@@ -73,6 +88,18 @@
                                             <Run Text="h" />
                                         </TextBlock>
                                     </StackPanel>
+
+                                    <!-- Unavailable Overlay -->
+                                    <Border Grid.RowSpan="3"
+                                            Background="#80000000"
+                                            CornerRadius="8"
+                                            Visibility="{Binding IsRuntimeAvailable, Converter={StaticResource InverseBoolToVisibility}}">
+                                        <TextBlock Text="Runtime Required"
+                                                   Style="{StaticResource CaptionText}"
+                                                   Foreground="{StaticResource AccentOrangeBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
                                 </Grid>
                             </Border>
                         </Button>
