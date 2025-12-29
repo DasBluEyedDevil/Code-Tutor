@@ -25,25 +25,9 @@
                         <Button Style="{StaticResource GhostButton}"
                                 Click="CourseCard_Click"
                                 Tag="{Binding}"
-                                Margin="0,0,16,16"
-                                IsEnabled="{Binding IsRuntimeAvailable}">
-                            <Button.ToolTip>
-                                <ToolTip Visibility="{Binding IsRuntimeAvailable, Converter={StaticResource InverseBoolToVisibility}}">
-                                    <StackPanel MaxWidth="250">
-                                        <TextBlock Text="Runtime Not Available"
-                                                   FontWeight="SemiBold"
-                                                   Foreground="{StaticResource AccentOrangeBrush}" />
-                                        <TextBlock TextWrapping="Wrap"
-                                                   Margin="0,4,0,0">
-                                            <Run Text="The " />
-                                            <Run Text="{Binding Language}" FontWeight="SemiBold" />
-                                            <Run Text=" runtime is not installed on this system. Please install it to access this course." />
-                                        </TextBlock>
-                                    </StackPanel>
-                                </ToolTip>
-                            </Button.ToolTip>
+                                Margin="0,0,16,16">
                             <Border Style="{StaticResource CardBorder}"
-                                    Width="320" Height="200">
+                                    Width="320" Height="220">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
@@ -71,13 +55,15 @@
                                         <TextBlock Text="{Binding Description}"
                                                    Style="{StaticResource CaptionText}"
                                                    TextWrapping="Wrap"
-                                                   MaxHeight="40"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   MaxHeight="60"
                                                    Margin="0,8,0,0" />
                                     </StackPanel>
 
-                                    <!-- Stats -->
+                                    <!-- Stats Row (when runtime available) -->
                                     <StackPanel Grid.Row="2"
-                                                Orientation="Horizontal">
+                                                Orientation="Horizontal"
+                                                Visibility="{Binding IsRuntimeAvailable, Converter={StaticResource BoolToVisibility}}">
                                         <TextBlock Style="{StaticResource CaptionText}">
                                             <Run Text="{Binding ModuleCount, Mode=OneWay}" />
                                             <Run Text=" modules" />
@@ -89,16 +75,32 @@
                                         </TextBlock>
                                     </StackPanel>
 
-                                    <!-- Unavailable Overlay -->
-                                    <Border Grid.RowSpan="3"
-                                            Background="#80000000"
-                                            CornerRadius="8"
+                                    <!-- Runtime Warning Banner (when runtime NOT available) -->
+                                    <Border Grid.Row="2"
+                                            Background="{StaticResource WarningBackgroundBrush}"
+                                            BorderBrush="{StaticResource AccentOrangeBrush}"
+                                            BorderThickness="0,1,0,0"
+                                            Padding="0,8"
+                                            Margin="-16,0,-16,-16"
+                                            CornerRadius="0,0,8,8"
                                             Visibility="{Binding IsRuntimeAvailable, Converter={StaticResource InverseBoolToVisibility}}">
-                                        <TextBlock Text="Runtime Required"
-                                                   Style="{StaticResource CaptionText}"
-                                                   Foreground="{StaticResource AccentOrangeBrush}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center" />
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="&#x26A0; "
+                                                           Foreground="{StaticResource AccentOrangeBrush}"
+                                                           FontSize="12"
+                                                           VerticalAlignment="Center" />
+                                                <TextBlock Text="Runtime setup required"
+                                                           Style="{StaticResource CaptionText}"
+                                                           Foreground="{StaticResource AccentOrangeBrush}"
+                                                           FontWeight="SemiBold" />
+                                            </StackPanel>
+                                            <TextBlock Text="Click to preview course content"
+                                                       Style="{StaticResource CaptionText}"
+                                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,2,0,0" />
+                                        </StackPanel>
                                     </Border>
                                 </Grid>
                             </Border>
