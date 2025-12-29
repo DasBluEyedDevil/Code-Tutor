@@ -65,6 +65,7 @@ public partial class CodingChallenge : UserControl
             "csharp" or "c#" => HighlightingManager.Instance.GetDefinition("C#"),
             "java" => HighlightingManager.Instance.GetDefinition("Java"),
             "kotlin" => HighlightingManager.Instance.GetDefinition("Java"), // Close enough
+            "rust" => HighlightingManager.Instance.GetDefinition("C#"), // Rust uses C-like syntax
             "dart" or "flutter" => HighlightingManager.Instance.GetDefinition("C#"), // Close enough
             _ => null
         };
