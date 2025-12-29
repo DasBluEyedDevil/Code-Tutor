@@ -8376,7 +8376,7 @@
         },
         {
           "id": "6.2",
-          "title": "Lesson 6.2: Introduction to Jetpack Compose",
+          "title": "Lesson 6.2: Introduction to Compose Multiplatform UI",
           "moduleId": "module-06",
           "order": 3,
           "estimatedMinutes": 70,
@@ -8390,12 +8390,12 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nWelcome to the world of **Jetpack Compose** - the modern toolkit for building native UIs!\n\nCompose uses a **declarative** approach: you describe what the UI should look like, and Compose handles the rest. This is a fundamental shift from imperative UI programming.\n\nIn this lesson, you'll learn:\n- What Jetpack Compose is and why it's revolutionary\n- How to write composable functions\n- Using Preview annotations for instant feedback\n- Basic UI components (Text, Button, Image, Column, Row)\n- Modifiers for styling and layout\n- Basic state management with `remember`\n\n---\n\n"
+              "content": "\nWelcome to the world of **Compose Multiplatform** - the modern toolkit for building native UIs across Android, iOS, Desktop, and Web!\n\nCompose uses a **declarative** approach: you describe what the UI should look like, and Compose handles the rest. This is a fundamental shift from imperative UI programming. With Compose Multiplatform, the same UI code runs on both Android and iOS.\n\nIn this lesson, you'll learn:\n- What Compose Multiplatform is and why it's revolutionary\n- How to write composable functions\n- Using Preview annotations for instant feedback\n- Basic UI components (Text, Button, Image, Column, Row)\n- Modifiers for styling and layout\n- Basic state management with `remember`\n- Running your app on both Android and iOS\n\n---\n\n"
             },
             {
               "type": "THEORY",
-              "title": "What is Jetpack Compose?",
-              "content": "\n### Declarative UI Framework\n\n**Imperative (Old Way)**:\n- Manually create and update UI elements\n- Keep track of UI state separately\n- Write code to sync state with UI\n\n**Declarative (Compose Way)**:\n- Describe what UI should look like for a given state\n- Framework automatically updates UI when state changes\n- Less code, fewer bugs\n\n**Benefits**:\n- Less code (often 40% reduction)\n- Easier to read and maintain\n- No manual view updates (automatic recomposition)\n- Type-safe (compiler catches errors)\n- Real-time, interactive previews\n- Easy reusability through functions\n\n---\n\n",
+              "title": "What is Compose Multiplatform?",
+              "content": "\n### Declarative UI Framework for All Platforms\n\n**Imperative (Old Way)**:\n- Manually create and update UI elements\n- Keep track of UI state separately\n- Write code to sync state with UI\n- Write separate UI code for Android (XML) and iOS (SwiftUI/UIKit)\n\n**Declarative (Compose Way)**:\n- Describe what UI should look like for a given state\n- Framework automatically updates UI when state changes\n- Less code, fewer bugs\n- **Same UI code works on Android AND iOS!**\n\n**Benefits**:\n- Less code (often 40% reduction)\n- Easier to read and maintain\n- No manual view updates (automatic recomposition)\n- Type-safe (compiler catches errors)\n- Real-time, interactive previews\n- Easy reusability through functions\n- **Share UI across Android, iOS, Desktop, and Web**\n\n### Compose Multiplatform vs Jetpack Compose\n\n| Feature | Jetpack Compose | Compose Multiplatform |\n|---------|-----------------|----------------------|\n| Platform | Android only | Android, iOS, Desktop, Web |\n| UI Code | Android-specific | Shared across platforms |\n| Native Performance | Yes | Yes (compiles to native) |\n| Material Design | Yes | Yes |\n\n---\n\n",
               "code": "// Describe WHAT the UI should look like\n@Composable\nfun MyScreen() {\n    var text by remember { mutableStateOf(\"Hello\") }\n\n    Column {\n        Text(\n            text = text,\n            fontSize = 20.sp,\n            color = Color.Blue\n        )\n        Button(onClick = { text = \"Clicked!\" }) {\n            Text(\"Click Me\")\n        }\n    }\n}",
               "language": "kotlin"
             },
@@ -8493,7 +8493,12 @@
             {
               "type": "THEORY",
               "title": "Why This Matters",
-              "content": "\n### Real-World Impact\n\n**Companies Using Jetpack Compose**:\n- **Google**: Gmail, Google Play Store, Google Drive\n- **Twitter**: Android app rebuilt with Compose\n- **Airbnb**: Migrating to Compose\n- **Square**: Cash App using Compose\n\n**Benefits in Production**:\n- ✅ 40% less code → faster development\n- ✅ Fewer bugs (type safety, automatic state management)\n- ✅ Better performance (smart recomposition)\n- ✅ Easier to test (composables are functions)\n- ✅ Modern, maintainable codebase\n\n**Industry Trends**:\n- Compose is now the **recommended** way to build Android UIs\n- All new Google apps use Compose\n- Strong community support and growing ecosystem\n- Multiplatform: Compose for Desktop, Web, iOS (experimental)\n\n---\n\n"
+              "content": "\n### Real-World Impact\n\n**Companies Using Compose Multiplatform**:\n- **Google**: Gmail, Google Play Store, Google Drive\n- **Twitter**: Android app rebuilt with Compose\n- **Airbnb**: Migrating to Compose\n- **Square**: Cash App using Compose\n- **JetBrains**: Toolbox App (Desktop + Mobile)\n- **McDonald's**: Mobile apps using Compose Multiplatform\n\n**Benefits in Production**:\n- ✅ 40% less code -> faster development\n- ✅ Fewer bugs (type safety, automatic state management)\n- ✅ Better performance (smart recomposition)\n- ✅ Easier to test (composables are functions)\n- ✅ Modern, maintainable codebase\n- ✅ **Share UI code between Android and iOS**\n\n**Industry Trends**:\n- Compose is now the **recommended** way to build Android UIs\n- All new Google apps use Compose\n- Strong community support and growing ecosystem\n- **Compose Multiplatform is production-ready for iOS**\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Running on iOS",
+              "content": "\n### Setting Up the iOS Simulator\n\nTo run your Compose Multiplatform app on iOS:\n\n**Prerequisites**:\n- macOS with Xcode installed\n- iOS Simulator configured\n- Kotlin Multiplatform Mobile plugin in Android Studio\n\n**Running on iOS Simulator**:\n1. Open your project in Android Studio\n2. Select the iOS target (e.g., `iosApp`)\n3. Choose an iOS Simulator from the device dropdown\n4. Click Run (or press Ctrl+R on macOS)\n\n**Alternatively, from command line**:\n```bash\n./gradlew :composeApp:iosSimulatorArm64Run\n```\n\n### Platform Differences to Note\n\n| Feature | Android | iOS |\n|---------|---------|-----|\n| **Status Bar** | Standard Android bar | Notch/Dynamic Island area |\n| **System Fonts** | Roboto | SF Pro |\n| **Back Navigation** | Hardware/gesture button | Swipe from left edge |\n| **Safe Area** | System bars | Safe area insets |\n\n### Handling Safe Areas\n\nOn iOS, you need to account for the notch and home indicator:\n\n```kotlin\n// In commonMain - works on both platforms!\n@Composable\nfun App() {\n    MaterialTheme {\n        Scaffold(\n            // Scaffold handles safe areas automatically\n        ) { paddingValues ->\n            Column(\n                modifier = Modifier\n                    .fillMaxSize()\n                    .padding(paddingValues)\n            ) {\n                // Your content here\n            }\n        }\n    }\n}\n```\n\n### Entry Points\n\n**Android Entry Point** (`androidMain`):\n```kotlin\nclass MainActivity : ComponentActivity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        setContent {\n            App()  // Shared composable\n        }\n    }\n}\n```\n\n**iOS Entry Point** (`iosMain`):\n```kotlin\nfun MainViewController(): UIViewController {\n    return ComposeUIViewController {\n        App()  // Same shared composable!\n    }\n}\n```\n\nBoth platforms use the same `App()` composable from `commonMain`!\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -8510,12 +8515,12 @@
             {
               "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\nWhat Jetpack Compose is and its declarative approach\nHow to write composable functions with `@Composable`\nUsing `@Preview` for instant UI feedback\nBasic components: Text, Button, Image, Icon\nLayout composables: Column, Row\nModifiers for styling (size, padding, background, clickable)\nState management basics with `remember` and `mutableStateOf`\nBuilding interactive UIs that respond to user input\n\n---\n\n"
+              "content": "\nWhat Compose Multiplatform is and its declarative approach\nHow to write composable functions with `@Composable`\nUsing `@Preview` for instant UI feedback\nBasic components: Text, Button, Image, Icon\nLayout composables: Column, Row\nModifiers for styling (size, padding, background, clickable)\nState management basics with `remember` and `mutableStateOf`\nBuilding interactive UIs that respond to user input\n**Running your app on both Android and iOS simulators**\n**Understanding platform differences (fonts, navigation, safe areas)**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.3: Layouts and UI Design**, you'll master:\n- Advanced layouts: Box, LazyColumn, LazyRow\n- Arrangement and alignment options\n- Material Design 3 components\n- Theming: colors, typography, shapes\n- Building complex, scrollable UIs\n- Responsive layouts\n\nGet ready to build professional-looking Android apps!\n\n"
+              "content": "\nIn **Lesson 6.3: Layouts and UI Design**, you'll master:\n- Advanced layouts: Box, LazyColumn, LazyRow\n- Arrangement and alignment options\n- Material Design 3 components\n- Theming: colors, typography, shapes\n- Building complex, scrollable UIs\n- Responsive layouts for both Android and iOS\n\nGet ready to build professional-looking apps for both platforms!\n\n"
             }
           ],
           "challenges": [
@@ -8719,7 +8724,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nBeautiful UI is crucial for app success. Users judge apps within **milliseconds** - if your UI looks outdated or confusing, users uninstall.\n\nIn this lesson, you'll master:\n- ✅ Advanced layout composables (Box, LazyColumn, LazyRow)\n- ✅ Arrangement and alignment strategies\n- ✅ Spacer for spacing control\n- ✅ Material Design 3 components\n- ✅ Theming: colors, typography, shapes\n- ✅ Building complex, professional UIs\n\n---\n\n"
+              "content": "\nBeautiful UI is crucial for app success. Users judge apps within **milliseconds** - if your UI looks outdated or confusing, users uninstall. With Compose Multiplatform, you can create stunning UIs that work on both Android and iOS.\n\nIn this lesson, you'll master:\n- ✅ Advanced layout composables (Box, LazyColumn, LazyRow)\n- ✅ Arrangement and alignment strategies\n- ✅ Spacer for spacing control\n- ✅ Material Design 3 components\n- ✅ Theming: colors, typography, shapes\n- ✅ Building complex, professional UIs\n- ✅ Platform-specific considerations for Android and iOS\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -8794,8 +8799,13 @@
             },
             {
               "type": "THEORY",
+              "title": "Running Layouts on iOS",
+              "content": "\n### Platform-Specific Layout Considerations\n\nWhile your Compose UI code works on both platforms, there are some differences to be aware of:\n\n| Feature | Android | iOS |\n|---------|---------|-----|\n| **List Scrolling** | Overscroll glow effect | Bounce effect |\n| **Scroll Bars** | Visible by default | Hidden by default |\n| **Grid Performance** | RecyclerView-based | Native iOS rendering |\n| **Safe Areas** | Status bar | Notch + Home indicator |\n\n### Running on iOS Simulator\n\n1. Ensure you have Xcode installed and configured\n2. In Android Studio, select the iOS target\n3. Choose an iOS Simulator (e.g., iPhone 15)\n4. Click Run\n\nYour layouts will automatically adapt to iOS safe areas when using `Scaffold`.\n\n### Font Differences\n\nBy default, text rendering differs between platforms:\n\n- **Android**: Uses Roboto font family\n- **iOS**: Uses SF Pro font family\n\nMaterial Theme handles this automatically, but be aware that text may appear slightly different on each platform. Always test on both simulators!\n\n### Handling Platform-Specific Styling\n\n```kotlin\n// In commonMain - style adapts per platform\n@Composable\nfun ProductList(products: List<Product>) {\n    LazyColumn(\n        // contentPadding handles safe areas on both platforms\n        contentPadding = PaddingValues(16.dp),\n        verticalArrangement = Arrangement.spacedBy(12.dp)\n    ) {\n        items(products) { product ->\n            ProductCard(product)\n        }\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "Why This Matters",
-              "content": "\n### Real-World Impact\n\n**User Statistics**:\n- **94%** of first impressions are design-related\n- **88%** of users won't return after a bad experience\n- **75%** judge credibility based on design\n- Apps with good UI have **3x** higher retention\n\n**Business Impact**:\n- Well-designed apps get **5x more downloads**\n- Higher ratings (4.5+ stars) increase installs by **300%**\n- Better UI reduces support requests by **40%**\n\n**Material Design 3 Benefits**:\n- ✅ **Consistent**: Familiar patterns across apps\n- ✅ **Accessible**: Built-in accessibility features\n- ✅ **Adaptive**: Dynamic colors on Android 12+\n- ✅ **Modern**: Fresh, contemporary look\n\n---\n\n"
+              "content": "\n### Real-World Impact\n\n**User Statistics**:\n- **94%** of first impressions are design-related\n- **88%** of users won't return after a bad experience\n- **75%** judge credibility based on design\n- Apps with good UI have **3x** higher retention\n\n**Business Impact**:\n- Well-designed apps get **5x more downloads**\n- Higher ratings (4.5+ stars) increase installs by **300%**\n- Better UI reduces support requests by **40%**\n\n**Material Design 3 Benefits**:\n- ✅ **Consistent**: Familiar patterns across apps\n- ✅ **Accessible**: Built-in accessibility features\n- ✅ **Adaptive**: Dynamic colors on Android 12+\n- ✅ **Modern**: Fresh, contemporary look\n- ✅ **Cross-platform**: Works on Android and iOS\n\n---\n\n"
             },
             {
               "type": "THEORY",
