@@ -3,6 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -13,41 +17,63 @@
         <Border Grid.Row="0"
                 Background="{StaticResource BackgroundMediumBrush}"
                 Padding="40,24">
-            <StackPanel>
-                <!-- Breadcrumb Navigation -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                    <Button x:Name="BreadcrumbCourse"
-                            Style="{StaticResource GhostButton}"
-                            Click="BreadcrumbCourse_Click"
-                            Padding="0">
-                        <TextBlock x:Name="BreadcrumbCourseText"
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <!-- Breadcrumb Navigation -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button x:Name="BreadcrumbCourse"
+                                Style="{StaticResource GhostButton}"
+                                Click="BreadcrumbCourse_Click"
+                                Padding="0">
+                            <TextBlock x:Name="BreadcrumbCourseText"
+                                       Style="{StaticResource CaptionText}"
+                                       Foreground="{StaticResource AccentBlueBrush}" />
+                        </Button>
+                        <TextBlock Text=" / "
                                    Style="{StaticResource CaptionText}"
-                                   Foreground="{StaticResource AccentBlueBrush}" />
-                    </Button>
-                    <TextBlock Text=" / "
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   VerticalAlignment="Center" />
+                        <TextBlock x:Name="BreadcrumbModuleText"
+                                   Style="{StaticResource CaptionText}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="LessonTitle"
+                               Style="{StaticResource HeadingText}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock x:Name="LessonTime"
+                                   Style="{StaticResource CaptionText}" />
+                        <TextBlock x:Name="LessonDifficulty"
+                                   Style="{StaticResource CaptionText}"
+                                   Margin="16,0,0,0" />
+                    </StackPanel>
+                    <TextBlock x:Name="LessonPosition"
                                Style="{StaticResource CaptionText}"
                                Foreground="{StaticResource TextMutedBrush}"
-                               VerticalAlignment="Center" />
-                    <TextBlock x:Name="BreadcrumbModuleText"
-                               Style="{StaticResource CaptionText}"
-                               Foreground="{StaticResource TextSecondaryBrush}"
-                               VerticalAlignment="Center" />
+                               Margin="0,4,0,0"/>
                 </StackPanel>
 
-                <TextBlock x:Name="LessonTitle"
-                           Style="{StaticResource HeadingText}" />
-                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                    <TextBlock x:Name="LessonTime"
-                               Style="{StaticResource CaptionText}" />
-                    <TextBlock x:Name="LessonDifficulty"
-                               Style="{StaticResource CaptionText}"
-                               Margin="16,0,0,0" />
-                </StackPanel>
-                <TextBlock x:Name="LessonPosition"
-                           Style="{StaticResource CaptionText}"
-                           Foreground="{StaticResource TextMutedBrush}"
-                           Margin="0,4,0,0"/>
-            </StackPanel>
+                <!-- AI Tutor Toggle Button -->
+                <Button x:Name="TutorToggleButton"
+                        Grid.Column="1"
+                        Content="&#xE716;"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="18"
+                        ToolTip="AI Tutor"
+                        Background="Transparent"
+                        Foreground="{StaticResource AccentPurpleBrush}"
+                        BorderThickness="0"
+                        Padding="12,8"
+                        Cursor="Hand"
+                        VerticalAlignment="Top"
+                        Click="TutorToggleButton_Click"/>
+            </Grid>
         </Border>
 
         <!-- Lesson Content -->
@@ -101,6 +127,17 @@
                     </StackPanel>
                 </Button>
             </Grid>
+        </Border>
+
+        <!-- Tutor Chat Panel (slides in from right) -->
+        <Border x:Name="TutorPanel"
+                Grid.Column="1"
+                Grid.RowSpan="3"
+                Width="0"
+                Background="{StaticResource BackgroundDarkBrush}"
+                BorderBrush="{StaticResource BorderDefaultBrush}"
+                BorderThickness="1,0,0,0">
+            <ContentPresenter x:Name="TutorContent"/>
         </Border>
     </Grid>
 </UserControl>
