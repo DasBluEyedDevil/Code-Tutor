@@ -158,7 +158,7 @@
               "language": "dart"
             },
             {
-              "type": "EXAMPLE",
+              "type": "KEY_POINT",
               "title": "Useful VS Code Shortcuts",
               "content": "\nLearn these - they'll save you tons of time:\n\n| Shortcut | What It Does |\n|----------|--------------|\n| `Ctrl/Cmd + P` | Quick file search |\n| `Ctrl/Cmd + Shift + P` | Command palette |\n| `Ctrl/Cmd + B` | Toggle sidebar |\n| `Ctrl/Cmd + J` | Toggle terminal |\n| `Ctrl/Cmd + S` | Save file |\n| `Ctrl/Cmd + /` | Comment/uncomment code |\n\n"
             },
@@ -279,7 +279,9 @@
             {
               "type": "EXAMPLE",
               "title": "Making Your First Change",
-              "content": "\nLet's personalize this app! We're going to change the title.\n\n1. Find line 31 in `main.dart`. It looks like:\n   ```dart\n   title: 'Flutter Demo',\n   ```\n\n2. Change it to:\n   ```dart\n   title: 'My First App',\n   ```\n\n3. Save the file (`Ctrl/Cmd + S`)\n\n4. Look at your running app - **it instantly updates!** The title bar now says \"My First App\"\n\nThis feature is called **Hot Reload** - it's one of Flutter's superpowers. You can make changes and see them instantly without restarting the app!\n\n"
+              "content": "Let's personalize this app! Find line 31 in main.dart and change the title. After saving, the app instantly updates. This is Hot Reload - Flutter's superpower that lets you see changes instantly without restarting!",
+              "code": "// BEFORE (line 31 in main.dart):\ntitle: 'Flutter Demo',\n\n// AFTER:\ntitle: 'My First App',\n\n// Steps:\n// 1. Find line 31 in main.dart\n// 2. Change 'Flutter Demo' to 'My First App'\n// 3. Save file (Ctrl/Cmd + S)\n// 4. Watch your app update instantly!",
+              "language": "dart"
             },
             {
               "type": "THEORY",
@@ -715,7 +717,7 @@
               "language": "dart"
             },
             {
-              "type": "EXAMPLE",
+              "type": "THEORY",
               "title": "Code is Just Instructions",
               "content": "\nWhen you write code, you're writing instructions for a computer. The computer:\n- Reads your instructions from top to bottom (usually)\n- Executes them exactly as written\n- Doesn't make assumptions or \"guess\" what you meant\n- Will do exactly what you say, even if it's wrong!\n\nThis is both powerful and dangerous:\n- **Powerful**: You have complete control\n- **Dangerous**: Small mistakes (like forgetting a step) cause errors\n\n"
             },
@@ -739,7 +741,7 @@
               "content": "\nNow that you understand the *concept*, here are the official programming terms:\n\n- **`void`**: This means \"doesn't give back any information.\" Don't worry about this yet.\n\n- **`main()`**: This is called a **function**. It's a container for instructions. The `main` function is special - it's where every program begins.\n\n- **`{ }`**: These curly braces define the **body** of the function. Everything inside them is part of `main`.\n\n- **`print()`**: This is also a function, but one that's already built into Dart. It displays text in the terminal.\n\n- **`'Hello, World!'`**: This is a **string** - programmer-speak for \"text.\" Strings always go in quotes.\n\n- **`;`**: The semicolon tells Dart \"this instruction is complete.\" It's like a period at the end of a sentence.\n\n"
             },
             {
-              "type": "EXAMPLE",
+              "type": "KEY_POINT",
               "title": "The Golden Rule of Learning Code",
               "content": "\n**Don't memorize syntax. Understand concepts.**\n\nYou might forget whether to use `print()` or `display()`. That's okay! You can always look it up.\n\nWhat matters is understanding:\n- Programs run instructions in order\n- You need a starting point (`main`)\n- You can tell the computer to display text\n\nThe exact spelling and punctuation will become natural with practice.\n\n"
             },
@@ -2388,7 +2390,7 @@
           "difficulty": "beginner",
           "contentSections": [
             {
-              "type": "EXAMPLE",
+              "type": "THEORY",
               "title": "Your First Widget Deep Dive",
               "content": "\nYou've seen the `Text` widget briefly. Now let's master it! Text is the most common widget you'll use - every app shows text somewhere.\n\nThink of the Text widget like a word processor:\n- You can change the **font size**\n- You can change the **color**\n- You can make it **bold** or *italic*\n- You can **align** it\n\nAll of this is possible with Flutter's Text widget!\n\n"
             },
@@ -6112,7 +6114,7 @@
               "language": "dart"
             },
             {
-              "type": "EXAMPLE",
+              "type": "KEY_POINT",
               "title": "HTTP Status Codes (The Restaurant Story)",
               "content": "\n| Code | Restaurant Analogy | Meaning |\n|------|-------------------|----------|\n| **200** | Order successful! | Request succeeded |\n| **201** | Order created! | Resource created |\n| **400** | Invalid order | Bad request |\n| **401** | Not allowed to order | Unauthorized |\n| **404** | Dish not on menu | Not found |\n| **500** | Kitchen on fire! | Server error |\n\n"
             },
@@ -8430,7 +8432,7 @@
               "content": "\n### What Are Platform Channels?\n\nSometimes you need features that don't have a Flutter plugin. **Platform Channels** let your Dart code communicate directly with native Android (Kotlin/Java) and iOS (Swift/Objective-C) code.\n\n**Analogy:** Think of Platform Channels like a **translator at a UN meeting**. Dart speaks one language, Android/iOS speak another. The channel translates messages back and forth!\n\n```\n┌─────────────────┐                    ┌─────────────────┐\n│     FLUTTER     │                    │     NATIVE      │\n│    (Dart)       │◄═══════════════════►│  (Kotlin/Swift) │\n│                 │   MethodChannel    │                 │\n└─────────────────┘                    └─────────────────┘\n         │                                      │\n    invokeMethod()  ─────────────────►   handle method\n         │          ◄─────────────────   return result\n    receive result                              │\n```\n\n### When Do You Need Platform Channels?\n\n1. **No plugin exists** for the feature you need\n2. **Proprietary SDKs** that only have native libraries\n3. **Hardware features** not exposed by Flutter\n4. **Performance-critical** code that must run natively\n5. **Existing native code** you want to reuse\n\n"
             },
             {
-              "type": "EXAMPLE",
+              "type": "THEORY",
               "title": "Complete Platform Channel Example: Get Battery Level",
               "content": "\n### Step 1: Flutter Side (Dart)\n\n**lib/services/battery_service.dart:**\n\n```dart\nimport 'package:flutter/services.dart';\n\nclass BatteryService {\n  // Create a channel with a unique name\n  static const platform = MethodChannel('com.myapp/battery');\n  \n  // Call native code to get battery level\n  static Future<int> getBatteryLevel() async {\n    try {\n      // invokeMethod sends a message to native code\n      final int result = await platform.invokeMethod('getBatteryLevel');\n      return result;\n    } on PlatformException catch (e) {\n      print('Failed to get battery level: ${e.message}');\n      return -1;\n    }\n  }\n  \n  // Call native code with arguments\n  static Future<bool> setBatteryAlarm(int threshold) async {\n    try {\n      final result = await platform.invokeMethod(\n        'setBatteryAlarm',\n        {'threshold': threshold},  // Pass data to native\n      );\n      return result as bool;\n    } on PlatformException {\n      return false;\n    }\n  }\n}\n```\n\n### Step 2: Android Side (Kotlin)\n\n**android/app/src/main/kotlin/.../MainActivity.kt:**\n\n```kotlin\npackage com.example.myapp\n\nimport android.content.Context\nimport android.content.ContextWrapper\nimport android.content.Intent\nimport android.content.IntentFilter\nimport android.os.BatteryManager\nimport android.os.Build\nimport io.flutter.embedding.android.FlutterActivity\nimport io.flutter.embedding.engine.FlutterEngine\nimport io.flutter.plugin.common.MethodChannel\n\nclass MainActivity : FlutterActivity() {\n    private val CHANNEL = \"com.myapp/battery\"  // Must match Dart!\n\n    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {\n        super.configureFlutterEngine(flutterEngine)\n\n        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)\n            .setMethodCallHandler { call, result ->\n                when (call.method) {\n                    \"getBatteryLevel\" -> {\n                        val batteryLevel = getBatteryLevel()\n                        if (batteryLevel != -1) {\n                            result.success(batteryLevel)\n                        } else {\n                            result.error(\"UNAVAILABLE\", \"Battery level not available\", null)\n                        }\n                    }\n                    \"setBatteryAlarm\" -> {\n                        val threshold = call.argument<Int>(\"threshold\") ?: 20\n                        // Implement your alarm logic here\n                        result.success(true)\n                    }\n                    else -> result.notImplemented()\n                }\n            }\n    }\n\n    private fun getBatteryLevel(): Int {\n        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {\n            val batteryManager = getSystemService(Context.BATTERY_SERVICE) as BatteryManager\n            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)\n        } else {\n            val intent = ContextWrapper(applicationContext)\n                .registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))\n            (intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1) * 100 /\n                (intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: 1)\n        }\n    }\n}\n```\n\n### Step 3: iOS Side (Swift)\n\n**ios/Runner/AppDelegate.swift:**\n\n```swift\nimport UIKit\nimport Flutter\n\n@UIApplicationMain\n@objc class AppDelegate: FlutterAppDelegate {\n    override func application(\n        _ application: UIApplication,\n        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?\n    ) -> Bool {\n        let controller = window?.rootViewController as! FlutterViewController\n        \n        let batteryChannel = FlutterMethodChannel(\n            name: \"com.myapp/battery\",  // Must match Dart!\n            binaryMessenger: controller.binaryMessenger\n        )\n        \n        batteryChannel.setMethodCallHandler { [weak self] (call, result) in\n            switch call.method {\n            case \"getBatteryLevel\":\n                self?.receiveBatteryLevel(result: result)\n            case \"setBatteryAlarm\":\n                if let args = call.arguments as? [String: Any],\n                   let threshold = args[\"threshold\"] as? Int {\n                    // Implement alarm logic\n                    result(true)\n                } else {\n                    result(FlutterError(code: \"INVALID_ARGS\", message: nil, details: nil))\n                }\n            default:\n                result(FlutterMethodNotImplemented)\n            }\n        }\n        \n        GeneratedPluginRegistrant.register(with: self)\n        return super.application(application, didFinishLaunchingWithOptions: launchOptions)\n    }\n    \n    private func receiveBatteryLevel(result: FlutterResult) {\n        UIDevice.current.isBatteryMonitoringEnabled = true\n        let batteryLevel = Int(UIDevice.current.batteryLevel * 100)\n        \n        if batteryLevel == -100 {\n            result(FlutterError(\n                code: \"UNAVAILABLE\",\n                message: \"Battery info unavailable\",\n                details: nil\n            ))\n        } else {\n            result(batteryLevel)\n        }\n    }\n}\n```\n\n### Step 4: Use It in Flutter\n\n```dart\nclass BatteryScreen extends StatefulWidget {\n  @override\n  State<BatteryScreen> createState() => _BatteryScreenState();\n}\n\nclass _BatteryScreenState extends State<BatteryScreen> {\n  int _batteryLevel = -1;\n  \n  @override\n  void initState() {\n    super.initState();\n    _loadBatteryLevel();\n  }\n  \n  Future<void> _loadBatteryLevel() async {\n    final level = await BatteryService.getBatteryLevel();\n    setState(() => _batteryLevel = level);\n  }\n  \n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Battery Level')),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            Icon(\n              _batteryLevel > 50 ? Icons.battery_full : Icons.battery_alert,\n              size: 100,\n              color: _batteryLevel > 20 ? Colors.green : Colors.red,\n            ),\n            SizedBox(height: 20),\n            Text(\n              '$_batteryLevel%',\n              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),\n            ),\n            SizedBox(height: 20),\n            ElevatedButton(\n              onPressed: _loadBatteryLevel,\n              child: Text('Refresh'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n```\n\n"
             },
@@ -8654,7 +8656,7 @@
               "content": "- Why testing matters in app development\n- Types of tests (unit, widget, integration)\n- Test-Driven Development (TDD) basics\n- Setting up your testing environment\n- Writing your first test\n- The testing pyramid\n\n"
             },
             {
-              "type": "EXAMPLE",
+              "type": "THEORY",
               "title": "Concept First: Why Test Your Code?",
               "content": "\n### Real-World Analogy\nThink of testing like a **safety inspection for a building**:\n- **Unit Tests** = Checking individual bricks (do they meet quality standards?)\n- **Widget Tests** = Testing rooms (do doors open, do lights work?)\n- **Integration Tests** = Full building walkthrough (does everything work together?)\n\nJust like you wouldn't move into a building without inspections, you shouldn't ship an app without tests!\n\n### Why This Matters\nTesting prevents disasters:\n\n1. **Catch Bugs Early**: Find issues before users do\n2. **Confidence to Refactor**: Change code without fear of breaking things\n3. **Documentation**: Tests show how code should work\n4. **Faster Development**: Automated tests are faster than manual testing\n5. **Better Design**: Testable code is usually better code\n\nAccording to Google, apps with >80% test coverage have **56% fewer production bugs** and **40% faster feature development** over time!\n\n"
             },
@@ -9171,7 +9173,7 @@
               "language": "bash"
             },
             {
-              "type": "EXAMPLE",
+              "type": "KEY_POINT",
               "title": "Section 4: Visualizing Coverage in VSCode",
               "content": "\n### Option 1: Flutter Coverage Extension\n\n1. Install **Flutter Coverage** extension in VSCode\n2. Run: `flutter test --coverage`\n3. Press `Cmd+Shift+P` (Mac) or `Ctrl+Shift+P` (Windows/Linux)\n4. Type \"Flutter Coverage: Toggle\"\n5. See coverage highlighting directly in your code!\n\n**Color coding:**\n- 🟢 Green highlight = tested line\n- 🔴 Red highlight = untested line\n- No highlight = not executable (comments, declarations)\n\n### Option 2: Coverage Gutters Extension\n\n1. Install **Coverage Gutters** extension in VSCode\n2. Run: `flutter test --coverage`\n3. Click \"Watch\" in the status bar\n4. See coverage in the gutter (line numbers area)\n\n**Gutter indicators:**\n- ✅ Green dot = line covered\n- ❌ Red dot = line not covered\n\n### Option 3: Both Extensions Together\n\nUse both for the best experience:\n- **Flutter Coverage**: Highlights entire lines\n- **Coverage Gutters**: Shows gutter indicators + branch coverage\n\n"
             },

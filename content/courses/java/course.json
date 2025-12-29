@@ -4203,7 +4203,9 @@
             {
               "type": "EXAMPLE",
               "title": "build.gradle.kts Structure",
-              "content": "```kotlin\nplugins {\n    kotlin(\"jvm\") version \"1.9.0\"\n    application\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n    testImplementation(kotlin(\"test\"))\n}\n\napplication {\n    mainClass.set(\"MainKt\")\n}\n```\n\nBREAKDOWN:\n- plugins: What Gradle plugins to use (kotlin, application)\n- repositories: Where to download dependencies (Maven Central)\n- dependencies: Libraries your project needs\n- application: Configuration for running as app\n\nNOTICE: Much shorter than pom.xml!"
+              "content": "A Gradle build file defines plugins, repositories, dependencies, and application config. Notice how much shorter it is than Maven's pom.xml! Plugins define build behavior, repositories specify where to download dependencies, and the application block configures how to run your app.",
+              "code": "plugins {\n    kotlin(\"jvm\") version \"1.9.0\"\n    application\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n    testImplementation(kotlin(\"test\"))\n}\n\napplication {\n    mainClass.set(\"MainKt\")\n}",
+              "language": "kotlin"
             },
             {
               "type": "KEY_POINT",
@@ -4213,10 +4215,12 @@
             {
               "type": "EXAMPLE",
               "title": "Common Gradle Tasks",
-              "content": "RUN FROM COMMAND LINE:\n\n./gradlew build\n  → Compiles, tests, and packages your project\n\n./gradlew test\n  → Runs all tests\n\n./gradlew run\n  → Runs your application (needs application plugin)\n\n./gradlew dependencies\n  → Shows dependency tree (great for debugging)\n\n./gradlew clean\n  → Deletes build directory\n\n./gradlew tasks\n  → Lists all available tasks\n\nCREATING CUSTOM TASKS:\n```kotlin\ntasks.register(\"hello\") {\n    doLast {\n        println(\"Hello from Gradle!\")\n    }\n}\n```\n\nRun with: ./gradlew hello"
+              "content": "Gradle tasks are run from the command line using ./gradlew. Common tasks include: build (compile, test, package), test (run tests), run (execute app), dependencies (show dependency tree), clean (delete build folder), and tasks (list available tasks). You can also create custom tasks.",
+              "code": "# Common Gradle commands:\n./gradlew build        # Compiles, tests, and packages\n./gradlew test         # Runs all tests\n./gradlew run          # Runs your application\n./gradlew dependencies # Shows dependency tree\n./gradlew clean        # Deletes build directory\n./gradlew tasks        # Lists all available tasks\n\n# Creating a custom task in build.gradle.kts:\ntasks.register(\"hello\") {\n    doLast {\n        println(\"Hello from Gradle!\")\n    }\n}\n\n# Run with:\n./gradlew hello",
+              "language": "kotlin"
             },
             {
-              "type": "EXAMPLE",
+              "type": "KEY_POINT",
               "title": "Converting Maven to Gradle",
               "content": "AUTOMATIC CONVERSION:\n\n# In your Maven project directory:\ngradle init --type pom\n\nThis reads pom.xml and creates:\n- build.gradle.kts (or build.gradle)\n- settings.gradle.kts\n- gradlew (wrapper script)\n\nMANUAL MAPPING:\n\nMaven pom.xml → Gradle build.gradle.kts:\n\n<groupId> → group = \"com.example\"\n<artifactId> → (in settings.gradle.kts: rootProject.name)\n<version> → version = \"1.0.0\"\n<dependencies> → dependencies { }\n<build><plugins> → plugins { }\n\nDEPENDENCY SCOPES:\nMaven compile → Gradle implementation\nMaven test → Gradle testImplementation\nMaven provided → Gradle compileOnly\nMaven runtime → Gradle runtimeOnly"
             },
