@@ -79,6 +79,7 @@ public partial class LessonPage : UserControl
             "THEORY" => new Controls.TheorySection(section),
             "EXAMPLE" => new Controls.CodeExampleSection(section),
             "KEY_POINT" => new Controls.KeyPointSection(section),
+            "LEGACY_COMPARISON" => new Controls.LegacyComparisonSection(section),
             _ => CreateDefaultSection(section)
         };
     }

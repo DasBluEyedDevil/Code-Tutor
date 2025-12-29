@@ -89,6 +89,9 @@ public class ContentSection
 
     [JsonPropertyName("language")]
     public string? Language { get; set; }
+
+    [JsonPropertyName("legacy")]
+    public string? Legacy { get; set; }
 }
 
 public class Challenge
