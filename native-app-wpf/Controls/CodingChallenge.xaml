@@ -29,9 +29,16 @@
             <Border Background="#0D1117"
                     BorderBrush="{StaticResource BorderDefaultBrush}"
                     BorderThickness="1"
-                    CornerRadius="6"
+                    CornerRadius="8"
                     MinHeight="200"
                     Margin="0,0,0,16">
+                <Border.Effect>
+                    <DropShadowEffect Direction="270"
+                                      ShadowDepth="2"
+                                      BlurRadius="8"
+                                      Opacity="0.3"
+                                      Color="Black" />
+                </Border.Effect>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -87,15 +94,44 @@
                     BorderThickness="1"
                     CornerRadius="6"
                     Padding="12"
-                    MinHeight="80"
                     Visibility="Collapsed">
                 <StackPanel>
-                    <TextBlock Text="Output:"
-                               Style="{StaticResource CaptionText}"
-                               Margin="0,0,0,8" />
-                    <TextBlock x:Name="OutputText"
-                               Style="{StaticResource CodeText}"
-                               TextWrapping="Wrap" />
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Output"
+                                       Style="{StaticResource CaptionText}" />
+                            <TextBlock x:Name="RunningIndicator"
+                                       Text=" (running...)"
+                                       Style="{StaticResource CaptionText}"
+                                       Foreground="{StaticResource AccentOrangeBrush}"
+                                       Visibility="Collapsed" />
+                        </StackPanel>
+                        <Button x:Name="StopButton"
+                                Grid.Column="1"
+                                Style="{StaticResource GhostButton}"
+                                Click="StopExecution_Click"
+                                Visibility="Collapsed"
+                                Padding="4,2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#x25A0; "
+                                           Foreground="{StaticResource AccentRedBrush}"
+                                           FontSize="10" />
+                                <TextBlock Text="Stop"
+                                           Foreground="{StaticResource AccentRedBrush}"
+                                           FontSize="11" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <ScrollViewer MaxHeight="200"
+                                  VerticalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="OutputText"
+                                   Style="{StaticResource CodeText}"
+                                   TextWrapping="Wrap" />
+                    </ScrollViewer>
                 </StackPanel>
             </Border>
 

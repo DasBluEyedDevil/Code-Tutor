@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
-using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace CodeTutor.Wpf.Controls;
 
@@ -17,6 +17,7 @@ public partial class CodingChallenge : UserControl
     private int _currentHintIndex = 0;
     private int _failedAttempts = 0;
     private readonly string _originalCode;
+    private CancellationTokenSource? _executionCts;
 
     public event EventHandler<string>? ChallengeCompleted;
     public bool IsCompleted { get; private set; }
@@ -35,7 +36,7 @@ public partial class CodingChallenge : UserControl
         CodeEditor.Text = challenge.StarterCode;
 
         // Set syntax highlighting based on language
-        var highlighting = GetHighlightingForLanguage(challenge.Language);
+        var highlighting = SyntaxHighlightingService.GetHighlightingForLanguage(challenge.Language);
         if (highlighting != null)
         {
             CodeEditor.SyntaxHighlighting = highlighting;
@@ -57,22 +58,6 @@ public partial class CodingChallenge : UserControl
 
         // Check runtime availability asynchronously
         _ = CheckRuntimeAsync();
-    }
-
-    private static IHighlightingDefinition? GetHighlightingForLanguage(string language)
-    {
-        var langLower = language.ToLower();
-        return langLower switch
-        {
-            "python" => HighlightingManager.Instance.GetDefinition("Python"),
-            "javascript" or "js" => HighlightingManager.Instance.GetDefinition("JavaScript"),
-            "csharp" or "c#" => HighlightingManager.Instance.GetDefinition("C#"),
-            "java" => HighlightingManager.Instance.GetDefinition("Java"),
-            "kotlin" => HighlightingManager.Instance.GetDefinition("Java"), // Close enough
-            "rust" => HighlightingManager.Instance.GetDefinition("C#"), // Rust uses C-like syntax
-            "dart" or "flutter" => HighlightingManager.Instance.GetDefinition("C#"), // Close enough
-            _ => null
-        };
     }
 
     private async Task CheckRuntimeAsync()
@@ -126,6 +111,12 @@ public partial class CodingChallenge : UserControl
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
     {
+        _executionCts?.Cancel();
+        _executionCts = new CancellationTokenSource();
+
+        RunningIndicator.Visibility = Visibility.Visible;
+        StopButton.Visibility = Visibility.Visible;
+
         StatusBar.SetStatus("Running...", false);
 
         try
@@ -182,6 +173,24 @@ public partial class CodingChallenge : UserControl
 
             StatusBar.SetStatus("Ready", true);
         }
+        finally
+        {
+            RunningIndicator.Visibility = Visibility.Collapsed;
+            StopButton.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void StopExecution_Click(object sender, RoutedEventArgs e)
+    {
+        _executionCts?.Cancel();
+        OutputText.Text = "Execution cancelled.";
+        OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentOrangeBrush");
+        OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentOrangeBrush");
+        OutputPanel.Background = (System.Windows.Media.Brush)FindResource("WarningBackgroundBrush");
+
+        RunningIndicator.Visibility = Visibility.Collapsed;
+        StopButton.Visibility = Visibility.Collapsed;
+        StatusBar.SetStatus("Cancelled", true);
     }
 
     private void ValidateTestCases(string actualOutput)
