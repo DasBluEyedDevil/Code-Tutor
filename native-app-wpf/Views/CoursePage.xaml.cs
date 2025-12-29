@@ -11,6 +11,7 @@ public partial class CoursePage : UserControl
     private readonly Course _course;
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
+    private readonly IProgressService _progressService = new ProgressService();
 
     public CoursePage(ICourseService courseService, INavigationService navigation, Course course)
     {
@@ -31,6 +32,36 @@ public partial class CoursePage : UserControl
         ModuleCount.Text = course.Modules.Count.ToString();
         LessonCount.Text = course.Modules.Sum(m => m.Lessons.Count).ToString();
         EstimatedTime.Text = course.EstimatedHours.ToString();
+
+        LoadProgressAsync();
+    }
+
+    private async void LoadProgressAsync()
+    {
+        var stats = await _progressService.GetCourseProgressAsync(_course);
+
+        if (stats.CompletedLessons > 0)
+        {
+            ProgressSection.Visibility = Visibility.Visible;
+
+            // Calculate progress bar width (parent width * percent / 100)
+            var progressWidth = ProgressFill.Parent is Grid grid
+                ? grid.ActualWidth * stats.PercentComplete / 100
+                : 0;
+            ProgressFill.Width = progressWidth > 0 ? progressWidth : stats.PercentComplete * 2; // Fallback
+
+            ProgressPercent.Text = $"{stats.PercentComplete}% Complete";
+            CompletedLessonsText.Text = $"{stats.CompletedLessons} of {stats.TotalLessons} lessons completed";
+
+            if (stats.CurrentStreak > 0)
+            {
+                StreakText.Visibility = Visibility.Visible;
+                StreakText.Text = $"{stats.CurrentStreak}-day streak";
+            }
+
+            // Update button text for returning users
+            StartButton.Content = new TextBlock { Text = "Continue Learning ->" };
+        }
     }
 
     private void StartButton_Click(object sender, RoutedEventArgs e)
