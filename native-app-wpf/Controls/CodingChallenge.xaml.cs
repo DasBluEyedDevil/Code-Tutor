@@ -14,6 +14,7 @@ public partial class CodingChallenge : UserControl
     private readonly Challenge _challenge;
     private readonly ICodeExecutionService _executionService;
     private int _currentHintIndex = 0;
+    private int _failedAttempts = 0;
     private readonly string _originalCode;
 
     public event EventHandler<string>? ChallengeCompleted;
@@ -51,11 +52,7 @@ public partial class CodingChallenge : UserControl
                 CodeEditor.TextArea.Caret.Column);
         };
 
-        // Hide hint button if no hints available
-        if (challenge.Hints == null || challenge.Hints.Count == 0)
-        {
-            HintButton.Visibility = Visibility.Collapsed;
-        }
+        UpdateHintButtonState();
     }
 
     private static IHighlightingDefinition? GetHighlightingForLanguage(string language)
@@ -71,6 +68,41 @@ public partial class CodingChallenge : UserControl
             "dart" or "flutter" => HighlightingManager.Instance.GetDefinition("C#"), // Close enough
             _ => null
         };
+    }
+
+    private void UpdateHintButtonState()
+    {
+        if (_challenge.Hints == null || _challenge.Hints.Count == 0)
+        {
+            HintButton.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        // Require at least 1 failed attempt to show first hint
+        if (_failedAttempts == 0)
+        {
+            HintButton.Content = new TextBlock { Text = "Hint (run code first)" };
+            HintButton.IsEnabled = false;
+        }
+        else if (_currentHintIndex >= _challenge.Hints.Count)
+        {
+            HintButton.Content = new TextBlock { Text = "No More Hints" };
+            HintButton.IsEnabled = false;
+        }
+        else
+        {
+            int hintsAvailable = Math.Min(_failedAttempts, _challenge.Hints.Count);
+            if (_currentHintIndex < hintsAvailable)
+            {
+                HintButton.Content = new TextBlock { Text = $"Show Hint ({_currentHintIndex + 1}/{hintsAvailable})" };
+                HintButton.IsEnabled = true;
+            }
+            else
+            {
+                HintButton.Content = new TextBlock { Text = "Try again to unlock more hints" };
+                HintButton.IsEnabled = false;
+            }
+        }
     }
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
@@ -115,6 +147,9 @@ public partial class CodingChallenge : UserControl
                 // Set error styling
                 OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
                 OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
+
+                _failedAttempts++;
+                UpdateHintButtonState();
 
                 StatusBar.SetStatus("Ready", true);
             }
@@ -173,6 +208,12 @@ public partial class CodingChallenge : UserControl
             ? (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush")
             : (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
 
+        if (!allPassed)
+        {
+            _failedAttempts++;
+            UpdateHintButtonState();
+        }
+
         // Fire completion event if all tests pass
         if (allPassed && !IsCompleted)
         {
@@ -183,22 +224,13 @@ public partial class CodingChallenge : UserControl
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)
     {
-        if (_challenge.Hints != null && _currentHintIndex < _challenge.Hints.Count)
+        if (_challenge.Hints != null && _currentHintIndex < _challenge.Hints.Count && _currentHintIndex < _failedAttempts)
         {
             var hint = _challenge.Hints[_currentHintIndex];
             HintText.Text = hint.Text;
             HintPanel.Visibility = Visibility.Visible;
             _currentHintIndex++;
-
-            if (_currentHintIndex >= _challenge.Hints.Count)
-            {
-                HintButton.Content = new TextBlock { Text = "No More Hints" };
-                HintButton.IsEnabled = false;
-            }
-            else
-            {
-                HintButton.Content = new TextBlock { Text = $"Next Hint ({_currentHintIndex + 1}/{_challenge.Hints.Count})" };
-            }
+            UpdateHintButtonState();
         }
     }
 
@@ -223,11 +255,8 @@ public partial class CodingChallenge : UserControl
         TestResultsPanel.Visibility = Visibility.Collapsed;
         HintPanel.Visibility = Visibility.Collapsed;
         _currentHintIndex = 0;
+        _failedAttempts = 0;
 
-        if (_challenge.Hints != null && _challenge.Hints.Count > 0)
-        {
-            HintButton.Content = new TextBlock { Text = "Show Hint" };
-            HintButton.IsEnabled = true;
-        }
+        UpdateHintButtonState();
     }
 }
