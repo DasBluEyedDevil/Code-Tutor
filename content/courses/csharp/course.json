@@ -4990,6 +4990,110 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "lesson-09-06",
+          "title": "Advanced LINQ (GroupBy, SelectMany, Join)",
+          "moduleId": "module-09",
+          "order": 6,
+          "estimatedMinutes": 20,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Think of organizing a music library:\n\nGROUPBY = Organizing by artist:\n• Take all songs → Group by artist → Get { Artist: [songs] }\n• Like creating folders: Beatles/, Bowie/, Queen/\n• Each group has a KEY (artist name) and VALUES (songs)\n\nSELECTMANY = Flattening nested playlists:\n• You have: [ [Song1, Song2], [Song3], [Song4, Song5] ]\n• SelectMany → [Song1, Song2, Song3, Song4, Song5]\n• Turns nested collections into ONE flat list!\n\nJOIN = Matching data from two sources:\n• Like a VLOOKUP in Excel\n• 'Match Orders with Customers on CustomerId'\n• Combines data where keys match\n\nThese are ESSENTIAL for real-world data manipulation!\n\nThink: 'GroupBy organizes, SelectMany flattens, Join connects!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\n// Sample data\nvar products = new[]\n{\n    new { Id = 1, Name = \"Laptop\", Category = \"Electronics\", Price = 999m },\n    new { Id = 2, Name = \"Mouse\", Category = \"Electronics\", Price = 29m },\n    new { Id = 3, Name = \"Desk\", Category = \"Furniture\", Price = 299m },\n    new { Id = 4, Name = \"Chair\", Category = \"Furniture\", Price = 199m },\n    new { Id = 5, Name = \"Monitor\", Category = \"Electronics\", Price = 399m }\n};\n\n// ===== GROUPBY: Group products by category =====\nvar productsByCategory = products.GroupBy(p => p.Category);\n\nConsole.WriteLine(\"=== GroupBy: Products by Category ===\");\nforeach (var group in productsByCategory)\n{\n    Console.WriteLine($\"\\n{group.Key} ({group.Count()} items):\");\n    foreach (var product in group)\n    {\n        Console.WriteLine($\"  - {product.Name}: ${product.Price}\");\n    }\n}\n\n// GroupBy with aggregation\nvar categorySummary = products\n    .GroupBy(p => p.Category)\n    .Select(g => new\n    {\n        Category = g.Key,\n        Count = g.Count(),\n        TotalValue = g.Sum(p => p.Price),\n        AveragePrice = g.Average(p => p.Price)\n    });\n\nConsole.WriteLine(\"\\n=== GroupBy with Aggregation ===\");\nforeach (var summary in categorySummary)\n{\n    Console.WriteLine($\"{summary.Category}: {summary.Count} items, \" +\n        $\"Total: ${summary.TotalValue}, Avg: ${summary.AveragePrice:F2}\");\n}\n\n// ===== SELECTMANY: Flatten nested collections =====\nvar departments = new[]\n{\n    new { Name = \"IT\", Employees = new[] { \"Alice\", \"Bob\" } },\n    new { Name = \"HR\", Employees = new[] { \"Carol\" } },\n    new { Name = \"Sales\", Employees = new[] { \"Dave\", \"Eve\", \"Frank\" } }\n};\n\n// Without SelectMany: nested IEnumerable<string[]>\nvar nested = departments.Select(d => d.Employees);\n\n// With SelectMany: flat IEnumerable<string>\nvar allEmployees = departments.SelectMany(d => d.Employees);\nConsole.WriteLine(\"\\n=== SelectMany: All Employees ===\");\nConsole.WriteLine(string.Join(\", \", allEmployees));\n\n// SelectMany with projection\nvar employeeDetails = departments\n    .SelectMany(\n        d => d.Employees,\n        (dept, emp) => new { Department = dept.Name, Employee = emp }\n    );\n\nConsole.WriteLine(\"\\n=== SelectMany with Projection ===\");\nforeach (var e in employeeDetails)\n{\n    Console.WriteLine($\"{e.Employee} works in {e.Department}\");\n}\n\n// ===== JOIN: Combine two data sources =====\nvar orders = new[]\n{\n    new { OrderId = 1, ProductId = 1, Quantity = 2 },\n    new { OrderId = 2, ProductId = 3, Quantity = 1 },\n    new { OrderId = 3, ProductId = 2, Quantity = 5 }\n};\n\nvar orderDetails = orders.Join(\n    products,                      // Inner collection\n    order => order.ProductId,      // Outer key selector\n    product => product.Id,         // Inner key selector\n    (order, product) => new        // Result selector\n    {\n        order.OrderId,\n        product.Name,\n        order.Quantity,\n        Total = product.Price * order.Quantity\n    }\n);\n\nConsole.WriteLine(\"\\n=== Join: Order Details ===\");\nforeach (var detail in orderDetails)\n{\n    Console.WriteLine($\"Order {detail.OrderId}: {detail.Quantity}x {detail.Name} = ${detail.Total}\");\n}",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`collection.GroupBy(x => x.Key)`**: Groups items by a key. Returns IEnumerable<IGrouping<TKey, TElement>>. Each group has .Key (the grouping value) and acts as IEnumerable of items.\n\n**`GroupBy + Select for aggregation`**: Common pattern: `.GroupBy(x => x.Category).Select(g => new { g.Key, Count = g.Count(), Sum = g.Sum(...) })`. Transforms groups into summary objects.\n\n**`collection.SelectMany(x => x.Items)`**: Flattens nested collections. If each element contains a collection, SelectMany extracts and concatenates them all.\n\n**`SelectMany with result selector`**: `.SelectMany(d => d.Items, (parent, item) => new { parent.Name, item })`. Second lambda combines parent object with each flattened item.\n\n**`outer.Join(inner, outerKey, innerKey, result)`**: Matches items where keys are equal. Like SQL INNER JOIN. Only items with matching keys appear in result.\n\n**`GroupJoin for LEFT JOIN behavior`**: Use `.GroupJoin()` when you need all outer items even without matches (like SQL LEFT JOIN)."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-09-06-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Practice advanced LINQ operations!\n\n1. Create a list of students with properties: Name, Grade (A/B/C), Score\n   - At least 6 students across different grades\n\n2. Use GroupBy to:\n   - Group students by Grade\n   - For each group, print the grade and all student names\n\n3. Use GroupBy with aggregation to find:\n   - Average score per grade\n   - Print: 'Grade A: Average = 92.5' etc.\n\n4. Create a list of Courses with: CourseId, Name, StudentNames (string[])\n   Use SelectMany to get all unique student names across all courses.\n\nDemonstrate GroupBy, aggregation, and SelectMany!",
+              "starterCode": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\n// Student class\nclass Student\n{\n    public string Name { get; set; }\n    public string Grade { get; set; }\n    public int Score { get; set; }\n}\n\n// Create students\nvar students = new List<Student>\n{\n    new Student { Name = \"Alice\", Grade = \"A\", Score = 95 },\n    // Add more students...\n};\n\n// Group by grade and print\nvar byGrade = students.GroupBy(s => s.Grade);\nforeach (var group in byGrade)\n{\n    Console.WriteLine($\"Grade {group.Key}:\");\n    // Print each student in group\n}\n\n// Average score per grade\nvar gradeAverages = students\n    .GroupBy(s => s.Grade)\n    .Select(g => new { /* create summary */ });\n\n// Print averages\n\n// SelectMany example\nvar courses = new[]\n{\n    new { Name = \"Math\", StudentNames = new[] { \"Alice\", \"Bob\" } },\n    // Add more courses...\n};\n\nvar allStudentNames = courses.SelectMany(c => c.StudentNames);\nConsole.WriteLine(\"\\nAll students: \" + string.Join(\", \", allStudentNames.Distinct()));",
+              "solution": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\nclass Student\n{\n    public string Name { get; set; }\n    public string Grade { get; set; }\n    public int Score { get; set; }\n}\n\nvar students = new List<Student>\n{\n    new Student { Name = \"Alice\", Grade = \"A\", Score = 95 },\n    new Student { Name = \"Bob\", Grade = \"B\", Score = 82 },\n    new Student { Name = \"Carol\", Grade = \"A\", Score = 91 },\n    new Student { Name = \"Dave\", Grade = \"C\", Score = 74 },\n    new Student { Name = \"Eve\", Grade = \"B\", Score = 88 },\n    new Student { Name = \"Frank\", Grade = \"A\", Score = 97 }\n};\n\nConsole.WriteLine(\"=== Students by Grade ===\");\nvar byGrade = students.GroupBy(s => s.Grade).OrderBy(g => g.Key);\nforeach (var group in byGrade)\n{\n    Console.WriteLine($\"\\nGrade {group.Key}:\");\n    foreach (var student in group)\n    {\n        Console.WriteLine($\"  {student.Name} ({student.Score})\");\n    }\n}\n\nConsole.WriteLine(\"\\n=== Average Score per Grade ===\");\nvar gradeAverages = students\n    .GroupBy(s => s.Grade)\n    .Select(g => new { Grade = g.Key, Average = g.Average(s => s.Score) })\n    .OrderBy(x => x.Grade);\n\nforeach (var avg in gradeAverages)\n{\n    Console.WriteLine($\"Grade {avg.Grade}: Average = {avg.Average:F1}\");\n}\n\nvar courses = new[]\n{\n    new { Name = \"Math\", StudentNames = new[] { \"Alice\", \"Bob\", \"Carol\" } },\n    new { Name = \"Science\", StudentNames = new[] { \"Bob\", \"Dave\", \"Eve\" } },\n    new { Name = \"English\", StudentNames = new[] { \"Alice\", \"Eve\", \"Frank\" } }\n};\n\nvar allStudentNames = courses.SelectMany(c => c.StudentNames).Distinct();\nConsole.WriteLine(\"\\n=== All Students (SelectMany) ===\");\nConsole.WriteLine(string.Join(\", \", allStudentNames));",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain \"Grade\"",
+                  "expectedOutput": "Grade",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should contain \"Average\"",
+                  "expectedOutput": "Average",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Output should contain \"SelectMany\" or list all students",
+                  "expectedOutput": "Alice",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "GroupBy syntax: 'collection.GroupBy(x => x.Property)'. Each group has .Key (the property value) and contains all matching items."
+                },
+                {
+                  "level": 2,
+                  "text": "GroupBy with aggregation: '.GroupBy(x => x.Prop).Select(g => new { g.Key, Avg = g.Average(x => x.Value) })'. Use .Average(), .Sum(), .Count() on each group."
+                },
+                {
+                  "level": 3,
+                  "text": "SelectMany flattens: If you have List<Course> where each Course has string[] Students, 'courses.SelectMany(c => c.Students)' gives you one flat list of all student names."
+                },
+                {
+                  "level": 4,
+                  "text": "Distinct removes duplicates: 'collection.SelectMany(...).Distinct()' returns only unique values."
+                },
+                {
+                  "level": 5,
+                  "text": "Join requires 4 arguments: outer.Join(inner, outerKey, innerKey, resultSelector). Keys must match types exactly!"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting IGrouping is enumerable",
+                  "consequence": "GroupBy returns groups, not items! Each group IS an IEnumerable. Iterate with 'foreach (var item in group)' or use LINQ methods on the group itself.",
+                  "correction": "Access items: 'foreach (var group in grouped) { foreach (var item in group) { ... } }'. Or aggregate: 'group.Sum(x => x.Value)'."
+                },
+                {
+                  "mistake": "SelectMany vs Select confusion",
+                  "consequence": "Select returns nested collections: IEnumerable<string[]>. SelectMany flattens: IEnumerable<string>. Use SelectMany when you want one flat list from nested data!",
+                  "correction": "If you're getting IEnumerable<IEnumerable<T>> and want IEnumerable<T>, switch from Select to SelectMany."
+                },
+                {
+                  "mistake": "Join key type mismatch",
+                  "consequence": "Join keys must be the same type! Joining on 'order.ProductId (int)' and 'product.Id (string)' will return ZERO results with no error!",
+                  "correction": "Ensure key types match exactly. Convert if needed: 'order => order.ProductId.ToString()' to match string keys."
+                },
+                {
+                  "mistake": "Expecting LEFT JOIN behavior from Join",
+                  "consequence": "LINQ .Join() is an INNER JOIN - only items with matching keys appear! Items without matches are silently excluded.",
+                  "correction": "For LEFT JOIN behavior (keep all left items even without matches), use .GroupJoin() with .DefaultIfEmpty()."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     },
@@ -5318,6 +5422,11 @@
                   "mistake": "Task.WhenAny result",
                   "consequence": "WhenAny returns the TASK, not the result! Must await again: 'Task<int> firstTask = await Task.WhenAny(t1, t2); int result = await firstTask;'.",
                   "correction": "Review the correct syntax and best practices for this concept."
+                },
+                {
+                  "mistake": "Task.WhenAll Exception Aggregation (CRITICAL!)",
+                  "consequence": "When multiple tasks fail, Task.WhenAll throws ONLY THE FIRST exception! Other exceptions are SILENTLY LOST unless you check Task.Exception.InnerExceptions. Example: if 3 of 5 API calls fail, you only see the first error!",
+                  "correction": "To see ALL exceptions: wrap in try/catch, then check 'task.Exception?.InnerExceptions' or handle the AggregateException. Pattern: 'try { await Task.WhenAll(tasks); } catch { foreach (var t in tasks.Where(t => t.IsFaulted)) { Log(t.Exception); } }'. Or use 'Task.WhenAll(tasks).ContinueWith(t => t.Exception?.Flatten())' to aggregate all failures."
                 }
               ],
               "difficulty": "intermediate"
@@ -5859,6 +5968,11 @@
                   "mistake": "Forgetting to register",
                   "consequence": "If you inject IService but didn't register it, you get runtime error: 'Unable to resolve service'. Must register in builder.Services first!",
                   "correction": "Review the correct syntax and best practices for this concept."
+                },
+                {
+                  "mistake": "Captive Dependencies (CRITICAL!)",
+                  "consequence": "Injecting a Scoped service into a Singleton creates a 'captive dependency' - the Scoped service becomes effectively Singleton! Example: If DbContext (Scoped) is injected into a Singleton service, the SAME DbContext instance is reused across ALL requests, causing data corruption, stale data, and threading issues!",
+                  "correction": "Never inject Scoped services into Singletons! Either: (1) Make both Scoped, (2) Inject IServiceScopeFactory into Singleton and create scope manually, or (3) Use AddDbContextFactory instead of AddDbContext."
                 }
               ],
               "difficulty": "advanced"
@@ -5981,6 +6095,109 @@
                   "mistake": "Returning null instead of 404",
                   "consequence": "Don't 'return null' - it gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. Status codes communicate meaning!",
                   "correction": "Review the correct syntax and best practices for this concept."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-11-06",
+          "title": "Authentication & Authorization (The Security Guard)",
+          "moduleId": "module-11",
+          "order": 6,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine a concert venue:\n\nAUTHENTICATION = 'Who are you?'\n• Checking your ID at the entrance\n• Proving your identity (username + password, or ticket)\n• Result: You ARE who you claim to be\n\nAUTHORIZATION = 'What can you do?'\n• VIP pass gets backstage access\n• General admission stays in crowd\n• Result: You have PERMISSION for specific areas\n\nASP.NET Core offers:\n1. ASP.NET Core Identity - Full user management (registration, login, passwords)\n2. JWT Bearer Tokens - Stateless API authentication\n3. Cookie Authentication - Session-based for web apps\n4. External Providers - Google, Microsoft, GitHub login (OAuth/OpenID Connect)\n\nMODERN APPROACH:\n• APIs use JWT tokens (stateless, scalable)\n• Web apps use cookies + Identity\n• Both use [Authorize] attribute for protection\n\nThink: 'Authentication = Login check, Authorization = Permission check!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== JWT AUTHENTICATION SETUP =====\n// Install: dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer\n\nusing Microsoft.AspNetCore.Authentication.JwtBearer;\nusing Microsoft.IdentityModel.Tokens;\nusing System.Text;\nusing System.Security.Claims;\nusing System.IdentityModel.Tokens.Jwt;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Configure JWT Authentication\nbuilder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)\n    .AddJwtBearer(options =>\n    {\n        options.TokenValidationParameters = new TokenValidationParameters\n        {\n            ValidateIssuer = true,\n            ValidateAudience = true,\n            ValidateLifetime = true,\n            ValidateIssuerSigningKey = true,\n            ValidIssuer = builder.Configuration[\"Jwt:Issuer\"],\n            ValidAudience = builder.Configuration[\"Jwt:Audience\"],\n            IssuerSigningKey = new SymmetricSecurityKey(\n                Encoding.UTF8.GetBytes(builder.Configuration[\"Jwt:Key\"]!))\n        };\n    });\n\nbuilder.Services.AddAuthorization();\n\nvar app = builder.Build();\n\napp.UseAuthentication();  // Must come BEFORE UseAuthorization!\napp.UseAuthorization();\n\n// ===== LOGIN ENDPOINT - Issues JWT Token =====\napp.MapPost(\"/login\", (LoginRequest request) =>\n{\n    // In production: Validate against database with hashed passwords!\n    if (request.Username == \"admin\" && request.Password == \"password123\")\n    {\n        var claims = new[]\n        {\n            new Claim(ClaimTypes.Name, request.Username),\n            new Claim(ClaimTypes.Role, \"Admin\"),\n            new Claim(\"UserId\", \"1\")\n        };\n        \n        var key = new SymmetricSecurityKey(\n            Encoding.UTF8.GetBytes(builder.Configuration[\"Jwt:Key\"]!));\n        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);\n        \n        var token = new JwtSecurityToken(\n            issuer: builder.Configuration[\"Jwt:Issuer\"],\n            audience: builder.Configuration[\"Jwt:Audience\"],\n            claims: claims,\n            expires: DateTime.Now.AddHours(1),\n            signingCredentials: creds\n        );\n        \n        return Results.Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });\n    }\n    \n    return Results.Unauthorized();\n});\n\nrecord LoginRequest(string Username, string Password);\n\n// ===== PROTECTED ENDPOINTS =====\n\n// Any authenticated user\napp.MapGet(\"/api/profile\", (ClaimsPrincipal user) =>\n{\n    var name = user.Identity?.Name;\n    var userId = user.FindFirst(\"UserId\")?.Value;\n    return Results.Ok(new { name, userId });\n}).RequireAuthorization();  // <-- Requires valid JWT token!\n\n// Specific role required\napp.MapGet(\"/api/admin/dashboard\", () =>\n{\n    return Results.Ok(new { message = \"Welcome, Admin!\" });\n}).RequireAuthorization(policy => policy.RequireRole(\"Admin\"));\n\n// Custom policy\nbuilder.Services.AddAuthorizationBuilder()\n    .AddPolicy(\"MinimumAge\", policy => \n        policy.RequireClaim(\"Age\").RequireAssertion(context =>\n            int.Parse(context.User.FindFirst(\"Age\")?.Value ?? \"0\") >= 18));\n\n// Public endpoint (no auth needed)\napp.MapGet(\"/api/public\", () => \"Anyone can see this!\");\n\napp.Run();\n\nConsole.WriteLine(\"JWT Auth setup complete!\");\nConsole.WriteLine(\"1. POST /login with username/password → get token\");\nConsole.WriteLine(\"2. Include token in header: Authorization: Bearer <token>\");\nConsole.WriteLine(\"3. Access protected endpoints!\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`AddAuthentication(JwtBearerDefaults.AuthenticationScheme)`**: Configures JWT as the default authentication. Options include: Cookie, JwtBearer, OpenIdConnect, or custom schemes.\n\n**`TokenValidationParameters`**: Rules for validating JWT tokens. ValidateIssuer/Audience ensure token is for YOUR app. ValidateLifetime checks expiration. IssuerSigningKey verifies signature.\n\n**`UseAuthentication() + UseAuthorization()`**: Middleware order matters! Authentication MUST come before Authorization. Add after UseRouting(), before endpoint mapping.\n\n**`.RequireAuthorization()`**: Protects endpoints. No parameters = any authenticated user. With policy: `RequireAuthorization(policy => policy.RequireRole(\"Admin\"))`.\n\n**`ClaimsPrincipal user`**: Injected parameter containing user info from token. Access claims: `user.FindFirst(\"ClaimType\")?.Value`. Get name: `user.Identity?.Name`.\n\n**`[Authorize]` attribute**: Alternative to RequireAuthorization(). Use on controllers/methods: `[Authorize(Roles = \"Admin\")]` or `[Authorize(Policy = \"CustomPolicy\")]`."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-11-06-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a protected API with JWT authentication!\n\n1. Set up JWT authentication in Program.cs:\n   - Add authentication services\n   - Configure token validation parameters\n   - Add authorization services\n\n2. Create endpoints:\n   - POST /login - Issues JWT token for valid credentials\n   - GET /api/public - Accessible to everyone\n   - GET /api/protected - Requires authentication\n   - GET /api/admin - Requires 'Admin' role\n\n3. In the login endpoint:\n   - Validate credentials (use hardcoded for demo)\n   - Create claims (Name, Role, custom claims)\n   - Generate and return JWT token\n\n4. Access user info in protected endpoints:\n   - Read claims from ClaimsPrincipal\n   - Return personalized response\n\nRemember: UseAuthentication() BEFORE UseAuthorization()!",
+              "starterCode": "using Microsoft.AspNetCore.Authentication.JwtBearer;\nusing Microsoft.IdentityModel.Tokens;\nusing System.Text;\nusing System.Security.Claims;\nusing System.IdentityModel.Tokens.Jwt;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// TODO: Add JWT authentication\n// builder.Services.AddAuthentication(...)\n\nbuilder.Services.AddAuthorization();\n\nvar app = builder.Build();\n\n// TODO: Add middleware (correct order!)\n// app.UseAuthentication();\n// app.UseAuthorization();\n\n// Login endpoint\napp.MapPost(\"/login\", (LoginRequest request) =>\n{\n    // TODO: Validate and issue token\n    return Results.Unauthorized();\n});\n\nrecord LoginRequest(string Username, string Password);\n\n// Public endpoint\napp.MapGet(\"/api/public\", () => \"Public data\");\n\n// Protected endpoint\napp.MapGet(\"/api/protected\", (ClaimsPrincipal user) =>\n{\n    // TODO: Return user info\n    return Results.Ok();\n}); // TODO: .RequireAuthorization()\n\n// Admin endpoint\napp.MapGet(\"/api/admin\", () => \"Admin only!\");\n// TODO: .RequireAuthorization(policy => policy.RequireRole(\"Admin\"))\n\nConsole.WriteLine(\"Auth endpoints defined!\");",
+              "solution": "using Microsoft.AspNetCore.Authentication.JwtBearer;\nusing Microsoft.IdentityModel.Tokens;\nusing System.Text;\nusing System.Security.Claims;\nusing System.IdentityModel.Tokens.Jwt;\n\nvar builder = WebApplication.CreateBuilder(args);\n\nvar jwtKey = \"SuperSecretKey12345678901234567890\"; // 32+ chars for HS256\nvar jwtIssuer = \"MyApp\";\nvar jwtAudience = \"MyAppUsers\";\n\nbuilder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)\n    .AddJwtBearer(options =>\n    {\n        options.TokenValidationParameters = new TokenValidationParameters\n        {\n            ValidateIssuer = true,\n            ValidateAudience = true,\n            ValidateLifetime = true,\n            ValidateIssuerSigningKey = true,\n            ValidIssuer = jwtIssuer,\n            ValidAudience = jwtAudience,\n            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))\n        };\n    });\n\nbuilder.Services.AddAuthorization();\n\nvar app = builder.Build();\n\napp.UseAuthentication();\napp.UseAuthorization();\n\napp.MapPost(\"/login\", (LoginRequest request) =>\n{\n    if (request.Username == \"admin\" && request.Password == \"password\")\n    {\n        var claims = new[]\n        {\n            new Claim(ClaimTypes.Name, request.Username),\n            new Claim(ClaimTypes.Role, \"Admin\"),\n            new Claim(\"UserId\", \"1\")\n        };\n        \n        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));\n        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);\n        \n        var token = new JwtSecurityToken(\n            issuer: jwtIssuer,\n            audience: jwtAudience,\n            claims: claims,\n            expires: DateTime.Now.AddHours(1),\n            signingCredentials: creds\n        );\n        \n        return Results.Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token) });\n    }\n    return Results.Unauthorized();\n});\n\nrecord LoginRequest(string Username, string Password);\n\napp.MapGet(\"/api/public\", () => \"Public data - anyone can see!\");\n\napp.MapGet(\"/api/protected\", (ClaimsPrincipal user) =>\n{\n    var name = user.Identity?.Name;\n    var userId = user.FindFirst(\"UserId\")?.Value;\n    return Results.Ok(new { message = $\"Hello {name}!\", userId });\n}).RequireAuthorization();\n\napp.MapGet(\"/api/admin\", () => \"Admin dashboard data!\")\n    .RequireAuthorization(policy => policy.RequireRole(\"Admin\"));\n\nConsole.WriteLine(\"JWT Auth API configured!\");\nConsole.WriteLine(\"POST /login → Get token\");\nConsole.WriteLine(\"GET /api/public → No auth needed\");\nConsole.WriteLine(\"GET /api/protected → Auth required\");\nConsole.WriteLine(\"GET /api/admin → Admin role required\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should show auth configuration",
+                  "expectedOutput": "Auth",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention endpoints",
+                  "expectedOutput": "/login",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Authentication setup: 'builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => { ... });'"
+                },
+                {
+                  "level": 2,
+                  "text": "Middleware order is CRITICAL: UseAuthentication() MUST come BEFORE UseAuthorization(). Wrong order = authorization always fails!"
+                },
+                {
+                  "level": 3,
+                  "text": "JWT key must be 32+ characters for HmacSha256! Shorter keys cause 'key too small' error."
+                },
+                {
+                  "level": 4,
+                  "text": "Add claims to token: 'new Claim(ClaimTypes.Role, \"Admin\")'. Access in endpoints: 'user.FindFirst(ClaimTypes.Role)?.Value'."
+                },
+                {
+                  "level": 5,
+                  "text": "Protect endpoints: '.RequireAuthorization()' for any auth user, '.RequireAuthorization(p => p.RequireRole(\"Admin\"))' for specific role."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Wrong middleware order",
+                  "consequence": "UseAuthorization() before UseAuthentication() = every request unauthorized! Authentication populates User, Authorization checks it.",
+                  "correction": "Always: UseAuthentication() THEN UseAuthorization(). Think: 'Who are you?' BEFORE 'What can you do?'"
+                },
+                {
+                  "mistake": "JWT key too short",
+                  "consequence": "Key under 32 characters throws 'IDX10653: The encryption key is too small'. HmacSha256 requires 256 bits = 32 bytes minimum.",
+                  "correction": "Use 32+ character key: 'SuperSecretKey12345678901234567890'. In production, use configuration or secrets manager!"
+                },
+                {
+                  "mistake": "Storing JWT in localStorage (XSS vulnerability!)",
+                  "consequence": "JavaScript can read localStorage! XSS attack = stolen tokens. Attacker impersonates users.",
+                  "correction": "Store tokens in httpOnly cookies (server sets, JS can't read). Or use short-lived tokens with refresh tokens."
+                },
+                {
+                  "mistake": "Not validating token claims properly",
+                  "consequence": "Trusting all claims without verification! Attacker modifies token claims (if not validating signature properly).",
+                  "correction": "Always set ValidateIssuer, ValidateAudience, ValidateIssuerSigningKey to true. Never skip signature validation!"
+                },
+                {
+                  "mistake": "Hardcoding credentials and secrets",
+                  "consequence": "Secrets in source code = compromised when code is shared. Anyone with repo access has your keys!",
+                  "correction": "Use Configuration (appsettings.json), Environment Variables, or Azure Key Vault / AWS Secrets Manager for production secrets."
                 }
               ],
               "difficulty": "advanced"
@@ -6353,9 +6570,9 @@
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
-                  "mistake": "EnsureCreated vs Migrations",
-                  "consequence": "EnsureCreated() creates DB but CAN'T update schema! Use Migrations in real apps. EnsureCreated() is only for learning/testing!",
-                  "correction": "Review the correct syntax and best practices for this concept."
+                  "mistake": "Using EnsureCreated() in Real Projects (NEVER DO THIS!)",
+                  "consequence": "EnsureCreated() is a DEAD END for real applications! It creates the DB once but CANNOT update schema - ever! If you add a column, change a relationship, or modify any entity, EnsureCreated() will NOT apply those changes. Your only options become: (1) Delete entire database and lose all data, or (2) Manual SQL alterations. Neither is acceptable in production!",
+                  "correction": "ALWAYS use Migrations in any project that will go to production or needs schema updates: 'dotnet ef migrations add InitialCreate' then 'dotnet ef database update'. EnsureCreated() is ONLY acceptable for: (1) Learning tutorials like this one, (2) Throwaway prototypes, (3) Unit tests with in-memory databases. The moment you think 'this might be real', switch to migrations immediately!"
                 }
               ],
               "difficulty": "advanced"
@@ -6469,9 +6686,9 @@
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
-                  "mistake": "EnsureCreated limitations",
-                  "consequence": "Can't modify schema after creation! Use Migrations in real apps. EnsureCreated() is learning/testing only. No schema updates possible!",
-                  "correction": "Review the correct syntax and best practices for this concept."
+                  "mistake": "EnsureCreated() is a Schema Dead End",
+                  "consequence": "Once you use EnsureCreated(), you're LOCKED to that schema! Adding new properties, changing types, or modifying relationships will be IGNORED. Your code and database will drift apart silently, causing runtime errors when properties don't match columns!",
+                  "correction": "Use EF Core Migrations from day one in any project beyond tutorials: 'dotnet ef migrations add [Name]' creates versioned schema changes. Migrations can be applied, rolled back, and version-controlled. EnsureCreated() should only appear in learning exercises or unit test setup."
                 }
               ],
               "difficulty": "advanced"
@@ -6703,9 +6920,9 @@
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
-                  "mistake": "Production migration",
-                  "consequence": "Don't use EnsureCreated() in production! Use migrations. EnsureCreated() can't update schema. Migrations = professional approach.",
-                  "correction": "Review the correct syntax and best practices for this concept."
+                  "mistake": "EnsureCreated() in Production (Career-Ending Mistake!)",
+                  "consequence": "Using EnsureCreated() in production is a TRAP! It works initially, but when you need to add a column or fix a relationship, you'll discover you can't update the schema without destroying all data. Teams have lost weeks of work to this mistake!",
+                  "correction": "Production apps MUST use Migrations: 'dotnet ef migrations add [Name]' → 'dotnet ef database update'. Migrations provide: version-controlled schema history, rollback capability, team collaboration, CI/CD integration. EnsureCreated() has NONE of these. Treat EnsureCreated() like 'Console.WriteLine debugging' - fine for learning, never for production."
                 },
                 {
                   "mistake": "Bulk operations and tracking",
@@ -7581,13 +7798,13 @@
               "type": "EXAMPLE",
               "title": "Code Example",
               "content": "This example demonstrates the concepts in action.",
-              "code": "// API (Backend) - Program.cs\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddDbContext<AppDbContext>();\n\nvar app = builder.Build();\n\n// CORS for Blazor\napp.UseCors(policy => policy\n    .AllowAnyOrigin()\n    .AllowAnyMethod()\n    .AllowAnyHeader());\n\napp.MapGet(\"/api/products\", async (AppDbContext db) =>\n    await db.Products.ToListAsync());\n\napp.MapGet(\"/api/products/{id}\", async (int id, AppDbContext db) =>\n    await db.Products.FindAsync(id));\n\napp.Run();\n\n// BLAZOR (Frontend) - Using HttpClient\n@inject HttpClient Http\n\n<h3>Products</h3>\n\n@if (products == null)\n{\n    <p>Loading...</p>\n}\nelse\n{\n    <ul>\n        @foreach (var product in products)\n        {\n            <li>@product.Name - $@product.Price</li>\n        }\n    </ul>\n}\n\n@code {\n    private List<Product>? products;\n    \n    protected override async Task OnInitializedAsync()\n    {\n        // Call API!\n        products = await Http.GetFromJsonAsync<List<Product>>(\n            \"https://localhost:5001/api/products\");\n    }\n}\n\n// POST REQUEST\nprivate async Task CreateProduct(Product product)\n{\n    var response = await Http.PostAsJsonAsync(\n        \"https://localhost:5001/api/products\", product);\n    \n    if (response.IsSuccessStatusCode)\n    {\n        Console.WriteLine(\"Product created!\");\n    }\n}\n\n// PUT REQUEST\nprivate async Task UpdateProduct(int id, Product product)\n{\n    await Http.PutAsJsonAsync(\n        $\"https://localhost:5001/api/products/{id}\", product);\n}\n\n// DELETE REQUEST\nprivate async Task DeleteProduct(int id)\n{\n    await Http.DeleteAsync(\n        $\"https://localhost:5001/api/products/{id}\");\n}\n\n// ERROR HANDLING\ntry\n{\n    products = await Http.GetFromJsonAsync<List<Product>>(\n        \"https://localhost:5001/api/products\");\n}\ncatch (HttpRequestException ex)\n{\n    errorMessage = $\"API Error: {ex.Message}\";\n}",
+              "code": "// API (Backend) - Program.cs\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.Services.AddDbContext<AppDbContext>();\n\nvar app = builder.Build();\n\n// CORS for Blazor - DEVELOPMENT ONLY!\n// WARNING: AllowAnyOrigin() is insecure for production!\nif (app.Environment.IsDevelopment())\n{\n    app.UseCors(policy => policy\n        .AllowAnyOrigin()\n        .AllowAnyMethod()\n        .AllowAnyHeader());\n}\nelse\n{\n    // PRODUCTION: Restrict to specific origins\n    app.UseCors(policy => policy\n        .WithOrigins(\"https://yourapp.com\", \"https://www.yourapp.com\")\n        .AllowAnyMethod()\n        .AllowAnyHeader()\n        .AllowCredentials());  // For cookies/auth headers\n}\n\napp.MapGet(\"/api/products\", async (AppDbContext db) =>\n    await db.Products.ToListAsync());\n\napp.MapGet(\"/api/products/{id}\", async (int id, AppDbContext db) =>\n    await db.Products.FindAsync(id));\n\napp.Run();\n\n// BLAZOR (Frontend) - Using HttpClient\n@inject HttpClient Http\n\n<h3>Products</h3>\n\n@if (products == null)\n{\n    <p>Loading...</p>\n}\nelse\n{\n    <ul>\n        @foreach (var product in products)\n        {\n            <li>@product.Name - $@product.Price</li>\n        }\n    </ul>\n}\n\n@code {\n    private List<Product>? products;\n    \n    protected override async Task OnInitializedAsync()\n    {\n        // Call API!\n        products = await Http.GetFromJsonAsync<List<Product>>(\n            \"https://localhost:5001/api/products\");\n    }\n}\n\n// POST REQUEST\nprivate async Task CreateProduct(Product product)\n{\n    var response = await Http.PostAsJsonAsync(\n        \"https://localhost:5001/api/products\", product);\n    \n    if (response.IsSuccessStatusCode)\n    {\n        Console.WriteLine(\"Product created!\");\n    }\n}\n\n// PUT REQUEST\nprivate async Task UpdateProduct(int id, Product product)\n{\n    await Http.PutAsJsonAsync(\n        $\"https://localhost:5001/api/products/{id}\", product);\n}\n\n// DELETE REQUEST\nprivate async Task DeleteProduct(int id)\n{\n    await Http.DeleteAsync(\n        $\"https://localhost:5001/api/products/{id}\");\n}\n\n// ERROR HANDLING\ntry\n{\n    products = await Http.GetFromJsonAsync<List<Product>>(\n        \"https://localhost:5001/api/products\");\n}\ncatch (HttpRequestException ex)\n{\n    errorMessage = $\"API Error: {ex.Message}\";\n}",
               "language": "csharp"
             },
             {
               "type": "THEORY",
               "title": "Syntax Breakdown",
-              "content": "## Breaking Down the Syntax\n\n**`@inject HttpClient Http`**: Injects HttpClient into component. Use 'Http' to make API calls. Configured in Program.cs with BaseAddress.\n\n**`GetFromJsonAsync<T>(url)`**: GET request, deserializes JSON to T. Returns T or null. Throws HttpRequestException on failure. Use try/catch!\n\n**`PostAsJsonAsync(url, data)`**: POST request, serializes data to JSON. Returns HttpResponseMessage. Check response.IsSuccessStatusCode for success.\n\n**`CORS configuration`**: API must enable CORS for Blazor WebAssembly! Use UseCors() with AllowAnyOrigin(). Without it, browser blocks requests (CORS error)."
+              "content": "## Breaking Down the Syntax\n\n**`@inject HttpClient Http`**: Injects HttpClient into component. Use 'Http' to make API calls. Configured in Program.cs with BaseAddress.\n\n**`GetFromJsonAsync<T>(url)`**: GET request, deserializes JSON to T. Returns T or null. Throws HttpRequestException on failure. Use try/catch!\n\n**`PostAsJsonAsync(url, data)`**: POST request, serializes data to JSON. Returns HttpResponseMessage. Check response.IsSuccessStatusCode for success.\n\n**`CORS configuration`**: API must enable CORS for Blazor WebAssembly! Use UseCors() in development with AllowAnyOrigin(). **SECURITY WARNING**: AllowAnyOrigin() is unsafe for production - any website could call your API! In production, use WithOrigins() to restrict to your specific frontend domains."
             }
           ],
           "challenges": [
@@ -8162,6 +8379,309 @@
                   "mistake": "Isolated learning",
                   "consequence": "Join communities! Pair programming, code reviews, discussions teach more than solo study. Connect with other developers!",
                   "correction": "Review the correct syntax and best practices for this concept."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-15",
+      "title": "Unit Testing with xUnit",
+      "description": "Master unit testing fundamentals with xUnit, mocking dependencies with Moq/NSubstitute, and integration testing patterns for robust, maintainable code.",
+      "difficulty": "intermediate",
+      "estimatedHours": 2,
+      "lessons": [
+        {
+          "id": "lesson-15-01",
+          "title": "xUnit Testing Fundamentals (The Quality Check)",
+          "moduleId": "module-15",
+          "order": 1,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're a chef. Before serving a dish to customers, you TASTE it first!\n\nThat's what UNIT TESTING is:\n• UNIT = One small piece of code (a method, a class)\n• TEST = Code that checks if that piece works correctly\n• xUnit = Popular testing framework for .NET\n\nWhy test?\n• Find bugs BEFORE users do\n• Refactor safely - tests catch breaking changes\n• Document behavior - tests show how code should work\n• Confidence - deploy knowing things work!\n\nANATOMY OF A TEST (AAA Pattern):\n1. ARRANGE - Set up test data and conditions\n2. ACT - Call the method being tested\n3. ASSERT - Verify the result is correct\n\nThink: 'Unit tests are automated quality checks that run in milliseconds!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// STEP 1: Install xUnit packages\n// dotnet add package xunit\n// dotnet add package xunit.runner.visualstudio\n// dotnet add package Microsoft.NET.Test.Sdk\n\nusing Xunit;\n\n// ===== THE CODE TO TEST =====\npublic class Calculator\n{\n    public int Add(int a, int b) => a + b;\n    public int Subtract(int a, int b) => a - b;\n    public int Divide(int a, int b)\n    {\n        if (b == 0) throw new DivideByZeroException();\n        return a / b;\n    }\n}\n\n// ===== THE TESTS =====\npublic class CalculatorTests\n{\n    // [Fact] = A single test case\n    [Fact]\n    public void Add_TwoPositiveNumbers_ReturnsSum()\n    {\n        // ARRANGE\n        var calculator = new Calculator();\n        \n        // ACT\n        int result = calculator.Add(3, 5);\n        \n        // ASSERT\n        Assert.Equal(8, result);\n    }\n    \n    [Fact]\n    public void Add_NegativeNumbers_ReturnsCorrectSum()\n    {\n        var calculator = new Calculator();\n        Assert.Equal(-8, calculator.Add(-3, -5));\n    }\n    \n    // [Theory] + [InlineData] = Parameterized tests\n    [Theory]\n    [InlineData(10, 5, 5)]\n    [InlineData(100, 25, 75)]\n    [InlineData(0, 0, 0)]\n    public void Subtract_VariousInputs_ReturnsCorrectDifference(\n        int a, int b, int expected)\n    {\n        var calculator = new Calculator();\n        Assert.Equal(expected, calculator.Subtract(a, b));\n    }\n    \n    // Testing exceptions\n    [Fact]\n    public void Divide_ByZero_ThrowsException()\n    {\n        var calculator = new Calculator();\n        \n        // Assert.Throws checks that an exception is thrown\n        Assert.Throws<DivideByZeroException>(\n            () => calculator.Divide(10, 0)\n        );\n    }\n}\n\n// ===== COMMON ASSERTIONS =====\n// Assert.Equal(expected, actual)      - Values match\n// Assert.NotEqual(expected, actual)   - Values don't match\n// Assert.True(condition)              - Condition is true\n// Assert.False(condition)             - Condition is false\n// Assert.Null(object)                 - Object is null\n// Assert.NotNull(object)              - Object is not null\n// Assert.Throws<T>(() => code)        - Code throws exception\n// Assert.Contains(item, collection)   - Collection contains item\n// Assert.Empty(collection)            - Collection is empty\n\n// Run tests: dotnet test\nConsole.WriteLine(\"Run tests with: dotnet test\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`[Fact]`**: Marks a method as a test. Method must be public, void (or Task for async), with no parameters. xUnit discovers and runs all [Fact] methods.\n\n**`[Theory] + [InlineData]`**: Parameterized tests! Run the same test with different inputs. Each [InlineData] creates a separate test case. Great for testing multiple scenarios efficiently.\n\n**`Assert.Equal(expected, actual)`**: Core assertion. IMPORTANT: expected comes FIRST! 'Assert.Equal(5, result)' not 'Assert.Equal(result, 5)'. Wrong order = confusing failure messages.\n\n**`Assert.Throws<TException>(() => code)`**: Verifies that code throws a specific exception. If no exception or wrong type, test fails. Use lambda to wrap the throwing code.\n\n**`Test naming: Method_Scenario_Expected`**: Convention: 'Add_TwoPositiveNumbers_ReturnsSum'. Clear names document behavior and make failures obvious."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-15-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create unit tests for a StringHelper class!\n\n1. Create a StringHelper class with methods:\n   - Reverse(string s) - Reverses a string\n   - IsPalindrome(string s) - True if string reads same forwards/backwards\n   - CountWords(string s) - Counts words separated by spaces\n\n2. Write tests for each method:\n   - Test Reverse with normal string\n   - Test IsPalindrome with 'racecar' (true) and 'hello' (false)\n   - Test CountWords with 'hello world' (2 words)\n   - Test edge case: empty string\n\nUse [Fact] for single tests, [Theory] for multiple inputs!",
+              "starterCode": "using Xunit;\n\npublic class StringHelper\n{\n    public string Reverse(string s)\n    {\n        // Implement: reverse the string\n        return new string(s.Reverse().ToArray());\n    }\n    \n    public bool IsPalindrome(string s)\n    {\n        // Implement: check if palindrome\n        return s == Reverse(s);\n    }\n    \n    public int CountWords(string s)\n    {\n        // Implement: count words\n        if (string.IsNullOrWhiteSpace(s)) return 0;\n        return s.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;\n    }\n}\n\npublic class StringHelperTests\n{\n    [Fact]\n    public void Reverse_NormalString_ReversesCorrectly()\n    {\n        // Arrange\n        var helper = new StringHelper();\n        \n        // Act\n        string result = helper.Reverse(\"hello\");\n        \n        // Assert\n        Assert.Equal(/* expected */, result);\n    }\n    \n    [Theory]\n    [InlineData(\"racecar\", true)]\n    [InlineData(\"hello\", false)]\n    public void IsPalindrome_VariousInputs_ReturnsCorrectResult(\n        string input, bool expected)\n    {\n        // Write test\n    }\n    \n    // Add more tests for CountWords and edge cases!\n}",
+              "solution": "using Xunit;\n\npublic class StringHelper\n{\n    public string Reverse(string s)\n    {\n        return new string(s.Reverse().ToArray());\n    }\n    \n    public bool IsPalindrome(string s)\n    {\n        return s.ToLower() == Reverse(s.ToLower());\n    }\n    \n    public int CountWords(string s)\n    {\n        if (string.IsNullOrWhiteSpace(s)) return 0;\n        return s.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;\n    }\n}\n\npublic class StringHelperTests\n{\n    [Fact]\n    public void Reverse_NormalString_ReversesCorrectly()\n    {\n        var helper = new StringHelper();\n        string result = helper.Reverse(\"hello\");\n        Assert.Equal(\"olleh\", result);\n    }\n    \n    [Theory]\n    [InlineData(\"racecar\", true)]\n    [InlineData(\"hello\", false)]\n    [InlineData(\"Racecar\", true)]\n    public void IsPalindrome_VariousInputs_ReturnsCorrectResult(\n        string input, bool expected)\n    {\n        var helper = new StringHelper();\n        Assert.Equal(expected, helper.IsPalindrome(input));\n    }\n    \n    [Theory]\n    [InlineData(\"hello world\", 2)]\n    [InlineData(\"one\", 1)]\n    [InlineData(\"a b c d e\", 5)]\n    public void CountWords_VariousInputs_ReturnsCorrectCount(\n        string input, int expected)\n    {\n        var helper = new StringHelper();\n        Assert.Equal(expected, helper.CountWords(input));\n    }\n    \n    [Fact]\n    public void CountWords_EmptyString_ReturnsZero()\n    {\n        var helper = new StringHelper();\n        Assert.Equal(0, helper.CountWords(\"\"));\n    }\n    \n    [Fact]\n    public void Reverse_EmptyString_ReturnsEmpty()\n    {\n        var helper = new StringHelper();\n        Assert.Equal(\"\", helper.Reverse(\"\"));\n    }\n}\n\nConsole.WriteLine(\"Tests defined! Run with: dotnet test\");\nConsole.WriteLine(\"Test: Reverse('hello') = 'olleh'\");\nConsole.WriteLine(\"Test: IsPalindrome('racecar') = true\");\nConsole.WriteLine(\"Test: CountWords('hello world') = 2\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain test definition",
+                  "expectedOutput": "Test",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should show Reverse test",
+                  "expectedOutput": "Reverse",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "AAA Pattern: Arrange (setup), Act (call method), Assert (verify). Every test follows this structure!"
+                },
+                {
+                  "level": 2,
+                  "text": "[Fact] for single test cases. [Theory] with [InlineData] for multiple inputs testing same logic."
+                },
+                {
+                  "level": 3,
+                  "text": "Assert.Equal(expected, actual): EXPECTED FIRST! Common mistake is reversing the order."
+                },
+                {
+                  "level": 4,
+                  "text": "Edge cases matter! Test empty strings, nulls, single characters. These often reveal bugs."
+                },
+                {
+                  "level": 5,
+                  "text": "Test naming: Method_Scenario_Expected. Example: 'CountWords_EmptyString_ReturnsZero'."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Wrong Assert.Equal order",
+                  "consequence": "Assert.Equal(actual, expected) produces confusing failure messages! 'Expected: [your result], Actual: [what you expected]'. Always put expected FIRST.",
+                  "correction": "Use Assert.Equal(expected, actual). Think: 'I expect THIS, and the actual result is THAT'."
+                },
+                {
+                  "mistake": "Not testing edge cases",
+                  "consequence": "Code works for 'hello' but crashes on empty string or null! Real apps receive unexpected inputs. Edge cases reveal bugs.",
+                  "correction": "Always test: empty string, null, single element, very large inputs, negative numbers, boundary values."
+                },
+                {
+                  "mistake": "Testing implementation instead of behavior",
+                  "consequence": "Tests break when you refactor! If you test 'list has 3 items after calling private method X', refactoring X breaks tests. Test PUBLIC behavior.",
+                  "correction": "Test WHAT code does, not HOW it does it. Test inputs and outputs, not internal implementation details."
+                },
+                {
+                  "mistake": "Multiple asserts per test (without good reason)",
+                  "consequence": "First failure stops the test! Other assertions never run. Hard to know full scope of failure.",
+                  "correction": "Prefer one logical assertion per test. Multiple asserts OK if testing one cohesive thing (like all properties of returned object)."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-15-02",
+          "title": "Mocking Dependencies (Fake Collaborators)",
+          "moduleId": "module-15",
+          "order": 2,
+          "estimatedMinutes": 20,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine testing a car's engine. You don't need the ACTUAL wheels, fuel tank, and exhaust - you just need to verify the engine works!\n\nSame with code:\n• Your class (Engine) depends on other classes (Database, EmailService, PaymentAPI)\n• In tests, you don't want REAL database calls or emails sent!\n• Use MOCKS - fake versions that simulate dependencies\n\nMOCKING FRAMEWORKS:\n• Moq - Most popular, fluent API, Setup().Returns()\n• NSubstitute - Clean syntax, Substitute.For<T>()\n• FakeItEasy - Easy to read, A.Fake<T>()\n\nWHY MOCK?\n• Isolate unit under test\n• Control dependency behavior\n• Avoid side effects (real DB, emails, payments)\n• Test edge cases (simulate errors, timeouts)\n• Fast tests (no network/disk I/O)\n\nThink: 'Mocks are stunt doubles - they look like the real thing but are safe for testing!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// Install: dotnet add package Moq\nusing Moq;\nusing Xunit;\n\n// ===== INTERFACES (Dependencies) =====\npublic interface IEmailService\n{\n    bool SendEmail(string to, string subject, string body);\n}\n\npublic interface IUserRepository\n{\n    User GetById(int id);\n    void Save(User user);\n}\n\npublic class User\n{\n    public int Id { get; set; }\n    public string Email { get; set; }\n    public bool IsVerified { get; set; }\n}\n\n// ===== CLASS UNDER TEST =====\npublic class UserService\n{\n    private readonly IUserRepository _repo;\n    private readonly IEmailService _email;\n    \n    public UserService(IUserRepository repo, IEmailService email)\n    {\n        _repo = repo;\n        _email = email;\n    }\n    \n    public bool VerifyUser(int userId)\n    {\n        var user = _repo.GetById(userId);\n        if (user == null) return false;\n        \n        user.IsVerified = true;\n        _repo.Save(user);\n        _email.SendEmail(user.Email, \"Verified!\", \"Your account is verified.\");\n        \n        return true;\n    }\n}\n\n// ===== TESTS WITH MOCKS =====\npublic class UserServiceTests\n{\n    [Fact]\n    public void VerifyUser_ValidUser_SetsVerifiedAndSendsEmail()\n    {\n        // ARRANGE - Create mocks\n        var mockRepo = new Mock<IUserRepository>();\n        var mockEmail = new Mock<IEmailService>();\n        \n        var testUser = new User { Id = 1, Email = \"test@test.com\" };\n        \n        // Setup mock behavior\n        mockRepo.Setup(r => r.GetById(1)).Returns(testUser);\n        mockEmail.Setup(e => e.SendEmail(\n            It.IsAny<string>(),\n            It.IsAny<string>(),\n            It.IsAny<string>()\n        )).Returns(true);\n        \n        // Create service with mocks\n        var service = new UserService(mockRepo.Object, mockEmail.Object);\n        \n        // ACT\n        bool result = service.VerifyUser(1);\n        \n        // ASSERT\n        Assert.True(result);\n        Assert.True(testUser.IsVerified);  // User was modified\n        \n        // Verify mock was called correctly\n        mockRepo.Verify(r => r.Save(testUser), Times.Once);\n        mockEmail.Verify(e => e.SendEmail(\n            \"test@test.com\",\n            \"Verified!\",\n            It.IsAny<string>()\n        ), Times.Once);\n    }\n    \n    [Fact]\n    public void VerifyUser_UserNotFound_ReturnsFalse()\n    {\n        var mockRepo = new Mock<IUserRepository>();\n        var mockEmail = new Mock<IEmailService>();\n        \n        // Setup: GetById returns null\n        mockRepo.Setup(r => r.GetById(999)).Returns((User)null);\n        \n        var service = new UserService(mockRepo.Object, mockEmail.Object);\n        \n        bool result = service.VerifyUser(999);\n        \n        Assert.False(result);\n        // Verify Save was NEVER called\n        mockRepo.Verify(r => r.Save(It.IsAny<User>()), Times.Never);\n    }\n}\n\nConsole.WriteLine(\"Mock examples defined!\");\nConsole.WriteLine(\"Key Moq methods:\");\nConsole.WriteLine(\"  mock.Setup(x => x.Method()).Returns(value)\");\nConsole.WriteLine(\"  mock.Verify(x => x.Method(), Times.Once)\");\nConsole.WriteLine(\"  mock.Object - get the mocked instance\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`new Mock<IInterface>()`**: Creates a mock object that implements the interface. All methods return default values unless you Setup() them.\n\n**`mock.Setup(x => x.Method(params)).Returns(value)`**: Configure what the mock returns when a method is called. Use It.IsAny<T>() for 'any argument of type T'.\n\n**`mock.Object`**: Gets the actual mock instance to inject into your class. This is what you pass to constructors.\n\n**`mock.Verify(x => x.Method(), Times.Once)`**: Verify that a method was called. Times options: Once, Never, Exactly(n), AtLeast(n), AtMost(n). Fails if condition not met.\n\n**`It.IsAny<T>()`**: Match any argument of type T. Use in Setup or Verify. Example: 'It.IsAny<string>()' matches any string.\n\n**`It.Is<T>(predicate)`**: Match arguments that satisfy a condition. Example: 'It.Is<int>(x => x > 0)' matches positive integers."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-15-02-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create tests with mocks for an OrderService!\n\n1. Define interfaces:\n   - IInventoryService: bool CheckStock(string productId, int quantity)\n   - IPaymentService: bool ProcessPayment(decimal amount)\n\n2. Create OrderService class:\n   - Constructor takes IInventoryService and IPaymentService\n   - Method: PlaceOrder(string productId, int quantity, decimal price)\n   - Returns true if stock available AND payment succeeds\n   - Returns false if no stock OR payment fails\n\n3. Write tests using Moq:\n   - Test successful order (stock OK, payment OK)\n   - Test failed order (no stock)\n   - Test failed order (payment fails)\n   - Verify each service was called correctly\n\nUse Setup(), Returns(), Verify()!",
+              "starterCode": "using Moq;\nusing Xunit;\n\npublic interface IInventoryService\n{\n    bool CheckStock(string productId, int quantity);\n}\n\npublic interface IPaymentService\n{\n    bool ProcessPayment(decimal amount);\n}\n\npublic class OrderService\n{\n    private readonly IInventoryService _inventory;\n    private readonly IPaymentService _payment;\n    \n    public OrderService(IInventoryService inventory, IPaymentService payment)\n    {\n        _inventory = inventory;\n        _payment = payment;\n    }\n    \n    public bool PlaceOrder(string productId, int quantity, decimal price)\n    {\n        // Implement: check stock, then process payment\n        // Return true only if BOTH succeed\n        return false; // TODO\n    }\n}\n\npublic class OrderServiceTests\n{\n    [Fact]\n    public void PlaceOrder_StockAvailablePaymentSucceeds_ReturnsTrue()\n    {\n        // Arrange - create mocks\n        var mockInventory = new Mock<IInventoryService>();\n        var mockPayment = new Mock<IPaymentService>();\n        \n        // Setup mock behavior\n        mockInventory.Setup(i => i.CheckStock(\"PROD1\", 2)).Returns(true);\n        // Setup payment mock...\n        \n        var service = new OrderService(mockInventory.Object, mockPayment.Object);\n        \n        // Act\n        bool result = service.PlaceOrder(\"PROD1\", 2, 99.99m);\n        \n        // Assert\n        Assert.True(result);\n        // Verify both services were called...\n    }\n    \n    // Add more tests for failure cases!\n}",
+              "solution": "using Moq;\nusing Xunit;\n\npublic interface IInventoryService\n{\n    bool CheckStock(string productId, int quantity);\n}\n\npublic interface IPaymentService\n{\n    bool ProcessPayment(decimal amount);\n}\n\npublic class OrderService\n{\n    private readonly IInventoryService _inventory;\n    private readonly IPaymentService _payment;\n    \n    public OrderService(IInventoryService inventory, IPaymentService payment)\n    {\n        _inventory = inventory;\n        _payment = payment;\n    }\n    \n    public bool PlaceOrder(string productId, int quantity, decimal price)\n    {\n        if (!_inventory.CheckStock(productId, quantity))\n            return false;\n        \n        return _payment.ProcessPayment(price * quantity);\n    }\n}\n\npublic class OrderServiceTests\n{\n    [Fact]\n    public void PlaceOrder_StockAvailablePaymentSucceeds_ReturnsTrue()\n    {\n        var mockInventory = new Mock<IInventoryService>();\n        var mockPayment = new Mock<IPaymentService>();\n        \n        mockInventory.Setup(i => i.CheckStock(\"PROD1\", 2)).Returns(true);\n        mockPayment.Setup(p => p.ProcessPayment(199.98m)).Returns(true);\n        \n        var service = new OrderService(mockInventory.Object, mockPayment.Object);\n        \n        bool result = service.PlaceOrder(\"PROD1\", 2, 99.99m);\n        \n        Assert.True(result);\n        mockInventory.Verify(i => i.CheckStock(\"PROD1\", 2), Times.Once);\n        mockPayment.Verify(p => p.ProcessPayment(199.98m), Times.Once);\n    }\n    \n    [Fact]\n    public void PlaceOrder_NoStock_ReturnsFalse()\n    {\n        var mockInventory = new Mock<IInventoryService>();\n        var mockPayment = new Mock<IPaymentService>();\n        \n        mockInventory.Setup(i => i.CheckStock(It.IsAny<string>(), It.IsAny<int>())).Returns(false);\n        \n        var service = new OrderService(mockInventory.Object, mockPayment.Object);\n        \n        bool result = service.PlaceOrder(\"PROD1\", 100, 99.99m);\n        \n        Assert.False(result);\n        mockPayment.Verify(p => p.ProcessPayment(It.IsAny<decimal>()), Times.Never);\n    }\n    \n    [Fact]\n    public void PlaceOrder_PaymentFails_ReturnsFalse()\n    {\n        var mockInventory = new Mock<IInventoryService>();\n        var mockPayment = new Mock<IPaymentService>();\n        \n        mockInventory.Setup(i => i.CheckStock(\"PROD1\", 1)).Returns(true);\n        mockPayment.Setup(p => p.ProcessPayment(It.IsAny<decimal>())).Returns(false);\n        \n        var service = new OrderService(mockInventory.Object, mockPayment.Object);\n        \n        bool result = service.PlaceOrder(\"PROD1\", 1, 50m);\n        \n        Assert.False(result);\n    }\n}\n\nConsole.WriteLine(\"OrderService tests with mocks defined!\");\nConsole.WriteLine(\"Tests cover: success, no stock, payment failure\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain test definitions",
+                  "expectedOutput": "OrderService",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention mocks",
+                  "expectedOutput": "mock",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Create mock: 'var mock = new Mock<IInterface>()'. Get instance: 'mock.Object'."
+                },
+                {
+                  "level": 2,
+                  "text": "Setup returns: 'mock.Setup(x => x.Method(args)).Returns(value)'. Use It.IsAny<T>() for any argument."
+                },
+                {
+                  "level": 3,
+                  "text": "Verify calls: 'mock.Verify(x => x.Method(args), Times.Once)'. Use Times.Never to verify NOT called."
+                },
+                {
+                  "level": 4,
+                  "text": "Test failure paths too! When stock fails, payment should NOT be called (Times.Never)."
+                },
+                {
+                  "level": 5,
+                  "text": "It.Is<T>(predicate) for conditional matching: 'It.Is<decimal>(x => x > 0)' matches positive decimals."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting mock.Object",
+                  "consequence": "Passing 'mock' instead of 'mock.Object' to constructor! Mock<T> is the wrapper, .Object is the actual instance that implements T.",
+                  "correction": "Always use mock.Object when injecting: 'new Service(mock.Object)' not 'new Service(mock)'."
+                },
+                {
+                  "mistake": "Over-mocking",
+                  "consequence": "Mocking everything including simple classes! Mocks add complexity. Only mock: external services, I/O, slow operations, things with side effects.",
+                  "correction": "Don't mock simple value objects or classes with no dependencies. Only mock interfaces/abstractions for external concerns."
+                },
+                {
+                  "mistake": "Setup without matching arguments",
+                  "consequence": "Setup(x => x.Method(5)).Returns(true) but calling Method(10)! The mock returns default (false), test fails mysteriously.",
+                  "correction": "Ensure Setup arguments match what code actually passes. Use It.IsAny<T>() when argument doesn't matter."
+                },
+                {
+                  "mistake": "Not verifying important calls",
+                  "consequence": "Test passes but critical method was never called! Setup returns values but Verify confirms calls actually happened.",
+                  "correction": "Use Verify() for important side effects: 'mockRepo.Verify(r => r.Save(user), Times.Once)'. Especially for void methods!"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-15-03",
+          "title": "Integration Testing & Test Organization",
+          "moduleId": "module-15",
+          "order": 3,
+          "estimatedMinutes": 15,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Unit tests check INDIVIDUAL parts work. But do they work TOGETHER?\n\nImagine testing a bicycle:\n• UNIT TESTS: Test brake pads, gears, wheels separately\n• INTEGRATION TESTS: Test brakes + wheels together - does braking actually stop the bike?\n\nTYPES OF TESTS:\n1. UNIT TESTS (70-80%)\n   - Test one class in isolation\n   - Fast, run in milliseconds\n   - Mock all dependencies\n\n2. INTEGRATION TESTS (15-20%)\n   - Test multiple components together\n   - May use real database (in-memory)\n   - Slower but more realistic\n\n3. END-TO-END TESTS (5-10%)\n   - Test entire application\n   - Real browser, real API calls\n   - Slowest but highest confidence\n\nTEST PYRAMID:\n   /\\\\    E2E (few)\n  /  \\\\\n /____\\\\  Integration (some)\n/______\\\\  Unit (many)\n\nThink: 'Unit tests for speed, integration tests for confidence, E2E tests for critical paths!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== PROJECT STRUCTURE =====\n// src/\n//   MyApp/\n//     Services/\n//       UserService.cs\n//     Data/\n//       AppDbContext.cs\n// tests/\n//   MyApp.Tests/\n//     Unit/\n//       UserServiceTests.cs\n//     Integration/\n//       UserServiceIntegrationTests.cs\n\nusing Xunit;\nusing Microsoft.EntityFrameworkCore;\n\n// ===== THE DBCONTEXT =====\npublic class AppDbContext : DbContext\n{\n    public AppDbContext(DbContextOptions<AppDbContext> options) \n        : base(options) { }\n    \n    public DbSet<User> Users { get; set; }\n}\n\npublic class User\n{\n    public int Id { get; set; }\n    public string Name { get; set; }\n    public string Email { get; set; }\n}\n\npublic class UserService\n{\n    private readonly AppDbContext _context;\n    \n    public UserService(AppDbContext context)\n    {\n        _context = context;\n    }\n    \n    public User CreateUser(string name, string email)\n    {\n        var user = new User { Name = name, Email = email };\n        _context.Users.Add(user);\n        _context.SaveChanges();\n        return user;\n    }\n    \n    public User GetByEmail(string email)\n    {\n        return _context.Users.FirstOrDefault(u => u.Email == email);\n    }\n}\n\n// ===== INTEGRATION TESTS with In-Memory Database =====\npublic class UserServiceIntegrationTests : IDisposable\n{\n    private readonly AppDbContext _context;\n    private readonly UserService _service;\n    \n    public UserServiceIntegrationTests()\n    {\n        // Use in-memory database for tests\n        var options = new DbContextOptionsBuilder<AppDbContext>()\n            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())\n            .Options;\n        \n        _context = new AppDbContext(options);\n        _service = new UserService(_context);\n    }\n    \n    [Fact]\n    public void CreateUser_ValidData_PersistsToDatabase()\n    {\n        // Act\n        var user = _service.CreateUser(\"John\", \"john@test.com\");\n        \n        // Assert - Actually query the database!\n        var dbUser = _context.Users.Find(user.Id);\n        Assert.NotNull(dbUser);\n        Assert.Equal(\"John\", dbUser.Name);\n    }\n    \n    [Fact]\n    public void GetByEmail_UserExists_ReturnsUser()\n    {\n        // Arrange - Create user first\n        _service.CreateUser(\"Jane\", \"jane@test.com\");\n        \n        // Act\n        var found = _service.GetByEmail(\"jane@test.com\");\n        \n        // Assert\n        Assert.NotNull(found);\n        Assert.Equal(\"Jane\", found.Name);\n    }\n    \n    [Fact]\n    public void GetByEmail_UserNotExists_ReturnsNull()\n    {\n        var found = _service.GetByEmail(\"nobody@test.com\");\n        Assert.Null(found);\n    }\n    \n    // IDisposable - cleanup after each test\n    public void Dispose()\n    {\n        _context.Dispose();\n    }\n}\n\n// ===== TEST ORGANIZATION TIPS =====\n// 1. Mirror source structure in test project\n// 2. One test class per class being tested\n// 3. Use folders: Unit/, Integration/, E2E/\n// 4. Naming: [ClassName]Tests.cs\n// 5. Use IClassFixture<T> for shared setup across tests\n\nConsole.WriteLine(\"Integration test patterns defined!\");\nConsole.WriteLine(\"Key: Use in-memory database for EF Core integration tests\");\nConsole.WriteLine(\"IDisposable ensures cleanup between tests\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`UseInMemoryDatabase(name)`**: EF Core in-memory provider for testing. Fast, no external DB needed. Use unique name (Guid) per test to ensure isolation.\n\n**`IDisposable`**: Implement Dispose() for cleanup. xUnit calls Dispose() after each test method. Perfect for cleaning up DbContext, connections, files.\n\n**`[Collection(name)]`**: Share fixtures across test classes. Tests in same collection don't run in parallel. Useful for shared database state.\n\n**`IClassFixture<T>`**: Shared setup/teardown for all tests in a class. Create expensive resources once, share across tests. Fixture disposed after all tests complete.\n\n**`IAsyncLifetime`**: Async setup/teardown. Use InitializeAsync() and DisposeAsync() for async operations like database seeding.\n\n**`[Trait(name, value)]`**: Categorize tests. Example: [Trait(\"Category\", \"Integration\")]. Filter in test runner: 'dotnet test --filter Category=Integration'."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-15-03-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create integration tests for a ProductRepository!\n\n1. Create Product class: Id, Name, Price, InStock (bool)\n\n2. Create ProductRepository class:\n   - Constructor takes DbContext\n   - AddProduct(Product) - adds to database\n   - GetInStock() - returns products where InStock = true\n   - GetByPriceRange(min, max) - returns products in price range\n\n3. Write integration tests using in-memory database:\n   - Test AddProduct persists correctly\n   - Test GetInStock returns only in-stock products\n   - Test GetByPriceRange filters correctly\n   - Implement IDisposable for cleanup\n\nUse UseInMemoryDatabase and seed test data!",
+              "starterCode": "using Xunit;\nusing Microsoft.EntityFrameworkCore;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic class Product\n{\n    public int Id { get; set; }\n    public string Name { get; set; }\n    public decimal Price { get; set; }\n    public bool InStock { get; set; }\n}\n\npublic class ProductDbContext : DbContext\n{\n    public ProductDbContext(DbContextOptions<ProductDbContext> options) \n        : base(options) { }\n    \n    public DbSet<Product> Products { get; set; }\n}\n\npublic class ProductRepository\n{\n    private readonly ProductDbContext _context;\n    \n    public ProductRepository(ProductDbContext context)\n    {\n        _context = context;\n    }\n    \n    public void AddProduct(Product product)\n    {\n        // Implement\n    }\n    \n    public List<Product> GetInStock()\n    {\n        // Implement: return products where InStock = true\n        return new List<Product>();\n    }\n    \n    public List<Product> GetByPriceRange(decimal min, decimal max)\n    {\n        // Implement: return products in price range\n        return new List<Product>();\n    }\n}\n\npublic class ProductRepositoryIntegrationTests : IDisposable\n{\n    private readonly ProductDbContext _context;\n    private readonly ProductRepository _repo;\n    \n    public ProductRepositoryIntegrationTests()\n    {\n        // Setup in-memory database\n        var options = new DbContextOptionsBuilder<ProductDbContext>()\n            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())\n            .Options;\n        \n        _context = new ProductDbContext(options);\n        _repo = new ProductRepository(_context);\n    }\n    \n    [Fact]\n    public void AddProduct_ValidProduct_PersistsToDatabase()\n    {\n        // Write test\n    }\n    \n    public void Dispose()\n    {\n        _context.Dispose();\n    }\n}",
+              "solution": "using Xunit;\nusing Microsoft.EntityFrameworkCore;\nusing System;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic class Product\n{\n    public int Id { get; set; }\n    public string Name { get; set; }\n    public decimal Price { get; set; }\n    public bool InStock { get; set; }\n}\n\npublic class ProductDbContext : DbContext\n{\n    public ProductDbContext(DbContextOptions<ProductDbContext> options) \n        : base(options) { }\n    \n    public DbSet<Product> Products { get; set; }\n}\n\npublic class ProductRepository\n{\n    private readonly ProductDbContext _context;\n    \n    public ProductRepository(ProductDbContext context)\n    {\n        _context = context;\n    }\n    \n    public void AddProduct(Product product)\n    {\n        _context.Products.Add(product);\n        _context.SaveChanges();\n    }\n    \n    public List<Product> GetInStock()\n    {\n        return _context.Products.Where(p => p.InStock).ToList();\n    }\n    \n    public List<Product> GetByPriceRange(decimal min, decimal max)\n    {\n        return _context.Products\n            .Where(p => p.Price >= min && p.Price <= max)\n            .ToList();\n    }\n}\n\npublic class ProductRepositoryIntegrationTests : IDisposable\n{\n    private readonly ProductDbContext _context;\n    private readonly ProductRepository _repo;\n    \n    public ProductRepositoryIntegrationTests()\n    {\n        var options = new DbContextOptionsBuilder<ProductDbContext>()\n            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())\n            .Options;\n        \n        _context = new ProductDbContext(options);\n        _repo = new ProductRepository(_context);\n    }\n    \n    [Fact]\n    public void AddProduct_ValidProduct_PersistsToDatabase()\n    {\n        var product = new Product { Name = \"Laptop\", Price = 999m, InStock = true };\n        \n        _repo.AddProduct(product);\n        \n        var dbProduct = _context.Products.First();\n        Assert.Equal(\"Laptop\", dbProduct.Name);\n        Assert.Equal(999m, dbProduct.Price);\n    }\n    \n    [Fact]\n    public void GetInStock_MixedProducts_ReturnsOnlyInStock()\n    {\n        _repo.AddProduct(new Product { Name = \"A\", Price = 10, InStock = true });\n        _repo.AddProduct(new Product { Name = \"B\", Price = 20, InStock = false });\n        _repo.AddProduct(new Product { Name = \"C\", Price = 30, InStock = true });\n        \n        var inStock = _repo.GetInStock();\n        \n        Assert.Equal(2, inStock.Count);\n        Assert.All(inStock, p => Assert.True(p.InStock));\n    }\n    \n    [Fact]\n    public void GetByPriceRange_ProductsExist_FiltersCorrectly()\n    {\n        _repo.AddProduct(new Product { Name = \"Cheap\", Price = 10, InStock = true });\n        _repo.AddProduct(new Product { Name = \"Mid\", Price = 50, InStock = true });\n        _repo.AddProduct(new Product { Name = \"Expensive\", Price = 100, InStock = true });\n        \n        var result = _repo.GetByPriceRange(20, 80);\n        \n        Assert.Single(result);\n        Assert.Equal(\"Mid\", result[0].Name);\n    }\n    \n    public void Dispose()\n    {\n        _context.Dispose();\n    }\n}\n\nConsole.WriteLine(\"Integration tests with in-memory DB defined!\");\nConsole.WriteLine(\"Tests: AddProduct, GetInStock, GetByPriceRange\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should contain integration tests",
+                  "expectedOutput": "Integration",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention products",
+                  "expectedOutput": "Product",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "UseInMemoryDatabase with unique name: 'databaseName: Guid.NewGuid().ToString()' ensures test isolation."
+                },
+                {
+                  "level": 2,
+                  "text": "Implement IDisposable and call _context.Dispose() to clean up after tests."
+                },
+                {
+                  "level": 3,
+                  "text": "Seed test data in tests, not constructor. Each test should set up its own data for isolation."
+                },
+                {
+                  "level": 4,
+                  "text": "Assert.All() checks all items in collection: 'Assert.All(list, item => Assert.True(item.Property))'."
+                },
+                {
+                  "level": 5,
+                  "text": "Use [Trait] to categorize: '[Trait(\"Category\", \"Integration\")]' then filter with 'dotnet test --filter Category=Integration'."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Same database name for all tests",
+                  "consequence": "Tests share data and affect each other! Test A adds user, Test B expects empty database but finds user. Flaky, order-dependent tests.",
+                  "correction": "Use Guid.NewGuid().ToString() for database name. Each test gets isolated database."
+                },
+                {
+                  "mistake": "Not disposing DbContext",
+                  "consequence": "Memory leaks, connection exhaustion. In-memory OK but bad habit for real databases.",
+                  "correction": "Implement IDisposable, call _context.Dispose() in Dispose() method."
+                },
+                {
+                  "mistake": "Testing EF Core instead of your code",
+                  "consequence": "Tests verify LINQ works, not your business logic. 'Assert.Equal(1, context.Users.Count())' tests EF, not your service.",
+                  "correction": "Test YOUR code's behavior. Mock DbContext in unit tests, use in-memory only for integration tests of actual database interactions."
+                },
+                {
+                  "mistake": "Too many integration tests",
+                  "consequence": "Slow test suite! Integration tests with DB are 10-100x slower than unit tests. Test pyramid inverted.",
+                  "correction": "Integration tests for critical paths and DB-specific logic. Unit tests with mocks for business logic."
                 }
               ],
               "difficulty": "advanced"

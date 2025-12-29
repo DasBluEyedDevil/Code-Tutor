@@ -16,7 +16,7 @@ Code Tutor is a **production-ready native desktop application** built with C# an
 ## 🌟 Features
 
 ### Learning Platform
-- **5 Programming Languages** - Python, JavaScript, Java, C#, Rust
+- **6 Programming Languages** - Python, JavaScript, Java, C#, Kotlin, Flutter/Dart
 - **6 Challenge Types** - Multiple Choice, True/False, Free Coding, Code Output, Code Completion, Conceptual
 - **Interactive Code Editor** - Syntax highlighting with TextMate grammar support
 - **Real-time Code Execution** - Execute code locally with resource limits for safety
@@ -63,7 +63,8 @@ Code-Tutor/
 │   ├── javascript/
 │   ├── java/
 │   ├── csharp/
-│   └── rust/
+│   ├── kotlin/
+│   └── flutter/
 │
 └── docs/                      # Documentation
     ├── INTERACTIVE_CONTENT_SCHEMA.md  - Content structure
@@ -87,7 +88,7 @@ That's it! The installer bundles everything you need - no .NET installation requ
 - **Python 3.x** - https://www.python.org/downloads/
 - **Node.js 18+** - https://nodejs.org
 - **Java 17+** - https://adoptium.net/
-- **Rust** - https://www.rust-lang.org/tools/install
+- **.NET SDK** - https://dotnet.microsoft.com/download
 
 The installer will detect which languages you have installed and show a warning if any are missing.
 
@@ -105,7 +106,8 @@ The installer will detect which languages you have installed and show a warning 
    - **Java 17+** - https://adoptium.net/
    - **.NET 8.0** - https://dotnet.microsoft.com/download
    - **Node.js 18+** - https://nodejs.org
-   - **Rust** - https://www.rust-lang.org/tools/install
+   - **Kotlin** - Included with Java
+   - **Flutter/Dart** - https://flutter.dev/docs/get-started/install
 
 ### Running from Source
 
@@ -166,7 +168,8 @@ dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj --filter Category=Ser
 | JavaScript | ✅ node         | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
 | Java       | ✅ javac + java | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
 | C#         | ✅ dotnet       | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
-| Rust       | ✅ rustc        | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| Kotlin     | ✅ kotlinc      | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
+| Dart       | ✅ dart         | ✅ TextMate          | ✅ Yes      | ✅ Yes         |
 
 ## 🎯 Challenge Types
 

@@ -1,6 +1,6 @@
 # Code Tutor - Quick Start Guide
 
-**Learn to code in Python, JavaScript, Java, C#, and Rust!**
+**Learn to code in Python, JavaScript, Java, C#, and more!**
 
 ---
 
@@ -34,8 +34,6 @@ When you first open Code Tutor, you'll see 5 programming languages:
 - **JavaScript** - For web development
 - **Java** - Industry standard
 - **C#** - Microsoft's powerhouse
-- **Rust** - Modern systems programming
-
 Click on any language to start!
 
 ### 2. Start a Course
@@ -84,10 +82,7 @@ Code Tutor can run your code locally! But you need to install the language runti
 - Restart Code Tutor
 
 **For C# lessons**:
-- Already included! (Code Tutor is built with C#)
-
-**For Rust lessons**:
-- Download Rust from https://www.rust-lang.org/tools/install
+- Download .NET SDK from https://dotnet.microsoft.com/download
 - Restart Code Tutor
 
 ### Pro Tips:
@@ -154,13 +149,6 @@ Code Tutor can run your code locally! But you need to install the language runti
 - Async programming
 - Properties and events
 - Delegates and lambdas
-
-### Rust Course
-- Ownership and borrowing
-- Pattern matching
-- Error handling
-- Traits and generics
-- Concurrency
 
 ---
 
