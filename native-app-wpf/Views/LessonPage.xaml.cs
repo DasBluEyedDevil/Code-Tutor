@@ -129,13 +129,13 @@ public partial class LessonPage : UserControl
 
         if (currentIndex > 0)
         {
-            PrevButton.Visibility = Visibility.Visible;
+            PrevButton.IsEnabled = true;
             PrevButton.Tag = allLessons[currentIndex - 1];
         }
 
         if (currentIndex < allLessons.Count - 1)
         {
-            NextButton.Visibility = Visibility.Visible;
+            NextButton.IsEnabled = true;
             NextButton.Tag = allLessons[currentIndex + 1];
         }
     }
