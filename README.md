@@ -2,11 +2,11 @@
 
 > Master multiple programming languages with an interactive, cross-platform native desktop application.
 
-## 🖥️ Native C#/Avalonia Desktop App
+## 🖥️ Native C#/WPF Desktop App
 
-Code Tutor is a **production-ready native desktop application** built with C# and Avalonia UI for superior performance and a true native experience.
+Code Tutor is a **production-ready native desktop application** built with C# and WPF for superior performance and a true native Windows experience.
 
-- ✅ **True Native App** - C#/.NET 8.0 with Avalonia UI (not Electron)
+- ✅ **True Native App** - C#/.NET 8.0 with WPF (not Electron)
 - ✅ **Cross-Platform** - Windows, macOS, and Linux
 - ✅ **Local Code Execution** - uses your installed language runtimes
 - ✅ **Works Offline** - everything runs locally
@@ -39,7 +39,7 @@ Code Tutor is a **production-ready native desktop application** built with C# an
 
 ```
 Code-Tutor/
-├── native-app/                # Native C#/Avalonia desktop app (PRODUCTION)
+├── native-app-wpf/            # Native C#/WPF desktop app (PRODUCTION)
 │   ├── Services/              # 15 production services
 │   │   ├── CodeExecutor.cs           - Secure code execution
 │   │   ├── ChallengeValidationService.cs  - Multi-language validation
@@ -47,7 +47,7 @@ Code-Tutor/
 │   │   ├── AchievementService.cs     - Gamification
 │   │   └── ...                       - 11 more services
 │   ├── ViewModels/            # MVVM ViewModels with ReactiveUI
-│   ├── Views/                 # Avalonia XAML views
+│   ├── Views/                 # WPF XAML views
 │   ├── Models/                # Data models
 │   ├── Controls/              # Custom controls
 │   ├── Themes/                # Dark/Light themes
@@ -117,10 +117,10 @@ git clone https://github.com/DasBluEyedDevil/Code-Tutor.git
 cd Code-Tutor
 
 # Restore NuGet packages
-dotnet restore native-app/CodeTutor.Native.csproj
+dotnet restore native-app-wpf/CodeTutor.Wpf.csproj
 
 # Run the application
-dotnet run --project native-app/CodeTutor.Native.csproj
+dotnet run --project native-app-wpf/CodeTutor.Wpf.csproj
 ```
 
 ### Building the Installer
@@ -149,13 +149,13 @@ This creates a complete Windows installer with:
 
 ```bash
 # Run all tests
-dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj
+dotnet test native-app.Tests/CodeTutor.Wpf.Tests.csproj
 
 # Run with coverage
-dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj --collect:"XPlat Code Coverage"
+dotnet test native-app.Tests/CodeTutor.Wpf.Tests.csproj --collect:"XPlat Code Coverage"
 
 # Run specific test category
-dotnet test native-app.Tests/CodeTutor.Native.Tests.csproj --filter Category=Services
+dotnet test native-app.Tests/CodeTutor.Wpf.Tests.csproj --filter Category=Services
 ```
 
 **Test Coverage**: 102 tests, 90% service coverage
@@ -195,7 +195,7 @@ The Code Tutor app implements multiple layers of security for safe code executio
 ## 📖 Technology Stack
 
 - **Framework**: .NET 8.0
-- **UI**: Avalonia UI 11.1.0 (cross-platform XAML)
+- **UI**: WPF (.NET 8.0 Windows)
 - **MVVM**: ReactiveUI 19.5.31
 - **Database**: Entity Framework Core 8.0 + SQLite
 - **Syntax Highlighting**: TextMateSharp 1.0.56
@@ -208,7 +208,7 @@ The Code Tutor app implements multiple layers of security for safe code executio
 The app follows the **Model-View-ViewModel** pattern:
 
 - **Models** - Data entities (Challenge, Course, UserProgress, Achievement)
-- **Views** - Avalonia XAML UI (CoursePage, LessonPage, Challenge Views)
+- **Views** - WPF XAML UI (CoursePage, LessonPage, Challenge Views)
 - **ViewModels** - Presentation logic with ReactiveUI (CoursePageViewModel, etc.)
 - **Services** - Business logic layer (15 services with dependency injection)
 
@@ -254,4 +254,4 @@ Code Tutor follows a **concept-first pedagogy**:
 
 **Production Version**: v1.0
 **Status**: ✅ Production Ready
-**Platform**: Native C#/Avalonia Desktop Application
+**Platform**: Native C#/WPF Desktop Application

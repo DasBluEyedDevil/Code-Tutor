@@ -402,7 +402,7 @@ mockService.Verify(s => s.Method(It.IsAny<string>()), Times.Once);
 
 ### UI Tests (Future)
 
-- [ ] Avalonia UI component tests
+- [ ] WPF UI component tests
 - [ ] Visual regression tests
 - [ ] Accessibility tests
 

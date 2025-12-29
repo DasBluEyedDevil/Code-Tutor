@@ -5,13 +5,13 @@
 
 *   **Type:** Native Desktop Application
 *   **Primary Language:** C# (.NET 8.0)
-*   **UI Framework:** Avalonia UI 11.1.0 (Cross-platform XAML)
+*   **UI Framework:** WPF (.NET 8.0 Windows)
 *   **Architecture:** MVVM (Model-View-ViewModel) with ReactiveUI
 *   **Status:** Production Ready (v1.0)
 
 ## 2. Technology Stack
 *   **Core:** .NET 8.0
-*   **UI:** Avalonia UI (XAML-based, similar to WPF/UWP but cross-platform)
+*   **UI:** WPF (XAML-based, native Windows)
 *   **MVVM Framework:** ReactiveUI 19.5.31
 *   **Database:** Entity Framework Core 8.0 + SQLite
 *   **Code Execution:** Local process spawning with resource limits and sandboxing
@@ -21,19 +21,19 @@
 ## 3. Architecture & Structure
 The project follows a strict **MVVM** pattern with a **Service-Oriented** architecture.
 
-### Key Directories (`native-app/`)
-*   `CodeTutor.Native.csproj`: Main project file.
+### Key Directories (`native-app-wpf/`)
+*   `CodeTutor.Wpf.csproj`: Main project file.
 *   `App.axaml`: Application entry and DI container configuration.
 *   `Program.cs`: Application entry point.
 *   `Models/`: Plain Data Objects (POCOs) (e.g., `Course.cs`, `User.cs`).
 *   `ViewModels/`: Presentation logic (e.g., `LessonPageViewModel.cs`). Inherits from `ViewModelBase`.
-*   `Views/`: XAML UI definitions (e.g., `LessonPage.axaml`).
+*   `Views/`: XAML UI definitions (e.g., `LessonPage.xaml`).
 *   `Services/`: Business logic (e.g., `CodeExecutor.cs`, `CourseService.cs`).
 *   `Data/`: Database context (`CodeTutorDbContext`) and repositories.
-*   `Controls/`: Custom UI controls (e.g., `CodeEditor.axaml`).
+*   `Controls/`: Custom UI controls (e.g., `CodeEditor.xaml`).
 
 ### Key Files
-*   `native-app/NATIVE_ARCHITECTURE.md`: Detailed architectural documentation.
+*   `native-app-wpf/ARCHITECTURE.md`: Detailed architectural documentation.
 *   `BUILD.md`: Comprehensive build instructions.
 *   `content/courses/**/*.json`: Course content data.
 
@@ -54,11 +54,11 @@ The project follows a strict **MVVM** pattern with a **Service-Oriented** archit
 ### Key Commands
 | Action | Command |
 | :--- | :--- |
-| **Run App** | `dotnet run --project native-app/CodeTutor.Native.csproj` |
-| **Build (Dev)** | `dotnet build native-app/CodeTutor.Native.csproj` |
+| **Run App** | `dotnet run --project native-app-wpf/CodeTutor.Wpf.csproj` |
+| **Build (Dev)** | `dotnet build native-app-wpf/CodeTutor.Wpf.csproj` |
 | **Run Tests** | `dotnet test native-app.Tests/native-app.Tests.csproj` |
 | **Build Installer (Win)** | `.\build-installer.ps1` (Requires Inno Setup for .exe) |
-| **Publish (Portable)** | `dotnet publish native-app/CodeTutor.Native.csproj -c Release -r win-x64 --self-contained` |
+| **Publish (Portable)** | `dotnet publish native-app-wpf/CodeTutor.Wpf.csproj -c Release -r win-x64 --self-contained` |
 
 ## 6. Content System
 Course content is defined in JSON files located in `content/courses/{language}/course.json`.

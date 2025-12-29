@@ -55,7 +55,7 @@ The build script creates:
 
 **Step 2: Publish Self-Contained App**
 ```bash
-dotnet publish native-app/CodeTutor.Native.csproj \
+dotnet publish native-app-wpf/CodeTutor.Wpf.csproj \
   -c Release \
   -r win-x64 \
   --self-contained true \
@@ -85,7 +85,7 @@ dotnet publish native-app/CodeTutor.Native.csproj \
 
 ```bash
 # Build self-contained Linux executable
-dotnet publish native-app/CodeTutor.Native.csproj \
+dotnet publish native-app-wpf/CodeTutor.Wpf.csproj \
   -c Release \
   -r linux-x64 \
   --self-contained true \
@@ -116,7 +116,7 @@ mkdir -p code-tutor_1.0.0_amd64/usr/share/applications
 mkdir -p code-tutor_1.0.0_amd64/usr/share/code-tutor
 
 # Copy files
-cp publish-linux/CodeTutor.Native code-tutor_1.0.0_amd64/usr/local/bin/code-tutor
+cp publish-linux/CodeTutor code-tutor_1.0.0_amd64/usr/local/bin/code-tutor
 cp -r publish-linux/Content code-tutor_1.0.0_amd64/usr/share/code-tutor/
 cp -r publish-linux/docs code-tutor_1.0.0_amd64/usr/share/code-tutor/
 
@@ -151,7 +151,7 @@ dpkg-deb --build code-tutor_1.0.0_amd64
 
 ```bash
 # Build self-contained macOS executable
-dotnet publish native-app/CodeTutor.Native.csproj \
+dotnet publish native-app-wpf/CodeTutor.Wpf.csproj \
   -c Release \
   -r osx-x64 \
   --self-contained true \
@@ -167,7 +167,7 @@ cp README.md publish-macos/
 mkdir -p CodeTutor.app/Contents/MacOS
 mkdir -p CodeTutor.app/Contents/Resources
 
-cp publish-macos/CodeTutor.Native CodeTutor.app/Contents/MacOS/
+cp publish-macos/CodeTutor CodeTutor.app/Contents/MacOS/
 cp -r publish-macos/Content CodeTutor.app/Contents/Resources/
 cp -r publish-macos/docs CodeTutor.app/Contents/Resources/
 
@@ -178,7 +178,7 @@ cat > CodeTutor.app/Contents/Info.plist << EOF
 <plist version="1.0">
 <dict>
     <key>CFBundleExecutable</key>
-    <string>CodeTutor.Native</string>
+    <string>CodeTutor</string>
     <key>CFBundleIdentifier</key>
     <string>com.codetutor.app</string>
     <key>CFBundleName</key>
@@ -214,7 +214,7 @@ Before distributing your build:
 
 ### Documentation
 - [ ] Update version number in `build-installer.ps1`
-- [ ] Update version number in `native-app/CodeTutor.Native.csproj`
+- [ ] Update version number in `native-app-wpf/CodeTutor.Wpf.csproj`
 - [ ] Update CHANGELOG.md with release notes
 - [ ] Update README.md if needed
 
@@ -275,7 +275,7 @@ To reduce size, use framework-dependent deployment (requires .NET 8.0 installed)
 
 ```bash
 # 1. Build
-dotnet publish native-app/CodeTutor.Native.csproj -c Release -r win-x64 --self-contained -o publish
+dotnet publish native-app-wpf/CodeTutor.Wpf.csproj -c Release -r win-x64 --self-contained -o publish
 
 # 2. Copy content
 xcopy /E /I /Y content publish\Content
@@ -300,7 +300,6 @@ powershell Compress-Archive -Path publish\* -DestinationPath dist\CodeTutor-Port
 - **Target**: Ubuntu 20.04+ / Debian 11+ / Fedora 36+
 - **Architecture**: x64
 - **Distribution**: .tar.gz or .deb package
-- **Note**: GTK3 required for Avalonia (usually pre-installed)
 
 ### macOS
 - **Target**: macOS 10.15 (Catalina) or later

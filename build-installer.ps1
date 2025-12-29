@@ -17,8 +17,8 @@ Write-Host ""
 
 # Paths
 $RootDir = $PSScriptRoot
-$ProjectDir = Join-Path $RootDir "native-app"
-$ProjectFile = Join-Path $ProjectDir "CodeTutor.Native.csproj"
+$ProjectDir = Join-Path $RootDir "native-app-wpf"
+$ProjectFile = Join-Path $ProjectDir "CodeTutor.Wpf.csproj"
 $ContentDir = Join-Path $RootDir "content"
 $DocsDir = Join-Path $RootDir "docs"
 $PublishDir = Join-Path $RootDir "publish"
