@@ -66,6 +66,43 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Progress Section -->
+                <Border x:Name="ProgressSection"
+                        Style="{StaticResource CardBorder}"
+                        Margin="0,0,0,32"
+                        Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock Text="Your Progress"
+                                   Style="{StaticResource SubheadingText}"
+                                   Margin="0,0,0,16" />
+
+                        <!-- Progress Bar -->
+                        <Grid Height="8" Margin="0,0,0,8">
+                            <Border Background="{StaticResource BackgroundLightBrush}"
+                                    CornerRadius="4" />
+                            <Border x:Name="ProgressFill"
+                                    Background="{StaticResource AccentGreenBrush}"
+                                    CornerRadius="4"
+                                    HorizontalAlignment="Left"
+                                    Width="0" />
+                        </Grid>
+
+                        <TextBlock x:Name="ProgressPercent"
+                                   Style="{StaticResource CaptionText}"
+                                   Margin="0,0,0,12" />
+
+                        <!-- Stats Row -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="CompletedLessonsText"
+                                       Style="{StaticResource CaptionText}" />
+                            <TextBlock x:Name="StreakText"
+                                       Style="{StaticResource CaptionText}"
+                                       Margin="24,0,0,0"
+                                       Visibility="Collapsed" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
                 <!-- Start Button -->
                 <Button x:Name="StartButton"
                         Style="{StaticResource PrimaryButton}"
