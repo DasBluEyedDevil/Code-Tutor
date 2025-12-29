@@ -44,6 +44,12 @@ public partial class LessonPage : UserControl
         LessonTime.Text = $"{_lesson.EstimatedMinutes} min";
         LessonDifficulty.Text = _lesson.Difficulty;
 
+        // Set lesson position
+        var allLessons = _course.Modules.SelectMany(m => m.Lessons).ToList();
+        var currentIndex = allLessons.FindIndex(l => l.Id == _lesson.Id);
+        var currentModule = _course.Modules.FirstOrDefault(m => m.Lessons.Any(l => l.Id == _lesson.Id));
+        LessonPosition.Text = $"Module: {currentModule?.Title} • Lesson {currentIndex + 1} of {allLessons.Count}";
+
         // Add content sections dynamically
         ContentPanel.Children.Clear();
 
