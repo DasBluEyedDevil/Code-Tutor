@@ -10,6 +10,8 @@ namespace CodeTutor.Wpf.Services.Executors;
 
 public class RoslynCSharpExecutor
 {
+    private static readonly object _consoleLock = new();
+
     private static readonly ScriptOptions DefaultOptions = ScriptOptions.Default
         .AddReferences(
             typeof(object).Assembly,
@@ -19,19 +21,28 @@ public class RoslynCSharpExecutor
         .AddImports(
             "System",
             "System.Collections.Generic",
+            "System.IO",
             "System.Linq",
-            "System.Text"
+            "System.Text",
+            "System.Text.RegularExpressions"
         );
 
     public async Task<ExecutionResult> ExecuteAsync(string code, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(code))
+            return new ExecutionResult(false, "", "Code cannot be empty");
+
         using var outputCapture = new StringWriter();
-        var originalOut = Console.Out;
+        TextWriter originalOut;
+
+        lock (_consoleLock)
+        {
+            originalOut = Console.Out;
+            Console.SetOut(outputCapture);
+        }
 
         try
         {
-            Console.SetOut(outputCapture);
-
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(TimeSpan.FromSeconds(30));
 
@@ -65,7 +76,10 @@ public class RoslynCSharpExecutor
         }
         finally
         {
-            Console.SetOut(originalOut);
+            lock (_consoleLock)
+            {
+                Console.SetOut(originalOut);
+            }
         }
     }
 }
