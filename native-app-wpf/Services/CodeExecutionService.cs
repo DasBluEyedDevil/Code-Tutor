@@ -23,6 +23,7 @@ public class CodeExecutionService : ICodeExecutionService
     private readonly PistonExecutor _pistonExecutor;
     private readonly RuntimeDetectionService _runtimeDetection;
     private bool? _pistonAvailable;
+    private Task<bool>? _pistonCheckTask;
 
     public bool IsPistonAvailable => _pistonAvailable ?? false;
 
@@ -32,13 +33,15 @@ public class CodeExecutionService : ICodeExecutionService
         _pistonExecutor = new PistonExecutor();
         _runtimeDetection = new RuntimeDetectionService();
 
-        // Check Piston availability in background
-        _ = CheckPistonAsync();
+        // Start check but store the task for lazy initialization
+        _pistonCheckTask = CheckPistonAsync();
     }
 
-    private async Task CheckPistonAsync()
+    private async Task<bool> CheckPistonAsync()
     {
-        _pistonAvailable = await _pistonExecutor.IsAvailableAsync();
+        var available = await _pistonExecutor.IsAvailableAsync();
+        _pistonAvailable = available;
+        return available;
     }
 
     public async Task<RuntimeInfo> GetRuntimeInfoAsync(string language)
@@ -48,6 +51,10 @@ public class CodeExecutionService : ICodeExecutionService
 
     public async Task<ExecutionResult> ExecuteAsync(string code, string language)
     {
+        // Input validation
+        if (string.IsNullOrWhiteSpace(language))
+            return new ExecutionResult(false, "", "Language cannot be empty");
+
         var langLower = language.ToLowerInvariant();
 
         // C# always uses Roslyn (no external dependency)
@@ -56,12 +63,20 @@ public class CodeExecutionService : ICodeExecutionService
             return await _roslynExecutor.ExecuteAsync(code);
         }
 
+        // Ensure Piston check is complete before using
+        if (_pistonCheckTask != null && !_pistonCheckTask.IsCompleted)
+        {
+            await _pistonCheckTask;
+        }
+
         // Try Piston first if available (sandboxed)
         if (_pistonAvailable == true)
         {
             var pistonResult = await _pistonExecutor.ExecuteAsync(code, language);
-            if (!pistonResult.Error.Contains("connection failed"))
+            // Only fall back to local if Piston connection failed, not for code errors
+            if (pistonResult.Success || !pistonResult.Error.Contains("connection failed"))
                 return pistonResult;
+            // Connection failed, fall back to local execution
         }
 
         // Fallback to local execution
