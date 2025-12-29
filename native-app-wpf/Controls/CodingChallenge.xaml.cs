@@ -66,12 +66,20 @@ public partial class CodingChallenge : UserControl
             OutputText.Text = "Running...";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
 
+            // Reset to default border while running
+            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("BorderDefaultBrush");
+            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("BackgroundDarkBrush");
+
             var result = await _executionService.ExecuteAsync(CodeEditor.Text, _challenge.Language);
 
             if (result.Success)
             {
                 OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
                 OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+
+                // Set success styling
+                OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentGreenBrush");
+                OutputPanel.Background = (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush");
 
                 // Run test case validation if test cases exist
                 if (_challenge.TestCases != null && _challenge.TestCases.Count > 0)
@@ -83,12 +91,18 @@ public partial class CodingChallenge : UserControl
             {
                 OutputText.Text = string.IsNullOrEmpty(result.Error) ? result.Output : result.Error;
                 OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+
+                // Set error styling
+                OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+                OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
             }
         }
         catch (Exception ex)
         {
             OutputText.Text = $"Execution failed: {ex.Message}";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
         }
     }
 
