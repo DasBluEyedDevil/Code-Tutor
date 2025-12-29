@@ -23,14 +23,48 @@ public partial class LandingPage : UserControl
     {
         try
         {
-            LoadingText.Visibility = Visibility.Visible;
+            // Show skeleton loading
+            SkeletonContainer.Visibility = Visibility.Visible;
+            for (int i = 0; i < 4; i++)
+            {
+                SkeletonContainer.Children.Add(new Controls.SkeletonCard { Margin = new Thickness(0, 0, 16, 16) });
+            }
+
             var courses = await _courseService.GetAllCoursesAsync();
+
+            // Hide skeletons and show courses
+            SkeletonContainer.Visibility = Visibility.Collapsed;
+            SkeletonContainer.Children.Clear();
             CourseList.ItemsSource = courses;
-            LoadingText.Visibility = Visibility.Collapsed;
         }
         catch (Exception ex)
         {
-            LoadingText.Text = $"Failed to load courses: {ex.Message}";
+            SkeletonContainer.Visibility = Visibility.Collapsed;
+            SkeletonContainer.Children.Clear();
+
+            // Show error in a more visible way
+            var errorText = new TextBlock
+            {
+                Text = $"Failed to load courses: {ex.Message}",
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            if (FindResource("BodyText") is Style bodyStyle)
+            {
+                errorText.Style = bodyStyle;
+            }
+
+            if (FindResource("AccentRedBrush") is System.Windows.Media.Brush redBrush)
+            {
+                errorText.Foreground = redBrush;
+            }
+
+            CourseList.ItemsSource = null;
+
+            if (CourseList.Parent is Panel parentPanel)
+            {
+                parentPanel.Children.Add(errorText);
+            }
         }
     }
 

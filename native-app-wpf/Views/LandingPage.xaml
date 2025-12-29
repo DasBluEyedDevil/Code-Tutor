@@ -80,11 +80,12 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- Loading indicator -->
-            <TextBlock x:Name="LoadingText"
-                       Text="Loading courses..."
-                       Style="{StaticResource BodyText}"
-                       Visibility="Collapsed" />
+            <!-- Loading Skeleton Container -->
+            <WrapPanel x:Name="SkeletonContainer"
+                       Orientation="Horizontal"
+                       Visibility="Collapsed">
+                <!-- Skeletons added dynamically -->
+            </WrapPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
