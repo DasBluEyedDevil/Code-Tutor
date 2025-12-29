@@ -9,8 +9,8 @@
   "modules": [
     {
       "id": "module-01",
-      "title": "Epoch 0",
-      "description": "Epoch 0 - Lesson 0.1",
+      "title": "Java Fundamentals",
+      "description": "Introduction to programming concepts, your first Java program, variables, and control flow.",
       "difficulty": "beginner",
       "estimatedHours": 1.5,
       "lessons": [
@@ -210,6 +210,7 @@
             {
               "type": "EXAMPLE",
               "title": "Using var in Practice",
+              "content": "The var keyword enables local type inference, reducing boilerplate while maintaining type safety. It's especially useful for complex generic types and in for-each loops where the type is obvious from context.",
               "code": "public class VarExample {\n    public static void main(String[] args) {\n        // Instead of: String message = \"Hello, World!\";\n        var message = \"Hello, World!\";\n        \n        // Instead of: int count = 10;\n        var count = 10;\n        \n        // Instead of: double price = 19.99;\n        var price = 19.99;\n        \n        // Especially useful for complex types:\n        // Instead of: ArrayList<String> names = new ArrayList<String>();\n        var names = new ArrayList<String>();\n        names.add(\"Alice\");\n        names.add(\"Bob\");\n        \n        // In for-each loops:\n        for (var name : names) {\n            System.out.println(name);\n        }\n        \n        // With Map:\n        var scores = new HashMap<String, Integer>();\n        scores.put(\"Alice\", 95);\n        scores.put(\"Bob\", 87);\n        \n        for (var entry : scores.entrySet()) {\n            System.out.println(entry.getKey() + \": \" + entry.getValue());\n        }\n    }\n}",
               "language": "java"
             }
@@ -527,6 +528,7 @@
             {
               "type": "EXAMPLE",
               "title": "Modern Switch and Pattern Matching in Action",
+              "content": "Switch expressions with arrow syntax eliminate fall-through bugs and return values directly. Pattern matching for instanceof combines type checking and casting. Guards with 'when' add conditional logic to patterns.",
               "code": "public class ModernJavaDemo {\n    public static void main(String[] args) {\n        // Switch expression with arrow syntax\n        String day = \"WEDNESDAY\";\n        String activity = switch (day) {\n            case \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\" -> \"Work\";\n            case \"SATURDAY\" -> \"Relax\";\n            case \"SUNDAY\" -> \"Prepare for week\";\n            default -> \"Unknown\";\n        };\n        System.out.println(day + \": \" + activity);\n        \n        // Pattern matching for instanceof\n        Object[] items = {\"Hello\", 42, 3.14, true};\n        for (Object item : items) {\n            if (item instanceof String s) {\n                System.out.println(\"String with \" + s.length() + \" chars\");\n            } else if (item instanceof Integer n) {\n                System.out.println(\"Integer: \" + n);\n            } else if (item instanceof Double d) {\n                System.out.println(\"Double: \" + d);\n            } else {\n                System.out.println(\"Other: \" + item);\n            }\n        }\n        \n        // Pattern matching in switch (Java 21+)\n        for (Object item : items) {\n            String description = switch (item) {\n                case String s when s.length() > 10 -> \"Long string\";\n                case String s -> \"String: \" + s;\n                case Integer i when i < 0 -> \"Negative\";\n                case Integer i -> \"Positive: \" + i;\n                case Double d -> \"Double: \" + d;\n                case Boolean b -> \"Boolean: \" + b;\n                case null -> \"null\";\n                default -> \"Unknown\";\n            };\n            System.out.println(description);\n        }\n    }\n}",
               "language": "java"
             },
@@ -656,8 +658,8 @@
     },
     {
       "id": "module-02",
-      "title": "Epoch 1",
-      "description": "Epoch 1 - Lesson 1.1",
+      "title": "Data Types, Loops, and Methods",
+      "description": "Deep dive into data types, operators, loops, and writing reusable methods.",
       "difficulty": "beginner",
       "estimatedHours": 3.4,
       "lessons": [
@@ -1537,8 +1539,8 @@
     },
     {
       "id": "module-03",
-      "title": "Epoch 2",
-      "description": "Epoch 2 - Lesson 2.1",
+      "title": "Object-Oriented Programming",
+      "description": "Master OOP concepts: classes, objects, encapsulation, inheritance, polymorphism, and modern records.",
       "difficulty": "beginner",
       "estimatedHours": 3.9,
       "lessons": [
@@ -2622,6 +2624,7 @@
             {
               "type": "EXAMPLE",
               "title": "Records in Action",
+              "content": "Records provide compact constructors for validation, automatic accessor methods, and built-in toString/equals/hashCode. Use them for immutable data holders like DTOs and value objects.",
               "code": "// Define a simple record\npublic record Student(String name, int grade, double gpa) {\n    // Compact constructor for validation\n    public Student {\n        if (grade < 1 || grade > 12) {\n            throw new IllegalArgumentException(\"Grade must be 1-12\");\n        }\n        if (gpa < 0.0 || gpa > 4.0) {\n            throw new IllegalArgumentException(\"GPA must be 0.0-4.0\");\n        }\n    }\n    \n    // Custom method\n    public boolean isHonorRoll() {\n        return gpa >= 3.5;\n    }\n}\n\n// Using the record\npublic class Main {\n    public static void main(String[] args) {\n        // Create records\n        var alice = new Student(\"Alice\", 10, 3.8);\n        var bob = new Student(\"Bob\", 11, 3.2);\n        \n        // Access components\n        System.out.println(alice.name());  // Alice\n        System.out.println(alice.gpa());   // 3.8\n        \n        // Use custom methods\n        System.out.println(alice.isHonorRoll());  // true\n        System.out.println(bob.isHonorRoll());    // false\n        \n        // Automatic toString\n        System.out.println(alice);  // Student[name=Alice, grade=10, gpa=3.8]\n        \n        // Automatic equals\n        var aliceCopy = new Student(\"Alice\", 10, 3.8);\n        System.out.println(alice.equals(aliceCopy));  // true\n        \n        // Use in collections\n        var students = List.of(alice, bob);\n        for (var student : students) {\n            System.out.println(student.name() + \": \" + student.gpa());\n        }\n    }\n}",
               "language": "java"
             },
@@ -2751,8 +2754,8 @@
     },
     {
       "id": "module-04",
-      "title": "Epoch 3",
-      "description": "Epoch 3 - Lesson 3.1",
+      "title": "Collections and Functional Programming",
+      "description": "Work with arrays, lists, maps, and functional programming with lambdas and streams.",
       "difficulty": "beginner",
       "estimatedHours": 3.2,
       "lessons": [
@@ -3627,6 +3630,7 @@
             {
               "type": "EXAMPLE",
               "title": "Lambdas in Action",
+              "content": "Lambdas work with functional interfaces like Comparator, Predicate, Function, and Consumer. Method references (::) provide cleaner syntax when a lambda just calls an existing method.",
               "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class LambdaDemo {\n    public static void main(String[] args) {\n        // Lambda as Comparator\n        List<String> names = new ArrayList<>(List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\"));\n        names.sort((a, b) -> a.length() - b.length());\n        System.out.println(names); // [Bob, Dan, Alice, Charlie]\n        \n        // Lambda with forEach\n        names.forEach(name -> System.out.println(\"Hello, \" + name));\n        \n        // Method reference\n        names.forEach(System.out::println);\n        \n        // Predicate - filter condition\n        Predicate<String> startsWithA = s -> s.startsWith(\"A\");\n        System.out.println(startsWithA.test(\"Alice\")); // true\n        System.out.println(startsWithA.test(\"Bob\"));   // false\n        \n        // Function - transform\n        Function<String, Integer> getLength = String::length;\n        System.out.println(getLength.apply(\"Hello\")); // 5\n        \n        // Consumer - action\n        Consumer<String> shout = s -> System.out.println(s.toUpperCase() + \"!\");\n        shout.accept(\"hello\"); // HELLO!\n        \n        // Custom functional interface\n        Calculator add = (a, b) -> a + b;\n        Calculator multiply = (a, b) -> a * b;\n        System.out.println(operate(10, 5, add));      // 15\n        System.out.println(operate(10, 5, multiply)); // 50\n    }\n    \n    @FunctionalInterface\n    interface Calculator {\n        int calculate(int a, int b);\n    }\n    \n    static int operate(int a, int b, Calculator calc) {\n        return calc.calculate(a, b);\n    }\n}",
               "language": "java"
             }
@@ -3737,6 +3741,7 @@
             {
               "type": "EXAMPLE",
               "title": "Stream Pipeline Examples",
+              "content": "Stream pipelines chain filter, map, and collect operations for declarative collection processing. Operations are lazy until a terminal operation like collect() triggers processing.",
               "code": "import java.util.*;\nimport java.util.stream.*;\n\npublic class StreamDemo {\n    public static void main(String[] args) {\n        List<String> names = List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\", \"Eve\");\n        \n        // Filter and collect\n        List<String> longNames = names.stream()\n            .filter(n -> n.length() > 3)\n            .collect(Collectors.toList());\n        System.out.println(longNames); // [Alice, Charlie]\n        \n        // Map and collect\n        List<Integer> lengths = names.stream()\n            .map(String::length)\n            .collect(Collectors.toList());\n        System.out.println(lengths); // [5, 3, 7, 3, 3]\n        \n        // Filter, map, collect\n        List<String> upperLong = names.stream()\n            .filter(n -> n.length() > 3)\n            .map(String::toUpperCase)\n            .collect(Collectors.toList());\n        System.out.println(upperLong); // [ALICE, CHARLIE]\n        \n        // Find first matching\n        Optional<String> firstLong = names.stream()\n            .filter(n -> n.length() > 3)\n            .findFirst();\n        firstLong.ifPresent(System.out::println); // Alice\n        \n        // Count\n        long count = names.stream()\n            .filter(n -> n.length() == 3)\n            .count();\n        System.out.println(\"3-letter names: \" + count); // 3\n        \n        // Sum with mapToInt\n        List<Integer> numbers = List.of(1, 2, 3, 4, 5);\n        int sum = numbers.stream()\n            .mapToInt(Integer::intValue)\n            .sum();\n        System.out.println(\"Sum: \" + sum); // 15\n        \n        // Join strings\n        String joined = names.stream()\n            .collect(Collectors.joining(\", \"));\n        System.out.println(joined); // Alice, Bob, Charlie, Dan, Eve\n        \n        // Group by length\n        Map<Integer, List<String>> byLength = names.stream()\n            .collect(Collectors.groupingBy(String::length));\n        System.out.println(byLength); // {3=[Bob, Dan, Eve], 5=[Alice], 7=[Charlie]}\n    }\n}",
               "language": "java"
             },
@@ -3897,8 +3902,8 @@
     },
     {
       "id": "module-05",
-      "title": "Epoch 4",
-      "description": "Epoch 4 - Lesson 4.1",
+      "title": "Testing and Build Tools",
+      "description": "Write tests with JUnit, practice TDD, and manage projects with Maven and Gradle.",
       "difficulty": "beginner",
       "estimatedHours": 3,
       "lessons": [
@@ -4304,8 +4309,8 @@
     },
     {
       "id": "module-06",
-      "title": "Epoch 5",
-      "description": "Epoch 5 - Lesson 5.1",
+      "title": "Databases and SQL",
+      "description": "Learn SQL fundamentals and connect Java applications to databases with JDBC.",
       "difficulty": "beginner",
       "estimatedHours": 3.4,
       "lessons": [
@@ -4503,8 +4508,8 @@
     },
     {
       "id": "module-07",
-      "title": "Epoch 6",
-      "description": "Epoch 6 - Lesson 6.1",
+      "title": "Web Fundamentals and APIs",
+      "description": "Understand HTTP, REST APIs, and consuming web services with HttpClient.",
       "difficulty": "beginner",
       "estimatedHours": 1.9,
       "lessons": [
@@ -4615,8 +4620,8 @@
     },
     {
       "id": "module-08",
-      "title": "Epoch 7",
-      "description": "Epoch 7 - Lesson 7.1",
+      "title": "Spring Boot",
+      "description": "Build modern web applications with Spring Boot, REST controllers, JPA, and security.",
       "difficulty": "beginner",
       "estimatedHours": 5.1,
       "lessons": [
@@ -4856,6 +4861,11 @@
               "type": "THEORY",
               "title": "💻 Complete Configuration Example",
               "content": "```java\napplication.yml:\n\nspring:\n  application:\n    name: book-store-api\n  datasource:\n    url: jdbc:mysql://localhost:3306/bookstore\n    username: ${DB_USER:root}\n    password: ${DB_PASSWORD:password}\n  jpa:\n    hibernate:\n      ddl-auto: update\n    show-sql: true\n\nserver:\n  port: 8080\n\napp:\n  features:\n    signup-enabled: true\n    max-users: 1000\n  email:\n    host: smtp.gmail.com\n    port: 587\n    username: ${EMAIL_USER}\n    password: ${EMAIL_PASSWORD}\n\nConfiguration classes:\n\n@ConfigurationProperties(prefix = \"app.features\")\npublic record FeaturesConfig(\n    boolean signupEnabled,\n    int maxUsers\n) { }\n\n@ConfigurationProperties(prefix = \"app.email\")\n@Validated\npublic record EmailConfig(\n    @NotBlank String host,\n    @Min(1) @Max(65535) int port,\n    @NotBlank String username,\n    @NotBlank String password\n) { }\n\nMain application:\n\n@SpringBootApplication\n@ConfigurationPropertiesScan\npublic class BookStoreApplication {\n    public static void main(String[] args) {\n        SpringApplication.run(BookStoreApplication.class, args);\n    }\n}\n\nUsing in service:\n\n@Service\npublic class UserService {\n    private final FeaturesConfig features;\n    \n    public UserService(FeaturesConfig features) {\n        this.features = features;\n    }\n    \n    public boolean canSignup() {\n        return features.signupEnabled();\n    }\n}\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "⚠️ ddl-auto: update is NOT for Production! Use Flyway or Liquibase",
+              "content": "ddl-auto OPTIONS:\n- create: DROP and recreate on startup (DESTROYS DATA!)\n- create-drop: Create on start, drop on shutdown\n- update: Update schema without deleting data\n- validate: Only check if schema matches entities\n- none: Do nothing\n\n❌ PROBLEMS WITH 'update':\n- Cannot remove columns (only adds)\n- Cannot rename columns\n- No rollback capability\n- No version history\n- Different results on different environments\n- Can cause data inconsistencies over time\n\n✓ PRODUCTION SOLUTION: Database Migration Tools\n\n1. FLYWAY (Recommended for simplicity):\n\nDependency:\n<dependency>\n    <groupId>org.flywaydb</groupId>\n    <artifactId>flyway-core</artifactId>\n</dependency>\n\nMigration file: src/main/resources/db/migration/V1__Create_users_table.sql\n\nCREATE TABLE users (\n    id BIGINT AUTO_INCREMENT PRIMARY KEY,\n    name VARCHAR(100) NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL\n);\n\nMigration file: V2__Add_age_column.sql\n\nALTER TABLE users ADD COLUMN age INT;\n\n2. LIQUIBASE (More flexible, XML/YAML/JSON):\n\nDependency:\n<dependency>\n    <groupId>org.liquibase</groupId>\n    <artifactId>liquibase-core</artifactId>\n</dependency>\n\nBENEFITS OF MIGRATION TOOLS:\n✓ Version-controlled schema changes\n✓ Rollback support\n✓ Team collaboration (everyone runs same migrations)\n✓ Production-safe deployments\n✓ Audit trail of all changes\n\nPRODUCTION CONFIG:\nspring.jpa.hibernate.ddl-auto=validate  # Only validate, don't modify!\nspring.flyway.enabled=true  # Let Flyway handle schema changes"
             }
           ],
           "challenges": []
@@ -4983,6 +4993,11 @@
               "type": "THEORY",
               "title": "💻 Complete Security Configuration",
               "content": "```java\nSecurityConfig.java:\n\n@Configuration\n@EnableWebSecurity\n@EnableMethodSecurity\npublic class SecurityConfig {\n    \n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity http) \n            throws Exception {\n        http\n            .csrf(csrf -> csrf.disable())  // Disable for REST APIs\n            .authorizeHttpRequests(auth -> auth\n                // Public endpoints\n                .requestMatchers(\"/api/auth/**\").permitAll()\n                .requestMatchers(\"/api/public/**\").permitAll()\n                \n                // User endpoints\n                .requestMatchers(\"/api/users/**\").hasAnyRole(\"USER\", \"ADMIN\")\n                \n                // Admin endpoints\n                .requestMatchers(\"/api/admin/**\").hasRole(\"ADMIN\")\n                \n                // All other requests need authentication\n                .anyRequest().authenticated()\n            )\n            .httpBasic(Customizer.withDefaults())  // Enable HTTP Basic\n            .sessionManagement(session -> session\n                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)\n            );  // Stateless for REST APIs\n        \n        return http.build();\n    }\n    \n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n}\n\nThis configuration:\n✓ Allows public access to /api/auth/** and /api/public/**\n✓ Requires USER or ADMIN role for /api/users/**\n✓ Requires ADMIN role for /api/admin/**\n✓ Uses BCrypt for password hashing\n✓ Stateless sessions (REST API pattern)\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "⚠️ HTTP Basic Auth vs JWT - Production Considerations",
+              "content": "HTTP BASIC AUTH (Used in this lesson):\n✓ Simple to implement and understand\n✓ Good for learning and internal tools\n✓ Works with testing tools (Postman, curl)\n\n❌ SECURITY LIMITATIONS:\n- Credentials sent with EVERY request (Base64 encoded, NOT encrypted!)\n- Must ALWAYS use HTTPS in production - without it, credentials are exposed!\n- No built-in token expiration\n- Hard to implement features like 'remember me' or token refresh\n\nPRODUCTION STANDARD - JWT (JSON Web Tokens):\n✓ Token-based: Login once, get token, use token for subsequent requests\n✓ Stateless: Server doesn't store sessions\n✓ Expiration: Tokens auto-expire (e.g., after 1 hour)\n✓ Claims: Can embed user info in token (roles, permissions)\n✓ Industry standard for REST APIs and microservices\n\nOAUTH2 / OpenID Connect:\n✓ For 'Login with Google/GitHub' features\n✓ Delegated authentication to trusted providers\n✓ Required for third-party API access\n\nRECOMMENDATION:\nUse HTTP Basic for:\n- Learning projects\n- Internal admin tools (behind VPN)\n- Simple prototypes\n\nUse JWT for:\n- Production APIs\n- Mobile apps\n- Single Page Applications (React, Angular)\n- Microservices\n\nSpring Security supports all options - we use Basic Auth here for simplicity, but migrate to JWT for production!"
             }
           ],
           "challenges": []
@@ -4991,8 +5006,8 @@
     },
     {
       "id": "module-09",
-      "title": "Epoch 8",
-      "description": "Epoch 8 - Lesson 8.1",
+      "title": "Full-Stack Development",
+      "description": "Connect frontend to backend, implement complete features, and deploy to production.",
       "difficulty": "beginner",
       "estimatedHours": 4.9,
       "lessons": [
@@ -5376,13 +5391,155 @@
             }
           ],
           "challenges": []
+        },
+        {
+          "id": "epoch-8-lesson-6",
+          "title": "Lesson 8.6: Virtual Threads (Project Loom) - Modern Concurrency",
+          "moduleId": "module-09",
+          "order": 6,
+          "estimatedMinutes": 55,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Thread-Per-Request is Expensive",
+              "content": "Traditional Java web servers use one OS thread per HTTP request:\n\nRequest 1 → Thread 1\nRequest 2 → Thread 2\nRequest 3 → Thread 3\n...\nRequest 1000 → Thread 1000\n\nPROBLEM:\n- Each OS thread costs ~1MB of memory\n- 1000 threads = 1GB of RAM just for threads!\n- Context switching between threads is expensive\n- Most threads spend time WAITING (for database, network)\n\nTraditional server: ~200-500 concurrent connections MAX\n\nThis is why reactive programming (WebFlux) became popular:\n- Don't block threads!\n- But... callback hell, hard to debug, complex code\n\nWhat if we could have MILLIONS of threads that are CHEAP?"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Virtual Threads are Like Lightweight Waiters",
+              "content": "TRADITIONAL THREADS (Platform Threads):\n= Restaurant with 10 waiters\n- Each waiter handles ONE table at a time\n- Customer orders food → waiter WAITS at kitchen door\n- While waiting, waiter can't serve other tables\n- 10 waiters = 10 tables maximum at once\n\nVIRTUAL THREADS:\n= Restaurant with VIRTUAL waiters\n- Waiter takes order, goes to kitchen, PUTS DOWN NOTEPAD\n- While kitchen cooks, waiter serves OTHER tables\n- When food ready, ANY waiter picks up notepad and delivers\n- 10 real waiters can serve 1000 tables!\n\nJava 21 adds Virtual Threads:\n- Managed by JVM, not OS\n- Cost: ~1KB each (vs 1MB for platform threads)\n- Can have MILLIONS of them\n- Write normal blocking code - JVM handles scheduling"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating Virtual Threads in Java 21",
+              "content": "BEFORE Java 21 - Platform Thread:\n\nThread platformThread = new Thread(() -> {\n    System.out.println(\"Running on platform thread\");\n});\nplatformThread.start();\n\n// Or with ExecutorService:\nExecutorService executor = Executors.newFixedThreadPool(10);\nexecutor.submit(() -> doWork());\n\nJAVA 21 - Virtual Thread:\n\n// Method 1: Thread.startVirtualThread()\nThread virtualThread = Thread.startVirtualThread(() -> {\n    System.out.println(\"Running on virtual thread!\");\n});\n\n// Method 2: Thread.ofVirtual().start()\nThread vt = Thread.ofVirtual()\n    .name(\"my-virtual-thread\")\n    .start(() -> doWork());\n\n// Method 3: Virtual Thread Executor (RECOMMENDED)\nExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();\nexecutor.submit(() -> doWork());\n\nCHECK IF VIRTUAL:\nThread.currentThread().isVirtual();  // true or false"
+            },
+            {
+              "type": "THEORY",
+              "title": "Virtual Threads with ExecutorService",
+              "content": "The most practical way to use Virtual Threads:\n\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    // Submit 100,000 tasks - each gets its own virtual thread!\n    List<Future<String>> futures = new ArrayList<>();\n    \n    for (int i = 0; i < 100_000; i++) {\n        final int taskId = i;\n        futures.add(executor.submit(() -> {\n            // Simulate network call (blocks, but that's OK!)\n            Thread.sleep(Duration.ofMillis(100));\n            return \"Result from task \" + taskId;\n        }));\n    }\n    \n    // Collect results\n    for (Future<String> future : futures) {\n        String result = future.get();  // Blocks until complete\n        System.out.println(result);\n    }\n}\n\n// With platform threads: This would need 100,000 MB of RAM!\n// With virtual threads: Runs with minimal memory overhead\n\nPRODUCTION PATTERN:\n@Bean\npublic ExecutorService virtualThreadExecutor() {\n    return Executors.newVirtualThreadPerTaskExecutor();\n}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "⚠️ What Virtual Threads Are NOT",
+              "content": "Virtual Threads DO NOT:\n\n❌ Make CPU-bound code faster\n   Virtual threads help with WAITING (I/O)\n   If you're doing math/compression, use parallel streams\n\n❌ Replace reactive programming entirely\n   Still useful for event-driven systems\n   But now you have a simpler alternative!\n\n❌ Work with synchronized blocks (pinning)\n   More on this later...\n\n❌ Require code changes\n   Existing blocking code works! That's the beauty.\n\nVirtual Threads ARE PERFECT FOR:\n\n✓ Web servers handling many requests\n✓ Database connections\n✓ HTTP client calls\n✓ File I/O operations\n✓ Any code that WAITS for something"
+            },
+            {
+              "type": "THEORY",
+              "title": "Spring Boot 3.2+ with Virtual Threads",
+              "content": "Enable Virtual Threads in Spring Boot 3.2+:\n\n# application.properties\nspring.threads.virtual.enabled=true\n\nThat's it! Now ALL HTTP requests use virtual threads automatically.\n\nBEFORE (Platform Threads):\n- Tomcat default: 200 threads\n- 200 concurrent requests max\n- Request 201 waits in queue\n\nAFTER (Virtual Threads):\n- Each request gets its own virtual thread\n- Handle 10,000+ concurrent requests\n- No thread pool exhaustion!\n\nYour existing code works unchanged:\n\n@RestController\npublic class UserController {\n    @GetMapping(\"/api/users/{id}\")\n    public User getUser(@PathVariable Long id) {\n        // This blocks waiting for DB - that's FINE now!\n        return userRepository.findById(id).orElseThrow();\n    }\n}\n\nWith virtual threads enabled:\n- JVM automatically \"parks\" virtual thread during DB wait\n- Platform thread freed to handle other requests\n- Virtual thread \"unparked\" when DB returns\n- You don't change ANY code!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Structured Concurrency (Java 21 Preview)",
+              "content": "Problem: Running multiple concurrent tasks and handling results/errors:\n\n// Old approach - error prone\nExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();\nFuture<User> userFuture = executor.submit(() -> fetchUser(userId));\nFuture<List<Order>> ordersFuture = executor.submit(() -> fetchOrders(userId));\n\nUser user = userFuture.get();      // What if this throws?\nList<Order> orders = ordersFuture.get();  // This might still be running!\n\n// STRUCTURED CONCURRENCY (Java 21 Preview):\ntry (var scope = new StructuredTaskScope.ShutdownOnFailure()) {\n    \n    Subtask<User> userTask = scope.fork(() -> fetchUser(userId));\n    Subtask<List<Order>> ordersTask = scope.fork(() -> fetchOrders(userId));\n    \n    scope.join();           // Wait for all tasks\n    scope.throwIfFailed();  // Propagate any exception\n    \n    // Both succeeded - get results\n    User user = userTask.get();\n    List<Order> orders = ordersTask.get();\n    \n    return new UserProfile(user, orders);\n}\n// If userTask fails, ordersTask is automatically cancelled!\n// No orphan threads, no resource leaks\n\nENABLE PREVIEW FEATURES:\n# Maven\n<compilerArgs>\n    <arg>--enable-preview</arg>\n</compilerArgs>\n\n# Or run with:\njava --enable-preview -jar myapp.jar"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "⚠️ Virtual Thread Pinning - The One Gotcha",
+              "content": "PINNING = Virtual thread gets \"stuck\" to platform thread\n\nThis happens with:\n1. synchronized blocks/methods\n2. Native code (JNI)\n\nExample of BAD code:\n\nsynchronized (lock) {\n    // Virtual thread is PINNED here\n    database.query();  // Can't yield to other virtual threads!\n}\n\nFIX - Use ReentrantLock instead:\n\nprivate final ReentrantLock lock = new ReentrantLock();\n\nlock.lock();\ntry {\n    database.query();  // Virtual thread CAN yield here!\n} finally {\n    lock.unlock();\n}\n\nDETECT PINNING:\n# JVM flag to warn about pinning\n-Djdk.tracePinnedThreads=full\n\nCHECKLIST FOR VIRTUAL THREAD READINESS:\n✓ Replace synchronized with ReentrantLock\n✓ Avoid ThreadLocal (or use ScopedValue preview)\n✓ Don't pool virtual threads (create fresh ones)\n✓ Update JDBC drivers to latest versions\n✓ Check third-party libraries for synchronized usage"
+            },
+            {
+              "type": "THEORY",
+              "title": "Performance Comparison: Platform vs Virtual Threads",
+              "content": "Benchmark: 10,000 concurrent HTTP requests to REST API\n\nPLATFORM THREADS (200 thread pool):\n- Throughput: ~1,800 req/sec\n- Latency P99: 5,200ms\n- Memory: 800MB\n- Thread contention: HIGH\n\nVIRTUAL THREADS:\n- Throughput: ~9,500 req/sec (5x improvement!)\n- Latency P99: 120ms\n- Memory: 350MB\n- Thread contention: MINIMAL\n\nWHY SO MUCH FASTER?\n1. No thread pool bottleneck\n2. Near-zero context switch cost\n3. Better CPU utilization (threads don't sit idle)\n4. Reduced memory pressure\n\nBUT REMEMBER:\n- Virtual threads don't make SINGLE request faster\n- They make MANY concurrent requests faster\n- CPU-bound code won't benefit\n- I/O-bound code (web servers) benefits MASSIVELY"
+            },
+            {
+              "type": "THEORY",
+              "title": "💻 Complete Example: Virtual Thread HTTP Client",
+              "content": "```java\nimport java.net.http.HttpClient;\nimport java.net.http.HttpRequest;\nimport java.net.http.HttpResponse;\nimport java.net.URI;\nimport java.util.List;\nimport java.util.concurrent.*;\n\npublic class VirtualThreadDemo {\n    \n    public static void main(String[] args) throws Exception {\n        HttpClient client = HttpClient.newHttpClient();\n        List<String> urls = List.of(\n            \"https://api.github.com\",\n            \"https://api.example.com/users\",\n            \"https://api.example.com/orders\"\n            // ... imagine 1000 more URLs\n        );\n        \n        // Fetch ALL URLs concurrently with virtual threads\n        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n            \n            List<Future<String>> futures = urls.stream()\n                .map(url -> executor.submit(() -> fetchUrl(client, url)))\n                .toList();\n            \n            // Collect results\n            for (Future<String> future : futures) {\n                try {\n                    System.out.println(future.get());\n                } catch (ExecutionException e) {\n                    System.err.println(\"Failed: \" + e.getCause());\n                }\n            }\n        }\n    }\n    \n    private static String fetchUrl(HttpClient client, String url) \n            throws Exception {\n        HttpRequest request = HttpRequest.newBuilder()\n            .uri(URI.create(url))\n            .build();\n        \n        HttpResponse<String> response = client.send(\n            request, \n            HttpResponse.BodyHandlers.ofString()\n        );\n        \n        return url + \" -> Status: \" + response.statusCode();\n    }\n}\n\n// This code creates a virtual thread per URL\n// 1000 URLs = 1000 virtual threads (uses ~1MB total, not 1GB!)\n// All requests happen concurrently\n// Simple, readable, blocking code - JVM handles the magic\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Migration Checklist: Adopting Virtual Threads",
+              "content": "STEP 1: Update to Java 21+ and Spring Boot 3.2+\n<java.version>21</java.version>\n<parent>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-parent</artifactId>\n    <version>3.2.0</version>\n</parent>\n\nSTEP 2: Enable Virtual Threads\nspring.threads.virtual.enabled=true\n\nSTEP 3: Update Dependencies\n- JDBC drivers (PostgreSQL 42.7+, MySQL 8.3+)\n- HikariCP (5.1+)\n- Hibernate (6.4+)\n\nSTEP 4: Check for Pinning\n# Run with tracing\njava -Djdk.tracePinnedThreads=full -jar app.jar\n\nSTEP 5: Replace synchronized\n// Before\nsynchronized (this) { ... }\n\n// After\nprivate final ReentrantLock lock = new ReentrantLock();\nlock.lock();\ntry { ... } finally { lock.unlock(); }\n\nSTEP 6: Load Test\n- Use JMeter or Gatling\n- Simulate 10,000 concurrent users\n- Compare metrics before/after\n\nSTEP 7: Monitor in Production\n- Watch thread metrics in Actuator\n- Monitor memory usage\n- Check response times"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "TL;DR - Virtual Threads Summary",
+              "content": "WHAT: Lightweight threads managed by JVM (not OS)\nWHY: Handle millions of concurrent connections\nWHEN: Java 21+ (LTS), Spring Boot 3.2+\n\nEnable in Spring Boot:\nspring.threads.virtual.enabled=true\n\nCreate manually:\nThread.startVirtualThread(() -> doWork());\nExecutors.newVirtualThreadPerTaskExecutor();\n\nBEST FOR:\n✓ Web servers (HTTP requests)\n✓ Microservices\n✓ Database-heavy applications\n✓ API gateways\n✓ Any I/O-bound workload\n\nAVOID:\n✗ CPU-intensive math/processing\n✗ synchronized blocks (use ReentrantLock)\n✗ Pooling virtual threads (create new ones)\n\nIMPACT:\n- 5-10x throughput improvement\n- Simpler code than reactive programming\n- Lower memory usage\n- Better latency under load\n\nThis is the BIGGEST change to Java concurrency since threads were introduced!"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "epoch-8-lesson-6-vt-basics",
+              "title": "Virtual Thread Basics",
+              "description": "What is the main advantage of virtual threads over platform threads?",
+              "question": "What is the main advantage of virtual threads over platform threads?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "They make CPU-intensive calculations faster",
+                  "isCorrect": false
+                },
+                {
+                  "id": "b",
+                  "text": "They use less memory and allow millions of concurrent threads",
+                  "isCorrect": true
+                },
+                {
+                  "id": "c",
+                  "text": "They automatically parallelize sequential code",
+                  "isCorrect": false
+                },
+                {
+                  "id": "d",
+                  "text": "They replace the need for databases",
+                  "isCorrect": false
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "epoch-8-lesson-6-pinning",
+              "title": "Virtual Thread Pinning",
+              "description": "What causes virtual thread pinning and how should you avoid it?",
+              "question": "Which of the following should you AVOID when using virtual threads because it causes pinning?",
+              "options": [
+                {
+                  "id": "a",
+                  "text": "Using ReentrantLock for synchronization",
+                  "isCorrect": false
+                },
+                {
+                  "id": "b",
+                  "text": "Using synchronized blocks or methods",
+                  "isCorrect": true
+                },
+                {
+                  "id": "c",
+                  "text": "Making HTTP calls with HttpClient",
+                  "isCorrect": false
+                },
+                {
+                  "id": "d",
+                  "text": "Using try-with-resources blocks",
+                  "isCorrect": false
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "TRUE_FALSE",
+              "id": "epoch-8-lesson-6-spring",
+              "title": "Spring Boot Virtual Threads",
+              "description": "Spring Boot 3.2+ can enable virtual threads with a single configuration property.",
+              "statement": "In Spring Boot 3.2+, you can enable virtual threads for all HTTP request handling by setting spring.threads.virtual.enabled=true",
+              "isTrue": true,
+              "explanation": "Correct! Spring Boot 3.2+ added native support for virtual threads. Setting this property makes Tomcat use virtual threads for handling HTTP requests instead of a thread pool.",
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     },
     {
       "id": "module-10",
-      "title": "Epoch 9",
-      "description": "Epoch 9 - Lesson 9.1",
+      "title": "Capstone Project",
+      "description": "Apply everything you've learned to build a complete full-stack application from scratch.",
       "difficulty": "beginner",
       "estimatedHours": 9.5,
       "lessons": [
@@ -5550,6 +5707,11 @@
               "type": "THEORY",
               "title": "Exit",
               "content": "\\q\n\nALTERNATIVE: Use H2 Database (In-Memory)\n✓ No installation needed\n✓ Add dependency in Spring Boot\n✓ Good for development, not for production\n\n✓ SUCCESS: Can connect to PostgreSQL"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "🐳 RECOMMENDED: Docker Compose for Local Development",
+              "content": "Skip manual database installation! Use Docker Compose instead.\n\nWHY DOCKER COMPOSE FOR LOCAL DEV?\n✓ One command starts everything (database, cache, message queue)\n✓ Same environment for all team members\n✓ No \"works on my machine\" problems\n✓ Easy to reset: docker compose down -v, docker compose up\n✓ No polluting your system with database installations\n✓ Matches production environment\n\nCREATE docker-compose.yml (in project root):\n\nversion: '3.8'\nservices:\n  postgres:\n    image: postgres:16-alpine\n    container_name: taskmanager-db\n    environment:\n      POSTGRES_DB: taskmanager\n      POSTGRES_USER: taskuser\n      POSTGRES_PASSWORD: localdev123\n    ports:\n      - \"5432:5432\"\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U taskuser -d taskmanager\"]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n\n  # Optional: Add Redis for caching\n  redis:\n    image: redis:7-alpine\n    container_name: taskmanager-cache\n    ports:\n      - \"6379:6379\"\n\nvolumes:\n  postgres_data:\n\nUSAGE:\n\n# Start all services\ndocker compose up -d\n\n# View logs\ndocker compose logs -f postgres\n\n# Stop all services (keep data)\ndocker compose down\n\n# Stop and DELETE all data (fresh start)\ndocker compose down -v\n\n# Restart just the database\ndocker compose restart postgres\n\napplication.yml (for local dev):\nspring:\n  datasource:\n    url: jdbc:postgresql://localhost:5432/taskmanager\n    username: taskuser\n    password: localdev123\n\nBEST PRACTICE:\n1. Add docker-compose.yml to Git\n2. Add .env file with local secrets to .gitignore\n3. Document in README: \"Run docker compose up -d first\"\n4. Everyone gets identical dev environment!\n\nTEAM WORKFLOW:\ngit clone taskmanager\ncd taskmanager\ndocker compose up -d    # Database ready in 5 seconds!\n./mvnw spring-boot:run  # App connects to Docker database\n\nNo more \"installing PostgreSQL\" instructions per OS! Just Docker."
             },
             {
               "type": "THEORY",
@@ -5882,6 +6044,21 @@
               "content": "Test business logic with mocked dependencies:\n\nCreate: src/test/java/com/yourname/taskmanager/service/TaskServiceTest.java\n\npackage com.yourname.taskmanager.service;\n\nimport com.yourname.taskmanager.dto.TaskDTO;\nimport com.yourname.taskmanager.dto.TaskRequest;\nimport com.yourname.taskmanager.exception.ForbiddenException;\nimport com.yourname.taskmanager.exception.ResourceNotFoundException;\nimport com.yourname.taskmanager.model.Task;\nimport com.yourname.taskmanager.model.User;\nimport com.yourname.taskmanager.repository.TaskRepository;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.extension.ExtendWith;\nimport org.mockito.InjectMocks;\nimport org.mockito.Mock;\nimport org.mockito.junit.jupiter.MockitoExtension;\nimport java.util.Optional;\nimport static org.assertj.core.api.Assertions.assertThat;\nimport static org.assertj.core.api.Assertions.assertThatThrownBy;\nimport static org.mockito.ArgumentMatchers.any;\nimport static org.mockito.Mockito.*;\n\n@ExtendWith(MockitoExtension.class)\nclass TaskServiceTest {\n    \n    @Mock\n    private TaskRepository taskRepository;\n    \n    @InjectMocks\n    private TaskService taskService;\n    \n    @Test\n    void shouldCreateTask() {\n        // Given\n        TaskRequest request = new TaskRequest();\n        request.setTitle(\"Buy milk\");\n        request.setDescription(\"From store\");\n        \n        User user = new User();\n        user.setId(1L);\n        \n        Task savedTask = new Task(\"Buy milk\", \"From store\", user);\n        savedTask.setId(1L);\n        \n        when(taskRepository.save(any(Task.class))).thenReturn(savedTask);\n        \n        // When\n        TaskDTO result = taskService.createTask(request, 1L);\n        \n        // Then\n        assertThat(result.getTitle()).isEqualTo(\"Buy milk\");\n        assertThat(result.getCompleted()).isFalse();\n        verify(taskRepository).save(any(Task.class));\n    }\n    \n    @Test\n    void shouldThrowExceptionWhenTaskNotFound() {\n        // Given\n        when(taskRepository.findById(999L)).thenReturn(Optional.empty());\n        \n        // When/Then\n        assertThatThrownBy(() -> taskService.getTaskById(999L, 1L))\n            .isInstanceOf(ResourceNotFoundException.class)\n            .hasMessageContaining(\"Task not found\");\n    }\n    \n    @Test\n    void shouldThrowExceptionWhenUserNotOwner() {\n        // Given\n        User owner = new User();\n        owner.setId(1L);\n        \n        Task task = new Task(\"Task\", \"Desc\", owner);\n        task.setId(1L);\n        \n        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));\n        \n        // When/Then\n        assertThatThrownBy(() -> taskService.getTaskById(1L, 2L))  // Different user!\n            .isInstanceOf(ForbiddenException.class)\n            .hasMessageContaining(\"permission\");\n    }\n}\n\nKEY CONCEPTS:\n@Mock - Creates mock object\n@InjectMocks - Injects mocks into tested class\nwhen().thenReturn() - Define mock behavior\nverify() - Check method was called\nassertThatThrownBy() - Test exceptions"
             },
             {
+              "type": "KEY_POINT",
+              "title": "Advanced Mockito: ArgumentCaptor - Capture & Inspect Arguments",
+              "content": "ArgumentCaptor lets you CAPTURE arguments passed to mock methods and inspect them.\n\nWHEN TO USE:\n- Verify WHAT was passed to a method\n- Test complex object arguments\n- Verify multiple fields on argument objects\n\nEXAMPLE: Verify the exact Task object saved to database:\n\n@Test\nvoid shouldSetCorrectFieldsWhenCreatingTask() {\n    // Given\n    TaskRequest request = new TaskRequest();\n    request.setTitle(\"Buy groceries\");\n    request.setDescription(\"Milk, eggs, bread\");\n    \n    // Create ArgumentCaptor for Task class\n    ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);\n    \n    when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> {\n        Task saved = invocation.getArgument(0);\n        saved.setId(1L);  // Simulate DB setting ID\n        return saved;\n    });\n    \n    // When\n    taskService.createTask(request, 1L);\n    \n    // Then - Capture what was actually passed to save()\n    verify(taskRepository).save(taskCaptor.capture());\n    \n    // Inspect the captured Task\n    Task capturedTask = taskCaptor.getValue();\n    assertThat(capturedTask.getTitle()).isEqualTo(\"Buy groceries\");\n    assertThat(capturedTask.getDescription()).isEqualTo(\"Milk, eggs, bread\");\n    assertThat(capturedTask.getCompleted()).isFalse();  // Default value\n    assertThat(capturedTask.getUser().getId()).isEqualTo(1L);\n}\n\nCAPTURE MULTIPLE CALLS:\n@Test\nvoid shouldSaveMultipleTasks() {\n    ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);\n    \n    // Method that calls save() multiple times\n    taskService.createBulkTasks(List.of(request1, request2, request3));\n    \n    // Capture ALL calls\n    verify(taskRepository, times(3)).save(captor.capture());\n    \n    // Get all captured values\n    List<Task> allCapturedTasks = captor.getAllValues();\n    assertThat(allCapturedTasks).hasSize(3);\n    assertThat(allCapturedTasks.get(0).getTitle()).isEqualTo(\"Task 1\");\n    assertThat(allCapturedTasks.get(1).getTitle()).isEqualTo(\"Task 2\");\n}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Advanced Mockito: @Spy - Partial Mocking",
+              "content": "@Spy lets you mock SOME methods while keeping REAL behavior for others.\n\nMOCK vs SPY:\n@Mock: ALL methods return null/default (nothing is real)\n@Spy: ALL methods are REAL, but you can override specific ones\n\nWHEN TO USE:\n- Test real implementation with some behavior overridden\n- Test class with complex internal logic\n- Verify internal method calls\n\nEXAMPLE: Real service, but override external call:\n\n@ExtendWith(MockitoExtension.class)\nclass EmailServiceTest {\n    \n    @Spy  // Real EmailService, not mock!\n    private EmailService emailService;\n    \n    @Test\n    void shouldSendWelcomeEmailWithCorrectSubject() {\n        // Override only sendEmail() - keep everything else real!\n        doNothing().when(emailService).sendEmail(anyString(), anyString(), anyString());\n        \n        // Call real method\n        emailService.sendWelcomeEmail(\"user@email.com\", \"John\");\n        \n        // Verify sendEmail was called with correct subject\n        verify(emailService).sendEmail(\n            eq(\"user@email.com\"),\n            eq(\"Welcome, John!\"),\n            anyString()\n        );\n    }\n}\n\nSPY ON EXISTING OBJECT:\n// Create real object\nList<String> realList = new ArrayList<>();\n\n// Wrap with spy\nList<String> spyList = spy(realList);\n\n// Override specific behavior\nwhen(spyList.size()).thenReturn(100);  // Fake size\n\nspyList.add(\"hello\");  // Real add() is called\nspyList.add(\"world\");  // Real add() is called\n\nassertThat(spyList.size()).isEqualTo(100);  // Returns fake 100\nassertThat(spyList.get(0)).isEqualTo(\"hello\");  // Real data\n\n⚠️ GOTCHA with Spies:\n// This WON'T work on spy:\nwhen(spy.someMethod()).thenReturn(value);  // Calls real method!\n\n// Use this instead:\ndoReturn(value).when(spy).someMethod();  // Safe!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Advanced Mockito: Answer & doAnswer for Dynamic Responses",
+              "content": "Sometimes you need mock responses that depend on input arguments.\n\nANSWER - Return dynamic values based on input:\n\n@Test\nvoid shouldReturnTaskWithMatchingId() {\n    // Dynamic mock - returns Task with same ID as requested\n    when(taskRepository.findById(anyLong())).thenAnswer(invocation -> {\n        Long requestedId = invocation.getArgument(0);  // Get first argument\n        \n        Task task = new Task();\n        task.setId(requestedId);\n        task.setTitle(\"Task \" + requestedId);\n        return Optional.of(task);\n    });\n    \n    // Works for any ID!\n    Task task1 = taskService.getTaskById(1L, 1L);\n    Task task2 = taskService.getTaskById(42L, 1L);\n    \n    assertThat(task1.getId()).isEqualTo(1L);\n    assertThat(task2.getId()).isEqualTo(42L);\n}\n\nDO_ANSWER - For void methods:\n\n@Test\nvoid shouldLogDeletedTaskTitle() {\n    List<String> deletedTitles = new ArrayList<>();\n    \n    // Capture side effects of void method\n    doAnswer(invocation -> {\n        Task task = invocation.getArgument(0);\n        deletedTitles.add(task.getTitle());  // Record what was deleted\n        return null;\n    }).when(taskRepository).delete(any(Task.class));\n    \n    taskService.deleteTask(1L, 1L);\n    \n    assertThat(deletedTitles).contains(\"Task to delete\");\n}\n\nVERIFY CALL ORDER:\nInOrder inOrder = inOrder(taskRepository, auditService);\n\ntaskService.createTask(request, 1L);\n\n// Verify methods called in specific order\ninOrder.verify(taskRepository).save(any(Task.class));\ninOrder.verify(auditService).logTaskCreated(anyLong());"
+            },
+            {
               "type": "THEORY",
               "title": "Step 3: Controller Testing with @WebMvcTest",
               "content": "Test REST endpoints with MockMvc (2024-2025 best practice):\n\nCreate: src/test/java/com/yourname/taskmanager/controller/TaskControllerTest.java\n\npackage com.yourname.taskmanager.controller;\n\nimport com.fasterxml.jackson.databind.ObjectMapper;\nimport com.yourname.taskmanager.dto.TaskDTO;\nimport com.yourname.taskmanager.dto.TaskRequest;\nimport com.yourname.taskmanager.service.TaskService;\nimport org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;\nimport org.springframework.boot.test.mock.mockito.MockBean;\nimport org.springframework.http.MediaType;\nimport org.springframework.security.test.context.support.WithMockUser;\nimport org.springframework.test.web.servlet.MockMvc;\nimport java.time.LocalDateTime;\nimport java.util.Arrays;\nimport java.util.List;\nimport static org.hamcrest.Matchers.hasSize;\nimport static org.mockito.ArgumentMatchers.any;\nimport static org.mockito.ArgumentMatchers.eq;\nimport static org.mockito.Mockito.when;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;\n\n@WebMvcTest(TaskController.class)\nclass TaskControllerTest {\n    \n    @Autowired\n    private MockMvc mockMvc;\n    \n    @Autowired\n    private ObjectMapper objectMapper;\n    \n    @MockBean\n    private TaskService taskService;\n    \n    @Test\n    @WithMockUser(username = \"test@email.com\")\n    void shouldGetAllTasks() throws Exception {\n        // Given\n        TaskDTO task1 = new TaskDTO(1L, \"Task 1\", \"Desc 1\", \n                                     false, 1L, LocalDateTime.now(), LocalDateTime.now());\n        TaskDTO task2 = new TaskDTO(2L, \"Task 2\", \"Desc 2\", \n                                     true, 1L, LocalDateTime.now(), LocalDateTime.now());\n        List<TaskDTO> tasks = Arrays.asList(task1, task2);\n        \n        when(taskService.getAllTasksForUser(any())).thenReturn(tasks);\n        \n        // When/Then\n        mockMvc.perform(get(\"/api/tasks\"))\n            .andExpect(status().isOk())\n            .andExpect(jsonPath(\"$\", hasSize(2)))\n            .andExpect(jsonPath(\"$[0].title\").value(\"Task 1\"))\n            .andExpect(jsonPath(\"$[1].completed\").value(true));\n    }\n    \n    @Test\n    @WithMockUser\n    void shouldCreateTask() throws Exception {\n        // Given\n        TaskRequest request = new TaskRequest();\n        request.setTitle(\"New Task\");\n        request.setDescription(\"New Description\");\n        \n        TaskDTO created = new TaskDTO(1L, \"New Task\", \"New Description\",\n                                      false, 1L, LocalDateTime.now(), LocalDateTime.now());\n        \n        when(taskService.createTask(any(TaskRequest.class), any()))\n            .thenReturn(created);\n        \n        // When/Then\n        mockMvc.perform(post(\"/api/tasks\")\n                .contentType(MediaType.APPLICATION_JSON)\n                .content(objectMapper.writeValueAsString(request)))\n            .andExpect(status().isCreated())\n            .andExpect(jsonPath(\"$.title\").value(\"New Task\"))\n            .andExpect(jsonPath(\"$.completed\").value(false));\n    }\n    \n    @Test\n    @WithMockUser\n    void shouldReturnBadRequestForInvalidTask() throws Exception {\n        // Given - Invalid request (no title)\n        TaskRequest request = new TaskRequest();\n        request.setDescription(\"Only description\");\n        \n        // When/Then\n        mockMvc.perform(post(\"/api/tasks\")\n                .contentType(MediaType.APPLICATION_JSON)\n                .content(objectMapper.writeValueAsString(request)))\n            .andExpect(status().isBadRequest());\n    }\n    \n    @Test\n    void shouldReturn401WithoutAuthentication() throws Exception {\n        // When/Then - No @WithMockUser annotation\n        mockMvc.perform(get(\"/api/tasks\"))\n            .andExpect(status().isUnauthorized());\n    }\n}\n\nKEY CONCEPTS (2024-2025):\n@WebMvcTest - Test only web layer\nMockMvc - Simulate HTTP requests\n@WithMockUser - Mock authenticated user\njsonPath() - Test JSON response\nObjectMapper - Convert objects to JSON"
@@ -6045,7 +6222,7 @@
             {
               "type": "THEORY",
               "title": "Step 5: Cloud Deployment Options (2024-2025)",
-              "content": "OPTION 1: HEROKU (Easiest, Free Tier)\n\n1. Install Heroku CLI:\n   curl https://cli-assets.heroku.com/install.sh | sh\n\n2. Login:\n   heroku login\n\n3. Create app:\n   heroku create taskmanager-yourname\n\n4. Add PostgreSQL:\n   heroku addons:create heroku-postgresql:mini\n\n5. Set environment variables:\n   heroku config:set SPRING_PROFILES_ACTIVE=prod\n\n6. Deploy:\n   git push heroku main\n\n7. Open app:\n   heroku open\n\nURL: https://taskmanager-yourname.herokuapp.com\n\nOPTION 2: AWS (Professional, Scalable)\n\nUsing AWS Elastic Beanstalk:\n1. Package app: ./mvnw package\n2. Create Elastic Beanstalk application\n3. Upload JAR file\n4. Add RDS PostgreSQL database\n5. Configure environment variables\n\nOPTION 3: DIGITAL OCEAN (Simple, Affordable)\n\nUsing App Platform:\n1. Connect GitHub repository\n2. Configure build command: ./mvnw package\n3. Add managed PostgreSQL database\n4. Auto-deploys on git push\n\nOPTION 4: RAILWAY.APP (Modern, Developer-Friendly)\n\n1. Connect GitHub repo\n2. Add PostgreSQL service\n3. Auto-detects Spring Boot\n4. Deploys automatically\n\nCOST COMPARISON (2024-2025):\nHeroku: Free tier (limited hours) → $7/month\nRailway: $5/month credit → $20+/month\nDigitalOcean: $5/month → $12+/month\nAWS: Pay-as-you-go (can be free tier eligible)"
+              "content": "OPTION 1: HEROKU (Easiest, Paid Plans Only - Free Tier Discontinued 2022)\n\n1. Install Heroku CLI:\n   curl https://cli-assets.heroku.com/install.sh | sh\n\n2. Login:\n   heroku login\n\n3. Create app:\n   heroku create taskmanager-yourname\n\n4. Add PostgreSQL:\n   heroku addons:create heroku-postgresql:mini\n\n5. Set environment variables:\n   heroku config:set SPRING_PROFILES_ACTIVE=prod\n\n6. Deploy:\n   git push heroku main\n\n7. Open app:\n   heroku open\n\nURL: https://taskmanager-yourname.herokuapp.com\n\nOPTION 2: AWS (Professional, Scalable)\n\nUsing AWS Elastic Beanstalk:\n1. Package app: ./mvnw package\n2. Create Elastic Beanstalk application\n3. Upload JAR file\n4. Add RDS PostgreSQL database\n5. Configure environment variables\n\nOPTION 3: DIGITAL OCEAN (Simple, Affordable)\n\nUsing App Platform:\n1. Connect GitHub repository\n2. Configure build command: ./mvnw package\n3. Add managed PostgreSQL database\n4. Auto-deploys on git push\n\nOPTION 4: RAILWAY.APP (Modern, Developer-Friendly)\n\n1. Connect GitHub repo\n2. Add PostgreSQL service\n3. Auto-detects Spring Boot\n4. Deploys automatically\n\nCOST COMPARISON (2024-2025):\nHeroku: $5/month (Eco dyno) → $7/month (Basic)\nRailway: $5/month credit → $20+/month\nDigitalOcean: $5/month → $12+/month\nAWS: Pay-as-you-go (can be free tier eligible)"
             },
             {
               "type": "THEORY",
@@ -6066,38 +6243,6 @@
               "type": "KEY_POINT",
               "title": "Best Practices Summary (2024-2025)",
               "content": "CONTAINERIZATION:\n✓ Use multi-stage Docker builds\n✓ Run as non-root user\n✓ Use Alpine Linux for smaller images\n✓ Add health checks\n✓ Use .dockerignore (exclude target/, node_modules/)\n\nCONFIGURATION:\n✓ Environment variables for all secrets\n✓ Different profiles (dev, test, prod)\n✓ Never commit .env files\n✓ Document required env vars in .env.example\n\nPRODUCTION:\n✓ Use managed database (don't self-host)\n✓ Enable HTTPS (Let's Encrypt is free)\n✓ Set up monitoring and alerts\n✓ Configure automated backups\n✓ Use CDN for static files\n\nCI/CD:\n✓ Automate testing (GitHub Actions, GitLab CI)\n✓ Auto-deploy on merge to main\n✓ Test before deploy\n✓ Easy rollback mechanism\n\nMONITORING:\n✓ Health check endpoints\n✓ Application performance monitoring (APM)\n✓ Error tracking (Sentry)\n✓ Uptime monitoring\n✓ Log aggregation (ELK, Papertrail)\n\nNEXT STEPS:\n- Add custom domain\n- Implement caching (Redis)\n- Add email notifications\n- Implement JWT for better auth\n- Add API rate limiting\n- Set up staging environment"
-            }
-          ],
-          "challenges": []
-        },
-        {
-          "id": "epoch-9-lesson-10",
-          "title": "Untitled Lesson",
-          "moduleId": "module-10",
-          "order": 10,
-          "estimatedMinutes": 30,
-          "difficulty": "advanced",
-          "contentSections": [
-            {
-              "type": "THEORY",
-              "title": "Content",
-              "content": "# Untitled Lesson"
-            }
-          ],
-          "challenges": []
-        },
-        {
-          "id": "epoch-9-lesson-11",
-          "title": "Untitled Lesson",
-          "moduleId": "module-10",
-          "order": 11,
-          "estimatedMinutes": 30,
-          "difficulty": "advanced",
-          "contentSections": [
-            {
-              "type": "THEORY",
-              "title": "Content",
-              "content": "# Untitled Lesson"
             }
           ],
           "challenges": []
