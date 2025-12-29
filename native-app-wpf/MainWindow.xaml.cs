@@ -18,6 +18,7 @@ public partial class MainWindow : Window
         var services = new ServiceCollection();
         services.AddSingleton<ICourseService, CourseService>();
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<ITutorService, Phi4TutorService>();
         var provider = services.BuildServiceProvider();
 
         _navigation = provider.GetRequiredService<INavigationService>();
