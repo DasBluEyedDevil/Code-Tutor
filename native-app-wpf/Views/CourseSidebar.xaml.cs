@@ -12,6 +12,9 @@ public partial class CourseSidebar : UserControl
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
     private readonly Dictionary<string, bool> _expandedModules = new();
+    private readonly IProgressService _progressService = new ProgressService();
+    private Lesson? _currentLesson;
+    private readonly Dictionary<string, Button> _lessonButtons = new();
 
     public CourseSidebar(Course course, ICourseService courseService, INavigationService navigation)
     {
@@ -26,6 +29,33 @@ public partial class CourseSidebar : UserControl
         foreach (var module in course.Modules)
         {
             _expandedModules[module.Id] = true;
+        }
+    }
+
+    public void SetCurrentLesson(Lesson lesson)
+    {
+        _currentLesson = lesson;
+        UpdateLessonStyles();
+    }
+
+    private async void UpdateLessonStyles()
+    {
+        var progress = await _progressService.LoadProgressAsync();
+
+        foreach (var (lessonId, button) in _lessonButtons)
+        {
+            if (_currentLesson?.Id == lessonId)
+            {
+                button.Style = (Style)FindResource("ActiveSidebarItemButton");
+            }
+            else if (progress.CompletedLessons.Contains(lessonId))
+            {
+                button.Style = (Style)FindResource("CompletedSidebarItemButton");
+            }
+            else
+            {
+                button.Style = (Style)FindResource("SidebarItemButton");
+            }
         }
     }
 
@@ -73,6 +103,15 @@ public partial class CourseSidebar : UserControl
     {
         if (sender is Button button && button.Tag is Lesson lesson)
         {
+            // Track button in dictionary if not already tracked
+            if (!_lessonButtons.ContainsKey(lesson.Id))
+            {
+                _lessonButtons[lesson.Id] = button;
+            }
+
+            _currentLesson = lesson;
+            UpdateLessonStyles();
+
             var lessonPage = new LessonPage(_course, lesson, _courseService, _navigation);
             _navigation.NavigateTo(lessonPage, lesson);
         }
