@@ -36,9 +36,14 @@ public class Phi4TutorService : ITutorService, IDisposable
             if (!Directory.Exists(_modelPath))
             {
                 throw new DirectoryNotFoundException(
-                    $"Phi-4 model not found at: {_modelPath}. " +
-                    "Please download the model using: huggingface-cli download microsoft/Phi-4-mini-instruct-onnx " +
-                    "--include gpu/gpu-int4-rtn-block-32/* --local-dir models/phi4");
+                    "The AI Tutor model needs to be downloaded.\n\n" +
+                    "To set up:\n" +
+                    "1. Open PowerShell\n" +
+                    "2. Run: pip install huggingface-hub\n" +
+                    "3. Run: huggingface-cli download microsoft/Phi-4-mini-instruct-onnx " +
+                    "--include gpu/gpu-int4-rtn-block-32/* --local-dir \"" +
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", "phi4") + "\"\n\n" +
+                    "Then restart Code Tutor.");
             }
 
             UpdateProgress(30);
