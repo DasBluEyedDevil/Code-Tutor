@@ -4332,9 +4332,9 @@
               "title": "Create Gradle Project",
               "type": "coding",
               "difficulty": "beginner",
-              "instructions": "Create a build.gradle.kts file that:\n1. Uses the Java plugin\n2. Sets Java version to 17\n3. Adds JUnit 5 as a test dependency\n4. Configures the test task to use JUnit Platform",
+              "instructions": "Create a build.gradle.kts file that:\n1. Uses the Java plugin\n2. Sets Java version to 23\n3. Adds JUnit 5 as a test dependency\n4. Configures the test task to use JUnit Platform",
               "starterCode": "// build.gradle.kts\n// Add your configuration here\n",
-              "solution": "plugins {\n    java\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\njava {\n    toolchain {\n        languageVersion.set(JavaLanguageVersion.of(17))\n    }\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.0\")\n}\n\ntasks.test {\n    useJUnitPlatform()\n}",
+              "solution": "plugins {\n    java\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\njava {\n    toolchain {\n        languageVersion.set(JavaLanguageVersion.of(23))\n    }\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.0\")\n}\n\ntasks.test {\n    useJUnitPlatform()\n}",
               "hints": [
                 "Use the 'java' plugin for Java projects",
                 "JUnit 5 dependency is 'org.junit.jupiter:junit-jupiter'",
