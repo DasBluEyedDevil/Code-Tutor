@@ -1,47 +1,133 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- Primary Button -->
-    <Style x:Key="PrimaryButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource AccentBlueBrush}" />
+    <!-- ============================================== -->
+    <!-- NEON PRIMARY BUTTON -->
+    <!-- Animated with scale, glow, and gradient effects -->
+    <!-- ============================================== -->
+
+    <Style x:Key="NeonPrimaryButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource AccentBlueGradientBrush}" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Padding" Value="16,10" />
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Padding" Value="20,12" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="6"
-                            Padding="{TemplateBinding Padding}">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}"
+                            RenderTransformOrigin="0.5,0.5">
+                        <Border.Effect>
+                            <DropShadowEffect x:Name="GlowEffect"
+                                              Color="#58A6FF"
+                                              BlurRadius="0"
+                                              ShadowDepth="0"
+                                              Opacity="0" />
+                        </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                            To="1.03" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                            To="1.03" Duration="0:0:0.15">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut" />
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="GlowEffect"
+                                            Storyboard.TargetProperty="BlurRadius"
+                                            To="15" Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="GlowEffect"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0.6" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                            To="1" Duration="0:0:0.15" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                            To="1" Duration="0:0:0.15" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="GlowEffect"
+                                            Storyboard.TargetProperty="BlurRadius"
+                                            To="0" Duration="0:0:0.2" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetName="GlowEffect"
+                                            Storyboard.TargetProperty="Opacity"
+                                            To="0" Duration="0:0:0.2" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource AccentBlueGradientHoverBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                            To="0.97" Duration="0:0:0.08" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                            To="0.97" Duration="0:0:0.08" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="White" />
+                            <Setter TargetName="ButtonBorder" Property="BorderThickness" Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundLightBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#79B8FF" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#388BFD" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="BorderBrush" Value="White" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
-                <Setter Property="Cursor" Value="Arrow" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Secondary Button -->
+    <!-- Legacy alias for backwards compatibility -->
+    <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource NeonPrimaryButton}" />
+
+    <!-- ============================================== -->
+    <!-- SECONDARY BUTTON -->
+    <!-- Subtle hover animation with border highlight -->
+    <!-- ============================================== -->
+
     <Style x:Key="SecondaryButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
@@ -49,10 +135,17 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="16,10" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1" />
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="6"
@@ -60,23 +153,56 @@
                         <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                            To="1.02" Duration="0:0:0.12" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                            To="1.02" Duration="0:0:0.12" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleX"
+                                            To="1" Duration="0:0:0.12" />
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="RenderTransform.ScaleY"
+                                            To="1" Duration="0:0:0.12" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundHoverBrush}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush"
+                                    Value="{StaticResource BorderActiveBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundMediumBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush"
+                                    Value="{StaticResource BackgroundLightBrush}" />
+                            <Setter Property="Cursor" Value="Arrow" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-            </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="{StaticResource BackgroundMediumBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
-                <Setter Property="BorderBrush" Value="{StaticResource BackgroundLightBrush}" />
-                <Setter Property="Cursor" Value="Arrow" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Ghost Button -->
+    <!-- ============================================== -->
+    <!-- GHOST BUTTON -->
+    <!-- Minimal style with hover fade -->
+    <!-- ============================================== -->
+
     <Style x:Key="GhostButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
@@ -86,24 +212,30 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="4"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Left"
                                           VerticalAlignment="Center" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundHoverBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource BackgroundHoverBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Sidebar Item Button -->
+    <!-- ============================================== -->
+    <!-- SIDEBAR ITEM BUTTON -->
+    <!-- Smooth background transition -->
+    <!-- ============================================== -->
+
     <Style x:Key="SidebarItemButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
@@ -114,31 +246,38 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="6"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="Center" />
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundLightBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Active Sidebar Item Button -->
+    <!-- ============================================== -->
+    <!-- ACTIVE SIDEBAR ITEM BUTTON -->
+    <!-- With accent border indicator -->
+    <!-- ============================================== -->
+
     <Style x:Key="ActiveSidebarItemButton" TargetType="Button" BasedOn="{StaticResource SidebarItemButton}">
         <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{StaticResource AccentBlueBrush}"
                             BorderThickness="2,0,0,0"
                             CornerRadius="0,6,6,0"
@@ -151,12 +290,17 @@
         </Setter>
     </Style>
 
-    <!-- Completed Sidebar Item Button -->
+    <!-- ============================================== -->
+    <!-- COMPLETED SIDEBAR ITEM BUTTON -->
+    <!-- With checkmark indicator -->
+    <!-- ============================================== -->
+
     <Style x:Key="CompletedSidebarItemButton" TargetType="Button" BasedOn="{StaticResource SidebarItemButton}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}"
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                             CornerRadius="6"
                             Padding="{TemplateBinding Padding}">
                         <Grid>
@@ -173,34 +317,47 @@
                                               VerticalAlignment="Center" />
                         </Grid>
                     </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundLightBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
-            </Trigger>
-        </Style.Triggers>
     </Style>
 
-    <!-- Card Border -->
+    <!-- ============================================== -->
+    <!-- CARD BORDER -->
+    <!-- With subtle shadow effect -->
+    <!-- ============================================== -->
+
     <Style x:Key="CardBorder" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource BackgroundMediumBrush}" />
         <Setter Property="BorderBrush" Value="{StaticResource BorderDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="Padding" Value="20" />
+        <Setter Property="Effect" Value="{StaticResource CardShadow}" />
     </Style>
 
-    <!-- ScrollViewer Dark Style -->
+    <!-- ============================================== -->
+    <!-- SCROLLVIEWER DARK STYLE -->
+    <!-- ============================================== -->
+
     <Style x:Key="DarkScrollViewer" TargetType="ScrollViewer">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
     </Style>
 
-    <!-- Quick Action Button (pill-shaped for tutor quick actions) -->
+    <!-- ============================================== -->
+    <!-- QUICK ACTION BUTTON -->
+    <!-- Pill-shaped for tutor quick actions -->
+    <!-- ============================================== -->
+
     <Style x:Key="QuickActionButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource BackgroundLightBrush}" />
         <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
@@ -229,6 +386,51 @@
                 <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- ============================================== -->
+    <!-- ICON BUTTON -->
+    <!-- Circular button for icons -->
+    <!-- ============================================== -->
+
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8" />
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="18"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background"
+                                    Value="{StaticResource BackgroundHoverBrush}" />
+                            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ============================================== -->
+    <!-- ANIMATED CONTENT CONTROL STYLE -->
+    <!-- ============================================== -->
+
+    <Style TargetType="{x:Type local:AnimatedContentControl}"
+           xmlns:local="clr-namespace:CodeTutor.Wpf.Controls">
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
     </Style>
 
 </ResourceDictionary>

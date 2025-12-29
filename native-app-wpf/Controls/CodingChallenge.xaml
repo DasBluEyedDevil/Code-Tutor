@@ -2,9 +2,11 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
-             xmlns:controls="clr-namespace:CodeTutor.Wpf.Controls">
+             xmlns:controls="clr-namespace:CodeTutor.Wpf.Controls"
+             xmlns:behaviors="clr-namespace:CodeTutor.Wpf.Behaviors">
 
-    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,24">
+    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,24"
+            behaviors:AnimationBehaviors.EnableFadeInOnLoad="True">
         <StackPanel>
             <!-- Challenge Header -->
             <TextBlock x:Name="ChallengeTitle"
