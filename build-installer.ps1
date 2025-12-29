@@ -25,7 +25,7 @@ $PublishDir = Join-Path $RootDir "publish"
 $OutputDir = Join-Path $RootDir "dist"
 
 # Check prerequisites
-Write-Host "[1/6] Checking prerequisites..." -ForegroundColor Yellow
+Write-Host "[1/7] Checking prerequisites..." -ForegroundColor Yellow
 
 if (-not (Test-Path $ProjectFile)) {
     Write-Error "Project file not found: $ProjectFile"
@@ -62,7 +62,7 @@ else {
 Write-Host ""
 
 # Clean publish directory
-Write-Host "[2/6] Cleaning publish directory..." -ForegroundColor Yellow
+Write-Host "[2/7] Cleaning publish directory..." -ForegroundColor Yellow
 if (Test-Path $PublishDir) {
     Remove-Item $PublishDir -Recurse -Force
 }
@@ -72,7 +72,7 @@ Write-Host ""
 
 # Build and publish self-contained app
 if (-not $SkipBuild) {
-    Write-Host "[3/6] Building self-contained Windows executable..." -ForegroundColor Yellow
+    Write-Host "[3/7] Building self-contained Windows executable..." -ForegroundColor Yellow
     Write-Host "  This may take a few minutes..." -ForegroundColor Gray
 
     $publishArgs = @(
@@ -97,19 +97,49 @@ if (-not $SkipBuild) {
     Write-Host "  [OK] Build complete" -ForegroundColor Green
 }
 else {
-    Write-Host "[3/6] Skipping build (using existing publish directory)..." -ForegroundColor Yellow
+    Write-Host "[3/7] Skipping build (using existing publish directory)..." -ForegroundColor Yellow
 }
 Write-Host ""
 
 # Copy content directory
-Write-Host "[4/6] Copying content files..." -ForegroundColor Yellow
+Write-Host "[4/7] Copying content files..." -ForegroundColor Yellow
 $PublishContentDir = Join-Path $PublishDir "Content"
-Copy-Item -Path $ContentDir -Destination $PublishContentDir -Recurse -Force
+# Ensure Content directory exists and copy contents (not the folder itself)
+if (-not (Test-Path $PublishContentDir)) {
+    New-Item -ItemType Directory -Path $PublishContentDir | Out-Null
+}
+# Copy the contents of the content directory directly into Content/
+Copy-Item -Path (Join-Path $ContentDir "*") -Destination $PublishContentDir -Recurse -Force
 Write-Host "  [OK] Copied content to publish directory" -ForegroundColor Green
 Write-Host ""
 
+# Create models directory for Phi-4 AI Tutor
+Write-Host "[5/7] Creating AI model directory..." -ForegroundColor Yellow
+$ModelsDir = Join-Path $PublishDir "models\phi4"
+New-Item -ItemType Directory -Path $ModelsDir -Force | Out-Null
+
+# Create a README for model setup
+$ModelReadmePath = Join-Path $ModelsDir "README.txt"
+@"
+AI Tutor Model Setup
+====================
+
+The Phi-4 model is not included with the installer due to size.
+
+To enable the AI Tutor:
+
+1. Open PowerShell
+2. Run: pip install huggingface-hub
+3. Run: huggingface-cli download microsoft/Phi-4-mini-instruct-onnx --include gpu/gpu-int4-rtn-block-32/* --local-dir "$ModelsDir"
+
+The download is approximately 2.5GB.
+"@ | Out-File -FilePath $ModelReadmePath -Encoding UTF8
+
+Write-Host "  [OK] Created models directory with setup instructions" -ForegroundColor Green
+Write-Host ""
+
 # Copy documentation
-Write-Host "[5/6] Copying documentation..." -ForegroundColor Yellow
+Write-Host "[6/7] Copying documentation..." -ForegroundColor Yellow
 Copy-Item -Path (Join-Path $RootDir "README.md") -Destination $PublishDir -Force
 if (Test-Path $DocsDir) {
     Copy-Item -Path $DocsDir -Destination (Join-Path $PublishDir "docs") -Recurse -Force
@@ -125,7 +155,7 @@ if (Test-Path $ExePath) {
 }
 
 # Create installer with Inno Setup
-Write-Host "[6/6] Creating installer..." -ForegroundColor Yellow
+Write-Host "[7/7] Creating installer..." -ForegroundColor Yellow
 
 if (-not $HasInnoSetup) {
     Write-Host "  [WARN] Skipping installer creation (Inno Setup not installed)" -ForegroundColor Yellow
