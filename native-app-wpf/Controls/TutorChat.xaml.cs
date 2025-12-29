@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,46 +11,167 @@ namespace CodeTutor.Wpf.Controls;
 public partial class TutorChat : UserControl
 {
     private readonly ITutorService _tutorService;
+    private readonly IModelDownloadService _downloadService;
     private readonly ObservableCollection<TutorMessage> _messages = new();
     private CancellationTokenSource? _currentResponseCts;
+    private CancellationTokenSource? _downloadCts;
     private TutorContext _currentContext = new();
+    private readonly string _modelPath;
 
     public event EventHandler? CloseRequested;
 
-    public TutorChat(ITutorService tutorService)
+    public TutorChat(ITutorService tutorService, IModelDownloadService downloadService)
     {
         _tutorService = tutorService;
+        _downloadService = downloadService;
+
+        // Model path relative to application directory
+        _modelPath = Path.Combine(
+            AppDomain.CurrentDomain.BaseDirectory,
+            "models", "phi4", "gpu", "gpu-int4-rtn-block-32");
+
         InitializeComponent();
 
         MessagesPanel.ItemsSource = _messages;
 
         _tutorService.LoadingProgressChanged += OnLoadingProgressChanged;
+        _downloadService.ProgressChanged += OnDownloadProgressChanged;
+        _downloadService.StatusChanged += OnDownloadStatusChanged;
 
         Loaded += OnLoaded;
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (!_tutorService.IsModelLoaded)
+        if (_tutorService.IsModelLoaded)
+        {
+            ShowReadyState();
+            return;
+        }
+
+        // Check if model exists
+        var modelExists = await _downloadService.IsModelDownloadedAsync(_modelPath);
+
+        if (modelExists)
         {
             await LoadModelAsync();
         }
+        else
+        {
+            ShowDownloadPrompt();
+        }
+    }
+
+    private void ShowDownloadPrompt()
+    {
+        LoadingOverlay.Visibility = Visibility.Visible;
+        DownloadPromptPanel.Visibility = Visibility.Visible;
+        DownloadProgressPanel.Visibility = Visibility.Collapsed;
+        LoadingModelPanel.Visibility = Visibility.Collapsed;
+        StatusText.Text = "Model required";
+    }
+
+    private void ShowDownloadProgress()
+    {
+        LoadingOverlay.Visibility = Visibility.Visible;
+        DownloadPromptPanel.Visibility = Visibility.Collapsed;
+        DownloadProgressPanel.Visibility = Visibility.Visible;
+        LoadingModelPanel.Visibility = Visibility.Collapsed;
+        StatusText.Text = "Downloading...";
+    }
+
+    private void ShowLoadingModel()
+    {
+        LoadingOverlay.Visibility = Visibility.Visible;
+        DownloadPromptPanel.Visibility = Visibility.Collapsed;
+        DownloadProgressPanel.Visibility = Visibility.Collapsed;
+        LoadingModelPanel.Visibility = Visibility.Visible;
+        StatusText.Text = "Loading model...";
+    }
+
+    private void ShowReadyState()
+    {
+        LoadingOverlay.Visibility = Visibility.Collapsed;
+        StatusText.Text = "Ready to help";
+
+        if (_messages.Count == 0)
+        {
+            _messages.Add(new TutorMessage(
+                MessageRole.Assistant,
+                "Hi! I'm your AI tutor. I can help you understand code, fix errors, or explain concepts. What would you like to learn?"));
+        }
+    }
+
+    private async void DownloadModelButton_Click(object sender, RoutedEventArgs e)
+    {
+        ShowDownloadProgress();
+
+        _downloadCts = new CancellationTokenSource();
+
+        try
+        {
+            var success = await _downloadService.DownloadModelAsync(_modelPath, _downloadCts.Token);
+
+            if (success)
+            {
+                await LoadModelAsync();
+            }
+            else
+            {
+                ShowDownloadPrompt();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            ShowDownloadPrompt();
+        }
+        catch (Exception ex)
+        {
+            _messages.Add(new TutorMessage(
+                MessageRole.Assistant,
+                $"Download failed: {ex.Message}"));
+            ShowDownloadPrompt();
+        }
+        finally
+        {
+            _downloadCts?.Dispose();
+            _downloadCts = null;
+        }
+    }
+
+    private void CancelDownloadButton_Click(object sender, RoutedEventArgs e)
+    {
+        _downloadCts?.Cancel();
+    }
+
+    private void OnDownloadProgressChanged(object? sender, ModelDownloadProgress progress)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            DownloadProgress.Value = progress.OverallProgress;
+
+            var downloadedMB = progress.BytesDownloaded / (1024.0 * 1024.0);
+            var totalMB = progress.TotalBytes / (1024.0 * 1024.0);
+            DownloadDetailText.Text = $"{downloadedMB:F1} MB / {totalMB:F1} MB";
+        });
+    }
+
+    private void OnDownloadStatusChanged(object? sender, string status)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            DownloadStatusText.Text = status;
+        });
     }
 
     private async Task LoadModelAsync()
     {
-        LoadingOverlay.Visibility = Visibility.Visible;
-        StatusText.Text = "Loading model...";
+        ShowLoadingModel();
 
         try
         {
             await _tutorService.LoadModelAsync();
-            StatusText.Text = "Ready to help";
-
-            // Add welcome message
-            _messages.Add(new TutorMessage(
-                MessageRole.Assistant,
-                "Hi! I'm your AI tutor. I can help you understand code, fix errors, or explain concepts. What would you like to learn?"));
+            ShowReadyState();
         }
         catch (Exception ex)
         {
@@ -57,9 +179,6 @@ public partial class TutorChat : UserControl
             _messages.Add(new TutorMessage(
                 MessageRole.Assistant,
                 $"Sorry, I couldn't load the AI model: {ex.Message}"));
-        }
-        finally
-        {
             LoadingOverlay.Visibility = Visibility.Collapsed;
         }
     }

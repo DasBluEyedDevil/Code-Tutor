@@ -17,11 +17,12 @@ public partial class LessonPage : UserControl
     private readonly INavigationService _navigation;
     private readonly IProgressService _progressService = new ProgressService();
     private readonly ITutorService _tutorService;
+    private readonly IModelDownloadService _downloadService;
     private readonly List<Controls.CodingChallenge> _challengeControls = new();
     private TutorChat? _tutorChat;
     private bool _isTutorOpen = false;
 
-    public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation, ITutorService tutorService)
+    public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation, ITutorService tutorService, IModelDownloadService downloadService)
     {
         InitializeComponent();
         _course = course;
@@ -29,6 +30,7 @@ public partial class LessonPage : UserControl
         _courseService = courseService;
         _navigation = navigation;
         _tutorService = tutorService;
+        _downloadService = downloadService;
 
         LoadLesson();
         SetupNavigation();
@@ -165,7 +167,7 @@ public partial class LessonPage : UserControl
     {
         if (PrevButton.Tag is Lesson prevLesson)
         {
-            var lessonPage = new LessonPage(_course, prevLesson, _courseService, _navigation, _tutorService);
+            var lessonPage = new LessonPage(_course, prevLesson, _courseService, _navigation, _tutorService, _downloadService);
             _navigation.NavigateTo(lessonPage, prevLesson);
         }
     }
@@ -174,7 +176,7 @@ public partial class LessonPage : UserControl
     {
         if (NextButton.Tag is Lesson nextLesson)
         {
-            var lessonPage = new LessonPage(_course, nextLesson, _courseService, _navigation, _tutorService);
+            var lessonPage = new LessonPage(_course, nextLesson, _courseService, _navigation, _tutorService, _downloadService);
             _navigation.NavigateTo(lessonPage, nextLesson);
         }
     }
@@ -188,7 +190,7 @@ public partial class LessonPage : UserControl
 
     private void BreadcrumbCourse_Click(object sender, RoutedEventArgs e)
     {
-        var coursePage = new CoursePage(_courseService, _navigation, _course, _tutorService);
+        var coursePage = new CoursePage(_courseService, _navigation, _course, _tutorService, _downloadService);
         _navigation.NavigateTo(coursePage, _course);
     }
 
@@ -223,7 +225,7 @@ public partial class LessonPage : UserControl
     {
         if (_tutorChat == null)
         {
-            _tutorChat = new TutorChat(_tutorService);
+            _tutorChat = new TutorChat(_tutorService, _downloadService);
             _tutorChat.CloseRequested += (s, e) => CloseTutorPanel();
             TutorContent.Content = _tutorChat;
         }

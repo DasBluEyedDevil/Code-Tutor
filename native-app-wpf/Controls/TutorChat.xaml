@@ -75,22 +75,83 @@
             </Grid>
         </Border>
 
-        <!-- Loading overlay -->
+        <!-- Loading/Download overlay -->
         <Border x:Name="LoadingOverlay"
                 Grid.Row="1"
                 Background="{StaticResource BackgroundDarkBrush}"
                 Visibility="Collapsed"
                 Panel.ZIndex="10">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                <ProgressBar x:Name="LoadingProgress"
-                             Width="200" Height="4"
-                             Minimum="0" Maximum="100"
-                             Foreground="{StaticResource AccentBlueBrush}"
-                             Background="{StaticResource BackgroundLightBrush}"/>
-                <TextBlock Text="Loading AI Tutor..."
-                           Margin="0,12,0,0"
-                           HorizontalAlignment="Center"
-                           Foreground="{StaticResource TextSecondaryBrush}"/>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+                <!-- Download prompt (shown when model missing) -->
+                <StackPanel x:Name="DownloadPromptPanel" Visibility="Collapsed">
+                    <TextBlock Text="&#xE896;"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="48"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource AccentPurpleBrush}"
+                               Margin="0,0,0,16"/>
+                    <TextBlock Text="AI Model Required"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="The Phi-4 model (~2.5GB) needs to be downloaded to enable the AI tutor."
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,8,0,16"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <Button x:Name="DownloadModelButton"
+                            Content="Download Model"
+                            Padding="24,12"
+                            FontSize="14"
+                            Background="{StaticResource AccentBlueBrush}"
+                            Foreground="White"
+                            BorderThickness="0"
+                            Cursor="Hand"
+                            Click="DownloadModelButton_Click"/>
+                </StackPanel>
+
+                <!-- Download progress (shown during download) -->
+                <StackPanel x:Name="DownloadProgressPanel" Visibility="Collapsed">
+                    <TextBlock x:Name="DownloadStatusText"
+                               Text="Downloading model..."
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               Margin="0,0,0,12"/>
+                    <ProgressBar x:Name="DownloadProgress"
+                                 Width="280" Height="8"
+                                 Minimum="0" Maximum="100"
+                                 Foreground="{StaticResource AccentBlueBrush}"
+                                 Background="{StaticResource BackgroundLightBrush}"/>
+                    <TextBlock x:Name="DownloadDetailText"
+                               Text="0 MB / 0 MB"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,12"
+                               FontSize="11"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <Button x:Name="CancelDownloadButton"
+                            Content="Cancel"
+                            Padding="16,8"
+                            Background="Transparent"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            BorderBrush="{StaticResource BorderDefaultBrush}"
+                            BorderThickness="1"
+                            Cursor="Hand"
+                            Click="CancelDownloadButton_Click"/>
+                </StackPanel>
+
+                <!-- Loading model (shown when loading after download) -->
+                <StackPanel x:Name="LoadingModelPanel" Visibility="Collapsed">
+                    <ProgressBar x:Name="LoadingProgress"
+                                 Width="200" Height="4"
+                                 Minimum="0" Maximum="100"
+                                 Foreground="{StaticResource AccentBlueBrush}"
+                                 Background="{StaticResource BackgroundLightBrush}"/>
+                    <TextBlock Text="Loading AI Tutor..."
+                               Margin="0,12,0,0"
+                               HorizontalAlignment="Center"
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                </StackPanel>
             </StackPanel>
         </Border>
 
