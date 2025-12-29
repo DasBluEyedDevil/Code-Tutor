@@ -2691,7 +2691,7 @@
         },
         {
           "id": "epoch-2-lesson-7",
-          "title": "Lesson 2.7: Records - Immutable Data Classes (Java 16+)",
+          "title": "Lesson 2.7: Records - Immutable Data Classes",
           "moduleId": "module-03",
           "order": 7,
           "estimatedMinutes": 35,
@@ -2700,7 +2700,7 @@
             {
               "type": "THEORY",
               "title": "The Problem: Too Much Boilerplate",
-              "content": "How much code does it take to create a simple data class in Java?\n\npublic class Person {\n    private final String name;\n    private final int age;\n    \n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n    \n    public String getName() { return name; }\n    public int getAge() { return age; }\n    \n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        Person person = (Person) o;\n        return age == person.age && Objects.equals(name, person.name);\n    }\n    \n    @Override\n    public int hashCode() {\n        return Objects.hash(name, age);\n    }\n    \n    @Override\n    public String toString() {\n        return \"Person[name=\" + name + \", age=\" + age + \"]\";\n    }\n}\n\nThat's over 25 lines for a simple class with just 2 fields!\n\nJava 16 introduced RECORDS to solve this problem."
+              "content": "Records are a standard feature since Java 16 and are widely used in modern Java development.\n\nHow much code does it take to create a simple data class in Java?\n\npublic class Person {\n    private final String name;\n    private final int age;\n    \n    public Person(String name, int age) {\n        this.name = name;\n        this.age = age;\n    }\n    \n    public String getName() { return name; }\n    public int getAge() { return age; }\n    \n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        Person person = (Person) o;\n        return age == person.age && Objects.equals(name, person.name);\n    }\n    \n    @Override\n    public int hashCode() {\n        return Objects.hash(name, age);\n    }\n    \n    @Override\n    public String toString() {\n        return \"Person[name=\" + name + \", age=\" + age + \"]\";\n    }\n}\n\nThat's over 25 lines for a simple class with just 2 fields!\n\nJava introduced RECORDS to solve this problem."
             },
             {
               "type": "KEY_POINT",
