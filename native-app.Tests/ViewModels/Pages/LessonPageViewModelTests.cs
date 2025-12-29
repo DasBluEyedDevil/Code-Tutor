@@ -31,7 +31,7 @@ public class LessonPageViewModelTests
     }
 
     [Fact]
-    public async Task LoadLessonAsync_LoadsLesson_AndCreatesChallenge ViewModels()
+    public async Task LoadLessonAsync_LoadsLesson_AndCreatesChallengeViewModels()
     {
         // Arrange
         var lesson = TestDataGenerator.CreateLesson(challengeCount: 3);
