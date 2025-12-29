@@ -64,6 +64,12 @@ public partial class CourseSidebar : UserControl
         _navigation.GoBack();
     }
 
+    private void CourseOverview_Click(object sender, RoutedEventArgs e)
+    {
+        var coursePage = new CoursePage(_courseService, _navigation, _course);
+        _navigation.NavigateTo(coursePage, _course);
+    }
+
     private void ModuleHeader_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.Tag is Module module)

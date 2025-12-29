@@ -50,6 +50,10 @@ public partial class LessonPage : UserControl
         var currentModule = _course.Modules.FirstOrDefault(m => m.Lessons.Any(l => l.Id == _lesson.Id));
         LessonPosition.Text = $"Module: {currentModule?.Title} • Lesson {currentIndex + 1} of {allLessons.Count}";
 
+        // Set breadcrumb navigation
+        BreadcrumbCourseText.Text = _course.Title;
+        BreadcrumbModuleText.Text = currentModule?.Title ?? "";
+
         // Add content sections dynamically
         ContentPanel.Children.Clear();
 
@@ -174,6 +178,12 @@ public partial class LessonPage : UserControl
         await _progressService.MarkLessonCompleteAsync(_lesson.Id);
         CompleteButton.Content = new TextBlock { Text = "Completed" };
         CompleteButton.IsEnabled = false;
+    }
+
+    private void BreadcrumbCourse_Click(object sender, RoutedEventArgs e)
+    {
+        var coursePage = new CoursePage(_courseService, _navigation, _course);
+        _navigation.NavigateTo(coursePage, _course);
     }
 
     private async void OnChallengeCompleted(object? sender, string challengeId)

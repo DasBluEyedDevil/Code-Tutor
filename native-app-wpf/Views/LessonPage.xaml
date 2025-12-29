@@ -14,6 +14,26 @@
                 Background="{StaticResource BackgroundMediumBrush}"
                 Padding="40,24">
             <StackPanel>
+                <!-- Breadcrumb Navigation -->
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                    <Button x:Name="BreadcrumbCourse"
+                            Style="{StaticResource GhostButton}"
+                            Click="BreadcrumbCourse_Click"
+                            Padding="0">
+                        <TextBlock x:Name="BreadcrumbCourseText"
+                                   Style="{StaticResource CaptionText}"
+                                   Foreground="{StaticResource AccentBlueBrush}" />
+                    </Button>
+                    <TextBlock Text=" / "
+                               Style="{StaticResource CaptionText}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               VerticalAlignment="Center" />
+                    <TextBlock x:Name="BreadcrumbModuleText"
+                               Style="{StaticResource CaptionText}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
                 <TextBlock x:Name="LessonTitle"
                            Style="{StaticResource HeadingText}" />
                 <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
