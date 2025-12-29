@@ -51,6 +51,15 @@ public class CourseService : ICourseService
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Failed to load course from {dir}: {ex.Message}");
+                    // Log to file for debugging (use AppData to avoid permission issues)
+                    try
+                    {
+                        var logDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CodeTutor");
+                        Directory.CreateDirectory(logDir);
+                        var logPath = Path.Combine(logDir, "course-load-errors.log");
+                        File.AppendAllText(logPath, $"{DateTime.Now}: Failed to load {dir}\n  Error: {ex.Message}\n  Stack: {ex.StackTrace}\n\n");
+                    }
+                    catch { /* Ignore logging errors */ }
                 }
             }
         }

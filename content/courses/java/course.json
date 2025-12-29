@@ -4336,9 +4336,9 @@
               "starterCode": "// build.gradle.kts\n// Add your configuration here\n",
               "solution": "plugins {\n    java\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\njava {\n    toolchain {\n        languageVersion.set(JavaLanguageVersion.of(23))\n    }\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.0\")\n}\n\ntasks.test {\n    useJUnitPlatform()\n}",
               "hints": [
-                "Use the 'java' plugin for Java projects",
-                "JUnit 5 dependency is 'org.junit.jupiter:junit-jupiter'",
-                "useJUnitPlatform() tells Gradle to use JUnit 5"
+                {"level": 1, "text": "Use the 'java' plugin for Java projects"},
+                {"level": 2, "text": "JUnit 5 dependency is 'org.junit.jupiter:junit-jupiter'"},
+                {"level": 3, "text": "useJUnitPlatform() tells Gradle to use JUnit 5"}
               ],
               "testCases": []
             },
@@ -4351,9 +4351,9 @@
               "starterCode": "// Add to build.gradle.kts\n\ntasks.register(\"projectInfo\") {\n    // Your code here\n}",
               "solution": "tasks.register(\"projectInfo\") {\n    group = \"help\"\n    description = \"Displays project information\"\n    \n    doLast {\n        println(\"================================\")\n        println(\"Project Information\")\n        println(\"================================\")\n        println(\"Name: ${project.name}\")\n        println(\"Version: ${project.version}\")\n        println(\"Java Version: ${java.toolchain.languageVersion.get()}\")\n        println(\"================================\")\n    }\n}",
               "hints": [
-                "Use doLast { } to define what the task does",
-                "Access project properties with 'project.name', 'project.version'",
-                "Use string templates with ${} for interpolation"
+                {"level": 1, "text": "Use doLast { } to define what the task does"},
+                {"level": 2, "text": "Access project properties with 'project.name', 'project.version'"},
+                {"level": 3, "text": "Use string templates with ${} for interpolation"}
               ],
               "testCases": []
             }
