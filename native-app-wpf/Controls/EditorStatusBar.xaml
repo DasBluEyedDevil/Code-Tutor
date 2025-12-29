@@ -1,0 +1,51 @@
+<UserControl x:Class="CodeTutor.Wpf.Controls.EditorStatusBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Border Background="{StaticResource BackgroundMediumBrush}"
+            BorderBrush="{StaticResource BorderDefaultBrush}"
+            BorderThickness="0,1,0,0"
+            Padding="12,4">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Position -->
+            <TextBlock x:Name="PositionText"
+                       Grid.Column="0"
+                       Text="Ln 1, Col 1"
+                       Style="{StaticResource CaptionText}"
+                       Foreground="{StaticResource TextMutedBrush}" />
+
+            <!-- Separator -->
+            <Border Grid.Column="1"
+                    Width="1"
+                    Background="{StaticResource BorderDefaultBrush}"
+                    Margin="12,0" />
+
+            <!-- Language -->
+            <TextBlock x:Name="LanguageText"
+                       Grid.Column="2"
+                       Text="Python"
+                       Style="{StaticResource CaptionText}"
+                       Foreground="{StaticResource TextMutedBrush}" />
+
+            <!-- Ready indicator -->
+            <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <Ellipse x:Name="StatusIndicator"
+                         Width="6" Height="6"
+                         Fill="{StaticResource AccentGreenBrush}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,6,0" />
+                <TextBlock x:Name="StatusText"
+                           Text="Ready"
+                           Style="{StaticResource CaptionText}"
+                           Foreground="{StaticResource TextMutedBrush}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
