@@ -494,7 +494,7 @@
         },
         {
           "id": "epoch-0-lesson-5",
-          "title": "Lesson 0.5: Switch Expressions & Pattern Matching (Java 17+)",
+          "title": "Lesson 0.5: Switch Expressions & Pattern Matching",
           "moduleId": "module-01",
           "order": 5,
           "estimatedMinutes": 40,
@@ -503,7 +503,7 @@
             {
               "type": "THEORY",
               "title": "The Problem: Clunky Switch Statements",
-              "content": "Traditional switch statements in Java are verbose and error-prone:\n\nString dayType;\nswitch (day) {\n    case \"MONDAY\":\n    case \"TUESDAY\":\n    case \"WEDNESDAY\":\n    case \"THURSDAY\":\n    case \"FRIDAY\":\n        dayType = \"Weekday\";\n        break;  // Easy to forget!\n    case \"SATURDAY\":\n    case \"SUNDAY\":\n        dayType = \"Weekend\";\n        break;\n    default:\n        dayType = \"Unknown\";\n        break;\n}\n\nProblems:\n1. Must remember 'break' or fall-through bugs occur\n2. Can't return values directly from switch\n3. Very verbose for simple mappings\n4. No compile-time exhaustiveness checking\n\nJava 14-17 introduced SWITCH EXPRESSIONS to fix all of this!"
+              "content": "Traditional switch statements in Java are verbose and error-prone:\n\nString dayType;\nswitch (day) {\n    case \"MONDAY\":\n    case \"TUESDAY\":\n    case \"WEDNESDAY\":\n    case \"THURSDAY\":\n    case \"FRIDAY\":\n        dayType = \"Weekday\";\n        break;  // Easy to forget!\n    case \"SATURDAY\":\n    case \"SUNDAY\":\n        dayType = \"Weekend\";\n        break;\n    default:\n        dayType = \"Unknown\";\n        break;\n}\n\nProblems:\n1. Must remember 'break' or fall-through bugs occur\n2. Can't return values directly from switch\n3. Very verbose for simple mappings\n4. No compile-time exhaustiveness checking\n\nSwitch expressions and pattern matching were introduced progressively in Java 14-21 and are fully stable in Java 23. These features fix all of the problems above!"
             },
             {
               "type": "KEY_POINT",
@@ -517,12 +517,12 @@
             },
             {
               "type": "KEY_POINT",
-              "title": "Pattern Matching for instanceof (Java 16+)",
+              "title": "Pattern Matching for instanceof",
               "content": "Traditional instanceof checking is repetitive:\n\n// Old way:\nif (obj instanceof String) {\n    String s = (String) obj;  // Repetitive cast!\n    System.out.println(s.length());\n}\n\n// New way with pattern matching:\nif (obj instanceof String s) {\n    // 's' is already a String - no cast needed!\n    System.out.println(s.length());\n}\n\nThe pattern 'String s' both:\n1. Tests if obj is a String\n2. Creates variable s with the String type\n\nMore examples:\n\n// With negation\nif (!(obj instanceof String s)) {\n    return;  // obj is not a String\n}\n// Here 's' is in scope and is a String\nSystem.out.println(s.toUpperCase());\n\n// In complex conditions\nif (obj instanceof String s && s.length() > 5) {\n    System.out.println(\"Long string: \" + s);\n}"
             },
             {
               "type": "THEORY",
-              "title": "Pattern Matching in Switch (Java 21+)",
+              "title": "Pattern Matching in Switch",
               "content": "Java 21 brings pattern matching to switch expressions:\n\n// Type patterns in switch\nString describe(Object obj) {\n    return switch (obj) {\n        case Integer i -> \"Integer: \" + i;\n        case Long l -> \"Long: \" + l;\n        case Double d -> \"Double: \" + d;\n        case String s -> \"String of length \" + s.length();\n        case null -> \"It's null!\";\n        default -> \"Unknown type\";\n    };\n}\n\n// With guards (when clause)\nString categorize(Object obj) {\n    return switch (obj) {\n        case Integer i when i < 0 -> \"Negative number\";\n        case Integer i when i == 0 -> \"Zero\";\n        case Integer i -> \"Positive number: \" + i;\n        case String s when s.isEmpty() -> \"Empty string\";\n        case String s -> \"String: \" + s;\n        case null -> \"null value\";\n        default -> \"Something else\";\n    };\n}\n\nKey features:\n- Type patterns: case Integer i -> ...\n- Guards: case Integer i when i > 0 -> ...\n- Null handling: case null -> ...\n- Record patterns: case Point(int x, int y) -> ..."
             },
             {
