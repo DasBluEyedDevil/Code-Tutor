@@ -1,0 +1,216 @@
+using System.Text.Json.Serialization;
+
+namespace CodeTutor.Tests.Models;
+
+/// <summary>
+/// Course model for testing - mirrors the WPF app model
+/// </summary>
+public class Course
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("language")]
+    public string Language { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("difficulty")]
+    public string Difficulty { get; set; } = string.Empty;
+
+    [JsonPropertyName("estimatedHours")]
+    public int EstimatedHours { get; set; }
+
+    [JsonPropertyName("prerequisites")]
+    public List<string> Prerequisites { get; set; } = new();
+
+    [JsonPropertyName("modules")]
+    public List<Module> Modules { get; set; } = new();
+
+    // Computed properties
+    public int TotalLessons => Modules.Sum(m => m.Lessons.Count);
+    public int TotalChallenges => Modules.Sum(m => m.Lessons.Sum(l => l.Challenges.Count));
+}
+
+public class Module
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("difficulty")]
+    public string Difficulty { get; set; } = string.Empty;
+
+    [JsonPropertyName("estimatedHours")]
+    public int EstimatedHours { get; set; }
+
+    [JsonPropertyName("lessons")]
+    public List<Lesson> Lessons { get; set; } = new();
+}
+
+public class Lesson
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonPropertyName("moduleId")]
+    public string ModuleId { get; set; } = string.Empty;
+
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
+
+    [JsonPropertyName("estimatedMinutes")]
+    public int EstimatedMinutes { get; set; }
+
+    [JsonPropertyName("difficulty")]
+    public string Difficulty { get; set; } = string.Empty;
+
+    [JsonPropertyName("contentSections")]
+    public List<ContentSection> ContentSections { get; set; } = new();
+
+    [JsonPropertyName("challenges")]
+    public List<Challenge> Challenges { get; set; } = new();
+}
+
+public class ContentSection
+{
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonPropertyName("content")]
+    public string Content { get; set; } = string.Empty;
+
+    [JsonPropertyName("code")]
+    public string? Code { get; set; }
+
+    [JsonPropertyName("language")]
+    public string? Language { get; set; }
+
+    [JsonPropertyName("legacy")]
+    public string? Legacy { get; set; }
+}
+
+public class Challenge
+{
+    [JsonPropertyName("type")]
+    public string Type { get; set; } = string.Empty;
+
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string Title { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("instructions")]
+    public string Instructions { get; set; } = string.Empty;
+
+    [JsonPropertyName("starterCode")]
+    public string StarterCode { get; set; } = string.Empty;
+
+    [JsonPropertyName("solution")]
+    public string Solution { get; set; } = string.Empty;
+
+    [JsonPropertyName("language")]
+    public string Language { get; set; } = string.Empty;
+
+    [JsonPropertyName("difficulty")]
+    public string Difficulty { get; set; } = string.Empty;
+
+    [JsonPropertyName("hints")]
+    public List<Hint> Hints { get; set; } = new();
+
+    [JsonPropertyName("testCases")]
+    public List<TestCase> TestCases { get; set; } = new();
+
+    [JsonPropertyName("commonMistakes")]
+    public List<CommonMistake> CommonMistakes { get; set; } = new();
+
+    // Multiple choice specific
+    [JsonPropertyName("question")]
+    public string? Question { get; set; }
+
+    [JsonPropertyName("options")]
+    public List<AnswerOption>? Options { get; set; }
+
+    [JsonPropertyName("correctAnswer")]
+    public int? CorrectAnswer { get; set; }
+
+    [JsonPropertyName("explanation")]
+    public string? Explanation { get; set; }
+
+    // Code output specific
+    [JsonPropertyName("codeSnippet")]
+    public string? CodeSnippet { get; set; }
+
+    [JsonPropertyName("expectedOutput")]
+    public string? ExpectedOutput { get; set; }
+}
+
+public class Hint
+{
+    [JsonPropertyName("level")]
+    public int Level { get; set; }
+
+    [JsonPropertyName("text")]
+    public string Text { get; set; } = string.Empty;
+}
+
+public class TestCase
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("input")]
+    public string? Input { get; set; }
+
+    [JsonPropertyName("expectedOutput")]
+    public string ExpectedOutput { get; set; } = string.Empty;
+
+    [JsonPropertyName("isVisible")]
+    public bool IsVisible { get; set; } = true;
+}
+
+public class CommonMistake
+{
+    [JsonPropertyName("mistake")]
+    public string Mistake { get; set; } = string.Empty;
+
+    [JsonPropertyName("consequence")]
+    public string Consequence { get; set; } = string.Empty;
+
+    [JsonPropertyName("correction")]
+    public string Correction { get; set; } = string.Empty;
+}
+
+public class AnswerOption
+{
+    [JsonPropertyName("text")]
+    public string Text { get; set; } = string.Empty;
+
+    [JsonPropertyName("isCorrect")]
+    public bool IsCorrect { get; set; }
+
+    [JsonPropertyName("explanation")]
+    public string? Explanation { get; set; }
+}

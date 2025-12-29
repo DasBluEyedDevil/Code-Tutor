@@ -1,6 +1,6 @@
-# Code Tutor - Test Suite
+# Code Tutor - Comprehensive E2E Test Suite
 
-Comprehensive test suite for the Code Tutor native application using xUnit, Moq, and FluentAssertions.
+Comprehensive end-to-end test suite for the Code Tutor application using xUnit and FluentAssertions.
 
 ---
 
@@ -8,20 +8,20 @@ Comprehensive test suite for the Code Tutor native application using xUnit, Moq,
 
 ```
 native-app.Tests/
-├── Unit/
-│   └── Services/          # Service layer unit tests
-│       ├── ProgressServiceTests.cs (14 tests)
-│       ├── AchievementServiceTests.cs (20 tests)
-│       └── StreakServiceTests.cs (11 tests)
-├── Integration/            # End-to-end workflow tests
-│   └── LessonCompletionWorkflowTests.cs (8 tests)
-├── ViewModels/
-│   └── Pages/             # ViewModel tests with mocks
-│       └── LessonPageViewModelTests.cs (11 tests)
-├── Fixtures/              # Test infrastructure
-│   └── DatabaseFixture.cs
-└── Helpers/               # Test utilities
-    └── TestDataGenerator.cs
+├── E2E/
+│   ├── ContentValidation/           # Course content validation tests
+│   │   ├── CourseContentValidationTests.cs (25+ tests)
+│   │   └── ChallengeValidationTests.cs (20+ tests)
+│   ├── CodeExecution/               # Code execution engine tests
+│   │   ├── RoslynExecutorTests.cs (25+ tests)
+│   │   └── RuntimeDetectionTests.cs (15+ tests)
+│   └── UserJourneys/                # Full user workflow tests
+│       ├── LearningJourneyTests.cs (20+ tests)
+│       └── ProgressTrackingTests.cs (25+ tests)
+├── Models/                          # Shared test models
+│   ├── Course.cs                    # Course/Module/Lesson models
+│   └── UserProgress.cs              # Progress/Achievement models
+└── native-app.Tests.csproj          # Test project configuration
 ```
 
 ---
@@ -31,81 +31,121 @@ native-app.Tests/
 ### Command Line
 
 ```bash
+# Navigate to test directory
+cd native-app.Tests
+
 # Run all tests
 dotnet test
 
 # Run with detailed output
 dotnet test --logger "console;verbosity=detailed"
 
-# Run specific test class
-dotnet test --filter "FullyQualifiedName~ProgressServiceTests"
+# Run specific test category
+dotnet test --filter "FullyQualifiedName~ContentValidation"
+dotnet test --filter "FullyQualifiedName~CodeExecution"
+dotnet test --filter "FullyQualifiedName~UserJourneys"
 
 # Run tests with coverage
 dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 ```
 
-### Visual Studio
+### Visual Studio / VS Code
 
-1. Open Test Explorer: `Test` → `Test Explorer`
-2. Click `Run All` to execute all tests
-3. Click individual tests to run specific tests
-4. Right-click test → `Debug` to debug a failing test
-
-### VS Code
-
-1. Install C# Dev Kit extension
-2. Open Testing panel (beaker icon)
-3. Click play button to run tests
-4. View results inline in code
+1. Open Test Explorer
+2. Run all tests or select specific categories
+3. View results inline
 
 ---
 
 ## Test Categories
 
-### Unit Tests - Services
+### Content Validation Tests
 
-**ProgressService** (14 tests)
-- ✅ SaveProgressAsync creates/updates records
-- ✅ Keeps best scores across attempts
-- ✅ Tracks hints per lesson and challenge
-- ✅ Sets completion timestamps correctly
-- ✅ Calculates course progress percentage
+**CourseContentValidationTests** (25+ tests)
+- ✅ All course JSON files load successfully
+- ✅ All courses have required properties (id, title, language, etc.)
+- ✅ All modules have valid structure
+- ✅ All lessons have content sections
+- ✅ Content section types are valid (THEORY, EXAMPLE, KEY_POINT, LEGACY_COMPARISON)
+- ✅ Lesson IDs are unique within courses
+- ✅ Challenge IDs are unique
+- ✅ Module IDs in lessons match parent modules
+- ✅ Lesson order numbers are sequential
+- ✅ Estimated times are reasonable
 
-**AchievementService** (20 tests)
-- ✅ All 10 achievement types unlock correctly
-- ✅ Progressive achievements increment properly
-- ✅ No duplicate achievement records
-- ✅ Achievement progress capped at max
-- ✅ Integration with ProgressService and StreakService
+**ChallengeValidationTests** (20+ tests)
+- ✅ All challenges have valid types
+- ✅ FREE_CODING challenges have required fields
+- ✅ MULTIPLE_CHOICE challenges have options
+- ✅ CODE_OUTPUT challenges have code snippets
+- ✅ Hints have valid levels and text
+- ✅ Test cases have proper structure
+- ✅ Starter code differs from solution
+- ✅ Common mistakes have valid structure
+- ✅ Challenge language matches course language
 
-**StreakService** (11 tests)
-- ✅ Records daily activity
-- ✅ Calculates consecutive day streaks
-- ✅ Breaks streaks on gaps
-- ✅ Tracks current and longest streaks
-- ✅ Handles multiple activities per day
+### Code Execution Tests
 
-### Integration Tests
+**RoslynExecutorTests** (25+ tests)
+- ✅ Simple expressions evaluate correctly
+- ✅ Console.WriteLine output is captured
+- ✅ Multiple statements execute in order
+- ✅ LINQ queries work correctly
+- ✅ Class and method definitions work
+- ✅ Syntax errors are properly reported
+- ✅ Runtime exceptions are caught
+- ✅ String interpolation works
+- ✅ Collections (List, Dictionary) work
+- ✅ Loops (for, foreach, while) work
+- ✅ Try-catch exception handling works
+- ✅ Async/await patterns work
+- ✅ Pattern matching works
+- ✅ Record types work
+- ✅ Regex operations work
+- ✅ Math operations return correct results
+- ✅ String operations work correctly
 
-**LessonCompletionWorkflow** (8 tests)
-- ✅ Complete lesson flow with progress, streaks, achievements
-- ✅ 7-day streak unlocks MarathonRunner
-- ✅ Perfect lesson unlocks Perfectionist and SpeedDemon
-- ✅ Quick completion unlocks QuickLearner
-- ✅ Multiple attempts track Debugger progress
-- ✅ Streak breaks reset current but keep longest
-- ✅ Hints tracked correctly across challenges
+**RuntimeDetectionTests** (15+ tests)
+- ✅ Python runtime detection
+- ✅ JavaScript/Node.js runtime detection
+- ✅ Java runtime detection
+- ✅ Kotlin runtime detection
+- ✅ Rust runtime detection
+- ✅ Dart runtime detection
+- ✅ C# always available (Roslyn built-in)
+- ✅ Install hints for each language
+- ✅ Result caching works
+- ✅ Timeout handling
 
-### ViewModel Tests
+### User Journey Tests
 
-**LessonPageViewModel** (11 tests)
-- ✅ Loads lessons and creates challenge ViewModels
-- ✅ Records streak on load
-- ✅ Handles errors gracefully
-- ✅ Saves progress on completion
-- ✅ Navigates back after completion
-- ✅ Tracks hints through events
-- ✅ Checks achievements on completion
+**LearningJourneyTests** (20+ tests)
+- ✅ Course selection and browsing
+- ✅ Module navigation
+- ✅ Lesson content viewing
+- ✅ Sequential lesson progression
+- ✅ Challenge completion flow
+- ✅ Progress tracking simulation
+- ✅ Multi-course progress
+- ✅ Achievement unlocking
+- ✅ Content quality validation
+
+**ProgressTrackingTests** (25+ tests)
+- ✅ New user starts with empty progress
+- ✅ Lesson completion tracking
+- ✅ No duplicate lesson completions
+- ✅ Multiple lesson tracking
+- ✅ Start and completion time tracking
+- ✅ Challenge attempt counting
+- ✅ Best score tracking
+- ✅ Hint usage tracking
+- ✅ Code persistence (last attempt)
+- ✅ Streak tracking (current and longest)
+- ✅ Time tracking
+- ✅ Progress serialization/deserialization
+- ✅ Completion percentage calculation
+- ✅ Achievement system (FirstSteps, Perfectionist, WeekWarrior)
+- ✅ Progressive achievement unlocking
 
 ---
 
@@ -115,72 +155,43 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 ```csharp
 [Fact]
-public async Task SaveProgressAsync_CreatesNewRecord_WhenNoExistingProgress()
+public void Course_ShouldLoadSuccessfully()
 {
-    // Arrange - Set up test data and dependencies
-    using var context = _fixture.CreateContext();
-    var service = new ProgressService(context);
+    // Arrange - Load course file
+    var courseFile = Path.Combine(_contentPath, "python", "course.json");
+    var json = File.ReadAllText(courseFile);
 
-    // Act - Execute the method being tested
-    await service.SaveProgressAsync("course1", "module1", "lesson1", 85, true);
+    // Act - Deserialize JSON
+    var course = JsonSerializer.Deserialize<Course>(json, _jsonOptions);
 
-    // Assert - Verify the expected outcomes
-    var progress = await context.Progress.FirstOrDefaultAsync();
-    progress.Should().NotBeNull();
-    progress.Score.Should().Be(85);
+    // Assert - Verify properties
+    course.Should().NotBeNull();
+    course.Id.Should().NotBeNullOrEmpty();
 }
 ```
 
-### Database Testing with Fixtures
+### Theory Tests with Inline Data
 
 ```csharp
-public class MyServiceTests : IDisposable
+[Theory]
+[InlineData("python")]
+[InlineData("javascript")]
+[InlineData("java")]
+[InlineData("csharp")]
+[InlineData("kotlin")]
+[InlineData("flutter")]
+public void Course_AllModuleIdsInLessons_ShouldMatchParentModule(string courseId)
 {
-    private readonly DatabaseFixture _fixture;
+    var course = LoadCourse(courseId);
+    if (course == null) return;
 
-    public MyServiceTests()
+    foreach (var module in course.Modules)
     {
-        _fixture = new DatabaseFixture();
+        foreach (var lesson in module.Lessons)
+        {
+            lesson.ModuleId.Should().Be(module.Id);
+        }
     }
-
-    [Fact]
-    public async Task MyTest()
-    {
-        // Each test gets a fresh in-memory database
-        using var context = _fixture.CreateContext();
-        var service = new MyService(context);
-
-        // ... test code
-    }
-
-    public void Dispose()
-    {
-        _fixture.Dispose();
-    }
-}
-```
-
-### Mocking Dependencies
-
-```csharp
-[Fact]
-public async Task LoadLessonAsync_CallsCourseService()
-{
-    // Arrange
-    var mockCourseService = new Mock<ICourseService>();
-    mockCourseService
-        .Setup(s => s.GetLessonAsync("course1", "module1", "lesson1"))
-        .ReturnsAsync(new Lesson { Id = "lesson1" });
-
-    var viewModel = new LessonPageViewModel(mockCourseService.Object, ...);
-
-    // Act
-    await viewModel.LoadLessonAsync();
-
-    // Assert
-    mockCourseService.Verify(
-        s => s.GetLessonAsync("course1", "module1", "lesson1"),
-        Times.Once);
 }
 ```
 
@@ -190,234 +201,127 @@ public async Task LoadLessonAsync_CallsCourseService()
 // Readable assertions
 result.Should().NotBeNull();
 result.Score.Should().Be(100);
-result.IsCorrect.Should().BeTrue();
+result.IsComplete.Should().BeTrue();
 
 // Collection assertions
-achievements.Should().HaveCount(2);
-achievements.Should().Contain(a => a.AchievementType == "FirstSteps");
+challenges.Should().HaveCount(5);
+challenges.Should().AllSatisfy(c => c.Id.Should().NotBeNullOrEmpty());
 
-// Time assertions
-achievement.UnlockedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+// String assertions
+title.Should().NotBeNullOrEmpty();
+content.Should().Contain("expected text");
+
+// Numeric assertions
+percentage.Should().BeApproximately(50, 5);
+count.Should().BeGreaterOrEqualTo(1);
 ```
 
 ---
 
-## Test Data Generation
+## Test Coverage Summary
 
-Use `TestDataGenerator` for consistent test data:
-
-```csharp
-// Create progress
-var progress = TestDataGenerator.CreateProgress(
-    courseId: "course1",
-    score: 85,
-    completed: true,
-    hintsUsed: 2);
-
-// Create streak
-var streak = TestDataGenerator.CreateStreak(
-    date: DateTime.UtcNow,
-    lessonsCompleted: 1);
-
-// Create consecutive streaks
-var streaks = TestDataGenerator.CreateConsecutiveStreaks(days: 7);
-
-// Create challenge
-var challenge = TestDataGenerator.CreateFreeCodingChallenge(
-    id: "challenge1",
-    language: "csharp");
-
-// Create lesson with challenges
-var lesson = TestDataGenerator.CreateLesson(
-    id: "lesson1",
-    challengeCount: 3);
-```
+| Category | Test Files | Tests | Coverage |
+|----------|------------|-------|----------|
+| Content Validation | 2 | 45+ | Course JSON |
+| Code Execution | 2 | 40+ | Roslyn, Runtime |
+| User Journeys | 2 | 45+ | Workflows |
+| **Total** | **6** | **130+** | **Full E2E** |
 
 ---
 
-## Current Test Coverage
+## Supported Languages Tested
 
-| Component | Tests | Coverage Target | Status |
-|-----------|-------|----------------|--------|
-| ProgressService | 14 | 90% | ✅ Complete |
-| AchievementService | 20 | 90% | ✅ Complete |
-| StreakService | 11 | 90% | ✅ Complete |
-| LessonPageViewModel | 11 | 80% | ✅ Complete |
-| Integration Workflows | 8 | N/A | ✅ Complete |
-| **Total** | **64** | **80%** | ✅ Phase 9 Core Complete |
+| Language | Content Tests | Execution Tests |
+|----------|--------------|-----------------|
+| Python | ✅ | ✅ (runtime detection) |
+| JavaScript | ✅ | ✅ (runtime detection) |
+| Java | ✅ | ✅ (runtime detection) |
+| C# | ✅ | ✅ (Roslyn execution) |
+| Kotlin | ✅ | ✅ (runtime detection) |
+| Flutter/Dart | ✅ | ✅ (runtime detection) |
 
 ---
 
 ## Adding New Tests
 
-### 1. Create Test Class
+### 1. Content Validation Test
 
 ```csharp
-public class MyServiceTests : IDisposable
+[Theory]
+[InlineData("python")]
+[InlineData("javascript")]
+public void Course_NewValidation_ShouldPass(string courseId)
 {
-    private readonly DatabaseFixture _fixture;
+    var course = LoadCourse(courseId);
+    if (course == null) return;
 
-    public MyServiceTests()
-    {
-        _fixture = new DatabaseFixture();
-    }
-
-    [Fact]
-    public async Task MyTest_DoesExpectedThing()
-    {
-        // Arrange
-        using var context = _fixture.CreateContext();
-        var service = new MyService(context);
-
-        // Act
-        var result = await service.DoSomethingAsync();
-
-        // Assert
-        result.Should().NotBeNull();
-    }
-
-    public void Dispose()
-    {
-        _fixture.Dispose();
-    }
+    // Your validation logic
+    course.SomeProperty.Should().BeValid();
 }
 ```
 
-### 2. Run Tests
+### 2. Code Execution Test
 
-```bash
-dotnet test
-```
-
-### 3. Fix Failures
-
-- Check assertion messages
-- Verify test data setup
-- Debug failing tests
-- Update expectations
-
----
-
-## Common Issues
-
-### Issue: InMemory Database Conflicts
-
-**Problem**: Tests interfere with each other
-
-**Solution**: Use unique database names per test
 ```csharp
-var options = new DbContextOptionsBuilder<CodeTutorDbContext>()
-    .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-    .Options;
-```
-
-### Issue: Async Tests Timing Out
-
-**Problem**: Async operations not completing
-
-**Solution**: Use `await` properly and increase timeout
-```csharp
-[Fact(Timeout = 5000)] // 5 second timeout
-public async Task MyAsyncTest()
+[Fact]
+public async Task Execute_NewFeature_Works()
 {
-    await service.DoSomethingAsync();
+    var code = "// Your C# code";
+    var result = await ExecuteAsync(code);
+
+    result.Success.Should().BeTrue();
+    result.Output.Should().Contain("expected");
 }
 ```
 
-### Issue: Mock Verification Failing
+### 3. User Journey Test
 
-**Problem**: Mock not called as expected
-
-**Solution**: Verify setup and timing
 ```csharp
-// Ensure setup matches call exactly
-mockService.Setup(s => s.Method(It.IsAny<string>()))
-          .ReturnsAsync(result);
+[Fact]
+public void UserJourney_NewScenario_WorksCorrectly()
+{
+    var progress = new UserProgress();
 
-// Verify after the call
-await systemUnderTest.DoWork();
-mockService.Verify(s => s.Method(It.IsAny<string>()), Times.Once);
+    // Simulate user actions
+    progress.CompletedLessons.Add("lesson-01");
+
+    // Assert expected state
+    progress.CompletedLessons.Should().Contain("lesson-01");
+}
 ```
 
 ---
 
 ## Best Practices
 
-1. **One Assert Per Test** (when possible)
-   - Tests should verify one behavior
-   - Makes failures easier to diagnose
-
-2. **Descriptive Test Names**
-   - Format: `MethodName_ExpectedBehavior_WhenCondition`
-   - Example: `SaveProgressAsync_CreatesNewRecord_WhenNoExistingProgress`
-
-3. **Arrange-Act-Assert**
-   - Always use AAA pattern
-   - Separate sections with comments
-
-4. **Clean Up Resources**
-   - Dispose contexts and fixtures
-   - Implement IDisposable properly
-
-5. **Test Both Success and Failure**
-   - Happy path tests
-   - Error handling tests
-   - Edge cases
-
-6. **Avoid Test Interdependence**
-   - Each test should run independently
-   - Use fresh database per test
-   - Don't rely on test execution order
-
-7. **Use TestDataGenerator**
-   - Consistent test data
-   - Reduces boilerplate
-   - Easy to maintain
+1. **Use Theory for multi-language tests** - Reduces duplication
+2. **Load courses gracefully** - Return early if content not found
+3. **Test behavior, not implementation** - Focus on expected outcomes
+4. **Use descriptive test names** - Format: `Context_Condition_ExpectedResult`
+5. **Keep tests independent** - No shared state between tests
+6. **Test edge cases** - Empty inputs, nulls, boundaries
 
 ---
 
-## Future Enhancements
+## Dependencies
 
-### Additional Test Coverage
-
-- [ ] CoursePageViewModel tests
-- [ ] Challenge ViewModel tests (all 6 types)
-- [ ] ErrorHandlerService unit tests
-- [ ] SettingsService unit tests
-- [ ] CourseService unit tests
-- [ ] NavigationService tests
-
-### Integration Tests
-
-- [ ] Multi-course achievement workflow
-- [ ] Settings persistence workflow
-- [ ] Error recovery workflow
-- [ ] Database migration tests
-
-### Performance Tests
-
-- [ ] Large dataset handling
-- [ ] Query performance benchmarks
-- [ ] Memory usage tests
-
-### UI Tests (Future)
-
-- [ ] WPF UI component tests
-- [ ] Visual regression tests
-- [ ] Accessibility tests
+- **xUnit 2.6.3** - Test framework
+- **FluentAssertions 6.12.0** - Assertion library
+- **Moq 4.20.70** - Mocking (for future expansion)
+- **Microsoft.CodeAnalysis.CSharp.Scripting 4.8.0** - Roslyn C# execution
+- **coverlet.collector 6.0.0** - Code coverage
 
 ---
 
 ## Resources
 
-- **xUnit Documentation**: https://xunit.net/docs/getting-started/netcore/cmdline
-- **Moq Quickstart**: https://github.com/moq/moq4/wiki/Quickstart
-- **FluentAssertions**: https://fluentassertions.com/introduction
-- **EF Core Testing**: https://learn.microsoft.com/en-us/ef/core/testing/
+- [xUnit Documentation](https://xunit.net/docs/getting-started/netcore/cmdline)
+- [FluentAssertions](https://fluentassertions.com/introduction)
+- [Roslyn Scripting](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples)
 
 ---
 
-**Test Suite Version**: 1.0.0
-**Last Updated**: 2025-11-18
-**Total Tests**: 64
-**Overall Status**: ✅ Phase 9 Core Complete
+**Test Suite Version**: 2.0.0
+**Last Updated**: 2025-12-29
+**Total Tests**: 130+
+**Overall Status**: ✅ Comprehensive E2E Coverage
