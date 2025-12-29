@@ -4263,7 +4263,7 @@
             {
               "type": "THEORY",
               "title": "The pom.xml File - Project Object Model",
-              "content": "pom.xml is the heart of a Maven project:\n\n<project>\n    <groupId>com.yourcompany</groupId>\n    <artifactId>my-app</artifactId>\n    <version>1.0.0</version>\n    \n    <properties>\n        <maven.compiler.source>17</maven.compiler.source>\n        <maven.compiler.target>17</maven.compiler.target>\n    </properties>\n    \n    <dependencies>\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n\nKEY SECTIONS:\n- groupId: Your organization (like package)\n- artifactId: Project name\n- version: Your project version\n- properties: Configuration (Java version, etc.)\n- dependencies: External libraries you need"
+              "content": "pom.xml is the heart of a Maven project:\n\n<project>\n    <groupId>com.yourcompany</groupId>\n    <artifactId>my-app</artifactId>\n    <version>1.0.0</version>\n    \n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n    \n    <dependencies>\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n\nKEY SECTIONS:\n- groupId: Your organization (like package)\n- artifactId: Project name\n- version: Your project version\n- properties: Configuration (Java version, etc.)\n- dependencies: External libraries you need"
             },
             {
               "type": "THEORY",
@@ -4278,7 +4278,7 @@
             {
               "type": "THEORY",
               "title": "💻 Real pom.xml Example",
-              "content": "```java\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0\n         http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.example</groupId>\n    <artifactId>my-web-app</artifactId>\n    <version>1.0-SNAPSHOT</version>\n\n    <properties>\n        <maven.compiler.source>17</maven.compiler.source>\n        <maven.compiler.target>17</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <!-- JSON parsing -->\n        <dependency>\n            <groupId>com.google.code.gson</groupId>\n            <artifactId>gson</artifactId>\n            <version>2.10.1</version>\n        </dependency>\n\n        <!-- Testing -->\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n```"
+              "content": "```java\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0\n         http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.example</groupId>\n    <artifactId>my-web-app</artifactId>\n    <version>1.0-SNAPSHOT</version>\n\n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <!-- JSON parsing -->\n        <dependency>\n            <groupId>com.google.code.gson</groupId>\n            <artifactId>gson</artifactId>\n            <version>2.10.1</version>\n        </dependency>\n\n        <!-- Testing -->\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n```"
             }
           ],
           "challenges": []
@@ -5336,7 +5336,7 @@
             {
               "type": "THEORY",
               "title": "Use official Java image",
-              "content": "FROM eclipse-temurin:17-jre"
+              "content": "FROM eclipse-temurin:23-jre"
             },
             {
               "type": "THEORY",
@@ -5366,22 +5366,22 @@
             {
               "type": "THEORY",
               "title": "Stage 1: Build",
-              "content": "FROM eclipse-temurin:17-jdk as builder\nWORKDIR /app\nCOPY pom.xml .\nCOPY src ./src\nRUN ./mvnw clean package -DskipTests"
+              "content": "FROM eclipse-temurin:23-jdk as builder\nWORKDIR /app\nCOPY pom.xml .\nCOPY src ./src\nRUN ./mvnw clean package -DskipTests"
             },
             {
               "type": "THEORY",
               "title": "Stage 2: Run",
-              "content": "FROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY --from=builder /app/target/myapp.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nWhy multi-stage?\n✓ Smaller image (no Maven, no source code)\n✓ Faster downloads\n✓ More secure (fewer tools = less attack surface)\n\nImage sizes:\n- Single stage with JDK: ~500 MB\n- Multi-stage with JRE: ~250 MB\n\nLayer optimization (Spring Boot 2.3+):\nSeparate layers for dependencies vs your code:"
+              "content": "FROM eclipse-temurin:23-jre\nWORKDIR /app\nCOPY --from=builder /app/target/myapp.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nWhy multi-stage?\n✓ Smaller image (no Maven, no source code)\n✓ Faster downloads\n✓ More secure (fewer tools = less attack surface)\n\nImage sizes:\n- Single stage with JDK: ~500 MB\n- Multi-stage with JRE: ~250 MB\n\nLayer optimization (Spring Boot 2.3+):\nSeparate layers for dependencies vs your code:"
             },
             {
               "type": "THEORY",
               "title": "Extract layers",
-              "content": "FROM eclipse-temurin:17-jdk as builder\nWORKDIR /app\nCOPY target/myapp.jar app.jar\nRUN java -Djarmode=layertools -jar app.jar extract"
+              "content": "FROM eclipse-temurin:23-jdk as builder\nWORKDIR /app\nCOPY target/myapp.jar app.jar\nRUN java -Djarmode=layertools -jar app.jar extract"
             },
             {
               "type": "THEORY",
               "title": "Run with layers",
-              "content": "FROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY --from=builder /app/dependencies/ ./\nCOPY --from=builder /app/spring-boot-loader/ ./\nCOPY --from=builder /app/snapshot-dependencies/ ./\nCOPY --from=builder /app/application/ ./\nENTRYPOINT [\"java\", \"org.springframework.boot.loader.JarLauncher\"]\n\nBenefit: Dependencies cached, only your code layer changes!"
+              "content": "FROM eclipse-temurin:23-jre\nWORKDIR /app\nCOPY --from=builder /app/dependencies/ ./\nCOPY --from=builder /app/spring-boot-loader/ ./\nCOPY --from=builder /app/snapshot-dependencies/ ./\nCOPY --from=builder /app/application/ ./\nENTRYPOINT [\"java\", \"org.springframework.boot.loader.JarLauncher\"]\n\nBenefit: Dependencies cached, only your code layer changes!"
             },
             {
               "type": "THEORY",
@@ -5416,7 +5416,7 @@
             {
               "type": "THEORY",
               "title": "💻 Complete Production Deployment",
-              "content": "```java\nSTEP 1: Build the application\n./mvnw clean package\n\nSTEP 2: Create Dockerfile\nFROM eclipse-temurin:17-jre\nWORKDIR /app\nCOPY target/myapp.jar app.jar\nEXPOSE 8080\nHEALTHCHECK --interval=30s --timeout=3s \\\n  CMD curl -f http://localhost:8080/actuator/health || exit 1\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nSTEP 3: Create docker-compose.yml\nversion: '3.8'\nservices:\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_DB: myapp\n      POSTGRES_USER: appuser\n      POSTGRES_PASSWORD: ${DB_PASSWORD}\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    \n  app:\n    build: .\n    ports:\n      - \"8080:8080\"\n    environment:\n      SPRING_PROFILES_ACTIVE: prod\n      DATABASE_URL: jdbc:postgresql://db:5432/myapp\n      DATABASE_USERNAME: appuser\n      DATABASE_PASSWORD: ${DB_PASSWORD}\n    depends_on:\n      - db\n    restart: unless-stopped\n\nvolumes:\n  postgres-data:\n\nSTEP 4: Create .env file (DON'T commit this!)\nDB_PASSWORD=your-secure-password-here\n\nSTEP 5: Deploy\ndocker-compose up -d\n\nSTEP 6: Check health\ncurl http://localhost:8080/actuator/health\n\nSTEP 7: View logs\ndocker-compose logs -f app\n\nSTEP 8: Update application\n./mvnw clean package\ndocker-compose build app\ndocker-compose up -d app\n```"
+              "content": "```java\nSTEP 1: Build the application\n./mvnw clean package\n\nSTEP 2: Create Dockerfile\nFROM eclipse-temurin:23-jre\nWORKDIR /app\nCOPY target/myapp.jar app.jar\nEXPOSE 8080\nHEALTHCHECK --interval=30s --timeout=3s \\\n  CMD curl -f http://localhost:8080/actuator/health || exit 1\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nSTEP 3: Create docker-compose.yml\nversion: '3.8'\nservices:\n  db:\n    image: postgres:15\n    environment:\n      POSTGRES_DB: myapp\n      POSTGRES_USER: appuser\n      POSTGRES_PASSWORD: ${DB_PASSWORD}\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    \n  app:\n    build: .\n    ports:\n      - \"8080:8080\"\n    environment:\n      SPRING_PROFILES_ACTIVE: prod\n      DATABASE_URL: jdbc:postgresql://db:5432/myapp\n      DATABASE_USERNAME: appuser\n      DATABASE_PASSWORD: ${DB_PASSWORD}\n    depends_on:\n      - db\n    restart: unless-stopped\n\nvolumes:\n  postgres-data:\n\nSTEP 4: Create .env file (DON'T commit this!)\nDB_PASSWORD=your-secure-password-here\n\nSTEP 5: Deploy\ndocker-compose up -d\n\nSTEP 6: Check health\ncurl http://localhost:8080/actuator/health\n\nSTEP 7: View logs\ndocker-compose logs -f app\n\nSTEP 8: Update application\n./mvnw clean package\ndocker-compose build app\ndocker-compose up -d app\n```"
             },
             {
               "type": "THEORY",
