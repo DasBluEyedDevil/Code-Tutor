@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using CodeTutor.Wpf.Models;
@@ -53,6 +54,9 @@ public partial class CodingChallenge : UserControl
         };
 
         UpdateHintButtonState();
+
+        // Check runtime availability asynchronously
+        _ = CheckRuntimeAsync();
     }
 
     private static IHighlightingDefinition? GetHighlightingForLanguage(string language)
@@ -69,6 +73,20 @@ public partial class CodingChallenge : UserControl
             "dart" or "flutter" => HighlightingManager.Instance.GetDefinition("C#"), // Close enough
             _ => null
         };
+    }
+
+    private async Task CheckRuntimeAsync()
+    {
+        var runtimeInfo = await _executionService.GetRuntimeInfoAsync(_challenge.Language);
+        StatusBar.SetRuntimeStatus(runtimeInfo.IsAvailable, runtimeInfo.Version);
+
+        if (!runtimeInfo.IsAvailable && !string.IsNullOrEmpty(runtimeInfo.InstallHint))
+        {
+            // Show a subtle warning in the output panel
+            OutputPanel.Visibility = Visibility.Visible;
+            OutputText.Text = $"Note: {runtimeInfo.InstallHint}";
+            OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentYellowBrush");
+        }
     }
 
     private void UpdateHintButtonState()
