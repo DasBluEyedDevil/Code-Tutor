@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CodeTutor.Wpf.Services;
@@ -9,7 +10,7 @@ public record RuntimeInfo(string Language, bool IsAvailable, string Version, str
 
 public class RuntimeDetectionService
 {
-    private readonly Dictionary<string, RuntimeInfo> _cache = new();
+    private readonly ConcurrentDictionary<string, RuntimeInfo> _cache = new();
 
     public async Task<RuntimeInfo> CheckRuntimeAsync(string language)
     {
@@ -60,14 +61,28 @@ public class RuntimeDetectionService
 
             var output = await process.StandardOutput.ReadToEndAsync();
             var error = await process.StandardError.ReadToEndAsync();
-            await process.WaitForExitAsync();
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            try
+            {
+                await process.WaitForExitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                process.Kill(true);
+                return new RuntimeInfo(language, false, "", installHint);
+            }
 
             var version = !string.IsNullOrWhiteSpace(output) ? output.Trim().Split('\n')[0] :
                           !string.IsNullOrWhiteSpace(error) ? error.Trim().Split('\n')[0] : "Unknown";
 
             return new RuntimeInfo(language, process.ExitCode == 0, version, "");
         }
-        catch
+        catch (OperationCanceledException)
+        {
+            return new RuntimeInfo(language, false, "", installHint);
+        }
+        catch (Exception)
         {
             return new RuntimeInfo(language, false, "", installHint);
         }
