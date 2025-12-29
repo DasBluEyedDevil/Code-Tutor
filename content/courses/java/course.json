@@ -653,6 +653,87 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "epoch-0-lesson-6",
+          "title": "Lesson 0.6: String Templates - Modern Text Formatting (Java 23+)",
+          "moduleId": "module-01",
+          "order": 6,
+          "estimatedMinutes": 25,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: String Concatenation is Ugly",
+              "content": "Building strings with data in Java has always been awkward:\n\nString name = \"Alice\";\nint age = 25;\ndouble balance = 1234.56;\n\n// Option 1: Concatenation - hard to read\nString msg = \"Hello, \" + name + \"! You are \" + age + \" years old.\";\n\n// Option 2: String.format - verbose\nString msg = String.format(\"Hello, %s! You are %d years old.\", name, age);\n\n// Option 3: StringBuilder - even more verbose\nStringBuilder sb = new StringBuilder();\nsb.append(\"Hello, \").append(name).append(\"!\");\n\nProblems with these approaches:\n1. Concatenation: Easy to miss spaces, quotes everywhere, hard to see the final result\n2. format(): Must remember format specifiers (%s, %d, %f), positional matching is error-prone\n3. StringBuilder: Way too verbose for simple cases\n\nJava 23 introduces STRING TEMPLATES to solve this elegantly!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "String Templates with STR",
+              "content": "String Templates let you embed expressions directly in strings:\n\nString name = \"Alice\";\nint age = 25;\n\n// Old way (concatenation)\nString msg = \"Hello, \" + name + \"! You are \" + age + \" years old.\";\n\n// New way (String Template)\nString msg = STR.\"Hello, \\{name}! You are \\{age} years old.\";\n\nThe syntax:\n• STR. - The template processor (required)\n• \\{expression} - Embedded expression (note the backslash!)\n• The result is a regular String\n\nKey benefits:\n1. What you see is what you get - the template looks like the output\n2. Expressions are clearly marked with \\{}\n3. No format specifiers to remember\n4. Compile-time type safety\n5. Any expression works inside \\{} - variables, method calls, math!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "String Templates in Action",
+              "content": "public class StringTemplateDemo {\n    public static void main(String[] args) {\n        // Basic interpolation\n        String name = \"Alice\";\n        int age = 25;\n        String greeting = STR.\"Hello, \\{name}!\";\n        \n        // Multiple expressions\n        String info = STR.\"\\{name} is \\{age} years old.\";\n        \n        // Expressions with method calls\n        String upper = STR.\"Name in caps: \\{name.toUpperCase()}\";\n        \n        // Math expressions\n        int x = 10, y = 20;\n        String math = STR.\"\\{x} + \\{y} = \\{x + y}\";\n        \n        // Complex expressions\n        String status = STR.\"Status: \\{age >= 18 ? \"Adult\" : \"Minor\"}\";\n        \n        System.out.println(greeting);  // Hello, Alice!\n        System.out.println(info);      // Alice is 25 years old.\n        System.out.println(upper);     // Name in caps: ALICE\n        System.out.println(math);      // 10 + 20 = 30\n    }\n}\n\nThe \\{} can contain ANY valid Java expression!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Multi-line String Templates",
+              "content": "String Templates combine beautifully with text blocks for multi-line strings:\n\nString name = \"Alice\";\nint items = 3;\ndouble total = 45.99;\n\n// Multi-line template with text block\nString receipt = STR.\"\"\"\n    ================================\n    Customer: \\{name}\n    Items: \\{items}\n    Total: $\\{String.format(\"%.2f\", total)}\n    ================================\n    Thank you for shopping with us!\n    \"\"\";\n\nThis creates a perfectly formatted receipt with real data embedded.\n\nYou can use any expression in multi-line templates:\n• Method calls: \\{name.toUpperCase()}\n• Formatting: \\{String.format(\"%.2f\", price)}\n• Conditionals: \\{count > 0 ? \"In stock\" : \"Out of stock\"}\n• Calculations: \\{price * quantity}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When to Use String Templates",
+              "content": "Use String Templates (STR.\"\") when:\n✓ Building messages with embedded data\n✓ Creating formatted output\n✓ Generating dynamic text (logs, reports, emails)\n✓ Any time you would use concatenation or format()\n\nThe syntax to remember:\n• STR.\"text \\{expression} more text\"\n• Always use STR. before the string\n• Use \\{} to embed expressions (backslash + braces)\n• Works with both regular strings and text blocks\n\nCompared to alternatives:\n• More readable than concatenation\n• Safer than format() (compile-time checking)\n• More concise than StringBuilder\n\nNote: String Templates were previewed in Java 21-22 and stabilized in Java 23. Make sure your project uses Java 23+!"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-0-lesson-6-string-template-basic",
+              "title": "Basic String Template",
+              "description": "Create a method greet(String name, int age) that returns a greeting using String Templates.\n\nThe method should return: \"Hello, [name]! You are [age] years old.\"\n\nFor example, greet(\"Alice\", 25) should return \"Hello, Alice! You are 25 years old.\"\n\nUse the STR.\"...\" syntax with \\{expression} for embedding values.",
+              "instructions": "Create a method greet(String name, int age) that uses a String Template to return a greeting message.",
+              "starterCode": "// String Templates (Java 23+)\n// Write your code below\n\npublic class Solution {\n    public static String greet(String name, int age) {\n        // Use STR.\"...\" with \\{expression} syntax\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(greet(\"Alice\", 25));\n    }\n}",
+              "solution": "// Solution: String Templates\npublic class Solution {\n    public static String greet(String name, int age) {\n        return STR.\"Hello, \\{name}! You are \\{age} years old.\";\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(greet(\"Alice\", 25));\n    }\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-0-lesson-6-string-template-basic-test-1",
+                  "description": "Should return 'Hello, Alice! You are 25 years old.'",
+                  "expectedOutput": "Hello, Alice! You are 25 years old.",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with STR.\" and embed variables using \\{variableName}"
+                },
+                {
+                  "level": 2,
+                  "text": "The syntax is: return STR.\"Hello, \\{name}! You are \\{age} years old.\";"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting the STR. prefix before the string",
+                  "consequence": "Compilation error - string templates require a processor",
+                  "correction": "Always use STR.\"...\" for string templates"
+                },
+                {
+                  "mistake": "Using ${} instead of \\{}",
+                  "consequence": "Syntax error - Java uses backslash, not dollar sign",
+                  "correction": "Use \\{expression} for embedded expressions"
+                },
+                {
+                  "mistake": "Forgetting the backslash before the brace",
+                  "consequence": "The braces are treated as literal characters",
+                  "correction": "Always use \\{ to start an embedded expression"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     },
