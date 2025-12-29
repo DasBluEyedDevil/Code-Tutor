@@ -7228,6 +7228,124 @@
           "challenges": []
         },
         {
+          "id": "8.1.5",
+          "title": "Module 8, Lesson 1.5: Supabase - The Open Source Alternative",
+          "moduleId": "module-08",
+          "order": 1.5,
+          "estimatedMinutes": 75,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Consider Supabase?",
+              "content": "\n### Avoiding Vendor Lock-In\n\nIn Module 8 Lesson 1, we introduced Firebase as our primary backend. It's excellent for rapid development. However, **senior developers should understand alternatives** for these reasons:\n\n1. **Cost at Scale**: Firebase pricing can surprise you as you grow\n2. **Data Ownership**: Your data lives on Google's servers\n3. **Flexibility**: Sometimes you need raw SQL power\n4. **Self-Hosting**: Some projects require on-premise deployment\n5. **Open Source**: Community-driven development and transparency\n\n### What is Supabase?\n\n**Supabase = Open Source Firebase Alternative**\n\n| Feature | Firebase | Supabase |\n|---------|----------|----------|\n| Database | Firestore (NoSQL) | PostgreSQL (SQL) |\n| Auth | Firebase Auth | GoTrue (compatible) |\n| Storage | Cloud Storage | S3-compatible |\n| Real-time | Firestore listeners | Postgres Changes |\n| Self-host | No | Yes |\n| Open Source | No | Yes |\n| Pricing | Pay per operation | Pay per resource |\n\n**When to choose Supabase:**\n- You need complex SQL queries (joins, aggregations)\n- You want to self-host or own your infrastructure\n- You prefer open source solutions\n- You're coming from a SQL background\n\n**When to stick with Firebase:**\n- Rapid prototyping (slightly faster setup)\n- Deep Google ecosystem integration\n- Offline-first with automatic sync\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setting Up Supabase",
+              "content": "\n### Step 1: Create a Supabase Project\n\n1. Go to https://supabase.com\n2. Sign up (free tier is generous)\n3. Click \"New Project\"\n4. Choose organization, name, password, region\n5. Wait 2 minutes for database provisioning\n\n### Step 2: Get Your Credentials\n\nIn your Supabase dashboard:\n1. Go to **Settings** > **API**\n2. Copy:\n   - **Project URL**: `https://xxxxx.supabase.co`\n   - **anon/public key**: `eyJhbGciOi...`\n\n### Step 3: Add to Flutter Project\n\n```yaml\n# pubspec.yaml\ndependencies:\n  supabase_flutter: ^2.3.0\n```\n\nRun: `flutter pub get`\n\n### Step 4: Initialize Supabase\n\n```dart\n// lib/main.dart\nimport 'package:flutter/material.dart';\nimport 'package:supabase_flutter/supabase_flutter.dart';\n\nFuture<void> main() async {\n  WidgetsFlutterBinding.ensureInitialized();\n  \n  await Supabase.initialize(\n    url: 'https://YOUR_PROJECT.supabase.co',\n    anonKey: 'YOUR_ANON_KEY',\n  );\n  \n  runApp(const MyApp());\n}\n\n// Access client anywhere\nfinal supabase = Supabase.instance.client;\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Authentication with Supabase",
+              "content": "\n### Sign Up\n\n```dart\nFuture<void> signUp(String email, String password) async {\n  final response = await supabase.auth.signUp(\n    email: email,\n    password: password,\n  );\n  \n  if (response.user != null) {\n    print('User created: ${response.user!.email}');\n  }\n}\n```\n\n### Sign In\n\n```dart\nFuture<void> signIn(String email, String password) async {\n  final response = await supabase.auth.signInWithPassword(\n    email: email,\n    password: password,\n  );\n  \n  if (response.session != null) {\n    print('Logged in: ${response.user!.email}');\n  }\n}\n```\n\n### Sign Out\n\n```dart\nFuture<void> signOut() async {\n  await supabase.auth.signOut();\n}\n```\n\n### Listen to Auth Changes\n\n```dart\nsupabase.auth.onAuthStateChange.listen((data) {\n  final session = data.session;\n  if (session != null) {\n    // User logged in\n    navigateToHome();\n  } else {\n    // User logged out\n    navigateToLogin();\n  }\n});\n```\n\n",
+              "code": "// Complete auth service\nclass SupabaseAuthService {\n  final _supabase = Supabase.instance.client;\n  \n  User? get currentUser => _supabase.auth.currentUser;\n  \n  Stream<AuthState> get authStateChanges => \n      _supabase.auth.onAuthStateChange;\n  \n  Future<AuthResponse> signUp(String email, String password) =>\n      _supabase.auth.signUp(email: email, password: password);\n  \n  Future<AuthResponse> signIn(String email, String password) =>\n      _supabase.auth.signInWithPassword(email: email, password: password);\n  \n  Future<void> signOut() => _supabase.auth.signOut();\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Database Operations (CRUD)",
+              "content": "\n### Create a Table (in Supabase Dashboard)\n\n1. Go to **Table Editor** > **New Table**\n2. Name: `todos`\n3. Columns:\n   - `id` (int8, primary key, auto-increment)\n   - `user_id` (uuid, foreign key to auth.users)\n   - `title` (text)\n   - `completed` (bool, default: false)\n   - `created_at` (timestamptz, default: now())\n\n### Insert (Create)\n\n```dart\nFuture<void> createTodo(String title) async {\n  await supabase.from('todos').insert({\n    'title': title,\n    'user_id': supabase.auth.currentUser!.id,\n  });\n}\n```\n\n### Select (Read)\n\n```dart\nFuture<List<Map<String, dynamic>>> getTodos() async {\n  final response = await supabase\n      .from('todos')\n      .select()\n      .eq('user_id', supabase.auth.currentUser!.id)\n      .order('created_at', ascending: false);\n  \n  return response;\n}\n```\n\n### Update\n\n```dart\nFuture<void> toggleTodo(int id, bool completed) async {\n  await supabase\n      .from('todos')\n      .update({'completed': completed})\n      .eq('id', id);\n}\n```\n\n### Delete\n\n```dart\nFuture<void> deleteTodo(int id) async {\n  await supabase.from('todos').delete().eq('id', id);\n}\n```\n\n",
+              "code": "// Compare to Firestore:\n// Firebase:  FirebaseFirestore.instance.collection('todos').add(data)\n// Supabase:  supabase.from('todos').insert(data)\n\n// Firebase:  .where('userId', isEqualTo: uid).get()\n// Supabase:  .select().eq('user_id', uid)",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-Time Subscriptions",
+              "content": "\n### Listen to Changes\n\n```dart\nclass TodosProvider extends ChangeNotifier {\n  List<Map<String, dynamic>> _todos = [];\n  RealtimeChannel? _subscription;\n  \n  List<Map<String, dynamic>> get todos => _todos;\n  \n  void subscribeTodos() {\n    // Initial fetch\n    _fetchTodos();\n    \n    // Real-time subscription\n    _subscription = supabase\n        .channel('todos_changes')\n        .onPostgresChanges(\n          event: PostgresChangeEvent.all,\n          schema: 'public',\n          table: 'todos',\n          callback: (payload) {\n            _fetchTodos(); // Refresh on any change\n          },\n        )\n        .subscribe();\n  }\n  \n  Future<void> _fetchTodos() async {\n    final response = await supabase\n        .from('todos')\n        .select()\n        .order('created_at');\n    \n    _todos = List<Map<String, dynamic>>.from(response);\n    notifyListeners();\n  }\n  \n  @override\n  void dispose() {\n    _subscription?.unsubscribe();\n    super.dispose();\n  }\n}\n```\n\n",
+              "code": "// Real-time is automatic when you subscribe!\n// Any INSERT, UPDATE, or DELETE triggers the callback",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "File Storage",
+              "content": "\n### Upload a File\n\n```dart\nimport 'dart:io';\n\nFuture<String> uploadImage(File file, String fileName) async {\n  final bytes = await file.readAsBytes();\n  \n  await supabase.storage\n      .from('avatars') // bucket name\n      .uploadBinary(\n        fileName,\n        bytes,\n        fileOptions: const FileOptions(\n          contentType: 'image/png',\n          upsert: true,\n        ),\n      );\n  \n  // Get public URL\n  final url = supabase.storage\n      .from('avatars')\n      .getPublicUrl(fileName);\n  \n  return url;\n}\n```\n\n### Download/Display\n\n```dart\n// Just use the public URL in Image.network\nImage.network(\n  supabase.storage.from('avatars').getPublicUrl('user-123.png'),\n  fit: BoxFit.cover,\n)\n```\n\n",
+              "code": "// Storage comparison:\n// Firebase:  FirebaseStorage.instance.ref(path).putFile(file)\n// Supabase:  supabase.storage.from(bucket).uploadBinary(path, bytes)",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Row Level Security (RLS)",
+              "content": "\n### Supabase's Killer Feature\n\nRow Level Security lets you define access rules **at the database level**:\n\n```sql\n-- Enable RLS\nALTER TABLE todos ENABLE ROW LEVEL SECURITY;\n\n-- Users can only see their own todos\nCREATE POLICY \"Users can view own todos\" ON todos\n  FOR SELECT USING (auth.uid() = user_id);\n\n-- Users can only insert their own todos\nCREATE POLICY \"Users can insert own todos\" ON todos\n  FOR INSERT WITH CHECK (auth.uid() = user_id);\n\n-- Users can only update their own todos\nCREATE POLICY \"Users can update own todos\" ON todos\n  FOR UPDATE USING (auth.uid() = user_id);\n\n-- Users can only delete their own todos\nCREATE POLICY \"Users can delete own todos\" ON todos\n  FOR DELETE USING (auth.uid() = user_id);\n```\n\n**This is more secure than client-side checks** - even if someone bypasses your app, the database enforces the rules!\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Firebase vs Supabase: Quick Reference",
+              "content": "\n| Operation | Firebase | Supabase |\n|-----------|----------|----------|\n| **Init** | `Firebase.initializeApp()` | `Supabase.initialize(url, key)` |\n| **Auth Sign Up** | `createUserWithEmailAndPassword()` | `auth.signUp(email, password)` |\n| **Auth Sign In** | `signInWithEmailAndPassword()` | `auth.signInWithPassword()` |\n| **Insert** | `collection('x').add(data)` | `from('x').insert(data)` |\n| **Query** | `where('field', '==', val)` | `.eq('field', val)` |\n| **Real-time** | `snapshots()` | `channel().onPostgresChanges()` |\n| **Storage Upload** | `ref(path).putFile(file)` | `storage.from(bucket).upload()` |\n\n### Migration Path\n\nIf you need to migrate from Firebase to Supabase:\n1. Export Firestore data as JSON\n2. Transform to relational format\n3. Import to Supabase using `psql` or Dashboard\n4. Update Flutter code (similar APIs make this straightforward)\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What Did We Learn?",
+              "content": "\n- Why backend alternatives matter (vendor lock-in)\n- Supabase as open-source Firebase alternative\n- Setting up Supabase in Flutter\n- Authentication with Supabase\n- CRUD operations with PostgreSQL\n- Real-time subscriptions\n- File storage\n- Row Level Security for database-level protection\n- Firebase vs Supabase comparison\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "8.1.5-challenge-0",
+              "title": "Supabase Todo App",
+              "description": "Build a complete todo app with Supabase backend:\n\n1. Set up Supabase project and Flutter integration\n2. Create 'todos' table with RLS policies\n3. Implement authentication (sign up, sign in, sign out)\n4. Implement CRUD operations for todos\n5. Add real-time sync so changes appear instantly",
+              "instructions": "Build a complete todo app with Supabase:\n\n1. Create Supabase project at supabase.com\n2. Add supabase_flutter package\n3. Initialize in main.dart\n4. Create auth service with sign up/in/out\n5. Create todos table with user_id foreign key\n6. Enable RLS with user-specific policies\n7. Implement TodoService with CRUD\n8. Subscribe to real-time changes",
+              "starterCode": "import 'package:supabase_flutter/supabase_flutter.dart';\n\n// TODO: Initialize Supabase\n// TODO: Create AuthService\n// TODO: Create TodoService with CRUD\n// TODO: Add real-time subscription",
+              "solution": "import 'package:flutter/material.dart';\nimport 'package:supabase_flutter/supabase_flutter.dart';\n\nfinal supabase = Supabase.instance.client;\n\nclass TodoService {\n  Future<List<Map<String, dynamic>>> getTodos() async {\n    return await supabase\n        .from('todos')\n        .select()\n        .eq('user_id', supabase.auth.currentUser!.id)\n        .order('created_at');\n  }\n  \n  Future<void> addTodo(String title) async {\n    await supabase.from('todos').insert({\n      'title': title,\n      'user_id': supabase.auth.currentUser!.id,\n    });\n  }\n  \n  Future<void> toggleTodo(int id, bool completed) async {\n    await supabase\n        .from('todos')\n        .update({'completed': completed})\n        .eq('id', id);\n  }\n  \n  Future<void> deleteTodo(int id) async {\n    await supabase.from('todos').delete().eq('id', id);\n  }\n  \n  RealtimeChannel subscribeToChanges(VoidCallback onUpdate) {\n    return supabase\n        .channel('todos')\n        .onPostgresChanges(\n          event: PostgresChangeEvent.all,\n          schema: 'public',\n          table: 'todos',\n          callback: (_) => onUpdate(),\n        )\n        .subscribe();\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Supabase initialized correctly",
+                  "expectedOutput": "Supabase client available",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "CRUD operations work",
+                  "expectedOutput": "Create, read, update, delete todos",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Real-time subscription active",
+                  "expectedOutput": "Changes sync automatically",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Remember to enable RLS on your todos table in Supabase dashboard"
+                },
+                {
+                  "level": 2,
+                  "text": "Use .eq() for WHERE clauses, .order() for sorting"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to enable RLS",
+                  "consequence": "Data exposed to all users",
+                  "correction": "Enable RLS and add policies in Supabase dashboard"
+                },
+                {
+                  "mistake": "Not unsubscribing from channels",
+                  "consequence": "Memory leaks",
+                  "correction": "Call channel.unsubscribe() in dispose()"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
           "id": "8.2",
           "title": "Module 8, Lesson 2: Firebase Authentication",
           "moduleId": "module-08",
