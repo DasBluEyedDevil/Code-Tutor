@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ public partial class LessonPage : UserControl
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
     private readonly IProgressService _progressService = new ProgressService();
+    private readonly List<Controls.CodingChallenge> _challengeControls = new();
 
     public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation)
     {
@@ -58,6 +60,8 @@ public partial class LessonPage : UserControl
         foreach (var challenge in _lesson.Challenges)
         {
             var challengeControl = new Controls.CodingChallenge(challenge);
+            challengeControl.ChallengeCompleted += OnChallengeCompleted;
+            _challengeControls.Add(challengeControl);
             ContentPanel.Children.Add(challengeControl);
         }
     }
@@ -163,5 +167,20 @@ public partial class LessonPage : UserControl
         await _progressService.MarkLessonCompleteAsync(_lesson.Id);
         CompleteButton.Content = new TextBlock { Text = "Completed" };
         CompleteButton.IsEnabled = false;
+    }
+
+    private async void OnChallengeCompleted(object? sender, string challengeId)
+    {
+        // Check if all challenges are now complete
+        if (_challengeControls.Count > 0 && _challengeControls.All(c => c.IsCompleted))
+        {
+            // Auto-mark lesson as complete
+            if (!await _progressService.IsLessonCompleteAsync(_lesson.Id))
+            {
+                await _progressService.MarkLessonCompleteAsync(_lesson.Id);
+                CompleteButton.Content = new TextBlock { Text = "Completed" };
+                CompleteButton.IsEnabled = false;
+            }
+        }
     }
 }
