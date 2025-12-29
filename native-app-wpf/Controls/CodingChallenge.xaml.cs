@@ -135,10 +135,19 @@ public partial class CodingChallenge : UserControl
         TestResultsPanel.Visibility = Visibility.Visible;
         TestResultsList.ItemsSource = results;
 
+        bool allPassed = passed == total;
         TestSummary.Text = $"{passed}/{total} tests passed";
-        TestSummary.Foreground = passed == total
+        TestSummary.Foreground = allPassed
             ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
             : (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+
+        // Set panel border and background based on overall result
+        TestResultsPanel.BorderBrush = allPassed
+            ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
+            : (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+        TestResultsPanel.Background = allPassed
+            ? (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush")
+            : (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)
