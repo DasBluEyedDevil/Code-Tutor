@@ -16,6 +16,10 @@ public partial class CodingChallenge : UserControl
     private int _currentHintIndex = 0;
     private readonly string _originalCode;
 
+    public event EventHandler<string>? ChallengeCompleted;
+    public bool IsCompleted { get; private set; }
+    public string ChallengeId => _challenge.Id;
+
     public CodingChallenge(Challenge challenge)
     {
         InitializeComponent();
@@ -148,6 +152,13 @@ public partial class CodingChallenge : UserControl
         TestResultsPanel.Background = allPassed
             ? (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush")
             : (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
+
+        // Fire completion event if all tests pass
+        if (allPassed && !IsCompleted)
+        {
+            IsCompleted = true;
+            ChallengeCompleted?.Invoke(this, _challenge.Id);
+        }
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)
