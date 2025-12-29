@@ -8323,7 +8323,7 @@
             {
               "type": "THEORY",
               "title": "Project Overview",
-              "content": "\nCongratulations on completing Part 6! You've learned Android development from fundamentals to advanced concepts.\n\nNow it's time to build a **complete, production-ready Task Manager App** that integrates everything you've learned:\n- ✅ Jetpack Compose UI\n- ✅ Material Design 3\n- ✅ MVVM architecture\n- ✅ Room database for local storage\n- ✅ Navigation between screens\n- ✅ State management\n- ✅ Animations and gestures\n- ✅ Dependency injection with Hilt\n\n---\n\n"
+              "content": "\nCongratulations on completing Part 6! You've learned mobile development from fundamentals to advanced concepts.\n\nNow it's time to build a **complete, production-ready Task Manager App** that integrates everything you've learned - and runs on both Android and iOS!\n\n- ✅ Compose Multiplatform UI\n- ✅ Material Design 3\n- ✅ MVVM architecture\n- ✅ SQLDelight database for cross-platform storage\n- ✅ Navigation between screens\n- ✅ State management\n- ✅ Animations and gestures\n- ✅ Dependency injection with Koin\n- ✅ **Runs on Android AND iOS!**\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -8338,8 +8338,8 @@
             {
               "type": "THEORY",
               "title": "Project Structure",
-              "content": "\n\n---\n\n",
-              "code": "app/src/main/java/com/example/taskmaster/\n├── data/\n│   ├── local/\n│   │   ├── TaskDatabase.kt\n│   │   ├── TaskDao.kt\n│   │   └── TaskEntity.kt\n│   ├── repository/\n│   │   └── TaskRepository.kt\n│   └── model/\n│       ├── Task.kt\n│       ├── Category.kt\n│       └── Priority.kt\n├── di/\n│   └── AppModule.kt\n├── ui/\n│   ├── theme/\n│   │   ├── Color.kt\n│   │   ├── Theme.kt\n│   │   └── Type.kt\n│   ├── components/\n│   │   ├── TaskItem.kt\n│   │   ├── CategoryChip.kt\n│   │   └── PriorityBadge.kt\n│   ├── screens/\n│   │   ├── home/\n│   │   │   ├── HomeScreen.kt\n│   │   │   └── HomeViewModel.kt\n│   │   ├── addEdit/\n│   │   │   ├── AddEditScreen.kt\n│   │   │   └── AddEditViewModel.kt\n│   │   └── statistics/\n│   │       ├── StatisticsScreen.kt\n│   │       └── StatisticsViewModel.kt\n│   └── navigation/\n│       └── NavGraph.kt\n└── MainActivity.kt",
+              "content": "\nThis is a Compose Multiplatform project structure that works on both Android and iOS:\n\n---\n\n",
+              "code": "composeApp/\n├── src/\n│   ├── commonMain/kotlin/com/example/taskmaster/  # Shared code\n│   │   ├── data/\n│   │   │   ├── local/\n│   │   │   │   ├── TaskDatabase.kt\n│   │   │   │   └── TaskEntity.kt\n│   │   │   ├── repository/\n│   │   │   │   └── TaskRepository.kt\n│   │   │   └── model/\n│   │   │       ├── Task.kt\n│   │   │       ├── Category.kt\n│   │   │       └── Priority.kt\n│   │   ├── di/\n│   │   │   └── AppModule.kt\n│   │   ├── ui/\n│   │   │   ├── theme/\n│   │   │   │   ├── Color.kt\n│   │   │   │   ├── Theme.kt\n│   │   │   │   └── Type.kt\n│   │   │   ├── components/\n│   │   │   │   ├── TaskItem.kt\n│   │   │   │   ├── CategoryChip.kt\n│   │   │   │   └── PriorityBadge.kt\n│   │   │   └── screens/\n│   │   │       ├── HomeScreen.kt\n│   │   │       ├── AddEditScreen.kt\n│   │   │       └── StatisticsScreen.kt\n│   │   └── App.kt  # Main shared composable\n│   ├── androidMain/kotlin/  # Android-specific\n│   │   └── MainActivity.kt\n│   └── iosMain/kotlin/       # iOS-specific\n│       └── MainViewController.kt\niosApp/   # iOS Xcode project\n    └── iosApp.xcodeproj",
               "language": "kotlin"
             },
             {
@@ -8363,13 +8363,18 @@
             },
             {
               "type": "THEORY",
+              "title": "Running on iOS",
+              "content": "\n### Building for iOS\n\n1. **Open in Xcode**: Open the `iosApp` folder in Xcode\n2. **Select Simulator**: Choose an iOS Simulator (e.g., iPhone 15)\n3. **Run**: Click the Run button\n\nOr from command line:\n```bash\n./gradlew :composeApp:iosSimulatorArm64Run\n```\n\n### iOS-Specific Testing\n\nTest these features on iOS Simulator:\n1. Swipe-back navigation works\n2. Safe areas are respected (notch, home indicator)\n3. Keyboard handling is smooth\n4. Data persists across app restarts\n5. Animations run at 60fps\n\n### Cross-Platform Verification\n\n| Feature | Android Test | iOS Test |\n|---------|-------------|----------|\n| Create task | Run on emulator | Run on simulator |\n| Edit task | Verify save | Verify save |\n| Delete (swipe) | Test gesture | Test gesture |\n| Categories | Filter works | Filter works |\n| Search | Results match | Results match |\n| Persistence | Restart app | Restart app |\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Building a complete Android app from scratch\n✅ MVVM architecture in practice\n✅ Room database for local storage\n✅ Navigation between multiple screens\n✅ Material Design 3 implementation\n✅ State management at scale\n✅ Dependency injection with Hilt\n✅ Animations and gestures\n✅ Production-ready code structure\n\n---\n\n"
+              "content": "\n✅ Building a complete multiplatform app from scratch\n✅ MVVM architecture in practice\n✅ SQLDelight database for cross-platform storage\n✅ Navigation between multiple screens\n✅ Material Design 3 implementation\n✅ State management at scale\n✅ Dependency injection with Koin\n✅ Animations and gestures\n✅ Production-ready code structure\n✅ **Running your app on both Android AND iOS!**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Congratulations!",
-              "content": "\nYou've completed **Part 6: Android Development with Kotlin**!\n\nYou can now:\n- Build modern Android apps with Jetpack Compose\n- Implement MVVM architecture\n- Manage local data with Room\n- Create beautiful UIs with Material Design 3\n- Handle navigation and state management\n- Add animations and gestures\n- Structure code for maintainability\n\n**Next Steps**:\n- Publish your app to Google Play\n- Learn advanced topics (WorkManager, Notifications, Services)\n- Explore Kotlin Multiplatform\n- Contribute to open-source Android projects\n- Build your portfolio with real apps\n\n**Keep building, keep learning!** 🚀\n\n"
+              "content": "\nYou've completed **Part 6: Mobile Development with Compose Multiplatform**!\n\nYou can now:\n- Build modern mobile apps with Compose Multiplatform\n- Target both Android AND iOS with shared code\n- Implement MVVM architecture\n- Manage local data with cross-platform databases\n- Create beautiful UIs with Material Design 3\n- Handle navigation and state management\n- Add animations and gestures\n- Structure code for maintainability\n\n**Next Steps**:\n- Publish your app to Google Play AND the App Store\n- Learn advanced topics (WorkManager, Push Notifications)\n- Explore more Kotlin Multiplatform features\n- Contribute to open-source projects\n- Build your portfolio with real apps for both platforms\n\n**Keep building, keep learning!**\n\n"
             }
           ],
           "challenges": []
@@ -8822,12 +8827,12 @@
             {
               "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Advanced layouts: Box, LazyColumn, LazyRow, LazyVerticalGrid\n✅ Arrangement and alignment options for precise positioning\n✅ Spacer for controlling spacing\n✅ Material Design 3 components: Cards, Chips, TextFields, Sliders\n✅ Selection controls: Checkbox, Switch, RadioButton\n✅ Theming system: ColorScheme, Typography, Shapes\n✅ Dynamic colors on Android 12+\n✅ Building complex, professional UIs with Material Design 3\n\n---\n\n"
+              "content": "\n✅ Advanced layouts: Box, LazyColumn, LazyRow, LazyVerticalGrid\n✅ Arrangement and alignment options for precise positioning\n✅ Spacer for controlling spacing\n✅ Material Design 3 components: Cards, Chips, TextFields, Sliders\n✅ Selection controls: Checkbox, Switch, RadioButton\n✅ Theming system: ColorScheme, Typography, Shapes\n✅ Dynamic colors on Android 12+\n✅ Building complex, professional UIs with Material Design 3\n✅ **Platform differences between Android and iOS layouts**\n✅ **Running and testing layouts on iOS Simulator**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.4: State Management**, you'll master:\n- Deep dive into state and recomposition\n- `remember` vs `rememberSaveable`\n- State hoisting patterns\n- ViewModel integration\n- Managing complex state\n- Best practices for state management\n\nGet ready to build truly interactive, data-driven apps!\n\n"
+              "content": "\nIn **Lesson 6.4: State Management**, you'll master:\n- Deep dive into state and recomposition\n- `remember` vs `rememberSaveable`\n- State hoisting patterns\n- ViewModel integration\n- Managing complex state\n- Best practices for state management on both platforms\n\nGet ready to build truly interactive, data-driven apps for Android and iOS!\n\n"
             }
           ],
           "challenges": []
@@ -8848,7 +8853,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nState is the **heart** of any interactive app. When a user clicks a button, types text, or scrolls a list - all of these change state, and the UI must respond.\n\nIn Jetpack Compose, state management is **declarative** and **automatic**. When state changes, Compose intelligently recomposes only the affected parts of the UI.\n\nIn this lesson, you'll master:\n- ✅ Understanding state and recomposition\n- ✅ `remember` vs `rememberSaveable`\n- ✅ State hoisting pattern\n- ✅ ViewModel integration\n- ✅ Different state holders and patterns\n- ✅ Best practices for managing state\n\n---\n\n"
+              "content": "\nState is the **heart** of any interactive app. When a user clicks a button, types text, or scrolls a list - all of these change state, and the UI must respond.\n\nIn Compose Multiplatform, state management is **declarative** and **automatic**. When state changes, Compose intelligently recomposes only the affected parts of the UI. The same state management patterns work on both Android and iOS!\n\nIn this lesson, you'll master:\n- ✅ Understanding state and recomposition\n- ✅ `remember` vs `rememberSaveable`\n- ✅ State hoisting pattern\n- ✅ ViewModel integration (works on both platforms)\n- ✅ Different state holders and patterns\n- ✅ Best practices for managing state\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -8937,8 +8942,13 @@
             },
             {
               "type": "THEORY",
+              "title": "State Management on iOS",
+              "content": "\n### Cross-Platform State\n\nThe same state management code works on both Android and iOS! Your `remember`, `rememberSaveable`, and ViewModel patterns all work identically.\n\n### Platform Differences\n\n| Feature | Android | iOS |\n|---------|---------|-----|\n| **Configuration Changes** | Screen rotation triggers | Less common (iOS handles rotation differently) |\n| **App Lifecycle** | Activity lifecycle | UIViewController lifecycle |\n| **State Restoration** | System-managed | System-managed |\n\n### Running State Examples on iOS\n\n1. Build and run on iOS Simulator\n2. Try rotating the device (Cmd + Left/Right Arrow)\n3. Observe that `rememberSaveable` state is preserved\n4. Test form inputs across configuration changes\n\n### ViewModel on iOS\n\nWith Compose Multiplatform, ViewModels work on iOS too! The state survives configuration changes on both platforms.\n\n```kotlin\n// In commonMain - works on both platforms!\nclass CounterViewModel : ViewModel() {\n    private val _count = MutableStateFlow(0)\n    val count: StateFlow<Int> = _count.asStateFlow()\n    \n    fun increment() {\n        _count.value++\n    }\n}\n\n@Composable\nfun CounterScreen(viewModel: CounterViewModel = viewModel()) {\n    val count by viewModel.count.collectAsState()\n    \n    // This UI and state work on Android AND iOS!\n    Column {\n        Text(\"Count: $count\")\n        Button(onClick = { viewModel.increment() }) {\n            Text(\"+1\")\n        }\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "Why This Matters",
-              "content": "\n### Real-World Impact\n\n**Poor State Management Causes**:\n- 🐛 Bugs: Inconsistent UI state\n- 📉 Performance: Unnecessary recompositions\n- 🔧 Maintenance: Hard to debug and modify\n- 😞 UX: Laggy, unresponsive UI\n\n**Good State Management Delivers**:\n- ✅ Predictable: UI always reflects current state\n- ✅ Fast: Only necessary parts recompose\n- ✅ Testable: Easy to test state logic\n- ✅ Scalable: Handles complex apps\n\n**Statistics**:\n- Apps with proper state management have **60% fewer bugs**\n- **40%** faster development time\n- **3x** better performance\n\n---\n\n"
+              "content": "\n### Real-World Impact\n\n**Poor State Management Causes**:\n- Bugs: Inconsistent UI state\n- Performance: Unnecessary recompositions\n- Maintenance: Hard to debug and modify\n- UX: Laggy, unresponsive UI\n\n**Good State Management Delivers**:\n- ✅ Predictable: UI always reflects current state\n- ✅ Fast: Only necessary parts recompose\n- ✅ Testable: Easy to test state logic\n- ✅ Scalable: Handles complex apps\n- ✅ **Cross-platform: Same patterns on Android and iOS**\n\n**Statistics**:\n- Apps with proper state management have **60% fewer bugs**\n- **40%** faster development time\n- **3x** better performance\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -8955,12 +8965,12 @@
             {
               "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ What state is and how recomposition works\n✅ Difference between `remember` and `rememberSaveable`\n✅ State hoisting pattern for reusable composables\n✅ ViewModel integration for screen-level state\n✅ Different state holder types and when to use each\n✅ Derived state for computed values\n✅ Best practices for managing state in Compose\n\n---\n\n"
+              "content": "\n✅ What state is and how recomposition works\n✅ Difference between `remember` and `rememberSaveable`\n✅ State hoisting pattern for reusable composables\n✅ ViewModel integration for screen-level state\n✅ Different state holder types and when to use each\n✅ Derived state for computed values\n✅ Best practices for managing state in Compose\n✅ **State management works identically on Android and iOS**\n✅ **ViewModels and state patterns are cross-platform**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.5: Navigation**, you'll learn:\n- Navigation component for Compose\n- NavHost and NavController setup\n- Route definitions and type-safe navigation\n- Passing arguments between screens\n- Bottom navigation bars\n- Drawer navigation\n- Deep linking\n\nGet ready to build multi-screen apps with seamless navigation!\n\n"
+              "content": "\nIn **Lesson 6.5: Navigation**, you'll learn:\n- Navigation component for Compose Multiplatform\n- NavHost and NavController setup\n- Route definitions and type-safe navigation\n- Passing arguments between screens\n- Bottom navigation bars\n- Drawer navigation\n- **Platform-specific navigation (iOS swipe-back gesture)**\n\nGet ready to build multi-screen apps with seamless navigation on both platforms!\n\n"
             }
           ],
           "challenges": []
@@ -8981,7 +8991,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nMulti-screen navigation is essential for modern apps. Users expect smooth transitions between screens, deep linking support, and logical app flow.\n\n**Jetpack Navigation for Compose** provides a type-safe, declarative way to handle navigation with full integration into Compose.\n\nIn this lesson, you'll master:\n- ✅ Navigation component setup\n- ✅ NavHost and NavController\n- ✅ Route definitions and navigation\n- ✅ Passing arguments between screens\n- ✅ Bottom navigation bars\n- ✅ Navigation drawer\n- ✅ Deep linking\n\n---\n\n"
+              "content": "\nMulti-screen navigation is essential for modern apps. Users expect smooth transitions between screens, deep linking support, and logical app flow.\n\n**Compose Navigation** provides a type-safe, declarative way to handle navigation with full integration into Compose. With Compose Multiplatform, the same navigation code works on both Android and iOS!\n\nIn this lesson, you'll master:\n- ✅ Navigation component setup\n- ✅ NavHost and NavController\n- ✅ Route definitions and navigation\n- ✅ Passing arguments between screens\n- ✅ Bottom navigation bars\n- ✅ Navigation drawer\n- ✅ Deep linking\n- ✅ **iOS-specific navigation patterns (swipe-back gesture)**\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9070,8 +9080,13 @@
             },
             {
               "type": "THEORY",
+              "title": "Navigation on iOS",
+              "content": "\n### Critical Platform Differences\n\nNavigation behavior differs significantly between Android and iOS. Understanding these differences is crucial for building great cross-platform apps.\n\n| Feature | Android | iOS |\n|---------|---------|-----|\n| **Back Navigation** | Hardware/gesture back button | Swipe from left edge |\n| **Back Button** | System provides it | You must add a back button in the UI |\n| **Navigation Bar** | Optional TopAppBar | Expected on every screen |\n| **Swipe Gesture** | Edge swipe optional | Users expect swipe-back |\n| **Tab Bar Position** | Bottom (Material) | Bottom (iOS standard) |\n| **Drawer** | Common pattern | Less common on iOS |\n\n### iOS Swipe-Back Gesture\n\nOn iOS, users expect to swipe from the left edge to go back. Compose Multiplatform supports this automatically when you use navigation properly:\n\n```kotlin\n// The navigation back stack handles iOS swipe-back\n@Composable\nfun DetailsScreen(\n    onNavigateBack: () -> Unit\n) {\n    Scaffold(\n        topBar = {\n            TopAppBar(\n                title = { Text(\"Details\") },\n                // Always show back button on iOS!\n                navigationIcon = {\n                    IconButton(onClick = onNavigateBack) {\n                        Icon(\n                            Icons.AutoMirrored.Filled.ArrowBack,\n                            contentDescription = \"Back\"\n                        )\n                    }\n                }\n            )\n        }\n    ) { /* content */ }\n}\n```\n\n### Best Practices for Cross-Platform Navigation\n\n1. **Always include a visible back button** - iOS has no hardware back\n2. **Use TopAppBar consistently** - iOS users expect it\n3. **Avoid navigation drawers on iOS** - Use tab bars instead\n4. **Test swipe-back gesture** - Run on iOS Simulator regularly\n5. **Handle safe areas** - Status bar and home indicator differ\n\n### Running Navigation on iOS Simulator\n\n1. Build and run on iOS Simulator\n2. Navigate to a detail screen\n3. Try swiping from the left edge to go back\n4. Verify the back button works\n5. Test bottom navigation tabs\n\n### Platform-Specific Navigation Patterns\n\n```kotlin\n// In commonMain - adapts to each platform\n@Composable\nfun AppNavigation() {\n    val navController = rememberNavController()\n    \n    Scaffold(\n        // Bottom bar works on both platforms\n        bottomBar = {\n            NavigationBar {\n                // Tab items...\n            }\n        }\n    ) { padding ->\n        NavHost(\n            navController = navController,\n            startDestination = \"home\",\n            modifier = Modifier.padding(padding)\n        ) {\n            composable(\"home\") {\n                HomeScreen(\n                    onItemClick = { id ->\n                        navController.navigate(\"details/$id\")\n                    }\n                )\n            }\n            composable(\"details/{id}\") { backStackEntry ->\n                DetailsScreen(\n                    id = backStackEntry.arguments?.getString(\"id\") ?: \"\",\n                    // popBackStack works on both Android and iOS!\n                    onNavigateBack = { navController.popBackStack() }\n                )\n            }\n        }\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "Why This Matters",
-              "content": "\n**User Expectations**:\n- 📱 Smooth transitions between screens\n- ↩️ Back button works correctly\n- 🔗 Deep links open correct screens\n- 💾 State preserved during navigation\n\n**Statistics**:\n- Apps with poor navigation have **75% higher** uninstall rates\n- Users abandon apps if they can't find features within **3 taps**\n- Deep linking increases engagement by **2x**\n\n---\n\n"
+              "content": "\n**User Expectations**:\n- Smooth transitions between screens\n- Back button/gesture works correctly\n- Deep links open correct screens\n- State preserved during navigation\n- **iOS users expect swipe-back to work**\n\n**Statistics**:\n- Apps with poor navigation have **75% higher** uninstall rates\n- Users abandon apps if they can't find features within **3 taps**\n- Deep linking increases engagement by **2x**\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9086,12 +9101,12 @@
             {
               "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Setting up Navigation Compose\n✅ NavController and NavHost basics\n✅ Passing arguments between screens\n✅ Bottom navigation bars\n✅ Navigation drawer\n✅ Nested navigation graphs\n✅ Deep linking support\n✅ Type-safe navigation patterns\n\n---\n\n"
+              "content": "\n✅ Setting up Navigation Compose\n✅ NavController and NavHost basics\n✅ Passing arguments between screens\n✅ Bottom navigation bars\n✅ Navigation drawer\n✅ Nested navigation graphs\n✅ Deep linking support\n✅ Type-safe navigation patterns\n✅ **iOS swipe-back gesture and back button requirements**\n✅ **Platform-specific navigation best practices**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.6: Networking and APIs**, you'll learn:\n- Retrofit setup for API calls\n- Kotlin serialization\n- Coroutines for async networking\n- Error handling\n- Loading states\n- Image loading with Coil\n\nGet ready to connect your app to the internet!\n\n"
+              "content": "\nIn **Lesson 6.6: Networking and APIs**, you'll learn:\n- Ktor client setup for cross-platform networking\n- Kotlin serialization\n- Coroutines for async networking\n- Error handling\n- Loading states\n- Image loading\n\nGet ready to connect your app to the internet on both Android and iOS!\n\n"
             }
           ],
           "challenges": []
@@ -9112,7 +9127,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nModern apps rely on network data from REST APIs, whether it's social media posts, weather data, or e-commerce products. Android apps must fetch, parse, and display this data efficiently.\n\nIn this lesson, you'll master:\n- ✅ Retrofit setup for REST APIs\n- ✅ Kotlin Serialization for JSON parsing\n- ✅ Coroutines for async network calls\n- ✅ Error handling and retry logic\n- ✅ Loading states and UI feedback\n- ✅ Image loading with Coil\n\n---\n\n"
+              "content": "\nModern apps rely on network data from REST APIs, whether it's social media posts, weather data, or e-commerce products. Apps must fetch, parse, and display this data efficiently on both Android and iOS.\n\nWith Compose Multiplatform, we use **Ktor** for cross-platform networking (though Retrofit works for Android-only projects). The same networking code works on both platforms!\n\nIn this lesson, you'll master:\n- ✅ Ktor/Retrofit setup for REST APIs\n- ✅ Kotlin Serialization for JSON parsing\n- ✅ Coroutines for async network calls\n- ✅ Error handling and retry logic\n- ✅ Loading states and UI feedback\n- ✅ Image loading with Coil/Kamel\n- ✅ Cross-platform networking considerations\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9223,13 +9238,18 @@
             },
             {
               "type": "THEORY",
+              "title": "Cross-Platform Networking",
+              "content": "\n### Ktor for Multiplatform\n\nFor Compose Multiplatform apps, use Ktor instead of Retrofit:\n\n```kotlin\n// In commonMain - works on Android AND iOS!\nval httpClient = HttpClient {\n    install(ContentNegotiation) {\n        json(Json {\n            ignoreUnknownKeys = true\n        })\n    }\n}\n\nsuspend fun getUsers(): List<User> {\n    return httpClient.get(\"https://api.example.com/users\").body()\n}\n```\n\n### Platform-Specific Engines\n\n| Platform | HTTP Engine |\n|----------|-------------|\n| Android | `ktor-client-android` or `ktor-client-okhttp` |\n| iOS | `ktor-client-darwin` |\n| JVM | `ktor-client-cio` |\n\n### Running on iOS\n\n1. Build and run on iOS Simulator\n2. Make network calls - they work identically!\n3. Test error handling on both platforms\n4. Verify loading states appear correctly\n\n### iOS Networking Permissions\n\niOS requires network permissions in Info.plist for non-HTTPS URLs:\n\n```xml\n<key>NSAppTransportSecurity</key>\n<dict>\n    <key>NSAllowsArbitraryLoads</key>\n    <true/>\n</dict>\n```\n\nNote: For production, always use HTTPS!\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Setting up Retrofit for REST APIs\n✅ Kotlin Serialization for JSON parsing\n✅ Repository pattern for data access\n✅ Coroutines for async network calls\n✅ Error handling and retry logic\n✅ Loading states in UI\n✅ Image loading with Coil\n✅ Pagination and search\n\n---\n\n"
+              "content": "\n✅ Setting up Retrofit/Ktor for REST APIs\n✅ Kotlin Serialization for JSON parsing\n✅ Repository pattern for data access\n✅ Coroutines for async network calls\n✅ Error handling and retry logic\n✅ Loading states in UI\n✅ Image loading with Coil/Kamel\n✅ Pagination and search\n✅ **Cross-platform networking with Ktor**\n✅ **iOS-specific networking considerations**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.7: Local Data Storage**, you'll learn:\n- Room database setup\n- Entity definitions and DAOs\n- Repository pattern with Room\n- Flows for reactive data\n- DataStore for preferences\n- Combining local and remote data\n\nGet ready to persist data locally!\n\n"
+              "content": "\nIn **Lesson 6.7: Local Data Storage**, you'll learn:\n- SQLDelight for cross-platform databases\n- Room for Android-specific projects\n- Entity definitions and DAOs\n- Repository pattern with databases\n- Flows for reactive data\n- DataStore/Settings for preferences\n- **iOS storage APIs (UserDefaults, Core Data alternatives)**\n\nGet ready to persist data locally on both platforms!\n\n"
             }
           ],
           "challenges": []
@@ -9250,7 +9270,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nApps need to store data locally for offline access, caching, and user preferences. Room provides a powerful, type-safe database layer over SQLite, while DataStore handles preferences elegantly.\n\nIn this lesson, you'll master:\n- ✅ Room database setup and configuration\n- ✅ Entity definitions with relationships\n- ✅ DAOs (Data Access Objects) for queries\n- ✅ Repository pattern with Room\n- ✅ Flows for reactive data updates\n- ✅ DataStore for preferences\n- ✅ Combining local and remote data\n\n---\n\n"
+              "content": "\nApps need to store data locally for offline access, caching, and user preferences. For Compose Multiplatform, we use cross-platform solutions that work on both Android and iOS.\n\n**Cross-Platform Options:**\n- **SQLDelight**: Cross-platform database (recommended for multiplatform)\n- **Room**: Android-only (great for Android-specific projects)\n- **Multiplatform Settings**: Cross-platform key-value storage\n\nIn this lesson, you'll master:\n- ✅ Room/SQLDelight database setup and configuration\n- ✅ Entity definitions with relationships\n- ✅ DAOs (Data Access Objects) for queries\n- ✅ Repository pattern with databases\n- ✅ Flows for reactive data updates\n- ✅ DataStore/Settings for preferences\n- ✅ **iOS storage APIs (UserDefaults equivalent)**\n- ✅ Combining local and remote data\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9361,13 +9381,18 @@
             },
             {
               "type": "THEORY",
+              "title": "iOS Storage APIs",
+              "content": "\n### Cross-Platform Storage with Multiplatform Settings\n\nFor Compose Multiplatform apps, use the `multiplatform-settings` library instead of DataStore:\n\n```kotlin\n// In commonMain - works on Android AND iOS!\nexpect class SettingsFactory {\n    fun create(): Settings\n}\n\nclass UserPreferences(private val settings: Settings) {\n    var isDarkMode: Boolean\n        get() = settings.getBoolean(\"dark_mode\", false)\n        set(value) = settings.putBoolean(\"dark_mode\", value)\n    \n    var username: String?\n        get() = settings.getStringOrNull(\"username\")\n        set(value) = if (value != null) {\n            settings.putString(\"username\", value)\n        } else {\n            settings.remove(\"username\")\n        }\n}\n```\n\n### Platform Implementations\n\n**Android** uses SharedPreferences:\n```kotlin\n// androidMain\nactual class SettingsFactory(private val context: Context) {\n    actual fun create(): Settings {\n        return SharedPreferencesSettings(\n            context.getSharedPreferences(\"app_prefs\", Context.MODE_PRIVATE)\n        )\n    }\n}\n```\n\n**iOS** uses UserDefaults:\n```kotlin\n// iosMain\nactual class SettingsFactory {\n    actual fun create(): Settings {\n        return NSUserDefaultsSettings(NSUserDefaults.standardUserDefaults)\n    }\n}\n```\n\n### Cross-Platform Database with SQLDelight\n\nFor structured data across platforms, use SQLDelight:\n\n| Feature | Room (Android) | SQLDelight (Multiplatform) |\n|---------|----------------|---------------------------|\n| Platform | Android only | Android, iOS, Desktop, Web |\n| Query Language | SQL annotations | .sq files |\n| Code Generation | Kotlin | Kotlin |\n| Flow Support | Yes | Yes |\n\n### Running on iOS\n\n1. Build and run on iOS Simulator\n2. Save some data using your storage APIs\n3. Force-close the app\n4. Reopen - verify data persisted!\n5. UserDefaults and SQLite work transparently on iOS\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Room database setup and entities\n✅ DAOs for type-safe queries\n✅ Repository pattern with Room\n✅ Flows for reactive data\n✅ Entity relationships (one-to-many)\n✅ DataStore for preferences\n✅ Database migrations\n✅ Offline-first architecture\n\n---\n\n"
+              "content": "\n✅ Room/SQLDelight database setup and entities\n✅ DAOs for type-safe queries\n✅ Repository pattern with databases\n✅ Flows for reactive data\n✅ Entity relationships (one-to-many)\n✅ DataStore/Multiplatform Settings for preferences\n✅ Database migrations\n✅ Offline-first architecture\n✅ **iOS storage (UserDefaults via multiplatform-settings)**\n✅ **Cross-platform database with SQLDelight**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.8: MVVM Architecture**, you'll learn:\n- MVVM pattern in depth\n- ViewModel lifecycle\n- LiveData vs StateFlow\n- Dependency injection with Hilt\n- Clean architecture layers\n- Testing ViewModels\n\nGet ready to structure professional apps!\n\n"
+              "content": "\nIn **Lesson 6.8: MVVM Architecture**, you'll learn:\n- MVVM pattern in depth (works on both platforms!)\n- ViewModel lifecycle\n- LiveData vs StateFlow\n- Dependency injection with Koin (cross-platform)\n- Clean architecture layers\n- Testing ViewModels\n\nGet ready to structure professional apps for Android and iOS!\n\n"
             }
           ],
           "challenges": []
@@ -9388,7 +9413,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nArchitecture patterns separate concerns, make code testable, and enable team collaboration. MVVM (Model-View-ViewModel) is the recommended architecture for Android apps.\n\nIn this lesson, you'll master:\n- ✅ MVVM pattern explained\n- ✅ ViewModel lifecycle and scope\n- ✅ LiveData vs StateFlow comparison\n- ✅ Dependency injection with Hilt\n- ✅ Clean architecture layers\n- ✅ Testing ViewModels\n- ✅ Best practices\n\n---\n\n"
+              "content": "\nArchitecture patterns separate concerns, make code testable, and enable team collaboration. MVVM (Model-View-ViewModel) is the recommended architecture for both Android and iOS apps with Compose Multiplatform.\n\nThe same MVVM patterns work on both platforms - your ViewModels, state management, and architecture remain consistent!\n\nIn this lesson, you'll master:\n- ✅ MVVM pattern explained\n- ✅ ViewModel lifecycle and scope\n- ✅ LiveData vs StateFlow comparison\n- ✅ Dependency injection with Hilt/Koin (cross-platform)\n- ✅ Clean architecture layers\n- ✅ Testing ViewModels\n- ✅ Best practices for multiplatform architecture\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9492,13 +9517,18 @@
             },
             {
               "type": "THEORY",
+              "title": "MVVM on iOS",
+              "content": "\n### Cross-Platform Architecture\n\nMVVM works identically on both Android and iOS with Compose Multiplatform!\n\n| Component | Android | iOS |\n|-----------|---------|-----|\n| **ViewModel** | Same code | Same code |\n| **StateFlow** | Same code | Same code |\n| **Repository** | Same code | Same code |\n| **DI (Koin)** | Same code | Same code |\n\n### Koin for Cross-Platform DI\n\nUse Koin instead of Hilt for multiplatform apps:\n\n```kotlin\n// In commonMain - works on both platforms!\nval appModule = module {\n    single { UserRepository(get()) }\n    viewModel { UsersViewModel(get()) }\n}\n\n@Composable\nfun UsersScreen(\n    viewModel: UsersViewModel = koinViewModel()\n) {\n    val uiState by viewModel.uiState.collectAsState()\n    // Same UI code works on Android and iOS!\n}\n```\n\n### Running Architecture on iOS\n\n1. Build and run on iOS Simulator\n2. Verify ViewModels manage state correctly\n3. Test that UI updates reactively\n4. Confirm the same architecture works seamlessly!\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ MVVM architecture pattern\n✅ ViewModel lifecycle and scope\n✅ StateFlow vs LiveData\n✅ Dependency injection with Hilt\n✅ Clean architecture layers\n✅ UI state management\n✅ Testing ViewModels\n✅ Best practices for scalable apps\n\n---\n\n"
+              "content": "\n✅ MVVM architecture pattern\n✅ ViewModel lifecycle and scope\n✅ StateFlow vs LiveData\n✅ Dependency injection with Hilt/Koin\n✅ Clean architecture layers\n✅ UI state management\n✅ Testing ViewModels\n✅ Best practices for scalable apps\n✅ **Cross-platform MVVM with Compose Multiplatform**\n✅ **Koin for multiplatform dependency injection**\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.9: Advanced UI & Animations**, you'll learn:\n- Animation APIs in Compose\n- animateDpAsState, animateColorAsState\n- AnimatedVisibility\n- Custom animations\n- Gestures and touch handling\n- Canvas for custom drawing\n\nGet ready to make your apps beautiful and interactive!\n\n"
+              "content": "\nIn **Lesson 6.9: Advanced UI & Animations**, you'll learn:\n- Animation APIs in Compose (same on both platforms!)\n- animateDpAsState, animateColorAsState\n- AnimatedVisibility\n- Custom animations\n- Gestures and touch handling\n- Canvas for custom drawing\n\nGet ready to make your apps beautiful and interactive on Android and iOS!\n\n"
             }
           ],
           "challenges": []
@@ -9519,7 +9549,7 @@
             {
               "type": "THEORY",
               "title": "Introduction",
-              "content": "\nAnimations make apps feel alive and responsive. They guide user attention, provide feedback, and create delightful experiences. Jetpack Compose makes animations simple and declarative.\n\nIn this lesson, you'll master:\n- ✅ Animation APIs overview\n- ✅ Simple value animations (animateDpAsState, animateColorAsState)\n- ✅ AnimatedVisibility for enter/exit animations\n- ✅ Transitions for complex state changes\n- ✅ Infinite and repeating animations\n- ✅ Gestures and touch handling\n- ✅ Canvas for custom drawing\n\n---\n\n"
+              "content": "\nAnimations make apps feel alive and responsive. They guide user attention, provide feedback, and create delightful experiences. Compose makes animations simple and declarative - and they work identically on Android and iOS!\n\nIn this lesson, you'll master:\n- ✅ Animation APIs overview\n- ✅ Simple value animations (animateDpAsState, animateColorAsState)\n- ✅ AnimatedVisibility for enter/exit animations\n- ✅ Transitions for complex state changes\n- ✅ Infinite and repeating animations\n- ✅ Gestures and touch handling\n- ✅ Canvas for custom drawing\n- ✅ Platform considerations for animations\n\n---\n\n"
             },
             {
               "type": "THEORY",
@@ -9617,12 +9647,17 @@
             {
               "type": "THEORY",
               "title": "What You've Learned",
-              "content": "\n✅ Simple value animations with animate*AsState\n✅ AnimatedVisibility for enter/exit transitions\n✅ Complex transitions with updateTransition\n✅ Infinite animations for loaders\n✅ Gesture handling (click, drag, swipe)\n✅ Custom drawing with Canvas\n✅ Performance considerations\n✅ UX best practices\n\n---\n\n"
+              "content": "\n✅ Simple value animations with animate*AsState\n✅ AnimatedVisibility for enter/exit transitions\n✅ Complex transitions with updateTransition\n✅ Infinite animations for loaders\n✅ Gesture handling (click, drag, swipe)\n✅ Custom drawing with Canvas\n✅ Performance considerations\n✅ UX best practices\n✅ **Animations work identically on Android and iOS**\n✅ **Cross-platform gestures and touch handling**\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Animations on iOS",
+              "content": "\n### Cross-Platform Animations\n\nAll Compose animations work identically on Android and iOS! The same animation code runs natively on both platforms.\n\n| Animation Type | Android | iOS |\n|----------------|---------|-----|\n| **animate*AsState** | Same code | Same code |\n| **AnimatedVisibility** | Same code | Same code |\n| **updateTransition** | Same code | Same code |\n| **Canvas drawing** | Same code | Same code |\n| **Gestures** | Same code | Same code |\n\n### Platform-Specific Considerations\n\n**Haptic Feedback**: iOS has more nuanced haptic feedback\n- Consider using expect/actual for haptics\n- iOS users expect subtle haptic responses\n\n**Animation Curves**: Both platforms support the same easing curves, but users may have different expectations:\n- iOS: Often uses spring animations\n- Android: Often uses standard easing\n\n### Running Animations on iOS\n\n1. Build and run on iOS Simulator\n2. Test all animations - they run natively!\n3. Verify gestures feel natural on iOS\n4. Check performance is smooth (60fps)\n\n```kotlin\n// This animation code works on BOTH platforms!\n@Composable\nfun CrossPlatformAnimation() {\n    var expanded by remember { mutableStateOf(false) }\n    \n    val size by animateDpAsState(\n        targetValue = if (expanded) 200.dp else 100.dp,\n        animationSpec = spring(\n            dampingRatio = Spring.DampingRatioMediumBouncy\n        )\n    )\n    \n    Box(\n        Modifier\n            .size(size)\n            .background(MaterialTheme.colorScheme.primary)\n            .clickable { expanded = !expanded }\n    )\n}\n```\n\n---\n\n"
             },
             {
               "type": "THEORY",
               "title": "Next Steps",
-              "content": "\nIn **Lesson 6.10: Part 6 Capstone - Task Manager App**, you'll build:\n- Complete Android app from scratch\n- All concepts integrated (MVVM, Room, Navigation, Animations)\n- Task CRUD operations\n- Categories, priorities, due dates\n- Material Design 3 UI\n- Fully functional production-ready app\n\nTime to put everything together!\n\n"
+              "content": "\nIn **Lesson 6.10: Part 6 Capstone - Task Manager App**, you'll build:\n- Complete multiplatform app from scratch\n- All concepts integrated (MVVM, Database, Navigation, Animations)\n- Task CRUD operations\n- Categories, priorities, due dates\n- Material Design 3 UI\n- **Runs on both Android and iOS!**\n\nTime to put everything together and build for both platforms!\n\n"
             }
           ],
           "challenges": []
