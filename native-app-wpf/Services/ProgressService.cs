@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CodeTutor.Wpf.Models;
@@ -12,7 +13,17 @@ public interface IProgressService
     Task SaveProgressAsync(UserProgress progress);
     Task MarkLessonCompleteAsync(string lessonId);
     Task<bool> IsLessonCompleteAsync(string lessonId);
+    Task<CourseProgressStats> GetCourseProgressAsync(Course course);
+    int GetCurrentStreak();
 }
+
+public record CourseProgressStats(
+    int CompletedLessons,
+    int TotalLessons,
+    double PercentComplete,
+    int CurrentStreak,
+    TimeSpan TimeThisWeek
+);
 
 public class ProgressService : IProgressService
 {
@@ -71,5 +82,29 @@ public class ProgressService : IProgressService
     {
         var progress = await LoadProgressAsync();
         return progress.CompletedLessons.Contains(lessonId);
+    }
+
+    public async Task<CourseProgressStats> GetCourseProgressAsync(Course course)
+    {
+        var progress = await LoadProgressAsync();
+
+        var allLessons = course.Modules.SelectMany(m => m.Lessons).ToList();
+        int completed = allLessons.Count(l => progress.CompletedLessons.Contains(l.Id));
+        int total = allLessons.Count;
+        double percent = total > 0 ? (double)completed / total * 100 : 0;
+
+        return new CourseProgressStats(
+            CompletedLessons: completed,
+            TotalLessons: total,
+            PercentComplete: Math.Round(percent, 1),
+            CurrentStreak: GetCurrentStreak(),
+            TimeThisWeek: TimeSpan.Zero // Placeholder - would need session tracking
+        );
+    }
+
+    public int GetCurrentStreak()
+    {
+        // Placeholder implementation - would need daily activity tracking
+        return 0;
     }
 }
