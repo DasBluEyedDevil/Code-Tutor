@@ -39,6 +39,18 @@ public partial class CodingChallenge : UserControl
             CodeEditor.SyntaxHighlighting = highlighting;
         }
 
+        // Set up status bar
+        StatusBar.SetLanguage(challenge.Language);
+        StatusBar.SetStatus("Ready", true);
+
+        // Update position on caret change
+        CodeEditor.TextArea.Caret.PositionChanged += (s, e) =>
+        {
+            StatusBar.UpdatePosition(
+                CodeEditor.TextArea.Caret.Line,
+                CodeEditor.TextArea.Caret.Column);
+        };
+
         // Hide hint button if no hints available
         if (challenge.Hints == null || challenge.Hints.Count == 0)
         {
@@ -63,6 +75,8 @@ public partial class CodingChallenge : UserControl
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
     {
+        StatusBar.SetStatus("Running...", false);
+
         try
         {
             OutputPanel.Visibility = Visibility.Visible;
@@ -90,6 +104,8 @@ public partial class CodingChallenge : UserControl
                 {
                     ValidateTestCases(result.Output);
                 }
+
+                StatusBar.SetStatus("Ready", true);
             }
             else
             {
@@ -99,6 +115,8 @@ public partial class CodingChallenge : UserControl
                 // Set error styling
                 OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
                 OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
+
+                StatusBar.SetStatus("Ready", true);
             }
         }
         catch (Exception ex)
@@ -107,6 +125,8 @@ public partial class CodingChallenge : UserControl
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
             OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
             OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
+
+            StatusBar.SetStatus("Ready", true);
         }
     }
 
