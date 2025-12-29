@@ -12,6 +12,8 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <!-- Position -->
@@ -34,8 +36,28 @@
                        Style="{StaticResource CaptionText}"
                        Foreground="{StaticResource TextMutedBrush}" />
 
-            <!-- Ready indicator -->
+            <!-- Runtime Status -->
             <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <TextBlock x:Name="RuntimeStatusIcon"
+                           Text="✓"
+                           FontSize="11"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource AccentGreenBrush}"
+                           Margin="0,0,4,0" />
+                <TextBlock x:Name="RuntimeStatusText"
+                           Text="Python"
+                           Style="{StaticResource CaptionText}"
+                           Foreground="{StaticResource TextMutedBrush}" />
+            </StackPanel>
+
+            <!-- Separator -->
+            <Border Grid.Column="4"
+                    Width="1"
+                    Background="{StaticResource BorderDefaultBrush}"
+                    Margin="12,0" />
+
+            <!-- Ready indicator -->
+            <StackPanel Grid.Column="5" Orientation="Horizontal">
                 <Ellipse x:Name="StatusIndicator"
                          Width="6" Height="6"
                          Fill="{StaticResource AccentGreenBrush}"

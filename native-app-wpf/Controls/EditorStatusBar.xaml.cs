@@ -27,4 +27,20 @@ public partial class EditorStatusBar : UserControl
             ? (Brush)FindResource("AccentGreenBrush")
             : (Brush)FindResource("AccentOrangeBrush");
     }
+
+    public void SetRuntimeStatus(bool isAvailable, string runtimeInfo)
+    {
+        if (isAvailable)
+        {
+            RuntimeStatusIcon.Text = "\u2713"; // checkmark
+            RuntimeStatusIcon.Foreground = (Brush)FindResource("AccentGreenBrush");
+            RuntimeStatusText.Text = runtimeInfo;
+        }
+        else
+        {
+            RuntimeStatusIcon.Text = "\u26A0"; // warning sign
+            RuntimeStatusIcon.Foreground = (Brush)FindResource("AccentOrangeBrush");
+            RuntimeStatusText.Text = "Not installed";
+        }
+    }
 }
