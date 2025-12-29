@@ -13,15 +13,17 @@ public partial class CourseSidebar : UserControl
     private readonly INavigationService _navigation;
     private readonly Dictionary<string, bool> _expandedModules = new();
     private readonly IProgressService _progressService = new ProgressService();
+    private readonly ITutorService _tutorService;
     private Lesson? _currentLesson;
     private readonly Dictionary<string, Button> _lessonButtons = new();
 
-    public CourseSidebar(Course course, ICourseService courseService, INavigationService navigation)
+    public CourseSidebar(Course course, ICourseService courseService, INavigationService navigation, ITutorService tutorService)
     {
         InitializeComponent();
         _course = course;
         _courseService = courseService;
         _navigation = navigation;
+        _tutorService = tutorService;
 
         CourseTitle.Text = course.Title;
         ModulesList.ItemsSource = course.Modules;
@@ -66,7 +68,7 @@ public partial class CourseSidebar : UserControl
 
     private void CourseOverview_Click(object sender, RoutedEventArgs e)
     {
-        var coursePage = new CoursePage(_courseService, _navigation, _course);
+        var coursePage = new CoursePage(_courseService, _navigation, _course, _tutorService);
         _navigation.NavigateTo(coursePage, _course);
     }
 
@@ -118,7 +120,7 @@ public partial class CourseSidebar : UserControl
             _currentLesson = lesson;
             UpdateLessonStyles();
 
-            var lessonPage = new LessonPage(_course, lesson, _courseService, _navigation);
+            var lessonPage = new LessonPage(_course, lesson, _courseService, _navigation, _tutorService);
             _navigation.NavigateTo(lessonPage, lesson);
         }
     }

@@ -10,12 +10,14 @@ public partial class LandingPage : UserControl
 {
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
+    private readonly ITutorService _tutorService;
 
-    public LandingPage(ICourseService courseService, INavigationService navigation)
+    public LandingPage(ICourseService courseService, INavigationService navigation, ITutorService tutorService)
     {
         InitializeComponent();
         _courseService = courseService;
         _navigation = navigation;
+        _tutorService = tutorService;
         Loaded += LandingPage_Loaded;
     }
 
@@ -72,7 +74,7 @@ public partial class LandingPage : UserControl
     {
         if (sender is Button button && button.Tag is Course course)
         {
-            var coursePage = new CoursePage(_courseService, _navigation, course);
+            var coursePage = new CoursePage(_courseService, _navigation, course, _tutorService);
             _navigation.NavigateTo(coursePage, course);
         }
     }

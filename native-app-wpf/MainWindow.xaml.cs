@@ -9,6 +9,7 @@ public partial class MainWindow : Window
 {
     private readonly INavigationService _navigation;
     private readonly ICourseService _courseService;
+    private readonly ITutorService _tutorService;
 
     public MainWindow()
     {
@@ -23,12 +24,13 @@ public partial class MainWindow : Window
 
         _navigation = provider.GetRequiredService<INavigationService>();
         _courseService = provider.GetRequiredService<ICourseService>();
+        _tutorService = provider.GetRequiredService<ITutorService>();
 
         // Subscribe to navigation
         _navigation.Navigated += (_, view) => MainContent.Content = view;
 
         // Navigate to landing page
-        var landingPage = new LandingPage(_courseService, _navigation);
+        var landingPage = new LandingPage(_courseService, _navigation, _tutorService);
         _navigation.NavigateTo(landingPage);
     }
 

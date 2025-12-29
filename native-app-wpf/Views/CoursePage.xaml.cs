@@ -12,17 +12,19 @@ public partial class CoursePage : UserControl
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
     private readonly IProgressService _progressService = new ProgressService();
+    private readonly ITutorService _tutorService;
 
-    public CoursePage(ICourseService courseService, INavigationService navigation, Course course)
+    public CoursePage(ICourseService courseService, INavigationService navigation, Course course, ITutorService tutorService)
     {
         InitializeComponent();
         _course = course;
         _courseService = courseService;
         _navigation = navigation;
+        _tutorService = tutorService;
 
         // Set up sidebar
         var mainWindow = Application.Current.MainWindow as MainWindow;
-        var sidebar = new CourseSidebar(course, courseService, navigation);
+        var sidebar = new CourseSidebar(course, courseService, navigation, tutorService);
         mainWindow?.SetSidebarContent(sidebar);
 
         // Populate course info
@@ -69,7 +71,7 @@ public partial class CoursePage : UserControl
         var firstLesson = _course.Modules.FirstOrDefault()?.Lessons.FirstOrDefault();
         if (firstLesson != null)
         {
-            var lessonPage = new LessonPage(_course, firstLesson, _courseService, _navigation);
+            var lessonPage = new LessonPage(_course, firstLesson, _courseService, _navigation, _tutorService);
             _navigation.NavigateTo(lessonPage, firstLesson);
         }
     }

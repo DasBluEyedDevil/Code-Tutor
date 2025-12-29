@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using CodeTutor.Wpf.Controls;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
 
@@ -14,15 +16,19 @@ public partial class LessonPage : UserControl
     private readonly ICourseService _courseService;
     private readonly INavigationService _navigation;
     private readonly IProgressService _progressService = new ProgressService();
+    private readonly ITutorService _tutorService;
     private readonly List<Controls.CodingChallenge> _challengeControls = new();
+    private TutorChat? _tutorChat;
+    private bool _isTutorOpen = false;
 
-    public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation)
+    public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation, ITutorService tutorService)
     {
         InitializeComponent();
         _course = course;
         _lesson = lesson;
         _courseService = courseService;
         _navigation = navigation;
+        _tutorService = tutorService;
 
         LoadLesson();
         SetupNavigation();
@@ -159,7 +165,7 @@ public partial class LessonPage : UserControl
     {
         if (PrevButton.Tag is Lesson prevLesson)
         {
-            var lessonPage = new LessonPage(_course, prevLesson, _courseService, _navigation);
+            var lessonPage = new LessonPage(_course, prevLesson, _courseService, _navigation, _tutorService);
             _navigation.NavigateTo(lessonPage, prevLesson);
         }
     }
@@ -168,7 +174,7 @@ public partial class LessonPage : UserControl
     {
         if (NextButton.Tag is Lesson nextLesson)
         {
-            var lessonPage = new LessonPage(_course, nextLesson, _courseService, _navigation);
+            var lessonPage = new LessonPage(_course, nextLesson, _courseService, _navigation, _tutorService);
             _navigation.NavigateTo(lessonPage, nextLesson);
         }
     }
@@ -182,7 +188,7 @@ public partial class LessonPage : UserControl
 
     private void BreadcrumbCourse_Click(object sender, RoutedEventArgs e)
     {
-        var coursePage = new CoursePage(_courseService, _navigation, _course);
+        var coursePage = new CoursePage(_courseService, _navigation, _course, _tutorService);
         _navigation.NavigateTo(coursePage, _course);
     }
 
@@ -199,5 +205,59 @@ public partial class LessonPage : UserControl
                 CompleteButton.IsEnabled = false;
             }
         }
+    }
+
+    private void TutorToggleButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isTutorOpen)
+        {
+            CloseTutorPanel();
+        }
+        else
+        {
+            OpenTutorPanel();
+        }
+    }
+
+    private void OpenTutorPanel()
+    {
+        if (_tutorChat == null)
+        {
+            _tutorChat = new TutorChat(_tutorService);
+            _tutorChat.CloseRequested += (s, e) => CloseTutorPanel();
+            TutorContent.Content = _tutorChat;
+        }
+
+        // Update context with current lesson info
+        UpdateTutorContext();
+
+        // Open panel
+        TutorPanel.Width = 380;
+        _isTutorOpen = true;
+
+        TutorToggleButton.Foreground = (Brush)FindResource("AccentGreenBrush");
+    }
+
+    private void CloseTutorPanel()
+    {
+        TutorPanel.Width = 0;
+        _isTutorOpen = false;
+        TutorToggleButton.Foreground = (Brush)FindResource("AccentPurpleBrush");
+    }
+
+    private void UpdateTutorContext()
+    {
+        if (_tutorChat == null || _lesson == null) return;
+
+        var context = new TutorContext
+        {
+            CurrentLanguage = _course?.Language,
+            LessonTitle = _lesson.Title,
+            LessonContent = string.Join("\n", _lesson.ContentSections
+                .Where(s => s.Type == "THEORY")
+                .Select(s => s.Content))
+        };
+
+        _tutorChat.UpdateContext(context);
     }
 }
