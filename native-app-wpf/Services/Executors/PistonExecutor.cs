@@ -10,20 +10,21 @@ namespace CodeTutor.Wpf.Services.Executors;
 
 public class PistonExecutor
 {
-    private readonly HttpClient _httpClient;
+    private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(35) };
     private readonly string _baseUrl;
 
     public PistonExecutor(string baseUrl = "http://localhost:2000")
     {
+        if (!Uri.TryCreate(baseUrl, UriKind.Absolute, out _))
+            throw new ArgumentException("Invalid base URL", nameof(baseUrl));
         _baseUrl = baseUrl.TrimEnd('/');
-        _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(35) };
     }
 
     public async Task<bool> IsAvailableAsync()
     {
         try
         {
-            var response = await _httpClient.GetAsync($"{_baseUrl}/api/v2/runtimes");
+            using var response = await _httpClient.GetAsync($"{_baseUrl}/api/v2/runtimes");
             return response.IsSuccessStatusCode;
         }
         catch
@@ -50,11 +51,14 @@ public class PistonExecutor
             var json = JsonSerializer.Serialize(request);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync($"{_baseUrl}/api/v2/execute", content, cancellationToken);
+            using var response = await _httpClient.PostAsync($"{_baseUrl}/api/v2/execute", content, cancellationToken);
             var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
-                return new ExecutionResult(false, "", $"Piston error: {response.StatusCode}");
+            {
+                var bodyPreview = responseBody.Length > 200 ? responseBody[..200] + "..." : responseBody;
+                return new ExecutionResult(false, "", $"Piston error ({response.StatusCode}): {bodyPreview}");
+            }
 
             var result = JsonSerializer.Deserialize<PistonResponse>(responseBody);
             if (result == null)
