@@ -26,11 +26,11 @@ public partial class ChatMessageBubble : UserControl
     {
         if (d is ChatMessageBubble bubble && e.NewValue is TutorMessage message)
         {
-            bubble.UpdateAppearance(message);
+            bubble.ApplyMessageStyle(message);
         }
     }
 
-    private void UpdateAppearance(TutorMessage message)
+    private void ApplyMessageStyle(TutorMessage message)
     {
         MessageText.Text = message.Content;
 
