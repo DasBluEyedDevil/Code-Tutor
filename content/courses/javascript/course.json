@@ -6806,6 +6806,72 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "16.4",
+          "title": "Type Checking with Bun (// @ts-check)",
+          "moduleId": "module-16",
+          "order": 4,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Building Inspector",
+              "content": "You can draw blueprints all day, but without an inspector, nobody verifies you're following them. `// @ts-check` is your building inspector - it reads your JSDoc blueprints and verifies your code matches."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Enabling Type Checking",
+              "content": "Add `// @ts-check` at the top of any JavaScript file to enable type checking:",
+              "language": "javascript",
+              "code": "// @ts-check\n\n/**\n * @param {string} name\n * @returns {string}\n */\nfunction greet(name) {\n  return `Hello, ${name}!`;\n}\n\ngreet(42);  // ERROR: Argument of type 'number' is not assignable to parameter of type 'string'\n\n/**\n * @type {number}\n */\nconst count = 'five';  // ERROR: Type 'string' is not assignable to type 'number'"
+            },
+            {
+              "type": "THEORY",
+              "title": "Project-Wide Type Checking",
+              "content": "For entire projects, create a `jsconfig.json`:\n\n```json\n{\n  \"compilerOptions\": {\n    \"checkJs\": true,\n    \"strict\": true,\n    \"target\": \"ESNext\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"bundler\"\n  },\n  \"include\": [\"src/**/*.js\"],\n  \"exclude\": [\"node_modules\"]\n}\n```\n\n**Key options:**\n- `checkJs: true` - Check all .js files\n- `strict: true` - Enable all strict checks\n- `target/module: ESNext` - Use latest JavaScript features\n\nBun respects `jsconfig.json`, so your IDE and runtime are in sync."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Ignoring Errors",
+              "content": "Sometimes you know better than the type checker:\n\n```javascript\n// @ts-ignore - Ignore the next line only\n// @ts-expect-error - Same, but fails if no error exists (preferred)\n\nconst data = JSON.parse(input);\n// @ts-expect-error - API returns wrong type, we handle it\ndata.items = data.items || [];\n```\n\n**Use sparingly!** Every ignore is technical debt."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16.4-challenge",
+              "title": "Fix the Type Errors",
+              "description": "Enable type checking and fix the errors in this code.",
+              "instructions": "Add // @ts-check, then fix the type errors. The function should accept a number and return a string.",
+              "starterCode": "function formatPrice(price) {\n  return '$' + price.toFixed(2);\n}\n\nconst result = formatPrice('19.99');\nconsole.log(result);",
+              "solution": "// @ts-check\n\n/**\n * @param {number} price\n * @returns {string}\n */\nfunction formatPrice(price) {\n  return '$' + price.toFixed(2);\n}\n\nconst result = formatPrice(19.99);\nconsole.log(result);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Formats price correctly",
+                  "expectedOutput": "$19.99",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The function expects a number but is being called with a string. Fix the call site."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Converting number to string inside function",
+                  "consequence": "The function signature says it takes a number, so callers should pass numbers",
+                  "correction": "Change formatPrice('19.99') to formatPrice(19.99)"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     }
