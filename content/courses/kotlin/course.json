@@ -3762,6 +3762,20 @@
               "language": "kotlin"
             },
             {
+              "type": "EXAMPLE",
+              "title": "Value Classes for Domain Modeling",
+              "content": "\n### Type-Safe IDs Prevent Mixing Entity IDs\n\nOne of the most powerful uses of value classes is creating type-safe IDs:\n\n\n### Validated Primitives\n\nValue classes can validate data at construction time:\n\n\n**Key Benefits**:\n- **Zero runtime overhead**: Compiled to primitives\n- **Type safety**: Compiler prevents mixing different ID types\n- **Validation**: Business rules enforced at creation\n- **Self-documenting**: Code expresses intent clearly\n\n---\n\n",
+              "code": "// Type-safe IDs prevent mixing different entity IDs\n@JvmInline\nvalue class UserId(val value: Long)\n\n@JvmInline\nvalue class OrderId(val value: Long)\n\n@JvmInline\nvalue class ProductId(val value: Long)\n\n// Compiler prevents mistakes!\nfun getOrder(orderId: OrderId): Order { /* ... */ }\n\nval userId = UserId(123)\n// getOrder(userId)  // Compile error: Type mismatch!\n//                   // Required: OrderId, Found: UserId\n\nval orderId = OrderId(456)\ngetOrder(orderId)  // Works correctly\n\n// Validated primitives with business rules\n@JvmInline\nvalue class Email(val address: String) {\n    init {\n        require(address.contains(\"@\") && address.contains(\".\")) {\n            \"Invalid email format: $address\"\n        }\n    }\n}\n\n@JvmInline\nvalue class PositiveInt(val value: Int) {\n    init {\n        require(value > 0) { \"Value must be positive, got: $value\" }\n    }\n}\n\n@JvmInline\nvalue class Percentage(val value: Double) {\n    init {\n        require(value in 0.0..100.0) { \"Percentage must be 0-100, got: $value\" }\n    }\n}\n\n// Usage - validation happens at construction\nval email = Email(\"user@example.com\")  // OK\n// val badEmail = Email(\"invalid\")     // Throws IllegalArgumentException\n\nval discount = Percentage(15.0)  // OK\n// val badDiscount = Percentage(150.0)  // Throws IllegalArgumentException",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Create Value Classes for a Banking Domain",
+              "content": "\n**Goal**: Create type-safe value classes for a banking application.\n\n**Requirements**:\n1. Create `AccountNumber` value class (8-digit string, must start with digit)\n2. Create `Money` value class (Double, must be non-negative)\n3. Create `TransactionId` value class (UUID string format)\n4. Write a `transfer` function that uses these types\n\n**Starter Code**:\n\n\n---\n\n",
+              "code": "@JvmInline\nvalue class AccountNumber(val value: String) {\n    init {\n        require(value.length == 8 && value[0].isDigit()) {\n            \"Account number must be 8 digits starting with a digit\"\n        }\n    }\n}\n\n@JvmInline\nvalue class Money(val amount: Double) {\n    init {\n        require(amount >= 0) { \"Money cannot be negative: $amount\" }\n    }\n}\n\n@JvmInline\nvalue class TransactionId(val value: String) {\n    init {\n        require(value.matches(Regex(\"[a-f0-9-]{36}\"))) {\n            \"Invalid UUID format: $value\"\n        }\n    }\n}\n\nfun transfer(\n    from: AccountNumber,\n    to: AccountNumber,\n    amount: Money,\n    transactionId: TransactionId\n): Boolean {\n    println(\"Transferring \\$${amount.amount} from ${from.value} to ${to.value}\")\n    println(\"Transaction ID: ${transactionId.value}\")\n    return true\n}",
+              "language": "kotlin"
+            },
+            {
               "type": "THEORY",
               "title": "Exercise 1: Product Catalog System",
               "content": "\n**Goal**: Create a product catalog using data classes.\n\n**Requirements**:\n1. Data class `Product` with: `id`, `name`, `price`, `category`, `inStock`\n2. Data class `Order` with: `orderId`, `products: List<Product>`, `total`\n3. Function to calculate total from products\n4. Function to create a modified order with discount\n5. Test with sample products and orders\n\n---\n\n"
