@@ -5967,9 +5967,87 @@
         },
         {
           "id": "6.8",
-          "title": "Module 6, Mini-Project: Social Media App with Complete Navigation",
+          "title": "Module 6, Lesson 8: Handling Back Navigation with PopScope",
           "moduleId": "module-06",
           "order": 8,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why PopScope?",
+              "content": "\n`WillPopScope` was deprecated in Flutter 3.12. The new `PopScope` widget provides better control over back navigation with a cleaner API.\n\n**Key differences:**\n- `WillPopScope.onWillPop` returned `Future<bool>` (confusing)\n- `PopScope.canPop` is a simple boolean\n- `PopScope.onPopInvokedWithResult` gives you the pop result\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic PopScope Usage",
+              "content": "\nPrevent accidental back navigation (e.g., during form editing):\n\n",
+              "code": "PopScope(\n  canPop: false, // Prevents back gesture/button\n  onPopInvokedWithResult: (didPop, result) {\n    if (!didPop) {\n      // Show confirmation dialog\n      showDialog(\n        context: context,\n        builder: (context) => AlertDialog(\n          title: const Text('Discard changes?'),\n          actions: [\n            TextButton(\n              onPressed: () => Navigator.pop(context),\n              child: const Text('Cancel'),\n            ),\n            TextButton(\n              onPressed: () {\n                Navigator.pop(context); // Close dialog\n                Navigator.pop(context); // Actually go back\n              },\n              child: const Text('Discard'),\n            ),\n          ],\n        ),\n      );\n    }\n  },\n  child: const FormScreen(),\n)",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Conditional Back Navigation",
+              "content": "\nAllow back only when form is saved:\n\n",
+              "code": "class EditScreen extends StatefulWidget {\n  @override\n  State<EditScreen> createState() => _EditScreenState();\n}\n\nclass _EditScreenState extends State<EditScreen> {\n  bool _hasUnsavedChanges = false;\n\n  @override\n  Widget build(BuildContext context) {\n    return PopScope(\n      canPop: !_hasUnsavedChanges, // Allow pop only when saved\n      onPopInvokedWithResult: (didPop, result) {\n        if (!didPop) {\n          _showDiscardDialog();\n        }\n      },\n      child: Scaffold(\n        appBar: AppBar(title: const Text('Edit')),\n        body: TextField(\n          onChanged: (value) {\n            setState(() => _hasUnsavedChanges = true);\n          },\n        ),\n      ),\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Migration from WillPopScope",
+              "content": "\n| Old (Deprecated) | New (Flutter 3.12+) |\n|------------------|---------------------|\n| `WillPopScope` | `PopScope` |\n| `onWillPop: () async => false` | `canPop: false` |\n| `onWillPop: () async => true` | `canPop: true` |\n| Return value controlled pop | `onPopInvokedWithResult` callback |\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "6.8-challenge-0",
+              "title": "Exit Confirmation Challenge",
+              "description": "Create a note-taking screen that asks for confirmation before discarding unsaved changes.",
+              "instructions": "1. Use PopScope to intercept back navigation\\n2. Track if notes have been modified\\n3. Show an AlertDialog when user tries to leave with unsaved changes",
+              "starterCode": "import 'package:flutter/material.dart';\n\nclass NoteScreen extends StatefulWidget {\n  const NoteScreen({super.key});\n\n  @override\n  State<NoteScreen> createState() => _NoteScreenState();\n}\n\nclass _NoteScreenState extends State<NoteScreen> {\n  final _controller = TextEditingController();\n  // TODO: Track if note has been modified\n\n  @override\n  Widget build(BuildContext context) {\n    // TODO: Wrap with PopScope\n    return Scaffold(\n      appBar: AppBar(title: const Text('New Note')),\n      body: Padding(\n        padding: const EdgeInsets.all(16),\n        child: TextField(\n          controller: _controller,\n          maxLines: null,\n          decoration: const InputDecoration(\n            hintText: 'Start typing...',\n          ),\n        ),\n      ),\n    );\n  }\n}",
+              "solution": "import 'package:flutter/material.dart';\n\nclass NoteScreen extends StatefulWidget {\n  const NoteScreen({super.key});\n\n  @override\n  State<NoteScreen> createState() => _NoteScreenState();\n}\n\nclass _NoteScreenState extends State<NoteScreen> {\n  final _controller = TextEditingController();\n  bool _hasUnsavedChanges = false;\n\n  void _showDiscardDialog() {\n    showDialog(\n      context: context,\n      builder: (context) => AlertDialog(\n        title: const Text('Discard changes?'),\n        content: const Text('You have unsaved changes. Are you sure you want to leave?'),\n        actions: [\n          TextButton(\n            onPressed: () => Navigator.pop(context),\n            child: const Text('Cancel'),\n          ),\n          TextButton(\n            onPressed: () {\n              Navigator.pop(context);\n              Navigator.pop(context);\n            },\n            child: const Text('Discard'),\n          ),\n        ],\n      ),\n    );\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return PopScope(\n      canPop: !_hasUnsavedChanges,\n      onPopInvokedWithResult: (didPop, result) {\n        if (!didPop) {\n          _showDiscardDialog();\n        }\n      },\n      child: Scaffold(\n        appBar: AppBar(title: const Text('New Note')),\n        body: Padding(\n          padding: const EdgeInsets.all(16),\n          child: TextField(\n            controller: _controller,\n            maxLines: null,\n            onChanged: (value) {\n              if (!_hasUnsavedChanges) {\n                setState(() => _hasUnsavedChanges = true);\n              }\n            },\n            decoration: const InputDecoration(\n              hintText: 'Start typing...',\n            ),\n          ),\n        ),\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses PopScope widget",
+                  "expectedOutput": "PopScope",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Tracks unsaved changes state",
+                  "expectedOutput": "_hasUnsavedChanges",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use a boolean state variable to track if the TextField has been modified"
+                },
+                {
+                  "level": 2,
+                  "text": "Set canPop to the opposite of your unsaved changes flag"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using WillPopScope instead of PopScope",
+                  "consequence": "Deprecated warning, won't work in future Flutter versions",
+                  "correction": "Replace WillPopScope with PopScope"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "6.9",
+          "title": "Module 6, Mini-Project: Social Media App with Complete Navigation",
+          "moduleId": "module-06",
+          "order": 9,
           "estimatedMinutes": 60,
           "difficulty": "intermediate",
           "contentSections": [
