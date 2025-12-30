@@ -4,7 +4,7 @@
   "title": "Flutter Complete Development Course",
   "description": "Master Flutter from basics to advanced with 87+ interactive lessons, hands-on challenges, and experiments.",
   "difficulty": "beginner",
-  "estimatedHours": 77,
+  "estimatedHours": 85,
   "prerequisites": [
     "Basic programming knowledge recommended"
   ],
@@ -10003,6 +10003,573 @@
             }
           ],
           "challenges": []
+        }
+      ]
+    },
+    {
+      "id": "module-13",
+      "title": "Module 13: Advanced State Management with Riverpod & Hooks",
+      "description": "Master modern Flutter state management with Riverpod 2.0, code generation, and Flutter Hooks for clean, testable apps.",
+      "difficulty": "intermediate",
+      "estimatedHours": 8,
+      "lessons": [
+        {
+          "id": "13.1",
+          "title": "Module 13, Lesson 1: Why Riverpod? Provider Limitations",
+          "moduleId": "module-13",
+          "order": 1,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Evolution of Flutter State Management",
+              "content": "\nYou've learned Provider, and it works! So why learn another state management solution?\n\n**Provider's Limitations:**\n1. **Runtime errors**: `ProviderNotFoundException` crashes at runtime, not compile time\n2. **Context dependency**: Need `BuildContext` to read providers\n3. **Difficult testing**: Mocking providers requires widget tests\n4. **No code generation**: Manual boilerplate for every provider\n\n**Riverpod solves all of these:**\n- Compile-time safety (errors caught before running)\n- No BuildContext needed (access providers anywhere)\n- Easy unit testing (no widgets required)\n- Code generation reduces boilerplate by 80%\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Who Made Riverpod?",
+              "content": "\nRiverpod was created by **Remi Rousselet**\u2014the same person who made Provider!\n\nHe built Riverpod to fix Provider's design flaws. The name 'Riverpod' is an anagram of 'Provider'.\n\nIn 2025, Riverpod is the recommended state management solution for production Flutter apps.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Provider vs Riverpod Comparison",
+              "content": "\n**Provider (what you know):**\n\n",
+              "code": "// Provider: Must be inside widget tree\nclass MyApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return MultiProvider(\n      providers: [\n        ChangeNotifierProvider(create: (_) => CartNotifier()),\n      ],\n      child: MaterialApp(...),\n    );\n  }\n}\n\n// Accessing: Needs BuildContext\nclass CartScreen extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    final cart = context.watch<CartNotifier>();\n    return Text('Items: ${cart.itemCount}');\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Riverpod Equivalent",
+              "content": "\n**Riverpod (cleaner):**\n\n",
+              "code": "// Riverpod: Providers defined globally\nfinal cartProvider = NotifierProvider<CartNotifier, CartState>(\n  CartNotifier.new,\n);\n\n// App setup: Just wrap with ProviderScope\nclass MyApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return ProviderScope(\n      child: MaterialApp(...),\n    );\n  }\n}\n\n// Accessing: Extend ConsumerWidget\nclass CartScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final cart = ref.watch(cartProvider);\n    return Text('Items: ${cart.itemCount}');\n  }\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "13.1-quiz-0",
+              "title": "Provider vs Riverpod Quiz",
+              "description": "Test your understanding of Riverpod's advantages.",
+              "questions": [
+                {
+                  "question": "What happens in Provider if you try to read a provider that wasn't added to the tree?",
+                  "options": [
+                    "Compile-time error",
+                    "Runtime ProviderNotFoundException",
+                    "Returns null",
+                    "Uses a default value"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Provider throws ProviderNotFoundException at runtime. Riverpod catches this at compile time."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.2",
+          "title": "Module 13, Lesson 2: Riverpod Fundamentals",
+          "moduleId": "module-13",
+          "order": 2,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Setting Up Riverpod",
+              "content": "\n**Installation:**\n\nAdd to `pubspec.yaml`:\n```yaml\ndependencies:\n  flutter_riverpod: ^2.5.0\n\ndev_dependencies:\n  riverpod_generator: ^2.4.0\n  build_runner: ^2.4.0\n```\n\nRun: `flutter pub get`\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "The Three Pillars",
+              "content": "\n**1. ProviderScope** - Wrap your app once\n```dart\nvoid main() {\n  runApp(const ProviderScope(child: MyApp()));\n}\n```\n\n**2. Providers** - Define your state\n```dart\nfinal counterProvider = StateProvider<int>((ref) => 0);\n```\n\n**3. ConsumerWidget** - Read your state\n```dart\nclass CounterScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final count = ref.watch(counterProvider);\n    return Text('$count');\n  }\n}\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Provider Types",
+              "content": "\n",
+              "code": "// Provider: Read-only value\nfinal greetingProvider = Provider<String>((ref) => 'Hello!');\n\n// StateProvider: Simple mutable state\nfinal counterProvider = StateProvider<int>((ref) => 0);\n\n// FutureProvider: Async data\nfinal usersProvider = FutureProvider<List<User>>((ref) async {\n  final response = await http.get(Uri.parse('/users'));\n  return User.fromJsonList(response.body);\n});\n\n// StreamProvider: Real-time data\nfinal messagesProvider = StreamProvider<Message>((ref) {\n  return firestore.collection('messages').snapshots();\n});\n\n// NotifierProvider: Complex state with methods\nfinal cartProvider = NotifierProvider<CartNotifier, CartState>(\n  CartNotifier.new,\n);",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.2-challenge-0",
+              "title": "Counter with Riverpod",
+              "description": "Implement a simple counter using Riverpod StateProvider.",
+              "instructions": "Create a counter that increments and decrements using Riverpod.",
+              "starterCode": "import 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\n// TODO: Define counterProvider\n\nvoid main() {\n  runApp(const ProviderScope(child: MyApp()));\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: CounterScreen(),\n    );\n  }\n}\n\n// TODO: Change to ConsumerWidget and implement",
+              "solution": "import 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\nfinal counterProvider = StateProvider<int>((ref) => 0);\n\nvoid main() {\n  runApp(const ProviderScope(child: MyApp()));\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      home: CounterScreen(),\n    );\n  }\n}\n\nclass CounterScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final count = ref.watch(counterProvider);\n\n    return Scaffold(\n      appBar: AppBar(title: const Text('Riverpod Counter')),\n      body: Center(\n        child: Text(\n          '$count',\n          style: Theme.of(context).textTheme.headlineLarge,\n        ),\n      ),\n      floatingActionButton: Column(\n        mainAxisAlignment: .end,\n        children: [\n          FloatingActionButton(\n            onPressed: () => ref.read(counterProvider.notifier).state++,\n            child: const Icon(Icons.add),\n          ),\n          const SizedBox(height: 8),\n          FloatingActionButton(\n            onPressed: () => ref.read(counterProvider.notifier).state--,\n            child: const Icon(Icons.remove),\n          ),\n        ],\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Defines counterProvider as StateProvider",
+                  "expectedOutput": "StateProvider",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses ConsumerWidget",
+                  "expectedOutput": "ConsumerWidget",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "StateProvider<int>((ref) => 0) creates a simple integer provider"
+                },
+                {
+                  "level": 2,
+                  "text": "Use ref.watch() to read and rebuild, ref.read() to just read"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using ref.watch in onPressed callbacks",
+                  "consequence": "Causes unnecessary rebuilds",
+                  "correction": "Use ref.read() in callbacks, ref.watch() in build()"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.3",
+          "title": "Module 13, Lesson 3: Notifier & NotifierProvider",
+          "moduleId": "module-13",
+          "order": 3,
+          "estimatedMinutes": 55,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "When StateProvider Isn't Enough",
+              "content": "\nStateProvider is great for simple values (int, bool, String), but what about:\n- Complex objects with multiple fields?\n- State that needs validation?\n- Actions that should be methods?\n\nThat's where **Notifier** comes in!\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building a Todo Notifier",
+              "content": "\n",
+              "code": "// State class\n@immutable\nclass TodosState {\n  const TodosState({this.todos = const []});\n  final List<Todo> todos;\n\n  TodosState copyWith({List<Todo>? todos}) {\n    return TodosState(todos: todos ?? this.todos);\n  }\n}\n\n// Notifier class\nclass TodosNotifier extends Notifier<TodosState> {\n  @override\n  TodosState build() => const TodosState();\n\n  void addTodo(String title) {\n    final newTodo = Todo(id: uuid.v4(), title: title);\n    state = state.copyWith(todos: [...state.todos, newTodo]);\n  }\n\n  void toggleTodo(String id) {\n    state = state.copyWith(\n      todos: state.todos.map((todo) {\n        if (todo.id == id) {\n          return todo.copyWith(completed: !todo.completed);\n        }\n        return todo;\n      }).toList(),\n    );\n  }\n\n  void removeTodo(String id) {\n    state = state.copyWith(\n      todos: state.todos.where((t) => t.id != id).toList(),\n    );\n  }\n}\n\n// Provider definition\nfinal todosProvider = NotifierProvider<TodosNotifier, TodosState>(\n  TodosNotifier.new,\n);",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using the Notifier",
+              "content": "\n",
+              "code": "class TodoScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final todosState = ref.watch(todosProvider);\n\n    return Scaffold(\n      body: ListView.builder(\n        itemCount: todosState.todos.length,\n        itemBuilder: (context, index) {\n          final todo = todosState.todos[index];\n          return ListTile(\n            title: Text(todo.title),\n            leading: Checkbox(\n              value: todo.completed,\n              onChanged: (_) {\n                ref.read(todosProvider.notifier).toggleTodo(todo.id);\n              },\n            ),\n            trailing: IconButton(\n              icon: const Icon(Icons.delete),\n              onPressed: () {\n                ref.read(todosProvider.notifier).removeTodo(todo.id);\n              },\n            ),\n          );\n        },\n      ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: () => _showAddDialog(context, ref),\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.3-challenge-0",
+              "title": "Shopping Cart Notifier",
+              "description": "Build a shopping cart using Notifier pattern.",
+              "instructions": "Create a CartNotifier with addItem, removeItem, and clearCart methods.",
+              "starterCode": "// TODO: Create CartItem class\n// TODO: Create CartState class with items list and total\n// TODO: Create CartNotifier extending Notifier<CartState>\n// TODO: Create cartProvider",
+              "solution": "@immutable\nclass CartItem {\n  const CartItem({\n    required this.id,\n    required this.name,\n    required this.price,\n    this.quantity = 1,\n  });\n  final String id;\n  final String name;\n  final double price;\n  final int quantity;\n\n  CartItem copyWith({int? quantity}) {\n    return CartItem(\n      id: id,\n      name: name,\n      price: price,\n      quantity: quantity ?? this.quantity,\n    );\n  }\n}\n\n@immutable\nclass CartState {\n  const CartState({this.items = const []});\n  final List<CartItem> items;\n\n  double get total => items.fold(0, (sum, item) => sum + item.price * item.quantity);\n  int get itemCount => items.fold(0, (sum, item) => sum + item.quantity);\n\n  CartState copyWith({List<CartItem>? items}) {\n    return CartState(items: items ?? this.items);\n  }\n}\n\nclass CartNotifier extends Notifier<CartState> {\n  @override\n  CartState build() => const CartState();\n\n  void addItem(CartItem item) {\n    final existingIndex = state.items.indexWhere((i) => i.id == item.id);\n    if (existingIndex >= 0) {\n      final existing = state.items[existingIndex];\n      final updated = existing.copyWith(quantity: existing.quantity + 1);\n      state = state.copyWith(\n        items: [...state.items]..replaceRange(existingIndex, existingIndex + 1, [updated]),\n      );\n    } else {\n      state = state.copyWith(items: [...state.items, item]);\n    }\n  }\n\n  void removeItem(String id) {\n    state = state.copyWith(\n      items: state.items.where((i) => i.id != id).toList(),\n    );\n  }\n\n  void clearCart() {\n    state = const CartState();\n  }\n}\n\nfinal cartProvider = NotifierProvider<CartNotifier, CartState>(\n  CartNotifier.new,\n);",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "CartNotifier extends Notifier",
+                  "expectedOutput": "extends Notifier",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Has addItem method",
+                  "expectedOutput": "void addItem",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use @immutable classes for state"
+                },
+                {
+                  "level": 2,
+                  "text": "Remember: state = newState triggers rebuilds"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Mutating state.items directly",
+                  "consequence": "UI won't update",
+                  "correction": "Always create new state object with copyWith"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.4",
+          "title": "Module 13, Lesson 4: Riverpod Generator & Code Generation",
+          "moduleId": "module-13",
+          "order": 4,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Code Generation?",
+              "content": "\nWriting providers manually works, but it's verbose. Riverpod Generator reduces boilerplate by 80%:\n\n**Before (manual):**\n```dart\nfinal usersProvider = FutureProvider<List<User>>((ref) async {\n  final response = await ref.watch(httpClientProvider).get('/users');\n  return response.map(User.fromJson).toList();\n});\n```\n\n**After (with @riverpod):**\n```dart\n@riverpod\nFuture<List<User>> users(UsersRef ref) async {\n  final response = await ref.watch(httpClientProvider).get('/users');\n  return response.map(User.fromJson).toList();\n}\n```\n\nThe generator creates the provider for you!\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setup",
+              "content": "\nAdd these imports to your file:\n```dart\nimport 'package:riverpod_annotation/riverpod_annotation.dart';\n\npart 'your_file.g.dart';\n```\n\nRun code generation:\n```bash\ndart run build_runner watch\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Generated Providers",
+              "content": "\n",
+              "code": "import 'package:riverpod_annotation/riverpod_annotation.dart';\n\npart 'users_provider.g.dart';\n\n// Simple provider (no state)\n@riverpod\nString greeting(GreetingRef ref) => 'Hello!';\n\n// Future provider\n@riverpod\nFuture<List<User>> fetchUsers(FetchUsersRef ref) async {\n  final client = ref.watch(httpClientProvider);\n  final response = await client.get('/users');\n  return User.fromJsonList(response.body);\n}\n\n// Notifier (with state)\n@riverpod\nclass Counter extends _$Counter {\n  @override\n  int build() => 0;\n\n  void increment() => state++;\n  void decrement() => state--;\n}\n\n// Usage is the same!\n// ref.watch(greetingProvider)\n// ref.watch(fetchUsersProvider)\n// ref.watch(counterProvider)",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Keep Alive vs Auto Dispose",
+              "content": "\nBy default, generated providers auto-dispose when no longer watched.\n\n**Keep state alive (cached):**\n```dart\n@Riverpod(keepAlive: true)\nFuture<Config> appConfig(AppConfigRef ref) async {\n  return loadConfig();\n}\n```\n\n**Auto dispose (default):**\n```dart\n@riverpod\nFuture<User> userProfile(UserProfileRef ref) async {\n  return fetchProfile();\n}\n```\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.4-challenge-0",
+              "title": "Convert to Generated Providers",
+              "description": "Refactor manual providers to use @riverpod annotations.",
+              "instructions": "Convert the manual FutureProvider to use code generation.",
+              "starterCode": "// Manual provider - convert this to @riverpod\nfinal weatherProvider = FutureProvider<Weather>((ref) async {\n  final location = ref.watch(locationProvider);\n  final response = await http.get(\n    Uri.parse('api.weather.com?lat=${location.lat}&lon=${location.lon}'),\n  );\n  return Weather.fromJson(jsonDecode(response.body));\n});",
+              "solution": "import 'package:riverpod_annotation/riverpod_annotation.dart';\n\npart 'weather_provider.g.dart';\n\n@riverpod\nFuture<Weather> weather(WeatherRef ref) async {\n  final location = ref.watch(locationProvider);\n  final response = await http.get(\n    Uri.parse('api.weather.com?lat=${location.lat}&lon=${location.lon}'),\n  );\n  return Weather.fromJson(jsonDecode(response.body));\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses @riverpod annotation",
+                  "expectedOutput": "@riverpod",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Function has Ref parameter",
+                  "expectedOutput": "WeatherRef ref",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add part directive for generated file"
+                },
+                {
+                  "level": 2,
+                  "text": "Function name becomes provider name (weather -> weatherProvider)"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting part directive",
+                  "consequence": "Code generation fails",
+                  "correction": "Add: part 'filename.g.dart';"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.5",
+          "title": "Module 13, Lesson 5: AsyncValue & Error Handling",
+          "moduleId": "module-13",
+          "order": 5,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The AsyncValue Pattern",
+              "content": "\nWhen dealing with async data (FutureProvider, StreamProvider), Riverpod wraps the result in `AsyncValue<T>`.\n\nAsyncValue has three states:\n- `AsyncData<T>` - Success with data\n- `AsyncError` - Failure with error\n- `AsyncLoading` - Still loading\n\nThis forces you to handle all states\u2014no more forgotten loading spinners!\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using .when()",
+              "content": "\n",
+              "code": "class UserProfileScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final userAsync = ref.watch(userProvider);\n\n    return userAsync.when(\n      data: (user) => UserCard(user: user),\n      loading: () => const CircularProgressIndicator(),\n      error: (error, stack) => ErrorWidget(\n        message: error.toString(),\n        onRetry: () => ref.invalidate(userProvider),\n      ),\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Pattern Matching Alternative",
+              "content": "\n",
+              "code": "Widget build(BuildContext context, WidgetRef ref) {\n  final userAsync = ref.watch(userProvider);\n\n  return switch (userAsync) {\n    AsyncData(:final value) => UserCard(user: value),\n    AsyncError(:final error) => Text('Error: $error'),\n    AsyncLoading() => const CircularProgressIndicator(),\n  };\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Refreshing & Invalidating",
+              "content": "\n**Invalidate**: Marks provider as stale, refetches on next read\n```dart\nref.invalidate(userProvider);\n```\n\n**Refresh**: Invalidates AND immediately refetches\n```dart\nawait ref.refresh(userProvider.future);\n```\n\nUse refresh for pull-to-refresh, invalidate for cache clearing.\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.5-challenge-0",
+              "title": "Products List with Error Handling",
+              "description": "Build a products list that properly handles loading, error, and data states.",
+              "instructions": "Use AsyncValue.when to handle all states with proper UI.",
+              "starterCode": "@riverpod\nFuture<List<Product>> products(ProductsRef ref) async {\n  // Simulated API call\n  await Future.delayed(const Duration(seconds: 2));\n  if (Random().nextBool()) throw Exception('Network error');\n  return [Product(name: 'Widget', price: 9.99)];\n}\n\nclass ProductsScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    // TODO: Watch productsProvider\n    // TODO: Use .when() to handle all states\n    return const Placeholder();\n  }\n}",
+              "solution": "@riverpod\nFuture<List<Product>> products(ProductsRef ref) async {\n  await Future.delayed(const Duration(seconds: 2));\n  if (Random().nextBool()) throw Exception('Network error');\n  return [Product(name: 'Widget', price: 9.99)];\n}\n\nclass ProductsScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final productsAsync = ref.watch(productsProvider);\n\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Products'),\n        actions: [\n          IconButton(\n            icon: const Icon(Icons.refresh),\n            onPressed: () => ref.invalidate(productsProvider),\n          ),\n        ],\n      ),\n      body: productsAsync.when(\n        data: (products) => ListView.builder(\n          itemCount: products.length,\n          itemBuilder: (context, index) {\n            final product = products[index];\n            return ListTile(\n              title: Text(product.name),\n              trailing: Text('\\$${product.price}'),\n            );\n          },\n        ),\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (error, stack) => Center(\n          child: Column(\n            mainAxisAlignment: .center,\n            children: [\n              Text('Error: $error'),\n              const SizedBox(height: 16),\n              ElevatedButton(\n                onPressed: () => ref.invalidate(productsProvider),\n                child: const Text('Retry'),\n              ),\n            ],\n          ),\n        ),\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses .when() method",
+                  "expectedOutput": ".when(",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Has retry functionality",
+                  "expectedOutput": "ref.invalidate",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "AsyncValue.when takes data, loading, and error callbacks"
+                },
+                {
+                  "level": 2,
+                  "text": "Use ref.invalidate() to retry failed requests"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting error state handling",
+                  "consequence": "App crashes on network errors",
+                  "correction": "Always provide error callback in .when()"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.6",
+          "title": "Module 13, Lesson 6: Flutter Hooks Fundamentals",
+          "moduleId": "module-13",
+          "order": 6,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What Are Flutter Hooks?",
+              "content": "\nFlutter Hooks bring React-style hooks to Flutter. They simplify StatefulWidget lifecycle management.\n\n**Problem**: StatefulWidgets require lots of boilerplate for controllers, animations, subscriptions.\n\n**Solution**: Hooks extract that logic into reusable functions.\n\n**Installation**:\n```yaml\ndependencies:\n  flutter_hooks: ^0.20.0\n  hooks_riverpod: ^2.5.0  # Combines hooks + riverpod\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Before Hooks (StatefulWidget)",
+              "content": "\n",
+              "code": "class FormScreen extends StatefulWidget {\n  @override\n  State<FormScreen> createState() => _FormScreenState();\n}\n\nclass _FormScreenState extends State<FormScreen> {\n  late TextEditingController _nameController;\n  late TextEditingController _emailController;\n  late FocusNode _nameFocus;\n  late FocusNode _emailFocus;\n\n  @override\n  void initState() {\n    super.initState();\n    _nameController = TextEditingController();\n    _emailController = TextEditingController();\n    _nameFocus = FocusNode();\n    _emailFocus = FocusNode();\n  }\n\n  @override\n  void dispose() {\n    _nameController.dispose();\n    _emailController.dispose();\n    _nameFocus.dispose();\n    _emailFocus.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: [\n        TextField(controller: _nameController, focusNode: _nameFocus),\n        TextField(controller: _emailController, focusNode: _emailFocus),\n      ],\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "After Hooks (HookWidget)",
+              "content": "\n",
+              "code": "class FormScreen extends HookWidget {\n  @override\n  Widget build(BuildContext context) {\n    final nameController = useTextEditingController();\n    final emailController = useTextEditingController();\n    final nameFocus = useFocusNode();\n    final emailFocus = useFocusNode();\n\n    return Column(\n      children: [\n        TextField(controller: nameController, focusNode: nameFocus),\n        TextField(controller: emailController, focusNode: emailFocus),\n      ],\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Common Hooks",
+              "content": "\n| Hook | Purpose |\n|------|--------|\n| `useState<T>()` | Local state (like setState) |\n| `useEffect()` | Side effects (API calls, subscriptions) |\n| `useMemoized()` | Expensive computations (caching) |\n| `useTextEditingController()` | TextEditingController lifecycle |\n| `useFocusNode()` | FocusNode lifecycle |\n| `useAnimationController()` | Animation controller lifecycle |\n| `useTabController()` | TabController lifecycle |\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.6-challenge-0",
+              "title": "Timer with Hooks",
+              "description": "Build a stopwatch using useState and useEffect.",
+              "instructions": "Create a timer that counts up every second using hooks.",
+              "starterCode": "class StopwatchScreen extends HookWidget {\n  @override\n  Widget build(BuildContext context) {\n    // TODO: Use useState for seconds count\n    // TODO: Use useState for isRunning state\n    // TODO: Use useEffect to set up timer\n\n    return Scaffold(\n      body: Center(\n        child: Column(\n          mainAxisAlignment: .center,\n          children: [\n            Text('0 seconds', style: Theme.of(context).textTheme.headlineLarge),\n            Row(\n              mainAxisAlignment: .center,\n              children: [\n                ElevatedButton(onPressed: () {}, child: const Text('Start')),\n                const SizedBox(width: 16),\n                ElevatedButton(onPressed: () {}, child: const Text('Reset')),\n              ],\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}",
+              "solution": "class StopwatchScreen extends HookWidget {\n  @override\n  Widget build(BuildContext context) {\n    final seconds = useState(0);\n    final isRunning = useState(false);\n\n    useEffect(() {\n      Timer? timer;\n      if (isRunning.value) {\n        timer = Timer.periodic(const Duration(seconds: 1), (_) {\n          seconds.value++;\n        });\n      }\n      return () => timer?.cancel();\n    }, [isRunning.value]);\n\n    return Scaffold(\n      body: Center(\n        child: Column(\n          mainAxisAlignment: .center,\n          children: [\n            Text(\n              '${seconds.value} seconds',\n              style: Theme.of(context).textTheme.headlineLarge,\n            ),\n            const SizedBox(height: 32),\n            Row(\n              mainAxisAlignment: .center,\n              children: [\n                ElevatedButton(\n                  onPressed: () => isRunning.value = !isRunning.value,\n                  child: Text(isRunning.value ? 'Stop' : 'Start'),\n                ),\n                const SizedBox(width: 16),\n                ElevatedButton(\n                  onPressed: () {\n                    seconds.value = 0;\n                    isRunning.value = false;\n                  },\n                  child: const Text('Reset'),\n                ),\n              ],\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses useState hook",
+                  "expectedOutput": "useState",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses useEffect hook",
+                  "expectedOutput": "useEffect",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "useState returns a ValueNotifier - access value with .value"
+                },
+                {
+                  "level": 2,
+                  "text": "useEffect's cleanup function cancels the timer"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not providing keys to useEffect",
+                  "consequence": "Effect runs every build",
+                  "correction": "Add [isRunning.value] as keys to only run when state changes"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "13.7",
+          "title": "Module 13, Lesson 7: Combining Riverpod + Hooks",
+          "moduleId": "module-13",
+          "order": 7,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "HookConsumerWidget",
+              "content": "\nThe `hooks_riverpod` package gives you `HookConsumerWidget`\u2014combining the power of both!\n\n```dart\n// Instead of choosing one:\nclass MyWidget extends HookWidget { } // Hooks only\nclass MyWidget extends ConsumerWidget { } // Riverpod only\n\n// Use both:\nclass MyWidget extends HookConsumerWidget { } // Best of both worlds!\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Search with Debounce",
+              "content": "\nCombine hooks for local state with Riverpod for async data:\n\n",
+              "code": "@riverpod\nFuture<List<Product>> searchProducts(\n  SearchProductsRef ref,\n  String query,\n) async {\n  if (query.isEmpty) return [];\n  final response = await http.get(Uri.parse('/search?q=$query'));\n  return Product.fromJsonList(response.body);\n}\n\nclass SearchScreen extends HookConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    // Local state with hooks\n    final searchController = useTextEditingController();\n    final debouncedQuery = useDebounced(searchController.text, const Duration(milliseconds: 500));\n\n    // Remote state with Riverpod\n    final searchResults = ref.watch(searchProductsProvider(debouncedQuery ?? ''));\n\n    return Scaffold(\n      appBar: AppBar(\n        title: TextField(\n          controller: searchController,\n          decoration: const InputDecoration(hintText: 'Search...'),\n          onChanged: (_) => setState(() {}), // Trigger rebuild\n        ),\n      ),\n      body: searchResults.when(\n        data: (products) => ListView.builder(\n          itemCount: products.length,\n          itemBuilder: (_, i) => ListTile(title: Text(products[i].name)),\n        ),\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (e, _) => Center(child: Text('Error: $e')),\n      ),\n    );\n  }\n}\n\n// Custom debounce hook\nT? useDebounced<T>(T value, Duration delay) {\n  final debouncedValue = useState<T?>(null);\n\n  useEffect(() {\n    final timer = Timer(delay, () => debouncedValue.value = value);\n    return timer.cancel;\n  }, [value, delay]);\n\n  return debouncedValue.value;\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "13.7-challenge-0",
+              "title": "Infinite Scroll List",
+              "description": "Build a paginated list using hooks for scroll position and Riverpod for data.",
+              "instructions": "Create an infinite scroll list that loads more items when reaching the bottom.",
+              "starterCode": "// TODO: Create a HookConsumerWidget\n// TODO: Use useScrollController for pagination detection\n// TODO: Use Riverpod for fetching paginated data",
+              "solution": "@riverpod\nclass PaginatedProducts extends _$PaginatedProducts {\n  @override\n  Future<List<Product>> build() async {\n    return _fetchPage(0);\n  }\n\n  Future<List<Product>> _fetchPage(int page) async {\n    final response = await http.get(Uri.parse('/products?page=$page'));\n    return Product.fromJsonList(response.body);\n  }\n\n  Future<void> loadMore() async {\n    final currentProducts = state.valueOrNull ?? [];\n    final nextPage = currentProducts.length ~/ 20;\n    final newProducts = await _fetchPage(nextPage);\n    state = AsyncData([...currentProducts, ...newProducts]);\n  }\n}\n\nclass ProductListScreen extends HookConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final scrollController = useScrollController();\n    final products = ref.watch(paginatedProductsProvider);\n    final isLoadingMore = useState(false);\n\n    useEffect(() {\n      void onScroll() async {\n        if (scrollController.position.pixels >= \n            scrollController.position.maxScrollExtent - 200) {\n          if (!isLoadingMore.value) {\n            isLoadingMore.value = true;\n            await ref.read(paginatedProductsProvider.notifier).loadMore();\n            isLoadingMore.value = false;\n          }\n        }\n      }\n      scrollController.addListener(onScroll);\n      return () => scrollController.removeListener(onScroll);\n    }, [scrollController]);\n\n    return products.when(\n      data: (items) => ListView.builder(\n        controller: scrollController,\n        itemCount: items.length + (isLoadingMore.value ? 1 : 0),\n        itemBuilder: (_, i) {\n          if (i >= items.length) {\n            return const Center(child: CircularProgressIndicator());\n          }\n          return ListTile(title: Text(items[i].name));\n        },\n      ),\n      loading: () => const Center(child: CircularProgressIndicator()),\n      error: (e, _) => Center(child: Text('Error: $e')),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses HookConsumerWidget",
+                  "expectedOutput": "HookConsumerWidget",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses useScrollController",
+                  "expectedOutput": "useScrollController",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Check scrollController.position.pixels vs maxScrollExtent"
+                },
+                {
+                  "level": 2,
+                  "text": "Add a loading indicator at the bottom while fetching"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not preventing duplicate loadMore calls",
+                  "consequence": "Fetches same page multiple times",
+                  "correction": "Use isLoadingMore flag to prevent concurrent calls"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "13.8",
+          "title": "Module 13, Lesson 8: Mini-Project - Todo App with Riverpod",
+          "moduleId": "module-13",
+          "order": 8,
+          "estimatedMinutes": 90,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Project Overview",
+              "content": "\nBuild a complete Todo app using everything from this module:\n\n**Features:**\n- Add, edit, delete todos\n- Filter by status (all, active, completed)\n- Persist to local storage\n- Pull-to-refresh simulation\n\n**Stack:**\n- Riverpod for state management\n- Code generation with @riverpod\n- Flutter Hooks for local state\n- AsyncValue for loading states\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Project Structure",
+              "content": "\n",
+              "code": "lib/\n  main.dart\n  models/\n    todo.dart\n  providers/\n    todos_provider.dart      # Notifier + Provider\n    filter_provider.dart     # Filter state\n    filtered_todos.dart      # Computed provider\n  screens/\n    todos_screen.dart        # Main UI\n  widgets/\n    todo_tile.dart           # Single todo item\n    add_todo_dialog.dart     # Add/edit form",
+              "language": "plaintext"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Core Providers",
+              "content": "\n",
+              "code": "// models/todo.dart\n@freezed\nclass Todo with _$Todo {\n  const factory Todo({\n    required String id,\n    required String title,\n    @Default(false) bool completed,\n  }) = _Todo;\n}\n\n// providers/todos_provider.dart\n@riverpod\nclass Todos extends _$Todos {\n  @override\n  Future<List<Todo>> build() async {\n    // Simulate API fetch\n    await Future.delayed(const Duration(seconds: 1));\n    return [\n      const Todo(id: '1', title: 'Learn Riverpod'),\n      const Todo(id: '2', title: 'Build awesome apps'),\n    ];\n  }\n\n  void addTodo(String title) {\n    final newTodo = Todo(id: const Uuid().v4(), title: title);\n    state = AsyncData([...state.value ?? [], newTodo]);\n  }\n\n  void toggleTodo(String id) {\n    state = AsyncData(\n      state.value?.map((t) => t.id == id ? t.copyWith(completed: !t.completed) : t).toList() ?? [],\n    );\n  }\n\n  void deleteTodo(String id) {\n    state = AsyncData(\n      state.value?.where((t) => t.id != id).toList() ?? [],\n    );\n  }\n}\n\n// providers/filter_provider.dart\nenum TodoFilter { all, active, completed }\n\n@riverpod\nclass Filter extends _$Filter {\n  @override\n  TodoFilter build() => TodoFilter.all;\n\n  void setFilter(TodoFilter filter) => state = filter;\n}\n\n// providers/filtered_todos.dart\n@riverpod\nList<Todo> filteredTodos(FilteredTodosRef ref) {\n  final filter = ref.watch(filterProvider);\n  final todosAsync = ref.watch(todosProvider);\n\n  return todosAsync.when(\n    data: (todos) => switch (filter) {\n      TodoFilter.all => todos,\n      TodoFilter.active => todos.where((t) => !t.completed).toList(),\n      TodoFilter.completed => todos.where((t) => t.completed).toList(),\n    },\n    loading: () => [],\n    error: (_, __) => [],\n  );\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "PROJECT",
+              "id": "13.8-project-0",
+              "title": "Complete Todo App",
+              "description": "Build a fully functional Todo app with Riverpod + Hooks.",
+              "instructions": "1. Set up project with riverpod_generator\\n2. Create Todo model with freezed\\n3. Implement TodosNotifier with CRUD operations\\n4. Add filter functionality\\n5. Build UI with HookConsumerWidget\\n6. Add pull-to-refresh\\n7. Handle loading and error states",
+              "starterCode": "// Start with: flutter create todo_riverpod\n// Add dependencies:\n// flutter_riverpod, riverpod_annotation, riverpod_generator\n// hooks_riverpod, flutter_hooks\n// freezed_annotation, freezed, build_runner\n// uuid",
+              "solution": "// See complete project at:\n// github.com/flutter-examples/riverpod-todo-app\n\n// Key implementation patterns shown in lesson content above.",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Run 'dart run build_runner watch' during development"
+                },
+                {
+                  "level": 2,
+                  "text": "Use AsyncValue.when for all loading states"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to wrap app with ProviderScope",
+                  "consequence": "Riverpod providers don't work",
+                  "correction": "Wrap MaterialApp with ProviderScope in main()"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     }
