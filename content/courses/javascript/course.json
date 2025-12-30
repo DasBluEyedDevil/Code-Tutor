@@ -7020,6 +7020,72 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "17.2",
+          "title": "Import Attributes Deep Dive",
+          "moduleId": "module-17",
+          "order": 2,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Import Security Guard",
+              "content": "Airport security X-rays your luggage. They're not just checking the label - they verify the contents match what you declared.\n\nImport Attributes are JavaScript's security checkpoint. When you write `with { type: 'json' }`, you're declaring 'this file contains ONLY data, no code.' The runtime verifies this and blocks any attempts to sneak executable code through a JSON import."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "All Import Attribute Syntaxes",
+              "content": "Master every way to use import attributes:",
+              "language": "javascript",
+              "code": "// Static imports - most common\nimport config from './config.json' with { type: 'json' };\nimport styles from './app.css' with { type: 'css' };\n\n// Dynamic imports - note the different structure\nconst data = await import('./data.json', {\n  with: { type: 'json' }\n});\n\n// Re-exports with attributes\nexport { default as config } from './config.json' with { type: 'json' };\n\n// Namespace imports\nimport * as pkg from './package.json' with { type: 'json' };\nconsole.log(pkg.default.name);\n\n// Multiple attributes (future-proofing)\nimport schema from './schema.json' with {\n  type: 'json',\n  integrity: 'sha384-abc...'\n};"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Not Just Parse JSON Manually?",
+              "content": "You might wonder: why not just use `JSON.parse(Bun.file('./config.json').text())`?\n\n**Import attributes offer:**\n\n1. **Static analysis**: Bundlers know what you're importing at build time\n2. **Caching**: Imported JSON is cached like any other module\n3. **Security**: Prevents code injection through JSON files\n4. **Portability**: Same syntax works in Bun, Node, Deno, browsers\n\n**Without import attributes:**\n```javascript\n// Node 18: This could execute code if evil.json contains a \".default\" export!\nimport data from './evil.json';  // DANGEROUS in some runtimes\n```\n\n**With import attributes:**\n```javascript\n// All runtimes: Guaranteed to be pure JSON, no code execution\nimport data from './evil.json' with { type: 'json' };\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Runtime Support",
+              "content": "Import attributes are ES2025 but runtime support varies:\n\n| Runtime | JSON | CSS | Other |\n|---------|------|-----|-------|\n| Bun 1.0+ | Full | Full | - |\n| Node 22+ | Full | - | - |\n| Deno 1.37+ | Full | - | - |\n| Chrome 123+ | Full | Full | - |\n\nFor older runtimes, you may need to fall back to:\n```javascript\n// Fallback for older Node.js\nimport { readFileSync } from 'fs';\nconst config = JSON.parse(readFileSync('./config.json', 'utf-8'));\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17.2-challenge",
+              "title": "Dynamic Config Loading",
+              "description": "Load config dynamically based on environment.",
+              "instructions": "Create a loadConfig function that dynamically imports a JSON config file based on the environment (development or production). Use import attributes.",
+              "starterCode": "async function loadConfig(env) {\n  // Dynamically import config based on env\n  // Use import attributes!\n}\n\nconst config = await loadConfig('development');\nconsole.log(config.apiUrl);",
+              "solution": "async function loadConfig(env) {\n  const configPath = env === 'production'\n    ? './config.prod.json'\n    : './config.dev.json';\n  \n  const module = await import(configPath, {\n    with: { type: 'json' }\n  });\n  \n  return module.default;\n}\n\nconst config = await loadConfig('development');\nconsole.log(config.apiUrl);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Loads correct config",
+                  "expectedOutput": "http://localhost:3000",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Dynamic import returns a module object - the JSON data is in .default"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting .default on dynamic JSON imports",
+                  "consequence": "You get the module wrapper, not the JSON data",
+                  "correction": "const data = (await import('./file.json', { with: { type: 'json' } })).default;"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     }
