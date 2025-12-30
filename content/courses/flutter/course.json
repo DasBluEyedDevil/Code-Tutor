@@ -4,7 +4,7 @@
   "title": "Flutter Complete Development Course",
   "description": "Master Flutter from basics to advanced with 87+ interactive lessons, hands-on challenges, and experiments.",
   "difficulty": "beginner",
-  "estimatedHours": 91,
+  "estimatedHours": 98,
   "prerequisites": [
     "Basic programming knowledge recommended"
   ],
@@ -11026,6 +11026,590 @@
                 }
               ],
               "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-15",
+      "title": "Module 15: Offline-First Architecture with Drift & Isar",
+      "description": "Build resilient mobile apps with type-safe local databases, offline sync strategies, and local-first architecture patterns.",
+      "difficulty": "intermediate",
+      "estimatedHours": 7,
+      "lessons": [
+        {
+          "id": "15.1",
+          "title": "Module 15, Lesson 1: Offline-First Principles",
+          "moduleId": "module-15",
+          "order": 1,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Offline-First?",
+              "content": "\n**Users Expect Apps to Work Without Internet**\n\nThink about how you use your phone. You're on a subway with spotty signal, in an airplane with no WiFi, or in a building with poor reception. What happens when you open an app?\n\nWith **online-first** apps, you see spinning loaders, error messages, or blank screens. Frustrating.\n\nWith **offline-first** apps, everything loads instantly. You can read, write, and interact. When connection returns, changes sync automatically.\n\n**Real-world examples:**\n- Notes apps (you expect to read your notes anywhere)\n- Todo lists (you want to check items off offline)\n- Email (you can read and compose offline)\n- Maps (downloaded areas work without signal)\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "The Problem with Online-First",
+              "content": "\n**Online-First Architecture:**\n```\nUser Action -> API Request -> Wait for Response -> Update UI\n```\n\n**Problems:**\n1. **Slow perceived performance** - Users wait for every action\n2. **Network dependency** - App is useless without internet\n3. **Poor UX on slow connections** - 3G users have terrible experience\n4. **Data loss risk** - If request fails mid-submission, data is lost\n5. **Battery drain** - Constant network activity\n\n**Statistics:**\n- 53% of users abandon sites that take >3 seconds to load\n- Mobile connections average 50-200ms latency per request\n- Users check phones 150+ times/day, often briefly\n\n"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Local is Truth, Remote is Backup",
+              "content": "\n**The Offline-First Mindset:**\n\nInstead of treating the server as the source of truth and local storage as a cache, flip it:\n\n- **Local database is the primary source** - App reads/writes here first\n- **Remote server is backup** - Syncs when connection is available\n- **Changes sync bidirectionally** - Local to remote, remote to local\n\n**Benefits:**\n- **Instant response** - No network wait for any action\n- **Works everywhere** - Online, offline, or poor connection\n- **Resilient** - Network failures don't lose data\n- **Better UX** - App feels native and fast\n\n**The key principle:** Your app should work perfectly with airplane mode on. Network is an enhancement, not a requirement.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sync Strategies Overview",
+              "content": "\nDifferent apps need different sync strategies:\n\n",
+              "code": "// 1. LAST-WRITE-WINS\n// Simple but can lose data\n// Good for: User preferences, settings\nclass LastWriteWins {\n  DateTime updatedAt;\n  // Whoever wrote last is the winner\n}\n\n// 2. MERGE STRATEGY\n// Combine changes from both sides\n// Good for: Lists, collections\nclass MergeStrategy {\n  // Add items from both local and remote\n  // Remove items marked deleted on either side\n}\n\n// 3. CONFLICT RESOLUTION\n// Ask user to choose or auto-resolve\n// Good for: Documents, notes\nclass ConflictResolution {\n  LocalVersion localVersion;\n  RemoteVersion remoteVersion;\n  // Present both to user or apply rules\n}\n\n// 4. OPERATION-BASED (CRDTs)\n// Track operations, not state\n// Good for: Collaborative editing\nclass OperationBased {\n  List<Operation> operations;\n  // Replay operations in order\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "15.1-quiz-0",
+              "title": "Offline-First Principles Quiz",
+              "description": "Test your understanding of offline-first architecture.",
+              "questions": [
+                {
+                  "question": "What is the core principle of offline-first architecture?",
+                  "options": [
+                    "Always fetch from server first",
+                    "Local database is the primary source of truth",
+                    "Cache server responses temporarily",
+                    "Only store data when offline"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "In offline-first architecture, the local database is the primary source of truth. The app reads and writes locally first, then syncs with the server when connection is available."
+                },
+                {
+                  "question": "Which sync strategy is best for user preferences?",
+                  "options": [
+                    "CRDT-based operations",
+                    "Ask user to resolve conflicts",
+                    "Last-write-wins",
+                    "Never sync preferences"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Last-write-wins is appropriate for user preferences because the most recent choice is typically what the user wants, and conflicts are rare."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.2",
+          "title": "Module 15, Lesson 2: Drift Setup & Type-Safe SQL",
+          "moduleId": "module-15",
+          "order": 2,
+          "estimatedMinutes": 55,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Drift over sqflite?",
+              "content": "\n**sqflite** is Flutter's basic SQLite wrapper. It works, but has limitations:\n\n```dart\n// sqflite - raw SQL, no type safety\nfinal results = await db.rawQuery(\n  'SELECT * FROM tasks WHERE complted = 1' // Typo! No compile error\n);\n// results is List<Map<String, dynamic>> - no type safety\n```\n\n**Drift** (formerly Moor) provides:\n- **Type safety** - Compile-time SQL validation\n- **Code generation** - Tables become Dart classes\n- **Streams** - Reactive queries that update UI automatically\n- **Migrations** - Built-in schema versioning\n- **DAOs** - Organized data access layer\n\n```dart\n// Drift - type-safe, compile-time checked\nfinal tasks = await db.select(db.tasks)\n  ..where((t) => t.completed.equals(true)); // Type-safe!\n// Returns List<Task> - proper Dart objects\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Installation",
+              "content": "\nAdd these dependencies to your `pubspec.yaml`:\n\n",
+              "code": "# pubspec.yaml\ndependencies:\n  flutter:\n    sdk: flutter\n  drift: ^2.14.0\n  sqlite3_flutter_libs: ^0.5.18\n  path_provider: ^2.1.1\n  path: ^1.8.3\n\ndev_dependencies:\n  flutter_test:\n    sdk: flutter\n  drift_dev: ^2.14.0\n  build_runner: ^2.4.7\n\n# Run: flutter pub get",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Table Definitions",
+              "content": "\nDefine your database tables as Dart classes:\n\n",
+              "code": "// lib/database/tables.dart\nimport 'package:drift/drift.dart';\n\n// Tasks table\nclass Tasks extends Table {\n  // Auto-incrementing primary key\n  IntColumn get id => integer().autoIncrement()();\n  \n  // Required text with length constraint\n  TextColumn get title => text().withLength(min: 1, max: 100)();\n  \n  // Optional description\n  TextColumn get description => text().nullable()();\n  \n  // Boolean with default value\n  BoolColumn get completed => boolean().withDefault(const Constant(false))();\n  \n  // DateTime with default to current time\n  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();\n  \n  // Optional due date\n  DateTimeColumn get dueDate => dateTime().nullable()();\n  \n  // Foreign key to categories table\n  IntColumn get categoryId => integer().nullable().references(Categories, #id)();\n}\n\n// Categories table\nclass Categories extends Table {\n  IntColumn get id => integer().autoIncrement()();\n  TextColumn get name => text().withLength(min: 1, max: 50)();\n  IntColumn get color => integer()(); // Store color as int\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Database Class",
+              "content": "\nCreate the database with `@DriftDatabase` annotation:\n\n",
+              "code": "// lib/database/database.dart\nimport 'dart:io';\nimport 'package:drift/drift.dart';\nimport 'package:drift/native.dart';\nimport 'package:path_provider/path_provider.dart';\nimport 'package:path/path.dart' as p;\n\nimport 'tables.dart';\n\npart 'database.g.dart'; // Generated file\n\n@DriftDatabase(tables: [Tasks, Categories])\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  // Schema version - increment when you change tables\n  @override\n  int get schemaVersion => 1;\n}\n\nLazyDatabase _openConnection() {\n  return LazyDatabase(() async {\n    final dbFolder = await getApplicationDocumentsDirectory();\n    final file = File(p.join(dbFolder.path, 'app.db'));\n    return NativeDatabase.createInBackground(file);\n  });\n}\n\n// Run code generation:\n// dart run build_runner build",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Code Generation",
+              "content": "\n**After defining tables, generate the code:**\n\n```bash\ndart run build_runner build\n```\n\nThis creates `database.g.dart` with:\n- Data classes (`Task`, `Category`)\n- Companion classes for inserts/updates\n- Database implementation\n\n**Watch mode for development:**\n```bash\ndart run build_runner watch\n```\n\nAuto-regenerates when you change table definitions.\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.2-challenge-0",
+              "title": "Set Up Drift Database",
+              "description": "Create a Drift database with Notes and Tags tables.",
+              "instructions": "Define a Notes table with id, title, content, createdAt, and updatedAt. Define a Tags table with id and name. Set up the database class.",
+              "starterCode": "// lib/database/tables.dart\nimport 'package:drift/drift.dart';\n\n// TODO: Define Notes table\n// - id (auto-increment)\n// - title (required, max 200 chars)\n// - content (required)\n// - createdAt (default to now)\n// - updatedAt (default to now)\n\n// TODO: Define Tags table\n// - id (auto-increment)\n// - name (required, max 50 chars)\n\n// lib/database/database.dart\n// TODO: Create AppDatabase class with @DriftDatabase annotation",
+              "solution": "// lib/database/tables.dart\nimport 'package:drift/drift.dart';\n\nclass Notes extends Table {\n  IntColumn get id => integer().autoIncrement()();\n  TextColumn get title => text().withLength(min: 1, max: 200)();\n  TextColumn get content => text()();\n  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();\n  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();\n}\n\nclass Tags extends Table {\n  IntColumn get id => integer().autoIncrement()();\n  TextColumn get name => text().withLength(min: 1, max: 50)();\n}\n\n// lib/database/database.dart\nimport 'dart:io';\nimport 'package:drift/drift.dart';\nimport 'package:drift/native.dart';\nimport 'package:path_provider/path_provider.dart';\nimport 'package:path/path.dart' as p;\n\nimport 'tables.dart';\n\npart 'database.g.dart';\n\n@DriftDatabase(tables: [Notes, Tags])\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  @override\n  int get schemaVersion => 1;\n}\n\nLazyDatabase _openConnection() {\n  return LazyDatabase(() async {\n    final dbFolder = await getApplicationDocumentsDirectory();\n    final file = File(p.join(dbFolder.path, 'notes.db'));\n    return NativeDatabase.createInBackground(file);\n  });\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use integer().autoIncrement()() for auto-incrementing primary keys"
+                },
+                {
+                  "level": 2,
+                  "text": "Use dateTime().withDefault(currentDateAndTime)() for timestamp defaults"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting the part directive for generated file",
+                  "consequence": "Build runner fails to generate code",
+                  "correction": "Add: part 'database.g.dart';"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.3",
+          "title": "Module 15, Lesson 3: Drift DAOs & Complex Queries",
+          "moduleId": "module-15",
+          "order": 3,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Data Access Objects (DAOs)",
+              "content": "\n**DAOs** organize database operations by domain:\n\n- `TaskDao` - All task-related queries\n- `CategoryDao` - All category-related queries\n\n**Benefits:**\n- Clean separation of concerns\n- Reusable query methods\n- Easier testing\n- Better code organization\n\nInstead of putting all queries in the database class, split them into focused DAOs.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating a DAO",
+              "content": "\n",
+              "code": "// lib/database/daos/task_dao.dart\nimport 'package:drift/drift.dart';\nimport '../database.dart';\nimport '../tables.dart';\n\npart 'task_dao.g.dart';\n\n@DriftAccessor(tables: [Tasks, Categories])\nclass TaskDao extends DatabaseAccessor<AppDatabase> with _$TaskDaoMixin {\n  TaskDao(AppDatabase db) : super(db);\n  \n  // CREATE\n  Future<int> insertTask(TasksCompanion task) {\n    return into(tasks).insert(task);\n  }\n  \n  // READ - Get all tasks\n  Future<List<Task>> getAllTasks() {\n    return select(tasks).get();\n  }\n  \n  // READ - Get single task\n  Future<Task?> getTaskById(int id) {\n    return (select(tasks)..where((t) => t.id.equals(id))).getSingleOrNull();\n  }\n  \n  // READ - Get incomplete tasks\n  Future<List<Task>> getIncompleteTasks() {\n    return (select(tasks)\n      ..where((t) => t.completed.equals(false))\n      ..orderBy([(t) => OrderingTerm.asc(t.dueDate)]))\n      .get();\n  }\n  \n  // UPDATE\n  Future<bool> updateTask(Task task) {\n    return update(tasks).replace(task);\n  }\n  \n  // UPDATE - Toggle completion\n  Future<int> toggleComplete(int id, bool completed) {\n    return (update(tasks)..where((t) => t.id.equals(id)))\n      .write(TasksCompanion(completed: Value(completed)));\n  }\n  \n  // DELETE\n  Future<int> deleteTask(int id) {\n    return (delete(tasks)..where((t) => t.id.equals(id))).go();\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Joins and Relations",
+              "content": "\nQuery across related tables:\n\n",
+              "code": "// Join tasks with categories\nclass TaskWithCategory {\n  final Task task;\n  final Category? category;\n  \n  TaskWithCategory(this.task, this.category);\n}\n\n// In TaskDao:\nFuture<List<TaskWithCategory>> getTasksWithCategories() {\n  final query = select(tasks).join([\n    leftOuterJoin(categories, categories.id.equalsExp(tasks.categoryId)),\n  ]);\n  \n  return query.map((row) {\n    return TaskWithCategory(\n      row.readTable(tasks),\n      row.readTableOrNull(categories),\n    );\n  }).get();\n}\n\n// Filter by category\nFuture<List<Task>> getTasksByCategory(int categoryId) {\n  return (select(tasks)\n    ..where((t) => t.categoryId.equals(categoryId)))\n    .get();\n}\n\n// Count tasks per category\nFuture<List<CategoryCount>> getTaskCountByCategory() {\n  final count = tasks.id.count();\n  \n  final query = selectOnly(categories)\n    ..addColumns([categories.name, count])\n    ..join([leftOuterJoin(tasks, tasks.categoryId.equalsExp(categories.id))])\n    ..groupBy([categories.id]);\n  \n  return query.map((row) {\n    return CategoryCount(\n      name: row.read(categories.name)!,\n      count: row.read(count)!,\n    );\n  }).get();\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Stream Queries for Reactive UI",
+              "content": "\nDrift's killer feature - queries that emit updates automatically:\n\n",
+              "code": "// In TaskDao:\n\n// Stream of all tasks - emits whenever data changes\nStream<List<Task>> watchAllTasks() {\n  return select(tasks).watch();\n}\n\n// Stream of incomplete tasks\nStream<List<Task>> watchIncompleteTasks() {\n  return (select(tasks)\n    ..where((t) => t.completed.equals(false))\n    ..orderBy([(t) => OrderingTerm.asc(t.dueDate)]))\n    .watch();\n}\n\n// Stream of single task\nStream<Task?> watchTask(int id) {\n  return (select(tasks)..where((t) => t.id.equals(id)))\n    .watchSingleOrNull();\n}\n\n// Usage in Flutter widget:\nclass TaskListWidget extends StatelessWidget {\n  final TaskDao taskDao;\n  \n  @override\n  Widget build(BuildContext context) {\n    return StreamBuilder<List<Task>>(\n      stream: taskDao.watchIncompleteTasks(),\n      builder: (context, snapshot) {\n        if (!snapshot.hasData) {\n          return const CircularProgressIndicator();\n        }\n        \n        final tasks = snapshot.data!;\n        return ListView.builder(\n          itemCount: tasks.length,\n          itemBuilder: (context, index) {\n            final task = tasks[index];\n            return TaskTile(task: task);\n          },\n        );\n      },\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Register DAOs in Database",
+              "content": "\n**Update your database class to include DAOs:**\n\n```dart\n@DriftDatabase(\n  tables: [Tasks, Categories],\n  daos: [TaskDao, CategoryDao], // Register DAOs here\n)\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  @override\n  int get schemaVersion => 1;\n  \n  // Access DAOs\n  TaskDao get taskDao => TaskDao(this);\n  CategoryDao get categoryDao => CategoryDao(this);\n}\n```\n\nNow you can use `db.taskDao.getAllTasks()` throughout your app.\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.3-challenge-0",
+              "title": "Build a Notes DAO",
+              "description": "Create a DAO for notes with CRUD operations and stream queries.",
+              "instructions": "Create a NoteDao with methods: insertNote, getAllNotes, getNoteById, updateNote, deleteNote, watchAllNotes (stream), and searchNotes (by title).",
+              "starterCode": "// lib/database/daos/note_dao.dart\nimport 'package:drift/drift.dart';\nimport '../database.dart';\nimport '../tables.dart';\n\npart 'note_dao.g.dart';\n\n@DriftAccessor(tables: [Notes])\nclass NoteDao extends DatabaseAccessor<AppDatabase> with _$NoteDaoMixin {\n  NoteDao(AppDatabase db) : super(db);\n  \n  // TODO: Implement CRUD operations\n  // - insertNote\n  // - getAllNotes (ordered by updatedAt descending)\n  // - getNoteById\n  // - updateNote\n  // - deleteNote\n  \n  // TODO: Implement stream query\n  // - watchAllNotes\n  \n  // TODO: Implement search\n  // - searchNotes (search in title)\n}",
+              "solution": "// lib/database/daos/note_dao.dart\nimport 'package:drift/drift.dart';\nimport '../database.dart';\nimport '../tables.dart';\n\npart 'note_dao.g.dart';\n\n@DriftAccessor(tables: [Notes])\nclass NoteDao extends DatabaseAccessor<AppDatabase> with _$NoteDaoMixin {\n  NoteDao(AppDatabase db) : super(db);\n  \n  // CREATE\n  Future<int> insertNote(NotesCompanion note) {\n    return into(notes).insert(note);\n  }\n  \n  // READ - Get all notes\n  Future<List<Note>> getAllNotes() {\n    return (select(notes)\n      ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))\n      .get();\n  }\n  \n  // READ - Get single note\n  Future<Note?> getNoteById(int id) {\n    return (select(notes)..where((n) => n.id.equals(id)))\n      .getSingleOrNull();\n  }\n  \n  // UPDATE\n  Future<bool> updateNote(Note note) {\n    return update(notes).replace(note);\n  }\n  \n  // DELETE\n  Future<int> deleteNote(int id) {\n    return (delete(notes)..where((n) => n.id.equals(id))).go();\n  }\n  \n  // STREAM - Watch all notes\n  Stream<List<Note>> watchAllNotes() {\n    return (select(notes)\n      ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))\n      .watch();\n  }\n  \n  // SEARCH - Search notes by title\n  Future<List<Note>> searchNotes(String query) {\n    return (select(notes)\n      ..where((n) => n.title.like('%$query%'))\n      ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)]))\n      .get();\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use select(notes).watch() for stream queries"
+                },
+                {
+                  "level": 2,
+                  "text": "Use .like('%query%') for text search"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to order results",
+                  "consequence": "Notes appear in random order",
+                  "correction": "Add ..orderBy([(n) => OrderingTerm.desc(n.updatedAt)])"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.4",
+          "title": "Module 15, Lesson 4: Drift Migrations",
+          "moduleId": "module-15",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Schema Versioning",
+              "content": "\n**Why Migrations Matter:**\n\nYour app is in production. Users have data. You need to add a new column.\n\nWithout migrations:\n- App crashes on startup\n- Users lose all their data\n- Bad reviews flood in\n\nWith migrations:\n- Schema updates smoothly\n- Existing data preserved\n- Users don't notice anything\n\n**The Rule:** Every schema change increments `schemaVersion` and requires migration code.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "MigrationStrategy",
+              "content": "\n",
+              "code": "// lib/database/database.dart\n@DriftDatabase(tables: [Tasks, Categories])\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  // Increment this when you change the schema\n  @override\n  int get schemaVersion => 2; // Was 1, now 2\n  \n  @override\n  MigrationStrategy get migration {\n    return MigrationStrategy(\n      // Called when creating a fresh database\n      onCreate: (Migrator m) async {\n        await m.createAll();\n      },\n      \n      // Called when upgrading from old version\n      onUpgrade: (Migrator m, int from, int to) async {\n        // Run migrations for each version\n        if (from < 2) {\n          // Migration from version 1 to 2\n          await m.addColumn(tasks, tasks.priority);\n        }\n        if (from < 3) {\n          // Migration from version 2 to 3\n          await m.createTable(tags);\n        }\n      },\n      \n      // Called after opening (useful for seeding data)\n      beforeOpen: (details) async {\n        // Enable foreign keys\n        await customStatement('PRAGMA foreign_keys = ON');\n        \n        // Seed default categories if needed\n        if (details.wasCreated) {\n          await _seedDefaultCategories();\n        }\n      },\n    );\n  }\n  \n  Future<void> _seedDefaultCategories() async {\n    await into(categories).insert(CategoriesCompanion(\n      name: const Value('Work'),\n      color: Value(Colors.blue.value),\n    ));\n    await into(categories).insert(CategoriesCompanion(\n      name: const Value('Personal'),\n      color: Value(Colors.green.value),\n    ));\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Common Migration Patterns",
+              "content": "\n",
+              "code": "// Common onUpgrade patterns:\n\nonUpgrade: (Migrator m, int from, int to) async {\n  // 1. ADD A COLUMN\n  if (from < 2) {\n    await m.addColumn(tasks, tasks.priority);\n  }\n  \n  // 2. CREATE A NEW TABLE\n  if (from < 3) {\n    await m.createTable(tags);\n  }\n  \n  // 3. DROP A TABLE\n  if (from < 4) {\n    await m.deleteTable('old_table_name');\n  }\n  \n  // 4. RENAME A COLUMN (requires custom SQL)\n  if (from < 5) {\n    await customStatement(\n      'ALTER TABLE tasks RENAME COLUMN old_name TO new_name'\n    );\n  }\n  \n  // 5. COMPLEX MIGRATION (data transformation)\n  if (from < 6) {\n    // Add new column\n    await m.addColumn(tasks, tasks.statusEnum);\n    \n    // Migrate data from old column to new\n    await customStatement('''\n      UPDATE tasks \n      SET status_enum = CASE \n        WHEN completed = 1 THEN 'done'\n        ELSE 'pending'\n      END\n    ''');\n    \n    // Optionally drop old column (SQLite limitation: can't drop columns easily)\n  }\n},",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Testing Migrations",
+              "content": "\n**Always test migrations before releasing!**\n\n```dart\n// test/migration_test.dart\nimport 'package:drift/drift.dart';\nimport 'package:drift_dev/api/migrations.dart';\nimport 'package:test/test.dart';\n\nvoid main() {\n  test('migration from v1 to v2', () async {\n    final verifier = SchemaVerifier(GeneratedHelper());\n    \n    // Start with schema version 1\n    final connection = await verifier.startAt(1);\n    final db = AppDatabase.connect(connection);\n    \n    // Verify migration runs without error\n    await verifier.migrateAndValidate(db, 2);\n    \n    await db.close();\n  });\n}\n```\n\n**Migration Checklist:**\n1. Increment schemaVersion\n2. Add migration code in onUpgrade\n3. Test migration locally\n4. Test with production-like data\n5. Test upgrading from ALL previous versions\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.4-challenge-0",
+              "title": "Add a Migration",
+              "description": "Add a 'priority' column to the Notes table with proper migration.",
+              "instructions": "1. Add a priority column (integer, nullable) to the Notes table. 2. Increment schemaVersion to 2. 3. Add migration code to add the column for existing users.",
+              "starterCode": "// Current schema version is 1\n// Notes table has: id, title, content, createdAt, updatedAt\n\n// TODO: Add priority column to Notes table\n// TODO: Update schemaVersion to 2\n// TODO: Add migration in onUpgrade\n\nclass Notes extends Table {\n  IntColumn get id => integer().autoIncrement()();\n  TextColumn get title => text().withLength(min: 1, max: 200)();\n  TextColumn get content => text()();\n  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();\n  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();\n  // TODO: Add priority column\n}\n\n@DriftDatabase(tables: [Notes])\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  @override\n  int get schemaVersion => 1; // TODO: Update this\n  \n  // TODO: Add MigrationStrategy\n}",
+              "solution": "class Notes extends Table {\n  IntColumn get id => integer().autoIncrement()();\n  TextColumn get title => text().withLength(min: 1, max: 200)();\n  TextColumn get content => text()();\n  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();\n  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();\n  IntColumn get priority => integer().nullable()(); // Added!\n}\n\n@DriftDatabase(tables: [Notes])\nclass AppDatabase extends _$AppDatabase {\n  AppDatabase() : super(_openConnection());\n  \n  @override\n  int get schemaVersion => 2; // Updated!\n  \n  @override\n  MigrationStrategy get migration {\n    return MigrationStrategy(\n      onCreate: (Migrator m) async {\n        await m.createAll();\n      },\n      onUpgrade: (Migrator m, int from, int to) async {\n        if (from < 2) {\n          // Add priority column for users upgrading from v1\n          await m.addColumn(notes, notes.priority);\n        }\n      },\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "New columns in migrations should be nullable or have defaults"
+                },
+                {
+                  "level": 2,
+                  "text": "Check 'from < 2' to run migration for version 1 users"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Adding required column without default in migration",
+                  "consequence": "Migration fails for existing data",
+                  "correction": "Make new columns nullable or provide a default value"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.5",
+          "title": "Module 15, Lesson 5: Isar NoSQL - Setup & CRUD",
+          "moduleId": "module-15",
+          "order": 5,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "When to Use Isar vs Drift",
+              "content": "\n**Choose Drift (SQL) when:**\n- Complex relational data with joins\n- Need SQL query flexibility\n- Coming from SQL background\n- Strict schema requirements\n- Complex reporting queries\n\n**Choose Isar (NoSQL) when:**\n- Simple data structures\n- Maximum performance is critical\n- Flexible/evolving schema\n- Document-style data\n- Need full-text search built-in\n- Want simplest possible API\n\n**Isar Advantages:**\n- **Blazing fast** - Written in Rust, optimized for mobile\n- **No code generation wait** - Fast builds\n- **Full-text search** - Built-in, no extra setup\n- **Synchronous API** - Optional sync operations\n- **Encryption** - Built-in database encryption\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Installation and Setup",
+              "content": "\n",
+              "code": "# pubspec.yaml\ndependencies:\n  flutter:\n    sdk: flutter\n  isar: ^3.1.0\n  isar_flutter_libs: ^3.1.0\n  path_provider: ^2.1.1\n\ndev_dependencies:\n  flutter_test:\n    sdk: flutter\n  isar_generator: ^3.1.0\n  build_runner: ^2.4.7\n\n# Run: flutter pub get\n# Then: dart run build_runner build",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Collection Definitions",
+              "content": "\nDefine your data models with the `@collection` annotation:\n\n",
+              "code": "// lib/models/task.dart\nimport 'package:isar/isar.dart';\n\npart 'task.g.dart'; // Generated file\n\n@collection\nclass Task {\n  Id id = Isar.autoIncrement; // Auto-incrementing ID\n  \n  @Index(type: IndexType.value) // Index for fast queries\n  String? title;\n  \n  String? description;\n  \n  @Index() // Index for filtering\n  bool isCompleted = false;\n  \n  DateTime? dueDate;\n  \n  @Index(composite: [CompositeIndex('isCompleted')]) // Composite index\n  DateTime createdAt = DateTime.now();\n  \n  // Enum stored as int\n  @Enumerated(EnumType.ordinal)\n  Priority priority = Priority.medium;\n}\n\nenum Priority { low, medium, high }\n\n// lib/models/category.dart\n@collection\nclass Category {\n  Id id = Isar.autoIncrement;\n  \n  @Index(unique: true) // Unique constraint\n  String? name;\n  \n  int color = 0xFF2196F3;\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Opening the Database",
+              "content": "\n",
+              "code": "// lib/database/isar_service.dart\nimport 'package:isar/isar.dart';\nimport 'package:path_provider/path_provider.dart';\nimport '../models/task.dart';\nimport '../models/category.dart';\n\nclass IsarService {\n  late Future<Isar> db;\n  \n  IsarService() {\n    db = openDB();\n  }\n  \n  Future<Isar> openDB() async {\n    final dir = await getApplicationDocumentsDirectory();\n    \n    if (Isar.instanceNames.isEmpty) {\n      return await Isar.open(\n        [TaskSchema, CategorySchema], // Register all schemas\n        directory: dir.path,\n        inspector: true, // Enable Isar Inspector in debug\n      );\n    }\n    \n    return Future.value(Isar.getInstance());\n  }\n}\n\n// Usage:\nfinal isarService = IsarService();\nfinal isar = await isarService.db;",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "CRUD Operations",
+              "content": "\n",
+              "code": "// lib/database/task_repository.dart\nimport 'package:isar/isar.dart';\nimport '../models/task.dart';\n\nclass TaskRepository {\n  final Isar isar;\n  \n  TaskRepository(this.isar);\n  \n  // CREATE\n  Future<int> addTask(Task task) async {\n    return await isar.writeTxn(() async {\n      return await isar.tasks.put(task);\n    });\n  }\n  \n  // CREATE MANY\n  Future<void> addTasks(List<Task> tasks) async {\n    await isar.writeTxn(() async {\n      await isar.tasks.putAll(tasks);\n    });\n  }\n  \n  // READ - Get all tasks\n  Future<List<Task>> getAllTasks() async {\n    return await isar.tasks.where().findAll();\n  }\n  \n  // READ - Get by ID\n  Future<Task?> getTaskById(int id) async {\n    return await isar.tasks.get(id);\n  }\n  \n  // READ - Get incomplete tasks\n  Future<List<Task>> getIncompleteTasks() async {\n    return await isar.tasks\n        .where()\n        .isCompletedEqualTo(false)\n        .sortByDueDate()\n        .findAll();\n  }\n  \n  // UPDATE\n  Future<void> updateTask(Task task) async {\n    await isar.writeTxn(() async {\n      await isar.tasks.put(task);\n    });\n  }\n  \n  // DELETE\n  Future<bool> deleteTask(int id) async {\n    return await isar.writeTxn(() async {\n      return await isar.tasks.delete(id);\n    });\n  }\n  \n  // DELETE ALL COMPLETED\n  Future<int> deleteCompletedTasks() async {\n    return await isar.writeTxn(() async {\n      return await isar.tasks\n          .where()\n          .isCompletedEqualTo(true)\n          .deleteAll();\n    });\n  }\n  \n  // WATCH - Stream of changes\n  Stream<List<Task>> watchAllTasks() {\n    return isar.tasks.where().watch(fireImmediately: true);\n  }\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.5-challenge-0",
+              "title": "Isar CRUD",
+              "description": "Create a Note collection and repository with full CRUD operations.",
+              "instructions": "1. Create a Note collection with id, title, content, createdAt, and isPinned. 2. Create a NoteRepository with addNote, getAllNotes, updateNote, deleteNote, and getPinnedNotes methods.",
+              "starterCode": "// lib/models/note.dart\nimport 'package:isar/isar.dart';\n\npart 'note.g.dart';\n\n// TODO: Create Note collection with:\n// - id (auto-increment)\n// - title (indexed)\n// - content\n// - createdAt\n// - isPinned (indexed)\n\n// lib/database/note_repository.dart\n// TODO: Create NoteRepository with:\n// - addNote\n// - getAllNotes (sorted by createdAt descending)\n// - updateNote\n// - deleteNote\n// - getPinnedNotes\n// - watchAllNotes (stream)",
+              "solution": "// lib/models/note.dart\nimport 'package:isar/isar.dart';\n\npart 'note.g.dart';\n\n@collection\nclass Note {\n  Id id = Isar.autoIncrement;\n  \n  @Index(type: IndexType.value)\n  String? title;\n  \n  String? content;\n  \n  DateTime createdAt = DateTime.now();\n  \n  @Index()\n  bool isPinned = false;\n}\n\n// lib/database/note_repository.dart\nimport 'package:isar/isar.dart';\nimport '../models/note.dart';\n\nclass NoteRepository {\n  final Isar isar;\n  \n  NoteRepository(this.isar);\n  \n  Future<int> addNote(Note note) async {\n    return await isar.writeTxn(() async {\n      return await isar.notes.put(note);\n    });\n  }\n  \n  Future<List<Note>> getAllNotes() async {\n    return await isar.notes\n        .where()\n        .sortByCreatedAtDesc()\n        .findAll();\n  }\n  \n  Future<void> updateNote(Note note) async {\n    await isar.writeTxn(() async {\n      await isar.notes.put(note);\n    });\n  }\n  \n  Future<bool> deleteNote(int id) async {\n    return await isar.writeTxn(() async {\n      return await isar.notes.delete(id);\n    });\n  }\n  \n  Future<List<Note>> getPinnedNotes() async {\n    return await isar.notes\n        .where()\n        .isPinnedEqualTo(true)\n        .sortByCreatedAtDesc()\n        .findAll();\n  }\n  \n  Stream<List<Note>> watchAllNotes() {\n    return isar.notes\n        .where()\n        .sortByCreatedAtDesc()\n        .watch(fireImmediately: true);\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use @Index() on fields you'll filter by"
+                },
+                {
+                  "level": 2,
+                  "text": "All write operations need isar.writeTxn()"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting writeTxn for write operations",
+                  "consequence": "Isar throws an error about not being in a transaction",
+                  "correction": "Wrap all puts, deletes with isar.writeTxn(() async { ... })"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.6",
+          "title": "Module 15, Lesson 6: Isar Indexes & Query Optimization",
+          "moduleId": "module-15",
+          "order": 6,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Index Types",
+              "content": "\n**Indexes make queries fast.** Without indexes, Isar scans every record.\n\n**Value Index (default):**\n- Best for equality checks and range queries\n- Stores actual values in sorted order\n- Good for: `equalTo`, `greaterThan`, `between`\n\n```dart\n@Index(type: IndexType.value)\nString? title; // Indexed by value\n```\n\n**Hash Index:**\n- Fast equality checks only\n- Smaller storage than value index\n- Cannot do range queries\n\n```dart\n@Index(type: IndexType.hash)\nString? email; // Only for exact matching\n```\n\n**HashElements Index (for lists):**\n- Index each element in a list\n- Find records containing specific values\n\n```dart\n@Index(type: IndexType.hashElements)\nList<String> tags = []; // Search by tag\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Composite Indexes",
+              "content": "\nIndex multiple fields together for compound queries:\n\n",
+              "code": "@collection\nclass Task {\n  Id id = Isar.autoIncrement;\n  \n  @Index() // Single index for filtering\n  bool isCompleted = false;\n  \n  @Index(\n    composite: [CompositeIndex('priority')],\n  )\n  DateTime? dueDate;\n  \n  @Enumerated(EnumType.ordinal)\n  Priority priority = Priority.medium;\n}\n\n// Now this query uses the composite index:\nfinal tasks = await isar.tasks\n    .where()\n    .dueDateIsNotNull()\n    .priorityEqualTo(Priority.high)\n    .findAll();\n\n// Composite indexes are read left-to-right\n// dueDate + priority is efficient\n// priority alone won't use this index",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Query Performance",
+              "content": "\n",
+              "code": "// FAST - Uses index\nfinal highPriority = await isar.tasks\n    .where()\n    .priorityEqualTo(Priority.high) // Indexed field\n    .findAll();\n\n// FAST - Uses composite index\nfinal upcomingImportant = await isar.tasks\n    .where()\n    .dueDateBetween(now, nextWeek)\n    .priorityEqualTo(Priority.high)\n    .findAll();\n\n// SLOW - Full table scan (no index on description)\nfinal searchResults = await isar.tasks\n    .where()\n    .filter()\n    .descriptionContains('meeting') // Not indexed!\n    .findAll();\n\n// FAST - Full-text search (use this instead)\n@collection\nclass Task {\n  Id id = Isar.autoIncrement;\n  \n  @Index(type: IndexType.value, caseSensitive: false)\n  String? title;\n}\n\n// Case-insensitive search on indexed field\nfinal results = await isar.tasks\n    .where()\n    .titleStartsWith('meet') // Uses index\n    .findAll();",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Filtering and Sorting",
+              "content": "\n",
+              "code": "// FILTER - For complex conditions after where()\nfinal filtered = await isar.tasks\n    .where()\n    .isCompletedEqualTo(false) // Uses index\n    .filter() // Switch to filter mode\n    .dueDateIsNotNull() // Additional filters\n    .and()\n    .titleContains('urgent', caseSensitive: false)\n    .findAll();\n\n// SORTING\nfinal sorted = await isar.tasks\n    .where()\n    .sortByDueDateDesc() // Primary sort\n    .thenByPriority() // Secondary sort\n    .findAll();\n\n// PAGINATION\nfinal page = await isar.tasks\n    .where()\n    .sortByCreatedAtDesc()\n    .offset(20) // Skip first 20\n    .limit(10) // Take 10\n    .findAll();\n\n// COUNT (efficient - doesn't load data)\nfinal count = await isar.tasks\n    .where()\n    .isCompletedEqualTo(false)\n    .count();\n\n// AGGREGATE\nfinal exists = await isar.tasks\n    .where()\n    .priorityEqualTo(Priority.high)\n    .isNotEmpty();",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Query Optimization Tips",
+              "content": "\n**Index Strategy:**\n1. Index fields you filter by frequently\n2. Use composite indexes for multi-field queries\n3. Put most selective field first in composite index\n4. Hash indexes for exact-match only fields\n5. Don't over-index - each index costs write performance\n\n**Query Tips:**\n1. Use `.where()` for indexed queries (fast)\n2. Use `.filter()` only for complex conditions\n3. Avoid `.filter().contains()` on unindexed fields\n4. Use `.count()` instead of `.findAll().length`\n5. Use `.limit()` for pagination\n\n**Debugging:**\n```dart\n// Enable Isar Inspector in development\nfinal isar = await Isar.open(\n  schemas,\n  inspector: true, // Opens inspector on localhost:8080\n);\n```\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.6-challenge-0",
+              "title": "Optimize Note Queries",
+              "description": "Add proper indexes and optimize queries for a notes collection.",
+              "instructions": "1. Add indexes for frequently queried fields (isPinned, createdAt). 2. Create a composite index for notes filtered by isPinned and sorted by createdAt. 3. Write an optimized query to get the 10 most recent pinned notes.",
+              "starterCode": "// Current Note collection - needs optimization\n@collection\nclass Note {\n  Id id = Isar.autoIncrement;\n  String? title;\n  String? content;\n  DateTime createdAt = DateTime.now();\n  bool isPinned = false;\n}\n\n// Current slow query:\nFuture<List<Note>> getRecentPinnedNotes() async {\n  final allNotes = await isar.notes.where().findAll();\n  final pinned = allNotes.where((n) => n.isPinned).toList();\n  pinned.sort((a, b) => b.createdAt.compareTo(a.createdAt));\n  return pinned.take(10).toList();\n}\n\n// TODO: Add indexes to Note class\n// TODO: Rewrite query to use indexes",
+              "solution": "@collection\nclass Note {\n  Id id = Isar.autoIncrement;\n  \n  @Index(type: IndexType.value, caseSensitive: false)\n  String? title;\n  \n  String? content;\n  \n  @Index(composite: [CompositeIndex('isPinned')])\n  DateTime createdAt = DateTime.now();\n  \n  @Index()\n  bool isPinned = false;\n}\n\n// Optimized query using indexes:\nFuture<List<Note>> getRecentPinnedNotes() async {\n  return await isar.notes\n      .where()\n      .isPinnedEqualTo(true) // Uses isPinned index\n      .sortByCreatedAtDesc() // Uses composite index\n      .limit(10) // Only fetch 10\n      .findAll();\n}\n\n// Alternative using composite index directly:\nFuture<List<Note>> getRecentPinnedNotesAlt() async {\n  return await isar.notes\n      .where()\n      .createdAtIsPinnedEqualTo(true) // Uses composite\n      .sortByCreatedAtDesc()\n      .limit(10)\n      .findAll();\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add @Index() to fields you filter by"
+                },
+                {
+                  "level": 2,
+                  "text": "Use composite index for multi-field queries: @Index(composite: [CompositeIndex('fieldName')])"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Filtering in Dart instead of database",
+                  "consequence": "Loads all records into memory, very slow for large datasets",
+                  "correction": "Use Isar's where() and filter() clauses to query at database level"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "15.7",
+          "title": "Module 15, Lesson 7: Sync Engine - Local-First with Cloud Backup",
+          "moduleId": "module-15",
+          "order": 7,
+          "estimatedMinutes": 60,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Sync Architecture Patterns",
+              "content": "\n**The Sync Challenge:**\nUser edits data offline. Server has updates. How do you merge?\n\n**Three Approaches:**\n\n1. **Pull-Only Sync**\n   - Fetch from server, overwrite local\n   - Simple but loses offline changes\n   - Good for: Read-only data, reference data\n\n2. **Push-Pull Sync**\n   - Push local changes, then pull remote changes\n   - Requires conflict handling\n   - Good for: User-generated content\n\n3. **Real-time Sync**\n   - WebSockets for instant sync\n   - Complex but seamless\n   - Good for: Collaboration apps\n\nWe'll build a **Push-Pull** sync with queue-based changes.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Conflict Resolution Strategies",
+              "content": "\n",
+              "code": "enum ConflictStrategy {\n  /// Server always wins - simplest\n  serverWins,\n  \n  /// Client always wins - risky\n  clientWins,\n  \n  /// Most recent change wins\n  lastWriteWins,\n  \n  /// Keep both versions for user to resolve\n  keepBoth,\n  \n  /// Merge field by field\n  fieldMerge,\n}\n\n// Example: Last-write-wins resolution\nclass ConflictResolver {\n  T resolve<T extends Syncable>(T local, T remote) {\n    // Compare timestamps\n    if (local.updatedAt.isAfter(remote.updatedAt)) {\n      return local;\n    } else {\n      return remote;\n    }\n  }\n}\n\n// Example: Field-level merge for notes\nNote mergeNotes(Note local, Note remote) {\n  return Note(\n    id: local.id,\n    // Use most recently updated title\n    title: local.titleUpdatedAt.isAfter(remote.titleUpdatedAt)\n        ? local.title\n        : remote.title,\n    // Use most recently updated content\n    content: local.contentUpdatedAt.isAfter(remote.contentUpdatedAt)\n        ? local.content\n        : remote.content,\n    // Keep latest timestamp\n    updatedAt: local.updatedAt.isAfter(remote.updatedAt)\n        ? local.updatedAt\n        : remote.updatedAt,\n  );\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Queue-Based Sync",
+              "content": "\nTrack local changes in a sync queue:\n\n",
+              "code": "// lib/sync/sync_queue.dart\nimport 'package:isar/isar.dart';\n\npart 'sync_queue.g.dart';\n\n@collection\nclass SyncOperation {\n  Id id = Isar.autoIncrement;\n  \n  @Index()\n  String entityType = ''; // 'note', 'task', etc.\n  \n  int entityId = 0;\n  \n  @Enumerated(EnumType.ordinal)\n  SyncOperationType operation = SyncOperationType.create;\n  \n  DateTime createdAt = DateTime.now();\n  \n  @Index()\n  bool isSynced = false;\n  \n  int retryCount = 0;\n}\n\nenum SyncOperationType { create, update, delete }\n\n// Queue operations when making local changes\nclass NoteRepository {\n  final Isar isar;\n  \n  Future<void> createNote(Note note) async {\n    await isar.writeTxn(() async {\n      // 1. Save the note\n      final id = await isar.notes.put(note);\n      \n      // 2. Queue sync operation\n      await isar.syncOperations.put(SyncOperation()\n        ..entityType = 'note'\n        ..entityId = id\n        ..operation = SyncOperationType.create\n      );\n    });\n  }\n  \n  Future<void> updateNote(Note note) async {\n    await isar.writeTxn(() async {\n      await isar.notes.put(note);\n      \n      await isar.syncOperations.put(SyncOperation()\n        ..entityType = 'note'\n        ..entityId = note.id\n        ..operation = SyncOperationType.update\n      );\n    });\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Network Connectivity Detection",
+              "content": "\n",
+              "code": "// lib/sync/connectivity_service.dart\nimport 'package:connectivity_plus/connectivity_plus.dart';\nimport 'dart:async';\n\nclass ConnectivityService {\n  final _connectivity = Connectivity();\n  final _controller = StreamController<bool>.broadcast();\n  \n  Stream<bool> get onConnectivityChanged => _controller.stream;\n  bool _isOnline = true;\n  bool get isOnline => _isOnline;\n  \n  ConnectivityService() {\n    _connectivity.onConnectivityChanged.listen(_updateStatus);\n    _checkInitialStatus();\n  }\n  \n  Future<void> _checkInitialStatus() async {\n    final result = await _connectivity.checkConnectivity();\n    _updateStatus(result);\n  }\n  \n  void _updateStatus(ConnectivityResult result) {\n    final online = result != ConnectivityResult.none;\n    if (online != _isOnline) {\n      _isOnline = online;\n      _controller.add(_isOnline);\n    }\n  }\n  \n  void dispose() {\n    _controller.close();\n  }\n}\n\n// Usage in sync service\nclass SyncService {\n  final ConnectivityService _connectivity;\n  \n  void startAutoSync() {\n    _connectivity.onConnectivityChanged.listen((isOnline) {\n      if (isOnline) {\n        sync(); // Sync when connection restored\n      }\n    });\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Sync Service",
+              "content": "\n",
+              "code": "// lib/sync/sync_service.dart\nclass SyncService {\n  final Isar isar;\n  final ApiClient api;\n  final ConnectivityService connectivity;\n  \n  DateTime? lastSyncAt;\n  bool _isSyncing = false;\n  \n  SyncService(this.isar, this.api, this.connectivity);\n  \n  Future<SyncResult> sync() async {\n    if (_isSyncing) return SyncResult.alreadySyncing;\n    if (!connectivity.isOnline) return SyncResult.offline;\n    \n    _isSyncing = true;\n    \n    try {\n      // 1. PUSH: Upload local changes\n      await _pushChanges();\n      \n      // 2. PULL: Download remote changes\n      await _pullChanges();\n      \n      lastSyncAt = DateTime.now();\n      return SyncResult.success;\n    } catch (e) {\n      return SyncResult.error;\n    } finally {\n      _isSyncing = false;\n    }\n  }\n  \n  Future<void> _pushChanges() async {\n    // Get unsynced operations\n    final operations = await isar.syncOperations\n        .where()\n        .isSyncedEqualTo(false)\n        .findAll();\n    \n    for (final op in operations) {\n      try {\n        switch (op.operation) {\n          case SyncOperationType.create:\n          case SyncOperationType.update:\n            final note = await isar.notes.get(op.entityId);\n            if (note != null) {\n              await api.upsertNote(note.toJson());\n            }\n            break;\n          case SyncOperationType.delete:\n            await api.deleteNote(op.entityId);\n            break;\n        }\n        \n        // Mark as synced\n        await isar.writeTxn(() async {\n          op.isSynced = true;\n          await isar.syncOperations.put(op);\n        });\n      } catch (e) {\n        // Increment retry count\n        await isar.writeTxn(() async {\n          op.retryCount++;\n          await isar.syncOperations.put(op);\n        });\n      }\n    }\n  }\n  \n  Future<void> _pullChanges() async {\n    // Fetch changes since last sync\n    final remoteNotes = await api.getNotesSince(lastSyncAt);\n    \n    await isar.writeTxn(() async {\n      for (final remoteNote in remoteNotes) {\n        final localNote = await isar.notes.get(remoteNote.id);\n        \n        if (localNote == null) {\n          // New note from server\n          await isar.notes.put(remoteNote);\n        } else {\n          // Conflict - resolve with last-write-wins\n          if (remoteNote.updatedAt.isAfter(localNote.updatedAt)) {\n            await isar.notes.put(remoteNote);\n          }\n          // Otherwise keep local (it will push on next sync)\n        }\n      }\n    });\n  }\n}\n\nenum SyncResult {\n  success,\n  offline,\n  alreadySyncing,\n  error,\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "15.7-challenge-0",
+              "title": "Build Sync Service",
+              "description": "Create a basic sync service with push and pull capabilities.",
+              "instructions": "Create a SyncService that: 1. Tracks online/offline status. 2. Maintains a queue of local changes. 3. Pushes changes when online. 4. Pulls remote changes. 5. Uses last-write-wins for conflicts.",
+              "starterCode": "// lib/sync/sync_service.dart\nclass SyncService {\n  final Isar isar;\n  final MockApiClient api; // Simplified API client\n  \n  SyncService(this.isar, this.api);\n  \n  // TODO: Track sync state\n  bool _isSyncing = false;\n  DateTime? lastSyncAt;\n  \n  // TODO: Implement sync method\n  Future<void> sync() async {\n    // 1. Check if already syncing\n    // 2. Push local changes\n    // 3. Pull remote changes\n    // 4. Update lastSyncAt\n  }\n  \n  // TODO: Push unsynced changes to server\n  Future<void> _pushChanges() async {\n    // Get unsynced operations\n    // Upload each to server\n    // Mark as synced\n  }\n  \n  // TODO: Pull changes from server\n  Future<void> _pullChanges() async {\n    // Fetch changes since lastSyncAt\n    // Merge with local data (last-write-wins)\n  }\n}",
+              "solution": "class SyncService {\n  final Isar isar;\n  final MockApiClient api;\n  \n  bool _isSyncing = false;\n  DateTime? lastSyncAt;\n  \n  SyncService(this.isar, this.api);\n  \n  Future<bool> sync() async {\n    if (_isSyncing) return false;\n    \n    _isSyncing = true;\n    try {\n      await _pushChanges();\n      await _pullChanges();\n      lastSyncAt = DateTime.now();\n      return true;\n    } catch (e) {\n      print('Sync error: $e');\n      return false;\n    } finally {\n      _isSyncing = false;\n    }\n  }\n  \n  Future<void> _pushChanges() async {\n    final unsynced = await isar.syncOperations\n        .where()\n        .isSyncedEqualTo(false)\n        .findAll();\n    \n    for (final op in unsynced) {\n      try {\n        if (op.operation == SyncOperationType.delete) {\n          await api.delete('notes', op.entityId);\n        } else {\n          final note = await isar.notes.get(op.entityId);\n          if (note != null) {\n            await api.upsert('notes', note.toJson());\n          }\n        }\n        \n        await isar.writeTxn(() async {\n          op.isSynced = true;\n          await isar.syncOperations.put(op);\n        });\n      } catch (e) {\n        await isar.writeTxn(() async {\n          op.retryCount++;\n          await isar.syncOperations.put(op);\n        });\n      }\n    }\n  }\n  \n  Future<void> _pullChanges() async {\n    final remoteNotes = await api.fetchSince('notes', lastSyncAt);\n    \n    await isar.writeTxn(() async {\n      for (final remote in remoteNotes) {\n        final local = await isar.notes.get(remote.id);\n        \n        // Last-write-wins conflict resolution\n        if (local == null || remote.updatedAt.isAfter(local.updatedAt)) {\n          await isar.notes.put(remote);\n        }\n      }\n    });\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use a boolean flag to prevent concurrent sync operations"
+                },
+                {
+                  "level": 2,
+                  "text": "Compare updatedAt timestamps for last-write-wins"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not handling concurrent sync attempts",
+                  "consequence": "Duplicate operations and data corruption",
+                  "correction": "Use _isSyncing flag and return early if already syncing"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "15.8",
+          "title": "Module 15, Lesson 8: Mini-Project - Notes App with Offline Sync",
+          "moduleId": "module-15",
+          "order": 8,
+          "estimatedMinutes": 90,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Project Overview",
+              "content": "\n**Build a Notes App with Offline-First Architecture**\n\nIn this project, you'll combine everything learned in this module:\n\n**Features:**\n- Create, edit, delete notes (works offline)\n- Notes persist in local database\n- Sync indicator shows online/offline status\n- Changes queue while offline\n- Auto-sync when connection restored\n- Pull-to-refresh for manual sync\n\n**Architecture:**\n```\nUI Layer\n    |\n    v\nRepository (abstraction)\n    |\n    v\nLocal Database (Isar) <---> Sync Service <---> Remote API\n```\n\n**Key Principle:** UI always talks to local database. Never waits for network.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Database Design",
+              "content": "\n",
+              "code": "// lib/models/note.dart\nimport 'package:isar/isar.dart';\n\npart 'note.g.dart';\n\n@collection\nclass Note {\n  Id id = Isar.autoIncrement;\n  \n  String? serverId; // ID from server (null if not synced yet)\n  \n  @Index(type: IndexType.value, caseSensitive: false)\n  String title = '';\n  \n  String content = '';\n  \n  @Index()\n  DateTime createdAt = DateTime.now();\n  \n  DateTime updatedAt = DateTime.now();\n  \n  @Index()\n  bool isPinned = false;\n  \n  @Index()\n  bool isDeleted = false; // Soft delete for sync\n  \n  // Convert to JSON for API\n  Map<String, dynamic> toJson() => {\n    'id': serverId,\n    'title': title,\n    'content': content,\n    'createdAt': createdAt.toIso8601String(),\n    'updatedAt': updatedAt.toIso8601String(),\n    'isPinned': isPinned,\n    'isDeleted': isDeleted,\n  };\n  \n  // Create from API response\n  static Note fromJson(Map<String, dynamic> json) => Note()\n    ..serverId = json['id']\n    ..title = json['title'] ?? ''\n    ..content = json['content'] ?? ''\n    ..createdAt = DateTime.parse(json['createdAt'])\n    ..updatedAt = DateTime.parse(json['updatedAt'])\n    ..isPinned = json['isPinned'] ?? false\n    ..isDeleted = json['isDeleted'] ?? false;\n}\n\n// lib/models/sync_operation.dart\n@collection\nclass SyncOperation {\n  Id id = Isar.autoIncrement;\n  \n  @Index()\n  int noteId = 0;\n  \n  @Enumerated(EnumType.ordinal)\n  SyncOpType type = SyncOpType.create;\n  \n  DateTime createdAt = DateTime.now();\n  \n  @Index()\n  bool isPending = true;\n}\n\nenum SyncOpType { create, update, delete }",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "UI Implementation",
+              "content": "\n",
+              "code": "// lib/screens/notes_screen.dart\nimport 'package:flutter/material.dart';\nimport 'package:isar/isar.dart';\n\nclass NotesScreen extends StatelessWidget {\n  final NoteRepository noteRepo;\n  final SyncService syncService;\n  final ConnectivityService connectivity;\n  \n  const NotesScreen({\n    required this.noteRepo,\n    required this.syncService,\n    required this.connectivity,\n  });\n  \n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('My Notes'),\n        actions: [\n          // Sync status indicator\n          StreamBuilder<bool>(\n            stream: connectivity.onConnectivityChanged,\n            initialData: connectivity.isOnline,\n            builder: (context, snapshot) {\n              final isOnline = snapshot.data ?? false;\n              return IconButton(\n                icon: Icon(\n                  isOnline ? Icons.cloud_done : Icons.cloud_off,\n                  color: isOnline ? Colors.green : Colors.grey,\n                ),\n                onPressed: isOnline ? () => syncService.sync() : null,\n                tooltip: isOnline ? 'Synced' : 'Offline',\n              );\n            },\n          ),\n        ],\n      ),\n      body: RefreshIndicator(\n        onRefresh: () => syncService.sync(),\n        child: StreamBuilder<List<Note>>(\n          stream: noteRepo.watchAllNotes(),\n          builder: (context, snapshot) {\n            if (!snapshot.hasData) {\n              return const Center(child: CircularProgressIndicator());\n            }\n            \n            final notes = snapshot.data!;\n            \n            if (notes.isEmpty) {\n              return const Center(\n                child: Text('No notes yet. Tap + to create one!'),\n              );\n            }\n            \n            return ListView.builder(\n              itemCount: notes.length,\n              itemBuilder: (context, index) {\n                final note = notes[index];\n                return NoteCard(\n                  note: note,\n                  onTap: () => _openNote(context, note),\n                  onDelete: () => _deleteNote(note),\n                );\n              },\n            );\n          },\n        ),\n      ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: () => _createNote(context),\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n  \n  void _createNote(BuildContext context) {\n    Navigator.push(\n      context,\n      MaterialPageRoute(\n        builder: (_) => NoteEditorScreen(\n          noteRepo: noteRepo,\n        ),\n      ),\n    );\n  }\n  \n  void _openNote(BuildContext context, Note note) {\n    Navigator.push(\n      context,\n      MaterialPageRoute(\n        builder: (_) => NoteEditorScreen(\n          noteRepo: noteRepo,\n          note: note,\n        ),\n      ),\n    );\n  }\n  \n  Future<void> _deleteNote(Note note) async {\n    await noteRepo.deleteNote(note.id);\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sync Implementation",
+              "content": "\n",
+              "code": "// lib/services/note_sync_service.dart\nclass NoteSyncService {\n  final Isar isar;\n  final NotesApi api;\n  final ConnectivityService connectivity;\n  \n  bool _isSyncing = false;\n  DateTime? _lastSyncAt;\n  \n  NoteSyncService(this.isar, this.api, this.connectivity) {\n    // Auto-sync when coming online\n    connectivity.onConnectivityChanged.listen((isOnline) {\n      if (isOnline) sync();\n    });\n  }\n  \n  Future<void> sync() async {\n    if (_isSyncing || !connectivity.isOnline) return;\n    _isSyncing = true;\n    \n    try {\n      // 1. Push local changes\n      final pending = await isar.syncOperations\n          .where()\n          .isPendingEqualTo(true)\n          .findAll();\n      \n      for (final op in pending) {\n        await _processSyncOp(op);\n      }\n      \n      // 2. Pull remote changes\n      final remoteNotes = await api.getNotesSince(_lastSyncAt);\n      await _mergeRemoteNotes(remoteNotes);\n      \n      _lastSyncAt = DateTime.now();\n    } finally {\n      _isSyncing = false;\n    }\n  }\n  \n  Future<void> _processSyncOp(SyncOperation op) async {\n    try {\n      final note = await isar.notes.get(op.noteId);\n      if (note == null) return;\n      \n      switch (op.type) {\n        case SyncOpType.create:\n        case SyncOpType.update:\n          final serverNote = await api.upsertNote(note.toJson());\n          await isar.writeTxn(() async {\n            note.serverId = serverNote['id'];\n            await isar.notes.put(note);\n          });\n          break;\n        case SyncOpType.delete:\n          if (note.serverId != null) {\n            await api.deleteNote(note.serverId!);\n          }\n          break;\n      }\n      \n      // Mark operation as complete\n      await isar.writeTxn(() async {\n        op.isPending = false;\n        await isar.syncOperations.put(op);\n      });\n    } catch (e) {\n      // Will retry on next sync\n      print('Sync error: $e');\n    }\n  }\n  \n  Future<void> _mergeRemoteNotes(List<Map<String, dynamic>> remoteNotes) async {\n    await isar.writeTxn(() async {\n      for (final json in remoteNotes) {\n        final remote = Note.fromJson(json);\n        \n        // Find local note by serverId\n        final local = await isar.notes\n            .where()\n            .serverIdEqualTo(remote.serverId)\n            .findFirst();\n        \n        if (local == null) {\n          // New note from server\n          await isar.notes.put(remote);\n        } else if (remote.updatedAt.isAfter(local.updatedAt)) {\n          // Server version is newer\n          remote.id = local.id; // Keep local ID\n          await isar.notes.put(remote);\n        }\n        // If local is newer, it will push on next sync\n      }\n    });\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Running the Project",
+              "content": "\n**Setup Steps:**\n\n1. Create new Flutter project:\n```bash\nflutter create notes_app\ncd notes_app\n```\n\n2. Add dependencies to pubspec.yaml\n\n3. Create models with Isar annotations\n\n4. Generate code:\n```bash\ndart run build_runner build\n```\n\n5. Implement repository, sync service, UI\n\n6. Run the app:\n```bash\nflutter run\n```\n\n**Testing Offline Mode:**\n1. Add some notes\n2. Turn on airplane mode\n3. Edit notes (should work instantly)\n4. Turn off airplane mode\n5. Watch sync indicator go green\n6. Changes sync automatically\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "PROJECT",
+              "id": "15.8-project-0",
+              "title": "Complete Notes App with Offline Sync",
+              "description": "Build a fully functional notes app that works offline and syncs when online.",
+              "instructions": "Create a notes app with: 1. Local storage using Isar. 2. CRUD operations that work offline. 3. Sync queue for tracking changes. 4. Automatic sync when coming online. 5. Visual indicator for online/offline status. 6. Pull-to-refresh for manual sync.",
+              "starterCode": "// Project Structure:\n// lib/\n//   models/\n//     note.dart\n//     sync_operation.dart\n//   services/\n//     database_service.dart\n//     sync_service.dart\n//     connectivity_service.dart\n//   repositories/\n//     note_repository.dart\n//   screens/\n//     notes_screen.dart\n//     note_editor_screen.dart\n//   widgets/\n//     note_card.dart\n//     sync_indicator.dart\n//   main.dart\n\n// Start with the models, then services, then UI.\n// Use the examples from this lesson as templates.\n\n// Key requirements:\n// 1. Notes persist locally (Isar)\n// 2. All CRUD operations work offline\n// 3. Changes queue in SyncOperation collection\n// 4. SyncService pushes/pulls when online\n// 5. UI shows sync status\n// 6. Auto-sync on connectivity change",
+              "solution": "// This is a large project - see lesson examples for complete implementation.\n//\n// Summary of key components:\n//\n// 1. Note model with serverId for sync tracking\n// 2. SyncOperation model to queue changes\n// 3. NoteRepository that wraps Isar operations\n// 4. SyncService that handles push/pull\n// 5. ConnectivityService for network status\n// 6. NotesScreen with StreamBuilder for reactive UI\n// 7. NoteEditorScreen for create/edit\n// 8. SyncIndicator widget showing online/offline\n//\n// The app should:\n// - Load instantly from local database\n// - Allow editing even when offline\n// - Queue changes automatically\n// - Sync in background when online\n// - Resolve conflicts with last-write-wins\n// - Show clear visual feedback for sync state",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with the data layer (models, database) before UI"
+                },
+                {
+                  "level": 2,
+                  "text": "Use StreamBuilder with Isar's watch() for reactive updates"
+                },
+                {
+                  "level": 3,
+                  "text": "Create a mock API for testing sync without a real server"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Waiting for sync before showing UI updates",
+                  "consequence": "App feels slow and defeats offline-first purpose",
+                  "correction": "Update local database immediately, sync in background"
+                },
+                {
+                  "mistake": "Not handling sync failures gracefully",
+                  "consequence": "Operations get stuck and never retry",
+                  "correction": "Keep failed operations in queue, retry on next sync"
+                }
+              ],
+              "difficulty": "advanced"
             }
           ]
         }
