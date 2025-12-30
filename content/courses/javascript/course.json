@@ -7293,6 +7293,357 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-18",
+      "title": "Module 18: Advanced Bun Features",
+      "description": "Unlock Bun's full potential with built-in SQLite, secure password hashing, shell scripting, bundling for production, and calling native code.",
+      "difficulty": "advanced",
+      "estimatedHours": 3,
+      "lessons": [
+        {
+          "id": "18.1",
+          "title": "Built-in SQLite with bun:sqlite",
+          "moduleId": "module-18",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Swiss Army Knife Database",
+              "content": "Most runtimes make you install database drivers, ORMs, and connection libraries. It's like needing 5 different tools to open a can.\n\nBun comes with SQLite built-in. It's like a Swiss Army knife - the database is right there, ready to use, no installation required."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Zero-Dependency Database",
+              "content": "Create a fully functional database with zero npm packages:",
+              "language": "javascript",
+              "code": "import { Database } from 'bun:sqlite';\n\n// Create or open a database file\nconst db = new Database('app.db');\n\n// Create tables\ndb.run(`\n  CREATE TABLE IF NOT EXISTS users (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL,\n    email TEXT UNIQUE,\n    created_at TEXT DEFAULT CURRENT_TIMESTAMP\n  )\n`);\n\n// Insert data (prepared statement for safety)\nconst insert = db.prepare(\n  'INSERT INTO users (name, email) VALUES ($name, $email)'\n);\n\ninsert.run({ $name: 'Alice', $email: 'alice@example.com' });\ninsert.run({ $name: 'Bob', $email: 'bob@example.com' });\n\n// Query data\nconst users = db.query('SELECT * FROM users').all();\nconsole.log(users);\n// [\n//   { id: 1, name: 'Alice', email: 'alice@example.com', created_at: '...' },\n//   { id: 2, name: 'Bob', email: 'bob@example.com', created_at: '...' }\n// ]"
+            },
+            {
+              "type": "THEORY",
+              "title": "Query Methods",
+              "content": "**Prepared Statements (always use for user input!):**\n```javascript\nconst stmt = db.prepare('SELECT * FROM users WHERE id = ?');\nstmt.get(1);  // Single row or undefined\nstmt.all();   // All rows as array\nstmt.run();   // For INSERT/UPDATE/DELETE, returns changes info\n```\n\n**Direct Queries (for trusted SQL only):**\n```javascript\ndb.query('SELECT COUNT(*) as count FROM users').get();  // { count: 42 }\ndb.run('DELETE FROM logs WHERE age > 30');  // Execute without results\n```\n\n**Transactions:**\n```javascript\nconst transaction = db.transaction((users) => {\n  for (const user of users) {\n    insert.run(user);\n  }\n});\n\n// Runs all inserts atomically\ntransaction([{ $name: 'Carol', $email: 'carol@example.com' }]);\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "In-Memory Databases",
+              "content": "For testing or ephemeral data, use an in-memory database:\n\n```javascript\n// ':memory:' creates a database that exists only in RAM\nconst testDb = new Database(':memory:');\n\n// Perfect for tests - fast and isolated\ntestDb.run('CREATE TABLE temp (id INTEGER)');\ntestDb.run('INSERT INTO temp VALUES (1)');\n\n// Database is automatically deleted when the process ends\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Reminders",
+              "content": "1. **Always use prepared statements for user input**\n```javascript\n// WRONG - SQL injection vulnerability!\ndb.run(`DELETE FROM users WHERE id = ${userId}`);\n\n// RIGHT - Safe parameterized query\ndb.prepare('DELETE FROM users WHERE id = ?').run(userId);\n```\n\n2. **Close connections when done**\n```javascript\ndb.close();\n```\n\n3. **Use WAL mode for concurrent access**\n```javascript\ndb.run('PRAGMA journal_mode = WAL');\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.1-challenge",
+              "title": "Build a Todo API",
+              "description": "Create a simple todo storage using bun:sqlite.",
+              "instructions": "Create a todos table with id, title, and completed. Write functions to add a todo and list all todos.",
+              "starterCode": "import { Database } from 'bun:sqlite';\n\nconst db = new Database(':memory:');\n\n// Create todos table\n\n// Function to add a todo\nfunction addTodo(title) {\n  // Your code here\n}\n\n// Function to get all todos\nfunction getTodos() {\n  // Your code here\n}\n\n// Test it\naddTodo('Learn Bun');\naddTodo('Build an app');\nconsole.log(getTodos());",
+              "solution": "import { Database } from 'bun:sqlite';\n\nconst db = new Database(':memory:');\n\ndb.run(`\n  CREATE TABLE todos (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    completed INTEGER DEFAULT 0\n  )\n`);\n\nconst insertStmt = db.prepare('INSERT INTO todos (title) VALUES (?)');\n\nfunction addTodo(title) {\n  insertStmt.run(title);\n}\n\nfunction getTodos() {\n  return db.query('SELECT * FROM todos').all();\n}\n\naddTodo('Learn Bun');\naddTodo('Build an app');\nconsole.log(getTodos());",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Creates and retrieves todos",
+                  "expectedOutput": "[{\"id\":1,\"title\":\"Learn Bun\",\"completed\":0},{\"id\":2,\"title\":\"Build an app\",\"completed\":0}]",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use db.query(...).all() to get all rows as an array"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using db.run() for SELECT queries",
+                  "consequence": "run() is for INSERT/UPDATE/DELETE and doesn't return rows",
+                  "correction": "Use db.query(...).all() or db.prepare(...).all() for SELECT"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "18.2",
+          "title": "Secure Password Hashing with Bun.password",
+          "moduleId": "module-18",
+          "order": 2,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Fingerprint Scanner",
+              "content": "A fingerprint scanner doesn't store your actual fingerprint - it stores a mathematical representation that can verify you later. If someone steals the database, they can't recreate your fingerprint.\n\nPassword hashing works the same way. Bun.password stores a hash, not the password itself. Even if attackers get the hash, they can't reverse it to get the original password."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Hash and Verify Passwords",
+              "content": "Bun.password provides secure bcrypt/argon2 hashing with zero dependencies:",
+              "language": "javascript",
+              "code": "// Hash a password (use when user signs up)\nconst hash = await Bun.password.hash('mySecretPassword');\n// '$argon2id$v=19$m=65536,t=2,p=1$...' - secure hash\n\n// Store 'hash' in your database, never the plain password!\n\n// Verify a password (use when user logs in)\nconst isValid = await Bun.password.verify('mySecretPassword', hash);\nconsole.log(isValid);  // true\n\nconst isWrong = await Bun.password.verify('wrongPassword', hash);\nconsole.log(isWrong);  // false\n\n// Complete signup/login example\nasync function signup(email, password) {\n  const hash = await Bun.password.hash(password);\n  db.prepare('INSERT INTO users (email, password_hash) VALUES (?, ?)')\n    .run(email, hash);\n}\n\nasync function login(email, password) {\n  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);\n  if (!user) return null;\n  \n  const valid = await Bun.password.verify(password, user.password_hash);\n  return valid ? user : null;\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Algorithm Options",
+              "content": "Bun supports multiple algorithms:\n\n```javascript\n// Argon2id (default, recommended)\nawait Bun.password.hash(password, { algorithm: 'argon2id' });\n\n// Argon2d (faster, less memory-hard)\nawait Bun.password.hash(password, { algorithm: 'argon2d' });\n\n// Bcrypt (widely compatible)\nawait Bun.password.hash(password, { algorithm: 'bcrypt', cost: 12 });\n```\n\n**Which to choose:**\n- **argon2id**: Best security, recommended for new projects\n- **bcrypt**: Use if you need compatibility with existing systems"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Best Practices",
+              "content": "1. **Never store plain passwords** - Always hash before storing\n\n2. **Never log passwords** - Even during debugging\n```javascript\n// WRONG\nconsole.log('User password:', password);\n\n// RIGHT\nconsole.log('Login attempt for:', email);\n```\n\n3. **Use HTTPS** - Passwords should only travel encrypted\n\n4. **Add rate limiting** - Prevent brute force attacks\n```javascript\nconst attempts = new Map();\nif (attempts.get(email) > 5) {\n  throw new Error('Too many attempts');\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.2-challenge",
+              "title": "User Authentication",
+              "description": "Build a simple auth system with signup and login.",
+              "instructions": "Create signup and login functions using Bun.password. The signup should hash the password, and login should verify it.",
+              "starterCode": "const users = new Map();\n\nasync function signup(username, password) {\n  // Hash password and store in users Map\n}\n\nasync function login(username, password) {\n  // Verify password and return true/false\n}\n\n// Test\nawait signup('alice', 'secret123');\nconsole.log(await login('alice', 'secret123'));  // true\nconsole.log(await login('alice', 'wrong'));      // false",
+              "solution": "const users = new Map();\n\nasync function signup(username, password) {\n  const hash = await Bun.password.hash(password);\n  users.set(username, hash);\n}\n\nasync function login(username, password) {\n  const hash = users.get(username);\n  if (!hash) return false;\n  return await Bun.password.verify(password, hash);\n}\n\nawait signup('alice', 'secret123');\nconsole.log(await login('alice', 'secret123'));\nconsole.log(await login('alice', 'wrong'));",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Authenticates correctly",
+                  "expectedOutput": "true\\nfalse",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use Bun.password.hash() for signup and Bun.password.verify() for login"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Comparing hashes directly",
+                  "consequence": "Hashes include random salt, so same password produces different hashes",
+                  "correction": "Always use Bun.password.verify() to compare"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "18.3",
+          "title": "Shell Scripting with Bun Shell",
+          "moduleId": "module-18",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "JavaScript Meets Bash",
+              "content": "You know how template literals let you embed expressions in strings? Bun Shell does the same thing for shell commands. It's like having bash superpowers inside your JavaScript.\n\nInstead of spawning processes and parsing stdout, you write shell commands as naturally as template strings."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The $ Tagged Template",
+              "content": "Run shell commands with the $ tag:",
+              "language": "javascript",
+              "code": "import { $ } from 'bun';\n\n// Simple commands\nawait $`echo 'Hello from Bun Shell!'`;\n\n// Variable interpolation (safely escaped!)\nconst name = 'my-project';\nawait $`mkdir -p ${name}/src`;\n\n// Capture output\nconst result = await $`ls -la`.text();\nconsole.log(result);\n\n// Get as JSON (if command outputs JSON)\nconst pkg = await $`cat package.json`.json();\nconsole.log(pkg.name);\n\n// Pipe commands\nawait $`cat file.txt | grep 'pattern' | wc -l`;\n\n// Environment variables\nawait $`NODE_ENV=production bun run build`;"
+            },
+            {
+              "type": "THEORY",
+              "title": "Output Handling",
+              "content": "**Get output in different formats:**\n```javascript\nconst cmd = $`echo 'hello'`;\n\nawait cmd.text();    // 'hello\\n'\nawait cmd.json();    // Parse as JSON\nawait cmd.blob();    // As Blob\nawait cmd.lines();   // ['hello']\nawait cmd.bytes();   // Uint8Array\n```\n\n**Check exit code:**\n```javascript\nconst result = await $`exit 1`.nothrow();\nconsole.log(result.exitCode);  // 1\n```\n\n**Quiet mode (suppress output):**\n```javascript\nawait $`npm install`.quiet();\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security & Escaping",
+              "content": "Bun Shell automatically escapes interpolated values:\n\n```javascript\nconst userInput = 'file; rm -rf /';\nawait $`cat ${userInput}`;  // Safe! Escapes the semicolon\n```\n\n**But be careful with:**\n```javascript\n// DANGEROUS - raw() bypasses escaping\nawait $`${$.raw(untrustedInput)}`;  // Never do this!\n\n// SAFE - let Bun escape it\nawait $`${untrustedInput}`;  // Bun escapes automatically\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.3-challenge",
+              "title": "Build Script",
+              "description": "Create a build script using Bun Shell.",
+              "instructions": "Write a script that creates a dist folder, copies files, and shows the result.",
+              "starterCode": "import { $ } from 'bun';\n\n// 1. Create dist directory\n// 2. Copy all .js files to dist\n// 3. List the dist contents\n// 4. Print 'Build complete!'",
+              "solution": "import { $ } from 'bun';\n\nawait $`mkdir -p dist`;\nawait $`cp *.js dist/ 2>/dev/null || true`;\nconst files = await $`ls dist`.text();\nconsole.log('Files in dist:', files);\nconsole.log('Build complete!');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Runs build script",
+                  "expectedOutput": "Build complete!",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use await $`command` for each shell operation"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to await shell commands",
+                  "consequence": "Commands run in parallel, causing race conditions",
+                  "correction": "Always await each $`...` call"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "18.4",
+          "title": "Bundling for Production with Bun.build()",
+          "moduleId": "module-18",
+          "order": 4,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Shipping Container",
+              "content": "When shipping goods overseas, you don't send each item separately. You pack everything into containers that are optimized for transport.\n\nBun.build() is your shipping container for JavaScript. It takes all your files, dependencies, and assets, then packs them into optimized bundles ready for production."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Bundling",
+              "content": "Bundle your app with one function call:",
+              "language": "javascript",
+              "code": "const result = await Bun.build({\n  entrypoints: ['./src/index.ts'],\n  outdir: './dist',\n  minify: true,\n  sourcemap: 'external',\n  target: 'browser',  // or 'bun', 'node'\n});\n\nif (!result.success) {\n  console.error('Build failed:', result.logs);\n  process.exit(1);\n}\n\nconsole.log('Build complete!');\nconsole.log('Output files:', result.outputs.map(o => o.path));\n\n// For multiple entry points (e.g., multi-page app)\nawait Bun.build({\n  entrypoints: [\n    './src/home.ts',\n    './src/about.ts',\n    './src/contact.ts',\n  ],\n  outdir: './dist',\n  splitting: true,  // Enable code splitting\n});"
+            },
+            {
+              "type": "THEORY",
+              "title": "Build Options",
+              "content": "**Common options:**\n```javascript\nawait Bun.build({\n  entrypoints: ['./src/index.ts'],\n  outdir: './dist',\n  \n  // Optimization\n  minify: true,           // Minify output\n  sourcemap: 'external',  // 'none' | 'inline' | 'external'\n  \n  // Target environment\n  target: 'browser',      // 'bun' | 'node' | 'browser'\n  \n  // Code splitting (for multiple entry points)\n  splitting: true,\n  \n  // Naming\n  naming: '[dir]/[name]-[hash].[ext]',\n  \n  // External packages (don't bundle these)\n  external: ['react', 'react-dom'],\n  \n  // Define globals\n  define: {\n    'process.env.NODE_ENV': '\"production\"',\n  },\n});\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Build for Different Targets",
+              "content": "**Browser:**\n```javascript\nawait Bun.build({\n  target: 'browser',\n  // Bundles everything, polyfills Node APIs\n});\n```\n\n**Node.js:**\n```javascript\nawait Bun.build({\n  target: 'node',\n  // Keeps require(), doesn't bundle node_modules\n});\n```\n\n**Bun:**\n```javascript\nawait Bun.build({\n  target: 'bun',\n  // Optimized for Bun runtime\n});\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.4-challenge",
+              "title": "Production Build Script",
+              "description": "Create a production build configuration.",
+              "instructions": "Write a build script that minifies code, generates sourcemaps, and reports the output file sizes.",
+              "starterCode": "// build.ts\nasync function build() {\n  const result = await Bun.build({\n    // Your configuration here\n  });\n  \n  // Report results\n}\n\nbuild();",
+              "solution": "async function build() {\n  const result = await Bun.build({\n    entrypoints: ['./src/index.ts'],\n    outdir: './dist',\n    minify: true,\n    sourcemap: 'external',\n    target: 'browser',\n  });\n  \n  if (!result.success) {\n    console.error('Build failed!');\n    for (const log of result.logs) {\n      console.error(log);\n    }\n    process.exit(1);\n  }\n  \n  console.log('Build successful!');\n  for (const output of result.outputs) {\n    const size = (output.size / 1024).toFixed(2);\n    console.log(`  ${output.path}: ${size} KB`);\n  }\n}\n\nbuild();",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Builds successfully",
+                  "expectedOutput": "Build successful!",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Check result.success and iterate over result.outputs for file info"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not checking result.success",
+                  "consequence": "Build errors go unnoticed, broken code gets deployed",
+                  "correction": "Always check result.success and handle result.logs"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "18.5",
+          "title": "Calling Native Code with FFI",
+          "moduleId": "module-18",
+          "order": 5,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Universal Translator",
+              "content": "Imagine you're at a UN meeting where everyone speaks different languages. A translator lets you communicate with anyone, regardless of their native language.\n\nFFI (Foreign Function Interface) is Bun's translator. It lets your JavaScript talk directly to code written in C, Rust, Zig, or any language that compiles to native code."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Calling C Functions",
+              "content": "Load and call functions from shared libraries:",
+              "language": "javascript",
+              "code": "import { dlopen, FFIType, suffix } from 'bun:ffi';\n\n// Load a system library (libc)\nconst lib = dlopen(`libc.${suffix}`, {\n  // Define the function signature\n  strlen: {\n    args: [FFIType.cstring],  // Takes a C string\n    returns: FFIType.i32,      // Returns int32\n  },\n  getpid: {\n    args: [],\n    returns: FFIType.i32,\n  },\n});\n\n// Call the functions\nconst length = lib.symbols.strlen('Hello, Bun!');\nconsole.log('String length:', length);  // 11\n\nconst pid = lib.symbols.getpid();\nconsole.log('Process ID:', pid);\n\n// Don't forget to close when done\nlib.close();"
+            },
+            {
+              "type": "THEORY",
+              "title": "FFI Types",
+              "content": "**Available types:**\n```javascript\nimport { FFIType } from 'bun:ffi';\n\n// Integers\nFFIType.i8   // int8_t\nFFIType.u8   // uint8_t\nFFIType.i16  // int16_t\nFFIType.u16  // uint16_t\nFFIType.i32  // int32_t  (int)\nFFIType.u32  // uint32_t\nFFIType.i64  // int64_t  (long long)\nFFIType.u64  // uint64_t\n\n// Floats\nFFIType.f32  // float\nFFIType.f64  // double\n\n// Pointers\nFFIType.ptr     // void*\nFFIType.cstring // char* (null-terminated)\n\n// Special\nFFIType.void    // void (for returns only)\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Custom Native Libraries",
+              "content": "Call your own Rust/C code:",
+              "language": "javascript",
+              "code": "// Assume you compiled a Rust library: libmath.dylib\n// #[no_mangle]\n// pub extern \"C\" fn add(a: i32, b: i32) -> i32 { a + b }\n\nimport { dlopen, FFIType, suffix } from 'bun:ffi';\n\nconst mathLib = dlopen(`./libmath.${suffix}`, {\n  add: {\n    args: [FFIType.i32, FFIType.i32],\n    returns: FFIType.i32,\n  },\n  multiply: {\n    args: [FFIType.f64, FFIType.f64],\n    returns: FFIType.f64,\n  },\n});\n\nconsole.log(mathLib.symbols.add(5, 3));       // 8\nconsole.log(mathLib.symbols.multiply(2.5, 4)); // 10.0"
+            },
+            {
+              "type": "WARNING",
+              "title": "FFI Risks",
+              "content": "**FFI is powerful but dangerous:**\n\n1. **Memory safety is your responsibility**\n   - Native code can crash your entire process\n   - No garbage collection for native memory\n\n2. **Type mismatches cause undefined behavior**\n```javascript\n// WRONG - passing string where int expected\nlib.symbols.add('5', 3);  // Crash or garbage!\n```\n\n3. **Always close libraries**\n```javascript\nlib.close();  // Free resources\n```\n\n**When to use FFI:**\n- Performance-critical code (image processing, crypto)\n- Interfacing with system libraries\n- Reusing existing native code\n\n**When NOT to use FFI:**\n- Simple operations (JavaScript is fast enough)\n- When a npm package already wraps the native code"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.5-challenge",
+              "title": "System Info via FFI",
+              "description": "Use FFI to get system information.",
+              "instructions": "Use FFI to call getpid() from libc and print the process ID.",
+              "starterCode": "import { dlopen, FFIType, suffix } from 'bun:ffi';\n\n// Load libc and call getpid()\n// Print: 'Process ID: <pid>'",
+              "solution": "import { dlopen, FFIType, suffix } from 'bun:ffi';\n\nconst libc = dlopen(`libc.${suffix}`, {\n  getpid: {\n    args: [],\n    returns: FFIType.i32,\n  },\n});\n\nconst pid = libc.symbols.getpid();\nconsole.log(`Process ID: ${pid}`);\n\nlibc.close();",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Gets process ID",
+                  "expectedOutput": "Process ID:",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "getpid() takes no arguments and returns an i32"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Wrong library suffix on different OS",
+                  "consequence": "Library fails to load on macOS/Linux/Windows",
+                  "correction": "Use suffix from bun:ffi - it's 'dylib' on macOS, 'so' on Linux, 'dll' on Windows"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
