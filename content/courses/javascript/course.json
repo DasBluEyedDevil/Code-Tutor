@@ -6872,6 +6872,72 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "16.5",
+          "title": "Migration Path to TypeScript",
+          "moduleId": "module-16",
+          "order": 5,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Learning to Drive Stick",
+              "content": "You learned to drive automatic first. Now you understand how the car works - when to shift, how the engine revs. Learning stick shift is much easier because you already understand the fundamentals.\n\nJSDoc is your automatic transmission. Once you're comfortable with types through JSDoc, TypeScript's syntax is just a different way to write the same things."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "JSDoc to TypeScript - Side by Side",
+              "content": "The concepts are identical, only the syntax changes:",
+              "language": "typescript",
+              "code": "// JSDoc (JavaScript)\n/**\n * @typedef {Object} User\n * @property {number} id\n * @property {string} name\n */\n\n/**\n * @param {User} user\n * @returns {string}\n */\nfunction greet(user) {\n  return `Hello, ${user.name}!`;\n}\n\n// TypeScript\ninterface User {\n  id: number;\n  name: string;\n}\n\nfunction greet(user: User): string {\n  return `Hello, ${user.name}!`;\n}\n\n// Same types, same behavior, different syntax!"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Migrate",
+              "content": "**Stay with JSDoc when:**\n- Your project is small (<10 files)\n- You want zero build step\n- Team is new to types\n- You're adding types to legacy code gradually\n\n**Migrate to TypeScript when:**\n- JSDoc comments become too verbose\n- You need advanced features (decorators, enums, namespaces)\n- Team is comfortable with type concepts\n- You're starting a new large project\n\n**The Migration:**\n1. Rename `.js` to `.ts` (Bun handles both!)\n2. Convert JSDoc comments to type annotations\n3. Fix any new errors TypeScript catches\n4. Repeat file by file"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Bun Makes This Easy",
+              "content": "With Bun, there's no compilation step for TypeScript:\n\n```bash\n# JavaScript with JSDoc\nbun run index.js\n\n# TypeScript\nbun run index.ts\n\n# Both work the same way - no tsc, no build!\n```\n\nYou can even mix `.js` and `.ts` files in the same project during migration."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16.5-challenge",
+              "title": "Convert JSDoc to TypeScript",
+              "description": "Convert this JSDoc-typed JavaScript to TypeScript syntax.",
+              "instructions": "Rewrite this code using TypeScript type annotations instead of JSDoc comments. Keep the same logic.",
+              "starterCode": "/**\n * @typedef {Object} Product\n * @property {string} name\n * @property {number} price\n */\n\n/**\n * @param {Product[]} products\n * @returns {number}\n */\nfunction totalPrice(products) {\n  return products.reduce((sum, p) => sum + p.price, 0);\n}",
+              "solution": "interface Product {\n  name: string;\n  price: number;\n}\n\nfunction totalPrice(products: Product[]): number {\n  return products.reduce((sum, p) => sum + p.price, 0);\n}",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Function works correctly",
+                  "expectedOutput": "29.98",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Replace @typedef with 'interface', and put types after colons instead of in JSDoc"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Keeping JSDoc AND TypeScript annotations",
+                  "consequence": "Redundant and can cause conflicts",
+                  "correction": "Remove JSDoc comments when using TypeScript annotations"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     }
