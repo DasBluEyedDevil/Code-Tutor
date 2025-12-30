@@ -5889,6 +5889,13 @@
               "language": "kotlin"
             },
             {
+              "type": "WARNING",
+              "title": "When to Use runBlocking",
+              "content": "\n### runBlocking Is for Demos Only!\n\n`runBlocking` blocks the current thread until all coroutines inside complete. This is dangerous in production code.\n\n**Safe Uses:**\n- `main()` functions in demos and CLI tools\n- Unit tests (though `runTest` is preferred)\n- Bridging synchronous to async code (rare)\n\n**Dangerous Uses:**\n- Android UI thread (causes ANR - Application Not Responding)\n- Ktor route handlers (blocks server thread)\n- ViewModel initialization (use `viewModelScope.launch`)\n- Compose composables (use `LaunchedEffect`)\n\n---\n\n",
+              "code": "// DEMO ONLY - appropriate for main()\nfun main() = runBlocking {\n    val data = fetchData()\n    println(data)\n}\n\n// PRODUCTION - use proper scopes\nclass UserViewModel : ViewModel() {\n    init {\n        // Use viewModelScope, NOT runBlocking\n        viewModelScope.launch {\n            val data = fetchData()\n            _state.value = data\n        }\n    }\n}\n\n// KTOR - suspend function, no blocking needed\nsuspend fun Route.userRoutes() {\n    get(\"/users\") {\n        val users = userService.getAll()  // Already suspending\n        call.respond(users)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
               "type": "THEORY",
               "title": "Coroutine Scope",
               "content": "\nEvery coroutine runs inside a scope. Scopes define lifecycle and context.\n\n### What is a Scope?\n\n\n### Creating Custom Scopes\n\n\n### Structured Concurrency\n\nChild coroutines are automatically cancelled when parent scope is cancelled:\n\n\n---\n\n",
