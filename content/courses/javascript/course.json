@@ -7086,6 +7086,211 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "17.3",
+          "title": "Top-Level Await in Practice",
+          "moduleId": "module-17",
+          "order": 3,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Restaurant Before Opening",
+              "content": "Before a restaurant opens, the chef needs ingredients. The waiters need menus. The host needs the reservation book. Everyone waits until everything is ready - THEN the doors open.\n\nTop-level await is your pre-opening checklist. Load config, connect to database, verify dependencies - all before your app starts accepting requests."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Modern Server Initialization",
+              "content": "Top-level await makes initialization clean and readable:",
+              "language": "javascript",
+              "code": "// server.js - Bun + Hono\nimport { Hono } from 'hono';\n\n// Top-level await: Load everything before starting\nconst config = await Bun.file('config.json').json();\nconst secrets = await loadSecrets(config.vaultUrl);\nconst db = await connectDatabase(secrets.databaseUrl);\n\nconsole.log(`Environment: ${config.env}`);\nconsole.log(`Database connected: ${db.isConnected}`);\n\nconst app = new Hono();\n\napp.get('/health', (c) => c.json({ status: 'ok', db: db.isConnected }));\n\napp.get('/users', async (c) => {\n  const users = await db.query('SELECT * FROM users');\n  return c.json(users);\n});\n\n// Export for Bun to serve\nexport default {\n  port: config.port,\n  fetch: app.fetch,\n};"
+            },
+            {
+              "type": "THEORY",
+              "title": "How Top-Level Await Works",
+              "content": "**The module loading story:**\n\n1. Your module starts executing\n2. Hits a top-level `await`\n3. Module loading PAUSES (but doesn't block the event loop)\n4. Other modules can still load in parallel\n5. Once await resolves, your module continues\n6. When all awaits complete, module is 'ready'\n7. Modules that import yours wait until you're ready\n\n**This means:**\n- Circular dependencies with top-level await can deadlock\n- Import order matters more\n- Errors in top-level await crash module loading\n\n**Best practice:** Keep top-level await for true initialization, not ongoing work."
+            },
+            {
+              "type": "WARNING",
+              "title": "Anti-Patterns",
+              "content": "**DON'T: Lazy-load at top level**\n```javascript\n// BAD: This delays every import of your module\nconst rarelyUsedLib = await import('heavy-library');\n```\n\n**DO: Lazy-load inside functions**\n```javascript\n// GOOD: Only load when needed\nasync function useRareFeature() {\n  const lib = await import('heavy-library');\n  return lib.doThing();\n}\n```\n\n**DON'T: Top-level await in loops**\n```javascript\n// BAD: Sequential loading, very slow\nfor (const url of urls) {\n  const data = await fetch(url);  // One at a time!\n}\n```\n\n**DO: Parallelize**\n```javascript\n// GOOD: All at once\nconst results = await Promise.all(urls.map(fetch));\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17.3-challenge",
+              "title": "App Initialization",
+              "description": "Create a proper app initialization sequence.",
+              "instructions": "Use top-level await to load config, validate it, and initialize the app. Log 'App ready' when done.",
+              "starterCode": "// Load config.json with import attributes\n// Validate that config has required fields: port, env\n// Log the environment\n// Log 'App ready'\n\nconsole.log('Starting...');",
+              "solution": "import config from './config.json' with { type: 'json' };\n\nconsole.log('Starting...');\n\n// Validate config\nif (!config.port || !config.env) {\n  throw new Error('Missing required config fields');\n}\n\nconsole.log(`Environment: ${config.env}`);\nconsole.log('App ready');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Initializes correctly",
+                  "expectedOutput": "Starting...\\nEnvironment: development\\nApp ready",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use import with type: 'json' for the config file"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not validating config before using it",
+                  "consequence": "Cryptic errors later when fields are undefined",
+                  "correction": "Always validate required config fields at startup"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "17.4",
+          "title": "ES2025 RegExp Modifiers",
+          "moduleId": "module-17",
+          "order": 4,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Search Filter Toggle",
+              "content": "Imagine a search bar with filter toggles: 'Case Sensitive', 'Whole Words', etc. You can turn them on globally, but what if you want case-insensitive for just part of your search?\n\nRegExp modifiers are like inline filter toggles. You can turn flags on or off for just a portion of your pattern."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Inline Flag Modifiers",
+              "content": "ES2025 adds the ability to enable or disable flags within a pattern:",
+              "language": "javascript",
+              "code": "// Enable case-insensitive for part of the pattern\nconst re1 = /hello(?i:world)/;\nre1.test('helloWorld');  // true - 'world' is case-insensitive\nre1.test('Helloworld');  // false - 'hello' is still case-sensitive\n\n// Disable a flag for part of the pattern\nconst re2 = /(?-i:strict)(?i:flexible)/i;  // Global 'i' flag\nre2.test('STRICTflexible');  // false - 'strict' must match exactly\nre2.test('strictFLEXIBLE');  // true\n\n// Multiple flags at once\nconst re3 = /(?ims:pattern)/;  // Enable i, m, s for this group\n\n// Real-world: Case-insensitive keywords, case-sensitive values\nconst configLine = /(?i:setting)=(.+)/;\nconfigLine.exec('SETTING=MyValue');  // ['SETTING=MyValue', 'MyValue']"
+            },
+            {
+              "type": "THEORY",
+              "title": "Available Modifiers",
+              "content": "**Modifiable flags:**\n- `i` - case-insensitive\n- `m` - multiline (^ and $ match line starts/ends)\n- `s` - dotAll (. matches newlines)\n\n**Syntax:**\n- `(?i:...)` - Enable flag i for this group\n- `(?-i:...)` - Disable flag i for this group\n- `(?i-s:...)` - Enable i, disable s\n- `(?:...)` - Non-capturing group (unchanged)\n\n**Why this matters:**\nPreviously, flags were all-or-nothing. Now you can have fine-grained control:\n\n```javascript\n// Match 'http' or 'HTTPS' but capture exact case of domain\nconst url = /(?i:https?):\\/\\/([a-z0-9.]+)/;\nurl.exec('HTTP://Example.COM');  // ['HTTP://Example.COM', 'example.com'] - domain lowercased\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Compatibility Note",
+              "content": "RegExp modifiers are ES2025 but may not be available in all environments yet:\n\n| Runtime | Support |\n|---------|--------|\n| Bun 1.1+ | Yes |\n| Node 23+ | Yes |\n| Chrome 125+ | Yes |\n| Firefox | Not yet |\n\nFor maximum compatibility, consider using separate regex patterns or libraries like `re2` for complex cases."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17.4-challenge",
+              "title": "Parse Config Lines",
+              "description": "Create a regex that matches config keys case-insensitively but preserves value case.",
+              "instructions": "Write a regex that matches 'PORT=3000' where 'PORT' is case-insensitive but the value after = is captured exactly.",
+              "starterCode": "// Create regex with inline modifiers\nconst configRegex = // your regex here\n\nconst match = configRegex.exec('port=MyValue');\nconsole.log(match[1]);  // Should print 'MyValue' (exact case)",
+              "solution": "const configRegex = /(?i:port)=(.+)/;\n\nconst match = configRegex.exec('port=MyValue');\nconsole.log(match[1]);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Captures value with exact case",
+                  "expectedOutput": "MyValue",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use (?i:...) to make only the key part case-insensitive"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using global 'i' flag",
+                  "consequence": "Makes the entire pattern case-insensitive, including capture groups",
+                  "correction": "Use inline (?i:...) only around the parts you want case-insensitive"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "17.5",
+          "title": "Decorators Preview (Stage 3)",
+          "moduleId": "module-17",
+          "order": 5,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Gift Wrapper",
+              "content": "When you gift-wrap a present, you don't change what's inside - you enhance its presentation. You might add a bow, a card, or ribbons.\n\nDecorators wrap your code. They don't change what your function/class does, but they can add logging, validation, caching, or access control around it."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Decorator Syntax",
+              "content": "Decorators use the @ symbol and can wrap classes, methods, and fields:",
+              "language": "javascript",
+              "code": "// Method decorator - add logging\nfunction logged(target, context) {\n  return function (...args) {\n    console.log(`Calling ${context.name} with`, args);\n    const result = target.apply(this, args);\n    console.log(`${context.name} returned`, result);\n    return result;\n  };\n}\n\nclass Calculator {\n  @logged\n  add(a, b) {\n    return a + b;\n  }\n}\n\nconst calc = new Calculator();\ncalc.add(2, 3);\n// Logs: Calling add with [2, 3]\n// Logs: add returned 5"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Practical Decorators",
+              "content": "Common real-world decorator patterns:",
+              "language": "javascript",
+              "code": "// Rate limiting decorator\nfunction rateLimit(callsPerSecond) {\n  let lastCall = 0;\n  return function(target, context) {\n    return function(...args) {\n      const now = Date.now();\n      const minInterval = 1000 / callsPerSecond;\n      if (now - lastCall < minInterval) {\n        throw new Error('Rate limit exceeded');\n      }\n      lastCall = now;\n      return target.apply(this, args);\n    };\n  };\n}\n\nclass ApiClient {\n  @rateLimit(10)  // Max 10 calls per second\n  async fetchData(id) {\n    return await fetch(`/api/${id}`);\n  }\n}\n\n// Validation decorator\nfunction validate(schema) {\n  return function(target, context) {\n    return function(...args) {\n      for (let i = 0; i < args.length; i++) {\n        if (!schema[i](args[i])) {\n          throw new TypeError(`Invalid argument at position ${i}`);\n        }\n      }\n      return target.apply(this, args);\n    };\n  };\n}\n\nclass UserService {\n  @validate([x => typeof x === 'number', x => typeof x === 'string'])\n  createUser(id, name) {\n    return { id, name };\n  }\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Decorator Kinds",
+              "content": "The Stage 3 decorators proposal supports:\n\n| Kind | Target | Example Use |\n|------|--------|-------------|\n| Class | `class Foo {}` | Singleton, frozen, service registration |\n| Method | `method() {}` | Logging, timing, validation |\n| Getter/Setter | `get foo() {}` | Lazy loading, caching |\n| Field | `x = 1;` | Observable, computed |\n| Accessor | `accessor x = 1;` | Reactive fields |\n\n**The `context` object includes:**\n- `kind`: 'class', 'method', 'getter', 'setter', 'field', 'accessor'\n- `name`: The member name\n- `access`: { get, set } for fields/accessors\n- `isStatic`: boolean\n- `isPrivate`: boolean\n- `addInitializer`: Add initialization code"
+            },
+            {
+              "type": "WARNING",
+              "title": "Stage 3 = Not Yet Standard",
+              "content": "Decorators are Stage 3 in TC39, meaning:\n\n- Syntax is stable but not yet ES standard\n- Bun and TypeScript support them with configuration\n- May change before final standardization\n\n**To use in Bun today:**\n```bash\n# No config needed! Bun supports decorators out of the box\nbun run decorated.ts\n```\n\n**To use in TypeScript:**\n```json\n// tsconfig.json\n{\n  \"compilerOptions\": {\n    \"experimentalDecorators\": true\n  }\n}\n```\n\nNote: TypeScript decorators use an older spec. Stage 3 decorators have slightly different semantics."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17.5-challenge",
+              "title": "Create a Timing Decorator",
+              "description": "Create a decorator that logs how long a method takes.",
+              "instructions": "Create a @timed decorator that logs 'methodName took Xms' after each call.",
+              "starterCode": "function timed(target, context) {\n  // Your decorator implementation\n}\n\nclass DataProcessor {\n  @timed\n  processData(data) {\n    // Simulate work\n    let sum = 0;\n    for (let i = 0; i < 1000000; i++) sum += i;\n    return sum;\n  }\n}\n\nconst processor = new DataProcessor();\nprocessor.processData([1, 2, 3]);",
+              "solution": "function timed(target, context) {\n  return function(...args) {\n    const start = performance.now();\n    const result = target.apply(this, args);\n    const end = performance.now();\n    console.log(`${context.name} took ${(end - start).toFixed(2)}ms`);\n    return result;\n  };\n}\n\nclass DataProcessor {\n  @timed\n  processData(data) {\n    let sum = 0;\n    for (let i = 0; i < 1000000; i++) sum += i;\n    return sum;\n  }\n}\n\nconst processor = new DataProcessor();\nprocessor.processData([1, 2, 3]);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Logs timing information",
+                  "expectedOutput": "processData took",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use performance.now() before and after calling the original function"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to return the wrapped function",
+                  "consequence": "Decorator doesn't work, original function is replaced with undefined",
+                  "correction": "Always return a function from your decorator"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     }
