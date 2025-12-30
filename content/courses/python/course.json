@@ -7572,6 +7572,66 @@
               "difficulty": "advanced"
             }
           ]
+        },
+        {
+          "id": "18_03",
+          "title": "Testing Async Code with pytest-asyncio",
+          "moduleId": "module-18",
+          "order": 3,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Challenge of Async Testing",
+              "content": "Async functions return coroutines, not values. You can't just call them:\n\n```python\nasync def fetch_data():\n    return \"data\"\n\n# This doesn't work:\ndef test_fetch():\n    result = fetch_data()  # Returns coroutine object, not \"data\"!\n    assert result == \"data\"  # Fails!\n```\n\n**Solution:** `pytest-asyncio` - a plugin that lets you write async tests naturally.\n\n**Installation:**\n```bash\nuv add pytest-asyncio\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "**pytest.ini or pyproject.toml configuration:**\n```toml\n[tool.pytest.ini_options]\nasyncio_mode = \"auto\"\n```",
+              "code": "# test_async.py\nimport pytest\nimport asyncio\n\n# The function we're testing\nasync def fetch_user(user_id: int) -> dict:\n    await asyncio.sleep(0.1)  # Simulate network call\n    return {\"id\": user_id, \"name\": f\"User {user_id}\"}\n\n# Basic async test - just add async!\n@pytest.mark.asyncio\nasync def test_fetch_user():\n    user = await fetch_user(42)\n    assert user[\"id\"] == 42\n    assert user[\"name\"] == \"User 42\"\n\n# Async fixture\n@pytest.fixture\nasync def sample_user():\n    return await fetch_user(1)\n\n@pytest.mark.asyncio\nasync def test_with_async_fixture(sample_user):\n    assert sample_user[\"name\"] == \"User 1\"\n\n# Testing exceptions\n@pytest.mark.asyncio\nasync def test_async_error():\n    async def failing_operation():\n        await asyncio.sleep(0.01)\n        raise ValueError(\"Something went wrong\")\n    \n    with pytest.raises(ValueError, match=\"went wrong\"):\n        await failing_operation()\n\n# Testing concurrent operations\n@pytest.mark.asyncio\nasync def test_concurrent_fetches():\n    users = await asyncio.gather(\n        fetch_user(1),\n        fetch_user(2),\n        fetch_user(3)\n    )\n    assert len(users) == 3\n    assert users[0][\"id\"] == 1\n",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Async Testing Patterns",
+              "content": "**1. Mark tests as async:**\n```python\n@pytest.mark.asyncio\nasync def test_something():\n    result = await async_function()\n```\n\n**2. Async fixtures:**\n```python\n@pytest.fixture\nasync def db_connection():\n    conn = await connect_to_db()\n    yield conn\n    await conn.close()\n```\n\n**3. Testing timeouts:**\n```python\n@pytest.mark.asyncio\nasync def test_timeout():\n    with pytest.raises(asyncio.TimeoutError):\n        await asyncio.wait_for(slow_operation(), timeout=0.1)\n```\n\n**4. Auto mode (recommended):**\nSet `asyncio_mode = \"auto\"` in config to skip `@pytest.mark.asyncio` decorators."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **`pytest-asyncio`** enables testing async code\n- Use **`@pytest.mark.asyncio`** decorator on async tests\n- Set **`asyncio_mode = \"auto\"`** to make all async tests work automatically\n- **Async fixtures** work just like regular fixtures\n- Test **concurrent operations** with `asyncio.gather()`\n- Test **timeouts** with `asyncio.wait_for()`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18_03-challenge-1",
+              "title": "Practice Exercise",
+              "description": "Write an async test for a function that fetches multiple URLs concurrently.",
+              "instructions": "Test concurrent async operations.",
+              "starterCode": "import pytest\nimport asyncio\n\nasync def fetch_url(url: str) -> str:\n    await asyncio.sleep(0.05)\n    return f\"Content from {url}\"\n\n@pytest.mark.____\nasync def test_concurrent_fetch():\n    urls = [\"http://a.com\", \"http://b.com\", \"http://c.com\"]\n    results = await asyncio.____(\n        fetch_url(urls[0]),\n        fetch_url(urls[1]),\n        fetch_url(urls[2])\n    )\n    assert len(results) == 3\n    assert \"a.com\" in results[0]\n",
+              "solution": "import pytest\nimport asyncio\n\nasync def fetch_url(url: str) -> str:\n    await asyncio.sleep(0.05)\n    return f\"Content from {url}\"\n\n@pytest.mark.asyncio\nasync def test_concurrent_fetch():\n    urls = [\"http://a.com\", \"http://b.com\", \"http://c.com\"]\n    results = await asyncio.gather(\n        fetch_url(urls[0]),\n        fetch_url(urls[1]),\n        fetch_url(urls[2])\n    )\n    assert len(results) == 3\n    assert \"a.com\" in results[0]\n",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Tests async code correctly",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** Use `@pytest.mark.asyncio` and `asyncio.gather()` for concurrent operations."
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     }
