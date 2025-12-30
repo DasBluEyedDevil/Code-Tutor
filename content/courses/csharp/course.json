@@ -2556,7 +2556,7 @@
               "type": "EXAMPLE",
               "title": "Code Example",
               "content": "This example demonstrates implicit indexer access in object initializers.",
-              "code": "// C# 13: Implicit indexer access in object initializers\n// Works with multi-dimensional arrays\nvar matrix = new int[3, 3]\n{\n    [0, 0] = 1, [0, 1] = 2, [0, 2] = 3,  // Implicit 'this' access\n    [1, 0] = 4, [1, 1] = 5, [1, 2] = 6,\n    [2, 0] = 7, [2, 1] = 8, [2, 2] = 9\n};\n\n// Display the matrix\nfor (int row = 0; row < 3; row++)\n{\n    for (int col = 0; col < 3; col++)\n    {\n        Console.Write(matrix[row, col] + \" \");\n    }\n    Console.WriteLine();\n}\n\n// Dictionary with indexer initialization (already supported, shown for context)\nvar translations = new Dictionary<string, string>\n{\n    [\"hello\"] = \"hola\",\n    [\"goodbye\"] = \"adios\",\n    [\"thank you\"] = \"gracias\"\n};\n\nConsole.WriteLine(translations[\"hello\"]);  // Output: hola\n\n// Custom class with indexer\nclass GameBoard\n{\n    private char[,] board = new char[3, 3];\n    \n    public char this[int row, int col]\n    {\n        get => board[row, col];\n        set => board[row, col] = value;\n    }\n}\n\n// C# 13 allows cleaner initialization with implicit indexer\nvar ticTacToe = new GameBoard\n{\n    [0, 0] = 'X', [0, 1] = ' ', [0, 2] = 'O',\n    [1, 0] = ' ', [1, 1] = 'X', [1, 2] = ' ',\n    [2, 0] = 'O', [2, 1] = ' ', [2, 2] = 'X'\n};",
+              "code": "// C# 13: Implicit indexer access in object initializers\n// Works with multi-dimensional arrays\nvar matrix = new int[3, 3]\n{\n    [0, 0] = 1, [0, 1] = 2, [0, 2] = 3,  // Implicit 'this' access\n    [1, 0] = 4, [1, 1] = 5, [1, 2] = 6,\n    [2, 0] = 7, [2, 1] = 8, [2, 2] = 9\n};\n\n// Display the matrix\nfor (int row = 0; row < 3; row++)\n{\n    for (int col = 0; col < 3; col++)\n    {\n        Console.Write(matrix[row, col] + \" \");\n    }\n    Console.WriteLine();\n}\n\n// Dictionary with indexer initialization (Note: This syntax has been available since C# 6, shown here for comparison with the new C# 13 array syntax)\nvar translations = new Dictionary<string, string>\n{\n    [\"hello\"] = \"hola\",\n    [\"goodbye\"] = \"adios\",\n    [\"thank you\"] = \"gracias\"\n};\n\nConsole.WriteLine(translations[\"hello\"]);  // Output: hola\n\n// Custom class with indexer\nclass GameBoard\n{\n    private char[,] board = new char[3, 3];\n    \n    public char this[int row, int col]\n    {\n        get => board[row, col];\n        set => board[row, col] = value;\n    }\n}\n\n// C# 13 allows cleaner initialization with implicit indexer\nvar ticTacToe = new GameBoard\n{\n    [0, 0] = 'X', [0, 1] = ' ', [0, 2] = 'O',\n    [1, 0] = ' ', [1, 1] = 'X', [1, 2] = ' ',\n    [2, 0] = 'O', [2, 1] = ' ', [2, 2] = 'X'\n};",
               "language": "csharp"
             },
             {
@@ -2597,16 +2597,19 @@
               ],
               "hints": [
                 {
-                  "level": 1,
-                  "text": "Use 'var pixel = new char[3, 3] { [0, 0] = 'X', ... }' syntax. Each cell is specified with [row, col] = value."
+                  "id": "hint-1",
+                  "text": "Use 'var pixel = new char[3, 3] { [0, 0] = 'X', ... }' syntax. Each cell is specified with [row, col] = value.",
+                  "order": 1
                 },
                 {
-                  "level": 2,
-                  "text": "For dictionaries: 'var dict = new Dictionary<string, int> { [\"key\"] = value }'. String keys go in quotes!"
+                  "id": "hint-2",
+                  "text": "For dictionaries: 'var dict = new Dictionary<string, int> { [\"key\"] = value }'. String keys go in quotes!",
+                  "order": 2
                 },
                 {
-                  "level": 3,
-                  "text": "Nested for loops: outer loop for rows (0 to 2), inner loop for columns (0 to 2). Access with pixel[row, col]."
+                  "id": "hint-3",
+                  "text": "Nested for loops: outer loop for rows (0 to 2), inner loop for columns (0 to 2). Access with pixel[row, col].",
+                  "order": 3
                 }
               ],
               "commonMistakes": [
@@ -9261,6 +9264,505 @@
                   "mistake": "Too many integration tests",
                   "consequence": "Slow test suite! Integration tests with DB are 10-100x slower than unit tests. Test pyramid inverted.",
                   "correction": "Integration tests for critical paths and DB-specific logic. Unit tests with mocks for business logic."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-16",
+      "title": "Building Cloud-Native Apps with .NET Aspire",
+      "description": "Orchestrate distributed applications with .NET Aspire. Learn service discovery, centralized dashboards, OpenTelemetry integration, and production deployment patterns.",
+      "difficulty": "advanced",
+      "estimatedHours": 2,
+      "lessons": [
+        {
+          "id": "lesson-16-01",
+          "title": "What is .NET Aspire? (The Orchestration Layer)",
+          "moduleId": "module-16",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're conducting an orchestra. Each musician (microservice) plays their part, but someone needs to coordinate when they start, ensure they can hear each other, and make sure the whole performance sounds harmonious.\n\n.NET Aspire is that CONDUCTOR for your cloud apps!\n\nTRADITIONAL CLOUD DEVELOPMENT:\n- Manually configure each service\n- Set up networking between services\n- Configure logging, metrics separately\n- Hope everything works together\n\n.NET ASPIRE APPROACH:\n- ONE place to define your entire app\n- Automatic service discovery\n- Built-in observability dashboard\n- Local development mirrors production\n\nKEY CONCEPTS:\n- AppHost: The conductor - orchestrates all services\n- ServiceDefaults: Shared configuration for all services\n- Components: Pre-built integrations (Redis, Postgres, etc.)\n- Dashboard: Real-time view of your entire system\n\nThink: 'Aspire turns a chaotic band of services into a well-coordinated orchestra!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== PROJECT STRUCTURE =====\n// MyApp.sln\n//   MyApp.AppHost/        <- The orchestrator (conductor)\n//   MyApp.ServiceDefaults/ <- Shared configuration\n//   MyApp.Api/             <- Your API service\n//   MyApp.Web/             <- Your web frontend\n\n// ===== AppHost/Program.cs =====\n// This is the HEART of .NET Aspire - defines your entire app!\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// Add infrastructure components\nvar cache = builder.AddRedis(\"cache\");\nvar db = builder.AddPostgres(\"postgres\")\n    .AddDatabase(\"catalogdb\");\n\n// Add your API project with references to infrastructure\nvar api = builder.AddProject<Projects.CatalogApi>(\"api\")\n    .WithReference(cache)    // API can access Redis\n    .WithReference(db);      // API can access Postgres\n\n// Add web frontend that talks to the API\nbuilder.AddProject<Projects.WebApp>(\"webapp\")\n    .WithReference(api);     // Web can call API\n\nbuilder.Build().Run();\n\n// ===== WHAT ASPIRE DOES FOR YOU =====\n// 1. Starts Redis container automatically\n// 2. Starts Postgres container automatically\n// 3. Configures connection strings\n// 4. Sets up service discovery (webapp knows api URL)\n// 5. Launches dashboard at https://localhost:15000\n\n// ===== ServiceDefaults/Extensions.cs =====\npublic static class Extensions\n{\n    public static IHostApplicationBuilder AddServiceDefaults(\n        this IHostApplicationBuilder builder)\n    {\n        // OpenTelemetry for logging, metrics, traces\n        builder.ConfigureOpenTelemetry();\n        \n        // Health checks\n        builder.AddDefaultHealthChecks();\n        \n        // Service discovery\n        builder.Services.AddServiceDiscovery();\n        \n        // Resilient HTTP clients\n        builder.Services.ConfigureHttpClientDefaults(http =>\n        {\n            http.AddStandardResilienceHandler();\n            http.AddServiceDiscovery();\n        });\n        \n        return builder;\n    }\n}\n\n// ===== In your API's Program.cs =====\nvar builder = WebApplication.CreateBuilder(args);\n\n// Add Aspire service defaults (one line!)\nbuilder.AddServiceDefaults();\n\n// Add Redis cache (connection string auto-configured!)\nbuilder.AddRedisClient(\"cache\");\n\n// Add database (connection string auto-configured!)\nbuilder.AddNpgsqlDbContext<CatalogDbContext>(\"catalogdb\");\n\nvar app = builder.Build();\napp.MapDefaultEndpoints();  // Health checks, etc.\napp.Run();\n\nConsole.WriteLine(\".NET Aspire orchestrates your distributed app!\");\nConsole.WriteLine(\"Dashboard at: https://localhost:15000\");\nConsole.WriteLine(\"Run: dotnet run --project MyApp.AppHost\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`DistributedApplication.CreateBuilder(args)`**: Entry point for Aspire. Creates an orchestrator that manages all your services and infrastructure.\n\n**`builder.AddRedis(\"cache\")`**: Adds a Redis container to your app. The name 'cache' becomes the connection string name. Aspire handles container lifecycle automatically.\n\n**`builder.AddPostgres(\"postgres\").AddDatabase(\"catalogdb\")`**: Adds Postgres server and creates a database. Chained calls configure complex infrastructure simply.\n\n**`builder.AddProject<Projects.CatalogApi>(\"api\")`**: Adds a .NET project to orchestration. 'Projects.CatalogApi' is auto-generated from your solution. Name 'api' is used for service discovery.\n\n**`.WithReference(cache)`**: Creates a dependency. The API project will receive the Redis connection string automatically. Service discovery 'just works'.\n\n**`builder.AddServiceDefaults()`**: In each service, adds OpenTelemetry, health checks, service discovery, and resilient HTTP clients. One line for production-ready defaults."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-16-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create an AppHost configuration for an e-commerce system!\n\n1. Define the infrastructure:\n   - Redis cache named 'productcache'\n   - Postgres database named 'orderdb'\n   - RabbitMQ message broker named 'messaging'\n\n2. Define three services:\n   - ProductApi: references Redis cache\n   - OrderApi: references Postgres and RabbitMQ\n   - WebStore: references both APIs\n\n3. Add comments explaining what each section does\n\nThink about the dependency chain: Web -> APIs -> Infrastructure",
+              "starterCode": "// E-Commerce AppHost Configuration\n// This orchestrates our entire e-commerce system\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// ===== INFRASTRUCTURE =====\n// TODO: Add Redis cache for products\nvar cache = builder.AddRedis(\"productcache\");\n\n// TODO: Add Postgres for orders\n\n// TODO: Add RabbitMQ for messaging\n\n// ===== SERVICES =====\n// TODO: Add ProductApi with cache reference\n\n// TODO: Add OrderApi with database and messaging references\n\n// TODO: Add WebStore with references to both APIs\n\nbuilder.Build().Run();\n\n// Print what we configured\nConsole.WriteLine(\"E-Commerce system configured!\");",
+              "solution": "// E-Commerce AppHost Configuration\n// This orchestrates our entire e-commerce system\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// ===== INFRASTRUCTURE =====\n// Redis for caching product data (fast reads)\nvar cache = builder.AddRedis(\"productcache\");\n\n// Postgres for persistent order storage\nvar orderDb = builder.AddPostgres(\"postgres\")\n    .AddDatabase(\"orderdb\");\n\n// RabbitMQ for async communication between services\nvar messaging = builder.AddRabbitMQ(\"messaging\");\n\n// ===== SERVICES =====\n// Product API - handles product catalog, uses cache\nvar productApi = builder.AddProject<Projects.ProductApi>(\"productapi\")\n    .WithReference(cache);\n\n// Order API - handles orders, needs DB and messaging\nvar orderApi = builder.AddProject<Projects.OrderApi>(\"orderapi\")\n    .WithReference(orderDb)\n    .WithReference(messaging);\n\n// Web storefront - talks to both APIs\nbuilder.AddProject<Projects.WebStore>(\"webstore\")\n    .WithReference(productApi)\n    .WithReference(orderApi);\n\nbuilder.Build().Run();\n\n// Print what we configured\nConsole.WriteLine(\"E-Commerce system configured!\");\nConsole.WriteLine(\"Infrastructure: Redis, Postgres, RabbitMQ\");\nConsole.WriteLine(\"Services: ProductApi, OrderApi, WebStore\");\nConsole.WriteLine(\"Dashboard: https://localhost:15000\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm e-commerce configuration",
+                  "expectedOutput": "E-Commerce",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention infrastructure components",
+                  "expectedOutput": "Redis",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "AddRedis, AddPostgres, AddRabbitMQ create infrastructure. Chain .AddDatabase() for Postgres databases."
+                },
+                {
+                  "level": 2,
+                  "text": "AddProject<Projects.ProjectName>('servicename') adds a .NET project. The name is used for service discovery."
+                },
+                {
+                  "level": 3,
+                  "text": ".WithReference(resource) creates a dependency. The service receives connection info automatically."
+                },
+                {
+                  "level": 4,
+                  "text": "Order matters for dependencies! Define infrastructure first, then services that use them."
+                },
+                {
+                  "level": 5,
+                  "text": "Multiple .WithReference() calls chain: .WithReference(db).WithReference(cache) connects to both."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to store infrastructure reference",
+                  "consequence": "builder.AddRedis('cache'); then later .WithReference(???) - you need the variable! var cache = builder.AddRedis('cache');",
+                  "correction": "Always store infrastructure in variables: var cache = builder.AddRedis('cache'); then .WithReference(cache)"
+                },
+                {
+                  "mistake": "Wrong project reference syntax",
+                  "consequence": "AddProject('MyApi') doesn't work! Aspire needs the compile-time project reference with generic syntax.",
+                  "correction": "Use AddProject<Projects.MyApi>('myapi') - Projects.MyApi is auto-generated from your solution."
+                },
+                {
+                  "mistake": "Circular dependencies",
+                  "consequence": "ServiceA.WithReference(serviceB) and ServiceB.WithReference(serviceA) creates a deadlock at startup!",
+                  "correction": "Design clear dependency hierarchy. Usually: Web -> APIs -> Infrastructure. Use messaging for bidirectional communication."
+                },
+                {
+                  "mistake": "Not understanding local vs production",
+                  "consequence": "Aspire uses containers locally but you might deploy to managed services. Connection strings differ!",
+                  "correction": "Aspire abstracts this! Same code works locally (containers) and in production (Azure services). Configuration handles the difference."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-16-02",
+          "title": "Service Discovery & Communication",
+          "moduleId": "module-16",
+          "order": 2,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine a company where departments need to talk to each other. In the OLD way, everyone memorizes direct phone numbers - if someone moves desks, chaos!\n\nThe MODERN way: a receptionist (service discovery). You call the receptionist, say 'Connect me to Sales,' and they route you - regardless of where Sales is sitting today.\n\nTRADITIONAL APPROACH:\n- Hardcode URLs: http://localhost:5001\n- Change port? Update every caller!\n- Different environments? Config nightmare!\n\nSERVICE DISCOVERY:\n- Services register by NAME\n- Callers request by NAME\n- Discovery resolves to actual URL\n- Port changes? No problem!\n\nASPIRE SERVICE DISCOVERY:\n- .WithReference(api) sets up discovery\n- http://api resolves automatically\n- Works locally and in production\n- No configuration needed!\n\nCOMMUNICATION PATTERNS:\n- HTTP/REST: Standard web APIs\n- gRPC: Fast binary protocol\n- Messaging: Async via queues\n\nThink: 'Service discovery is the phone book that always stays updated!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== AppHost/Program.cs =====\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// The API service\nvar catalogApi = builder.AddProject<Projects.CatalogApi>(\"catalog-api\");\n\n// Web app references the API (enables service discovery)\nbuilder.AddProject<Projects.WebApp>(\"webapp\")\n    .WithReference(catalogApi);\n\nbuilder.Build().Run();\n\n// ===== WebApp/Program.cs =====\nvar builder = WebApplication.CreateBuilder(args);\nbuilder.AddServiceDefaults();\n\n// Register HttpClient for the catalog API\n// Service discovery resolves \"http://catalog-api\" automatically!\nbuilder.Services.AddHttpClient<CatalogApiClient>(client =>\n{\n    // Use service name, NOT hardcoded URL!\n    client.BaseAddress = new Uri(\"http://catalog-api\");\n});\n\nvar app = builder.Build();\napp.MapDefaultEndpoints();\napp.Run();\n\n// ===== WebApp/CatalogApiClient.cs =====\npublic class CatalogApiClient\n{\n    private readonly HttpClient _httpClient;\n    \n    public CatalogApiClient(HttpClient httpClient)\n    {\n        _httpClient = httpClient;\n    }\n    \n    public async Task<List<Product>> GetProductsAsync()\n    {\n        // Just use relative path - base address is service-discovered!\n        var response = await _httpClient.GetAsync(\"/api/products\");\n        response.EnsureSuccessStatusCode();\n        return await response.Content.ReadFromJsonAsync<List<Product>>();\n    }\n    \n    public async Task<Product?> GetProductAsync(int id)\n    {\n        return await _httpClient.GetFromJsonAsync<Product>($\"/api/products/{id}\");\n    }\n}\n\npublic record Product(int Id, string Name, decimal Price);\n\n// ===== ALTERNATIVE: Typed Client with Refit =====\n// Install: dotnet add package Refit.HttpClientFactory\n\n// Define API interface\npublic interface ICatalogApi\n{\n    [Get(\"/api/products\")]\n    Task<List<Product>> GetProductsAsync();\n    \n    [Get(\"/api/products/{id}\")]\n    Task<Product> GetProductAsync(int id);\n    \n    [Post(\"/api/products\")]\n    Task<Product> CreateProductAsync([Body] Product product);\n}\n\n// Register with Refit + service discovery\nbuilder.Services\n    .AddRefitClient<ICatalogApi>()\n    .ConfigureHttpClient(c => c.BaseAddress = new Uri(\"http://catalog-api\"));\n\n// ===== Using the client =====\npublic class ProductsController : Controller\n{\n    private readonly CatalogApiClient _catalogClient;\n    \n    public ProductsController(CatalogApiClient catalogClient)\n    {\n        _catalogClient = catalogClient;\n    }\n    \n    public async Task<IActionResult> Index()\n    {\n        var products = await _catalogClient.GetProductsAsync();\n        return View(products);\n    }\n}\n\nConsole.WriteLine(\"Service discovery configured!\");\nConsole.WriteLine(\"http://catalog-api resolves automatically\");\nConsole.WriteLine(\"No hardcoded URLs, works in any environment!\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`.WithReference(catalogApi)`**: In AppHost, this tells Aspire that webapp needs to call catalog-api. Aspire injects environment variables with the service URL.\n\n**`new Uri(\"http://catalog-api\")`**: Use the SERVICE NAME as the hostname! Aspire's service discovery intercepts this and resolves to the actual running instance URL.\n\n**`AddHttpClient<TClient>()`**: Registers a typed HttpClient. The client class receives a pre-configured HttpClient via constructor injection. Cleaner than using IHttpClientFactory directly.\n\n**`builder.AddServiceDefaults()`**: Enables service discovery (among other things). Without this, http://service-name won't resolve!\n\n**`GetFromJsonAsync<T>()`**: Convenience method that GETs JSON and deserializes to T. Part of System.Net.Http.Json. Reduces boilerplate.\n\n**`Refit [Get], [Post] attributes`**: Declare HTTP operations as interface methods. Refit generates the implementation. Cleaner than manual HttpClient code."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-16-02-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a typed HTTP client for an inventory service!\n\n1. Define InventoryItem record:\n   - Id (int), Sku (string), Quantity (int), WarehouseId (string)\n\n2. Create InventoryApiClient class:\n   - Constructor takes HttpClient\n   - GetAllItemsAsync() - GET /api/inventory\n   - GetItemBySkuAsync(sku) - GET /api/inventory/{sku}\n   - UpdateQuantityAsync(sku, quantity) - PUT /api/inventory/{sku}/quantity\n   - CheckStockAsync(sku, required) - GET /api/inventory/{sku}/check?required={required}\n\n3. Use service discovery URL: http://inventory-api\n\nRemember: Use GetFromJsonAsync, PostAsJsonAsync, etc.!",
+              "starterCode": "using System.Net.Http.Json;\n\npublic record InventoryItem(int Id, string Sku, int Quantity, string WarehouseId);\n\npublic record StockCheckResult(bool InStock, int Available, int Required);\n\npublic class InventoryApiClient\n{\n    private readonly HttpClient _httpClient;\n    \n    public InventoryApiClient(HttpClient httpClient)\n    {\n        _httpClient = httpClient;\n        // Base address set via DI: http://inventory-api\n    }\n    \n    public async Task<List<InventoryItem>> GetAllItemsAsync()\n    {\n        // TODO: GET /api/inventory\n        return new List<InventoryItem>();\n    }\n    \n    public async Task<InventoryItem?> GetItemBySkuAsync(string sku)\n    {\n        // TODO: GET /api/inventory/{sku}\n        return null;\n    }\n    \n    public async Task<bool> UpdateQuantityAsync(string sku, int quantity)\n    {\n        // TODO: PUT /api/inventory/{sku}/quantity with { quantity } body\n        return false;\n    }\n    \n    public async Task<StockCheckResult?> CheckStockAsync(string sku, int required)\n    {\n        // TODO: GET /api/inventory/{sku}/check?required={required}\n        return null;\n    }\n}\n\n// Registration example\nConsole.WriteLine(\"Register with: builder.Services.AddHttpClient<InventoryApiClient>(...)\");",
+              "solution": "using System.Net.Http.Json;\n\npublic record InventoryItem(int Id, string Sku, int Quantity, string WarehouseId);\n\npublic record StockCheckResult(bool InStock, int Available, int Required);\n\npublic class InventoryApiClient\n{\n    private readonly HttpClient _httpClient;\n    \n    public InventoryApiClient(HttpClient httpClient)\n    {\n        _httpClient = httpClient;\n        // Base address set via DI: http://inventory-api\n    }\n    \n    public async Task<List<InventoryItem>> GetAllItemsAsync()\n    {\n        var items = await _httpClient.GetFromJsonAsync<List<InventoryItem>>(\"/api/inventory\");\n        return items ?? new List<InventoryItem>();\n    }\n    \n    public async Task<InventoryItem?> GetItemBySkuAsync(string sku)\n    {\n        try\n        {\n            return await _httpClient.GetFromJsonAsync<InventoryItem>($\"/api/inventory/{sku}\");\n        }\n        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)\n        {\n            return null;\n        }\n    }\n    \n    public async Task<bool> UpdateQuantityAsync(string sku, int quantity)\n    {\n        var response = await _httpClient.PutAsJsonAsync(\n            $\"/api/inventory/{sku}/quantity\", \n            new { quantity });\n        return response.IsSuccessStatusCode;\n    }\n    \n    public async Task<StockCheckResult?> CheckStockAsync(string sku, int required)\n    {\n        return await _httpClient.GetFromJsonAsync<StockCheckResult>(\n            $\"/api/inventory/{sku}/check?required={required}\");\n    }\n}\n\n// Registration example\nConsole.WriteLine(\"InventoryApiClient implemented!\");\nConsole.WriteLine(\"Register with:\");\nConsole.WriteLine(\"builder.Services.AddHttpClient<InventoryApiClient>(client =>\");\nConsole.WriteLine(\"    client.BaseAddress = new Uri(\\\"http://inventory-api\\\"));\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm implementation",
+                  "expectedOutput": "InventoryApiClient",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should show service discovery URL",
+                  "expectedOutput": "inventory-api",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "GetFromJsonAsync<T>(url) does GET + deserialize in one call. Returns T? so handle nulls."
+                },
+                {
+                  "level": 2,
+                  "text": "PutAsJsonAsync(url, object) serializes object to JSON and sends PUT. Returns HttpResponseMessage."
+                },
+                {
+                  "level": 3,
+                  "text": "Query strings: $\"/api/endpoint?param={value}\" - string interpolation works in URLs!"
+                },
+                {
+                  "level": 4,
+                  "text": "Handle 404s gracefully! GetFromJsonAsync throws on non-success. Catch HttpRequestException and check StatusCode."
+                },
+                {
+                  "level": 5,
+                  "text": "Anonymous types for simple bodies: new { quantity } creates { \"quantity\": value } JSON."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Hardcoding full URLs",
+                  "consequence": "http://localhost:5001/api/inventory works locally but fails in production! Defeats service discovery.",
+                  "correction": "Use relative paths (/api/inventory) with BaseAddress set to service name (http://inventory-api)."
+                },
+                {
+                  "mistake": "Not handling HTTP errors",
+                  "consequence": "GetFromJsonAsync throws on 404, 500, etc. Unhandled exception crashes your app!",
+                  "correction": "Wrap in try-catch, check response.IsSuccessStatusCode, or use HttpResponseMessage directly."
+                },
+                {
+                  "mistake": "Creating HttpClient manually",
+                  "consequence": "new HttpClient() in each method = socket exhaustion! HttpClient should be reused.",
+                  "correction": "Inject HttpClient via constructor. Let DI manage lifecycle. AddHttpClient<T> handles pooling."
+                },
+                {
+                  "mistake": "Forgetting AddServiceDefaults()",
+                  "consequence": "Service discovery won't work! http://service-name fails to resolve.",
+                  "correction": "Always call builder.AddServiceDefaults() in each service's Program.cs. It enables service discovery."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-16-03",
+          "title": "Observability: Logs, Metrics, Traces (OpenTelemetry)",
+          "moduleId": "module-16",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're a detective investigating why a pizza delivery was late. You need THREE types of evidence:\n\n1. LOGS (The Diary): What happened step by step\n   'Order received at 6:00 PM'\n   'Pizza made at 6:15 PM'\n   'Driver left at 6:20 PM'\n   'ERROR: GPS lost signal at 6:30 PM'\n\n2. METRICS (The Dashboard): Numbers over time\n   'Orders per hour: 50'\n   'Average delivery time: 35 mins'\n   'Error rate: 2%'\n\n3. TRACES (The Journey): Follow one request across services\n   Order Service -> Kitchen Service -> Driver Service -> Delivery\n   'This specific order took 50 mins because Kitchen was slow'\n\nOPENTELEMETRY: Industry standard for all three!\n- One API for logs, metrics, traces\n- Works with any backend (Jaeger, Zipkin, Prometheus)\n- Auto-instrumentation for common libraries\n\nASPIRE DASHBOARD: Built-in visualization!\n- See all services and their status\n- View logs, metrics, traces in one place\n- No external tools needed for development\n\nThink: 'Logs tell you WHAT happened. Metrics tell you HOW MUCH. Traces tell you WHERE in the journey.'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== ServiceDefaults/Extensions.cs =====\n// This is included in Aspire templates!\n\npublic static IHostApplicationBuilder ConfigureOpenTelemetry(\n    this IHostApplicationBuilder builder)\n{\n    builder.Logging.AddOpenTelemetry(logging =>\n    {\n        logging.IncludeFormattedMessage = true;\n        logging.IncludeScopes = true;\n    });\n    \n    builder.Services.AddOpenTelemetry()\n        .WithMetrics(metrics =>\n        {\n            // Built-in metrics from ASP.NET Core, HttpClient, etc.\n            metrics.AddAspNetCoreInstrumentation()\n                   .AddHttpClientInstrumentation()\n                   .AddRuntimeInstrumentation();\n        })\n        .WithTracing(tracing =>\n        {\n            // Trace requests through your services\n            tracing.AddAspNetCoreInstrumentation()\n                   .AddHttpClientInstrumentation()\n                   .AddEntityFrameworkCoreInstrumentation();\n        });\n    \n    // Export to Aspire Dashboard (OTLP protocol)\n    builder.AddOpenTelemetryExporters();\n    \n    return builder;\n}\n\n// ===== Using Structured Logging =====\npublic class OrderService\n{\n    private readonly ILogger<OrderService> _logger;\n    \n    public OrderService(ILogger<OrderService> logger)\n    {\n        _logger = logger;\n    }\n    \n    public async Task<Order> CreateOrderAsync(CreateOrderRequest request)\n    {\n        // STRUCTURED logging - properties are indexed and searchable!\n        _logger.LogInformation(\n            \"Creating order for customer {CustomerId} with {ItemCount} items\",\n            request.CustomerId,\n            request.Items.Count);\n        \n        try\n        {\n            var order = new Order { /* ... */ };\n            \n            _logger.LogInformation(\n                \"Order {OrderId} created successfully. Total: {Total:C}\",\n                order.Id,\n                order.Total);\n            \n            return order;\n        }\n        catch (Exception ex)\n        {\n            // Log exception with full details\n            _logger.LogError(ex,\n                \"Failed to create order for customer {CustomerId}\",\n                request.CustomerId);\n            throw;\n        }\n    }\n}\n\n// ===== Custom Metrics =====\nusing System.Diagnostics.Metrics;\n\npublic class OrderMetrics\n{\n    private readonly Counter<int> _ordersCreated;\n    private readonly Histogram<double> _orderProcessingTime;\n    private readonly UpDownCounter<int> _activeOrders;\n    \n    public OrderMetrics(IMeterFactory meterFactory)\n    {\n        var meter = meterFactory.Create(\"MyApp.Orders\");\n        \n        _ordersCreated = meter.CreateCounter<int>(\n            \"orders.created\",\n            description: \"Number of orders created\");\n        \n        _orderProcessingTime = meter.CreateHistogram<double>(\n            \"orders.processing_time\",\n            unit: \"ms\",\n            description: \"Order processing time in milliseconds\");\n        \n        _activeOrders = meter.CreateUpDownCounter<int>(\n            \"orders.active\",\n            description: \"Currently processing orders\");\n    }\n    \n    public void OrderCreated(string region)\n    {\n        // Tags add dimensions to metrics\n        _ordersCreated.Add(1, new KeyValuePair<string, object?>(\"region\", region));\n    }\n    \n    public void RecordProcessingTime(double milliseconds)\n    {\n        _orderProcessingTime.Record(milliseconds);\n    }\n    \n    public void OrderStarted() => _activeOrders.Add(1);\n    public void OrderCompleted() => _activeOrders.Add(-1);\n}\n\n// ===== Custom Tracing (ActivitySource) =====\nusing System.Diagnostics;\n\npublic class PaymentService\n{\n    private static readonly ActivitySource ActivitySource = \n        new(\"MyApp.Payments\");\n    \n    public async Task<PaymentResult> ProcessPaymentAsync(Payment payment)\n    {\n        // Start a new span (trace segment)\n        using var activity = ActivitySource.StartActivity(\"ProcessPayment\");\n        \n        // Add attributes to the span\n        activity?.SetTag(\"payment.amount\", payment.Amount);\n        activity?.SetTag(\"payment.method\", payment.Method);\n        \n        try\n        {\n            var result = await CallPaymentGatewayAsync(payment);\n            activity?.SetTag(\"payment.success\", true);\n            return result;\n        }\n        catch (Exception ex)\n        {\n            activity?.SetTag(\"payment.success\", false);\n            activity?.SetTag(\"error.message\", ex.Message);\n            activity?.SetStatus(ActivityStatusCode.Error, ex.Message);\n            throw;\n        }\n    }\n}\n\nConsole.WriteLine(\"OpenTelemetry configured!\");\nConsole.WriteLine(\"View in Aspire Dashboard: https://localhost:15000\");\nConsole.WriteLine(\"Logs, Metrics, and Traces all in one place!\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`AddOpenTelemetry().WithMetrics().WithTracing()`**: Fluent API to configure OpenTelemetry. Chain WithMetrics() and WithTracing() to enable each signal.\n\n**`AddAspNetCoreInstrumentation()`**: Auto-instruments ASP.NET Core requests. Every HTTP request becomes a trace span with timing, status codes, etc.\n\n**`_logger.LogInformation(\"Message {Property}\", value)`**: Structured logging! {Property} is a placeholder, value fills it. Properties are indexed for searching in the dashboard.\n\n**`meter.CreateCounter<int>(\"metric.name\")`**: Creates a metric that only goes up (counts events). Other types: Histogram (distributions), UpDownCounter (can decrease), Gauge (point-in-time value).\n\n**`ActivitySource.StartActivity(\"name\")`**: Starts a trace span. The span represents a unit of work. Use 'using' to auto-close when done.\n\n**`activity?.SetTag(\"key\", value)`**: Adds metadata to a span. Tags are indexed and searchable. Use for request IDs, user IDs, amounts, etc."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-16-03-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Add observability to a shopping cart service!\n\n1. Create CartMetrics class with:\n   - Counter: items_added (with product_category tag)\n   - Counter: items_removed\n   - Histogram: cart_value (track cart totals)\n   - UpDownCounter: active_carts\n\n2. Create CartService with structured logging:\n   - Log when items are added (include CartId, ProductId, Quantity)\n   - Log warnings when cart exceeds $1000\n   - Log errors with exception details\n\n3. Add tracing with ActivitySource:\n   - Span for AddToCart operation\n   - Include cart_id and product_id as tags\n\nUse IMeterFactory and ILogger<T>!",
+              "starterCode": "using System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing Microsoft.Extensions.Logging;\n\npublic class CartMetrics\n{\n    // TODO: Define metrics\n    // - Counter for items added (with category tag)\n    // - Counter for items removed\n    // - Histogram for cart values\n    // - UpDownCounter for active carts\n    \n    public CartMetrics(IMeterFactory meterFactory)\n    {\n        var meter = meterFactory.Create(\"MyApp.Cart\");\n        \n        // TODO: Create metrics\n    }\n    \n    public void ItemAdded(string category)\n    {\n        // TODO: Increment counter with category tag\n    }\n    \n    public void ItemRemoved()\n    {\n        // TODO: Increment removed counter\n    }\n    \n    public void RecordCartValue(double value)\n    {\n        // TODO: Record histogram value\n    }\n}\n\npublic class CartService\n{\n    private static readonly ActivitySource ActivitySource = new(\"MyApp.Cart\");\n    \n    private readonly ILogger<CartService> _logger;\n    private readonly CartMetrics _metrics;\n    \n    public CartService(ILogger<CartService> logger, CartMetrics metrics)\n    {\n        _logger = logger;\n        _metrics = metrics;\n    }\n    \n    public void AddToCart(string cartId, string productId, int quantity, string category, decimal price)\n    {\n        // TODO: Start activity/span with tags\n        // TODO: Log structured message\n        // TODO: Record metrics\n        // TODO: Warn if cart > $1000\n    }\n}\n\nConsole.WriteLine(\"Implement observability for CartService!\");",
+              "solution": "using System.Diagnostics;\nusing System.Diagnostics.Metrics;\nusing Microsoft.Extensions.Logging;\n\npublic class CartMetrics\n{\n    private readonly Counter<int> _itemsAdded;\n    private readonly Counter<int> _itemsRemoved;\n    private readonly Histogram<double> _cartValue;\n    private readonly UpDownCounter<int> _activeCarts;\n    \n    public CartMetrics(IMeterFactory meterFactory)\n    {\n        var meter = meterFactory.Create(\"MyApp.Cart\");\n        \n        _itemsAdded = meter.CreateCounter<int>(\n            \"cart.items_added\",\n            description: \"Number of items added to carts\");\n        \n        _itemsRemoved = meter.CreateCounter<int>(\n            \"cart.items_removed\",\n            description: \"Number of items removed from carts\");\n        \n        _cartValue = meter.CreateHistogram<double>(\n            \"cart.value\",\n            unit: \"USD\",\n            description: \"Shopping cart total values\");\n        \n        _activeCarts = meter.CreateUpDownCounter<int>(\n            \"cart.active\",\n            description: \"Number of active shopping carts\");\n    }\n    \n    public void ItemAdded(string category)\n    {\n        _itemsAdded.Add(1, new KeyValuePair<string, object?>(\"product_category\", category));\n    }\n    \n    public void ItemRemoved()\n    {\n        _itemsRemoved.Add(1);\n    }\n    \n    public void RecordCartValue(double value)\n    {\n        _cartValue.Record(value);\n    }\n    \n    public void CartCreated() => _activeCarts.Add(1);\n    public void CartCompleted() => _activeCarts.Add(-1);\n}\n\npublic class CartService\n{\n    private static readonly ActivitySource ActivitySource = new(\"MyApp.Cart\");\n    \n    private readonly ILogger<CartService> _logger;\n    private readonly CartMetrics _metrics;\n    private decimal _cartTotal = 0;\n    \n    public CartService(ILogger<CartService> logger, CartMetrics metrics)\n    {\n        _logger = logger;\n        _metrics = metrics;\n    }\n    \n    public void AddToCart(string cartId, string productId, int quantity, string category, decimal price)\n    {\n        using var activity = ActivitySource.StartActivity(\"AddToCart\");\n        activity?.SetTag(\"cart.id\", cartId);\n        activity?.SetTag(\"product.id\", productId);\n        activity?.SetTag(\"product.category\", category);\n        activity?.SetTag(\"quantity\", quantity);\n        \n        _logger.LogInformation(\n            \"Adding to cart {CartId}: Product {ProductId}, Quantity {Quantity}, Category {Category}\",\n            cartId, productId, quantity, category);\n        \n        _cartTotal += price * quantity;\n        \n        _metrics.ItemAdded(category);\n        _metrics.RecordCartValue((double)_cartTotal);\n        \n        if (_cartTotal > 1000)\n        {\n            _logger.LogWarning(\n                \"Cart {CartId} exceeds $1000! Current total: {CartTotal:C}\",\n                cartId, _cartTotal);\n        }\n        \n        activity?.SetTag(\"cart.total\", _cartTotal);\n    }\n}\n\nConsole.WriteLine(\"CartService with full observability!\");\nConsole.WriteLine(\"Metrics: items_added (with category), items_removed, cart_value, active_carts\");\nConsole.WriteLine(\"Logging: Structured with CartId, ProductId, Quantity\");\nConsole.WriteLine(\"Tracing: AddToCart spans with product details\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm observability implementation",
+                  "expectedOutput": "CartService",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention metrics",
+                  "expectedOutput": "Metrics",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "CreateCounter, CreateHistogram, CreateUpDownCounter from Meter. Pass name and optional description."
+                },
+                {
+                  "level": 2,
+                  "text": "Counter.Add(1, tag) - second parameter is KeyValuePair for tags. Tags enable filtering in dashboards."
+                },
+                {
+                  "level": 3,
+                  "text": "Structured logging: LogInformation(\"Message {Prop}\", value) - curly braces are placeholders, not string interpolation!"
+                },
+                {
+                  "level": 4,
+                  "text": "ActivitySource.StartActivity returns Activity?. Use null-conditional: activity?.SetTag(...)"
+                },
+                {
+                  "level": 5,
+                  "text": "Wrap activity in 'using' statement - it auto-completes the span when disposed."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "String interpolation in log messages",
+                  "consequence": "_logger.LogInformation($\"Order {orderId}\") - string is evaluated BEFORE logging! Loses structured logging benefits.",
+                  "correction": "Use placeholders: _logger.LogInformation(\"Order {OrderId}\", orderId). Properties are indexed separately."
+                },
+                {
+                  "mistake": "Forgetting to dispose activities",
+                  "consequence": "Activity without 'using' stays open forever. Span never ends, traces are incomplete.",
+                  "correction": "Always use 'using var activity = ...' or manually call activity.Dispose()."
+                },
+                {
+                  "mistake": "Too many metrics/tags",
+                  "consequence": "High cardinality (unique combinations) explodes storage. user_id as tag = millions of time series!",
+                  "correction": "Use low-cardinality tags: region, status, category. Put high-cardinality data in logs/traces instead."
+                },
+                {
+                  "mistake": "Not checking activity for null",
+                  "consequence": "StartActivity returns null if no listener! activity.SetTag() throws NullReferenceException.",
+                  "correction": "Use null-conditional: activity?.SetTag(...). Or check if (activity != null) first."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-16-04",
+          "title": "Resilience Patterns (Polly, Circuit Breakers)",
+          "moduleId": "module-16",
+          "order": 4,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're calling a friend who's not answering. What do you do?\n\nBAD APPROACH: Keep calling every second for an hour. You waste time, annoy them, and their phone overheats!\n\nGOOD APPROACH (Resilience Patterns):\n\n1. RETRY: Try 3 times with pauses between\n   Call... wait 1 sec... call... wait 2 sec... call\n\n2. CIRCUIT BREAKER: Stop trying temporarily\n   After 5 failures: 'Phone is probably dead, wait 30 seconds'\n   Like an electrical circuit breaker - prevents damage!\n\n3. TIMEOUT: Don't wait forever\n   'If no answer in 10 seconds, hang up'\n\n4. FALLBACK: Have a backup plan\n   'If call fails, send a text instead'\n\n5. BULKHEAD: Limit concurrent attempts\n   'Only make 5 calls at once, queue the rest'\n\nPOLLY: .NET library for all these patterns!\n- Fluent API to define policies\n- Compose multiple strategies\n- Built into Aspire via AddStandardResilienceHandler()\n\nASPIRE DEFAULT: Retry + Circuit Breaker + Timeout combined!\n\nThink: 'Resilience patterns are like defensive driving - expect things to go wrong and be prepared!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== ASPIRE'S BUILT-IN RESILIENCE =====\n// In ServiceDefaults, this is already configured!\n\nbuilder.Services.ConfigureHttpClientDefaults(http =>\n{\n    // AddStandardResilienceHandler adds:\n    // - Retry (3 attempts with exponential backoff)\n    // - Circuit breaker (opens after failures)\n    // - Timeout (30 seconds total)\n    // - Rate limiter (prevents overload)\n    http.AddStandardResilienceHandler();\n});\n\n// ===== CUSTOM POLLY POLICIES =====\n// Install: Microsoft.Extensions.Http.Resilience (included in Aspire)\n\nusing Microsoft.Extensions.Http.Resilience;\nusing Polly;\n\n// Configure custom resilience for specific client\nbuilder.Services.AddHttpClient<PaymentApiClient>(client =>\n{\n    client.BaseAddress = new Uri(\"http://payment-api\");\n})\n.AddResilienceHandler(\"PaymentRetry\", builder =>\n{\n    // RETRY: Try 5 times with exponential backoff\n    builder.AddRetry(new HttpRetryStrategyOptions\n    {\n        MaxRetryAttempts = 5,\n        Delay = TimeSpan.FromMilliseconds(500),\n        BackoffType = DelayBackoffType.Exponential,\n        UseJitter = true,  // Randomize delays to avoid thundering herd\n        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()\n            .Handle<HttpRequestException>()\n            .HandleResult(r => r.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)\n    });\n    \n    // CIRCUIT BREAKER: Open after 3 failures\n    builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions\n    {\n        FailureRatio = 0.5,           // 50% failure rate\n        SamplingDuration = TimeSpan.FromSeconds(10),\n        MinimumThroughput = 3,        // Need 3 requests to evaluate\n        BreakDuration = TimeSpan.FromSeconds(30)\n    });\n    \n    // TIMEOUT: 10 second limit per request\n    builder.AddTimeout(TimeSpan.FromSeconds(10));\n});\n\n// ===== USING POLLY DIRECTLY =====\nusing Polly;\nusing Polly.Retry;\nusing Polly.CircuitBreaker;\nusing Polly.Timeout;\n\npublic class ResilientService\n{\n    private readonly ResiliencePipeline _pipeline;\n    private readonly ILogger<ResilientService> _logger;\n    \n    public ResilientService(ILogger<ResilientService> logger)\n    {\n        _logger = logger;\n        \n        // Build a resilience pipeline\n        _pipeline = new ResiliencePipelineBuilder()\n            .AddRetry(new RetryStrategyOptions\n            {\n                MaxRetryAttempts = 3,\n                Delay = TimeSpan.FromSeconds(1),\n                OnRetry = args =>\n                {\n                    _logger.LogWarning(\n                        \"Retry attempt {Attempt} after {Delay}ms\",\n                        args.AttemptNumber,\n                        args.RetryDelay.TotalMilliseconds);\n                    return ValueTask.CompletedTask;\n                }\n            })\n            .AddCircuitBreaker(new CircuitBreakerStrategyOptions\n            {\n                FailureRatio = 0.5,\n                SamplingDuration = TimeSpan.FromSeconds(10),\n                BreakDuration = TimeSpan.FromSeconds(30),\n                OnOpened = args =>\n                {\n                    _logger.LogError(\"Circuit OPENED! Service unavailable.\");\n                    return ValueTask.CompletedTask;\n                },\n                OnClosed = args =>\n                {\n                    _logger.LogInformation(\"Circuit CLOSED. Service recovered.\");\n                    return ValueTask.CompletedTask;\n                }\n            })\n            .AddTimeout(TimeSpan.FromSeconds(5))\n            .Build();\n    }\n    \n    public async Task<string> CallExternalServiceAsync()\n    {\n        // Execute with resilience\n        return await _pipeline.ExecuteAsync(async token =>\n        {\n            // Your actual operation here\n            await Task.Delay(100, token);  // Simulate work\n            return \"Success!\";\n        });\n    }\n}\n\n// ===== CIRCUIT BREAKER STATES =====\n// CLOSED: Normal operation, requests flow through\n// OPEN: Failures exceeded threshold, requests fail fast\n// HALF-OPEN: Testing if service recovered, limited requests\n\n// CLOSED -> (failures) -> OPEN -> (wait) -> HALF-OPEN -> (success) -> CLOSED\n//                                                     -> (failure) -> OPEN\n\nConsole.WriteLine(\"Resilience patterns configured!\");\nConsole.WriteLine(\"Retry: 3 attempts with exponential backoff\");\nConsole.WriteLine(\"Circuit Breaker: Opens after 50% failures\");\nConsole.WriteLine(\"Timeout: 5 second limit\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`AddStandardResilienceHandler()`**: Aspire's one-liner for production-ready resilience. Adds retry, circuit breaker, timeout, and rate limiting with sensible defaults.\n\n**`AddResilienceHandler(name, builder => {...})`**: Custom resilience for specific HttpClient. Chain .AddRetry(), .AddCircuitBreaker(), .AddTimeout() in the builder.\n\n**`BackoffType.Exponential`**: Each retry waits longer: 500ms, 1s, 2s, 4s... Prevents hammering a struggling service. Add UseJitter=true to randomize.\n\n**`FailureRatio + MinimumThroughput`**: Circuit breaker opens when FailureRatio (e.g., 50%) of requests fail, but only after MinimumThroughput requests. Prevents opening on 1 failure.\n\n**`ResiliencePipelineBuilder`**: Polly's fluent builder for composing strategies. Build() creates an immutable pipeline. Execute() runs code through the pipeline.\n\n**`OnRetry, OnOpened, OnClosed callbacks`**: Hooks for logging, metrics, alerts. Know when resilience kicks in! Returns ValueTask for async support."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-16-04-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Configure resilience for an external weather API client!\n\n1. Create WeatherApiClient with HttpClient injection\n\n2. Configure resilience with:\n   - Retry: 4 attempts, 200ms initial delay, exponential backoff with jitter\n   - Circuit Breaker: Opens at 30% failure rate, 5 request minimum, 20 second break\n   - Timeout: 8 seconds per request\n\n3. Add OnRetry callback that logs the attempt number\n\n4. Handle specific HTTP status codes:\n   - Retry on 503 (Service Unavailable)\n   - Retry on 429 (Too Many Requests)\n\nUse AddResilienceHandler with custom configuration!",
+              "starterCode": "using Microsoft.Extensions.Http.Resilience;\nusing Polly;\n\npublic class WeatherApiClient\n{\n    private readonly HttpClient _httpClient;\n    \n    public WeatherApiClient(HttpClient httpClient)\n    {\n        _httpClient = httpClient;\n    }\n    \n    public async Task<WeatherData?> GetWeatherAsync(string city)\n    {\n        var response = await _httpClient.GetAsync($\"/api/weather/{city}\");\n        response.EnsureSuccessStatusCode();\n        return await response.Content.ReadFromJsonAsync<WeatherData>();\n    }\n}\n\npublic record WeatherData(string City, double Temperature, string Conditions);\n\n// Configure the HttpClient with resilience\nvar builder = WebApplication.CreateBuilder(args);\n\nbuilder.Services.AddHttpClient<WeatherApiClient>(client =>\n{\n    client.BaseAddress = new Uri(\"http://weather-api\");\n})\n// TODO: Add resilience handler with:\n// - Retry (4 attempts, 200ms delay, exponential, jitter)\n// - Circuit breaker (30% failure, 5 min throughput, 20s break)\n// - Timeout (8 seconds)\n;\n\nConsole.WriteLine(\"Configure resilience for WeatherApiClient!\");",
+              "solution": "using Microsoft.Extensions.Http.Resilience;\nusing Polly;\nusing System.Net;\n\npublic class WeatherApiClient\n{\n    private readonly HttpClient _httpClient;\n    \n    public WeatherApiClient(HttpClient httpClient)\n    {\n        _httpClient = httpClient;\n    }\n    \n    public async Task<WeatherData?> GetWeatherAsync(string city)\n    {\n        var response = await _httpClient.GetAsync($\"/api/weather/{city}\");\n        response.EnsureSuccessStatusCode();\n        return await response.Content.ReadFromJsonAsync<WeatherData>();\n    }\n}\n\npublic record WeatherData(string City, double Temperature, string Conditions);\n\n// Configure the HttpClient with resilience\nvar builder = WebApplication.CreateBuilder(args);\n\nbuilder.Services.AddHttpClient<WeatherApiClient>(client =>\n{\n    client.BaseAddress = new Uri(\"http://weather-api\");\n})\n.AddResilienceHandler(\"WeatherResilience\", pipeline =>\n{\n    // RETRY: 4 attempts with exponential backoff + jitter\n    pipeline.AddRetry(new HttpRetryStrategyOptions\n    {\n        MaxRetryAttempts = 4,\n        Delay = TimeSpan.FromMilliseconds(200),\n        BackoffType = DelayBackoffType.Exponential,\n        UseJitter = true,\n        ShouldHandle = new PredicateBuilder<HttpResponseMessage>()\n            .Handle<HttpRequestException>()\n            .HandleResult(r => r.StatusCode == HttpStatusCode.ServiceUnavailable)\n            .HandleResult(r => r.StatusCode == HttpStatusCode.TooManyRequests),\n        OnRetry = args =>\n        {\n            Console.WriteLine($\"Retry attempt {args.AttemptNumber} after {args.RetryDelay.TotalMilliseconds}ms\");\n            return ValueTask.CompletedTask;\n        }\n    });\n    \n    // CIRCUIT BREAKER: 30% failure rate threshold\n    pipeline.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions\n    {\n        FailureRatio = 0.3,  // 30%\n        SamplingDuration = TimeSpan.FromSeconds(10),\n        MinimumThroughput = 5,\n        BreakDuration = TimeSpan.FromSeconds(20),\n        OnOpened = args =>\n        {\n            Console.WriteLine(\"Circuit breaker OPENED - weather service unavailable\");\n            return ValueTask.CompletedTask;\n        }\n    });\n    \n    // TIMEOUT: 8 seconds max\n    pipeline.AddTimeout(TimeSpan.FromSeconds(8));\n});\n\nConsole.WriteLine(\"WeatherApiClient resilience configured!\");\nConsole.WriteLine(\"Retry: 4 attempts, exponential backoff (200ms base), jitter enabled\");\nConsole.WriteLine(\"Circuit Breaker: 30% failure ratio, 20s break duration\");\nConsole.WriteLine(\"Timeout: 8 seconds per request\");\nConsole.WriteLine(\"Handles: HttpRequestException, 503, 429\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm resilience configuration",
+                  "expectedOutput": "WeatherApiClient",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention retry configuration",
+                  "expectedOutput": "Retry",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": ".AddResilienceHandler('name', pipeline => {...}) chains after AddHttpClient. Pipeline is a builder."
+                },
+                {
+                  "level": 2,
+                  "text": "HttpRetryStrategyOptions: MaxRetryAttempts, Delay (initial), BackoffType, UseJitter, ShouldHandle, OnRetry."
+                },
+                {
+                  "level": 3,
+                  "text": "PredicateBuilder<HttpResponseMessage>().HandleResult(r => r.StatusCode == ...) for specific status codes."
+                },
+                {
+                  "level": 4,
+                  "text": "HttpCircuitBreakerStrategyOptions: FailureRatio (0-1), MinimumThroughput, BreakDuration, OnOpened/OnClosed."
+                },
+                {
+                  "level": 5,
+                  "text": "Order matters! Retry inside circuit breaker: pipeline.AddRetry().AddCircuitBreaker(). Retries happen before circuit evaluation."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Wrong strategy order",
+                  "consequence": "AddCircuitBreaker().AddRetry() means circuit opens BEFORE retries happen. Each retry is counted separately!",
+                  "correction": "Usually: AddRetry().AddCircuitBreaker().AddTimeout(). Outer strategies wrap inner ones."
+                },
+                {
+                  "mistake": "Too aggressive retry",
+                  "consequence": "MaxRetryAttempts=10 with 100ms delay = hammering dying service. Makes problems worse!",
+                  "correction": "Use exponential backoff, reasonable limits (3-5 retries), and jitter. Give service time to recover."
+                },
+                {
+                  "mistake": "Circuit breaker too sensitive",
+                  "consequence": "MinimumThroughput=1, FailureRatio=0.5 means ONE failure opens circuit! False positives everywhere.",
+                  "correction": "Set MinimumThroughput high enough (5-10+) for statistical significance. Brief glitches won't trigger."
+                },
+                {
+                  "mistake": "Forgetting to handle specific status codes",
+                  "consequence": "Default only retries on network exceptions. 503/429 from server won't retry!",
+                  "correction": "Use ShouldHandle with PredicateBuilder to include specific HTTP status codes for retry."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-16-05",
+          "title": "Deploying to Azure Container Apps",
+          "moduleId": "module-16",
+          "order": 5,
+          "estimatedMinutes": 20,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "You've built your orchestra (Aspire app) and rehearsed locally. Now it's time for the REAL CONCERT - production deployment!\n\nLOCAL DEVELOPMENT:\n- Containers run on your machine\n- Dashboard at localhost:15000\n- Redis/Postgres in Docker\n\nPRODUCTION (Azure Container Apps):\n- Containers run in Azure's cloud\n- Auto-scaling based on load\n- Managed Redis (Azure Cache)\n- Managed Postgres (Azure Database)\n- Built-in HTTPS, load balancing\n\nAZURE CONTAINER APPS (ACA):\n- Serverless containers - pay for what you use\n- Automatic scaling (0 to many instances)\n- Built-in service discovery (works with Aspire!)\n- No Kubernetes complexity\n\nDEPLOYMENT OPTIONS:\n1. Azure Developer CLI (azd) - Recommended!\n2. Visual Studio Publish\n3. CI/CD pipelines (GitHub Actions)\n\nASPIRE + ACA = Perfect Match:\n- Aspire manifest describes your app\n- azd reads manifest, creates Azure resources\n- Connection strings auto-configured\n- Same code, different environment!\n\nThink: 'Aspire is the blueprint, Azure Container Apps is the construction site!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== STEP 1: Prepare Your AppHost =====\n// AppHost/Program.cs - Production-ready configuration\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// Infrastructure - Aspire maps these to Azure services\nvar cache = builder.AddRedis(\"cache\");\nvar db = builder.AddPostgres(\"postgres\")\n    .AddDatabase(\"catalogdb\");\n\n// Services\nvar api = builder.AddProject<Projects.CatalogApi>(\"api\")\n    .WithReference(cache)\n    .WithReference(db)\n    .WithExternalHttpEndpoints();  // Expose to internet\n\nbuilder.AddProject<Projects.WebApp>(\"webapp\")\n    .WithReference(api)\n    .WithExternalHttpEndpoints();\n\nbuilder.Build().Run();\n\n// ===== STEP 2: Initialize Azure Developer CLI =====\n// Run in terminal (from solution folder):\n\n// Initialize azd (one time)\n// > azd init\n//   - Creates azure.yaml\n//   - Creates .azure/ folder\n\n// ===== azure.yaml (auto-generated) =====\n// name: my-aspire-app\n// services:\n//   app:\n//     project: ./MyApp.AppHost/MyApp.AppHost.csproj\n//     host: containerapp\n\n// ===== STEP 3: Deploy! =====\n// > azd up\n//\n// This command:\n// 1. Builds all your projects as containers\n// 2. Creates Azure Container Registry\n// 3. Pushes containers to registry\n// 4. Creates Azure Container Apps Environment\n// 5. Creates managed Redis (Azure Cache for Redis)\n// 6. Creates managed Postgres (Azure Database)\n// 7. Deploys your containers\n// 8. Configures networking/service discovery\n// 9. Sets up connection strings\n\n// ===== STEP 4: Environment Configuration =====\n// appsettings.Production.json - Override for production\n{\n    \"Logging\": {\n        \"LogLevel\": {\n            \"Default\": \"Warning\",\n            \"Microsoft.Hosting.Lifetime\": \"Information\"\n        }\n    }\n}\n\n// ===== STEP 5: GitHub Actions CI/CD =====\n// .github/workflows/deploy.yml\n\n// name: Deploy to Azure\n// \n// on:\n//   push:\n//     branches: [main]\n// \n// jobs:\n//   deploy:\n//     runs-on: ubuntu-latest\n//     steps:\n//       - uses: actions/checkout@v4\n//       \n//       - name: Install azd\n//         uses: Azure/setup-azd@v1\n//       \n//       - name: Log in with Azure (federated)\n//         run: azd auth login --no-prompt\n//         env:\n//           AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}\n//           AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}\n//           AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}\n//       \n//       - name: Deploy\n//         run: azd up --no-prompt\n//         env:\n//           AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}\n\n// ===== USEFUL AZD COMMANDS =====\n// azd init          - Initialize project\n// azd up            - Deploy everything\n// azd deploy        - Deploy code only (faster)\n// azd down          - Delete all Azure resources\n// azd monitor       - Open Azure Portal monitoring\n// azd env list      - List environments (dev, staging, prod)\n// azd env select    - Switch environment\n\n// ===== ASPIRE MANIFEST =====\n// Aspire generates a manifest.json describing your app\n// Run: dotnet run --project AppHost -- --publisher manifest\n\nConsole.WriteLine(\"Deployment steps:\");\nConsole.WriteLine(\"1. azd init      - Initialize Azure config\");\nConsole.WriteLine(\"2. azd up        - Deploy to Azure!\");\nConsole.WriteLine(\"3. azd monitor   - View in Azure Portal\");\nConsole.WriteLine(\"\");\nConsole.WriteLine(\"Aspire maps to Azure services:\");\nConsole.WriteLine(\"  AddRedis -> Azure Cache for Redis\");\nConsole.WriteLine(\"  AddPostgres -> Azure Database for PostgreSQL\");\nConsole.WriteLine(\"  AddProject -> Azure Container App\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`.WithExternalHttpEndpoints()`**: Marks a service as internet-facing. Azure Container Apps will create a public URL. Without this, service is internal only.\n\n**`azd init`**: Creates azure.yaml and .azure/ folder. Scans your solution, detects Aspire AppHost, generates deployment config. Run once per project.\n\n**`azd up`**: The magic command! Provisions Azure resources, builds containers, deploys everything. First run creates resources, subsequent runs update.\n\n**`azure.yaml`**: Deployment descriptor. Points to AppHost project. azd reads this to understand your app structure.\n\n**`azd env`**: Manage multiple environments (dev, staging, prod). Each environment has separate Azure resources. Switch with 'azd env select'.\n\n**`azd down`**: Cleanup! Deletes ALL Azure resources for the environment. Use carefully - data is lost! Great for dev environments to save costs."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-16-05-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Prepare an AppHost for Azure deployment!\n\n1. Configure the following services:\n   - Redis cache named 'appcache'\n   - PostgreSQL database named 'appdb'\n   - Background worker service (internal only)\n   - Public API service (external endpoints)\n   - Public web frontend (external endpoints)\n\n2. Set up dependencies:\n   - Worker needs cache and database\n   - API needs cache and database\n   - Web needs to call API\n\n3. Add comments explaining:\n   - Which services are public vs internal\n   - What Azure resources each maps to\n\n4. Print deployment instructions",
+              "starterCode": "// Production-Ready AppHost for Azure Container Apps\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// ===== INFRASTRUCTURE =====\n// TODO: Add Redis cache (maps to Azure Cache for Redis)\n\n// TODO: Add PostgreSQL database (maps to Azure Database for PostgreSQL)\n\n// ===== SERVICES =====\n// TODO: Add background worker (INTERNAL - no external endpoints)\n//       Needs: cache, database\n\n// TODO: Add API service (EXTERNAL - public endpoint)\n//       Needs: cache, database\n\n// TODO: Add web frontend (EXTERNAL - public endpoint)\n//       Needs: API reference\n\nbuilder.Build().Run();\n\n// Print deployment guide\nConsole.WriteLine(\"AppHost configured for Azure!\");",
+              "solution": "// Production-Ready AppHost for Azure Container Apps\n\nvar builder = DistributedApplication.CreateBuilder(args);\n\n// ===== INFRASTRUCTURE =====\n// Redis cache - maps to Azure Cache for Redis (managed)\nvar cache = builder.AddRedis(\"appcache\");\n\n// PostgreSQL - maps to Azure Database for PostgreSQL (managed)\nvar db = builder.AddPostgres(\"postgres\")\n    .AddDatabase(\"appdb\");\n\n// ===== SERVICES =====\n\n// Background worker - INTERNAL only (no WithExternalHttpEndpoints)\n// Processes jobs from database, updates cache\n// Maps to: Azure Container App (internal ingress only)\nvar worker = builder.AddProject<Projects.BackgroundWorker>(\"worker\")\n    .WithReference(cache)\n    .WithReference(db);\n\n// API service - EXTERNAL (public internet access)\n// Serves REST endpoints for web and mobile clients\n// Maps to: Azure Container App (external ingress + public URL)\nvar api = builder.AddProject<Projects.PublicApi>(\"api\")\n    .WithReference(cache)\n    .WithReference(db)\n    .WithExternalHttpEndpoints();  // Creates public URL\n\n// Web frontend - EXTERNAL (public internet access)\n// Server-side rendered web app, calls API via service discovery\n// Maps to: Azure Container App (external ingress + public URL)\nbuilder.AddProject<Projects.WebFrontend>(\"web\")\n    .WithReference(api)  // Service discovery to API\n    .WithExternalHttpEndpoints();  // Creates public URL\n\nbuilder.Build().Run();\n\n// Print deployment guide\nConsole.WriteLine(\"AppHost configured for Azure Container Apps!\");\nConsole.WriteLine(\"\");\nConsole.WriteLine(\"Infrastructure (managed Azure services):\");\nConsole.WriteLine(\"  - appcache -> Azure Cache for Redis\");\nConsole.WriteLine(\"  - appdb    -> Azure Database for PostgreSQL\");\nConsole.WriteLine(\"\");\nConsole.WriteLine(\"Services (Azure Container Apps):\");\nConsole.WriteLine(\"  - worker   -> Internal (background processing)\");\nConsole.WriteLine(\"  - api      -> External (public REST API)\");\nConsole.WriteLine(\"  - web      -> External (public website)\");\nConsole.WriteLine(\"\");\nConsole.WriteLine(\"Deploy with:\");\nConsole.WriteLine(\"  1. azd init\");\nConsole.WriteLine(\"  2. azd up\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm Azure configuration",
+                  "expectedOutput": "Azure",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention deployment commands",
+                  "expectedOutput": "azd",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": ".WithExternalHttpEndpoints() marks a service as internet-facing. Without it, service is internal only."
+                },
+                {
+                  "level": 2,
+                  "text": "Background workers typically don't need external endpoints - they process internal jobs."
+                },
+                {
+                  "level": 3,
+                  "text": "Store infrastructure in variables (var cache = ...) to pass to .WithReference() calls."
+                },
+                {
+                  "level": 4,
+                  "text": "Order of AddProject doesn't matter for dependencies - just use .WithReference() correctly."
+                },
+                {
+                  "level": 5,
+                  "text": "Comments help others (and future you) understand the deployment architecture!"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Making everything external",
+                  "consequence": "All services get public URLs! Security risk - internal services exposed to internet.",
+                  "correction": "Only add .WithExternalHttpEndpoints() to services that need public access (web, public API)."
+                },
+                {
+                  "mistake": "Forgetting database reference for workers",
+                  "consequence": "Worker can't connect to database! Connection string not injected.",
+                  "correction": "Use .WithReference(db) for every service that needs database access."
+                },
+                {
+                  "mistake": "Not understanding azd down",
+                  "consequence": "'azd down' deletes EVERYTHING including databases! Data loss in production!",
+                  "correction": "Use azd down for dev/test only. Production cleanup should be manual and careful."
+                },
+                {
+                  "mistake": "Hardcoding production URLs",
+                  "consequence": "new Uri('https://myapp.azurecontainerapps.io') breaks in other environments!",
+                  "correction": "Use service discovery (http://service-name). Aspire + Azure handles the real URLs."
                 }
               ],
               "difficulty": "advanced"
