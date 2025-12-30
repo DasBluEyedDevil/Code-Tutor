@@ -4363,19 +4363,19 @@
             {
               "type": "ANALOGY",
               "title": "Understanding the Concept",
-              "content": "Imagine you want to add GPS navigation to your phone. You don't build it from scratch - you download an app from the App Store!\n\nThat's what NUGET is - the 'app store' for C# code libraries (called PACKAGES):\n• Need to work with JSON? Install Newtonsoft.Json\n• Need to send emails? Install MailKit\n• Need to parse CSV files? Install CsvHelper\n• Need to connect to databases? Install Entity Framework Core\n\nThese packages are built by other developers and SHARED for free (mostly). They're:\n• TESTED by thousands of users\n• MAINTAINED with bug fixes\n• DOCUMENTED with examples\n• VERSIONED (you can upgrade/downgrade)\n\nThink: NuGet = 'Don't write everything yourself! Stand on the shoulders of giants.' Professional developers use dozens of NuGet packages!"
+              "content": "Imagine you want to add GPS navigation to your phone. You don't build it from scratch - you download an app from the App Store!\n\nThat's what NUGET is - the 'app store' for C# code libraries (called PACKAGES):\n• Need to work with JSON? Use built-in System.Text.Json (or install Newtonsoft.Json)\n• Need to send emails? Install MailKit\n• Need to parse CSV files? Install CsvHelper\n• Need to connect to databases? Install Entity Framework Core\n\nThese packages are built by other developers and SHARED for free (mostly). They're:\n• TESTED by thousands of users\n• MAINTAINED with bug fixes\n• DOCUMENTED with examples\n• VERSIONED (you can upgrade/downgrade)\n\nThink: NuGet = 'Don't write everything yourself! Stand on the shoulders of giants.' Professional developers use dozens of NuGet packages!"
             },
             {
               "type": "EXAMPLE",
               "title": "Code Example",
               "content": "This example demonstrates the concepts in action.",
-              "code": "// INSTALLING packages (via terminal or Visual Studio)\n// dotnet add package Newtonsoft.Json\n// dotnet add package Humanizer\n\n// Once installed, use them like system libraries!\nusing System;\nusing Newtonsoft.Json;  // Popular JSON library\nusing Humanizer;  // Makes things human-readable\n\n// JSON SERIALIZATION with Newtonsoft.Json\nclass Person\n{\n    public string Name { get; set; }\n    public int Age { get; set; }\n    public string Email { get; set; }\n}\n\nPerson person = new Person \n{ \n    Name = \"Alice\", \n    Age = 30, \n    Email = \"alice@example.com\" \n};\n\n// Convert object to JSON string\nstring json = JsonConvert.SerializeObject(person, Formatting.Indented);\nConsole.WriteLine(\"JSON:\\n\" + json);\n\n// Convert JSON string back to object\nstring jsonData = \"{\\\"Name\\\":\\\"Bob\\\",\\\"Age\\\":25}\";\nPerson restored = JsonConvert.DeserializeObject<Person>(jsonData);\nConsole.WriteLine(\"Name: \" + restored.Name);\n\n// HUMANIZER library - makes numbers/dates readable\nDateTime past = DateTime.Now.AddDays(-5);\nConsole.WriteLine(past.Humanize());  // \"5 days ago\"\n\nConsole.WriteLine(\"NoOfDonuts\".Humanize());  // \"No of donuts\"\nConsole.WriteLine(\"1000\".ToWords());  // \"one thousand\"",
+              "code": "// INSTALLING packages (via terminal or Visual Studio)\n// dotnet add package Humanizer\n// System.Text.Json is BUILT-IN - no install needed!\n\n// Once installed, use them like system libraries!\nusing System;\nusing System.Text.Json;  // Built-in JSON library (modern .NET)\nusing Humanizer;  // Makes things human-readable\n\n// JSON SERIALIZATION with System.Text.Json\nclass Person\n{\n    public string Name { get; set; }\n    public int Age { get; set; }\n    public string Email { get; set; }\n}\n\nPerson person = new Person \n{ \n    Name = \"Alice\", \n    Age = 30, \n    Email = \"alice@example.com\" \n};\n\n// Convert object to JSON string\nstring json = JsonSerializer.Serialize(person, new JsonSerializerOptions { WriteIndented = true });\nConsole.WriteLine(\"JSON:\\n\" + json);\n\n// Convert JSON string back to object\nstring jsonData = \"{\\\"Name\\\":\\\"Bob\\\",\\\"Age\\\":25}\";\nPerson restored = JsonSerializer.Deserialize<Person>(jsonData)!;\nConsole.WriteLine(\"Name: \" + restored.Name);\n\n// HUMANIZER library - makes numbers/dates readable\nDateTime past = DateTime.Now.AddDays(-5);\nConsole.WriteLine(past.Humanize());  // \"5 days ago\"\n\nConsole.WriteLine(\"NoOfDonuts\".Humanize());  // \"No of donuts\"\nConsole.WriteLine(\"1000\".ToWords());  // \"one thousand\"",
               "language": "csharp"
             },
             {
               "type": "THEORY",
               "title": "Syntax Breakdown",
-              "content": "## Breaking Down the Syntax\n\n**`dotnet add package PackageName`**: Command-line way to install NuGet packages. Run in project folder. Adds package to .csproj file automatically.\n\n**`JsonConvert.SerializeObject()`**: From Newtonsoft.Json. Converts C# objects to JSON strings. Use Formatting.Indented for readable output.\n\n**`JsonConvert.DeserializeObject<T>()`**: Converts JSON string back to C# object. Specify type with <Person>. Returns null if JSON doesn't match structure!\n\n**`Package versioning`**: Packages have versions: 13.0.3, 2.1.0. Install specific version: 'dotnet add package Name --version 2.1.0'. Update: 'dotnet add package Name'."
+              "content": "## Breaking Down the Syntax\n\n**`dotnet add package PackageName`**: Command-line way to install NuGet packages. Run in project folder. Adds package to .csproj file automatically.\n\n**`JsonSerializer.Serialize()`**: From System.Text.Json (built-in). Converts C# objects to JSON strings. Use JsonSerializerOptions { WriteIndented = true } for readable output.\n\n**`JsonSerializer.Deserialize<T>()`**: Converts JSON string back to C# object. Specify type with <Person>. Returns null if JSON doesn't match structure - use ! operator when you know data is valid.\n\n**`Package versioning`**: Packages have versions: 13.0.3, 2.1.0. Install specific version: 'dotnet add package Name --version 2.1.0'. Update: 'dotnet add package Name'."
             }
           ],
           "challenges": [
@@ -4384,9 +4384,9 @@
               "id": "lesson-08-05-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
-              "instructions": "Work with JSON data using Newtonsoft.Json!\n\n1. Create a 'Book' class:\n   - string Title\n   - string Author\n   - int Year\n   - decimal Price\n\n2. Create a List of 3 books\n\n3. Use JsonConvert.SerializeObject() to convert list to JSON\n   - Use Formatting.Indented for readability\n   - Display the JSON\n\n4. Save JSON to a file (books.json)\n\n5. Read the file back and deserialize to List<Book>\n\n6. Display all book titles from the deserialized list\n\nNOTE: For this challenge, assume Newtonsoft.Json is installed!",
-              "starterCode": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing Newtonsoft.Json;\n\nclass Book\n{\n    // Define properties\n}\n\n// Create list of books\nList<Book> books = new List<Book>();\n\n// Add 3 books\n\n// Serialize to JSON\nstring json = JsonConvert.SerializeObject(books, Formatting.Indented);\nConsole.WriteLine(\"JSON:\\n\" + json);\n\n// Save to file\n\n// Read from file and deserialize\n\n// Display book titles",
-              "solution": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing Newtonsoft.Json;\n\nclass Book\n{\n    public string Title { get; set; }\n    public string Author { get; set; }\n    public int Year { get; set; }\n    public decimal Price { get; set; }\n}\n\nList<Book> books = new List<Book>();\nbooks.Add(new Book { Title = \"1984\", Author = \"Orwell\", Year = 1949, Price = 15.99m });\nbooks.Add(new Book { Title = \"To Kill a Mockingbird\", Author = \"Lee\", Year = 1960, Price = 12.99m });\nbooks.Add(new Book { Title = \"The Great Gatsby\", Author = \"Fitzgerald\", Year = 1925, Price = 10.99m });\n\nstring json = JsonConvert.SerializeObject(books, Formatting.Indented);\nConsole.WriteLine(\"JSON:\\n\" + json);\n\nFile.WriteAllText(\"books.json\", json);\nConsole.WriteLine(\"\\nSaved to books.json\");\n\nstring fileContent = File.ReadAllText(\"books.json\");\nList<Book> loadedBooks = JsonConvert.DeserializeObject<List<Book>>(fileContent);\n\nConsole.WriteLine(\"\\nLoaded books:\");\nforeach (Book book in loadedBooks)\n{\n    Console.WriteLine(\"- \" + book.Title + \" by \" + book.Author);\n}",
+              "instructions": "Work with JSON data using System.Text.Json!\n\n1. Create a 'Book' class:\n   - string Title\n   - string Author\n   - int Year\n   - decimal Price\n\n2. Create a List of 3 books\n\n3. Use JsonSerializer.Serialize() to convert list to JSON\n   - Use JsonSerializerOptions { WriteIndented = true } for readability\n   - Display the JSON\n\n4. Save JSON to a file (books.json)\n\n5. Read the file back and deserialize to List<Book>\n\n6. Display all book titles from the deserialized list\n\nNOTE: System.Text.Json is built into .NET - no NuGet install needed!",
+              "starterCode": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Text.Json;\n\nclass Book\n{\n    // Define properties\n}\n\n// Create list of books\nList<Book> books = new List<Book>();\n\n// Add 3 books\n\n// Serialize to JSON\nstring json = JsonSerializer.Serialize(books, new JsonSerializerOptions { WriteIndented = true });\nConsole.WriteLine(\"JSON:\\n\" + json);\n\n// Save to file\n\n// Read from file and deserialize\n\n// Display book titles",
+              "solution": "using System;\nusing System.Collections.Generic;\nusing System.IO;\nusing System.Text.Json;\n\nclass Book\n{\n    public string Title { get; set; }\n    public string Author { get; set; }\n    public int Year { get; set; }\n    public decimal Price { get; set; }\n}\n\nList<Book> books = new List<Book>();\nbooks.Add(new Book { Title = \"1984\", Author = \"Orwell\", Year = 1949, Price = 15.99m });\nbooks.Add(new Book { Title = \"To Kill a Mockingbird\", Author = \"Lee\", Year = 1960, Price = 12.99m });\nbooks.Add(new Book { Title = \"The Great Gatsby\", Author = \"Fitzgerald\", Year = 1925, Price = 10.99m });\n\nstring json = JsonSerializer.Serialize(books, new JsonSerializerOptions { WriteIndented = true });\nConsole.WriteLine(\"JSON:\\n\" + json);\n\nFile.WriteAllText(\"books.json\", json);\nConsole.WriteLine(\"\\nSaved to books.json\");\n\nstring fileContent = File.ReadAllText(\"books.json\");\nList<Book> loadedBooks = JsonSerializer.Deserialize<List<Book>>(fileContent)!;\n\nConsole.WriteLine(\"\\nLoaded books:\");\nforeach (Book book in loadedBooks)\n{\n    Console.WriteLine(\"- \" + book.Title + \" by \" + book.Author);\n}",
               "language": "csharp",
               "testCases": [
                 {
@@ -4411,19 +4411,19 @@
               "hints": [
                 {
                   "level": 1,
-                  "text": "Serialize: 'JsonConvert.SerializeObject(obj, Formatting.Indented)'. Deserialize: 'JsonConvert.DeserializeObject<Type>(json)'. Save/load JSON with File.WriteAllText and File.ReadAllText."
+                  "text": "Serialize: 'JsonSerializer.Serialize(obj, new JsonSerializerOptions { WriteIndented = true })'. Deserialize: 'JsonSerializer.Deserialize<Type>(json)!'. Save/load JSON with File.WriteAllText and File.ReadAllText."
                 },
                 {
                   "level": 2,
-                  "text": "Package not installed: If you use Newtonsoft.Json without installing it, you get 'namespace not found' error! Must run 'dotnet add package Newtonsoft.Json' first."
+                  "text": "System.Text.Json is built-in: Unlike third-party packages, System.Text.Json comes with .NET - no installation needed! Just add 'using System.Text.Json;' at the top."
                 },
                 {
                   "level": 3,
-                  "text": "Property names must match JSON: JsonConvert uses property names! If JSON has \\\"title\\\" but your class has \\\"Title\\\", use [JsonProperty(\\\"title\\\")] attribute or it won't map correctly."
+                  "text": "Property names must match JSON: JsonSerializer uses property names! If JSON has \\\"title\\\" but your class has \\\"Title\\\", use [JsonPropertyName(\\\"title\\\")] attribute or it won't map correctly."
                 },
                 {
                   "level": 4,
-                  "text": "Null reference after deserialize: If JSON structure doesn't match class, DeserializeObject returns null or incomplete object! Always validate JSON structure matches your class."
+                  "text": "Null reference after deserialize: If JSON structure doesn't match class, Deserialize returns null or incomplete object! Use the ! operator when you know data is valid, or check for null."
                 },
                 {
                   "level": 5,
@@ -4432,18 +4432,18 @@
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Package not installed",
-                  "consequence": "If you use Newtonsoft.Json without installing it, you get 'namespace not found' error! Must run 'dotnet add package Newtonsoft.Json' first.",
+                  "mistake": "Missing using statement",
+                  "consequence": "System.Text.Json is built into .NET - no installation needed! Just add 'using System.Text.Json;' at the top of your file.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
                   "mistake": "Property names must match JSON",
-                  "consequence": "JsonConvert uses property names! If JSON has \\\"title\\\" but your class has \\\"Title\\\", use [JsonProperty(\\\"title\\\")] attribute or it won't map correctly.",
+                  "consequence": "JsonSerializer uses property names! If JSON has \\\"title\\\" but your class has \\\"Title\\\", use [JsonPropertyName(\\\"title\\\")] attribute or it won't map correctly.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
                   "mistake": "Null reference after deserialize",
-                  "consequence": "If JSON structure doesn't match class, DeserializeObject returns null or incomplete object! Always validate JSON structure matches your class.",
+                  "consequence": "If JSON structure doesn't match class, Deserialize returns null or incomplete object! Use the ! operator when you know data is valid, or check for null.",
                   "correction": "Review the correct syntax and best practices for this concept."
                 },
                 {
