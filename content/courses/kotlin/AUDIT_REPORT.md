@@ -143,23 +143,24 @@ fun processOrder(order: Order) {
 
 ### 2.1 Collection Declarations
 
-#### ⚠️ ISSUE: Java Collection Types
+#### ✅ RESOLVED: No Java Collection Types Found
 
-**Found** (Lines 10456, 10468, 10833):
+**Initial Report**: Lines 10456, 10468, 10833 were flagged as containing Java collection types.
+
+**Findings After Review**:
+- No `ArrayList`, `HashMap`, or `LinkedList` types exist in the codebase
+- The flagged lines contain `ConcurrentHashMap` which is **NOT a Java-ism**
+- `ConcurrentHashMap` is the correct choice for thread-safe concurrent access
+- Kotlin stdlib does not provide concurrent collection implementations
+- Using `mutableMapOf()` for concurrent scenarios would cause race conditions
+
+**Example - Correct Usage**:
 ```kotlin
-// Java-ism
-val list = ArrayList<String>()
-val map = HashMap<String, Int>()
+// ConcurrentHashMap is correct for thread-safe server-side state
+private val rateLimitData = ConcurrentHashMap<String, RateLimitInfo>()
 ```
 
-**Should Be**:
-```kotlin
-// Idiomatic Kotlin
-val list = mutableListOf<String>()
-val map = mutableMapOf<String, Int>()
-```
-
-**Action Required**: Search and replace all `ArrayList`, `HashMap`, `LinkedList` with Kotlin stdlib equivalents.
+**Status**: No changes required. Comments added to clarify correct usage.
 
 ### 2.2 Null Checking Patterns
 
@@ -402,10 +403,13 @@ suspend fun fetchData(): Data {
  */
 ```
 
-### Fix 2: Replace Java Collections (Global)
+### Fix 2: Replace Java Collections (Global) - RESOLVED
 
-**Search**: `ArrayList<`, `HashMap<`, `LinkedList<`
-**Replace With**: `mutableListOf`, `mutableMapOf`, `ArrayDeque` or appropriate Kotlin type
+**Original Request**: Search for `ArrayList<`, `HashMap<`, `LinkedList<`
+
+**Resolution**: No Java collection types found. The grep matches were `ConcurrentHashMap` (contains "HashMap" as substring), which is the correct choice for thread-safe concurrent access. Kotlin stdlib does not provide concurrent collections, so `ConcurrentHashMap` from java.util.concurrent is idiomatic.
+
+**Action Taken**: Added explanatory comments to `ConcurrentHashMap` usages clarifying why they are correct.
 
 ### Fix 3: Add Value Class Examples (Module 03)
 
@@ -444,8 +448,8 @@ value class PositiveInt(val value: Int) {
 ## Summary of Required Actions
 
 ### Immediate Fixes (Priority 1)
-- [ ] Add `runBlocking` warning to all coroutine examples
-- [ ] Replace Java collection types (3 instances)
+- [x] Add `runBlocking` warning to all coroutine examples
+- [x] Replace Java collection types (3 instances) - **RESOLVED: No Java-isms found, only ConcurrentHashMap which is correct**
 - [ ] Expand value class examples with domain modeling
 
 ### Content Additions (Priority 2)
