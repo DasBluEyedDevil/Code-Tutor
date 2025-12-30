@@ -7388,6 +7388,61 @@
               "difficulty": "advanced"
             }
           ]
+        },
+        {
+          "id": "17_04",
+          "title": "Partial Failure Handling Patterns",
+          "moduleId": "module-17",
+          "order": 4,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Real-World Partial Failures",
+              "content": "In production systems, partial success is often acceptable:\n\n**Examples:**\n- Sending notifications to 1000 users - 5 fail, 995 succeed\n- Uploading 50 files - 2 timeout, 48 succeed\n- Validating 20 fields - 3 have errors, 17 are valid\n\n**The pattern:**\n1. Attempt all operations\n2. Collect successes and failures separately\n3. Report both to the caller\n4. Let the caller decide what to do\n\nThis is where ExceptionGroups truly shine."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "**Expected Output:**\n```\nSuccessfully sent to: ['user1@email.com', 'user3@email.com']\nFailed to send to 2 recipients:\n  - user2@email.com: Mailbox full\n  - user4@email.com: Invalid address\n```",
+              "code": "import asyncio\nfrom dataclasses import dataclass\n\n@dataclass\nclass EmailResult:\n    email: str\n    success: bool\n    error: Exception | None = None\n\nclass EmailError(Exception):\n    def __init__(self, email: str, reason: str):\n        self.email = email\n        super().__init__(f\"{email}: {reason}\")\n\nasync def send_email(email: str) -> EmailResult:\n    await asyncio.sleep(0.1)\n    # Simulate some failures\n    if \"2\" in email:\n        raise EmailError(email, \"Mailbox full\")\n    if \"4\" in email:\n        raise EmailError(email, \"Invalid address\")\n    return EmailResult(email=email, success=True)\n\nasync def send_bulk_emails(emails: list[str]) -> tuple[list[str], list[EmailError]]:\n    successes: list[str] = []\n    failures: list[EmailError] = []\n    \n    async with asyncio.TaskGroup() as tg:\n        tasks = {email: tg.create_task(send_email(email)) for email in emails}\n    \n    # This won't be reached if ANY task fails - we need a different approach\n    # Let's wrap each task to catch individual failures:\n    \nasync def send_bulk_emails_safe(emails: list[str]):\n    \"\"\"Send emails with partial failure handling.\"\"\"\n    successes = []\n    failures = []\n    \n    async def safe_send(email: str):\n        try:\n            await send_email(email)\n            return (\"success\", email)\n        except EmailError as e:\n            return (\"failure\", e)\n    \n    async with asyncio.TaskGroup() as tg:\n        tasks = [tg.create_task(safe_send(email)) for email in emails]\n    \n    for task in tasks:\n        status, result = task.result()\n        if status == \"success\":\n            successes.append(result)\n        else:\n            failures.append(result)\n    \n    print(f\"Successfully sent to: {successes}\")\n    if failures:\n        print(f\"Failed to send to {len(failures)} recipients:\")\n        for err in failures:\n            print(f\"  - {err}\")\n    \n    return successes, failures\n\nasyncio.run(send_bulk_emails_safe([\n    \"user1@email.com\",\n    \"user2@email.com\",\n    \"user3@email.com\",\n    \"user4@email.com\"\n]))\n",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Wrap individual operations** to catch failures without stopping the group\n- Return `(status, result)` tuples to distinguish success/failure\n- **Collect both successes and failures** separately\n- Let the **caller decide** how to handle partial success\n- Use dataclasses for structured error information"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17_04-challenge-1",
+              "title": "Practice Exercise",
+              "description": "Implement a file processor that handles partial failures.\n\n**Requirements:**\n- Process a list of filenames\n- Some files may 'fail' (contain 'bad' in the name)\n- Return lists of successful and failed filenames",
+              "instructions": "Create a partial failure handler for file processing.",
+              "starterCode": "async def process_file(filename: str) -> str:\n    if \"bad\" in filename:\n        raise ValueError(f\"Cannot process {filename}\")\n    return f\"Processed {filename}\"\n\nasync def process_files(filenames: list[str]):\n    successes = []\n    failures = []\n    \n    async def safe_process(filename):\n        try:\n            result = await process_file(filename)\n            return (\"success\", result)\n        except ValueError as e:\n            return (\"failure\", str(e))\n    \n    async with asyncio.TaskGroup() as tg:\n        tasks = [tg.____(safe_process(f)) for f in filenames]\n    \n    for task in tasks:\n        status, result = task.____\n        if status == \"success\":\n            successes.append(result)\n        else:\n            failures.append(result)\n    \n    return successes, failures\n",
+              "solution": "async def process_file(filename: str) -> str:\n    if \"bad\" in filename:\n        raise ValueError(f\"Cannot process {filename}\")\n    return f\"Processed {filename}\"\n\nasync def process_files(filenames: list[str]):\n    successes = []\n    failures = []\n    \n    async def safe_process(filename):\n        try:\n            result = await process_file(filename)\n            return (\"success\", result)\n        except ValueError as e:\n            return (\"failure\", str(e))\n    \n    async with asyncio.TaskGroup() as tg:\n        tasks = [tg.create_task(safe_process(f)) for f in filenames]\n    \n    for task in tasks:\n        status, result = task.result()\n        if status == \"success\":\n            successes.append(result)\n        else:\n            failures.append(result)\n    \n    return successes, failures\n",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Handles partial failures",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** Use `tg.create_task()` and `task.result()` to get the tuple."
+                }
+              ],
+              "commonMistakes": [],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     }

@@ -5791,20 +5791,24 @@
               ],
               "hints": [
                 {
-                  "level": 1,
-                  "text": "Lock syntax: 'lock (_lock) { /* code */ }'. All reads AND writes to _balance must be inside lock blocks. The Lock type is in System.Threading namespace."
+                  "id": "hint-1",
+                  "text": "Lock syntax: 'lock (_lock) { /* code */ }'. All reads AND writes to _balance must be inside lock blocks. The Lock type is in System.Threading namespace.",
+                  "order": 1
                 },
                 {
-                  "level": 2,
-                  "text": "EnterScope alternative: 'using (_lock.EnterScope()) { /* code */ }'. The lock is automatically released when the using block exits, even if exception occurs."
+                  "id": "hint-2",
+                  "text": "EnterScope alternative: 'using (_lock.EnterScope()) { /* code */ }'. The lock is automatically released when the using block exits, even if exception occurs.",
+                  "order": 2
                 },
                 {
-                  "level": 3,
-                  "text": "Don't forget the Balance getter! Reading _balance outside a lock can return stale/torn values. ALWAYS protect shared mutable state, even for reads."
+                  "id": "hint-3",
+                  "text": "Don't forget the Balance getter! Reading _balance outside a lock can return stale/torn values. ALWAYS protect shared mutable state, even for reads.",
+                  "order": 3
                 },
                 {
-                  "level": 4,
-                  "text": "Withdraw check-then-act: The balance check AND subtraction must be in the SAME lock block. If you check outside, another thread might withdraw between check and action!"
+                  "id": "hint-4",
+                  "text": "Withdraw check-then-act: The balance check AND subtraction must be in the SAME lock block. If you check outside, another thread might withdraw between check and action!",
+                  "order": 4
                 }
               ],
               "commonMistakes": [
