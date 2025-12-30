@@ -5173,6 +5173,112 @@
               "difficulty": "advanced"
             }
           ]
+        },
+        {
+          "id": "lesson-09-07",
+          "title": "New in .NET 9: CountBy and AggregateBy",
+          "moduleId": "module-09",
+          "order": 7,
+          "estimatedMinutes": 15,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine sorting your groceries: 'How many items per category?' (CountBy) or 'What's the total cost per category?' (AggregateBy). Before .NET 9, you'd need GroupBy + Select + Count/Sum. Now it's one simple method call!\n\nCountBy = Quick counting by key:\n- 'How many products in each category?'\n- Returns KeyValuePair<TKey, int> for each group\n- Single method instead of GroupBy().Select(g => new { g.Key, g.Count() })\n\nAggregateBy = Accumulate values by key:\n- 'What's the total price per category?'\n- You provide: key selector, seed value, accumulator function\n- Returns KeyValuePair<TKey, TAccumulate> for each group\n\nBoth methods:\n- More efficient (single pass through data)\n- Cleaner code (one method vs. chain)\n- Type-safe (strong typing on key and result)\n\nThink: 'GroupBy patterns simplified into direct, purpose-built methods!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": ".NET 9 introduces CountBy and AggregateBy - two LINQ methods that replace common GroupBy patterns with cleaner, more efficient code.",
+              "code": "using System;\nusing System.Linq;\n\nvar products = new[]\n{\n    new { Name = \"Apple\", Category = \"Fruit\", Price = 1.50m },\n    new { Name = \"Banana\", Category = \"Fruit\", Price = 0.75m },\n    new { Name = \"Carrot\", Category = \"Vegetable\", Price = 0.50m },\n    new { Name = \"Broccoli\", Category = \"Vegetable\", Price = 1.25m },\n    new { Name = \"Orange\", Category = \"Fruit\", Price = 1.00m }\n};\n\n// ===== COUNTBY: Count items by key =====\nConsole.WriteLine(\"=== CountBy ===\");\nvar countByCategory = products.CountBy(p => p.Category);\nforeach (var (category, count) in countByCategory)\n    Console.WriteLine($\"{category}: {count} items\");\n// Output: Fruit: 3 items, Vegetable: 2 items\n\n// ===== AGGREGATEBY: Sum/aggregate values by key =====\nConsole.WriteLine(\"\\n=== AggregateBy ===\");\nvar totalByCategory = products.AggregateBy(\n    keySelector: p => p.Category,\n    seed: 0m,\n    func: (total, product) => total + product.Price);\n\nforeach (var (category, total) in totalByCategory)\n    Console.WriteLine($\"{category}: ${total}\");\n// Output: Fruit: $3.25, Vegetable: $1.75\n\n// ===== COMPARE TO OLD WAY (verbose) =====\nConsole.WriteLine(\"\\n=== Old GroupBy Way (for comparison) ===\");\nvar oldWayCount = products\n    .GroupBy(p => p.Category)\n    .Select(g => new { Category = g.Key, Count = g.Count() });\n\nvar oldWaySum = products\n    .GroupBy(p => p.Category)\n    .Select(g => new { Category = g.Key, Total = g.Sum(p => p.Price) });\n\nforeach (var item in oldWaySum)\n    Console.WriteLine($\"{item.Category}: ${item.Total}\");\n\n// ===== MORE EXAMPLES =====\n// Count orders by status\nvar orders = new[] { \"Pending\", \"Shipped\", \"Pending\", \"Delivered\", \"Shipped\", \"Shipped\" };\nvar orderCounts = orders.CountBy(status => status);\nConsole.WriteLine(\"\\n=== Order Status Counts ===\");\nforeach (var (status, count) in orderCounts)\n    Console.WriteLine($\"{status}: {count}\");\n\n// AggregateBy with string concatenation\nvar employees = new[]\n{\n    new { Name = \"Alice\", Department = \"IT\" },\n    new { Name = \"Bob\", Department = \"HR\" },\n    new { Name = \"Carol\", Department = \"IT\" },\n    new { Name = \"Dave\", Department = \"IT\" }\n};\n\nvar namesByDept = employees.AggregateBy(\n    e => e.Department,\n    seed: \"\",\n    func: (names, emp) => names == \"\" ? emp.Name : names + \", \" + emp.Name);\n\nConsole.WriteLine(\"\\n=== Employees by Department ===\");\nforeach (var (dept, names) in namesByDept)\n    Console.WriteLine($\"{dept}: {names}\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**CountBy<TSource, TKey>**\n```csharp\nsource.CountBy(keySelector)\n```\n- Returns `IEnumerable<KeyValuePair<TKey, int>>`\n- Counts occurrences of each key\n- Equivalent to: `.GroupBy(key).Select(g => new { g.Key, Count = g.Count() })`\n\n**AggregateBy<TSource, TKey, TAccumulate>**\n```csharp\nsource.AggregateBy(keySelector, seed, func)\n```\n- `keySelector`: Groups items by this key\n- `seed`: Starting value for aggregation (e.g., 0 for sum, \"\" for strings)\n- `func`: Combines accumulator with each item `(acc, item) => newAcc`\n- Returns `IEnumerable<KeyValuePair<TKey, TAccumulate>>`\n\n**Why Use These?**\n1. **Cleaner code**: One method vs GroupBy+Select+Aggregate chain\n2. **More efficient**: Single pass through data\n3. **Type-safe**: Strong typing on key and accumulator\n4. **Intent clarity**: Method name describes exactly what you're doing\n\n**When to Use Which?**\n- Use `CountBy` when you just need counts per group\n- Use `AggregateBy` when you need to combine/accumulate values\n- Use `GroupBy` when you need the actual grouped items (not just aggregations)"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-09-07-challenge-01",
+              "title": "Sales Analytics Dashboard",
+              "description": "Use CountBy and AggregateBy to analyze sales data.",
+              "instructions": "Given a list of sales records with Region and Amount:\n1. Use CountBy to find number of sales per region\n2. Use AggregateBy to find total sales amount per region\n3. Print both results with descriptive labels\n\nExpected output format:\n- Sales count per region: Region: X sales\n- Total sales per region: Region: $XXX",
+              "starterCode": "using System;\nusing System.Linq;\n\nvar sales = new[]\n{\n    new { Region = \"North\", Amount = 500m },\n    new { Region = \"South\", Amount = 300m },\n    new { Region = \"North\", Amount = 200m },\n    new { Region = \"East\", Amount = 400m },\n    new { Region = \"South\", Amount = 600m }\n};\n\n// TODO: Count sales per region using CountBy\nConsole.WriteLine(\"Sales count per region:\");\n\n// TODO: Sum sales amount per region using AggregateBy\nConsole.WriteLine(\"\\nTotal sales per region:\");",
+              "solution": "using System;\nusing System.Linq;\n\nvar sales = new[]\n{\n    new { Region = \"North\", Amount = 500m },\n    new { Region = \"South\", Amount = 300m },\n    new { Region = \"North\", Amount = 200m },\n    new { Region = \"East\", Amount = 400m },\n    new { Region = \"South\", Amount = 600m }\n};\n\n// Count sales per region\nvar countPerRegion = sales.CountBy(s => s.Region);\nConsole.WriteLine(\"Sales count per region:\");\nforeach (var (region, count) in countPerRegion)\n    Console.WriteLine($\"  {region}: {count} sales\");\n\n// Sum amount per region\nvar totalPerRegion = sales.AggregateBy(\n    s => s.Region,\n    0m,\n    (sum, sale) => sum + sale.Amount);\n\nConsole.WriteLine(\"\\nTotal sales per region:\");\nforeach (var (region, total) in totalPerRegion)\n    Console.WriteLine($\"  {region}: ${total}\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-countby",
+                  "description": "CountBy returns correct counts per region",
+                  "expectedOutput": "North: 2",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-aggregateby",
+                  "description": "AggregateBy returns correct totals per region",
+                  "expectedOutput": "North: $700",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-south-count",
+                  "description": "South region has correct count",
+                  "expectedOutput": "South: 2",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-south-total",
+                  "description": "South region has correct total",
+                  "expectedOutput": "South: $900",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "CountBy syntax: 'collection.CountBy(item => item.KeyProperty)'. Returns KeyValuePair<TKey, int> that you can destructure: 'foreach (var (key, count) in results)'."
+                },
+                {
+                  "level": 2,
+                  "text": "AggregateBy needs three arguments: key selector (s => s.Region), seed value (0m for decimal sum), and accumulator function ((sum, item) => sum + item.Amount)."
+                },
+                {
+                  "level": 3,
+                  "text": "The seed value type determines the result type. Use 0m for decimal sums, 0 for int sums, \"\" for string concatenation."
+                },
+                {
+                  "level": 4,
+                  "text": "Both methods return IEnumerable<KeyValuePair<TKey, TValue>>. Use tuple deconstruction: 'foreach (var (region, value) in results)' for clean iteration."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using GroupBy + Count instead of CountBy",
+                  "consequence": "CountBy is a single-method replacement that's more efficient and readable. Instead of .GroupBy(x => x.Key).Select(g => new { g.Key, g.Count() }), just use .CountBy(x => x.Key).",
+                  "correction": "Replace the GroupBy chain with: sales.CountBy(s => s.Region)"
+                },
+                {
+                  "mistake": "Forgetting the seed value in AggregateBy",
+                  "consequence": "AggregateBy requires a seed value as the second argument. Without it, you'll get a compiler error.",
+                  "correction": "Always provide a seed: sales.AggregateBy(key, 0m, (sum, item) => sum + item.Amount) where 0m is the seed for decimal sum."
+                },
+                {
+                  "mistake": "Wrong seed type for aggregation",
+                  "consequence": "The seed type determines the accumulator type. Using 0 (int) when summing decimals will cause type mismatch errors.",
+                  "correction": "Match seed type to your values: 0m for decimal, 0 for int, 0.0 for double, \"\" for strings."
+                },
+                {
+                  "mistake": "Trying to use CountBy/AggregateBy on .NET 8 or earlier",
+                  "consequence": "These methods are new in .NET 9. Using them on earlier versions will result in 'method not found' errors.",
+                  "correction": "Ensure your project targets .NET 9 or later in your .csproj file: <TargetFramework>net9.0</TargetFramework>"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
