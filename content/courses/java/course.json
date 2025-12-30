@@ -545,8 +545,8 @@
               "title": "Basic Switch Expression",
               "description": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.\n\nTest: getSeason(7) should return \"Summer\"",
               "instructions": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.",
-              "starterCode": "// Basic Switch Expression\n// Write your code below\n\npublic class Solution {\n    public static String getSeason(int month) {\n        // Use switch expression here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getSeason(7));\n    }\n}",
-              "solution": "// Solution: Basic Switch Expression\npublic class Solution {\n    public static String getSeason(int month) {\n        return switch (month) {\n            case 12, 1, 2 -> \"Winter\";\n            case 3, 4, 5 -> \"Spring\";\n            case 6, 7, 8 -> \"Summer\";\n            case 9, 10, 11 -> \"Fall\";\n            default -> \"Unknown\";\n        };\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getSeason(7));\n    }\n}",
+              "starterCode": "// Basic Switch Expression\n// Write your code below\n\nString getSeason(int month) {\n    // Use switch expression here\n}\n\nvoid main() {\n    println(getSeason(7));\n}",
+              "solution": "// Solution: Basic Switch Expression\nString getSeason(int month) {\n    return switch (month) {\n        case 12, 1, 2 -> \"Winter\";\n        case 3, 4, 5 -> \"Spring\";\n        case 6, 7, 8 -> \"Summer\";\n        case 9, 10, 11 -> \"Fall\";\n        default -> \"Unknown\";\n    };\n}\n\nvoid main() {\n    println(getSeason(7));\n}",
               "language": "java",
               "testCases": [
                 {
@@ -586,8 +586,8 @@
               "title": "Pattern Matching for instanceof",
               "description": "Create a method describe(Object obj) that returns:\n- \"String: [value]\" if it's a String\n- \"Number: [value]\" if it's an Integer\n- \"Unknown\" for anything else\n\nUse pattern matching for instanceof.\n\nTest: describe(\"Hello\") should return \"String: Hello\"",
               "instructions": "Create a method describe(Object obj) that returns:\n- \"String: [value]\" if it's a String\n- \"Number: [value]\" if it's an Integer\n- \"Unknown\" for anything else\n\nUse pattern matching for instanceof.",
-              "starterCode": "// Pattern Matching for instanceof\n// Write your code below\n\npublic class Solution {\n    public static String describe(Object obj) {\n        // Use pattern matching instanceof here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(describe(\"Hello\"));\n    }\n}",
-              "solution": "// Solution: Pattern Matching for instanceof\npublic class Solution {\n    public static String describe(Object obj) {\n        if (obj instanceof String s) {\n            return \"String: \" + s;\n        } else if (obj instanceof Integer n) {\n            return \"Number: \" + n;\n        } else {\n            return \"Unknown\";\n        }\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(describe(\"Hello\"));\n    }\n}",
+              "starterCode": "// Pattern Matching for instanceof\n// Write your code below\n\nString describe(Object obj) {\n    // Use pattern matching instanceof here\n}\n\nvoid main() {\n    println(describe(\"Hello\"));\n}",
+              "solution": "// Solution: Pattern Matching for instanceof\nString describe(Object obj) {\n    if (obj instanceof String s) {\n        return \"String: \" + s;\n    } else if (obj instanceof Integer n) {\n        return \"Number: \" + n;\n    } else {\n        return \"Unknown\";\n    }\n}\n\nvoid main() {\n    println(describe(\"Hello\"));\n}",
               "language": "java",
               "testCases": [
                 {
@@ -622,8 +622,8 @@
               "title": "Switch Expression with yield",
               "description": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.\n\nTest: getGrade(95) should print \"Excellent!\" and return \"A\"",
               "instructions": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.",
-              "starterCode": "// Switch Expression with yield\n// Write your code below\n\npublic class Solution {\n    public static String getGrade(int score) {\n        // Use switch expression with yield here\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getGrade(95));\n    }\n}",
-              "solution": "// Solution: Switch Expression with yield\npublic class Solution {\n    public static String getGrade(int score) {\n        return switch (score / 10) {\n            case 10, 9 -> {\n                System.out.println(\"Excellent!\");\n                yield \"A\";\n            }\n            case 8 -> \"B\";\n            case 7 -> \"C\";\n            case 6 -> \"D\";\n            default -> \"F\";\n        };\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(getGrade(95));\n    }\n}",
+              "starterCode": "// Switch Expression with yield\n// Write your code below\n\nString getGrade(int score) {\n    // Use switch expression with yield here\n}\n\nvoid main() {\n    println(getGrade(95));\n}",
+              "solution": "// Solution: Switch Expression with yield\nString getGrade(int score) {\n    return switch (score / 10) {\n        case 10, 9 -> {\n            println(\"Excellent!\");\n            yield \"A\";\n        }\n        case 8 -> \"B\";\n        case 7 -> \"C\";\n        case 6 -> \"D\";\n        default -> \"F\";\n    };\n}\n\nvoid main() {\n    println(getGrade(95));\n}",
               "language": "java",
               "testCases": [
                 {
