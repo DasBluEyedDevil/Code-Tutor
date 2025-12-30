@@ -2766,6 +2766,18 @@
               "content": "Before ES2024, you had to use the executor callback pattern. This is still valid and works everywhere, but Promise.withResolvers() is cleaner for complex cases where you need to pass resolve/reject to other functions.",
               "language": "javascript",
               "code": "// The executor pattern (pre-ES2024)\nconst promise = new Promise((resolve, reject) => {\n  // resolve and reject are only available here\n  doAsyncWork((err, result) => {\n    if (err) reject(err);\n    else resolve(result);\n  });\n});"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Top-Level Await is the Standard",
+              "content": "In ES modules (`.mjs` files or `\"type\": \"module\"` in package.json), you can use `await` at the top level without wrapping in an async function:\n\n```javascript\n// index.js (ESM module)\nconst config = await Bun.file('config.json').json();\nconst db = await connectDatabase(config.database);\n\nconsole.log('Server starting with config:', config.name);\n\nexport default {\n  port: config.port,\n  fetch: app.fetch,\n};\n```\n\n**This is now the standard pattern for:**\n- Server startup sequences\n- Loading configuration\n- Database connections\n- Any async initialization"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Top-Level Await in Practice",
+              "content": "No more IIFE (Immediately Invoked Function Expression) hacks!",
+              "language": "javascript",
+              "code": "// OLD WAY (pre-ESM): Wrap everything in async IIFE\n(async () => {\n  const data = await fetchData();\n  console.log(data);\n})();\n\n// NEW WAY (ESM): Just use await directly!\nconst data = await fetchData();\nconsole.log(data);\n\n// Real example: Server with Bun + Hono\nimport { Hono } from 'hono';\n\nconst config = await Bun.file('config.json').json();\nconst app = new Hono();\n\napp.get('/', (c) => c.text(`Running on port ${config.port}`));\n\nexport default {\n  port: config.port,\n  fetch: app.fetch,\n};"
             }
           ],
           "challenges": [
