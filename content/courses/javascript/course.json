@@ -2755,17 +2755,17 @@
             {
               "type": "EXAMPLE",
               "title": "Promise.withResolvers() - The Modern Way",
-              "content": "ES2025 introduces `Promise.withResolvers()` which gives you the promise, resolve, and reject functions separately. This is cleaner than the traditional executor pattern.",
+              "content": "ES2024 introduces `Promise.withResolvers()` which gives you the promise, resolve, and reject functions separately. This is cleaner than the traditional executor pattern.",
               "language": "javascript",
-              "code": "// TRADITIONAL: Executor callback (still valid but verbose)\nfunction rollDiceOld() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve(Math.floor(Math.random() * 6) + 1);\n    }, 1000);\n  });\n}\n\n// MODERN: Promise.withResolvers() (ES2025)\nfunction rollDice() {\n  const { promise, resolve } = Promise.withResolvers();\n  setTimeout(() => {\n    resolve(Math.floor(Math.random() * 6) + 1);\n  }, 1000);\n  return promise;\n}\n\n// Usage is identical\nrollDice().then(result => console.log('You rolled:', result));"
+              "code": "// TRADITIONAL: Executor callback (still valid but verbose)\nfunction rollDiceOld() {\n  return new Promise((resolve, reject) => {\n    setTimeout(() => {\n      resolve(Math.floor(Math.random() * 6) + 1);\n    }, 1000);\n  });\n}\n\n// MODERN: Promise.withResolvers() (ES2024)\nfunction rollDice() {\n  const { promise, resolve } = Promise.withResolvers();\n  setTimeout(() => {\n    resolve(Math.floor(Math.random() * 6) + 1);\n  }, 1000);\n  return promise;\n}\n\n// Usage is identical\nrollDice().then(result => console.log('You rolled:', result));"
             },
             {
               "type": "LEGACY_COMPARISON",
               "title": "Traditional Promise Constructor",
               "legacy": "es2020",
-              "content": "Before ES2025, you had to use the executor callback pattern. This is still valid and works everywhere, but Promise.withResolvers() is cleaner for complex cases where you need to pass resolve/reject to other functions.",
+              "content": "Before ES2024, you had to use the executor callback pattern. This is still valid and works everywhere, but Promise.withResolvers() is cleaner for complex cases where you need to pass resolve/reject to other functions.",
               "language": "javascript",
-              "code": "// The executor pattern (pre-ES2025)\nconst promise = new Promise((resolve, reject) => {\n  // resolve and reject are only available here\n  doAsyncWork((err, result) => {\n    if (err) reject(err);\n    else resolve(result);\n  });\n});"
+              "code": "// The executor pattern (pre-ES2024)\nconst promise = new Promise((resolve, reject) => {\n  // resolve and reject are only available here\n  doAsyncWork((err, result) => {\n    if (err) reject(err);\n    else resolve(result);\n  });\n});"
             }
           ],
           "challenges": [
