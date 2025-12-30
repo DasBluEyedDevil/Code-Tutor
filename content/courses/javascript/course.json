@@ -2739,6 +2739,18 @@
               "type": "WARNING",
               "title": "Common Pitfalls",
               "content": "Common mistakes:\n\n1. Forgetting to return a promise from a function:\n   function getData() {\n     new Promise((resolve) => { ... });  // WRONG - not returned!\n   }\n   \n   function getData() {\n     return new Promise((resolve) => { ... });  // CORRECT\n   }\n\n2. Not returning in .then() for chaining:\n   promise\n     .then(data => {\n       processData(data);  // Returns undefined!\n     })\n     .then(result => {\n       console.log(result);  // undefined\n     });\n   \n   Must return:\n   .then(data => {\n     return processData(data);\n   })\n\n3. Calling resolve/reject multiple times:\n   new Promise((resolve) => {\n     resolve('first');\n     resolve('second');  // Ignored!\n   });\n   // Only first resolve/reject counts\n\n4. Mixing callbacks and promises:\n   // Don't do this:\n   getData(function(result) {\n     // Old callback style mixed with promises\n   });\n   \n   // Use promises consistently\n\n5. Not catching errors:\n   fetch('/api/data')\n     .then(response => response.json());\n   // If error occurs, it's unhandled!\n   \n   Always add .catch():\n   fetch('/api/data')\n     .then(response => response.json())\n     .catch(error => console.log(error));"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Promise.try() - Safe Error Handling",
+              "content": "Promise.try() wraps any function and catches both sync AND async errors. This solves the problem where synchronous throws inside promise chains cause unhandled exceptions.",
+              "language": "javascript",
+              "code": "// BEFORE: Manual wrapping for sync errors\nfunction loadConfigOld(path) {\n  return Promise.resolve().then(() => {\n    if (!path) throw new Error('Path required');\n    return Bun.file(path).json();\n  });\n}\n\n// AFTER: Promise.try() handles sync errors elegantly\nfunction loadConfig(path) {\n  return Promise.try(() => {\n    if (!path) throw new Error('Path required');\n    return Bun.file(path).json();\n  });\n}\n\n// Usage - both sync and async errors are caught\nloadConfig(null)\n  .catch(err => console.log('Caught:', err.message));\n// Output: Caught: Path required"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When to Use Promise.try()",
+              "content": "Use `Promise.try()` when:\n\n1. **Your callback might throw synchronously** - Validation, parsing, etc.\n2. **You want consistent error handling** - All errors go to `.catch()`\n3. **Mixing sync and async code** - The callback can return a value OR a Promise\n\n```javascript\n// Works with sync returns\nPromise.try(() => 42).then(console.log); // 42\n\n// Works with async returns\nPromise.try(() => fetch('/api')).then(console.log); // Response\n\n// Works with sync throws\nPromise.try(() => { throw new Error('Oops'); }).catch(console.log); // Error: Oops\n```"
             }
           ],
           "challenges": [
