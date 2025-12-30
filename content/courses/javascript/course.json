@@ -6740,6 +6740,72 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "16.3",
+          "title": "Complex Types (@typedef, @template, Unions)",
+          "moduleId": "module-16",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Creating Your Own Label Templates",
+              "content": "Shipping companies don't write 'Fragile Electronics from China containing 50 smartphones' on every box. They create a template label: 'PRODUCT-TECH-001' that everyone understands.\n\n@typedef lets you create reusable type templates. Define 'User' once, use it everywhere."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Reusable Types with @typedef",
+              "content": "Define complex types once and reuse them throughout your codebase:",
+              "language": "javascript",
+              "code": "/**\n * @typedef {Object} User\n * @property {number} id - Unique identifier\n * @property {string} name - Display name\n * @property {string} email - Email address\n * @property {'admin'|'user'|'guest'} role - User role\n */\n\n/**\n * @typedef {Object} ApiResponse\n * @property {boolean} success\n * @property {T} [data] - Response data (when success)\n * @property {string} [error] - Error message (when failed)\n * @template T\n */\n\n/**\n * @param {number} id\n * @returns {Promise<ApiResponse<User>>}\n */\nasync function fetchUser(id) {\n  const res = await fetch(`/api/users/${id}`);\n  if (!res.ok) {\n    return { success: false, error: 'User not found' };\n  }\n  return { success: true, data: await res.json() };\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "@template - Generic Types",
+              "content": "@template lets you create flexible, reusable types:\n\n```javascript\n/**\n * Wraps any value in an object with metadata\n * @template T\n * @param {T} value - Any value\n * @returns {{ value: T, timestamp: number }}\n */\nfunction wrap(value) {\n  return { value, timestamp: Date.now() };\n}\n\nconst wrapped = wrap('hello');  // { value: string, timestamp: number }\nconst wrappedNum = wrap(42);    // { value: number, timestamp: number }\n```\n\n**Multiple type parameters:**\n```javascript\n/**\n * @template K, V\n * @param {K} key\n * @param {V} value\n * @returns {Map<K, V>}\n */\nfunction createMap(key, value) {\n  return new Map([[key, value]]);\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "When JSDoc Gets Too Complex",
+              "content": "If you find yourself writing types like this:\n\n```javascript\n/**\n * @typedef {Object} DeepNestedType\n * @property {{ items: Array<{ id: number, data: { nested: { value: string }[] } }> }} response\n */\n```\n\n**It's time to consider TypeScript.** JSDoc is great for adding types to JavaScript, but deeply nested generic types become unreadable. That's your signal to migrate."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16.3-challenge",
+              "title": "Create a Product Type",
+              "description": "Create a @typedef for Product and use it in a function.",
+              "instructions": "Create a Product typedef with id (number), name (string), price (number), and inStock (boolean). Then use it to type the getProduct function return value.",
+              "starterCode": "// Create @typedef for Product here\n\n/**\n * @param {number} id\n * @returns {???} - Use your Product type here\n */\nfunction getProduct(id) {\n  return {\n    id: id,\n    name: 'Widget',\n    price: 9.99,\n    inStock: true\n  };\n}\n\nconst product = getProduct(1);\nconsole.log(`${product.name}: $${product.price}`);",
+              "solution": "/**\n * @typedef {Object} Product\n * @property {number} id\n * @property {string} name\n * @property {number} price\n * @property {boolean} inStock\n */\n\n/**\n * @param {number} id\n * @returns {Product}\n */\nfunction getProduct(id) {\n  return {\n    id: id,\n    name: 'Widget',\n    price: 9.99,\n    inStock: true\n  };\n}\n\nconst product = getProduct(1);\nconsole.log(`${product.name}: $${product.price}`);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Returns properly typed product",
+                  "expectedOutput": "Widget: $9.99",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "@typedef {Object} Product starts the type definition, then use @property for each field"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Defining typedef inside function",
+                  "consequence": "Typedef should be at module level so it can be reused",
+                  "correction": "Put @typedef at the top of your file, before any functions"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     }
