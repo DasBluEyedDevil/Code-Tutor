@@ -4,7 +4,7 @@
   "title": "Flutter Complete Development Course",
   "description": "Master Flutter from basics to advanced with 87+ interactive lessons, hands-on challenges, and experiments.",
   "difficulty": "beginner",
-  "estimatedHours": 85,
+  "estimatedHours": 91,
   "prerequisites": [
     "Basic programming knowledge recommended"
   ],
@@ -10568,6 +10568,464 @@
                 }
               ],
               "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-14",
+      "title": "Module 14: Flutter Web with WebAssembly (Wasm)",
+      "description": "Build and deploy production-ready Flutter web applications with WebAssembly for optimal performance.",
+      "difficulty": "intermediate",
+      "estimatedHours": 6,
+      "lessons": [
+        {
+          "id": "14.1",
+          "title": "Module 14, Lesson 1: Flutter Web Architecture",
+          "moduleId": "module-14",
+          "order": 1,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Three Rendering Modes",
+              "content": "\nFlutter Web supports three rendering backends, each with different tradeoffs:\n\n**1. HTML Renderer**\n- Uses standard HTML, CSS, and Canvas elements\n- Smallest download size (~200KB compressed)\n- Best compatibility with older browsers\n- Good for text-heavy apps\n\n**2. CanvasKit Renderer**\n- Uses Skia compiled to WebAssembly\n- Pixel-perfect rendering matching mobile\n- Larger download (~2.5MB)\n- Best for graphics-intensive apps\n\n**3. WebAssembly (Wasm) Renderer** (Flutter 3.22+)\n- Compiles Dart directly to Wasm\n- 2x faster startup than JavaScript\n- Smaller bundle sizes\n- Native-like performance\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Each Mode",
+              "content": "\n**Choose HTML when:**\n- SEO is critical (search engine indexing)\n- Download size must be minimal\n- Supporting legacy browsers\n- Building content-focused sites\n\n**Choose CanvasKit when:**\n- Visual fidelity is paramount\n- Complex animations and graphics\n- Consistency with mobile app appearance\n- Rich data visualizations\n\n**Choose Wasm when:**\n- Performance is the priority\n- Modern browser audience (Chrome 119+, Firefox 120+, Safari 18+)\n- Production apps in 2024+\n- You want the smallest startup time\n\n"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Wasm Advantages",
+              "content": "\n**Why Wasm is the future of Flutter Web:**\n\n- **2x Faster Startup**: Wasm loads and initializes faster than JavaScript\n- **Smaller Bundles**: More efficient binary format\n- **Better Performance**: Near-native execution speed\n- **Improved Memory**: More predictable memory management\n- **Type Safety**: Wasm's type system prevents classes of bugs\n\nGoogle recommends Wasm for all new Flutter web projects in 2024+.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Specifying Renderer Mode",
+              "content": "\nYou can specify the renderer in your index.html or via build flags:\n\n",
+              "code": "// In web/index.html - Auto-select renderer\n<script>\n  // Let Flutter choose the best renderer\n  _flutter.loader.load();\n</script>\n\n// Force CanvasKit renderer\n<script>\n  _flutter.loader.load({\n    config: {\n      renderer: 'canvaskit',\n    },\n  });\n</script>\n\n// Build commands for different renderers:\n// HTML: flutter build web --web-renderer html\n// CanvasKit: flutter build web --web-renderer canvaskit\n// Wasm: flutter build web --wasm",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "14.1-quiz-0",
+              "title": "Flutter Web Rendering Quiz",
+              "description": "Test your understanding of Flutter web rendering modes.",
+              "questions": [
+                {
+                  "question": "Which renderer provides 2x faster startup times?",
+                  "options": [
+                    "HTML renderer",
+                    "CanvasKit renderer",
+                    "WebAssembly (Wasm) renderer",
+                    "SVG renderer"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "WebAssembly (Wasm) provides approximately 2x faster startup times compared to JavaScript-based renderers."
+                },
+                {
+                  "question": "When should you choose the HTML renderer?",
+                  "options": [
+                    "For graphics-intensive applications",
+                    "When SEO and download size are critical",
+                    "For gaming applications",
+                    "When targeting only modern browsers"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "HTML renderer is best when SEO matters and you need the smallest download size, as it uses standard web technologies that search engines can index."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.2",
+          "title": "Module 14, Lesson 2: Building for Wasm",
+          "moduleId": "module-14",
+          "order": 2,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Development with Wasm",
+              "content": "\n**Running in Development:**\n\nTo test your app with Wasm during development:\n\n```bash\nflutter run -d chrome --wasm\n```\n\nThis compiles your Dart code to WebAssembly and serves it with hot reload support (where available).\n\n**Requirements:**\n- Flutter 3.22 or newer\n- Chrome 119+ or Firefox 120+ for testing\n- No special configuration needed for most apps\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Production Build",
+              "content": "\n**Building for Production:**\n\n```bash\nflutter build web --wasm\n```\n\nThis creates an optimized Wasm build in `build/web/`.\n\n**Build Output:**\n```\nbuild/web/\n├── main.dart.wasm      # Your compiled Dart code\n├── main.dart.mjs       # JavaScript glue code\n├── flutter.js          # Flutter loader\n├── flutter_bootstrap.js # Bootstrap script\n├── index.html          # Entry point\n├── manifest.json       # PWA manifest\n├── assets/             # Images, fonts, etc.\n└── canvaskit/          # Fallback renderer\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Build Commands Reference",
+              "content": "\n",
+              "code": "# Development - run with Wasm in Chrome\nflutter run -d chrome --wasm\n\n# Production build with Wasm\nflutter build web --wasm\n\n# Production with release optimizations\nflutter build web --wasm --release\n\n# Check build output size\ndu -sh build/web/\n\n# Serve locally to test production build\ncd build/web && python3 -m http.server 8080\n\n# Or use Flutter's built-in server\nflutter run -d web-server --web-port 8080 --wasm",
+              "language": "bash"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Wasm Build Requirements",
+              "content": "\n**What works with Wasm:**\n- Most Flutter widgets and APIs\n- All Dart language features\n- Popular packages (check pub.dev for compatibility)\n- Platform channels (with JS interop)\n\n**Current limitations:**\n- Some plugins need Wasm-compatible versions\n- Debugging experience is improving\n- Source maps support is evolving\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14.2-challenge-0",
+              "title": "Build a Basic App with Wasm",
+              "description": "Create a Flutter web app and build it with WebAssembly.",
+              "instructions": "Create a simple counter app and build it for web using the --wasm flag. Examine the output files.",
+              "starterCode": "// Create a new Flutter project:\n// flutter create my_wasm_app\n// cd my_wasm_app\n\n// Run with Wasm:\n// flutter run -d chrome --wasm\n\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Wasm Demo',\n      home: const CounterPage(),\n    );\n  }\n}\n\nclass CounterPage extends StatefulWidget {\n  const CounterPage({super.key});\n\n  @override\n  State<CounterPage> createState() => _CounterPageState();\n}\n\nclass _CounterPageState extends State<CounterPage> {\n  int _counter = 0;\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Wasm Counter'),\n        backgroundColor: Theme.of(context).colorScheme.inversePrimary,\n      ),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            const Text('You have pushed the button this many times:'),\n            Text(\n              '$_counter',\n              style: Theme.of(context).textTheme.headlineMedium,\n            ),\n          ],\n        ),\n      ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: () => setState(() => _counter++),\n        tooltip: 'Increment',\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}",
+              "solution": "// Build commands:\n// flutter build web --wasm\n//\n// Output structure in build/web/:\n// - main.dart.wasm (compiled Dart code)\n// - main.dart.mjs (JS glue code)\n// - flutter.js (loader)\n// - index.html (entry point)\n// - assets/ (resources)\n\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MyApp());\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Wasm Demo',\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),\n        useMaterial3: true,\n      ),\n      home: const CounterPage(),\n    );\n  }\n}\n\nclass CounterPage extends StatefulWidget {\n  const CounterPage({super.key});\n\n  @override\n  State<CounterPage> createState() => _CounterPageState();\n}\n\nclass _CounterPageState extends State<CounterPage> {\n  int _counter = 0;\n\n  void _incrementCounter() {\n    setState(() {\n      _counter++;\n    });\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Wasm Counter'),\n        backgroundColor: Theme.of(context).colorScheme.inversePrimary,\n      ),\n      body: Center(\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            const Text('You have pushed the button this many times:'),\n            Text(\n              '$_counter',\n              style: Theme.of(context).textTheme.headlineMedium,\n            ),\n            const SizedBox(height: 20),\n            const Text(\n              'Built with WebAssembly!',\n              style: TextStyle(color: Colors.green),\n            ),\n          ],\n        ),\n      ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: _incrementCounter,\n        tooltip: 'Increment',\n        child: const Icon(Icons.add),\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Make sure you have Flutter 3.22+ installed"
+                },
+                {
+                  "level": 2,
+                  "text": "Use 'flutter build web --wasm' for production builds"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using an older Flutter version",
+                  "consequence": "Wasm build flag not available",
+                  "correction": "Upgrade to Flutter 3.22 or newer with 'flutter upgrade'"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.3",
+          "title": "Module 14, Lesson 3: Browser Compatibility",
+          "moduleId": "module-14",
+          "order": 3,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Wasm Browser Support",
+              "content": "\n**Browsers that support Wasm GC (required for Flutter Wasm):**\n\n| Browser | Minimum Version | Release Date |\n|---------|-----------------|---------------|\n| Chrome | 119+ | Nov 2023 |\n| Firefox | 120+ | Nov 2023 |\n| Safari | 18+ | Sep 2024 |\n| Edge | 119+ | Nov 2023 |\n\n**Global Support (2024):**\n- ~85% of desktop users\n- ~75% of mobile users\n- Growing monthly\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Feature Detection Patterns",
+              "content": "\nDetect Wasm support before loading your app:\n\n**In JavaScript (index.html):**\n```javascript\nfunction supportsWasmGC() {\n  try {\n    // Check for Wasm GC proposal support\n    return typeof WebAssembly.validate === 'function' &&\n           WebAssembly.validate(new Uint8Array([\n             0x00, 0x61, 0x73, 0x6d, // Wasm magic\n             0x01, 0x00, 0x00, 0x00, // Version\n           ]));\n  } catch (e) {\n    return false;\n  }\n}\n```\n\nFlutter's loader handles this automatically and falls back to CanvasKit when needed.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Platform Detection in Dart",
+              "content": "\n",
+              "code": "import 'package:flutter/foundation.dart';\n\nclass PlatformInfo {\n  // Check if running on web\n  static bool get isWeb => kIsWeb;\n\n  // Check platform at runtime\n  static String get currentPlatform {\n    if (kIsWeb) {\n      return 'Web';\n    }\n    switch (defaultTargetPlatform) {\n      case TargetPlatform.android:\n        return 'Android';\n      case TargetPlatform.iOS:\n        return 'iOS';\n      case TargetPlatform.macOS:\n        return 'macOS';\n      case TargetPlatform.windows:\n        return 'Windows';\n      case TargetPlatform.linux:\n        return 'Linux';\n      case TargetPlatform.fuchsia:\n        return 'Fuchsia';\n    }\n  }\n}\n\n// Usage in widgets\nclass MyWidget extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    if (kIsWeb) {\n      // Web-specific UI\n      return WebOptimizedLayout();\n    }\n    return MobileLayout();\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Fallback Strategies",
+              "content": "\n**Flutter's Automatic Fallback:**\nFlutter's web loader automatically detects browser capabilities and falls back gracefully:\n\n1. **Try Wasm** - If browser supports Wasm GC\n2. **Fall back to CanvasKit** - If Wasm not available\n3. **Fall back to HTML** - If specified in config\n\n**Custom Fallback Logic:**\n```javascript\n// In index.html\n_flutter.loader.load({\n  config: {\n    renderer: supportsWasmGC() ? 'wasm' : 'canvaskit',\n  },\n});\n```\n\n**Progressive Enhancement:**\n- Ship with multiple renderers\n- Let Flutter choose the best one\n- Users get optimal experience for their browser\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "14.3-quiz-0",
+              "title": "Browser Compatibility Quiz",
+              "description": "Test your knowledge of Wasm browser support.",
+              "questions": [
+                {
+                  "question": "What is the minimum Chrome version required for Flutter Wasm?",
+                  "options": [
+                    "Chrome 100+",
+                    "Chrome 110+",
+                    "Chrome 119+",
+                    "Chrome 125+"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Chrome 119 (released November 2023) is the minimum version that supports Wasm GC, which is required for Flutter's Wasm compilation."
+                },
+                {
+                  "question": "How do you detect if code is running on web in Flutter?",
+                  "options": [
+                    "Platform.isWeb",
+                    "kIsWeb from foundation.dart",
+                    "WebPlatform.current",
+                    "dart:web.isWeb"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "The kIsWeb constant from package:flutter/foundation.dart is the correct way to check if Flutter is running on the web platform."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.4",
+          "title": "Module 14, Lesson 4: Performance Optimization",
+          "moduleId": "module-14",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Tree Shaking for Web",
+              "content": "\n**Tree Shaking** removes unused code from your final bundle:\n\n**How it works:**\n1. Compiler analyzes your code\n2. Identifies unused classes, methods, functions\n3. Removes them from the final build\n\n**Best practices:**\n- Avoid dynamic imports when possible\n- Use `const` constructors\n- Don't import entire packages if you only need one class\n- Use conditional imports for platform-specific code\n\n```dart\n// Bad: Imports everything\nimport 'package:huge_library/huge_library.dart';\n\n// Good: Import only what you need\nimport 'package:huge_library/specific_widget.dart';\n```\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lazy Loading and Deferred Components",
+              "content": "\n**Deferred Loading** splits your app into smaller chunks that load on demand:\n\n```dart\n// Defer loading a heavy feature\nimport 'package:my_app/heavy_feature.dart' deferred as heavy;\n\nFuture<void> loadHeavyFeature() async {\n  await heavy.loadLibrary();\n  // Now you can use heavy.HeavyWidget()\n}\n```\n\n**Benefits:**\n- Faster initial load time\n- Users only download what they use\n- Better Core Web Vitals scores\n\n**Good candidates for deferring:**\n- Admin panels\n- Settings screens\n- Heavy charts/visualizations\n- Rarely used features\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Image Optimization",
+              "content": "\n",
+              "code": "// Use appropriate image formats\nclass OptimizedImage extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return Image.network(\n      'https://example.com/image.webp', // Use WebP for web\n      // Provide multiple resolutions\n      cacheWidth: 800, // Resize on decode\n      cacheHeight: 600,\n      loadingBuilder: (context, child, loadingProgress) {\n        if (loadingProgress == null) return child;\n        return CircularProgressIndicator(\n          value: loadingProgress.expectedTotalBytes != null\n              ? loadingProgress.cumulativeBytesLoaded /\n                  loadingProgress.expectedTotalBytes!\n              : null,\n        );\n      },\n      errorBuilder: (context, error, stackTrace) {\n        return Icon(Icons.error);\n      },\n    );\n  }\n}\n\n// For assets, use proper resolution variants\n// assets/\n//   images/\n//     logo.png      (1x)\n//     2.0x/logo.png (2x)\n//     3.0x/logo.png (3x)",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Font Optimization",
+              "content": "\n**Font Loading Strategies:**\n\n1. **Use System Fonts When Possible:**\n```dart\nThemeData(\n  fontFamily: 'system-ui', // Uses native system font\n)\n```\n\n2. **Subset Custom Fonts:**\nOnly include characters you need:\n```yaml\nflutter:\n  fonts:\n    - family: CustomFont\n      fonts:\n        - asset: fonts/CustomFont.ttf\n```\n\n3. **Preload Critical Fonts:**\n```html\n<link rel=\"preload\" href=\"assets/fonts/main.ttf\" as=\"font\" crossorigin>\n```\n\n4. **Use font-display: swap:**\nShows system font while custom font loads.\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14.4-challenge-0",
+              "title": "Optimize a Web App",
+              "description": "Apply performance optimizations to a Flutter web application.",
+              "instructions": "Implement deferred loading, optimize images, and configure fonts for a web app.",
+              "starterCode": "// TODO: Implement deferred loading for AdminPanel\nimport 'package:my_app/admin_panel.dart';\n\n// TODO: Optimize image loading\nclass ImageGallery extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return Image.network(\n      'https://example.com/large-image.png',\n    );\n  }\n}\n\n// TODO: Configure fonts efficiently",
+              "solution": "// Deferred loading implementation\nimport 'package:my_app/admin_panel.dart' deferred as admin;\n\nclass AdminLoader extends StatefulWidget {\n  @override\n  State<AdminLoader> createState() => _AdminLoaderState();\n}\n\nclass _AdminLoaderState extends State<AdminLoader> {\n  bool _isLoaded = false;\n\n  @override\n  void initState() {\n    super.initState();\n    _loadAdmin();\n  }\n\n  Future<void> _loadAdmin() async {\n    await admin.loadLibrary();\n    setState(() => _isLoaded = true);\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    if (!_isLoaded) {\n      return const Center(child: CircularProgressIndicator());\n    }\n    return admin.AdminPanel();\n  }\n}\n\n// Optimized image loading\nclass ImageGallery extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return Image.network(\n      'https://example.com/large-image.webp', // WebP format\n      cacheWidth: 800,\n      cacheHeight: 600,\n      fit: BoxFit.cover,\n      loadingBuilder: (context, child, loadingProgress) {\n        if (loadingProgress == null) return child;\n        return Center(\n          child: CircularProgressIndicator(\n            value: loadingProgress.expectedTotalBytes != null\n                ? loadingProgress.cumulativeBytesLoaded /\n                    loadingProgress.expectedTotalBytes!\n                : null,\n          ),\n        );\n      },\n      errorBuilder: (context, error, stackTrace) {\n        return const Icon(Icons.broken_image, size: 48);\n      },\n    );\n  }\n}\n\n// Font configuration in pubspec.yaml:\n// flutter:\n//   fonts:\n//     - family: Roboto\n//       fonts:\n//         - asset: fonts/Roboto-Regular.ttf\n//         - asset: fonts/Roboto-Bold.ttf\n//           weight: 700",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use the 'deferred as' keyword for lazy loading"
+                },
+                {
+                  "level": 2,
+                  "text": "Always provide cacheWidth/cacheHeight for network images"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not handling loading state for deferred imports",
+                  "consequence": "App crashes when accessing deferred code before it loads",
+                  "correction": "Always await loadLibrary() before using deferred imports"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.5",
+          "title": "Module 14, Lesson 5: PWA Configuration",
+          "moduleId": "module-14",
+          "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "PWA Manifest Setup",
+              "content": "\n**Progressive Web Apps (PWAs)** can be installed on devices and work offline.\n\nFlutter creates `web/manifest.json` automatically. Customize it:\n\n```json\n{\n  \"name\": \"My Flutter App\",\n  \"short_name\": \"MyApp\",\n  \"description\": \"A Flutter PWA\",\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"background_color\": \"#0175C2\",\n  \"theme_color\": \"#0175C2\",\n  \"orientation\": \"portrait-primary\",\n  \"icons\": [\n    {\n      \"src\": \"icons/Icon-192.png\",\n      \"sizes\": \"192x192\",\n      \"type\": \"image/png\"\n    },\n    {\n      \"src\": \"icons/Icon-512.png\",\n      \"sizes\": \"512x512\",\n      \"type\": \"image/png\"\n    }\n  ]\n}\n```\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Service Worker Configuration",
+              "content": "\nFlutter generates a service worker in `flutter_service_worker.js`.\n\n**Configure caching strategy in `index.html`:**\n\n```javascript\n<script>\n  var serviceWorkerVersion = null;\n  _flutter.loader.load({\n    serviceWorkerSettings: {\n      serviceWorkerVersion: serviceWorkerVersion,\n    },\n    onEntrypointLoaded: async function(engineInitializer) {\n      const appRunner = await engineInitializer.initializeEngine();\n      await appRunner.runApp();\n    }\n  });\n</script>\n```\n\n**Service Worker Caches:**\n- App shell (HTML, CSS, JS)\n- Flutter assets\n- Custom offline page\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Offline Support Basics",
+              "content": "\n",
+              "code": "// Check connectivity in your app\nimport 'package:connectivity_plus/connectivity_plus.dart';\n\nclass ConnectivityService {\n  final Connectivity _connectivity = Connectivity();\n\n  // Check current connectivity\n  Future<bool> isOnline() async {\n    final result = await _connectivity.checkConnectivity();\n    return result != ConnectivityResult.none;\n  }\n\n  // Listen for changes\n  Stream<bool> get onConnectivityChanged {\n    return _connectivity.onConnectivityChanged.map(\n      (result) => result != ConnectivityResult.none,\n    );\n  }\n}\n\n// Usage in widget\nclass OfflineAwareWidget extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return StreamBuilder<bool>(\n      stream: ConnectivityService().onConnectivityChanged,\n      builder: (context, snapshot) {\n        final isOnline = snapshot.data ?? true;\n\n        if (!isOnline) {\n          return OfflineBanner(\n            child: YourContent(),\n          );\n        }\n\n        return YourContent();\n      },\n    );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Install Prompts",
+              "content": "\n**Triggering Install Prompts:**\n\nBrowsers show install prompts automatically when PWA criteria are met:\n1. Valid manifest.json with icons\n2. Service worker registered\n3. Served over HTTPS\n4. User has engaged with the site\n\n**Custom Install Button:**\n```javascript\n// In index.html or separate JS file\nlet deferredPrompt;\n\nwindow.addEventListener('beforeinstallprompt', (e) => {\n  e.preventDefault();\n  deferredPrompt = e;\n  showInstallButton();\n});\n\nfunction installApp() {\n  deferredPrompt.prompt();\n  deferredPrompt.userChoice.then((result) => {\n    if (result.outcome === 'accepted') {\n      console.log('App installed');\n    }\n    deferredPrompt = null;\n  });\n}\n```\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14.5-challenge-0",
+              "title": "Configure PWA Features",
+              "description": "Set up a Flutter web app as a Progressive Web App with offline support.",
+              "instructions": "Configure the manifest.json, set up basic offline detection, and prepare the app for installation.",
+              "starterCode": "// TODO: Create manifest.json configuration\n// TODO: Implement offline detection\n// TODO: Show install prompt\n\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const MyPWA());\n}\n\nclass MyPWA extends StatelessWidget {\n  const MyPWA({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'My PWA',\n      home: const HomePage(),\n    );\n  }\n}\n\nclass HomePage extends StatelessWidget {\n  const HomePage({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: const Text('My PWA')),\n      body: const Center(\n        child: Text('Hello PWA!'),\n      ),\n    );\n  }\n}",
+              "solution": "// manifest.json (in web/ folder):\n// {\n//   \"name\": \"My Flutter PWA\",\n//   \"short_name\": \"MyPWA\",\n//   \"start_url\": \".\",\n//   \"display\": \"standalone\",\n//   \"background_color\": \"#6200EE\",\n//   \"theme_color\": \"#6200EE\",\n//   \"icons\": [\n//     {\"src\": \"icons/Icon-192.png\", \"sizes\": \"192x192\", \"type\": \"image/png\"},\n//     {\"src\": \"icons/Icon-512.png\", \"sizes\": \"512x512\", \"type\": \"image/png\"}\n//   ]\n// }\n\nimport 'package:flutter/material.dart';\nimport 'package:connectivity_plus/connectivity_plus.dart';\n\nvoid main() {\n  runApp(const MyPWA());\n}\n\nclass MyPWA extends StatelessWidget {\n  const MyPWA({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'My PWA',\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),\n        useMaterial3: true,\n      ),\n      home: const HomePage(),\n    );\n  }\n}\n\nclass HomePage extends StatefulWidget {\n  const HomePage({super.key});\n\n  @override\n  State<HomePage> createState() => _HomePageState();\n}\n\nclass _HomePageState extends State<HomePage> {\n  bool _isOnline = true;\n  final Connectivity _connectivity = Connectivity();\n\n  @override\n  void initState() {\n    super.initState();\n    _checkConnectivity();\n    _connectivity.onConnectivityChanged.listen((result) {\n      setState(() {\n        _isOnline = result != ConnectivityResult.none;\n      });\n    });\n  }\n\n  Future<void> _checkConnectivity() async {\n    final result = await _connectivity.checkConnectivity();\n    setState(() {\n      _isOnline = result != ConnectivityResult.none;\n    });\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('My PWA'),\n        backgroundColor: Theme.of(context).colorScheme.inversePrimary,\n      ),\n      body: Column(\n        children: [\n          if (!_isOnline)\n            Container(\n              width: double.infinity,\n              color: Colors.orange,\n              padding: const EdgeInsets.all(8),\n              child: const Text(\n                'You are offline',\n                textAlign: TextAlign.center,\n                style: TextStyle(color: Colors.white),\n              ),\n            ),\n          const Expanded(\n            child: Center(\n              child: Column(\n                mainAxisAlignment: MainAxisAlignment.center,\n                children: [\n                  Icon(Icons.web, size: 64),\n                  SizedBox(height: 16),\n                  Text(\n                    'Hello PWA!',\n                    style: TextStyle(fontSize: 24),\n                  ),\n                  SizedBox(height: 8),\n                  Text('Install me from your browser menu'),\n                ],\n              ),\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The manifest.json file goes in the web/ directory"
+                },
+                {
+                  "level": 2,
+                  "text": "Use connectivity_plus package to detect offline state"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Missing icons in manifest.json",
+                  "consequence": "PWA install prompt won't appear",
+                  "correction": "Add both 192x192 and 512x512 PNG icons"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.6",
+          "title": "Module 14, Lesson 6: Deployment",
+          "moduleId": "module-14",
+          "order": 6,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Firebase Hosting Deployment",
+              "content": "\n**Firebase Hosting** is Google's recommended hosting for Flutter web:\n\n**Setup:**\n```bash\n# Install Firebase CLI\nnpm install -g firebase-tools\n\n# Login\nfirebase login\n\n# Initialize in your project\nfirebase init hosting\n\n# Select build/web as public directory\n# Configure as single-page app: Yes\n```\n\n**Deploy:**\n```bash\nflutter build web --wasm\nfirebase deploy\n```\n\n**Benefits:**\n- Free SSL certificates\n- Global CDN\n- Easy rollback\n- Preview channels for testing\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Vercel Deployment",
+              "content": "\n**Vercel** offers excellent performance and simple deployment:\n\n**Setup:**\n```bash\n# Install Vercel CLI\nnpm install -g vercel\n\n# Login\nvercel login\n```\n\n**Create vercel.json in project root:**\n```json\n{\n  \"buildCommand\": \"flutter build web --wasm\",\n  \"outputDirectory\": \"build/web\",\n  \"framework\": null,\n  \"rewrites\": [\n    { \"source\": \"/(.*)\", \"destination\": \"/index.html\" }\n  ]\n}\n```\n\n**Deploy:**\n```bash\nvercel --prod\n```\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Netlify Deployment",
+              "content": "\n",
+              "code": "# netlify.toml in project root\n[build]\n  command = \"flutter build web --wasm\"\n  publish = \"build/web\"\n\n[[redirects]]\n  from = \"/*\"\n  to = \"/index.html\"\n  status = 200\n\n# Deploy via CLI:\n# npm install -g netlify-cli\n# netlify login\n# netlify deploy --prod\n\n# Or connect GitHub repo for automatic deploys",
+              "language": "toml"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "GitHub Pages Deployment",
+              "content": "\n**GitHub Pages** is free and integrates with your repository:\n\n**Method 1: Manual**\n```bash\nflutter build web --wasm --base-href \"/your-repo-name/\"\n\n# Copy build/web contents to gh-pages branch\n```\n\n**Method 2: GitHub Actions**\n```yaml\n# .github/workflows/deploy.yml\nname: Deploy to GitHub Pages\non:\n  push:\n    branches: [main]\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - uses: subosito/flutter-action@v2\n        with:\n          flutter-version: '3.22.0'\n      - run: flutter build web --wasm --base-href \"/${{ github.event.repository.name }}/\"\n      - uses: peaceiris/actions-gh-pages@v3\n        with:\n          github_token: ${{ secrets.GITHUB_TOKEN }}\n          publish_dir: ./build/web\n```\n\n**Important:** Set `--base-href` for GitHub Pages!\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "14.6-challenge-0",
+              "title": "Deploy to a Platform",
+              "description": "Deploy a Flutter web app to one of the hosting platforms.",
+              "instructions": "Choose a hosting platform (Firebase, Vercel, Netlify, or GitHub Pages) and deploy your Flutter web app with Wasm.",
+              "starterCode": "# Choose one platform and follow these steps:\n\n# Firebase Hosting:\n# 1. npm install -g firebase-tools\n# 2. firebase login\n# 3. firebase init hosting\n# 4. flutter build web --wasm\n# 5. firebase deploy\n\n# Vercel:\n# 1. npm install -g vercel\n# 2. vercel login\n# 3. Create vercel.json\n# 4. vercel --prod\n\n# Netlify:\n# 1. npm install -g netlify-cli\n# 2. netlify login\n# 3. Create netlify.toml\n# 4. netlify deploy --prod\n\n# GitHub Pages:\n# 1. Create .github/workflows/deploy.yml\n# 2. Push to main branch\n# 3. Enable GitHub Pages in repo settings",
+              "solution": "# Firebase Hosting Example (Recommended)\n\n# Step 1: Install Firebase CLI\nnpm install -g firebase-tools\n\n# Step 2: Login to Firebase\nfirebase login\n\n# Step 3: Initialize hosting (run in project root)\nfirebase init hosting\n# - Select or create a Firebase project\n# - Set public directory to: build/web\n# - Configure as single-page app: Yes\n# - Don't overwrite index.html: No\n\n# Step 4: Build Flutter web with Wasm\nflutter build web --wasm --release\n\n# Step 5: Deploy\nfirebase deploy\n\n# Output will show your live URL:\n# Hosting URL: https://your-project.web.app\n\n# -----------------------------------\n# firebase.json should look like:\n# {\n#   \"hosting\": {\n#     \"public\": \"build/web\",\n#     \"ignore\": [\"firebase.json\", \"**/.*\", \"**/node_modules/**\"],\n#     \"rewrites\": [\n#       { \"source\": \"**\", \"destination\": \"/index.html\" }\n#     ],\n#     \"headers\": [\n#       {\n#         \"source\": \"**/*.@(wasm)\",\n#         \"headers\": [\n#           { \"key\": \"Content-Type\", \"value\": \"application/wasm\" }\n#         ]\n#       }\n#     ]\n#   }\n# }\n\n# Bonus: Preview channels for testing\nfirebase hosting:channel:deploy preview",
+              "language": "bash",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Firebase Hosting is the easiest for beginners"
+                },
+                {
+                  "level": 2,
+                  "text": "Remember to set proper MIME types for .wasm files"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting --base-href for GitHub Pages",
+                  "consequence": "Assets fail to load due to incorrect paths",
+                  "correction": "Use flutter build web --wasm --base-href \"/repo-name/\""
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "14.7",
+          "title": "Module 14, Lesson 7: Mini-Project - Portfolio PWA",
+          "moduleId": "module-14",
+          "order": 7,
+          "estimatedMinutes": 80,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Project Overview",
+              "content": "\n**Build a Personal Portfolio PWA**\n\nIn this mini-project, you'll create a portfolio website that showcases your skills as a Flutter developer:\n\n**Features:**\n- Responsive design (mobile, tablet, desktop)\n- Dark/light theme toggle\n- Project showcase with images\n- Contact form\n- PWA installability\n- Wasm compilation for performance\n\n**Pages:**\n1. Home - Hero section with intro\n2. About - Skills and experience\n3. Projects - Portfolio gallery\n4. Contact - Contact form\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Building Responsive Portfolio",
+              "content": "\n**Responsive Design Approach:**\n\nUse `LayoutBuilder` and breakpoints:\n\n```dart\nclass ResponsiveLayout extends StatelessWidget {\n  final Widget mobile;\n  final Widget tablet;\n  final Widget desktop;\n\n  const ResponsiveLayout({\n    required this.mobile,\n    required this.tablet,\n    required this.desktop,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return LayoutBuilder(\n      builder: (context, constraints) {\n        if (constraints.maxWidth >= 1200) {\n          return desktop;\n        } else if (constraints.maxWidth >= 800) {\n          return tablet;\n        } else {\n          return mobile;\n        }\n      },\n    );\n  }\n}\n```\n\n**Navigation:**\n- Mobile: Bottom navigation or drawer\n- Desktop: Top navigation bar\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Adding PWA Features",
+              "content": "\n",
+              "code": "// Portfolio app with PWA features\nimport 'package:flutter/material.dart';\nimport 'package:flutter/foundation.dart';\n\nvoid main() {\n  runApp(const PortfolioApp());\n}\n\nclass PortfolioApp extends StatelessWidget {\n  const PortfolioApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'John Doe - Flutter Developer',\n      debugShowCheckedModeBanner: false,\n      theme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(\n          seedColor: Colors.indigo,\n          brightness: Brightness.light,\n        ),\n        useMaterial3: true,\n      ),\n      darkTheme: ThemeData(\n        colorScheme: ColorScheme.fromSeed(\n          seedColor: Colors.indigo,\n          brightness: Brightness.dark,\n        ),\n        useMaterial3: true,\n      ),\n      themeMode: ThemeMode.system,\n      home: const PortfolioHome(),\n    );\n  }\n}\n\nclass PortfolioHome extends StatelessWidget {\n  const PortfolioHome({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    final screenWidth = MediaQuery.of(context).size.width;\n    final isDesktop = screenWidth >= 1200;\n\n    return Scaffold(\n      appBar: isDesktop ? _buildDesktopNav(context) : null,\n      drawer: isDesktop ? null : _buildDrawer(context),\n      body: SingleChildScrollView(\n        child: Column(\n          children: [\n            if (!isDesktop) _buildMobileHeader(context),\n            const HeroSection(),\n            const AboutSection(),\n            const ProjectsSection(),\n            const ContactSection(),\n            const Footer(),\n          ],\n        ),\n      ),\n    );\n  }\n\n  PreferredSizeWidget _buildDesktopNav(BuildContext context) {\n    return AppBar(\n      title: const Text('John Doe'),\n      actions: [\n        TextButton(onPressed: () {}, child: const Text('Home')),\n        TextButton(onPressed: () {}, child: const Text('About')),\n        TextButton(onPressed: () {}, child: const Text('Projects')),\n        TextButton(onPressed: () {}, child: const Text('Contact')),\n        const SizedBox(width: 16),\n      ],\n    );\n  }\n\n  Widget _buildMobileHeader(BuildContext context) {\n    return AppBar(\n      title: const Text('John Doe'),\n    );\n  }\n\n  Widget _buildDrawer(BuildContext context) {\n    return Drawer(\n      child: ListView(\n        children: [\n          const DrawerHeader(\n            decoration: BoxDecoration(color: Colors.indigo),\n            child: Text('Portfolio', style: TextStyle(color: Colors.white)),\n          ),\n          ListTile(title: const Text('Home'), onTap: () {}),\n          ListTile(title: const Text('About'), onTap: () {}),\n          ListTile(title: const Text('Projects'), onTap: () {}),\n          ListTile(title: const Text('Contact'), onTap: () {}),\n        ],\n      ),\n    );\n  }\n}\n\nclass HeroSection extends StatelessWidget {\n  const HeroSection({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      height: 500,\n      width: double.infinity,\n      decoration: BoxDecoration(\n        gradient: LinearGradient(\n          colors: [Colors.indigo, Colors.indigo.shade300],\n        ),\n      ),\n      child: Column(\n        mainAxisAlignment: MainAxisAlignment.center,\n        children: [\n          const CircleAvatar(\n            radius: 60,\n            child: Icon(Icons.person, size: 60),\n          ),\n          const SizedBox(height: 24),\n          Text(\n            'John Doe',\n            style: Theme.of(context).textTheme.headlineLarge?.copyWith(\n              color: Colors.white,\n              fontWeight: FontWeight.bold,\n            ),\n          ),\n          const SizedBox(height: 8),\n          Text(\n            'Flutter Developer',\n            style: Theme.of(context).textTheme.titleLarge?.copyWith(\n              color: Colors.white70,\n            ),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass AboutSection extends StatelessWidget {\n  const AboutSection({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Padding(\n      padding: const EdgeInsets.all(48),\n      child: Column(\n        children: [\n          Text('About Me', style: Theme.of(context).textTheme.headlineMedium),\n          const SizedBox(height: 16),\n          const Text(\n            'I am a passionate Flutter developer with experience building cross-platform applications.',\n            textAlign: TextAlign.center,\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass ProjectsSection extends StatelessWidget {\n  const ProjectsSection({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      color: Theme.of(context).colorScheme.surfaceVariant,\n      padding: const EdgeInsets.all(48),\n      child: Column(\n        children: [\n          Text('Projects', style: Theme.of(context).textTheme.headlineMedium),\n          const SizedBox(height: 24),\n          Wrap(\n            spacing: 16,\n            runSpacing: 16,\n            children: [\n              _buildProjectCard('Project 1', 'A Flutter app'),\n              _buildProjectCard('Project 2', 'A web app'),\n              _buildProjectCard('Project 3', 'A mobile game'),\n            ],\n          ),\n        ],\n      ),\n    );\n  }\n\n  Widget _buildProjectCard(String title, String description) {\n    return Card(\n      child: Container(\n        width: 300,\n        padding: const EdgeInsets.all(16),\n        child: Column(\n          crossAxisAlignment: CrossAxisAlignment.start,\n          children: [\n            Container(\n              height: 150,\n              color: Colors.grey.shade300,\n              child: const Center(child: Icon(Icons.image, size: 48)),\n            ),\n            const SizedBox(height: 8),\n            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),\n            Text(description),\n          ],\n        ),\n      ),\n    );\n  }\n}\n\nclass ContactSection extends StatelessWidget {\n  const ContactSection({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Padding(\n      padding: const EdgeInsets.all(48),\n      child: Column(\n        children: [\n          Text('Contact', style: Theme.of(context).textTheme.headlineMedium),\n          const SizedBox(height: 24),\n          const SizedBox(\n            width: 400,\n            child: Column(\n              children: [\n                TextField(decoration: InputDecoration(labelText: 'Name')),\n                SizedBox(height: 16),\n                TextField(decoration: InputDecoration(labelText: 'Email')),\n                SizedBox(height: 16),\n                TextField(\n                  decoration: InputDecoration(labelText: 'Message'),\n                  maxLines: 4,\n                ),\n                SizedBox(height: 16),\n              ],\n            ),\n          ),\n          ElevatedButton(\n            onPressed: () {},\n            child: const Text('Send Message'),\n          ),\n        ],\n      ),\n    );\n  }\n}\n\nclass Footer extends StatelessWidget {\n  const Footer({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      padding: const EdgeInsets.all(24),\n      color: Colors.grey.shade900,\n      child: const Center(\n        child: Text(\n          '2024 John Doe. Built with Flutter Web + Wasm',\n          style: TextStyle(color: Colors.white70),\n        ),\n      ),\n    );\n  }\n}",
+              "language": "dart"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "PROJECT",
+              "id": "14.7-project-0",
+              "title": "Complete Portfolio PWA",
+              "description": "Build and deploy a complete portfolio PWA using Flutter Web with WebAssembly.",
+              "instructions": "Create a portfolio website with responsive design, theme switching, project showcase, and PWA features. Deploy to a hosting platform of your choice.",
+              "starterCode": "// Portfolio PWA Project\n//\n// Requirements:\n// 1. Responsive layout (mobile/tablet/desktop)\n// 2. Dark/light theme toggle\n// 3. At least 4 sections: Hero, About, Projects, Contact\n// 4. PWA manifest configured\n// 5. Deployed with Wasm compilation\n//\n// Steps:\n// 1. Create new Flutter project: flutter create portfolio\n// 2. Implement responsive layout\n// 3. Add theme switching\n// 4. Configure PWA (manifest.json, icons)\n// 5. Build: flutter build web --wasm\n// 6. Deploy to Firebase/Vercel/Netlify\n\nimport 'package:flutter/material.dart';\n\nvoid main() {\n  runApp(const PortfolioApp());\n}\n\nclass PortfolioApp extends StatefulWidget {\n  const PortfolioApp({super.key});\n\n  @override\n  State<PortfolioApp> createState() => _PortfolioAppState();\n}\n\nclass _PortfolioAppState extends State<PortfolioApp> {\n  ThemeMode _themeMode = ThemeMode.system;\n\n  void toggleTheme() {\n    setState(() {\n      _themeMode = _themeMode == ThemeMode.light \n          ? ThemeMode.dark \n          : ThemeMode.light;\n    });\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'My Portfolio',\n      theme: ThemeData.light(useMaterial3: true),\n      darkTheme: ThemeData.dark(useMaterial3: true),\n      themeMode: _themeMode,\n      home: PortfolioHome(onToggleTheme: toggleTheme),\n    );\n  }\n}\n\nclass PortfolioHome extends StatelessWidget {\n  final VoidCallback onToggleTheme;\n\n  const PortfolioHome({super.key, required this.onToggleTheme});\n\n  @override\n  Widget build(BuildContext context) {\n    // TODO: Implement responsive portfolio\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Portfolio'),\n        actions: [\n          IconButton(\n            icon: const Icon(Icons.brightness_6),\n            onPressed: onToggleTheme,\n          ),\n        ],\n      ),\n      body: const Center(\n        child: Text('Build your portfolio here!'),\n      ),\n    );\n  }\n}",
+              "solution": "// Complete Portfolio PWA Solution\n// See the example code in the lesson content above for full implementation\n//\n// Key implementation points:\n//\n// 1. Responsive Layout:\n//    - Use LayoutBuilder or MediaQuery\n//    - Different layouts for mobile (<800), tablet (800-1200), desktop (>1200)\n//\n// 2. Theme Switching:\n//    - Store ThemeMode in StatefulWidget\n//    - Pass toggle function down widget tree\n//\n// 3. PWA Configuration:\n//    - Configure web/manifest.json with proper icons\n//    - Ensure service worker is registered\n//\n// 4. Deployment:\n//    - Build: flutter build web --wasm\n//    - Deploy to chosen platform\n//\n// manifest.json:\n// {\n//   \"name\": \"My Portfolio\",\n//   \"short_name\": \"Portfolio\",\n//   \"start_url\": \".\",\n//   \"display\": \"standalone\",\n//   \"background_color\": \"#6200EE\",\n//   \"theme_color\": \"#6200EE\",\n//   \"icons\": [\n//     {\"src\": \"icons/Icon-192.png\", \"sizes\": \"192x192\", \"type\": \"image/png\"},\n//     {\"src\": \"icons/Icon-512.png\", \"sizes\": \"512x512\", \"type\": \"image/png\"}\n//   ]\n// }",
+              "language": "dart",
+              "testCases": [],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with the Hero section and work your way down"
+                },
+                {
+                  "level": 2,
+                  "text": "Use Wrap widget for responsive grid of project cards"
+                },
+                {
+                  "level": 3,
+                  "text": "Test on different screen sizes using Chrome DevTools"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not testing on different screen sizes",
+                  "consequence": "Layout breaks on certain devices",
+                  "correction": "Use Chrome DevTools device toolbar to test responsive breakpoints"
+                },
+                {
+                  "mistake": "Forgetting PWA icons",
+                  "consequence": "App won't be installable",
+                  "correction": "Add 192x192 and 512x512 PNG icons in web/icons/"
+                }
+              ],
+              "difficulty": "intermediate"
             }
           ]
         }
