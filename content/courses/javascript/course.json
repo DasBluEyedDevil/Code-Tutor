@@ -6608,7 +6608,74 @@
       "description": "Get TypeScript-level type safety without changing your file extensions. Learn to use JSDoc comments for full IDE support, catch errors before runtime, and create a migration path to TypeScript.",
       "difficulty": "intermediate",
       "estimatedHours": 2,
-      "lessons": []
+      "lessons": [
+        {
+          "id": "16.1",
+          "title": "Why Types Matter (The Blueprint Analogy)",
+          "moduleId": "module-16",
+          "order": 1,
+          "estimatedMinutes": 20,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Building Without a Blueprint",
+              "content": "Imagine building a house without blueprints. The electrician runs wires where they think outlets should go. The plumber puts pipes wherever is convenient. When the drywall goes up, half the outlets are in the wrong places and pipes cross where they shouldn't.\n\nDynamic typing in JavaScript is like building without blueprints. Everything MIGHT work, but you won't find out until the house is built (or your app is in production).\n\nTypes are your blueprints. They catch mistakes before anyone starts building."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "A Real Production Bug",
+              "content": "This code shipped to production. Can you spot the bug?",
+              "language": "javascript",
+              "code": "function calculateDiscount(price, discountPercent) {\n  return price - (price * discountPercent);\n}\n\n// Developer A uses it correctly\nconst salePrice = calculateDiscount(100, 0.2);  // 80\n\n// Developer B reads \"discountPercent\" and does this\nconst wrongPrice = calculateDiscount(100, 20);  // -1900 (oops!)\n\n// With JSDoc types, the IDE would warn Developer B immediately:\n/**\n * @param {number} price - Original price\n * @param {number} discountPercent - Discount as decimal (0.2 = 20%)\n * @returns {number}\n */\nfunction calculateDiscountTyped(price, discountPercent) {\n  return price - (price * discountPercent);\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "What You Get With Types",
+              "content": "JSDoc types give you:\n\n1. **Autocomplete**: Your IDE knows what methods are available\n2. **Inline Documentation**: Hover over any function to see what it does\n3. **Error Detection**: Red squiggles appear BEFORE you run the code\n4. **Refactoring Safety**: Rename a property and find all usages instantly\n\nAnd the best part? It's just JavaScript. No build step, no compilation, no new syntax to learn."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Objections (and Why They're Wrong)",
+              "content": "1. **\"Types slow me down\"** - Types slow you down for 10 seconds while saving you hours of debugging.\n\n2. **\"JavaScript is supposed to be flexible\"** - Types don't remove flexibility, they document your intentions.\n\n3. **\"I'll just write tests instead\"** - Types catch bugs BEFORE tests run. Use both."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16.1-challenge",
+              "title": "Spot the Type Bug",
+              "description": "This code has a type bug. The function expects an array but gets called with a string. Add JSDoc to document what the function expects.",
+              "instructions": "Add JSDoc comments to the processItems function to document that it expects an array of strings.",
+              "starterCode": "// Add JSDoc here\nfunction processItems(items) {\n  return items.map(item => item.toUpperCase());\n}\n\n// This should show a type error in your IDE\nprocessItems('hello');",
+              "solution": "/**\n * @param {string[]} items - Array of strings to process\n * @returns {string[]} Uppercased strings\n */\nfunction processItems(items) {\n  return items.map(item => item.toUpperCase());\n}\n\n// This should show a type error in your IDE\nprocessItems('hello');",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Correct usage works",
+                  "expectedOutput": "[\"HELLO\",\"WORLD\"]",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use @param {string[]} to indicate an array of strings"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using @param {array} instead of @param {string[]}",
+                  "consequence": "Generic 'array' doesn't give you element type safety",
+                  "correction": "Use @param {string[]} for arrays of strings, @param {number[]} for arrays of numbers, etc."
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
