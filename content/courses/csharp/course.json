@@ -10269,6 +10269,505 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-18",
+      "title": "Modern API Development with OpenAPI & Scalar",
+      "description": "Document and test your APIs professionally. Learn OpenAPI specification, Scalar UI, API versioning, and generating type-safe clients.",
+      "difficulty": "advanced",
+      "estimatedHours": 2,
+      "lessons": [
+        {
+          "id": "lesson-18-01",
+          "title": "OpenAPI in .NET 9 (Built-in Support)",
+          "moduleId": "module-18",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're opening a restaurant and need to create a menu for your customers:\n\nOLD WAY (No Documentation):\n- Customers ask waiter: 'What do you serve?'\n- Waiter describes dishes from memory\n- Different waiters give different answers\n- Customers confused, order wrong things\n\nOPENAPI WAY (Standardized Menu):\n- Printed menu with ALL dishes\n- Photos, ingredients, prices listed\n- Allergen information included\n- Same menu for everyone - no confusion!\n\nAPI DOCUMENTATION EXPLAINED:\n\nBEFORE OPENAPI:\n1. API exists but clients don't know endpoints\n2. Developers read code or ask questions\n3. Documentation gets outdated quickly\n4. Each team documents differently\n\nWITH OPENAPI:\n1. Standardized specification (JSON/YAML)\n2. Auto-generated from your code\n3. Always in sync with actual API\n4. Tools can read and use it (code gen, testing)\n\n.NET 9 BUILT-IN SUPPORT:\n- No Swashbuckle package needed!\n- builder.Services.AddOpenApi() - that's it!\n- app.MapOpenApi() exposes the spec\n- Works with Minimal APIs and Controllers\n\nBENEFITS:\n- Pro: Self-documenting APIs\n- Pro: Generate client code automatically\n- Pro: Interactive testing UIs\n- Pro: Validate requests/responses\n- Pro: API contract for teams\n\nThink: 'OpenAPI is your API's menu - customers know exactly what's available and how to order!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== .NET 9 BUILT-IN OPENAPI SUPPORT =====\n// No Swashbuckle needed!\n\nusing Microsoft.AspNetCore.OpenApi;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Add OpenAPI services - that's it!\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\n// Expose OpenAPI document at /openapi/v1.json\napp.MapOpenApi();\n\n// ===== WELL-DOCUMENTED ENDPOINTS =====\n\n// Simple GET with metadata\napp.MapGet(\"/products\", () => \n{\n    return new[]\n    {\n        new Product(1, \"Laptop\", 999.99m),\n        new Product(2, \"Mouse\", 29.99m)\n    };\n})\n.WithName(\"GetProducts\")\n.WithDescription(\"Returns all available products in the catalog\")\n.WithTags(\"Products\")\n.Produces<Product[]>(StatusCodes.Status200OK);\n\n// GET with path parameter\napp.MapGet(\"/products/{id}\", (int id) =>\n{\n    if (id <= 0) return Results.BadRequest(\"Invalid ID\");\n    return Results.Ok(new Product(id, \"Sample Product\", 49.99m));\n})\n.WithName(\"GetProductById\")\n.WithDescription(\"Returns a specific product by its unique identifier\")\n.WithTags(\"Products\")\n.Produces<Product>(StatusCodes.Status200OK)\n.Produces(StatusCodes.Status400BadRequest)\n.Produces(StatusCodes.Status404NotFound);\n\n// POST with request body\napp.MapPost(\"/products\", (CreateProductRequest request) =>\n{\n    var product = new Product(Random.Shared.Next(1000), request.Name, request.Price);\n    return Results.Created($\"/products/{product.Id}\", product);\n})\n.WithName(\"CreateProduct\")\n.WithDescription(\"Creates a new product in the catalog\")\n.WithTags(\"Products\")\n.Accepts<CreateProductRequest>(\"application/json\")\n.Produces<Product>(StatusCodes.Status201Created)\n.Produces(StatusCodes.Status400BadRequest);\n\n// PUT with path parameter and body\napp.MapPut(\"/products/{id}\", (int id, UpdateProductRequest request) =>\n{\n    return Results.Ok(new Product(id, request.Name, request.Price));\n})\n.WithName(\"UpdateProduct\")\n.WithDescription(\"Updates an existing product\")\n.WithTags(\"Products\")\n.Accepts<UpdateProductRequest>(\"application/json\")\n.Produces<Product>(StatusCodes.Status200OK)\n.Produces(StatusCodes.Status404NotFound);\n\n// DELETE endpoint\napp.MapDelete(\"/products/{id}\", (int id) =>\n{\n    return Results.NoContent();\n})\n.WithName(\"DeleteProduct\")\n.WithDescription(\"Removes a product from the catalog\")\n.WithTags(\"Products\")\n.Produces(StatusCodes.Status204NoContent)\n.Produces(StatusCodes.Status404NotFound);\n\napp.Run();\n\n// ===== DATA MODELS =====\n\npublic record Product(int Id, string Name, decimal Price);\n\npublic record CreateProductRequest(string Name, decimal Price);\n\npublic record UpdateProductRequest(string Name, decimal Price);\n\n// ===== OPENAPI OUTPUT (openapi/v1.json) =====\n// {\n//   \"openapi\": \"3.0.1\",\n//   \"info\": { \"title\": \"MyApi\", \"version\": \"1.0\" },\n//   \"paths\": {\n//     \"/products\": {\n//       \"get\": {\n//         \"operationId\": \"GetProducts\",\n//         \"description\": \"Returns all available products...\",\n//         \"tags\": [\"Products\"],\n//         \"responses\": { \"200\": { ... } }\n//       }\n//     }\n//   }\n// }",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`builder.Services.AddOpenApi()`**: Registers OpenAPI services in the DI container. This is the .NET 9 built-in method - no external packages needed! Analyzes your endpoints at startup.\n\n**`app.MapOpenApi()`**: Exposes the OpenAPI specification at `/openapi/v1.json`. Clients and tools can fetch this document to understand your API.\n\n**`.WithName(\"GetProducts\")`**: Sets the operationId in OpenAPI. Used for code generation - this becomes the method name in generated clients.\n\n**`.WithDescription(\"...\")`**: Human-readable description shown in documentation UIs. Explain what the endpoint does, not how.\n\n**`.WithTags(\"Products\")`**: Groups endpoints in the documentation. All 'Products' endpoints appear together in Swagger/Scalar UI.\n\n**`.Produces<T>(statusCode)`**: Declares what the endpoint returns. T is the response type, statusCode is the HTTP status. Enables accurate documentation.\n\n**`.Accepts<T>(contentType)`**: Declares what request body the endpoint expects. Used for POST/PUT methods.\n\n**`StatusCodes.Status200OK`**: Strongly-typed status codes. Use these instead of magic numbers (200, 201, 404) for clarity."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a well-documented Minimal API for a bookstore!\n\n1. Add OpenAPI services and map the OpenAPI endpoint\n\n2. Create these endpoints with full documentation:\n   - GET /books - Returns all books\n   - GET /books/{isbn} - Returns a book by ISBN\n   - POST /books - Creates a new book\n   - DELETE /books/{isbn} - Deletes a book\n\n3. Each endpoint needs:\n   - WithName (operation ID)\n   - WithDescription (what it does)\n   - WithTags (\"Books\")\n   - Appropriate Produces declarations\n\n4. Create Book record with: Isbn, Title, Author, Price\n\n5. Create CreateBookRequest with: Title, Author, Price",
+              "starterCode": "var builder = WebApplication.CreateBuilder(args);\n\n// TODO: Add OpenAPI services\n\nvar app = builder.Build();\n\n// TODO: Map OpenAPI endpoint\n\n// Sample data\nvar books = new List<Book>\n{\n    new(\"978-0-13-468599-1\", \"Clean Code\", \"Robert Martin\", 39.99m),\n    new(\"978-0-596-51774-8\", \"JavaScript: The Good Parts\", \"Douglas Crockford\", 29.99m)\n};\n\n// TODO: GET /books - Return all books\n// - WithName(\"GetBooks\")\n// - WithDescription(\"Returns all books in the catalog\")\n// - WithTags(\"Books\")\n// - Produces<List<Book>>(StatusCodes.Status200OK)\n\n// TODO: GET /books/{isbn} - Return book by ISBN\n// - WithName(\"GetBookByIsbn\")\n// - WithDescription(\"Returns a specific book by ISBN\")\n// - WithTags(\"Books\")\n// - Produces<Book>(200), Produces(404)\n\n// TODO: POST /books - Create new book\n// - WithName(\"CreateBook\")\n// - WithDescription(\"Adds a new book to the catalog\")\n// - WithTags(\"Books\")\n// - Accepts<CreateBookRequest>, Produces<Book>(201)\n\n// TODO: DELETE /books/{isbn} - Delete book\n// - WithName(\"DeleteBook\")\n// - WithDescription(\"Removes a book from the catalog\")\n// - WithTags(\"Books\")\n// - Produces(204), Produces(404)\n\napp.Run();\n\n// TODO: Define Book record (Isbn, Title, Author, Price)\n// TODO: Define CreateBookRequest record (Title, Author, Price)",
+              "solution": "var builder = WebApplication.CreateBuilder(args);\n\n// Add OpenAPI services (.NET 9 built-in!)\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\n// Expose OpenAPI document at /openapi/v1.json\napp.MapOpenApi();\n\n// Sample data\nvar books = new List<Book>\n{\n    new(\"978-0-13-468599-1\", \"Clean Code\", \"Robert Martin\", 39.99m),\n    new(\"978-0-596-51774-8\", \"JavaScript: The Good Parts\", \"Douglas Crockford\", 29.99m)\n};\n\n// GET /books - Return all books\napp.MapGet(\"/books\", () => books)\n    .WithName(\"GetBooks\")\n    .WithDescription(\"Returns all books in the catalog\")\n    .WithTags(\"Books\")\n    .Produces<List<Book>>(StatusCodes.Status200OK);\n\n// GET /books/{isbn} - Return book by ISBN\napp.MapGet(\"/books/{isbn}\", (string isbn) =>\n{\n    var book = books.FirstOrDefault(b => b.Isbn == isbn);\n    return book is not null \n        ? Results.Ok(book) \n        : Results.NotFound($\"Book with ISBN {isbn} not found\");\n})\n    .WithName(\"GetBookByIsbn\")\n    .WithDescription(\"Returns a specific book by its ISBN identifier\")\n    .WithTags(\"Books\")\n    .Produces<Book>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status404NotFound);\n\n// POST /books - Create new book\napp.MapPost(\"/books\", (CreateBookRequest request) =>\n{\n    var isbn = $\"978-{Random.Shared.Next(1000000000):D10}\";\n    var book = new Book(isbn, request.Title, request.Author, request.Price);\n    books.Add(book);\n    return Results.Created($\"/books/{book.Isbn}\", book);\n})\n    .WithName(\"CreateBook\")\n    .WithDescription(\"Adds a new book to the catalog\")\n    .WithTags(\"Books\")\n    .Accepts<CreateBookRequest>(\"application/json\")\n    .Produces<Book>(StatusCodes.Status201Created)\n    .Produces(StatusCodes.Status400BadRequest);\n\n// DELETE /books/{isbn} - Delete book\napp.MapDelete(\"/books/{isbn}\", (string isbn) =>\n{\n    var book = books.FirstOrDefault(b => b.Isbn == isbn);\n    if (book is null)\n        return Results.NotFound($\"Book with ISBN {isbn} not found\");\n    \n    books.Remove(book);\n    return Results.NoContent();\n})\n    .WithName(\"DeleteBook\")\n    .WithDescription(\"Removes a book from the catalog\")\n    .WithTags(\"Books\")\n    .Produces(StatusCodes.Status204NoContent)\n    .Produces(StatusCodes.Status404NotFound);\n\nConsole.WriteLine(\"OpenAPI available at: /openapi/v1.json\");\napp.Run();\n\n// Data models\npublic record Book(string Isbn, string Title, string Author, decimal Price);\n\npublic record CreateBookRequest(string Title, string Author, decimal Price);",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should add OpenAPI services",
+                  "expectedOutput": "AddOpenApi",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should map OpenAPI endpoint",
+                  "expectedOutput": "MapOpenApi",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "builder.Services.AddOpenApi() registers the OpenAPI services - no external packages needed in .NET 9!"
+                },
+                {
+                  "level": 2,
+                  "text": "app.MapOpenApi() exposes the spec at /openapi/v1.json - call this before your endpoints."
+                },
+                {
+                  "level": 3,
+                  "text": "Chain methods: app.MapGet(...).WithName(...).WithDescription(...).WithTags(...).Produces(...);"
+                },
+                {
+                  "level": 4,
+                  "text": "For NotFound results, use: return Results.NotFound(message); and declare .Produces(StatusCodes.Status404NotFound)"
+                },
+                {
+                  "level": 5,
+                  "text": "POST should return Results.Created(uri, object) with .Produces<Book>(StatusCodes.Status201Created)"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using Swashbuckle packages in .NET 9",
+                  "consequence": "Swashbuckle is no longer needed! .NET 9 has built-in OpenAPI support that's lighter and faster.",
+                  "correction": "Use builder.Services.AddOpenApi() and app.MapOpenApi() - no NuGet packages required."
+                },
+                {
+                  "mistake": "Forgetting to declare all possible response types",
+                  "consequence": "Documentation is incomplete. Clients don't know about error responses.",
+                  "correction": "Add .Produces(StatusCodes.Status404NotFound) for endpoints that can return 404, etc."
+                },
+                {
+                  "mistake": "Using magic numbers for status codes",
+                  "consequence": "Less readable code. Easy to use wrong status code.",
+                  "correction": "Use StatusCodes.Status200OK, Status201Created, Status404NotFound instead of 200, 201, 404."
+                },
+                {
+                  "mistake": "Not providing meaningful operation names",
+                  "consequence": "Generated clients have poor method names. Documentation is less clear.",
+                  "correction": "Use descriptive WithName() values like 'GetBookByIsbn', 'CreateBook', 'DeleteBook'."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-18-02",
+          "title": "Scalar: Modern API Documentation UI",
+          "moduleId": "module-18",
+          "order": 2,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Think of API documentation UIs like restaurant review apps:\n\nOLD SWAGGER UI:\n- Like an old restaurant website from 2010\n- Works, but looks dated\n- Basic features only\n- Same design for every restaurant\n\nSCALAR UI:\n- Like a modern food delivery app\n- Beautiful, intuitive design\n- Dark mode, customizable themes\n- Interactive examples and testing\n- Makes you WANT to explore the menu!\n\nWHY SCALAR OVER SWAGGER?\n\nSWAGGER UI (Traditional):\n- Industry standard for years\n- Functional but aging design\n- Limited customization\n- Heavy JavaScript bundle\n\nSCALAR (Modern Alternative):\n- Clean, modern aesthetic\n- Built-in dark mode\n- Better code examples (multiple languages)\n- Request/response side by side\n- Faster loading\n- Actively maintained\n\nUSER EXPERIENCE:\n- Developers ENJOY using Scalar\n- Better first impression of your API\n- Interactive testing built-in\n- Copy-paste ready code snippets\n\nINTEGRATION:\n- Works with any OpenAPI spec\n- Drop-in replacement for Swagger\n- Single NuGet package\n- One line to add: app.MapScalarApiReference()\n\nThink: 'Scalar is the modern, beautiful face of your API - making documentation a pleasure, not a chore!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== SCALAR: MODERN API DOCUMENTATION =====\n// Install: dotnet add package Scalar.AspNetCore\n\nusing Scalar.AspNetCore;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// .NET 9 built-in OpenAPI\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\n// Expose OpenAPI spec (required for Scalar)\napp.MapOpenApi();\n\n// Add Scalar UI - beautiful API documentation!\napp.MapScalarApiReference(options =>\n{\n    options\n        .WithTitle(\"My Bookstore API\")\n        .WithTheme(ScalarTheme.Purple)  // Built-in themes!\n        .WithDarkMode(true)              // Dark mode by default\n        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)\n        .WithPreferredScheme(\"Bearer\");  // JWT auth hint\n});\n\n// ===== SAMPLE API ENDPOINTS =====\n\nvar products = new List<Product>\n{\n    new(1, \"Laptop Pro\", 1299.99m, \"Electronics\"),\n    new(2, \"Wireless Mouse\", 49.99m, \"Electronics\"),\n    new(3, \"Desk Lamp\", 39.99m, \"Home Office\")\n};\n\napp.MapGet(\"/products\", () => products)\n    .WithName(\"GetProducts\")\n    .WithDescription(\"Returns all available products\")\n    .WithTags(\"Products\")\n    .WithSummary(\"List all products\")\n    .Produces<List<Product>>(StatusCodes.Status200OK);\n\napp.MapGet(\"/products/{id}\", (int id) =>\n{\n    var product = products.FirstOrDefault(p => p.Id == id);\n    return product is not null \n        ? Results.Ok(product) \n        : Results.NotFound();\n})\n    .WithName(\"GetProductById\")\n    .WithDescription(\"Returns a product by its unique identifier\")\n    .WithTags(\"Products\")\n    .WithSummary(\"Get product by ID\")\n    .Produces<Product>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status404NotFound);\n\napp.MapGet(\"/products/search\", (string? category, decimal? minPrice) =>\n{\n    var results = products.AsEnumerable();\n    \n    if (!string.IsNullOrEmpty(category))\n        results = results.Where(p => p.Category == category);\n    if (minPrice.HasValue)\n        results = results.Where(p => p.Price >= minPrice);\n    \n    return results.ToList();\n})\n    .WithName(\"SearchProducts\")\n    .WithDescription(\"Search products by category and/or minimum price\")\n    .WithTags(\"Products\")\n    .WithSummary(\"Search products\")\n    .Produces<List<Product>>(StatusCodes.Status200OK);\n\napp.MapPost(\"/products\", (CreateProductRequest request) =>\n{\n    var product = new Product(\n        products.Max(p => p.Id) + 1,\n        request.Name,\n        request.Price,\n        request.Category\n    );\n    products.Add(product);\n    return Results.Created($\"/products/{product.Id}\", product);\n})\n    .WithName(\"CreateProduct\")\n    .WithDescription(\"Creates a new product in the catalog\")\n    .WithTags(\"Products\")\n    .WithSummary(\"Create new product\")\n    .Accepts<CreateProductRequest>(\"application/json\")\n    .Produces<Product>(StatusCodes.Status201Created);\n\nConsole.WriteLine(\"API Documentation available at: /scalar/v1\");\napp.Run();\n\n// ===== MODELS =====\n\npublic record Product(int Id, string Name, decimal Price, string Category);\n\npublic record CreateProductRequest(string Name, decimal Price, string Category);\n\n// ===== SCALAR THEMES =====\n// ScalarTheme.Default   - Clean light theme\n// ScalarTheme.Purple    - Purple accent\n// ScalarTheme.Solarized - Solarized colors\n// ScalarTheme.BluePlanet - Blue accent\n// ScalarTheme.Saturn    - Dark with orange\n// ScalarTheme.Kepler    - Minimal design\n// ScalarTheme.Mars      - Red accent\n// ScalarTheme.DeepSpace - Dark mode\n\n// ===== CODE GENERATION TARGETS =====\n// ScalarTarget.CSharp, .JavaScript, .Python, .Curl, .Go, .Ruby, etc.\n// Users see ready-to-copy code in their preferred language!",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`app.MapScalarApiReference()`**: Adds Scalar UI to your app. By default available at `/scalar/v1`. Reads your OpenAPI spec and generates beautiful documentation.\n\n**`.WithTitle(\"My API\")`**: Sets the title displayed in the Scalar header. Use your API's name or product name.\n\n**`.WithTheme(ScalarTheme.Purple)`**: Choose from built-in themes. Options: Default, Purple, Solarized, BluePlanet, Saturn, Kepler, Mars, DeepSpace.\n\n**`.WithDarkMode(true)`**: Enable dark mode by default. Users can still toggle. Modern developers often prefer dark mode.\n\n**`.WithDefaultHttpClient(target, client)`**: Set the default code example language. ScalarTarget.CSharp shows C# examples first.\n\n**`.WithPreferredScheme(\"Bearer\")`**: Hint for authentication. Tells Scalar your API uses JWT Bearer tokens.\n\n**`.WithSummary(\"...\")`**: Short one-line summary shown in endpoint lists. Keep it brief - 3-5 words ideal.\n\n**`.WithDescription(\"...\")`**: Longer explanation shown when endpoint is expanded. Can include details about behavior, requirements.\n\n**Scalar vs Swagger**: Scalar is a modern alternative with better UX. Both use OpenAPI spec, so you can switch anytime."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-02-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Set up Scalar documentation for a Movie API!\n\n1. Add OpenAPI and Scalar services\n2. Configure Scalar with:\n   - Title: 'Movie Database API'\n   - Theme: DeepSpace (dark theme)\n   - Dark mode enabled\n   - Default client: Python\n\n3. Create these documented endpoints:\n   - GET /movies - List all movies\n   - GET /movies/{id} - Get movie by ID\n   - GET /movies/search?genre=&year= - Search movies\n   - POST /movies - Add new movie\n\n4. Each endpoint needs WithName, WithSummary, WithDescription, WithTags\n\n5. Create Movie record: Id, Title, Genre, Year, Rating\n\n6. Print the Scalar UI URL when app starts",
+              "starterCode": "// TODO: Add using statement for Scalar\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// TODO: Add OpenAPI services\n\nvar app = builder.Build();\n\n// TODO: Map OpenAPI endpoint\n\n// TODO: Add Scalar UI with configuration:\n// - Title: \"Movie Database API\"\n// - Theme: DeepSpace\n// - Dark mode: true\n// - Default client: Python\n\nvar movies = new List<Movie>\n{\n    new(1, \"The Matrix\", \"Sci-Fi\", 1999, 8.7),\n    new(2, \"Inception\", \"Sci-Fi\", 2010, 8.8),\n    new(3, \"The Dark Knight\", \"Action\", 2008, 9.0)\n};\n\n// TODO: GET /movies endpoint\n// - WithName(\"GetMovies\")\n// - WithSummary(\"List all movies\")\n// - WithDescription(\"Returns the complete movie catalog\")\n// - WithTags(\"Movies\")\n\n// TODO: GET /movies/{id} endpoint\n\n// TODO: GET /movies/search endpoint with genre and year query params\n\n// TODO: POST /movies endpoint\n\n// TODO: Print Scalar UI URL\n\napp.Run();\n\n// TODO: Define Movie record\n// TODO: Define CreateMovieRequest record",
+              "solution": "using Scalar.AspNetCore;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Add OpenAPI services\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\n// Map OpenAPI endpoint\napp.MapOpenApi();\n\n// Add Scalar UI with custom configuration\napp.MapScalarApiReference(options =>\n{\n    options\n        .WithTitle(\"Movie Database API\")\n        .WithTheme(ScalarTheme.DeepSpace)\n        .WithDarkMode(true)\n        .WithDefaultHttpClient(ScalarTarget.Python, ScalarClient.Requests);\n});\n\nvar movies = new List<Movie>\n{\n    new(1, \"The Matrix\", \"Sci-Fi\", 1999, 8.7),\n    new(2, \"Inception\", \"Sci-Fi\", 2010, 8.8),\n    new(3, \"The Dark Knight\", \"Action\", 2008, 9.0)\n};\n\n// GET /movies - List all movies\napp.MapGet(\"/movies\", () => movies)\n    .WithName(\"GetMovies\")\n    .WithSummary(\"List all movies\")\n    .WithDescription(\"Returns the complete movie catalog with all available films\")\n    .WithTags(\"Movies\")\n    .Produces<List<Movie>>(StatusCodes.Status200OK);\n\n// GET /movies/{id} - Get movie by ID\napp.MapGet(\"/movies/{id}\", (int id) =>\n{\n    var movie = movies.FirstOrDefault(m => m.Id == id);\n    return movie is not null\n        ? Results.Ok(movie)\n        : Results.NotFound($\"Movie with ID {id} not found\");\n})\n    .WithName(\"GetMovieById\")\n    .WithSummary(\"Get movie by ID\")\n    .WithDescription(\"Returns a specific movie by its unique identifier\")\n    .WithTags(\"Movies\")\n    .Produces<Movie>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status404NotFound);\n\n// GET /movies/search - Search movies\napp.MapGet(\"/movies/search\", (string? genre, int? year) =>\n{\n    var results = movies.AsEnumerable();\n    \n    if (!string.IsNullOrEmpty(genre))\n        results = results.Where(m => m.Genre.Equals(genre, StringComparison.OrdinalIgnoreCase));\n    if (year.HasValue)\n        results = results.Where(m => m.Year == year);\n    \n    return results.ToList();\n})\n    .WithName(\"SearchMovies\")\n    .WithSummary(\"Search movies\")\n    .WithDescription(\"Search movies by genre and/or release year\")\n    .WithTags(\"Movies\")\n    .Produces<List<Movie>>(StatusCodes.Status200OK);\n\n// POST /movies - Add new movie\napp.MapPost(\"/movies\", (CreateMovieRequest request) =>\n{\n    var movie = new Movie(\n        movies.Max(m => m.Id) + 1,\n        request.Title,\n        request.Genre,\n        request.Year,\n        request.Rating\n    );\n    movies.Add(movie);\n    return Results.Created($\"/movies/{movie.Id}\", movie);\n})\n    .WithName(\"CreateMovie\")\n    .WithSummary(\"Add new movie\")\n    .WithDescription(\"Adds a new movie to the database\")\n    .WithTags(\"Movies\")\n    .Accepts<CreateMovieRequest>(\"application/json\")\n    .Produces<Movie>(StatusCodes.Status201Created);\n\n// Print Scalar UI URL\nConsole.WriteLine(\"Scalar API Documentation: http://localhost:5000/scalar/v1\");\n\napp.Run();\n\npublic record Movie(int Id, string Title, string Genre, int Year, double Rating);\n\npublic record CreateMovieRequest(string Title, string Genre, int Year, double Rating);",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should configure Scalar with title",
+                  "expectedOutput": "Movie Database API",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should use DeepSpace theme",
+                  "expectedOutput": "DeepSpace",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add 'using Scalar.AspNetCore;' at the top for Scalar extensions."
+                },
+                {
+                  "level": 2,
+                  "text": "Chain Scalar options: options.WithTitle(...).WithTheme(...).WithDarkMode(...)"
+                },
+                {
+                  "level": 3,
+                  "text": "For Python default: .WithDefaultHttpClient(ScalarTarget.Python, ScalarClient.Requests)"
+                },
+                {
+                  "level": 4,
+                  "text": "WithSummary is short (shown in list), WithDescription is longer (shown when expanded)."
+                },
+                {
+                  "level": 5,
+                  "text": "Scalar UI is at /scalar/v1 by default. Print this URL for easy access."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to call MapOpenApi before MapScalarApiReference",
+                  "consequence": "Scalar needs the OpenAPI spec! Without MapOpenApi(), Scalar has no documentation to display.",
+                  "correction": "Always call app.MapOpenApi() before app.MapScalarApiReference()."
+                },
+                {
+                  "mistake": "Missing the using statement for Scalar.AspNetCore",
+                  "consequence": "Extension methods like WithTitle, WithTheme won't be available.",
+                  "correction": "Add 'using Scalar.AspNetCore;' at the top of your file."
+                },
+                {
+                  "mistake": "Confusing WithSummary and WithDescription",
+                  "consequence": "Summary appears in endpoint list, Description appears in expanded view. Wrong placement = poor UX.",
+                  "correction": "Summary: 3-5 words (like a headline). Description: Full explanation of endpoint behavior."
+                },
+                {
+                  "mistake": "Not installing the Scalar.AspNetCore NuGet package",
+                  "consequence": "MapScalarApiReference method won't exist. Compile error.",
+                  "correction": "Run: dotnet add package Scalar.AspNetCore"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-18-03",
+          "title": "API Versioning Strategies",
+          "moduleId": "module-18",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're running a restaurant that needs to update its menu:\n\nNO VERSIONING (Breaking Changes):\n- Change the pasta recipe completely\n- Regular customers order 'pasta' expecting the old dish\n- They get something totally different!\n- Angry customers, bad reviews\n\nURL VERSIONING (/v1/, /v2/):\n- Two separate menus: 'Classic Menu' and 'New Menu'\n- Customers explicitly choose which one\n- 'I'll order from the Classic Menu'\n- Clear separation, no surprises\n\nHEADER VERSIONING (X-API-Version):\n- Same menu card, but waiter asks 'Which style?'\n- Customer says 'Traditional style' or 'Modern style'\n- Menu looks the same, behavior differs\n- Cleaner URLs, but hidden complexity\n\nQUERY VERSIONING (?api-version=1.0):\n- Add a note to your order: 'Pasta (original recipe)'\n- Works with bookmarks and sharing\n- Version visible in URL\n- Easy to test different versions\n\nWHY VERSION?\n- Clients break when APIs change\n- Mobile apps can't update instantly\n- Partners need migration time\n- Multiple versions can coexist\n\nVERSION STRATEGIES:\n1. URL Path: /api/v1/users (most common, very clear)\n2. Query String: /api/users?version=1.0 (easy to add)\n3. Header: X-API-Version: 1 (clean URLs)\n4. Media Type: Accept: application/vnd.api.v1+json (RESTful)\n\nThink: 'API versioning is like having multiple menus - old customers keep their favorites, new customers get improvements!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== API VERSIONING IN .NET 9 =====\n// Install: dotnet add package Asp.Versioning.Http\n\nusing Asp.Versioning;\nusing Asp.Versioning.Builder;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Add API versioning services\nbuilder.Services.AddApiVersioning(options =>\n{\n    options.DefaultApiVersion = new ApiVersion(1, 0);\n    options.AssumeDefaultVersionWhenUnspecified = true;\n    options.ReportApiVersions = true;  // Adds api-supported-versions header\n    \n    // Support multiple versioning schemes\n    options.ApiVersionReader = ApiVersionReader.Combine(\n        new UrlSegmentApiVersionReader(),           // /api/v1/\n        new QueryStringApiVersionReader(\"version\"), // ?version=1.0\n        new HeaderApiVersionReader(\"X-API-Version\") // X-API-Version: 1.0\n    );\n}).AddApiExplorer(options =>\n{\n    options.GroupNameFormat = \"'v'VVV\";  // v1, v2, etc.\n    options.SubstituteApiVersionInUrl = true;\n});\n\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\napp.MapOpenApi();\n\n// ===== VERSION 1 ENDPOINTS =====\nvar v1 = app.NewVersionedApi()\n    .MapGroup(\"/api/v{version:apiVersion}/products\")\n    .HasApiVersion(new ApiVersion(1, 0));\n\nv1.MapGet(\"/\", () =>\n{\n    // V1: Simple product list\n    return new[]\n    {\n        new ProductV1(1, \"Laptop\", 999.99m),\n        new ProductV1(2, \"Mouse\", 29.99m)\n    };\n})\n    .WithName(\"GetProductsV1\")\n    .WithTags(\"Products\");\n\nv1.MapGet(\"/{id}\", (int id) =>\n{\n    return new ProductV1(id, \"Sample Product\", 49.99m);\n})\n    .WithName(\"GetProductByIdV1\")\n    .WithTags(\"Products\");\n\n// ===== VERSION 2 ENDPOINTS (Enhanced) =====\nvar v2 = app.NewVersionedApi()\n    .MapGroup(\"/api/v{version:apiVersion}/products\")\n    .HasApiVersion(new ApiVersion(2, 0));\n\nv2.MapGet(\"/\", () =>\n{\n    // V2: Enhanced product with more fields\n    return new[]\n    {\n        new ProductV2(1, \"Laptop\", 999.99m, \"Electronics\", 50, 4.5),\n        new ProductV2(2, \"Mouse\", 29.99m, \"Accessories\", 200, 4.8)\n    };\n})\n    .WithName(\"GetProductsV2\")\n    .WithTags(\"Products\");\n\nv2.MapGet(\"/{id}\", (int id) =>\n{\n    return new ProductV2(id, \"Sample Product\", 49.99m, \"General\", 100, 4.0);\n})\n    .WithName(\"GetProductByIdV2\")\n    .WithTags(\"Products\");\n\n// Search only available in V2\nv2.MapGet(\"/search\", (string? category, decimal? minPrice) =>\n{\n    return new[] { new ProductV2(1, \"Found Item\", minPrice ?? 0, category ?? \"All\", 10, 4.0) };\n})\n    .WithName(\"SearchProductsV2\")\n    .WithTags(\"Products\");\n\nConsole.WriteLine(\"API Versions:\");\nConsole.WriteLine(\"  V1: /api/v1/products (basic)\");\nConsole.WriteLine(\"  V2: /api/v2/products (enhanced + search)\");\nConsole.WriteLine();\nConsole.WriteLine(\"Version can be specified via:\");\nConsole.WriteLine(\"  URL: /api/v1/products\");\nConsole.WriteLine(\"  Query: /api/products?version=1.0\");\nConsole.WriteLine(\"  Header: X-API-Version: 1.0\");\n\napp.Run();\n\n// ===== VERSION-SPECIFIC MODELS =====\n\n// V1: Basic product\npublic record ProductV1(int Id, string Name, decimal Price);\n\n// V2: Enhanced with category, stock, rating\npublic record ProductV2(\n    int Id, \n    string Name, \n    decimal Price, \n    string Category, \n    int StockCount, \n    double Rating\n);",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`builder.Services.AddApiVersioning()`**: Registers versioning services. Configure default version, readers, and behavior here.\n\n**`new ApiVersion(1, 0)`**: Represents version 1.0. Use major.minor format. Major = breaking changes, Minor = additions.\n\n**`AssumeDefaultVersionWhenUnspecified`**: If client doesn't specify version, use default. Good for backward compatibility.\n\n**`ReportApiVersions = true`**: Adds `api-supported-versions` header to responses. Clients can discover available versions.\n\n**`ApiVersionReader.Combine(...)`**: Accept version from multiple sources. URL segment is clearest, header is cleanest.\n\n**`app.NewVersionedApi()`**: Creates a version set for grouping endpoints. Use with MapGroup for organized versioning.\n\n**`.HasApiVersion(new ApiVersion(1, 0))`**: Marks the group as version 1.0. Only clients requesting v1.0 reach these endpoints.\n\n**`{version:apiVersion}`**: Route constraint that captures version from URL. Works with SubstituteApiVersionInUrl.\n\n**Version-specific models**: Common pattern is ProductV1, ProductV2. Each version can have different properties without breaking clients."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-03-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a versioned User API with two versions!\n\n1. Configure API versioning with:\n   - Default version: 1.0\n   - Support URL segment, query string, and header\n   - Report versions in response headers\n\n2. Version 1 endpoints (UserV1: Id, Name, Email):\n   - GET /api/v1/users - List users\n   - GET /api/v1/users/{id} - Get user by ID\n\n3. Version 2 endpoints (UserV2: Id, Name, Email, Role, CreatedAt):\n   - GET /api/v2/users - List users (enhanced)\n   - GET /api/v2/users/{id} - Get user by ID\n   - GET /api/v2/users/admins - NEW: Get only admin users\n\n4. Print available API versions and how to access them",
+              "starterCode": "// TODO: Add using statement for Asp.Versioning\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// TODO: Configure API versioning\n// - DefaultApiVersion: 1.0\n// - AssumeDefaultVersionWhenUnspecified: true\n// - ReportApiVersions: true\n// - ApiVersionReader: Combine URL, Query, Header readers\n\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\napp.MapOpenApi();\n\n// Sample data\nvar usersV1 = new[]\n{\n    new UserV1(1, \"Alice\", \"alice@example.com\"),\n    new UserV1(2, \"Bob\", \"bob@example.com\")\n};\n\nvar usersV2 = new[]\n{\n    new UserV2(1, \"Alice\", \"alice@example.com\", \"Admin\", DateTime.Parse(\"2024-01-15\")),\n    new UserV2(2, \"Bob\", \"bob@example.com\", \"User\", DateTime.Parse(\"2024-03-20\"))\n};\n\n// TODO: Create V1 endpoint group at /api/v{version:apiVersion}/users\n// - GET / - return usersV1\n// - GET /{id} - return user by ID\n\n// TODO: Create V2 endpoint group\n// - GET / - return usersV2\n// - GET /{id} - return user by ID (V2)\n// - GET /admins - return only admin users (new in V2!)\n\n// TODO: Print API version info\nConsole.WriteLine(\"Available API Versions:\");\n// Print how to access each version\n\napp.Run();\n\n// TODO: Define UserV1 record (Id, Name, Email)\n// TODO: Define UserV2 record (Id, Name, Email, Role, CreatedAt)",
+              "solution": "using Asp.Versioning;\nusing Asp.Versioning.Builder;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Configure API versioning\nbuilder.Services.AddApiVersioning(options =>\n{\n    options.DefaultApiVersion = new ApiVersion(1, 0);\n    options.AssumeDefaultVersionWhenUnspecified = true;\n    options.ReportApiVersions = true;\n    \n    options.ApiVersionReader = ApiVersionReader.Combine(\n        new UrlSegmentApiVersionReader(),\n        new QueryStringApiVersionReader(\"version\"),\n        new HeaderApiVersionReader(\"X-API-Version\")\n    );\n}).AddApiExplorer(options =>\n{\n    options.GroupNameFormat = \"'v'VVV\";\n    options.SubstituteApiVersionInUrl = true;\n});\n\nbuilder.Services.AddOpenApi();\n\nvar app = builder.Build();\n\napp.MapOpenApi();\n\n// Sample data\nvar usersV1 = new[]\n{\n    new UserV1(1, \"Alice\", \"alice@example.com\"),\n    new UserV1(2, \"Bob\", \"bob@example.com\")\n};\n\nvar usersV2 = new[]\n{\n    new UserV2(1, \"Alice\", \"alice@example.com\", \"Admin\", DateTime.Parse(\"2024-01-15\")),\n    new UserV2(2, \"Bob\", \"bob@example.com\", \"User\", DateTime.Parse(\"2024-03-20\")),\n    new UserV2(3, \"Charlie\", \"charlie@example.com\", \"Admin\", DateTime.Parse(\"2024-02-10\"))\n};\n\n// V1 endpoint group\nvar v1 = app.NewVersionedApi()\n    .MapGroup(\"/api/v{version:apiVersion}/users\")\n    .HasApiVersion(new ApiVersion(1, 0));\n\nv1.MapGet(\"/\", () => usersV1)\n    .WithName(\"GetUsersV1\")\n    .WithTags(\"Users\");\n\nv1.MapGet(\"/{id}\", (int id) =>\n{\n    var user = usersV1.FirstOrDefault(u => u.Id == id);\n    return user is not null ? Results.Ok(user) : Results.NotFound();\n})\n    .WithName(\"GetUserByIdV1\")\n    .WithTags(\"Users\");\n\n// V2 endpoint group (enhanced)\nvar v2 = app.NewVersionedApi()\n    .MapGroup(\"/api/v{version:apiVersion}/users\")\n    .HasApiVersion(new ApiVersion(2, 0));\n\nv2.MapGet(\"/\", () => usersV2)\n    .WithName(\"GetUsersV2\")\n    .WithTags(\"Users\");\n\nv2.MapGet(\"/{id}\", (int id) =>\n{\n    var user = usersV2.FirstOrDefault(u => u.Id == id);\n    return user is not null ? Results.Ok(user) : Results.NotFound();\n})\n    .WithName(\"GetUserByIdV2\")\n    .WithTags(\"Users\");\n\n// NEW in V2: Get admins only\nv2.MapGet(\"/admins\", () =>\n{\n    return usersV2.Where(u => u.Role == \"Admin\").ToArray();\n})\n    .WithName(\"GetAdminUsersV2\")\n    .WithDescription(\"Returns only users with Admin role (V2 only)\")\n    .WithTags(\"Users\");\n\n// Print API version info\nConsole.WriteLine(\"=== Available API Versions ===\");\nConsole.WriteLine();\nConsole.WriteLine(\"Version 1.0 (Basic):\");\nConsole.WriteLine(\"  GET /api/v1/users\");\nConsole.WriteLine(\"  GET /api/v1/users/{id}\");\nConsole.WriteLine();\nConsole.WriteLine(\"Version 2.0 (Enhanced):\");\nConsole.WriteLine(\"  GET /api/v2/users (includes Role, CreatedAt)\");\nConsole.WriteLine(\"  GET /api/v2/users/{id}\");\nConsole.WriteLine(\"  GET /api/v2/users/admins (NEW!)\");\nConsole.WriteLine();\nConsole.WriteLine(\"Access via:\");\nConsole.WriteLine(\"  URL: /api/v1/users or /api/v2/users\");\nConsole.WriteLine(\"  Query: /api/users?version=1.0\");\nConsole.WriteLine(\"  Header: X-API-Version: 1.0\");\n\napp.Run();\n\npublic record UserV1(int Id, string Name, string Email);\n\npublic record UserV2(int Id, string Name, string Email, string Role, DateTime CreatedAt);",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should configure API versioning",
+                  "expectedOutput": "AddApiVersioning",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should create versioned endpoint groups",
+                  "expectedOutput": "NewVersionedApi",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add 'using Asp.Versioning;' and 'using Asp.Versioning.Builder;' for versioning extensions."
+                },
+                {
+                  "level": 2,
+                  "text": "ApiVersionReader.Combine() accepts multiple readers to support different versioning schemes."
+                },
+                {
+                  "level": 3,
+                  "text": "app.NewVersionedApi().MapGroup(...).HasApiVersion(...) creates a versioned endpoint group."
+                },
+                {
+                  "level": 4,
+                  "text": "Use {version:apiVersion} in the route template to capture version from URL."
+                },
+                {
+                  "level": 5,
+                  "text": "V2-only endpoints can simply be added to the v2 group - they won't exist in V1."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to install Asp.Versioning.Http package",
+                  "consequence": "AddApiVersioning and related types won't be available.",
+                  "correction": "Run: dotnet add package Asp.Versioning.Http"
+                },
+                {
+                  "mistake": "Using same route without version differentiation",
+                  "consequence": "Ambiguous route matching. Requests fail with 500 error.",
+                  "correction": "Use HasApiVersion() on groups or MapToApiVersion() on individual endpoints."
+                },
+                {
+                  "mistake": "Not adding .AddApiExplorer() for OpenAPI support",
+                  "consequence": "Versioned endpoints won't appear correctly in Swagger/Scalar documentation.",
+                  "correction": "Chain .AddApiExplorer() after AddApiVersioning() for proper OpenAPI integration."
+                },
+                {
+                  "mistake": "Breaking changes without version bump",
+                  "consequence": "Existing clients break. Mobile apps crash. Partners angry.",
+                  "correction": "Always create new version for breaking changes. Keep old version for migration period."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-18-04",
+          "title": "Generating Typed Clients with Kiota",
+          "moduleId": "module-18",
+          "order": 4,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're learning to order at a restaurant in a foreign country:\n\nMANUAL APPROACH (HttpClient):\n- You have a phrasebook (documentation)\n- Construct sentences manually\n- 'I... want... the... pasta... please'\n- Easy to make mistakes\n- No help if you mispronounce\n\nTYPED CLIENT APPROACH (Kiota):\n- You have a translation app!\n- Tap 'Order Pasta' button\n- App speaks perfect phrases for you\n- Can't make grammar mistakes\n- App knows all valid menu items\n\nCLIENT GENERATION EXPLAINED:\n\nWITHOUT GENERATED CLIENT:\n```\nvar response = await http.GetAsync(\"/api/products\");\nvar json = await response.Content.ReadAsStringAsync();\nvar products = JsonSerializer.Deserialize<List<Product>>(json);\n```\n- Manual URL construction\n- Manual deserialization\n- No IntelliSense\n- Typos cause runtime errors\n\nWITH KIOTA CLIENT:\n```\nvar products = await client.Products.GetAsync();\n```\n- Strongly typed methods\n- IntelliSense shows available endpoints\n- Compile-time error checking\n- Request/response types included\n\nKIOTA BENEFITS:\n- Microsoft's official OpenAPI client generator\n- Supports C#, Python, TypeScript, Go, Java\n- Lightweight, no heavy dependencies\n- Incremental regeneration\n- Works with any OpenAPI spec\n\nThink: 'Kiota turns your API documentation into a perfectly typed SDK - like autocomplete for API calls!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== GENERATING TYPED CLIENTS WITH KIOTA =====\n\n// Step 1: Install Kiota CLI\n// dotnet tool install --global Microsoft.OpenApi.Kiota\n\n// Step 2: Generate client from OpenAPI spec\n// kiota generate -l CSharp -o ./Client -d https://api.example.com/openapi.json -c ApiClient -n MyApp.Client\n\n// Step 3: Install required packages in your project\n// dotnet add package Microsoft.Kiota.Abstractions\n// dotnet add package Microsoft.Kiota.Http.HttpClientLibrary\n// dotnet add package Microsoft.Kiota.Serialization.Json\n\n// ===== USING THE GENERATED CLIENT =====\n\nusing Microsoft.Kiota.Abstractions.Authentication;\nusing Microsoft.Kiota.Http.HttpClientLibrary;\n\n// Create authentication provider (anonymous for public APIs)\nvar authProvider = new AnonymousAuthenticationProvider();\n\n// Create HTTP client adapter\nvar adapter = new HttpClientRequestAdapter(authProvider)\n{\n    BaseUrl = \"https://api.example.com\"\n};\n\n// Create the typed API client\nvar client = new ApiClient(adapter);\n\n// ===== STRONGLY TYPED API CALLS =====\n\n// GET all products - fully typed!\nvar products = await client.Products.GetAsync();\nforeach (var product in products ?? Enumerable.Empty<Product>())\n{\n    Console.WriteLine($\"{product.Id}: {product.Name} - ${product.Price}\");\n}\n\n// GET single product by ID\nvar laptop = await client.Products[1].GetAsync();\nConsole.WriteLine($\"Found: {laptop?.Name}\");\n\n// POST create new product\nvar newProduct = await client.Products.PostAsync(new CreateProductRequest\n{\n    Name = \"New Gadget\",\n    Price = 199.99m,\n    Category = \"Electronics\"\n});\nConsole.WriteLine($\"Created: {newProduct?.Id}\");\n\n// PUT update product\nawait client.Products[1].PutAsync(new UpdateProductRequest\n{\n    Name = \"Updated Laptop\",\n    Price = 1099.99m\n});\n\n// DELETE product\nawait client.Products[99].DeleteAsync();\n\n// ===== QUERY PARAMETERS (Typed!) =====\n\n// Search with typed query parameters\nvar searchResults = await client.Products.GetAsync(config =>\n{\n    config.QueryParameters.Category = \"Electronics\";\n    config.QueryParameters.MinPrice = 100;\n    config.QueryParameters.MaxPrice = 500;\n});\n\n// ===== ERROR HANDLING =====\n\ntry\n{\n    var product = await client.Products[99999].GetAsync();\n}\ncatch (ApiException ex) when (ex.ResponseStatusCode == 404)\n{\n    Console.WriteLine(\"Product not found!\");\n}\n\n// ===== KIOTA CLI COMMANDS =====\n\n/*\n// Generate client from local file\nkiota generate -l CSharp -o ./Client -d ./openapi.json -c ApiClient -n MyApp.Client\n\n// Generate from URL\nkiota generate -l CSharp -o ./Client -d https://api.example.com/openapi/v1.json -c ApiClient -n MyApp.Client\n\n// Update existing client (incremental)\nkiota update -o ./Client\n\n// Generate for specific API paths only\nkiota generate -l CSharp -o ./Client -d ./openapi.json -c ApiClient --include-path \"/products/**\"\n\n// Languages: CSharp, TypeScript, Python, Go, Java, Ruby, PHP, Swift\n*/\n\nConsole.WriteLine(\"Kiota generates:\");\nConsole.WriteLine(\"- Strongly typed request/response models\");\nConsole.WriteLine(\"- Fluent API client with IntelliSense\");\nConsole.WriteLine(\"- Query parameter objects\");\nConsole.WriteLine(\"- Proper error types\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`kiota generate`**: CLI command to generate a client. Creates models and client classes from OpenAPI spec.\n\n**`-l CSharp`**: Target language. Options: CSharp, TypeScript, Python, Go, Java, Ruby, PHP, Swift.\n\n**`-o ./Client`**: Output directory. Generated files go here. Usually add to .gitignore or commit for easier builds.\n\n**`-d <spec>`**: OpenAPI document. Can be local file path or URL to live spec.\n\n**`-c ApiClient`**: Client class name. The main class you'll instantiate to make API calls.\n\n**`-n MyApp.Client`**: Namespace for generated code. Choose something that fits your project structure.\n\n**`HttpClientRequestAdapter`**: Kiota's HTTP implementation using HttpClient. Handles serialization, headers, etc.\n\n**`AnonymousAuthenticationProvider`**: For APIs without auth. Use other providers for OAuth, API keys, etc.\n\n**`client.Products.GetAsync()`**: Fluent API matches your endpoints. Products endpoint becomes Products property.\n\n**`client.Products[id].GetAsync()`**: Path parameters use indexer syntax. Clean and intuitive.\n\n**`config.QueryParameters`**: Typed query parameters. IntelliSense shows what's available. Compile-time checking."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-04-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Demonstrate Kiota client usage patterns!\n\n1. Show the Kiota CLI command to generate a client:\n   - Language: CSharp\n   - Output: ./BookstoreClient\n   - Document: https://api.bookstore.com/openapi.json\n   - Client name: BookstoreApiClient\n   - Namespace: Bookstore.Client\n\n2. Write code that demonstrates using a generated client:\n   - Set up authentication provider and adapter\n   - Create the API client\n   - GET all books\n   - GET single book by ISBN\n   - POST create new book\n   - Search books with query parameters\n   - Handle 404 error gracefully\n\n3. Print the benefits of using Kiota over manual HttpClient",
+              "starterCode": "using Microsoft.Kiota.Abstractions.Authentication;\nusing Microsoft.Kiota.Http.HttpClientLibrary;\n\nConsole.WriteLine(\"=== Kiota Client Generation ===\");\n\n// TODO: Print the Kiota CLI command to generate the client\n// kiota generate -l CSharp -o ./BookstoreClient ...\n\nConsole.WriteLine(\"\\n=== Using Generated Client ===\");\n\n// TODO: Create authentication provider (anonymous for demo)\n\n// TODO: Create HTTP client adapter with base URL\n\n// TODO: Create the typed API client\n// var client = new BookstoreApiClient(adapter);\n\n// Simulated client usage (comments showing what real code would look like)\nConsole.WriteLine(\"\\nTyped API Calls:\");\n\n// TODO: Show GET all books\n// var books = await client.Books.GetAsync();\n\n// TODO: Show GET book by ISBN\n// var book = await client.Books[\"978-0-13-468599-1\"].GetAsync();\n\n// TODO: Show POST create book\n// var newBook = await client.Books.PostAsync(new CreateBookRequest { ... });\n\n// TODO: Show search with query parameters\n// var results = await client.Books.GetAsync(config => {\n//     config.QueryParameters.Genre = \"Fiction\";\n// });\n\n// TODO: Show error handling for 404\n\n// TODO: Print benefits of Kiota\nConsole.WriteLine(\"\\n=== Benefits of Kiota ===\");",
+              "solution": "using Microsoft.Kiota.Abstractions.Authentication;\nusing Microsoft.Kiota.Http.HttpClientLibrary;\n\nConsole.WriteLine(\"=== Kiota Client Generation ===\");\nConsole.WriteLine();\n\n// Print the Kiota CLI command\nConsole.WriteLine(\"Generate client with this command:\");\nConsole.WriteLine();\nConsole.WriteLine(\"kiota generate \\\\\");\nConsole.WriteLine(\"  -l CSharp \\\\\");\nConsole.WriteLine(\"  -o ./BookstoreClient \\\\\");\nConsole.WriteLine(\"  -d https://api.bookstore.com/openapi.json \\\\\");\nConsole.WriteLine(\"  -c BookstoreApiClient \\\\\");\nConsole.WriteLine(\"  -n Bookstore.Client\");\n\nConsole.WriteLine(\"\\n=== Using Generated Client ===\");\nConsole.WriteLine();\n\n// Create authentication provider\nConsole.WriteLine(\"// Set up authentication (anonymous for public API)\");\nConsole.WriteLine(\"var authProvider = new AnonymousAuthenticationProvider();\");\nvar authProvider = new AnonymousAuthenticationProvider();\n\n// Create HTTP client adapter\nConsole.WriteLine();\nConsole.WriteLine(\"// Create adapter with base URL\");\nConsole.WriteLine(\"var adapter = new HttpClientRequestAdapter(authProvider)\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    BaseUrl = \\\"https://api.bookstore.com\\\"\");\nConsole.WriteLine(\"}}\");\n\n// Create client\nConsole.WriteLine();\nConsole.WriteLine(\"// Create strongly-typed API client\");\nConsole.WriteLine(\"var client = new BookstoreApiClient(adapter);\");\n\nConsole.WriteLine(\"\\n=== Typed API Calls ===\");\nConsole.WriteLine();\n\n// GET all books\nConsole.WriteLine(\"// GET all books - fully typed!\");\nConsole.WriteLine(\"var books = await client.Books.GetAsync();\");\nConsole.WriteLine(\"foreach (var book in books)\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    Console.WriteLine($\\\"{{book.Title}} by {{book.Author}}\\\");\");\nConsole.WriteLine(\"}}\");\n\nConsole.WriteLine();\n\n// GET by ISBN\nConsole.WriteLine(\"// GET single book by ISBN\");\nConsole.WriteLine(\"var book = await client.Books[\\\"978-0-13-468599-1\\\"].GetAsync();\");\nConsole.WriteLine(\"Console.WriteLine($\\\"Found: {{book?.Title}}\\\");\");\n\nConsole.WriteLine();\n\n// POST create\nConsole.WriteLine(\"// POST create new book\");\nConsole.WriteLine(\"var newBook = await client.Books.PostAsync(new CreateBookRequest\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    Title = \\\"My New Book\\\",\");\nConsole.WriteLine(\"    Author = \\\"Jane Doe\\\",\");\nConsole.WriteLine(\"    Price = 29.99m\");\nConsole.WriteLine(\"}});\");\n\nConsole.WriteLine();\n\n// Search with query parameters\nConsole.WriteLine(\"// Search with typed query parameters\");\nConsole.WriteLine(\"var results = await client.Books.GetAsync(config =>\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    config.QueryParameters.Genre = \\\"Science Fiction\\\";\");\nConsole.WriteLine(\"    config.QueryParameters.MinPrice = 10m;\");\nConsole.WriteLine(\"    config.QueryParameters.MaxPrice = 50m;\");\nConsole.WriteLine(\"}});\");\n\nConsole.WriteLine();\n\n// Error handling\nConsole.WriteLine(\"// Handle 404 gracefully\");\nConsole.WriteLine(\"try\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    var book = await client.Books[\\\"invalid-isbn\\\"].GetAsync();\");\nConsole.WriteLine(\"}}\");\nConsole.WriteLine(\"catch (ApiException ex) when (ex.ResponseStatusCode == 404)\");\nConsole.WriteLine(\"{{\");\nConsole.WriteLine(\"    Console.WriteLine(\\\"Book not found!\\\");\");\nConsole.WriteLine(\"}}\");\n\nConsole.WriteLine(\"\\n=== Benefits of Kiota ===\");\nConsole.WriteLine();\nConsole.WriteLine(\"1. Strongly Typed: All requests and responses have proper types\");\nConsole.WriteLine(\"2. IntelliSense: IDE shows available endpoints and parameters\");\nConsole.WriteLine(\"3. Compile-Time Errors: Catch typos before runtime\");\nConsole.WriteLine(\"4. Auto-Updated: Regenerate when API changes\");\nConsole.WriteLine(\"5. Fluent API: client.Books[id].GetAsync() is intuitive\");\nConsole.WriteLine(\"6. Cross-Platform: Same patterns for C#, Python, TypeScript, etc.\");\nConsole.WriteLine(\"7. Lightweight: Minimal dependencies unlike other generators\");\nConsole.WriteLine();\nConsole.WriteLine(\"Compare to manual HttpClient:\");\nConsole.WriteLine(\"  BEFORE: await http.GetAsync(\\\"/books/\" + isbn);\");\nConsole.WriteLine(\"  AFTER:  await client.Books[isbn].GetAsync();\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should show Kiota generate command",
+                  "expectedOutput": "kiota generate",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should demonstrate typed client usage",
+                  "expectedOutput": "GetAsync",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Kiota CLI: kiota generate -l CSharp -o <output> -d <spec> -c <classname> -n <namespace>"
+                },
+                {
+                  "level": 2,
+                  "text": "AnonymousAuthenticationProvider is for public APIs without authentication."
+                },
+                {
+                  "level": 3,
+                  "text": "HttpClientRequestAdapter takes auth provider and needs BaseUrl set."
+                },
+                {
+                  "level": 4,
+                  "text": "Path parameters use indexer: client.Books[isbn] not client.Books(isbn)."
+                },
+                {
+                  "level": 5,
+                  "text": "Query params: GetAsync(config => { config.QueryParameters.Prop = value; })"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not installing required Kiota packages",
+                  "consequence": "Missing types like HttpClientRequestAdapter, AnonymousAuthenticationProvider.",
+                  "correction": "Install: Microsoft.Kiota.Abstractions, Microsoft.Kiota.Http.HttpClientLibrary, Microsoft.Kiota.Serialization.Json"
+                },
+                {
+                  "mistake": "Forgetting to set BaseUrl on adapter",
+                  "consequence": "Requests go to wrong URL or fail completely.",
+                  "correction": "Always set adapter.BaseUrl = \"https://your-api.com\";"
+                },
+                {
+                  "mistake": "Using () instead of [] for path parameters",
+                  "consequence": "Compile error. Kiota uses indexer syntax for path params.",
+                  "correction": "Use client.Books[id] not client.Books(id) for path parameters."
+                },
+                {
+                  "mistake": "Not regenerating client after API changes",
+                  "consequence": "Client is out of sync with API. Runtime errors or missing endpoints.",
+                  "correction": "Run 'kiota update -o ./Client' after API changes or add to CI/CD pipeline."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-18-05",
+          "title": "API Security Documentation",
+          "moduleId": "module-18",
+          "order": 5,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're documenting the security at a private club:\n\nPOOR DOCUMENTATION:\n- 'Members only'\n- New visitors don't know how to become members\n- Security guards explain rules verbally each time\n- Inconsistent enforcement\n\nGOOD DOCUMENTATION:\n- Clear membership types (Basic, VIP, Staff)\n- Explicit entry requirements listed\n- ID verification process explained\n- Guest access rules documented\n\nAPI SECURITY DOCUMENTATION:\n\nAUTHENTICATION SCHEMES:\n1. Bearer Token (JWT)\n   - 'Show your membership card'\n   - Header: Authorization: Bearer <token>\n\n2. API Key\n   - 'Enter your access code'\n   - Header: X-API-Key: your-secret-key\n\n3. OAuth 2.0\n   - 'Login through our partner'\n   - Redirect flow for third-party apps\n\n4. Basic Auth\n   - 'Username and password'\n   - Header: Authorization: Basic base64(user:pass)\n\nOPENAPI SECURITY:\n- Define security schemes once\n- Apply to endpoints or globally\n- Document required scopes\n- Show in Swagger/Scalar UI\n\nBENEFITS:\n- Developers know how to authenticate\n- Auto-generated client handles auth\n- Security requirements are explicit\n- Testing tools can authenticate\n\nThink: 'Security documentation is your API's bouncer manual - everyone knows the rules before arriving!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== API SECURITY DOCUMENTATION =====\n\nusing Microsoft.AspNetCore.Authentication.JwtBearer;\nusing Microsoft.IdentityModel.Tokens;\nusing Microsoft.OpenApi.Models;\nusing System.Text;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Configure JWT Authentication\nbuilder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)\n    .AddJwtBearer(options =>\n    {\n        options.TokenValidationParameters = new TokenValidationParameters\n        {\n            ValidateIssuer = true,\n            ValidateAudience = true,\n            ValidateLifetime = true,\n            ValidateIssuerSigningKey = true,\n            ValidIssuer = \"https://myapi.com\",\n            ValidAudience = \"https://myapi.com\",\n            IssuerSigningKey = new SymmetricSecurityKey(\n                Encoding.UTF8.GetBytes(\"YourSuperSecretKeyHere32Chars!!\"))\n        };\n    });\n\nbuilder.Services.AddAuthorization();\n\n// Configure OpenAPI with security schemes\nbuilder.Services.AddOpenApi(options =>\n{\n    options.AddDocumentTransformer((document, context, cancellationToken) =>\n    {\n        // Define JWT Bearer security scheme\n        document.Components ??= new OpenApiComponents();\n        document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>\n        {\n            [\"Bearer\"] = new OpenApiSecurityScheme\n            {\n                Type = SecuritySchemeType.Http,\n                Scheme = \"bearer\",\n                BearerFormat = \"JWT\",\n                Description = \"Enter your JWT token. Example: eyJhbGciOiJIUzI1NiIs...\"\n            },\n            [\"ApiKey\"] = new OpenApiSecurityScheme\n            {\n                Type = SecuritySchemeType.ApiKey,\n                In = ParameterLocation.Header,\n                Name = \"X-API-Key\",\n                Description = \"API key for server-to-server communication\"\n            }\n        };\n\n        // Apply Bearer auth globally (can be overridden per-endpoint)\n        document.SecurityRequirements = new List<OpenApiSecurityRequirement>\n        {\n            new OpenApiSecurityRequirement\n            {\n                [new OpenApiSecurityScheme\n                {\n                    Reference = new OpenApiReference\n                    {\n                        Type = ReferenceType.SecurityScheme,\n                        Id = \"Bearer\"\n                    }\n                }] = Array.Empty<string>()\n            }\n        };\n\n        return Task.CompletedTask;\n    });\n});\n\nvar app = builder.Build();\n\napp.UseAuthentication();\napp.UseAuthorization();\n\napp.MapOpenApi();\n\n// ===== PUBLIC ENDPOINTS (No Auth) =====\n\napp.MapGet(\"/health\", () => new { Status = \"Healthy\", Timestamp = DateTime.UtcNow })\n    .WithName(\"HealthCheck\")\n    .WithTags(\"System\")\n    .WithDescription(\"Public health check endpoint - no authentication required\")\n    .AllowAnonymous();  // Explicitly public\n\napp.MapPost(\"/auth/login\", (LoginRequest request) =>\n{\n    // In real app: validate credentials, generate JWT\n    return Results.Ok(new\n    {\n        Token = \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n        ExpiresIn = 3600\n    });\n})\n    .WithName(\"Login\")\n    .WithTags(\"Authentication\")\n    .WithDescription(\"Authenticate with username/password to receive JWT token\")\n    .AllowAnonymous();\n\n// ===== PROTECTED ENDPOINTS =====\n\napp.MapGet(\"/products\", () =>\n{\n    return new[]\n    {\n        new Product(1, \"Laptop\", 999.99m),\n        new Product(2, \"Mouse\", 29.99m)\n    };\n})\n    .WithName(\"GetProducts\")\n    .WithTags(\"Products\")\n    .WithDescription(\"Returns all products. Requires Bearer token authentication.\")\n    .RequireAuthorization();  // Requires valid JWT\n\napp.MapGet(\"/admin/users\", () =>\n{\n    return new[] { new User(1, \"admin@example.com\", \"Admin\") };\n})\n    .WithName(\"GetUsers\")\n    .WithTags(\"Admin\")\n    .WithDescription(\"Admin only endpoint. Requires Bearer token with 'admin' role.\")\n    .RequireAuthorization(\"AdminPolicy\");  // Requires specific policy\n\nConsole.WriteLine(\"Security configured:\");\nConsole.WriteLine(\"  Public: /health, /auth/login\");\nConsole.WriteLine(\"  Protected: /products (Bearer token)\");\nConsole.WriteLine(\"  Admin: /admin/users (Bearer + admin role)\");\n\napp.Run();\n\n// ===== MODELS =====\n\npublic record LoginRequest(string Username, string Password);\npublic record Product(int Id, string Name, decimal Price);\npublic record User(int Id, string Email, string Role);",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`SecuritySchemeType.Http`**: Standard HTTP authentication (Bearer, Basic). Most common for JWT tokens.\n\n**`SecuritySchemeType.ApiKey`**: API key in header, query, or cookie. Good for server-to-server calls.\n\n**`SecuritySchemeType.OAuth2`**: OAuth 2.0 flows (authorization code, client credentials). For third-party integrations.\n\n**`BearerFormat = \"JWT\"`**: Hints that the bearer token is a JWT. Helps documentation tools and developers.\n\n**`ParameterLocation.Header`**: Where the API key is sent. Options: Header, Query, Cookie.\n\n**`document.Components.SecuritySchemes`**: Defines available auth methods. Referenced by name in security requirements.\n\n**`document.SecurityRequirements`**: Global security applied to all endpoints. Individual endpoints can override.\n\n**`.AllowAnonymous()`**: Explicitly marks endpoint as public. Overrides global security requirements.\n\n**`.RequireAuthorization()`**: Endpoint requires authentication. User must present valid credentials.\n\n**`.RequireAuthorization(\"PolicyName\")`**: Requires specific authorization policy. For role-based or claims-based access.\n\n**`AddDocumentTransformer`**: .NET 9 way to customize OpenAPI document. Add security schemes, info, servers, etc."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-05-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a fully documented API with security!\n\n1. Configure OpenAPI with these security schemes:\n   - Bearer (JWT token)\n   - ApiKey (header: X-API-Key)\n\n2. Create these endpoints with proper security documentation:\n   \n   PUBLIC (AllowAnonymous):\n   - GET /health - Health check\n   - POST /auth/login - Get JWT token\n   \n   PROTECTED (RequireAuthorization):\n   - GET /orders - List user's orders\n   - POST /orders - Create new order\n   \n   ADMIN (RequireAuthorization with policy):\n   - GET /admin/orders - List ALL orders\n   - DELETE /admin/orders/{id} - Delete any order\n\n3. Each endpoint needs proper tags, descriptions, and response types\n\n4. Print a summary of the security configuration",
+              "starterCode": "using Microsoft.OpenApi.Models;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// TODO: Add authentication and authorization services\n\n// TODO: Configure OpenAPI with security schemes\n// Use AddDocumentTransformer to add:\n// - Bearer scheme (JWT)\n// - ApiKey scheme (X-API-Key header)\n\nvar app = builder.Build();\n\n// TODO: Add authentication/authorization middleware\n\napp.MapOpenApi();\n\n// ===== PUBLIC ENDPOINTS =====\n\n// TODO: GET /health - AllowAnonymous\n\n// TODO: POST /auth/login - AllowAnonymous, returns token\n\n// ===== PROTECTED ENDPOINTS =====\n\n// TODO: GET /orders - RequireAuthorization\n// Returns user's orders\n\n// TODO: POST /orders - RequireAuthorization\n// Creates new order\n\n// ===== ADMIN ENDPOINTS =====\n\n// TODO: GET /admin/orders - RequireAuthorization(\"Admin\")\n// Returns ALL orders (admin only)\n\n// TODO: DELETE /admin/orders/{id} - RequireAuthorization(\"Admin\")\n// Deletes order (admin only)\n\n// TODO: Print security summary\n\napp.Run();\n\n// TODO: Define models (LoginRequest, Order, CreateOrderRequest)",
+              "solution": "using Microsoft.AspNetCore.Authentication.JwtBearer;\nusing Microsoft.OpenApi.Models;\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Add authentication and authorization\nbuilder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)\n    .AddJwtBearer();\nbuilder.Services.AddAuthorization(options =>\n{\n    options.AddPolicy(\"Admin\", policy => policy.RequireRole(\"Admin\"));\n});\n\n// Configure OpenAPI with security schemes\nbuilder.Services.AddOpenApi(options =>\n{\n    options.AddDocumentTransformer((document, context, cancellationToken) =>\n    {\n        document.Components ??= new OpenApiComponents();\n        document.Components.SecuritySchemes = new Dictionary<string, OpenApiSecurityScheme>\n        {\n            [\"Bearer\"] = new OpenApiSecurityScheme\n            {\n                Type = SecuritySchemeType.Http,\n                Scheme = \"bearer\",\n                BearerFormat = \"JWT\",\n                Description = \"JWT token from /auth/login endpoint\"\n            },\n            [\"ApiKey\"] = new OpenApiSecurityScheme\n            {\n                Type = SecuritySchemeType.ApiKey,\n                In = ParameterLocation.Header,\n                Name = \"X-API-Key\",\n                Description = \"API key for service accounts\"\n            }\n        };\n        return Task.CompletedTask;\n    });\n});\n\nvar app = builder.Build();\n\napp.UseAuthentication();\napp.UseAuthorization();\n\napp.MapOpenApi();\n\n// ===== PUBLIC ENDPOINTS =====\n\napp.MapGet(\"/health\", () => new { Status = \"Healthy\", Time = DateTime.UtcNow })\n    .WithName(\"HealthCheck\")\n    .WithTags(\"System\")\n    .WithDescription(\"Public health check - no authentication required\")\n    .Produces<object>(StatusCodes.Status200OK)\n    .AllowAnonymous();\n\napp.MapPost(\"/auth/login\", (LoginRequest request) =>\n{\n    // Validate and return token (simplified)\n    return Results.Ok(new { Token = \"jwt.token.here\", ExpiresIn = 3600 });\n})\n    .WithName(\"Login\")\n    .WithTags(\"Authentication\")\n    .WithDescription(\"Authenticate to receive JWT token\")\n    .Accepts<LoginRequest>(\"application/json\")\n    .Produces<object>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status401Unauthorized)\n    .AllowAnonymous();\n\n// ===== PROTECTED ENDPOINTS =====\n\nvar orders = new List<Order>\n{\n    new(1, \"user@example.com\", 99.99m, \"Pending\"),\n    new(2, \"user@example.com\", 149.99m, \"Shipped\")\n};\n\napp.MapGet(\"/orders\", () => orders)\n    .WithName(\"GetUserOrders\")\n    .WithTags(\"Orders\")\n    .WithDescription(\"Get current user's orders. Requires Bearer token.\")\n    .Produces<List<Order>>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status401Unauthorized)\n    .RequireAuthorization();\n\napp.MapPost(\"/orders\", (CreateOrderRequest request) =>\n{\n    var order = new Order(orders.Count + 1, \"user@example.com\", request.Amount, \"Pending\");\n    orders.Add(order);\n    return Results.Created($\"/orders/{order.Id}\", order);\n})\n    .WithName(\"CreateOrder\")\n    .WithTags(\"Orders\")\n    .WithDescription(\"Create new order. Requires Bearer token.\")\n    .Accepts<CreateOrderRequest>(\"application/json\")\n    .Produces<Order>(StatusCodes.Status201Created)\n    .Produces(StatusCodes.Status401Unauthorized)\n    .RequireAuthorization();\n\n// ===== ADMIN ENDPOINTS =====\n\napp.MapGet(\"/admin/orders\", () => orders)\n    .WithName(\"GetAllOrders\")\n    .WithTags(\"Admin\")\n    .WithDescription(\"Get ALL orders. Admin role required.\")\n    .Produces<List<Order>>(StatusCodes.Status200OK)\n    .Produces(StatusCodes.Status401Unauthorized)\n    .Produces(StatusCodes.Status403Forbidden)\n    .RequireAuthorization(\"Admin\");\n\napp.MapDelete(\"/admin/orders/{id}\", (int id) =>\n{\n    var order = orders.FirstOrDefault(o => o.Id == id);\n    if (order is null) return Results.NotFound();\n    orders.Remove(order);\n    return Results.NoContent();\n})\n    .WithName(\"DeleteOrder\")\n    .WithTags(\"Admin\")\n    .WithDescription(\"Delete any order. Admin role required.\")\n    .Produces(StatusCodes.Status204NoContent)\n    .Produces(StatusCodes.Status404NotFound)\n    .Produces(StatusCodes.Status401Unauthorized)\n    .Produces(StatusCodes.Status403Forbidden)\n    .RequireAuthorization(\"Admin\");\n\n// Print security summary\nConsole.WriteLine(\"=== API Security Configuration ===\");\nConsole.WriteLine();\nConsole.WriteLine(\"Security Schemes:\");\nConsole.WriteLine(\"  - Bearer: JWT token in Authorization header\");\nConsole.WriteLine(\"  - ApiKey: X-API-Key header\");\nConsole.WriteLine();\nConsole.WriteLine(\"Endpoint Security:\");\nConsole.WriteLine(\"  PUBLIC (no auth):\");\nConsole.WriteLine(\"    GET  /health\");\nConsole.WriteLine(\"    POST /auth/login\");\nConsole.WriteLine();\nConsole.WriteLine(\"  PROTECTED (Bearer token):\");\nConsole.WriteLine(\"    GET  /orders\");\nConsole.WriteLine(\"    POST /orders\");\nConsole.WriteLine();\nConsole.WriteLine(\"  ADMIN (Bearer + Admin role):\");\nConsole.WriteLine(\"    GET    /admin/orders\");\nConsole.WriteLine(\"    DELETE /admin/orders/{id}\");\n\napp.Run();\n\npublic record LoginRequest(string Username, string Password);\npublic record Order(int Id, string UserEmail, decimal Amount, string Status);\npublic record CreateOrderRequest(decimal Amount);",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should configure security schemes",
+                  "expectedOutput": "SecuritySchemes",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should have protected endpoints",
+                  "expectedOutput": "RequireAuthorization",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use AddDocumentTransformer to add security schemes to the OpenAPI document."
+                },
+                {
+                  "level": 2,
+                  "text": "document.Components.SecuritySchemes is a Dictionary<string, OpenApiSecurityScheme>."
+                },
+                {
+                  "level": 3,
+                  "text": ".AllowAnonymous() makes endpoint public, .RequireAuthorization() makes it protected."
+                },
+                {
+                  "level": 4,
+                  "text": ".RequireAuthorization(\"Admin\") requires the 'Admin' policy defined in AddAuthorization."
+                },
+                {
+                  "level": 5,
+                  "text": "Document 401 Unauthorized and 403 Forbidden responses for protected endpoints."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting UseAuthentication() and UseAuthorization() middleware",
+                  "consequence": "RequireAuthorization has no effect. All endpoints are accessible.",
+                  "correction": "Add app.UseAuthentication(); app.UseAuthorization(); before mapping endpoints."
+                },
+                {
+                  "mistake": "Not documenting 401/403 response codes",
+                  "consequence": "API consumers don't know authentication is required until they get errors.",
+                  "correction": "Add .Produces(StatusCodes.Status401Unauthorized) and 403 for admin endpoints."
+                },
+                {
+                  "mistake": "Using AllowAnonymous on sensitive endpoints",
+                  "consequence": "Security bypass! Anyone can access protected resources.",
+                  "correction": "Only use AllowAnonymous on truly public endpoints like health checks and login."
+                },
+                {
+                  "mistake": "Hardcoding secrets in source code",
+                  "consequence": "Secrets exposed in version control. Security breach risk.",
+                  "correction": "Use configuration, environment variables, or secret managers for JWT keys."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
