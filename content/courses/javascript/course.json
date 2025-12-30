@@ -6947,7 +6947,81 @@
       "description": "Master the cutting-edge JavaScript features in ES2025. Learn Promise.try(), Import Attributes, RegExp modifiers, and get a preview of upcoming decorators.",
       "difficulty": "intermediate",
       "estimatedHours": 2,
-      "lessons": []
+      "lessons": [
+        {
+          "id": "17.1",
+          "title": "Modern Promise Patterns (Promise.try & withResolvers)",
+          "moduleId": "module-17",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Safety Net and The Remote Control",
+              "content": "Imagine a circus trapeze act. `Promise.try()` is like having a safety net - whether the acrobat jumps wrong (sync error) or misses the catch mid-air (async error), they land safely in the net.\n\n`Promise.withResolvers()` is like having a remote control for a TV that's across the room. Instead of being stuck next to the TV to change channels (executor callback), you can control it from anywhere (separate resolve/reject functions)."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Promise.try() - The Universal Error Catcher",
+              "content": "Promise.try() wraps any function and catches ALL errors - sync or async:",
+              "language": "javascript",
+              "code": "// The Problem: Sync errors bypass .catch()\nfunction riskySync(input) {\n  if (!input) throw new Error('Input required!');  // This is sync!\n  return fetch(`/api/${input}`);\n}\n\n// OLD WAY: Errors thrown before the promise is created aren't caught\nriskySync(null).catch(console.error);  // UNCAUGHT! throws before .catch() is set up\n\n// OLD WORKAROUND: Wrap in Promise.resolve().then()\nPromise.resolve().then(() => riskySync(null)).catch(console.error);  // Works but ugly\n\n// NEW WAY: Promise.try() handles everything\nPromise.try(() => riskySync(null)).catch(console.error);  // 'Input required!' - caught!\n\n// Works with any return value:\nPromise.try(() => 42).then(console.log);                    // 42\nPromise.try(() => fetch('/api')).then(r => console.log(r)); // Response\nPromise.try(() => { throw 'oops'; }).catch(console.log);    // 'oops'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Promise.withResolvers() - External Control",
+              "content": "Get resolve/reject functions outside the executor:",
+              "language": "javascript",
+              "code": "// OLD WAY: Hoisting variables out of executor\nlet resolveFromOutside, rejectFromOutside;\nconst promise = new Promise((resolve, reject) => {\n  resolveFromOutside = resolve;\n  rejectFromOutside = reject;\n});\nresolveFromOutside('done');  // Awkward!\n\n// NEW WAY: Promise.withResolvers()\nconst { promise: p, resolve, reject } = Promise.withResolvers();\n\n// Now you can pass resolve/reject anywhere\nsetTimeout(() => resolve('done'), 1000);\n\n// Real-world example: Deferred pattern\nfunction createDeferred() {\n  return Promise.withResolvers();\n}\n\nconst deferred = createDeferred();\neventEmitter.once('complete', deferred.resolve);\neventEmitter.once('error', deferred.reject);\nawait deferred.promise;"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Each",
+              "content": "**Use Promise.try() when:**\n- Calling functions that might throw synchronously\n- Normalizing sync/async function returns\n- Building robust error handling chains\n\n**Use Promise.withResolvers() when:**\n- Building event-to-promise adapters\n- Creating deferred/lazy promises\n- Passing resolve/reject to callbacks or other functions\n- Implementing timeout patterns"
+            },
+            {
+              "type": "WARNING",
+              "title": "Don't Overuse",
+              "content": "1. **Don't wrap async functions in Promise.try()** - They already return promises!\n```javascript\nasync function safe() { /* ... */ }\n\n// WRONG: Unnecessary wrapping\nPromise.try(() => safe());\n\n// RIGHT: Just call it\nsafe();\n```\n\n2. **Don't use withResolvers() for simple cases** - The executor pattern is fine for simple promises."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "17.1-challenge",
+              "title": "Build a Timeout Wrapper",
+              "description": "Use Promise.withResolvers() to create a timeout wrapper.",
+              "instructions": "Create a function that takes a promise and a timeout. If the promise doesn't resolve within the timeout, reject with 'Timeout'.",
+              "starterCode": "function withTimeout(promise, ms) {\n  // Use Promise.withResolvers() here\n  // Set up a timeout that rejects\n  // Race between the timeout and the original promise\n}\n\n// Test it:\nconst slow = new Promise(r => setTimeout(() => r('done'), 5000));\nwithTimeout(slow, 1000).catch(console.log);  // Should log 'Timeout'",
+              "solution": "function withTimeout(promise, ms) {\n  const { promise: timeoutPromise, reject } = Promise.withResolvers();\n  \n  const timer = setTimeout(() => reject(new Error('Timeout')), ms);\n  \n  return Promise.race([promise, timeoutPromise])\n    .finally(() => clearTimeout(timer));\n}\n\nconst slow = new Promise(r => setTimeout(() => r('done'), 5000));\nwithTimeout(slow, 1000).catch(err => console.log(err.message));",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Times out slow promises",
+                  "expectedOutput": "Timeout",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use Promise.race() to race between the original promise and your timeout promise"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not cleaning up the timeout on success",
+                  "consequence": "Memory leak if many timeouts are created",
+                  "correction": "Use .finally(() => clearTimeout(timer)) to clean up"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
