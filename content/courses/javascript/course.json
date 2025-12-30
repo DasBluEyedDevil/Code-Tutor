@@ -6674,6 +6674,72 @@
               "difficulty": "beginner"
             }
           ]
+        },
+        {
+          "id": "16.2",
+          "title": "JSDoc Basics (@param, @returns, @type)",
+          "moduleId": "module-16",
+          "order": 2,
+          "estimatedMinutes": 25,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Labels on Shipping Boxes",
+              "content": "Every shipping box has labels: 'FRAGILE', 'THIS SIDE UP', 'CONTENTS: Electronics'. Without labels, the delivery person has to guess.\n\nJSDoc tags are your labels. `@param` says 'this box contains a string'. `@returns` says 'you'll get back a number'. Anyone handling your code knows exactly what to expect."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The Core JSDoc Tags",
+              "content": "These three tags cover 90% of your typing needs:",
+              "language": "javascript",
+              "code": "/**\n * Calculates the total price with tax\n * @param {number} price - The base price\n * @param {number} [taxRate=0.1] - Tax rate (default 10%)\n * @returns {number} The total with tax\n */\nfunction calculateTotal(price, taxRate = 0.1) {\n  return price * (1 + taxRate);\n}\n\n// @type for variables\n/** @type {string[]} */\nconst names = ['Alice', 'Bob', 'Charlie'];\n\n/** @type {{ id: number, name: string }} */\nconst user = { id: 1, name: 'Alice' };\n\n// @type for destructuring\n/** @type {{ port: number, host: string }} */\nconst { port, host } = config;"
+            },
+            {
+              "type": "THEORY",
+              "title": "JSDoc Type Syntax",
+              "content": "**Primitive types:**\n- `{string}` - text\n- `{number}` - any number\n- `{boolean}` - true/false\n- `{null}` - null value\n- `{undefined}` - undefined value\n\n**Arrays:**\n- `{string[]}` - array of strings\n- `{Array<number>}` - array of numbers (alternative syntax)\n\n**Objects:**\n- `{{ name: string, age: number }}` - inline object type\n- `{Object}` - any object (avoid, too vague)\n\n**Optional parameters:**\n- `{string} [name]` - optional string\n- `{number} [count=0]` - optional with default\n\n**Union types:**\n- `{string|number}` - either string or number\n- `{string|null}` - string or null"
+            },
+            {
+              "type": "WARNING",
+              "title": "JSDoc Gotchas",
+              "content": "1. **Put JSDoc DIRECTLY above the function** - No blank lines between!\n```javascript\n// WRONG - blank line breaks the connection\n/**\n * My function\n */\n\nfunction myFunc() {}\n\n// RIGHT - no blank line\n/**\n * My function\n */\nfunction myFunc() {}\n```\n\n2. **Use curly braces around types**: It's `@param {string}` not `@param string`\n\n3. **Arrays need element type**: `{string[]}` not just `{array}`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16.2-challenge",
+              "title": "Document the API Function",
+              "description": "Add complete JSDoc documentation to this API function.",
+              "instructions": "Add @param and @returns tags to document this function. The id should be a number, and the function returns a Promise that resolves to a user object with id and name properties.",
+              "starterCode": "// Add JSDoc here\nasync function getUser(id) {\n  const response = await fetch(`/api/users/${id}`);\n  return response.json();\n}\n\nconst user = await getUser(42);\nconsole.log(user.name);",
+              "solution": "/**\n * Fetches a user by their ID\n * @param {number} id - The user's ID\n * @returns {Promise<{ id: number, name: string }>} The user object\n */\nasync function getUser(id) {\n  const response = await fetch(`/api/users/${id}`);\n  return response.json();\n}\n\nconst user = await getUser(42);\nconsole.log(user.name);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Function is documented with JSDoc",
+                  "expectedOutput": "Alice",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For async functions, the @returns type should be Promise<...>"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting Promise wrapper on async function returns",
+                  "consequence": "The actual return type of async functions is always a Promise",
+                  "correction": "@returns {Promise<{ id: number, name: string }>}"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     }
