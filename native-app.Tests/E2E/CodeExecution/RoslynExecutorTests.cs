@@ -22,7 +22,8 @@ public class RoslynExecutorTests
             "System.IO",
             "System.Linq",
             "System.Text",
-            "System.Text.RegularExpressions"
+            "System.Text.RegularExpressions",
+            "System.Threading.Tasks"
         );
 
     [Fact]

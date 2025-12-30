@@ -30,12 +30,19 @@ public class AnimatedContentControl : ContentControl
             typeof(AnimatedContentControl),
             new PropertyMetadata(60.0));
 
-    public static readonly DependencyProperty NavigationDirectionProperty =
+    public static readonly DependencyProperty NavigationDirectionProperty =     
         DependencyProperty.Register(
             nameof(NavigationDirection),
             typeof(NavigationDirection),
             typeof(AnimatedContentControl),
             new PropertyMetadata(NavigationDirection.Forward));
+
+    public static readonly DependencyProperty TransitionTypeProperty =
+        DependencyProperty.Register(
+            nameof(TransitionType),
+            typeof(ContentTransition),
+            typeof(AnimatedContentControl),
+            new PropertyMetadata(ContentTransition.SlideAndFade));
 
     public Duration TransitionDuration
     {
@@ -51,8 +58,14 @@ public class AnimatedContentControl : ContentControl
 
     public NavigationDirection NavigationDirection
     {
-        get => (NavigationDirection)GetValue(NavigationDirectionProperty);
+        get => (NavigationDirection)GetValue(NavigationDirectionProperty);      
         set => SetValue(NavigationDirectionProperty, value);
+    }
+
+    public ContentTransition TransitionType
+    {
+        get => (ContentTransition)GetValue(TransitionTypeProperty);
+        set => SetValue(TransitionTypeProperty, value);
     }
 
     static AnimatedContentControl()
@@ -79,14 +92,14 @@ public class AnimatedContentControl : ContentControl
         _previousPresenter = new ContentPresenter
         {
             Opacity = 0,
-            RenderTransform = new TranslateTransform(),
+            RenderTransform = CreatePresenterTransform(),
             RenderTransformOrigin = new Point(0.5, 0.5)
         };
 
         _currentPresenter = new ContentPresenter
         {
             Content = Content,
-            RenderTransform = new TranslateTransform(),
+            RenderTransform = CreatePresenterTransform(),
             RenderTransformOrigin = new Point(0.5, 0.5)
         };
 
@@ -137,12 +150,79 @@ public class AnimatedContentControl : ContentControl
         // Set up the transition
         _previousPresenter.Content = oldContent;
         _previousPresenter.Opacity = 1;
-        ((TranslateTransform)_previousPresenter.RenderTransform).X = 0;
+        ResetTransforms(_previousPresenter);
 
         _currentPresenter.Content = newContent;
         _currentPresenter.Opacity = 0;
 
-        // Calculate slide direction
+        ApplyTransitionAnimations();
+    }
+
+    private static TransformGroup CreatePresenterTransform()
+    {
+        var group = new TransformGroup();
+        group.Children.Add(new ScaleTransform(1, 1));
+        group.Children.Add(new TranslateTransform());
+        return group;
+    }
+
+    private static ScaleTransform GetScaleTransform(ContentPresenter presenter)
+    {
+        return (ScaleTransform)((TransformGroup)presenter.RenderTransform).Children[0];
+    }
+
+    private static TranslateTransform GetTranslateTransform(ContentPresenter presenter)
+    {
+        return (TranslateTransform)((TransformGroup)presenter.RenderTransform).Children[1];
+    }
+
+    private static void ResetTransforms(ContentPresenter presenter)
+    {
+        GetScaleTransform(presenter).ScaleX = 1;
+        GetScaleTransform(presenter).ScaleY = 1;
+        GetTranslateTransform(presenter).X = 0;
+        GetTranslateTransform(presenter).Y = 0;
+    }
+
+    private void ApplyTransitionAnimations()
+    {
+        if (_currentPresenter == null || _previousPresenter == null)
+            return;
+
+        var duration = TransitionDuration;
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var fadeEasing = new QuadraticEase { EasingMode = EasingMode.EaseOut };
+
+        var oldOpacity = new DoubleAnimation(1, 0, duration) { EasingFunction = fadeEasing };
+        var newOpacity = new DoubleAnimation(0, 1, duration) { EasingFunction = fadeEasing };
+
+        ResetTransforms(_previousPresenter);
+        ResetTransforms(_currentPresenter);
+
+        _previousPresenter.BeginAnimation(OpacityProperty, oldOpacity);
+        _currentPresenter.BeginAnimation(OpacityProperty, newOpacity);
+
+        switch (TransitionType)
+        {
+            case ContentTransition.CrossFade:
+                break;
+            case ContentTransition.ZoomAndFade:
+                ApplyZoomTransition(0.98, easing);
+                break;
+            case ContentTransition.Morph:
+                ApplyMorphTransition(easing);
+                break;
+            default:
+                ApplySlideTransition(easing);
+                break;
+        }
+    }
+
+    private void ApplySlideTransition(IEasingFunction easing)
+    {
+        if (_currentPresenter == null || _previousPresenter == null)
+            return;
+
         double slideFrom = NavigationDirection == NavigationDirection.Forward
             ? SlideDistance
             : -SlideDistance;
@@ -150,25 +230,56 @@ public class AnimatedContentControl : ContentControl
             ? -SlideDistance
             : SlideDistance;
 
-        ((TranslateTransform)_currentPresenter.RenderTransform).X = slideFrom;
+        var previousTranslate = GetTranslateTransform(_previousPresenter);
+        var currentTranslate = GetTranslateTransform(_currentPresenter);
 
-        // Create animations
-        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        currentTranslate.X = slideFrom;
 
-        // Animate old content out
-        var oldOpacity = new DoubleAnimation(1, 0, TransitionDuration) { EasingFunction = easing };
         var oldSlide = new DoubleAnimation(0, slideTo, TransitionDuration) { EasingFunction = easing };
-
-        // Animate new content in
-        var newOpacity = new DoubleAnimation(0, 1, TransitionDuration) { EasingFunction = easing };
         var newSlide = new DoubleAnimation(slideFrom, 0, TransitionDuration) { EasingFunction = easing };
 
-        // Apply animations
-        _previousPresenter.BeginAnimation(OpacityProperty, oldOpacity);
-        ((TranslateTransform)_previousPresenter.RenderTransform).BeginAnimation(TranslateTransform.XProperty, oldSlide);
+        previousTranslate.BeginAnimation(TranslateTransform.XProperty, oldSlide);
+        currentTranslate.BeginAnimation(TranslateTransform.XProperty, newSlide);
+    }
 
-        _currentPresenter.BeginAnimation(OpacityProperty, newOpacity);
-        ((TranslateTransform)_currentPresenter.RenderTransform).BeginAnimation(TranslateTransform.XProperty, newSlide);
+    private void ApplyZoomTransition(double startScale, IEasingFunction easing)
+    {
+        if (_currentPresenter == null || _previousPresenter == null)
+            return;
+
+        var previousScale = GetScaleTransform(_previousPresenter);
+        var currentScale = GetScaleTransform(_currentPresenter);
+
+        currentScale.ScaleX = startScale;
+        currentScale.ScaleY = startScale;
+
+        var oldScale = new DoubleAnimation(1, startScale, TransitionDuration) { EasingFunction = easing };
+        var newScale = new DoubleAnimation(startScale, 1, TransitionDuration) { EasingFunction = easing };
+
+        previousScale.BeginAnimation(ScaleTransform.ScaleXProperty, oldScale);
+        previousScale.BeginAnimation(ScaleTransform.ScaleYProperty, oldScale);
+        currentScale.BeginAnimation(ScaleTransform.ScaleXProperty, newScale);
+        currentScale.BeginAnimation(ScaleTransform.ScaleYProperty, newScale);
+    }
+
+    private void ApplyMorphTransition(IEasingFunction easing)
+    {
+        if (_currentPresenter == null || _previousPresenter == null)
+            return;
+
+        var previousScale = GetScaleTransform(_previousPresenter);
+        var currentScale = GetScaleTransform(_currentPresenter);
+
+        currentScale.ScaleX = 0.96;
+        currentScale.ScaleY = 0.96;
+
+        var oldScale = new DoubleAnimation(1, 1.04, TransitionDuration) { EasingFunction = easing };
+        var newScale = new DoubleAnimation(0.96, 1, TransitionDuration) { EasingFunction = easing };
+
+        previousScale.BeginAnimation(ScaleTransform.ScaleXProperty, oldScale);
+        previousScale.BeginAnimation(ScaleTransform.ScaleYProperty, oldScale);
+        currentScale.BeginAnimation(ScaleTransform.ScaleXProperty, newScale);
+        currentScale.BeginAnimation(ScaleTransform.ScaleYProperty, newScale);
     }
 
     /// <summary>
@@ -194,4 +305,12 @@ public enum NavigationDirection
 {
     Forward,
     Back
+}
+
+public enum ContentTransition
+{
+    SlideAndFade,
+    CrossFade,
+    ZoomAndFade,
+    Morph
 }

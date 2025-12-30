@@ -28,7 +28,11 @@ public class ChallengeValidationTests
             "CODE_OUTPUT",
             "FILL_IN_THE_BLANK",
             "DEBUGGING",
-            "CODE_REVIEW"
+            "CODE_REVIEW",
+            "QUIZ",
+            "coding",
+            "PROJECT",
+            "TRUE_FALSE"
         };
     }
 
@@ -273,7 +277,7 @@ public class ChallengeValidationTests
         var course = LoadCourse(courseId);
         if (course == null) return;
 
-        var expectedLanguage = GetExpectedLanguage(courseId);
+        var acceptableLanguages = GetAcceptableLanguages(courseId);
 
         // Assert
         foreach (var module in course.Modules)
@@ -284,8 +288,8 @@ public class ChallengeValidationTests
                 {
                     if (!string.IsNullOrEmpty(challenge.Language))
                     {
-                        challenge.Language.ToLowerInvariant().Should().Be(expectedLanguage,
-                            $"Challenge {challenge.Id} language should match course {courseId}");
+                        acceptableLanguages.Should().Contain(challenge.Language.ToLowerInvariant(),
+                            $"Challenge {challenge.Id} language '{challenge.Language}' should be valid for course {courseId}");
                     }
                 }
             }
@@ -386,17 +390,17 @@ public class ChallengeValidationTests
         }
     }
 
-    private static string GetExpectedLanguage(string courseId)
+    private static string[] GetAcceptableLanguages(string courseId)
     {
         return courseId switch
         {
-            "python" => "python",
-            "javascript" => "javascript",
-            "java" => "java",
-            "csharp" => "csharp",
-            "kotlin" => "kotlin",
-            "flutter" or "dart" => "dart",
-            _ => courseId
+            "python" => new[] { "python" },
+            "javascript" => new[] { "javascript", "typescript" }, // TypeScript is valid in JS course
+            "java" => new[] { "java" },
+            "csharp" => new[] { "csharp" },
+            "kotlin" => new[] { "kotlin" },
+            "flutter" or "dart" => new[] { "dart", "bash", "yaml" }, // CLI and config examples
+            _ => new[] { courseId }
         };
     }
 

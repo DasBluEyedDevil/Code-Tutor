@@ -30,7 +30,7 @@
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "This example demonstrates the concepts in action.",
+              "content": "This example shows your first C# program using Console.WriteLine to display text to the screen.",
               "code": "// YOUR FIRST C# PROGRAM!\n// This is a comment - the computer ignores it\n// Comments help humans understand the code\n\nConsole.WriteLine(\"Hello, World!\");\n\n// Let's break this down:\n// Console = The black window where text appears\n// WriteLine = Write a line of text\n// \"Hello, World!\" = The text to display\n// ; = End of instruction (like a period in English)\n\n// More examples:\nConsole.WriteLine(\"Welcome to C#!\");\nConsole.WriteLine(\"Programming is fun!\");\nConsole.WriteLine(\"I am learning C#!\");\n\n// Each instruction runs in order:\nConsole.WriteLine(\"First\");   // Runs 1st\nConsole.WriteLine(\"Second\");  // Runs 2nd\nConsole.WriteLine(\"Third\");   // Runs 3rd\n\n// Output:\n// First\n// Second\n// Third",
               "language": "csharp"
             },
@@ -2597,19 +2597,16 @@
               ],
               "hints": [
                 {
-                  "id": "hint-1",
-                  "text": "Use 'var pixel = new char[3, 3] { [0, 0] = 'X', ... }' syntax. Each cell is specified with [row, col] = value.",
-                  "order": 1
+                  "level": 1,
+                  "text": "Use 'var pixel = new char[3, 3] { [0, 0] = 'X', ... }' syntax. Each cell is specified with [row, col] = value."
                 },
                 {
-                  "id": "hint-2",
-                  "text": "For dictionaries: 'var dict = new Dictionary<string, int> { [\"key\"] = value }'. String keys go in quotes!",
-                  "order": 2
+                  "level": 2,
+                  "text": "For dictionaries: 'var dict = new Dictionary<string, int> { [\"key\"] = value }'. String keys go in quotes!"
                 },
                 {
-                  "id": "hint-3",
-                  "text": "Nested for loops: outer loop for rows (0 to 2), inner loop for columns (0 to 2). Access with pixel[row, col].",
-                  "order": 3
+                  "level": 3,
+                  "text": "Nested for loops: outer loop for rows (0 to 2), inner loop for columns (0 to 2). Access with pixel[row, col]."
                 }
               ],
               "commonMistakes": [
@@ -3398,21 +3395,20 @@
               ],
               "hints": [
                 {
-                  "id": "hint-1",
-                  "text": "Use `params IEnumerable<string>` not `params string[]`",
-                  "order": 1
+                  "level": 1,
+                  "text": "Use `params IEnumerable<string>` not `params string[]`"
                 },
                 {
-                  "id": "hint-2",
-                  "text": "foreach works the same way on IEnumerable as on arrays",
-                  "order": 2
+                  "level": 2,
+                  "text": "foreach works the same way on IEnumerable as on arrays"
                 }
               ],
               "commonMistakes": [
                 {
                   "id": "mistake-1",
-                  "description": "Using params string[] instead of params IEnumerable<string>",
-                  "solution": "C# 13 extends params to work with IEnumerable<T>. This allows callers to pass existing collections without conversion."
+                  "mistake": "Using params string[] instead of params IEnumerable<string>",
+                  "consequence": "Callers must convert existing collections to arrays before passing them",
+                  "correction": "C# 13 extends params to work with IEnumerable<T>. This allows callers to pass existing collections without conversion."
                 }
               ],
               "difficulty": "intermediate"
@@ -4654,7 +4650,7 @@
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "This example demonstrates the concepts in action.",
+              "content": "This example demonstrates LINQ in action, comparing the traditional loop approach with the concise LINQ query syntax.",
               "code": "using System;\nusing System.Collections.Generic;\nusing System.Linq;  // MUST include System.Linq!\n\nList<int> numbers = new List<int> { 1, 5, 2, 8, 3, 9, 4, 7, 6 };\n\n// WITHOUT LINQ - manual loop\nList<int> evenNumbers = new List<int>();\nforeach (int num in numbers)\n{\n    if (num % 2 == 0)\n    {\n        evenNumbers.Add(num);\n    }\n}\nConsole.WriteLine(\"Even (without LINQ): \" + string.Join(\", \", evenNumbers));\n\n// WITH LINQ - one line!\nvar evenLinq = numbers.Where(n => n % 2 == 0);\nConsole.WriteLine(\"Even (with LINQ): \" + string.Join(\", \", evenLinq));\n\n// More LINQ examples\nvar greaterThanFive = numbers.Where(n => n > 5);\nvar sorted = numbers.OrderBy(n => n);\nvar firstThree = numbers.Take(3);\n\nConsole.WriteLine(\"Greater than 5: \" + string.Join(\", \", greaterThanFive));\nConsole.WriteLine(\"Sorted: \" + string.Join(\", \", sorted));\nConsole.WriteLine(\"First 3: \" + string.Join(\", \", firstThree));\n\n// QUERY SYNTAX (alternative)\nvar query = from n in numbers\n            where n > 5\n            orderby n descending\n            select n;\n\nConsole.WriteLine(\"Query syntax: \" + string.Join(\", \", query));",
               "language": "csharp"
             },
@@ -4775,7 +4771,7 @@
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Work with IEnumerable<T> and understand deferred execution!\n\n1. Create a List of strings: \"apple\", \"banana\", \"apricot\", \"blueberry\", \"avocado\"\n\n2. Use LINQ to create an IEnumerable<string> of fruits starting with 'a'\n   - DON'T use .ToList() yet!\n   - Print \"Query created\"\n\n3. Add \"cherry\" to the original list AFTER creating the query\n\n4. Now iterate the query result with foreach\n   - What do you notice? Does it include \"cherry\"?\n\n5. Create a second query for fruits longer than 6 characters\n   - Convert this one to a List with .ToList()\n   - Display the count and items",
-              "starterCode": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\nList<string> fruits = new List<string> { \"apple\", \"banana\", \"apricot\", \"blueberry\", \"avocado\" };\n\n// Query 1: starts with 'a' (deferred)\nIEnumerable<string> startsWithA = fruits.Where(f => /* condition */);\nConsole.WriteLine(\"Query created\");\n\n// Add item AFTER query creation\nfruits.Add(\"cherry\");\n\n// Iterate query 1\nforeach (string fruit in startsWithA)\n{\n    Console.WriteLine(\"Starts with A: \" + fruit);\n}\n\n// Query 2: longer than 6 characters (materialized)\nList<string> longFruits = fruits.Where(f => /* condition */).ToList();\nConsole.WriteLine(\"Long fruits count: \" + longFruits.Count);",
+              "starterCode": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\nList<string> fruits = new List<string> { \"apple\", \"banana\", \"apricot\", \"blueberry\", \"avocado\" };\n\n// Query 1: starts with 'a' (deferred)\n// TODO: Add your .Where() condition for fruits starting with 'a'\nIEnumerable<string> startsWithA = fruits.Where(f => /* condition */);\nConsole.WriteLine(\"Query created\");\n\n// Add item AFTER query creation\nfruits.Add(\"cherry\");\n\n// Iterate query 1\nforeach (string fruit in startsWithA)\n{\n    Console.WriteLine(\"Starts with A: \" + fruit);\n}\n\n// Query 2: longer than 6 characters (materialized)\n// TODO: Add your .Where() condition for fruits longer than 6 characters\nList<string> longFruits = fruits.Where(f => /* condition */).ToList();\nConsole.WriteLine(\"Long fruits count: \" + longFruits.Count);",
               "solution": "using System;\nusing System.Collections.Generic;\nusing System.Linq;\n\nList<string> fruits = new List<string> { \"apple\", \"banana\", \"apricot\", \"blueberry\", \"avocado\" };\n\nIEnumerable<string> startsWithA = fruits.Where(f => f.StartsWith(\"a\"));\nConsole.WriteLine(\"Query created (deferred execution)\");\n\nfruits.Add(\"cherry\");\nConsole.WriteLine(\"Added 'cherry' to list\");\n\nConsole.WriteLine(\"\\nFruits starting with 'a':\");\nforeach (string fruit in startsWithA)\n{\n    Console.WriteLine(\"- \" + fruit);\n}\n\nList<string> longFruits = fruits.Where(f => f.Length > 6).ToList();\nConsole.WriteLine(\"\\nLong fruits (>6 chars): \" + longFruits.Count);\nforeach (string fruit in longFruits)\n{\n    Console.WriteLine(\"- \" + fruit);\n}",
               "language": "csharp",
               "testCases": [
@@ -5885,24 +5881,20 @@
               ],
               "hints": [
                 {
-                  "id": "hint-1",
-                  "text": "Lock syntax: 'lock (_lock) { /* code */ }'. All reads AND writes to _balance must be inside lock blocks. The Lock type is in System.Threading namespace.",
-                  "order": 1
+                  "level": 1,
+                  "text": "Lock syntax: 'lock (_lock) { /* code */ }'. All reads AND writes to _balance must be inside lock blocks. The Lock type is in System.Threading namespace."
                 },
                 {
-                  "id": "hint-2",
-                  "text": "EnterScope alternative: 'using (_lock.EnterScope()) { /* code */ }'. The lock is automatically released when the using block exits, even if exception occurs.",
-                  "order": 2
+                  "level": 2,
+                  "text": "EnterScope alternative: 'using (_lock.EnterScope()) { /* code */ }'. The lock is automatically released when the using block exits, even if exception occurs."
                 },
                 {
-                  "id": "hint-3",
-                  "text": "Don't forget the Balance getter! Reading _balance outside a lock can return stale/torn values. ALWAYS protect shared mutable state, even for reads.",
-                  "order": 3
+                  "level": 3,
+                  "text": "Don't forget the Balance getter! Reading _balance outside a lock can return stale/torn values. ALWAYS protect shared mutable state, even for reads."
                 },
                 {
-                  "id": "hint-4",
-                  "text": "Withdraw check-then-act: The balance check AND subtraction must be in the SAME lock block. If you check outside, another thread might withdraw between check and action!",
-                  "order": 4
+                  "level": 4,
+                  "text": "Withdraw check-then-act: The balance check AND subtraction must be in the SAME lock block. If you check outside, another thread might withdraw between check and action!"
                 }
               ],
               "commonMistakes": [

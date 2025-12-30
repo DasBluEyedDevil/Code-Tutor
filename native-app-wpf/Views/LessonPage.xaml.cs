@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using CodeTutor.Wpf.Controls;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
@@ -31,6 +33,12 @@ public partial class LessonPage : UserControl
         _navigation = navigation;
         _tutorService = tutorService;
         _downloadService = downloadService;
+
+        // Refresh sidebar and highlight active lesson
+        var mainWindow = Application.Current.MainWindow as MainWindow;
+        var sidebar = new CourseSidebar(course, courseService, navigation, tutorService, downloadService);
+        sidebar.SetCurrentLesson(lesson);
+        mainWindow?.SetSidebarContent(sidebar);
 
         LoadLesson();
         SetupNavigation();
@@ -225,7 +233,7 @@ public partial class LessonPage : UserControl
     {
         if (_tutorChat == null)
         {
-            _tutorChat = new TutorChat(_tutorService, _downloadService);
+            _tutorChat = new TutorChat(_tutorService, _downloadService);        
             _tutorChat.CloseRequested += (s, e) => CloseTutorPanel();
             TutorContent.Content = _tutorChat;
         }
@@ -233,18 +241,53 @@ public partial class LessonPage : UserControl
         // Update context with current lesson info
         UpdateTutorContext();
 
-        // Open panel
-        TutorPanel.Width = 380;
+        AnimateTutorPanel(true);
         _isTutorOpen = true;
 
-        TutorToggleButton.Foreground = (Brush)FindResource("AccentGreenBrush");
+        TutorToggleButton.Foreground = (Brush)FindResource("AccentGreenBrush"); 
     }
 
     private void CloseTutorPanel()
     {
-        TutorPanel.Width = 0;
+        AnimateTutorPanel(false);
         _isTutorOpen = false;
         TutorToggleButton.Foreground = (Brush)FindResource("AccentPurpleBrush");
+    }
+
+    private void AnimateTutorPanel(bool open)
+    {
+        if (TutorPanel.RenderTransform is not TranslateTransform translate)
+        {
+            translate = new TranslateTransform();
+            TutorPanel.RenderTransform = translate;
+        }
+
+        var duration = TimeSpan.FromMilliseconds(260);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var targetWidth = open ? 380 : 0;
+        var targetOpacity = open ? 1 : 0;
+        var targetX = open ? 0 : 24;
+
+        TutorPanel.BeginAnimation(WidthProperty, new DoubleAnimation
+        {
+            To = targetWidth,
+            Duration = duration,
+            EasingFunction = easing
+        });
+
+        TutorPanel.BeginAnimation(OpacityProperty, new DoubleAnimation
+        {
+            To = targetOpacity,
+            Duration = duration,
+            EasingFunction = easing
+        });
+
+        translate.BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation
+        {
+            To = targetX,
+            Duration = duration,
+            EasingFunction = easing
+        });
     }
 
     private void UpdateTutorContext()

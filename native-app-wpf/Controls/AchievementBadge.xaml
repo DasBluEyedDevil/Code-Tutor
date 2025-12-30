@@ -1,0 +1,110 @@
+<UserControl x:Class="CodeTutor.Wpf.Controls.AchievementBadge"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:CodeTutor.Wpf.Controls"
+             IsHitTestVisible="False"
+             Visibility="Collapsed">
+    <UserControl.Resources>
+        <Storyboard x:Key="BadgeShowStoryboard">
+            <DoubleAnimation Storyboard.TargetName="BadgeScale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="0.9" To="1"
+                             Duration="0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <ElasticEase EasingMode="EaseOut" Oscillations="1" Springiness="6" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BadgeScale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="0.9" To="1"
+                             Duration="0:0:0.5">
+                <DoubleAnimation.EasingFunction>
+                    <ElasticEase EasingMode="EaseOut" Oscillations="1" Springiness="6" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BadgeTranslate"
+                             Storyboard.TargetProperty="X"
+                             From="40" To="0"
+                             Duration="0:0:0.35">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BadgeRoot"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1"
+                             Duration="0:0:0.3" />
+        </Storyboard>
+
+        <Storyboard x:Key="BadgeGlowStoryboard" RepeatBehavior="Forever" AutoReverse="True">
+            <DoubleAnimation Storyboard.TargetName="BadgeGlow"
+                             Storyboard.TargetProperty="BlurRadius"
+                             From="12" To="20"
+                             Duration="0:0:1.2" />
+            <DoubleAnimation Storyboard.TargetName="BadgeGlow"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.5" To="0.85"
+                             Duration="0:0:1.2" />
+        </Storyboard>
+
+        <Storyboard x:Key="BadgeHideStoryboard">
+            <DoubleAnimation Storyboard.TargetName="BadgeTranslate"
+                             Storyboard.TargetProperty="X"
+                             From="0" To="20"
+                             Duration="0:0:0.2">
+                <DoubleAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseIn" />
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="BadgeRoot"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="0:0:0.2" />
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Border x:Name="BadgeRoot"
+            Background="{StaticResource GlassDarkBrush}"
+            BorderBrush="{StaticResource AccentGreenBrush}"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="12"
+            Opacity="0">
+        <Border.Effect>
+            <DropShadowEffect x:Name="BadgeGlow"
+                              Color="{StaticResource AccentGreen}"
+                              BlurRadius="12"
+                              ShadowDepth="0"
+                              Opacity="0.5" />
+        </Border.Effect>
+        <Border.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform x:Name="BadgeScale" ScaleX="0.9" ScaleY="0.9" />
+                <TranslateTransform x:Name="BadgeTranslate" X="40" />
+            </TransformGroup>
+        </Border.RenderTransform>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Border Width="28" Height="28"
+                    Background="{StaticResource AccentGreenBrush}"
+                    CornerRadius="6"
+                    VerticalAlignment="Center">
+                <controls:PathTracerIcon x:Name="BadgeIcon"
+                                         Width="18"
+                                         Height="18"
+                                         Stroke="White"
+                                         StrokeThickness="2"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center" />
+            </Border>
+            <StackPanel Margin="10,0,0,0">
+                <TextBlock x:Name="TitleText"
+                           Text="Perfect!"
+                           Style="{StaticResource SubheadingText}" />
+                <TextBlock x:Name="SubtitleText"
+                           Text="All tests passed"
+                           Style="{StaticResource CaptionText}"
+                           Foreground="{StaticResource TextSecondaryBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

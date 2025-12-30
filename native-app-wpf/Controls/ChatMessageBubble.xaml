@@ -1,13 +1,26 @@
 <UserControl x:Class="CodeTutor.Wpf.Controls.ChatMessageBubble"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:behaviors="clr-namespace:CodeTutor.Wpf.Behaviors">
-    <Border x:Name="MessageBorder" Padding="12,8" MaxWidth="300"
-            behaviors:AnimationBehaviors.EnableFadeInOnLoad="True">
-        <TextBlock x:Name="MessageText"
-                   TextWrapping="Wrap"
-                   Foreground="{StaticResource TextPrimaryBrush}"
-                   FontSize="13"
-                   Style="{StaticResource BodyText}"/>
+             xmlns:controls="clr-namespace:CodeTutor.Wpf.Controls">
+    <Border x:Name="MessageBorder" Padding="12,8" MaxWidth="300">
+        <Grid>
+            <TextBlock x:Name="UserMessageText"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       FontSize="13"
+                       Style="{StaticResource BodyText}"
+                       Visibility="Collapsed" />
+            <controls:TypewriterTextBlock x:Name="AssistantMessageText"
+                                          TextWrapping="Wrap"
+                                          Foreground="{StaticResource TextPrimaryBrush}"
+                                          FontSize="13"
+                                          Style="{StaticResource BodyText}"
+                                          CharacterDelay="18"
+                                          CursorBlinkCount="3"
+                                          CursorBlinkInterval="300"
+                                          EnableIncremental="True"
+                                          ShowCursor="True"
+                                          Visibility="Collapsed" />
+        </Grid>
     </Border>
 </UserControl>

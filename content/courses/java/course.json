@@ -712,7 +712,7 @@
               "title": "Modern Main Method",
               "description": "Rewrite this traditional Java program using Java 23 implicit main syntax:\n\npublic class Greeter {\n    public static void main(String[] args) {\n        String name = \"World\";\n        System.out.println(\"Hello, \" + name + \"!\");\n    }\n}\n\nYour solution should use void main() and println().",
               "instructions": "Rewrite the Greeter program using Java 23 implicit main. Use void main() and println() instead of the traditional boilerplate.",
-              "starterCode": "// Rewrite using Java 23 implicit main syntax\n// Remove: public class, static, String[] args, System.out\n\n",
+              "starterCode": "// Rewrite using Java 23 implicit main syntax\n// Remove: public class, static, String[] args, System.out\n\n// Your code here\n",
               "solution": "void main() {\n    String name = \"World\";\n    println(\"Hello, \" + name + \"!\");\n}",
               "language": "java",
               "testCases": [
@@ -4930,7 +4930,7 @@
             {
               "type": "THEORY",
               "title": "Server configuration",
-              "content": "server.port=8080"
+              "content": "The server.port property changes which port your Spring Boot application listens on. By default it uses 8080."
             },
             {
               "type": "THEORY",
@@ -5351,22 +5351,22 @@
             {
               "type": "THEORY",
               "title": "Use official Java image",
-              "content": "FROM eclipse-temurin:23-jre"
+              "content": "Use the official Eclipse Temurin image for production Java applications. This provides a secure, well-maintained JRE."
             },
             {
               "type": "THEORY",
               "title": "Set working directory",
-              "content": "WORKDIR /app"
+              "content": "Set the working directory inside the container to /app. All subsequent commands run from this directory."
             },
             {
               "type": "THEORY",
               "title": "Copy JAR file",
-              "content": "COPY target/myapp.jar app.jar"
+              "content": "Copy your compiled Spring Boot JAR file from the target folder into the container as app.jar."
             },
             {
               "type": "THEORY",
               "title": "Expose port",
-              "content": "EXPOSE 8080"
+              "content": "Expose port 8080 so external clients can connect to your Spring Boot application running inside the container."
             },
             {
               "type": "THEORY",
@@ -5421,7 +5421,7 @@
             {
               "type": "THEORY",
               "title": "NOT @CrossOrigin(\"*\")",
-              "content": "✓ Set reasonable rate limits"
+              "content": "Avoid using @CrossOrigin(\"*\") which allows all origins. Instead, configure CORS to only accept requests from your frontend domain and set reasonable rate limits to prevent abuse."
             },
             {
               "type": "THEORY",
@@ -5508,10 +5508,10 @@
           "challenges": []
         },
         {
-          "id": "epoch-8-lesson-6",
-          "title": "Lesson 8.6: Virtual Threads (Project Loom) - Modern Concurrency",
+          "id": "epoch-8-lesson-7",
+          "title": "Lesson 8.7: Virtual Threads (Project Loom) - Modern Concurrency",
           "moduleId": "module-09",
-          "order": 6,
+          "order": 7,
           "estimatedMinutes": 55,
           "difficulty": "advanced",
           "contentSections": [

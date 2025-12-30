@@ -134,9 +134,14 @@
                 Grid.Column="1"
                 Grid.RowSpan="3"
                 Width="0"
+                Opacity="0"
                 Background="{StaticResource BackgroundDarkBrush}"
                 BorderBrush="{StaticResource BorderDefaultBrush}"
-                BorderThickness="1,0,0,0">
+                BorderThickness="1,0,0,0"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TranslateTransform X="24" />
+            </Border.RenderTransform>
             <ContentPresenter x:Name="TutorContent"/>
         </Border>
     </Grid>

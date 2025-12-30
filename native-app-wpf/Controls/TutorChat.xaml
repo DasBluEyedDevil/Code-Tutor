@@ -27,6 +27,26 @@
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="MaxWidth" Value="300"/>
         </Style>
+
+        <Storyboard x:Key="ThinkingDotsStoryboard" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Dot1"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.2" To="1"
+                             Duration="0:0:0.6"
+                             AutoReverse="True" />
+            <DoubleAnimation Storyboard.TargetName="Dot2"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.2" To="1"
+                             Duration="0:0:0.6"
+                             BeginTime="0:0:0.2"
+                             AutoReverse="True" />
+            <DoubleAnimation Storyboard.TargetName="Dot3"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.2" To="1"
+                             Duration="0:0:0.6"
+                             BeginTime="0:0:0.4"
+                             AutoReverse="True" />
+        </Storyboard>
     </UserControl.Resources>
 
     <Grid>
@@ -57,11 +77,32 @@
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <TextBlock Text="AI Tutor"
                                FontWeight="SemiBold"
-                               Foreground="{StaticResource TextPrimaryBrush}"/>
-                    <TextBlock x:Name="StatusText"
-                               Text="Ready to help"
-                               FontSize="11"
-                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                               Foreground="{StaticResource TextPrimaryBrush}"/> 
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="StatusText"
+                                   Text="Ready to help"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <StackPanel x:Name="ThinkingIndicator"
+                                    Orientation="Horizontal"
+                                    Margin="6,0,0,0"
+                                    Visibility="Collapsed">
+                            <Ellipse x:Name="Dot1"
+                                     Width="4" Height="4"
+                                     Fill="{StaticResource AccentPurpleBrush}"
+                                     Opacity="0.2"
+                                     Margin="0,0,2,0" />
+                            <Ellipse x:Name="Dot2"
+                                     Width="4" Height="4"
+                                     Fill="{StaticResource AccentPurpleBrush}"
+                                     Opacity="0.2"
+                                     Margin="0,0,2,0" />
+                            <Ellipse x:Name="Dot3"
+                                     Width="4" Height="4"
+                                     Fill="{StaticResource AccentPurpleBrush}"
+                                     Opacity="0.2" />
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
 
                 <!-- Close button -->

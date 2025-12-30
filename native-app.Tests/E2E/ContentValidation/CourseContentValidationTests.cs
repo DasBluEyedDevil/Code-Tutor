@@ -160,7 +160,7 @@ public class CourseContentValidationTests
         var course = LoadCourse(courseId);
         if (course == null) return;
 
-        var validSectionTypes = new[] { "THEORY", "EXAMPLE", "KEY_POINT", "LEGACY_COMPARISON" };
+        var validSectionTypes = new[] { "THEORY", "EXAMPLE", "KEY_POINT", "LEGACY_COMPARISON", "ANALOGY", "INTRODUCTION", "WARNING", "TIP", "NOTE", "EXERCISE", "SUMMARY", "EXPERIMENT" };
 
         // Assert
         foreach (var module in course.Modules)

@@ -1,76 +1,55 @@
 <UserControl x:Class="CodeTutor.Wpf.Controls.SkeletonCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:CodeTutor.Wpf.Controls">
+    <controls:ShimmerEffect>
+        <Border Style="{StaticResource CardBorder}"
+                Width="320" Height="200"
+                ClipToBounds="True">
+            <Grid>
+                <!-- Skeleton Content -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-    <UserControl.Resources>
-        <Storyboard x:Key="ShimmerAnimation" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetName="ShimmerTransform"
-                             Storyboard.TargetProperty="X"
-                             From="-320" To="320"
-                             Duration="0:0:1.5" />
-        </Storyboard>
-    </UserControl.Resources>
-
-    <Border Style="{StaticResource CardBorder}"
-            Width="320" Height="200"
-            ClipToBounds="True">
-        <Grid>
-            <!-- Skeleton Content -->
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <!-- Badge Skeleton -->
-            <Border Grid.Row="0"
-                    Background="{StaticResource BackgroundLightBrush}"
-                    CornerRadius="4"
-                    Width="60" Height="24"
-                    HorizontalAlignment="Left" />
-
-            <!-- Title Skeleton -->
-            <StackPanel Grid.Row="1" Margin="0,12,0,0">
-                <Border Background="{StaticResource BackgroundLightBrush}"
+                <!-- Badge Skeleton -->
+                <Border Grid.Row="0"
+                        Background="{StaticResource BackgroundLightBrush}"
                         CornerRadius="4"
-                        Height="20" Width="200"
+                        Width="60" Height="24"
                         HorizontalAlignment="Left" />
-                <Border Background="{StaticResource BackgroundLightBrush}"
-                        CornerRadius="4"
-                        Height="14" Width="280"
-                        HorizontalAlignment="Left"
-                        Margin="0,8,0,0" />
-                <Border Background="{StaticResource BackgroundLightBrush}"
-                        CornerRadius="4"
-                        Height="14" Width="160"
-                        HorizontalAlignment="Left"
-                        Margin="0,4,0,0" />
-            </StackPanel>
 
-            <!-- Stats Skeleton -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Border Background="{StaticResource BackgroundLightBrush}"
-                        CornerRadius="4"
-                        Height="12" Width="80" />
-                <Border Background="{StaticResource BackgroundLightBrush}"
-                        CornerRadius="4"
-                        Height="12" Width="40"
-                        Margin="16,0,0,0" />
-            </StackPanel>
+                <!-- Title Skeleton -->
+                <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                    <Border Background="{StaticResource BackgroundLightBrush}"
+                            CornerRadius="4"
+                            Height="20" Width="200"
+                            HorizontalAlignment="Left" />
+                    <Border Background="{StaticResource BackgroundLightBrush}"
+                            CornerRadius="4"
+                            Height="14" Width="280"
+                            HorizontalAlignment="Left"
+                            Margin="0,8,0,0" />
+                    <Border Background="{StaticResource BackgroundLightBrush}"
+                            CornerRadius="4"
+                            Height="14" Width="160"
+                            HorizontalAlignment="Left"
+                            Margin="0,4,0,0" />
+                </StackPanel>
 
-            <!-- Shimmer Overlay -->
-            <Border Grid.RowSpan="3" IsHitTestVisible="False">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0.5" EndPoint="1,0.5">
-                        <LinearGradientBrush.RelativeTransform>
-                            <TranslateTransform x:Name="ShimmerTransform" X="-320" />
-                        </LinearGradientBrush.RelativeTransform>
-                        <GradientStop Color="Transparent" Offset="0" />
-                        <GradientStop Color="#20FFFFFF" Offset="0.5" />
-                        <GradientStop Color="Transparent" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
-        </Grid>
-    </Border>
+                <!-- Stats Skeleton -->
+                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <Border Background="{StaticResource BackgroundLightBrush}"
+                            CornerRadius="4"
+                            Height="12" Width="80" />
+                    <Border Background="{StaticResource BackgroundLightBrush}"
+                            CornerRadius="4"
+                            Height="12" Width="40"
+                            Margin="16,0,0,0" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </controls:ShimmerEffect>
 </UserControl>

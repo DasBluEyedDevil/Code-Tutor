@@ -61,6 +61,18 @@
     <!-- PAGE TRANSITION ANIMATIONS -->
     <!-- ============================================== -->
 
+    <!-- Simple crossfade (for soft page swaps) -->
+    <Storyboard x:Key="PageCrossFadeStoryboard">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="0:0:0.3">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
     <!-- Fade + Slide Left (for navigating forward) -->
     <Storyboard x:Key="PageSlideInFromRight">
         <DoubleAnimation
@@ -271,6 +283,25 @@
     <!-- SLIDE PANEL ANIMATIONS (for output panels) -->
     <!-- ============================================== -->
 
+    <Storyboard x:Key="PanelSlideRevealStoryboard">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+            From="24" To="0"
+            Duration="0:0:0.25">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+
     <Storyboard x:Key="SlideDownExpandStoryboard">
         <DoubleAnimation
             Storyboard.TargetProperty="Opacity"
@@ -293,6 +324,25 @@
     <!-- ============================================== -->
     <!-- SHAKE ANIMATION (for errors) -->
     <!-- ============================================== -->
+
+    <Storyboard x:Key="SidebarExpandStoryboard">
+        <DoubleAnimation
+            Storyboard.TargetProperty="Opacity"
+            From="0" To="1"
+            Duration="0:0:0.2">
+            <DoubleAnimation.EasingFunction>
+                <QuadraticEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+        <DoubleAnimation
+            Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+            From="-8" To="0"
+            Duration="0:0:0.2">
+            <DoubleAnimation.EasingFunction>
+                <CubicEase EasingMode="EaseOut" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
 
     <Storyboard x:Key="ShakeStoryboard">
         <DoubleAnimationUsingKeyFrames

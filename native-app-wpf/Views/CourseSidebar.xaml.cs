@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
 
@@ -50,7 +53,7 @@ public partial class CourseSidebar : UserControl
         {
             if (_currentLesson?.Id == lessonId)
             {
-                button.Style = (Style)FindResource("ActiveSidebarItemButton");
+                button.Style = (Style)FindResource("ActiveSidebarItemButton");  
             }
             else if (progress.CompletedLessons.Contains(lessonId))
             {
@@ -58,8 +61,13 @@ public partial class CourseSidebar : UserControl
             }
             else
             {
-                button.Style = (Style)FindResource("SidebarItemButton");
+                button.Style = (Style)FindResource("SidebarItemButton");        
             }
+        }
+
+        if (_currentLesson != null && _lessonButtons.TryGetValue(_currentLesson.Id, out var activeButton))
+        {
+            MoveActiveIndicator(activeButton);
         }
     }
 
@@ -88,9 +96,14 @@ public partial class CourseSidebar : UserControl
                 {
                     if (child is ItemsControl lessonsPanel)
                     {
-                        lessonsPanel.Visibility = _expandedModules[module.Id]
-                            ? Visibility.Visible
-                            : Visibility.Collapsed;
+                        if (_expandedModules[module.Id])
+                        {
+                            AnimateExpand(lessonsPanel);
+                        }
+                        else
+                        {
+                            AnimateCollapse(lessonsPanel);
+                        }
                     }
                 }
             }
@@ -113,17 +126,107 @@ public partial class CourseSidebar : UserControl
     {
         if (sender is Button button && button.Tag is Lesson lesson)
         {
-            // Track button in dictionary if not already tracked
-            if (!_lessonButtons.ContainsKey(lesson.Id))
-            {
-                _lessonButtons[lesson.Id] = button;
-            }
-
+            _lessonButtons[lesson.Id] = button;
             _currentLesson = lesson;
             UpdateLessonStyles();
 
             var lessonPage = new LessonPage(_course, lesson, _courseService, _navigation, _tutorService, _downloadService);
             _navigation.NavigateTo(lessonPage, lesson);
         }
+    }
+
+    private void LessonItem_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button button && button.Tag is Lesson lesson)
+        {
+            _lessonButtons[lesson.Id] = button;
+
+            if (_currentLesson?.Id == lesson.Id)
+            {
+                button.Style = (Style)FindResource("ActiveSidebarItemButton");
+                MoveActiveIndicator(button);
+            }
+        }
+    }
+
+    private void MoveActiveIndicator(Button button)
+    {
+        if (!button.IsLoaded)
+            return;
+
+        var transform = button.TransformToVisual(ActiveIndicatorLayer);
+        var point = transform.Transform(new Point(0, 0));
+        var targetHeight = Math.Max(16, button.ActualHeight - 4);
+        var targetTop = point.Y + (button.ActualHeight - targetHeight) / 2;
+
+        ActiveIndicator.Opacity = 1;
+        Canvas.SetLeft(ActiveIndicator, 0);
+
+        if (double.IsNaN(Canvas.GetTop(ActiveIndicator)))
+        {
+            Canvas.SetTop(ActiveIndicator, targetTop);
+            ActiveIndicator.Height = targetHeight;
+            return;
+        }
+
+        var duration = TimeSpan.FromMilliseconds(220);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+        ActiveIndicator.BeginAnimation(Canvas.TopProperty, new DoubleAnimation
+        {
+            To = targetTop,
+            Duration = duration,
+            EasingFunction = easing
+        });
+
+        ActiveIndicator.BeginAnimation(FrameworkElement.HeightProperty, new DoubleAnimation
+        {
+            To = targetHeight,
+            Duration = duration,
+            EasingFunction = easing
+        });
+    }
+
+    private void AnimateExpand(ItemsControl lessonsPanel)
+    {
+        lessonsPanel.Visibility = Visibility.Visible;
+        lessonsPanel.Opacity = 0;
+
+        if (lessonsPanel.RenderTransform is not TranslateTransform translate)
+        {
+            translate = new TranslateTransform();
+            lessonsPanel.RenderTransform = translate;
+        }
+
+        translate.Y = -8;
+
+        var duration = TimeSpan.FromMilliseconds(200);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+        lessonsPanel.BeginAnimation(OpacityProperty, new DoubleAnimation(0, 1, duration) { EasingFunction = easing });
+        translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(-8, 0, duration) { EasingFunction = easing });
+    }
+
+    private void AnimateCollapse(ItemsControl lessonsPanel)
+    {
+        if (lessonsPanel.RenderTransform is not TranslateTransform translate)
+        {
+            translate = new TranslateTransform();
+            lessonsPanel.RenderTransform = translate;
+        }
+
+        var duration = TimeSpan.FromMilliseconds(160);
+        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+        var opacityAnim = new DoubleAnimation(1, 0, duration) { EasingFunction = easing };
+        opacityAnim.Completed += (_, _) =>
+        {
+            lessonsPanel.Visibility = Visibility.Collapsed;
+            lessonsPanel.Opacity = 1;
+            translate.Y = 0;
+        };
+
+        lessonsPanel.BeginAnimation(OpacityProperty, opacityAnim);
+        translate.BeginAnimation(TranslateTransform.YProperty, new DoubleAnimation(0, -8, duration) { EasingFunction = easing });
     }
 }

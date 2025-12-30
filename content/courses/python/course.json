@@ -30,7 +30,7 @@
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**Expected Output:**\n```\nHello, World!\n```",
+              "content": "This is the classic first program every developer writes. The print() function displays text to the console. **Expected Output:**\n```\nHello, World!\n```",
               "code": "# This is your first Python program!\n# The '#' symbol creates a comment - notes for humans that the computer ignores\n\n# Tell the computer to print (display) a message\nprint(\"Hello, World!\")\n\n# That's it! This simple instruction tells Python:\n# \"Show the text 'Hello, World!' on the screen\"",
               "language": "python"
             },
@@ -855,7 +855,7 @@
               "title": "Practice Exercise",
               "description": "Build a **Time Converter** program that converts total minutes into hours and minutes.\n\n**Your task:**\n\n- Ask the user to enter a number of minutes\n- Use floor division (//) to calculate the number of whole hours\n- Use modulo (%) to find the remaining minutes\n- Display the result in a friendly format: \"X hours and Y minutes\"\n\n**Example:**\n\n<pre>Enter total minutes: 135\nThat's 2 hours and 15 minutes\n</pre>**Hints:**\n\n- There are 60 minutes in an hour\n- Use `total_minutes // 60` to get hours\n- Use `total_minutes % 60` to get remaining minutes\n- Remember to convert the input to an integer!",
               "instructions": "Build a **Time Converter** program that converts total minutes into hours and minutes.\n\n**Your task:**\n\n- Ask the user to enter a number of minutes\n- Use floor division (//) to calculate the number of whole hours\n- Use modulo (%) to find the remaining minutes\n- Display the result in a friendly format: \"X hours and Y minutes\"\n\n**Example:**\n\n<pre>Enter total minutes: 135\nThat's 2 hours and 15 minutes\n</pre>**Hints:**\n\n- There are 60 minutes in an hour\n- Use `total_minutes // 60` to get hours\n- Use `total_minutes % 60` to get remaining minutes\n- Remember to convert the input to an integer!",
-              "starterCode": "# Time Converter Program\n# Convert total minutes to hours and minutes\n\n# Get input from user\ntotal_minutes = int(input(\"Enter total minutes: \"))\n\n# YOUR CODE HERE:\n# Calculate hours using floor division (//)\nhours = \n\n# Calculate remaining minutes using modulo (%)\nminutes = \n\n# Display the result\nprint(f\"That's {hours} hours and {minutes} minutes\")",
+              "starterCode": "# Time Converter Program\n# Convert total minutes to hours and minutes\n\n# Get input from user\ntotal_minutes = int(input(\"Enter total minutes: \"))\n\n# Your code here:\n# Calculate hours using floor division (//)\nhours = \n\n# Calculate remaining minutes using modulo (%)\nminutes = \n\n# Display the result\nprint(f\"That's {hours} hours and {minutes} minutes\")",
               "solution": "# Time Converter Program - SOLUTION\n# Convert total minutes to hours and minutes\n\n# Get input from user\ntotal_minutes = int(input(\"Enter total minutes: \"))\n\n# Calculate hours using floor division (//)\nhours = total_minutes // 60\n\n# Calculate remaining minutes using modulo (%)\nminutes = total_minutes % 60\n\n# Display the result\nprint(f\"That's {hours} hours and {minutes} minutes\")",
               "language": "python",
               "testCases": [
@@ -6241,7 +6241,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "13_05-challenge-1",
+              "id": "14_11-challenge-1",
               "title": "Interactive Exercise: Write API Tests",
               "description": "Write pytest tests for a User API with the following endpoints:\n- GET /api/users - Returns list of users\n- GET /api/users/<id> - Returns single user or 404\n- POST /api/users - Creates user (requires name and email)\n- DELETE /api/users/<id> - Deletes user\n\nWrite tests for: success cases, 404 errors, and validation errors.",
               "instructions": "Write pytest tests for a User API with the following endpoints:\n- GET /api/users - Returns list of users\n- GET /api/users/<id> - Returns single user or 404\n- POST /api/users - Creates user (requires name and email)\n- DELETE /api/users/<id> - Deletes user\n\nWrite tests for: success cases, 404 errors, and validation errors.",
@@ -6319,7 +6319,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "13_06-challenge-1",
+              "id": "14_12-challenge-1",
               "title": "Extend the Blog API",
               "description": "Extend the FastAPI Blog API with these features:\n\n1. Add a 'likes' system:\n   - POST /api/posts/{id}/like - Like a post (authenticated)\n   - Each user can only like a post once\n   - GET /api/posts/{id} should include like_count\n\n2. Add user profiles:\n   - GET /api/users/{username} - Get user's public profile\n   - Include: username, bio, post_count, joined date\n\n3. Add search:\n   - GET /api/posts?search=keyword - Filter posts by title/content",
               "instructions": "Extend the FastAPI Blog API with these features:\n\n1. Add a 'likes' system:\n   - POST /api/posts/{id}/like - Like a post (authenticated)\n   - Each user can only like a post once\n   - GET /api/posts/{id} should include like_count\n\n2. Add user profiles:\n   - GET /api/users/{username} - Get user's public profile\n   - Include: username, bio, post_count, joined date\n\n3. Add search:\n   - GET /api/posts?search=keyword - Filter posts by title/content",
@@ -7469,7 +7469,7 @@
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**conftest.py:**",
+              "content": "The conftest.py file is a special pytest file that shares fixtures across multiple test files in the same directory.",
               "code": "# conftest.py - Fixtures available to all tests in directory\nimport pytest\nfrom pathlib import Path\nimport tempfile\n\n@pytest.fixture(scope=\"session\")\ndef database_connection():\n    \"\"\"Expensive setup - reused across all tests.\"\"\"\n    print(\"\\nConnecting to database...\")\n    conn = {\"host\": \"localhost\", \"connected\": True}  # Simulated\n    yield conn\n    print(\"\\nClosing database connection...\")\n    conn[\"connected\"] = False\n\n@pytest.fixture(scope=\"function\")\ndef temp_file(tmp_path):\n    \"\"\"Fresh temp file for each test.\"\"\"\n    file_path = tmp_path / \"test_data.txt\"\n    file_path.write_text(\"initial content\")\n    return file_path\n\n@pytest.fixture\ndef user_factory():\n    \"\"\"Factory fixture - returns a function to create users.\"\"\"\n    created_users = []\n    \n    def _create_user(name: str, role: str = \"user\"):\n        user = {\"name\": name, \"role\": role, \"id\": len(created_users) + 1}\n        created_users.append(user)\n        return user\n    \n    yield _create_user\n    \n    # Cleanup: delete created users\n    print(f\"\\nCleaning up {len(created_users)} test users\")\n\n# test_example.py\ndef test_database_query(database_connection):\n    assert database_connection[\"connected\"] is True\n\ndef test_file_operations(temp_file):\n    assert temp_file.read_text() == \"initial content\"\n    temp_file.write_text(\"modified\")\n    assert temp_file.read_text() == \"modified\"\n\ndef test_multiple_users(user_factory):\n    admin = user_factory(\"Alice\", role=\"admin\")\n    user = user_factory(\"Bob\")\n    assert admin[\"role\"] == \"admin\"\n    assert user[\"id\"] == 2\n",
               "language": "python"
             },
@@ -7529,7 +7529,7 @@
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**Testing code that calls an external API:**",
+              "content": "This example shows how to mock external API calls so tests don't depend on network or live services.",
               "code": "# weather.py\nimport httpx\n\ndef get_weather(city: str) -> dict:\n    response = httpx.get(f\"https://api.weather.com/{city}\")\n    response.raise_for_status()\n    return response.json()\n\ndef weather_message(city: str) -> str:\n    data = get_weather(city)\n    return f\"It's {data['temp']}F in {city}\"\n\n# test_weather.py\nimport pytest\nfrom unittest.mock import patch, MagicMock\n\ndef test_weather_message_with_patch():\n    # Mock the get_weather function\n    with patch(\"weather.get_weather\") as mock_get_weather:\n        mock_get_weather.return_value = {\"temp\": 72, \"conditions\": \"sunny\"}\n        \n        result = weather_message(\"Seattle\")\n        \n        assert result == \"It's 72F in Seattle\"\n        mock_get_weather.assert_called_once_with(\"Seattle\")\n\ndef test_weather_api_error():\n    with patch(\"weather.get_weather\") as mock_get_weather:\n        mock_get_weather.side_effect = httpx.HTTPError(\"API down\")\n        \n        with pytest.raises(httpx.HTTPError):\n            weather_message(\"Seattle\")\n\n# Using pytest-mock (cleaner)\ndef test_weather_with_mocker(mocker):\n    mock_weather = mocker.patch(\"weather.get_weather\")\n    mock_weather.return_value = {\"temp\": 65}\n    \n    result = weather_message(\"Portland\")\n    \n    assert \"65\" in result\n",
               "language": "python"
             },

@@ -52,7 +52,7 @@
               "title": "Practice Challenge",
               "description": "Now it's your turn! Your challenge: Write code that displays your own name to the console. Replace 'Your Name Here' with your actual name (keep the quotes!).",
               "instructions": "Now it's your turn! Your challenge: Write code that displays your own name to the console. Replace 'Your Name Here' with your actual name (keep the quotes!).",
-              "starterCode": "// Replace 'Your Name Here' with your name\nconsole.log('Your Name Here');",
+              "starterCode": "// Your code here: Replace 'Your Name Here' with your name\nconsole.log('Your Name Here');",
               "solution": "console.log('Alice');  // Replace Alice with your actual name",
               "language": "javascript",
               "testCases": [
@@ -134,7 +134,7 @@
               "title": "Practice Challenge",
               "description": "Create a mini calculator! Write code that:\n1. Displays the result of 15 + 27\n2. Displays the result of 100 - 45\n3. Displays the result of 6 * 7 (the * symbol means multiply)",
               "instructions": "Create a mini calculator! Write code that:\n1. Displays the result of 15 + 27\n2. Displays the result of 100 - 45\n3. Displays the result of 6 * 7 (the * symbol means multiply)",
-              "starterCode": "// Calculate and display 15 + 27\nconsole.log(15 + 27);\n\n// Calculate and display 100 - 45\n// YOUR CODE HERE\n\n// Calculate and display 6 * 7\n// YOUR CODE HERE",
+              "starterCode": "// Calculate and display 15 + 27\nconsole.log(15 + 27);\n\n// Calculate and display 100 - 45\n// Your code here\n\n// Calculate and display 6 * 7\n// Your code here",
               "solution": "console.log(15 + 27);\nconsole.log(100 - 45);\nconsole.log(6 * 7);",
               "language": "javascript",
               "testCases": [
@@ -480,7 +480,7 @@
               "title": "Practice Challenge",
               "description": "Create a simple age checker:\n1. Create a variable 'age' and set it to any number\n2. Write an if statement that displays 'You can vote!' if age is 18 or greater\n3. Test it with different ages (try 17, then try 18)",
               "instructions": "Create a simple age checker:\n1. Create a variable 'age' and set it to any number\n2. Write an if statement that displays 'You can vote!' if age is 18 or greater\n3. Test it with different ages (try 17, then try 18)",
-              "starterCode": "// Create your age variable\nlet age = 17;\n\n// Write your if statement here\n",
+              "starterCode": "// Create your age variable\nlet age = 17;\n\n// Your code here\n",
               "solution": "let age = 18;\n\nif (age >= 18) {\n  console.log('You can vote!');\n}",
               "language": "javascript",
               "testCases": [
@@ -6691,7 +6691,7 @@
             {
               "type": "EXAMPLE",
               "title": "The Core JSDoc Tags",
-              "content": "These three tags cover 90% of your typing needs:",
+              "content": "These three core JSDoc tags cover 90% of your typing needs. Use @param for function parameters, @returns for return types, and @type for variables.",
               "language": "javascript",
               "code": "/**\n * Calculates the total price with tax\n * @param {number} price - The base price\n * @param {number} [taxRate=0.1] - Tax rate (default 10%)\n * @returns {number} The total with tax\n */\nfunction calculateTotal(price, taxRate = 0.1) {\n  return price * (1 + taxRate);\n}\n\n// @type for variables\n/** @type {string[]} */\nconst names = ['Alice', 'Bob', 'Charlie'];\n\n/** @type {{ id: number, name: string }} */\nconst user = { id: 1, name: 'Alice' };\n\n// @type for destructuring\n/** @type {{ port: number, host: string }} */\nconst { port, host } = config;"
             },
@@ -6971,7 +6971,7 @@
             {
               "type": "EXAMPLE",
               "title": "Promise.withResolvers() - External Control",
-              "content": "Get resolve/reject functions outside the executor:",
+              "content": "Promise.withResolvers() lets you get resolve and reject functions outside the executor callback, enabling cleaner deferred patterns.",
               "language": "javascript",
               "code": "// OLD WAY: Hoisting variables out of executor\nlet resolveFromOutside, rejectFromOutside;\nconst promise = new Promise((resolve, reject) => {\n  resolveFromOutside = resolve;\n  rejectFromOutside = reject;\n});\nresolveFromOutside('done');  // Awkward!\n\n// NEW WAY: Promise.withResolvers()\nconst { promise: p, resolve, reject } = Promise.withResolvers();\n\n// Now you can pass resolve/reject anywhere\nsetTimeout(() => resolve('done'), 1000);\n\n// Real-world example: Deferred pattern\nfunction createDeferred() {\n  return Promise.withResolvers();\n}\n\nconst deferred = createDeferred();\neventEmitter.once('complete', deferred.resolve);\neventEmitter.once('error', deferred.reject);\nawait deferred.promise;"
             },

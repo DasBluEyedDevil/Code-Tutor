@@ -24,7 +24,8 @@ public class RoslynCSharpExecutor
             "System.IO",
             "System.Linq",
             "System.Text",
-            "System.Text.RegularExpressions"
+            "System.Text.RegularExpressions",
+            "System.Threading.Tasks"
         );
 
     public async Task<ExecutionResult> ExecuteAsync(string code, CancellationToken cancellationToken = default)

@@ -1,6 +1,7 @@
-﻿using System.Configuration;
+using System.Configuration;
 using System.Data;
 using System.Windows;
+using CodeTutor.Wpf.Services;
 
 namespace CodeTutor.Wpf;
 
@@ -9,5 +10,9 @@ namespace CodeTutor.Wpf;
 /// </summary>
 public partial class App : Application
 {
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+        PerformanceProfile.ApplyLowTierResources(Resources);
+    }
 }
-

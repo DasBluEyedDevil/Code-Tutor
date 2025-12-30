@@ -5,7 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Effects;
 using CodeTutor.Wpf.Models;
+using CodeTutor.Wpf.Behaviors;
 using CodeTutor.Wpf.Services;
 
 namespace CodeTutor.Wpf.Controls;
@@ -29,6 +31,12 @@ public partial class CodingChallenge : UserControl
         _challenge = challenge;
         _originalCode = challenge.StarterCode;
         _executionService = new CodeExecutionService();
+
+        if (PerformanceProfile.IsSoftwareRendering && CodeEditorBorder.Effect is DropShadowEffect effect)
+        {
+            effect.BlurRadius = 0;
+            effect.Opacity = 0;
+        }
 
         ChallengeTitle.Text = challenge.Title;
         Description.Text = challenge.Description;
@@ -245,9 +253,17 @@ public partial class CodingChallenge : UserControl
         // Fire completion event if all tests pass
         if (allPassed && !IsCompleted)
         {
+            TriggerSuccessCelebration();
             IsCompleted = true;
             ChallengeCompleted?.Invoke(this, _challenge.Id);
         }
+    }
+
+    private void TriggerSuccessCelebration()
+    {
+        AnimationBehaviors.SetTriggerSuccessFlash(CodeEditorBorder, true);
+        ConfettiOverlay.Play();
+        AchievementBadge.Show("Perfect!", "All tests passed");
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)

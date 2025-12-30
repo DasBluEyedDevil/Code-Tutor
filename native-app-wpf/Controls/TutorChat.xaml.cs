@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Services;
 
@@ -69,6 +70,7 @@ public partial class TutorChat : UserControl
         DownloadProgressPanel.Visibility = Visibility.Collapsed;
         LoadingModelPanel.Visibility = Visibility.Collapsed;
         StatusText.Text = "Model required";
+        SetThinkingState(false);
     }
 
     private void ShowDownloadProgress()
@@ -78,6 +80,7 @@ public partial class TutorChat : UserControl
         DownloadProgressPanel.Visibility = Visibility.Visible;
         LoadingModelPanel.Visibility = Visibility.Collapsed;
         StatusText.Text = "Downloading...";
+        SetThinkingState(false);
     }
 
     private void ShowLoadingModel()
@@ -87,12 +90,14 @@ public partial class TutorChat : UserControl
         DownloadProgressPanel.Visibility = Visibility.Collapsed;
         LoadingModelPanel.Visibility = Visibility.Visible;
         StatusText.Text = "Loading model...";
+        SetThinkingState(false);
     }
 
     private void ShowReadyState()
     {
         LoadingOverlay.Visibility = Visibility.Collapsed;
         StatusText.Text = "Ready to help";
+        SetThinkingState(false);
 
         if (_messages.Count == 0)
         {
@@ -232,6 +237,8 @@ public partial class TutorChat : UserControl
 
         StatusText.Text = "Thinking...";
         SendButton.IsEnabled = false;
+        SetThinkingState(true);
+        PerformanceProfile.SetUiThrottled(true);
 
         try
         {
@@ -260,6 +267,25 @@ public partial class TutorChat : UserControl
         {
             StatusText.Text = "Ready to help";
             SendButton.IsEnabled = true;
+            SetThinkingState(false);
+            PerformanceProfile.SetUiThrottled(false);
+        }
+    }
+
+    private void SetThinkingState(bool isThinking)
+    {
+        ThinkingIndicator.Visibility = isThinking ? Visibility.Visible : Visibility.Collapsed;
+
+        if (Resources["ThinkingDotsStoryboard"] is Storyboard storyboard)
+        {
+            if (isThinking)
+            {
+                storyboard.Begin(this, true);
+            }
+            else
+            {
+                storyboard.Remove(this);
+            }
         }
     }
 

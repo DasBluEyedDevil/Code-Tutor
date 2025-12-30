@@ -23,7 +23,7 @@ public class Course
     public string Difficulty { get; set; } = string.Empty;
 
     [JsonPropertyName("estimatedHours")]
-    public int EstimatedHours { get; set; }
+    public double EstimatedHours { get; set; }
 
     [JsonPropertyName("prerequisites")]
     public List<string> Prerequisites { get; set; } = new();
@@ -51,7 +51,7 @@ public class Module
     public string Difficulty { get; set; } = string.Empty;
 
     [JsonPropertyName("estimatedHours")]
-    public int EstimatedHours { get; set; }
+    public double EstimatedHours { get; set; }
 
     [JsonPropertyName("lessons")]
     public List<Lesson> Lessons { get; set; } = new();

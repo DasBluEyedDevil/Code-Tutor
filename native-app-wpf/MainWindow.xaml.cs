@@ -1,4 +1,5 @@
 using System.Windows;
+using CodeTutor.Wpf.Controls;
 using CodeTutor.Wpf.Services;
 using CodeTutor.Wpf.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,24 @@ public partial class MainWindow : Window
         _downloadService = provider.GetRequiredService<IModelDownloadService>();
 
         // Subscribe to navigation
-        _navigation.Navigated += (_, view) => MainContent.Content = view;
+        _navigation.Navigated += (_, view) =>
+        {
+            if (MainContent is AnimatedContentControl animated)
+            {
+                if (_navigation.IsBackNavigation)
+                {
+                    animated.NavigateBack(view);
+                }
+                else
+                {
+                    animated.NavigateForward(view);
+                }
+            }
+            else
+            {
+                MainContent.Content = view;
+            }
+        };
 
         // Navigate to landing page
         var landingPage = new LandingPage(_courseService, _navigation, _tutorService, _downloadService);

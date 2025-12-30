@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ScrollViewer Style="{StaticResource DarkScrollViewer}">
-        <StackPanel Margin="12">
+        <Grid>
+            <StackPanel x:Name="SidebarStack" Margin="12" CacheMode="BitmapCache">
             <!-- Back Button -->
             <Button Style="{StaticResource GhostButton}"
                     Click="BackButton_Click"
@@ -64,13 +65,18 @@
                             <!-- Lessons (Expandable) -->
                             <ItemsControl ItemsSource="{Binding Lessons}"
                                           x:Name="LessonsList"
-                                          Margin="16,4,0,0">
+                                          Margin="16,4,0,0"
+                                          RenderTransformOrigin="0.5,0">
+                                <ItemsControl.RenderTransform>
+                                    <TranslateTransform Y="0" />
+                                </ItemsControl.RenderTransform>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Button Style="{StaticResource SidebarItemButton}"
                                                 Click="LessonItem_Click"
                                                 Tag="{Binding}"
-                                                HorizontalAlignment="Stretch">
+                                                HorizontalAlignment="Stretch"
+                                                Loaded="LessonItem_Loaded">
                                             <TextBlock Text="{Binding Title}"
                                                        Style="{StaticResource CaptionText}"
                                                        TextWrapping="Wrap" />
@@ -83,5 +89,18 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </StackPanel>
+
+        <Canvas x:Name="ActiveIndicatorLayer"
+                Margin="12"
+                IsHitTestVisible="False"
+                Panel.ZIndex="2">
+            <Border x:Name="ActiveIndicator"
+                    Width="4"
+                    Height="24"
+                    Background="{StaticResource AccentBlueBrush}"
+                    CornerRadius="2"
+                    Opacity="0" />
+        </Canvas>
+        </Grid>
     </ScrollViewer>
 </UserControl>
