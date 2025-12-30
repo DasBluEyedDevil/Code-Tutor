@@ -65,13 +65,13 @@
             },
             {
               "type": "THEORY",
-              "title": "Anatomy of a Java Program",
-              "content": "Here's the simplest possible Java program:\n\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n\nLet's break it down, line by line:\n\n1. 'public class HelloWorld {'\n   - 'public' means anyone can use this\n   - 'class' is a container for code (you'll learn more later)\n   - 'HelloWorld' is the name we chose\n   - '{' opens a block of code\n\n2. 'public static void main(String[] args) {'\n   - This is the 'main method'—the entry point where your program starts\n   - Don't worry about the details yet, just know: every program needs this line\n\n3. 'System.out.println(\"Hello, World!\");'\n   - 'System.out.println' means \"print this on the screen\"\n   - The text inside quotes is what gets printed\n   - The semicolon ';' ends the instruction (like a period ends a sentence)\n\n4. The closing braces '}' close the blocks we opened\n\nKEY RULE: Java is case-sensitive. 'System' and 'system' are different. Be precise!"
+              "title": "Your First Java Program",
+              "content": "In Java 25+, writing your first program is simple:\n\nvoid main() {\n    println(\"Hello, World!\");\n}\n\nThat's it! Just 3 lines. Let's break it down:\n- void main() - the entry point of your program\n- println() - prints text to the console\n- The semicolon ';' ends the instruction (like a period ends a sentence)\n\nKEY RULE: Java is case-sensitive. 'Main' and 'main' are different. Be precise!"
             },
             {
               "type": "KEY_POINT",
-              "title": "Your First Java Program",
-              "content": "Every Java program you write will follow this basic structure:\n\npublic class ClassName {\n    public static void main(String[] args) {\n        // Your code goes here\n    }\n}\n\nFor now, accept this as the \"formal letter header.\" Soon, you'll understand why each part exists."
+              "title": "Historical Note: The Full Syntax",
+              "content": "You may see older Java code using this fuller syntax:\n\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n\nThis is still valid but modern Java simplifies it with 'implicit classes' - the compiler adds the class wrapper for you.\n\nIn older code:\n- 'public class HelloWorld' - a container for code\n- 'public static void main(String[] args)' - the entry point\n- 'System.out.println' - the full way to print\n\nModern Java removes this boilerplate so you can focus on learning programming concepts!"
             }
           ],
           "challenges": [
@@ -531,6 +531,11 @@
               "content": "Switch expressions with arrow syntax eliminate fall-through bugs and return values directly. Pattern matching for instanceof combines type checking and casting. Guards with 'when' add conditional logic to patterns.",
               "code": "public class ModernJavaDemo {\n    public static void main(String[] args) {\n        // Switch expression with arrow syntax\n        String day = \"WEDNESDAY\";\n        String activity = switch (day) {\n            case \"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\" -> \"Work\";\n            case \"SATURDAY\" -> \"Relax\";\n            case \"SUNDAY\" -> \"Prepare for week\";\n            default -> \"Unknown\";\n        };\n        System.out.println(day + \": \" + activity);\n        \n        // Pattern matching for instanceof\n        Object[] items = {\"Hello\", 42, 3.14, true};\n        for (Object item : items) {\n            if (item instanceof String s) {\n                System.out.println(\"String with \" + s.length() + \" chars\");\n            } else if (item instanceof Integer n) {\n                System.out.println(\"Integer: \" + n);\n            } else if (item instanceof Double d) {\n                System.out.println(\"Double: \" + d);\n            } else {\n                System.out.println(\"Other: \" + item);\n            }\n        }\n        \n        // Pattern matching in switch\n        for (Object item : items) {\n            String description = switch (item) {\n                case String s when s.length() > 10 -> \"Long string\";\n                case String s -> \"String: \" + s;\n                case Integer i when i < 0 -> \"Negative\";\n                case Integer i -> \"Positive: \" + i;\n                case Double d -> \"Double: \" + d;\n                case Boolean b -> \"Boolean: \" + b;\n                case null -> \"null\";\n                default -> \"Unknown\";\n            };\n            System.out.println(description);\n        }\n    }\n}",
               "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Primitive Type Patterns (Java 23+)",
+              "content": "Pattern matching now works with primitive types:\n\n// Match on int values with guards\nString describe(int value) {\n    return switch (value) {\n        case 0 -> \"zero\";\n        case int i when i > 0 -> \"positive: \" + i;\n        case int i -> \"negative: \" + i;\n    };\n}\n\nKey points:\n- Declare type: case int i or case long l\n- Add guards with when clause\n- Must cover all cases (final case with no guard)\n- Works with all primitives: int, long, double, etc."
             },
             {
               "type": "KEY_POINT",
@@ -2055,6 +2060,11 @@
               "type": "THEORY",
               "title": "The 'super' Keyword",
               "content": "'super' refers to the PARENT class:\n\n1. CALLING PARENT CONSTRUCTOR:\n   public Dog(String name, int age) {\n       super(name, age);  // Must be FIRST line\n   }\n\n2. CALLING PARENT METHOD:\n   public void eat() {\n       super.eat();  // Call Animal's eat() first\n       System.out.println(\"Dog is satisfied.\");\n   }\n\n3. ACCESSING PARENT FIELD:\n   System.out.println(super.name);  // Usually just use 'name'\n\nNOTE: If you don't call super(...) explicitly, Java tries to call\nthe parent's no-argument constructor automatically."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Flexible Constructor Bodies (Java 22+)",
+              "content": "Java 22+ allows initializing fields BEFORE calling super():\n\n// Pre-Java 22 - had to call super() first\nclass Child extends Parent {\n    final int computed;\n    Child(int x) {\n        super();  // Must be first!\n        this.computed = x * 2;\n    }\n}\n\n// Java 22+ - can initialize before super()\nclass Child extends Parent {\n    final int computed;\n    Child(int x) {\n        this.computed = x * 2;  // Initialize first!\n        super();\n    }\n}\n\nThis enables:\n- Validate/transform arguments before passing to parent\n- Initialize final fields with computed values\n- Write cleaner constructor logic"
             },
             {
               "type": "KEY_POINT",
