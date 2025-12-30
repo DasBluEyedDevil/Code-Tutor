@@ -11021,6 +11021,522 @@
           "challenges": []
         }
       ]
+    },
+    {
+      "id": "module-08",
+      "title": "Gradle Mastery for Kotlin Developers",
+      "description": "Master Gradle build system with Kotlin DSL. Learn dependency management, multiplatform configuration, custom tasks, and convention plugins.",
+      "difficulty": "intermediate",
+      "estimatedHours": 8,
+      "lessons": [
+        {
+          "id": "8.1",
+          "title": "Lesson 8.1: Understanding Gradle Basics with Kotlin DSL",
+          "moduleId": "module-08",
+          "order": 1,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nGradle is the build system that powers Kotlin projects, Android apps, and modern JVM development. Understanding Gradle is essential for professional Kotlin development.\n\nIn this lesson, you'll learn:\n- Gradle's task-based build model\n- How to read and write `build.gradle.kts` files\n- The difference between project and build scripts\n- How to configure basic project metadata\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What is Gradle?",
+              "content": "\n### The Build System\n\nGradle is an **automation tool** that handles:\n- Compiling your code\n- Running tests\n- Managing dependencies\n- Packaging your application\n- Deploying to production\n\n### Why Gradle?\n\n**Flexibility**: Unlike older build tools (Maven, Ant), Gradle uses code (Kotlin or Groovy) instead of XML, making it infinitely customizable.\n\n**Performance**: Gradle uses incremental builds, caching, and parallel execution to build faster.\n\n**Kotlin DSL**: Since Kotlin 1.0, Gradle supports Kotlin as a first-class scripting language, giving you:\n- Full IDE support (autocomplete, refactoring)\n- Type safety (catch errors at compile time)\n- Better documentation through types\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Project Structure",
+              "content": "\nA typical Gradle project looks like this:\n\n",
+              "code": "my-kotlin-project/\n├── build.gradle.kts          # Main build script\n├── settings.gradle.kts       # Project settings\n├── gradle.properties         # Build configuration\n├── gradle/\n│   └── wrapper/\n│       ├── gradle-wrapper.jar\n│       └── gradle-wrapper.properties\n├── gradlew                   # Unix wrapper script\n├── gradlew.bat               # Windows wrapper script\n└── src/\n    ├── main/\n    │   └── kotlin/\n    └── test/\n        └── kotlin/",
+              "language": "text"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "settings.gradle.kts",
+              "content": "\nThe settings file defines your project structure:\n\n",
+              "code": "// settings.gradle.kts\nrootProject.name = \"my-kotlin-project\"\n\n// For multi-module projects:\ninclude(\":app\")\ninclude(\":shared\")\ninclude(\":backend\")",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic build.gradle.kts",
+              "content": "\nThe build script configures how your project is built:\n\n",
+              "code": "// build.gradle.kts\nplugins {\n    kotlin(\"jvm\") version \"2.0.21\"\n    application\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(kotlin(\"stdlib\"))\n    testImplementation(kotlin(\"test\"))\n}\n\napplication {\n    mainClass.set(\"com.example.MainKt\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding the Build Script",
+              "content": "\n### Plugins Block\n\nPlugins add capabilities to your build:\n\n```kotlin\nplugins {\n    kotlin(\"jvm\") version \"2.0.21\"  // Kotlin JVM plugin\n    application                       // Creates runnable application\n    id(\"com.example.custom\")          // Custom/third-party plugin\n}\n```\n\n### Repositories Block\n\nRepositories are where Gradle finds dependencies:\n\n```kotlin\nrepositories {\n    mavenCentral()                    // Primary repository\n    google()                          // Android/Google libraries\n    gradlePluginPortal()              // Gradle plugins\n    maven(\"https://custom.repo.com\") // Custom repository\n}\n```\n\n### Dependencies Block\n\nDependencies are libraries your project uses:\n\n```kotlin\ndependencies {\n    implementation(\"group:artifact:version\")  // Runtime dependency\n    api(\"group:artifact:version\")             // Exposed to consumers\n    testImplementation(\"group:artifact:version\") // Test-only\n    compileOnly(\"group:artifact:version\")     // Compile-only\n    runtimeOnly(\"group:artifact:version\")     // Runtime-only\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Gradle Tasks",
+              "content": "\nTasks are the fundamental unit of work in Gradle.\n\n### Common Tasks\n\n| Task | Description |\n|------|-------------|\n| `build` | Compiles, tests, and packages |\n| `clean` | Removes build outputs |\n| `test` | Runs all tests |\n| `run` | Runs the application |\n| `jar` | Creates a JAR file |\n| `assemble` | Assembles all outputs |\n\n### Running Tasks\n\n```bash\n# Single task\n./gradlew build\n\n# Multiple tasks\n./gradlew clean build\n\n# Task in subproject\n./gradlew :app:build\n\n# List all tasks\n./gradlew tasks\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "gradle.properties",
+              "content": "\nThe properties file configures Gradle behavior:\n\n",
+              "code": "# gradle.properties\n\n# JVM settings\norg.gradle.jvmargs=-Xmx2g -XX:+UseParallelGC\n\n# Enable parallel builds\norg.gradle.parallel=true\n\n# Enable build cache\norg.gradle.caching=true\n\n# Enable configuration cache\norg.gradle.configuration-cache=true\n\n# Kotlin settings\nkotlin.code.style=official",
+              "language": "properties"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Mistakes",
+              "content": "\n### Using Wrong File Extension\n\n```kotlin\n// WRONG: build.gradle (Groovy syntax)\napply plugin: 'kotlin'\n\n// RIGHT: build.gradle.kts (Kotlin syntax)\nplugins {\n    kotlin(\"jvm\")\n}\n```\n\n### Mixing Groovy and Kotlin Syntax\n\nIf you're converting from Groovy, remember:\n- Single quotes `'text'` become double quotes `\"text\"`\n- Method calls `compile 'lib'` become `implementation(\"lib\")`\n- Assignment `group 'com.example'` becomes `group = \"com.example\"`\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Create a Kotlin Project",
+              "content": "\n**Goal**: Set up a new Kotlin project from scratch.\n\n**Steps**:\n1. Create project directory\n2. Initialize Gradle wrapper\n3. Create settings.gradle.kts\n4. Create build.gradle.kts with Kotlin JVM plugin\n5. Create a simple Main.kt\n6. Run with `./gradlew run`\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: Project Setup",
+              "content": "\n",
+              "code": "# Create project\nmkdir my-project && cd my-project\n\n# Initialize Gradle\ngradle wrapper\n\n# Create settings.gradle.kts\necho 'rootProject.name = \"my-project\"' > settings.gradle.kts\n\n# Create build.gradle.kts (see content below)\n\n# Create source directory\nmkdir -p src/main/kotlin/com/example\n\n# Create Main.kt\ncat > src/main/kotlin/com/example/Main.kt << 'EOF'\npackage com.example\n\nfun main() {\n    println(\"Hello from Gradle!\")\n}\nEOF\n\n# Run\n./gradlew run",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Gradle uses a task-based model for builds\n- `build.gradle.kts` uses Kotlin for type-safe configuration\n- `settings.gradle.kts` defines project structure\n- `gradle.properties` configures build behavior\n- The Gradle wrapper ensures consistent builds across machines\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "8.2",
+          "title": "Lesson 8.2: Dependency Management & Version Catalogs",
+          "moduleId": "module-08",
+          "order": 2,
+          "estimatedMinutes": 75,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 75 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nManaging dependencies is one of the most important aspects of any project. As projects grow, keeping track of library versions becomes challenging, especially in multi-module projects.\n\nIn this lesson, you'll learn:\n- How to declare and manage dependencies\n- Using version catalogs for centralized dependency management\n- Understanding dependency configurations\n- Resolving dependency conflicts\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Dependency Configurations",
+              "content": "\n### Understanding Configurations\n\nConfigurations determine how dependencies are used:\n\n| Configuration | Visible to Consumers? | Included at Runtime? | Use Case |\n|--------------|----------------------|---------------------|----------|\n| `implementation` | No | Yes | Internal dependencies |\n| `api` | Yes | Yes | Part of public API |\n| `compileOnly` | No | No | Compile-time only (annotations) |\n| `runtimeOnly` | No | Yes | Runtime only (drivers) |\n| `testImplementation` | No | Yes (tests) | Test dependencies |\n\n### Example\n\n```kotlin\ndependencies {\n    // Internal - consumers don't see it\n    implementation(\"com.squareup.okhttp3:okhttp:4.12.0\")\n    \n    // API - exposed to library consumers\n    api(\"org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0\")\n    \n    // Annotation processor - compile only\n    compileOnly(\"org.projectlombok:lombok:1.18.30\")\n    \n    // Database driver - runtime only\n    runtimeOnly(\"org.postgresql:postgresql:42.7.4\")\n    \n    // Testing\n    testImplementation(kotlin(\"test\"))\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Version Catalogs",
+              "content": "\nVersion catalogs centralize dependency versions in a single file:\n\n",
+              "code": "# gradle/libs.versions.toml\n[versions]\nkotlin = \"2.0.21\"\nkotlinx-coroutines = \"1.9.0\"\nkotlinx-serialization = \"1.7.3\"\nktor = \"3.0.2\"\nkoin = \"4.0.0\"\ncompose-multiplatform = \"1.7.1\"\n\n[libraries]\nkotlinx-coroutines-core = { module = \"org.jetbrains.kotlinx:kotlinx-coroutines-core\", version.ref = \"kotlinx-coroutines\" }\nkotlinx-serialization-json = { module = \"org.jetbrains.kotlinx:kotlinx-serialization-json\", version.ref = \"kotlinx-serialization\" }\nktor-server-core = { module = \"io.ktor:ktor-server-core\", version.ref = \"ktor\" }\nktor-server-netty = { module = \"io.ktor:ktor-server-netty\", version.ref = \"ktor\" }\nkoin-core = { module = \"io.insert-koin:koin-core\", version.ref = \"koin\" }\n\n[bundles]\nktor-server = [\"ktor-server-core\", \"ktor-server-netty\"]\n\n[plugins]\nkotlin-jvm = { id = \"org.jetbrains.kotlin.jvm\", version.ref = \"kotlin\" }\nkotlin-multiplatform = { id = \"org.jetbrains.kotlin.multiplatform\", version.ref = \"kotlin\" }\nkotlinx-serialization = { id = \"org.jetbrains.kotlin.plugin.serialization\", version.ref = \"kotlin\" }",
+              "language": "toml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using Version Catalogs",
+              "content": "\nReference the catalog in your build scripts:\n\n",
+              "code": "// build.gradle.kts using version catalog\nplugins {\n    alias(libs.plugins.kotlin.jvm)\n    alias(libs.plugins.kotlinx.serialization)\n}\n\ndependencies {\n    // Single library\n    implementation(libs.kotlinx.coroutines.core)\n    implementation(libs.kotlinx.serialization.json)\n    \n    // Bundle of libraries\n    implementation(libs.bundles.ktor.server)\n    \n    // Testing\n    testImplementation(kotlin(\"test\"))\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Benefits of Version Catalogs",
+              "content": "\n### Why Use Version Catalogs?\n\n**1. Single Source of Truth**\n- All versions in one file\n- No version mismatches across modules\n\n**2. IDE Support**\n- Autocomplete for dependencies\n- Type-safe references\n- Refactoring support\n\n**3. Easy Updates**\n- Update version once, applies everywhere\n- Clear view of all dependencies\n\n**4. Bundles**\n- Group related dependencies\n- Add multiple libraries with one line\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Dependency Conflicts",
+              "content": "\n### Understanding Conflicts\n\nConflicts occur when different dependencies require different versions of the same library.\n\n### Resolution Strategies\n\n```kotlin\nconfigurations.all {\n    resolutionStrategy {\n        // Force a specific version\n        force(\"org.jetbrains.kotlin:kotlin-stdlib:2.0.21\")\n        \n        // Fail on version conflict\n        failOnVersionConflict()\n        \n        // Prefer project modules over external\n        preferProjectModules()\n    }\n}\n```\n\n### Viewing Dependencies\n\n```bash\n# See all dependencies\n./gradlew dependencies\n\n# See specific configuration\n./gradlew dependencies --configuration runtimeClasspath\n\n# Find dependency that brought another\n./gradlew dependencyInsight --dependency kotlin-stdlib\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Excluding Dependencies",
+              "content": "\nExclude transitive dependencies when needed:\n\n",
+              "code": "dependencies {\n    implementation(\"com.example:library:1.0\") {\n        // Exclude specific dependency\n        exclude(group = \"org.unwanted\", module = \"library\")\n        \n        // Exclude all transitive dependencies\n        isTransitive = false\n    }\n}\n\n// Global exclusion\nconfigurations.all {\n    exclude(group = \"org.unwanted\", module = \"library\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "\n### Mixing Catalog and Inline Versions\n\nAvoid mixing styles in the same project:\n\n```kotlin\n// BAD - inconsistent\ndependencies {\n    implementation(libs.ktor.server.core)  // From catalog\n    implementation(\"io.ktor:ktor-server-netty:2.3.0\")  // Hardcoded - might be different version!\n}\n\n// GOOD - all from catalog\ndependencies {\n    implementation(libs.ktor.server.core)\n    implementation(libs.ktor.server.netty)\n}\n```\n\n### Forgetting to Sync\n\nAfter editing `libs.versions.toml`, sync Gradle to see changes in IDE.\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Set Up Version Catalog",
+              "content": "\n**Goal**: Create a version catalog for a Ktor server project.\n\n**Requirements**:\n1. Create `gradle/libs.versions.toml`\n2. Define versions for Kotlin, Ktor, and kotlinx.serialization\n3. Create library entries for ktor-server-core, ktor-server-netty, ktor-serialization\n4. Create a bundle for all Ktor server dependencies\n5. Update build.gradle.kts to use the catalog\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: Version Catalog",
+              "content": "\n",
+              "code": "# gradle/libs.versions.toml\n[versions]\nkotlin = \"2.0.21\"\nktor = \"3.0.2\"\nkotlinx-serialization = \"1.7.3\"\nlogback = \"1.5.12\"\n\n[libraries]\nktor-server-core = { module = \"io.ktor:ktor-server-core\", version.ref = \"ktor\" }\nktor-server-netty = { module = \"io.ktor:ktor-server-netty\", version.ref = \"ktor\" }\nktor-server-content-negotiation = { module = \"io.ktor:ktor-server-content-negotiation\", version.ref = \"ktor\" }\nktor-serialization-json = { module = \"io.ktor:ktor-serialization-kotlinx-json\", version.ref = \"ktor\" }\nlogback-classic = { module = \"ch.qos.logback:logback-classic\", version.ref = \"logback\" }\n\n[bundles]\nktor-server = [\n    \"ktor-server-core\",\n    \"ktor-server-netty\",\n    \"ktor-server-content-negotiation\",\n    \"ktor-serialization-json\"\n]\n\n[plugins]\nkotlin-jvm = { id = \"org.jetbrains.kotlin.jvm\", version.ref = \"kotlin\" }\nktor = { id = \"io.ktor.plugin\", version.ref = \"ktor\" }\nkotlinx-serialization = { id = \"org.jetbrains.kotlin.plugin.serialization\", version.ref = \"kotlin\" }",
+              "language": "toml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Use `implementation` for internal dependencies, `api` for exposed ones\n- Version catalogs centralize dependency management\n- Bundles group related dependencies\n- Use `dependencyInsight` to debug conflicts\n- Keep all versions in the catalog for consistency\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "8.3",
+          "title": "Lesson 8.3: Multiplatform Build Configuration",
+          "moduleId": "module-08",
+          "order": 3,
+          "estimatedMinutes": 90,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 90 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nKotlin Multiplatform (KMP) projects require special Gradle configuration to target multiple platforms. Understanding how to configure targets, source sets, and platform-specific dependencies is crucial.\n\nIn this lesson, you'll learn:\n- How to configure Kotlin Multiplatform targets\n- Setting up shared source sets\n- Handling platform-specific dependencies\n- Configuring iOS framework distribution\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Multiplatform Plugin",
+              "content": "\n### Setting Up KMP\n\nThe multiplatform plugin is the foundation:\n\n```kotlin\nplugins {\n    kotlin(\"multiplatform\") version \"2.0.21\"\n}\n\nkotlin {\n    // Configure targets here\n}\n```\n\n### Available Targets\n\n| Target | Platform | Use Case |\n|--------|----------|----------|\n| `jvm()` | JVM | Backend, Desktop |\n| `androidTarget()` | Android | Mobile |\n| `iosArm64()` | iOS Device | iPhone/iPad |\n| `iosX64()` | iOS Simulator (Intel) | Testing |\n| `iosSimulatorArm64()` | iOS Simulator (Apple Silicon) | Testing |\n| `js()` | JavaScript | Web |\n| `wasmJs()` | WebAssembly | Web |\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete KMP Configuration",
+              "content": "\nA full multiplatform build configuration:\n\n",
+              "code": "// build.gradle.kts\nplugins {\n    alias(libs.plugins.kotlin.multiplatform)\n    alias(libs.plugins.compose.multiplatform)\n}\n\nkotlin {\n    // Android target\n    androidTarget {\n        compilations.all {\n            kotlinOptions {\n                jvmTarget = \"17\"\n            }\n        }\n    }\n\n    // iOS targets\n    listOf(\n        iosX64(),\n        iosArm64(),\n        iosSimulatorArm64()\n    ).forEach { iosTarget ->\n        iosTarget.binaries.framework {\n            baseName = \"Shared\"\n            isStatic = true\n        }\n    }\n\n    // JVM target (for desktop/server)\n    jvm(\"desktop\")\n\n    // Source sets\n    sourceSets {\n        val commonMain by getting {\n            dependencies {\n                implementation(libs.kotlinx.coroutines.core)\n                implementation(libs.ktor.client.core)\n            }\n        }\n\n        val androidMain by getting {\n            dependencies {\n                implementation(libs.ktor.client.okhttp)\n            }\n        }\n\n        val iosMain by creating {\n            dependsOn(commonMain)\n            dependencies {\n                implementation(libs.ktor.client.darwin)\n            }\n        }\n\n        val iosX64Main by getting { dependsOn(iosMain) }\n        val iosArm64Main by getting { dependsOn(iosMain) }\n        val iosSimulatorArm64Main by getting { dependsOn(iosMain) }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Source Set Hierarchy",
+              "content": "\n### Understanding Source Sets\n\nSource sets define where code lives and what it can access:\n\n```\ncommonMain           <- Shared code (all platforms)\n    |\n    |-- androidMain  <- Android-specific\n    |-- iosMain      <- iOS-specific (custom)\n    |       |\n    |       |-- iosX64Main\n    |       |-- iosArm64Main\n    |       |-- iosSimulatorArm64Main\n    |\n    |-- desktopMain  <- Desktop-specific\n```\n\n### Creating Custom Source Sets\n\n```kotlin\nsourceSets {\n    // Create intermediate source set\n    val mobileMain by creating {\n        dependsOn(commonMain)\n    }\n    \n    val androidMain by getting {\n        dependsOn(mobileMain)  // Android inherits mobile code\n    }\n    \n    val iosMain by creating {\n        dependsOn(mobileMain)  // iOS inherits mobile code\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Platform-Specific Dependencies",
+              "content": "\nDifferent platforms need different implementations:\n\n",
+              "code": "sourceSets {\n    val commonMain by getting {\n        dependencies {\n            // Works on all platforms\n            implementation(libs.kotlinx.coroutines.core)\n            implementation(libs.kotlinx.datetime)\n        }\n    }\n    \n    val androidMain by getting {\n        dependencies {\n            // Android-specific HTTP client\n            implementation(libs.ktor.client.okhttp)\n            // Android-specific image loading\n            implementation(libs.coil.compose)\n        }\n    }\n    \n    val iosMain by getting {\n        dependencies {\n            // iOS-specific HTTP client (uses Darwin networking)\n            implementation(libs.ktor.client.darwin)\n        }\n    }\n    \n    val desktopMain by getting {\n        dependencies {\n            // Desktop uses CIO or Java client\n            implementation(libs.ktor.client.cio)\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "iOS Framework Configuration",
+              "content": "\n### Building iOS Frameworks\n\niOS apps consume Kotlin code as frameworks:\n\n```kotlin\nkotlin {\n    listOf(\n        iosX64(),\n        iosArm64(),\n        iosSimulatorArm64()\n    ).forEach { target ->\n        target.binaries {\n            framework {\n                baseName = \"SharedKit\"  // Framework name\n                isStatic = true         // Static vs dynamic\n                \n                // Export other modules\n                export(project(\":core\"))\n                export(libs.kotlinx.datetime)\n            }\n        }\n    }\n}\n```\n\n### CocoaPods Integration\n\n```kotlin\nplugins {\n    kotlin(\"multiplatform\")\n    kotlin(\"native.cocoapods\")\n}\n\nkotlin {\n    cocoapods {\n        summary = \"Shared Kotlin code\"\n        homepage = \"https://github.com/example/project\"\n        version = \"1.0.0\"\n        \n        ios.deploymentTarget = \"14.0\"\n        \n        framework {\n            baseName = \"SharedKit\"\n            isStatic = true\n        }\n        \n        // Use CocoaPods dependencies\n        pod(\"AFNetworking\") {\n            version = \"~> 4.0\"\n        }\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Hierarchical Source Sets (New Default)",
+              "content": "\nKotlin 2.0 uses hierarchical source sets by default:\n\n",
+              "code": "kotlin {\n    // This is now the default in Kotlin 2.0\n    // applyDefaultHierarchyTemplate() is called automatically\n    \n    androidTarget()\n    iosArm64()\n    iosSimulatorArm64()\n    jvm()\n    \n    sourceSets {\n        // Automatic hierarchies created:\n        // commonMain\n        //   |-- appleMain (all Apple targets)\n        //   |     |-- iosMain (all iOS targets)\n        //   |           |-- iosArm64Main\n        //   |           |-- iosSimulatorArm64Main\n        //   |-- jvmMain\n        //   |-- androidMain\n        \n        val commonMain by getting {\n            dependencies {\n                implementation(libs.kotlinx.coroutines.core)\n            }\n        }\n        \n        // appleMain is automatically created for Apple targets\n        val appleMain by getting {\n            dependencies {\n                implementation(libs.ktor.client.darwin)\n            }\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Multiplatform Issues",
+              "content": "\n### Missing Intermediate Source Sets\n\n```kotlin\n// WRONG - Duplicating dependencies\nval iosX64Main by getting {\n    dependencies { implementation(libs.ktor.client.darwin) }\n}\nval iosArm64Main by getting {\n    dependencies { implementation(libs.ktor.client.darwin) }  // Duplicate!\n}\n\n// RIGHT - Use intermediate source set\nval iosMain by creating {\n    dependsOn(commonMain)\n    dependencies { implementation(libs.ktor.client.darwin) }  // Once!\n}\n```\n\n### Framework Name Conflicts\n\nEnsure your framework name doesn't conflict with system frameworks:\n- Avoid: `Foundation`, `UIKit`, `Core`\n- Use: `SharedKit`, `AppShared`, `MyAppCore`\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Configure a KMP Project",
+              "content": "\n**Goal**: Set up a multiplatform project targeting Android, iOS, and Desktop.\n\n**Requirements**:\n1. Configure Android target with Java 17\n2. Configure all iOS targets with a framework\n3. Configure Desktop JVM target\n4. Create proper source set hierarchy\n5. Add Ktor client with platform-specific engines\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Use `kotlin { }` block to configure multiplatform targets\n- Source sets define code visibility and dependencies\n- Create intermediate source sets to avoid duplication\n- iOS frameworks are configured in `binaries { }` block\n- Kotlin 2.0 uses hierarchical source sets by default\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "8.4",
+          "title": "Lesson 8.4: Custom Tasks and Plugins",
+          "moduleId": "module-08",
+          "order": 4,
+          "estimatedMinutes": 75,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 75 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nGradle's power comes from its extensibility. Custom tasks automate repetitive work, and plugins package reusable build logic.\n\nIn this lesson, you'll learn:\n- How to create custom Gradle tasks\n- Understanding task dependencies and ordering\n- Creating simple script plugins\n- Understanding task inputs/outputs for caching\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating Custom Tasks",
+              "content": "\nCustom tasks automate project-specific work:\n\n",
+              "code": "// Custom task in build.gradle.kts\ntasks.register(\"generateBuildInfo\") {\n    group = \"build\"\n    description = \"Generates build information file\"\n\n    val outputFile = layout.buildDirectory.file(\"generated/BuildInfo.kt\")\n    outputs.file(outputFile)\n\n    doLast {\n        outputFile.get().asFile.apply {\n            parentFile.mkdirs()\n            writeText(\"\"\"\n                package com.example\n\n                object BuildInfo {\n                    const val VERSION = \"${project.version}\"\n                    const val BUILD_TIME = \"${java.time.Instant.now()}\"\n                    const val GIT_HASH = \"${getGitHash()}\"\n                }\n            \"\"\".trimIndent())\n        }\n    }\n}\n\nfun getGitHash(): String =\n    providers.exec {\n        commandLine(\"git\", \"rev-parse\", \"--short\", \"HEAD\")\n    }.standardOutput.asText.get().trim()",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Task Dependencies",
+              "content": "\n### Ordering Tasks\n\nControl when tasks run relative to each other:\n\n```kotlin\n// Task dependency - must run before\ntasks.named(\"compileKotlin\") {\n    dependsOn(\"generateBuildInfo\")\n}\n\n// Must run after (if both are in graph)\ntasks.register(\"cleanup\") {\n    mustRunAfter(\"build\")\n}\n\n// Should run after (weaker ordering)\ntasks.register(\"report\") {\n    shouldRunAfter(\"test\")\n}\n\n// Finalized by (always runs after, even on failure)\ntasks.named(\"test\") {\n    finalizedBy(\"generateReport\")\n}\n```\n\n### Task Graph\n\n```\ncompileKotlin\n    |\n    +-- dependsOn --> generateBuildInfo\n    |\n    v\ntest\n    |\n    +-- finalizedBy --> generateReport\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Typed Tasks",
+              "content": "\nUse built-in task types for common operations:\n\n",
+              "code": "// Copy task\ntasks.register<Copy>(\"copyDocs\") {\n    from(\"docs\")\n    into(layout.buildDirectory.dir(\"documentation\"))\n    include(\"**/*.md\")\n    rename { it.replace(\".md\", \".txt\") }\n}\n\n// Delete task\ntasks.register<Delete>(\"cleanGenerated\") {\n    delete(layout.buildDirectory.dir(\"generated\"))\n}\n\n// Zip task\ntasks.register<Zip>(\"packageDist\") {\n    from(layout.buildDirectory.dir(\"dist\"))\n    archiveFileName.set(\"app-${project.version}.zip\")\n    destinationDirectory.set(layout.buildDirectory.dir(\"packages\"))\n}\n\n// Exec task\ntasks.register<Exec>(\"npmInstall\") {\n    workingDir = file(\"frontend\")\n    commandLine(\"npm\", \"install\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Task Inputs and Outputs",
+              "content": "\n### Incremental Builds\n\nGradle skips tasks when inputs/outputs haven't changed:\n\n```kotlin\ntasks.register(\"processConfig\") {\n    // Declare inputs\n    inputs.file(\"config.json\")\n    inputs.property(\"version\", project.version)\n    \n    // Declare outputs\n    outputs.file(layout.buildDirectory.file(\"config.processed.json\"))\n    \n    doLast {\n        // Task logic\n    }\n}\n```\n\n### Why It Matters\n\n- First run: Task executes\n- Second run (no changes): `UP-TO-DATE` (skipped)\n- Change input: Task executes again\n\nThis can save minutes on large builds!\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating a Script Plugin",
+              "content": "\nExtract reusable build logic into script plugins:\n\n",
+              "code": "// gradle/quality.gradle.kts\n// A reusable script plugin for code quality\n\nval detektTask = tasks.register(\"detektCheck\") {\n    group = \"verification\"\n    description = \"Runs Detekt static analysis\"\n    \n    doLast {\n        println(\"Running Detekt analysis...\")\n        // Detekt logic here\n    }\n}\n\nval ktlintTask = tasks.register(\"ktlintCheck\") {\n    group = \"verification\"\n    description = \"Runs ktlint style check\"\n    \n    doLast {\n        println(\"Running ktlint check...\")\n        // ktlint logic here\n    }\n}\n\ntasks.named(\"check\") {\n    dependsOn(detektTask, ktlintTask)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Applying Script Plugins",
+              "content": "\nApply the plugin in your build script:\n\n",
+              "code": "// build.gradle.kts\nplugins {\n    kotlin(\"jvm\") version \"2.0.21\"\n}\n\n// Apply the script plugin\napply(from = \"gradle/quality.gradle.kts\")\n\n// Now quality tasks are available:\n// ./gradlew detektCheck\n// ./gradlew ktlintCheck\n// ./gradlew check (includes both)",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Practical Task: Generate API Client",
+              "content": "\nA real-world example of code generation:\n\n",
+              "code": "tasks.register(\"generateApiClient\") {\n    group = \"codegen\"\n    description = \"Generates API client from OpenAPI spec\"\n    \n    val specFile = file(\"api/openapi.yaml\")\n    val outputDir = layout.buildDirectory.dir(\"generated/api\")\n    \n    inputs.file(specFile)\n    outputs.dir(outputDir)\n    \n    doLast {\n        val spec = specFile.readText()\n        val output = outputDir.get().asFile\n        output.mkdirs()\n        \n        // Parse spec and generate client code\n        println(\"Generating API client from ${specFile.name}\")\n        \n        // Add generated sources to compilation\n        val generatedFile = File(output, \"ApiClient.kt\")\n        generatedFile.writeText(\"\"\"\n            package com.example.api\n            \n            class ApiClient {\n                // Generated from OpenAPI spec\n            }\n        \"\"\".trimIndent())\n    }\n}\n\n// Add generated sources to source sets\nkotlin {\n    sourceSets {\n        main {\n            kotlin.srcDir(layout.buildDirectory.dir(\"generated/api\"))\n        }\n    }\n}\n\ntasks.named(\"compileKotlin\") {\n    dependsOn(\"generateApiClient\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Task Mistakes",
+              "content": "\n### Doing Work at Configuration Time\n\n```kotlin\n// WRONG - runs during configuration\ntasks.register(\"bad\") {\n    val content = file(\"data.txt\").readText()  // Runs immediately!\n    doLast {\n        println(content)\n    }\n}\n\n// RIGHT - runs during execution\ntasks.register(\"good\") {\n    doLast {\n        val content = file(\"data.txt\").readText()  // Runs when task executes\n        println(content)\n    }\n}\n```\n\n### Not Declaring Inputs/Outputs\n\nWithout proper declarations, tasks always run:\n\n```kotlin\n// WRONG - no caching\ntasks.register(\"process\") {\n    doLast { /* work */ }\n}\n\n// RIGHT - proper caching\ntasks.register(\"process\") {\n    inputs.file(\"input.txt\")\n    outputs.file(layout.buildDirectory.file(\"output.txt\"))\n    doLast { /* work */ }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Create Build Info Task",
+              "content": "\n**Goal**: Create a task that generates a `BuildInfo.kt` file.\n\n**Requirements**:\n1. Generate file with version, build time, and git hash\n2. Output to `build/generated/BuildInfo.kt`\n3. Make compileKotlin depend on it\n4. Declare proper inputs/outputs for caching\n5. Only regenerate when version changes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Tasks are the building blocks of Gradle builds\n- Use `dependsOn`, `mustRunAfter`, and `finalizedBy` for ordering\n- Declare inputs/outputs for incremental builds\n- Script plugins share logic across modules\n- Always do work in `doLast { }`, not at configuration time\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "8.5",
+          "title": "Lesson 8.5: Convention Plugins for Team Standards",
+          "moduleId": "module-08",
+          "order": 5,
+          "estimatedMinutes": 90,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 90 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nAs projects grow, maintaining consistent build configuration becomes challenging. Convention plugins solve this by encoding team standards into reusable plugins.\n\nIn this lesson, you'll learn:\n- How to create buildSrc convention plugins\n- Sharing build logic across modules\n- Implementing team coding standards in builds\n- Using composite builds for plugin development\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What are Convention Plugins?",
+              "content": "\n### The Problem\n\nIn large projects, you often see duplicated build configuration:\n\n```kotlin\n// app/build.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n}\nkotlin { jvmToolchain(17) }\ntasks.withType<Test> { useJUnitPlatform() }\n\n// lib/build.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n}\nkotlin { jvmToolchain(17) }  // Duplicate!\ntasks.withType<Test> { useJUnitPlatform() }  // Duplicate!\n```\n\n### The Solution\n\nConvention plugins encapsulate shared configuration:\n\n```kotlin\n// app/build.gradle.kts\nplugins {\n    id(\"kotlin-library-conventions\")\n}\n// All standard config inherited!\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Setting Up buildSrc",
+              "content": "\nThe buildSrc directory is a special Gradle feature:\n\n",
+              "code": "project-root/\n├── buildSrc/\n│   ├── build.gradle.kts\n│   └── src/main/kotlin/\n│       └── kotlin-library-conventions.gradle.kts\n├── app/\n│   └── build.gradle.kts\n├── lib/\n│   └── build.gradle.kts\n└── settings.gradle.kts",
+              "language": "text"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "buildSrc/build.gradle.kts",
+              "content": "\nConfigure buildSrc to use Kotlin DSL:\n\n",
+              "code": "// buildSrc/build.gradle.kts\nplugins {\n    `kotlin-dsl`\n}\n\nrepositories {\n    mavenCentral()\n    gradlePluginPortal()\n}\n\ndependencies {\n    // Add plugins you want to configure in convention plugins\n    implementation(\"org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21\")\n    implementation(\"io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.7\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Convention Plugin",
+              "content": "\nCreate a convention plugin for Kotlin libraries:\n\n",
+              "code": "// buildSrc/src/main/kotlin/kotlin-library-conventions.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n    id(\"io.gitlab.arturbosch.detekt\")\n}\n\nkotlin {\n    jvmToolchain(17)\n\n    compilerOptions {\n        allWarningsAsErrors.set(true)\n        freeCompilerArgs.addAll(\n            \"-Xjdk-release=17\",\n            \"-opt-in=kotlin.RequiresOptIn\"\n        )\n    }\n}\n\ndetekt {\n    buildUponDefaultConfig = true\n    config.setFrom(rootProject.files(\"config/detekt.yml\"))\n}\n\ntasks.withType<Test> {\n    useJUnitPlatform()\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using Convention Plugins",
+              "content": "\nApply the convention plugin in modules:\n\n",
+              "code": "// app/build.gradle.kts\nplugins {\n    id(\"kotlin-library-conventions\")\n    application\n}\n\n// All standard config inherited from convention plugin!\n// Just add module-specific config:\napplication {\n    mainClass.set(\"com.example.MainKt\")\n}\n\n// lib/build.gradle.kts  \nplugins {\n    id(\"kotlin-library-conventions\")\n}\n\n// That's it! All team standards applied automatically.",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Multiple Convention Plugins",
+              "content": "\n### Layer Your Conventions\n\nCreate specialized plugins for different module types:\n\n```\nbuildSrc/src/main/kotlin/\n├── kotlin-base-conventions.gradle.kts     # Basic Kotlin setup\n├── kotlin-library-conventions.gradle.kts  # For libraries\n├── kotlin-app-conventions.gradle.kts      # For applications\n├── kotlin-android-conventions.gradle.kts  # For Android\n└── kotlin-test-conventions.gradle.kts     # Test configuration\n```\n\n### Composing Plugins\n\n```kotlin\n// kotlin-library-conventions.gradle.kts\nplugins {\n    id(\"kotlin-base-conventions\")  // Apply base first\n    id(\"kotlin-test-conventions\")  // Add test setup\n}\n\n// Library-specific additions\nkotlin {\n    explicitApi()\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Convention Plugin with Extensions",
+              "content": "\nAdd custom configuration options:\n\n",
+              "code": "// buildSrc/src/main/kotlin/team-kotlin-conventions.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n}\n\n// Custom extension for team options\ninterface TeamExtension {\n    val enableStrictMode: Property<Boolean>\n    val minimumCoverage: Property<Int>\n}\n\nval team = extensions.create<TeamExtension>(\"team\")\n\n// Apply defaults\nteam.enableStrictMode.convention(true)\nteam.minimumCoverage.convention(80)\n\nafterEvaluate {\n    if (team.enableStrictMode.get()) {\n        kotlin {\n            compilerOptions {\n                allWarningsAsErrors.set(true)\n            }\n        }\n    }\n}\n\n// Usage in build.gradle.kts:\n// plugins { id(\"team-kotlin-conventions\") }\n// team {\n//     enableStrictMode.set(false)  // Override for this module\n//     minimumCoverage.set(90)\n// }",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Composite Builds",
+              "content": "\n### Beyond buildSrc\n\nFor sharing plugins across multiple projects, use composite builds:\n\n```\nproject-root/\n├── build-logic/              # Separate project for plugins\n│   ├── build.gradle.kts\n│   ├── settings.gradle.kts\n│   └── conventions/\n│       ├── build.gradle.kts\n│       └── src/main/kotlin/\n│           └── my.conventions.gradle.kts\n├── app/\n├── lib/\n└── settings.gradle.kts\n```\n\n### settings.gradle.kts\n\n```kotlin\npluginManagement {\n    includeBuild(\"build-logic\")\n}\n\ninclude(\":app\", \":lib\")\n```\n\n### Benefits over buildSrc\n\n- Plugins can be published and shared\n- Changes don't invalidate entire build cache\n- Cleaner separation of concerns\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World Convention Plugin",
+              "content": "\nA production-ready convention plugin:\n\n",
+              "code": "// buildSrc/src/main/kotlin/kotlin-service-conventions.gradle.kts\nimport org.jetbrains.kotlin.gradle.tasks.KotlinCompile\n\nplugins {\n    kotlin(\"jvm\")\n    kotlin(\"plugin.serialization\")\n    id(\"io.gitlab.arturbosch.detekt\")\n    jacoco\n}\n\ngroup = \"com.example\"\n\nrepositories {\n    mavenCentral()\n}\n\nkotlin {\n    jvmToolchain(17)\n    \n    compilerOptions {\n        allWarningsAsErrors.set(true)\n        freeCompilerArgs.addAll(\n            \"-Xjdk-release=17\",\n            \"-opt-in=kotlin.RequiresOptIn\",\n            \"-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi\"\n        )\n    }\n}\n\ndetekt {\n    buildUponDefaultConfig = true\n    allRules = false\n    config.setFrom(rootProject.files(\"config/detekt.yml\"))\n    baseline = file(\"detekt-baseline.xml\")\n}\n\njacoco {\n    toolVersion = \"0.8.12\"\n}\n\ntasks.withType<Test> {\n    useJUnitPlatform()\n    testLogging {\n        events(\"passed\", \"skipped\", \"failed\")\n    }\n}\n\ntasks.jacocoTestReport {\n    dependsOn(tasks.test)\n    reports {\n        xml.required.set(true)\n        html.required.set(true)\n    }\n}\n\ntasks.jacocoTestCoverageVerification {\n    violationRules {\n        rule {\n            limit {\n                minimum = \"0.80\".toBigDecimal()\n            }\n        }\n    }\n}\n\ntasks.named(\"check\") {\n    dependsOn(\"jacocoTestCoverageVerification\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Convention Plugin Pitfalls",
+              "content": "\n### Overriding Applied Plugins\n\nBe careful with plugin versions:\n\n```kotlin\n// buildSrc/build.gradle.kts\ndependencies {\n    implementation(\"org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21\")\n}\n\n// Don't also specify version in convention plugin!\n// kotlin-conventions.gradle.kts\nplugins {\n    kotlin(\"jvm\")  // No version! Uses buildSrc dependency version\n}\n```\n\n### Configuration Order\n\n```kotlin\n// WRONG - afterEvaluate can cause issues\nafterEvaluate {\n    kotlin { jvmToolchain(17) }\n}\n\n// RIGHT - configure directly\nkotlin {\n    jvmToolchain(17)\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Create Team Conventions",
+              "content": "\n**Goal**: Create a set of convention plugins for a team.\n\n**Requirements**:\n1. Create buildSrc with kotlin-dsl\n2. Create `kotlin-base-conventions` with JVM 17 and warnings-as-errors\n3. Create `kotlin-library-conventions` that applies base + explicit API mode\n4. Create `kotlin-app-conventions` that applies base + application plugin\n5. Apply to sample modules\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Convention plugins eliminate build configuration duplication\n- buildSrc is the simplest way to create project-local plugins\n- Composite builds enable sharing plugins across projects\n- Layer plugins for different module types\n- Encode team standards (toolchain, linting, testing) in plugins\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "8.6",
+          "title": "Lesson 8.6: Build Optimization & Caching",
+          "moduleId": "module-08",
+          "order": 6,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nBuild time directly impacts developer productivity. A slow build breaks flow and costs money. Gradle provides powerful caching and optimization features.\n\nIn this lesson, you'll learn:\n- How to enable and configure Gradle build cache\n- Using the configuration cache\n- Optimizing build times\n- Profiling and debugging slow builds\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Essential gradle.properties",
+              "content": "\nOptimize builds with these properties:\n\n",
+              "code": "# gradle.properties\n\n# Enable build cache\norg.gradle.caching=true\n\n# Enable configuration cache\norg.gradle.configuration-cache=true\n\n# Run tasks in parallel\norg.gradle.parallel=true\n\n# Keep daemon running\norg.gradle.daemon=true\n\n# JVM settings\norg.gradle.jvmargs=-Xmx4g -XX:+UseParallelGC\n\n# Kotlin settings\nkotlin.incremental=true\nkotlin.caching.enabled=true",
+              "language": "properties"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding Gradle Caching",
+              "content": "\n### Types of Caching\n\n**1. Incremental Builds**\n- Skips tasks when inputs/outputs unchanged\n- Enabled by default\n- Shows `UP-TO-DATE` in output\n\n**2. Build Cache**\n- Stores task outputs by input hash\n- Reuses outputs even after `clean`\n- Can be shared across machines (remote cache)\n\n**3. Configuration Cache**\n- Caches the build configuration itself\n- Dramatically speeds up repeated builds\n- Requires compatible plugins\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Remote Build Cache",
+              "content": "\nShare cache across your team or CI:\n\n",
+              "code": "// settings.gradle.kts - Remote build cache\nbuildCache {\n    local {\n        isEnabled = true\n        directory = File(rootDir, \"build-cache\")\n    }\n\n    remote<HttpBuildCache> {\n        url = uri(\"https://cache.example.com/\")\n        isPush = System.getenv(\"CI\") != null  // Only CI pushes\n        credentials {\n            username = System.getenv(\"CACHE_USER\")\n            password = System.getenv(\"CACHE_PASSWORD\")\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Configuration Cache",
+              "content": "\n### What It Caches\n\nThe configuration cache stores:\n- Resolved plugins\n- Applied configurations\n- Task graph\n\n### Requirements\n\nPlugins must be compatible:\n- No `project` access at execution time\n- No shared mutable state\n- Proper input/output declarations\n\n### Checking Compatibility\n\n```bash\n# Test configuration cache compatibility\n./gradlew build --configuration-cache\n\n# See problems report\nopen build/reports/configuration-cache/\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Profiling Builds",
+              "content": "\nIdentify slow parts of your build:\n\n",
+              "code": "# Generate build scan (detailed online report)\n./gradlew build --scan\n\n# Generate local profile\n./gradlew build --profile\nopen build/reports/profile/\n\n# See task execution times\n./gradlew build --info\n\n# Debug configuration issues\n./gradlew build --debug\n\n# See dependency resolution\n./gradlew build --refresh-dependencies",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "Build Optimization Strategies",
+              "content": "\n### 1. Avoid Configuration-Time Work\n\n```kotlin\n// SLOW - runs every build\nval gitHash = \"git rev-parse HEAD\".execute().text\n\n// FAST - runs only when task executes\nval gitHash = providers.exec {\n    commandLine(\"git\", \"rev-parse\", \"HEAD\")\n}.standardOutput.asText\n```\n\n### 2. Use Lazy Configuration\n\n```kotlin\n// SLOW - creates closure immediately\ntasks.register(\"slow\") {\n    inputs.file(getExpensiveFile())  // Runs at configuration\n}\n\n// FAST - deferred execution\ntasks.register(\"fast\") {\n    inputs.file(providers.provider { getExpensiveFile() })\n}\n```\n\n### 3. Limit Plugin Application\n\n```kotlin\n// SLOW - applies to all projects\nsubprojects {\n    apply(plugin = \"kotlin\")\n}\n\n// FAST - apply only where needed via convention plugins\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Kotlin Compilation Optimization",
+              "content": "\nSpeed up Kotlin compilation specifically:\n\n",
+              "code": "// build.gradle.kts\nkotlin {\n    compilerOptions {\n        // Use incremental compilation\n        incremental = true\n        \n        // Parallel compilation (for multi-module)\n        freeCompilerArgs.add(\"-Xparallel-compilation\")\n    }\n}\n\n// gradle.properties\nkotlin.incremental=true\nkotlin.caching.enabled=true\nkotlin.compiler.execution.strategy=in-process\n\n# For large projects\nkotlin.build.report.output=file",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Measuring Build Performance",
+              "content": "\n### Key Metrics\n\n| Metric | Good | Needs Work |\n|--------|------|------------|\n| Configuration | < 5s | > 10s |\n| Clean build | < 2min | > 5min |\n| Incremental | < 20s | > 60s |\n| Cache hit rate | > 80% | < 50% |\n\n### Build Scan Reports\n\n```bash\n# Create detailed report\n./gradlew build --scan\n\n# Report shows:\n# - Task execution timeline\n# - Cache hit/miss rates\n# - Configuration time\n# - Dependency download time\n# - Memory usage\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Optimized Multi-Module Build",
+              "content": "\nOptimal configuration for large projects:\n\n",
+              "code": "# gradle.properties\n\n# Core optimizations\norg.gradle.caching=true\norg.gradle.configuration-cache=true\norg.gradle.parallel=true\norg.gradle.daemon=true\n\n# Memory settings (adjust based on project size)\norg.gradle.jvmargs=-Xmx8g -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g\n\n# Kotlin settings\nkotlin.incremental=true\nkotlin.caching.enabled=true\nkotlin.parallel.tasks.in.project=true\n\n# File system watching (real-time change detection)\norg.gradle.vfs.watch=true\n\n# Reduce console output overhead\norg.gradle.console=plain",
+              "language": "properties"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Performance Issues",
+              "content": "\n### Too Many Subprojects\n\n```kotlin\n// SLOW - 100+ subprojects\nsettings.gradle.kts:\ninclude(\":lib1\", \":lib2\", ... \":lib100\")\n\n// BETTER - consolidate small modules\n// Or use --parallel with proper isolation\n```\n\n### Dynamic Dependency Resolution\n\n```kotlin\n// SLOW - version resolved every build\nimplementation(\"com.example:lib:+\")\n\n// FAST - fixed version\nimplementation(\"com.example:lib:1.2.3\")\n```\n\n### Unnecessary Work\n\n```kotlin\n// SLOW - all tests run always\ntasks.test {\n    // No filtering\n}\n\n// FAST - run affected tests\n./gradlew test --tests \"*Feature*\"\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Optimize a Build",
+              "content": "\n**Goal**: Apply optimizations to a slow build.\n\n**Requirements**:\n1. Add optimal gradle.properties settings\n2. Enable configuration cache\n3. Run build with --scan and analyze results\n4. Identify and fix configuration-time work\n5. Measure before/after build times\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Enable caching, parallel builds, and daemon in gradle.properties\n- Build cache can be shared via remote HTTP cache\n- Configuration cache dramatically speeds repeated builds\n- Use --scan to identify performance bottlenecks\n- Avoid configuration-time work; use lazy configuration\n- Proper input/output declarations enable caching\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Module Summary",
+              "content": "\nCongratulations on completing Module 08: Gradle Mastery!\n\nYou've learned:\n- Gradle basics and Kotlin DSL\n- Dependency management with version catalogs\n- Multiplatform build configuration\n- Custom tasks and plugins\n- Convention plugins for team standards\n- Build optimization and caching\n\nThese skills will help you maintain professional-grade build configurations and significantly improve build performance.\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        }
+      ]
     }
   ]
 }
