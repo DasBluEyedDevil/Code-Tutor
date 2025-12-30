@@ -11537,6 +11537,606 @@
           "challenges": []
         }
       ]
+    },
+    {
+      "id": "module-09",
+      "title": "Functional Kotlin with Arrow",
+      "description": "Master functional programming in Kotlin. Learn error handling without exceptions, railway-oriented programming, and Arrow's powerful effect system.",
+      "difficulty": "intermediate",
+      "estimatedHours": 6,
+      "lessons": [
+        {
+          "id": "9.1",
+          "title": "Lesson 9.1: Functional Programming Principles",
+          "moduleId": "module-09",
+          "order": 1,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nFunctional programming (FP) is a programming paradigm that treats computation as the evaluation of mathematical functions. It emphasizes immutability, pure functions, and declarative code.\n\nIn this lesson, you'll learn:\n- What makes a function \"pure\" and why it matters\n- How to apply immutability principles in Kotlin\n- Function composition techniques\n- Understanding referential transparency\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What is Functional Programming?",
+              "content": "\n### Core Principles\n\nFunctional programming is built on several key ideas:\n\n**1. Pure Functions**\n- Same inputs always produce same outputs\n- No side effects (no I/O, no mutations, no global state)\n- Predictable and testable\n\n**2. Immutability**\n- Data never changes after creation\n- \"Changes\" create new data\n- Eliminates entire classes of bugs\n\n**3. Function Composition**\n- Build complex behavior from simple functions\n- Functions as first-class values\n- Declarative over imperative\n\n**4. Referential Transparency**\n- An expression can be replaced with its value\n- Makes reasoning about code easier\n- Enables powerful optimizations\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Pure vs Impure Functions",
+              "content": "\nUnderstanding the difference is fundamental:\n\n",
+              "code": "// PURE FUNCTIONS - same input always gives same output\nfun add(a: Int, b: Int): Int = a + b  // Pure: no side effects\n\nfun double(x: Int): Int = x * 2  // Pure: deterministic\n\nfun formatName(first: String, last: String): String =\n    \"$first $last\".trim()  // Pure: only uses inputs\n\n// IMPURE FUNCTIONS - have side effects or depend on external state\nfun now(): Long = System.currentTimeMillis()  // Impure: reads system clock\n\nvar counter = 0\nfun increment(): Int = ++counter  // Impure: mutates global state\n\nfun log(message: String) {\n    println(message)  // Impure: I/O side effect\n}\n\nfun readConfig(): String =\n    File(\"config.json\").readText()  // Impure: reads file system",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Benefits of Pure Functions",
+              "content": "\n### Why Pure Functions Matter\n\n**1. Testability**\n```kotlin\n// Easy to test - no mocks needed!\n@Test\nfun `add should sum two numbers`() {\n    assertEquals(5, add(2, 3))\n    assertEquals(0, add(-1, 1))\n}\n```\n\n**2. Cacheability (Memoization)**\n```kotlin\n// Safe to cache results\nval memoizedFib = mutableMapOf<Int, Long>()\nfun fib(n: Int): Long = memoizedFib.getOrPut(n) {\n    if (n <= 1) n.toLong() else fib(n - 1) + fib(n - 2)\n}\n```\n\n**3. Parallelization**\n```kotlin\n// Safe to run in parallel - no shared mutable state\nlistOf(1, 2, 3, 4, 5)\n    .parallelStream()\n    .map { double(it) }  // Each call is independent\n    .toList()\n```\n\n**4. Reasoning**\n```kotlin\n// Can substitute equals for equals\nval x = add(2, 3)\nval y = add(2, 3)\n// x and y are guaranteed to be equal!\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Immutability with Data Classes",
+              "content": "\nKotlin's data classes support immutable patterns:\n\n",
+              "code": "// Immutable data class\ndata class User(\n    val id: Long,\n    val name: String,\n    val email: String,\n    val isActive: Boolean = true\n)\n\n// \"Update\" by creating new instance\nfun updateEmail(user: User, newEmail: String): User =\n    user.copy(email = newEmail)  // Returns new instance, original unchanged\n\nfun deactivate(user: User): User =\n    user.copy(isActive = false)\n\n// Chaining updates\nfun updateAndDeactivate(user: User, newEmail: String): User =\n    user.copy(email = newEmail, isActive = false)\n\n// Usage\nval original = User(1, \"John\", \"john@old.com\")\nval updated = updateEmail(original, \"john@new.com\")\n\nprintln(original.email)  // \"john@old.com\" - unchanged!\nprintln(updated.email)   // \"john@new.com\" - new instance",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Immutable Collections",
+              "content": "\nKotlin provides both mutable and immutable collections:\n\n",
+              "code": "// Immutable by default\nval numbers: List<Int> = listOf(1, 2, 3)\n// numbers.add(4)  // Won't compile!\n\n// \"Adding\" creates new list\nval moreNumbers: List<Int> = numbers + 4\nprintln(numbers)      // [1, 2, 3] - unchanged\nprintln(moreNumbers)  // [1, 2, 3, 4] - new list\n\n// Transforming immutably\nval doubled: List<Int> = numbers.map { it * 2 }\nval filtered: List<Int> = numbers.filter { it > 1 }\n\n// Immutable maps\nval config: Map<String, String> = mapOf(\n    \"host\" to \"localhost\",\n    \"port\" to \"8080\"\n)\nval updated: Map<String, String> = config + (\"debug\" to \"true\")\n\n// For performance with many operations, use builders\nval built: List<Int> = buildList {\n    add(1)\n    add(2)\n    addAll(listOf(3, 4, 5))\n}  // Returns immutable List<Int>",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Function Composition",
+              "content": "\nBuild complex operations from simple functions:\n\n",
+              "code": "// Simple functions\nval trim: (String) -> String = { it.trim() }\nval lowercase: (String) -> String = { it.lowercase() }\nval removeSpaces: (String) -> String = { it.replace(\" \", \"\") }\n\n// Manual composition\nval sanitize: (String) -> String = { removeSpaces(lowercase(trim(it))) }\n\n// Usage\nval input = \"  Hello World  \"\nprintln(sanitize(input))  // \"helloworld\"\n\n// Composing with infix functions\ninfix fun <A, B, C> ((A) -> B).andThen(g: (B) -> C): (A) -> C = { a ->\n    g(this(a))\n}\n\nval sanitize2 = trim andThen lowercase andThen removeSpaces\n\n// Composing in reverse (mathematical composition)\ninfix fun <A, B, C> ((B) -> C).compose(g: (A) -> B): (A) -> C = { a ->\n    this(g(a))\n}\n\nval sanitize3 = removeSpaces compose lowercase compose trim",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Higher-Order Functions",
+              "content": "\nFunctions that take or return other functions:\n\n",
+              "code": "// Function that takes a function\nfun <T> List<T>.customFilter(predicate: (T) -> Boolean): List<T> =\n    buildList {\n        for (item in this@customFilter) {\n            if (predicate(item)) add(item)\n        }\n    }\n\n// Function that returns a function\nfun multiplyBy(factor: Int): (Int) -> Int = { it * factor }\n\nval double = multiplyBy(2)\nval triple = multiplyBy(3)\n\nprintln(double(5))  // 10\nprintln(triple(5))  // 15\n\n// Currying - transforming multi-arg function to chain of single-arg functions\nfun add(a: Int): (Int) -> Int = { b -> a + b }\n\nval add5 = add(5)\nprintln(add5(3))  // 8\nprintln(add5(10)) // 15\n\n// Partial application\nfun greet(greeting: String, name: String): String = \"$greeting, $name!\"\n\nval sayHello: (String) -> String = { name -> greet(\"Hello\", name) }\nval sayGoodbye: (String) -> String = { name -> greet(\"Goodbye\", name) }\n\nprintln(sayHello(\"World\"))  // \"Hello, World!\"",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Referential Transparency",
+              "content": "\n### What is Referential Transparency?\n\nAn expression is referentially transparent if it can be replaced with its value without changing the program's behavior.\n\n```kotlin\n// Referentially transparent\nval x = add(2, 3)  // Can replace with 5 anywhere\nval result = x + x  // Same as 5 + 5 = 10\n\n// NOT referentially transparent\nvar counter = 0\nfun next(): Int = ++counter  // Value changes each call!\n\nval a = next()  // 1\nval b = next()  // 2\n// Cannot replace next() with its value!\n```\n\n### Why It Matters\n\n1. **Equational reasoning**: Substitute equals for equals\n2. **Refactoring safety**: Extract/inline without changing behavior\n3. **Lazy evaluation**: Defer computation safely\n4. **Parallel execution**: Order doesn't matter\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Applying FP to Real Code",
+              "content": "\nTransforming imperative code to functional style:\n\n",
+              "code": "// IMPERATIVE STYLE\nfun processOrdersImperative(orders: List<Order>): Double {\n    var total = 0.0\n    for (order in orders) {\n        if (order.status == OrderStatus.COMPLETED) {\n            for (item in order.items) {\n                total += item.price * item.quantity\n            }\n        }\n    }\n    return total\n}\n\n// FUNCTIONAL STYLE\nfun processOrdersFunctional(orders: List<Order>): Double =\n    orders\n        .filter { it.status == OrderStatus.COMPLETED }\n        .flatMap { it.items }\n        .sumOf { it.price * it.quantity }\n\n// Even more composable\nval isCompleted: (Order) -> Boolean = { it.status == OrderStatus.COMPLETED }\nval itemTotal: (OrderItem) -> Double = { it.price * it.quantity }\n\nfun processOrders(orders: List<Order>): Double =\n    orders\n        .filter(isCompleted)\n        .flatMap(Order::items)\n        .sumOf(itemTotal)",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common FP Pitfalls",
+              "content": "\n### Over-Engineering\n\n```kotlin\n// TOO ABSTRACT - hard to read\nval result = input\n    .let(::trim)\n    .let(::validate)\n    .let(::transform)\n    .let(::format)\n\n// BETTER - clear and simple\nval trimmed = input.trim()\nval validated = validate(trimmed)\nval transformed = transform(validated)\nval result = format(transformed)\n```\n\n### Ignoring Performance\n\n```kotlin\n// CREATES MANY INTERMEDIATE LISTS\nlist\n    .filter { it > 0 }      // New list\n    .map { it * 2 }         // New list\n    .filter { it < 100 }    // New list\n    .toList()\n\n// BETTER - use sequences for large lists\nlist.asSequence()\n    .filter { it > 0 }\n    .map { it * 2 }\n    .filter { it < 100 }\n    .toList()  // Single list created\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Refactor to Functional Style",
+              "content": "\n**Goal**: Transform imperative code to functional style.\n\n**Starting Code**:\n```kotlin\nfun findTopCustomers(orders: List<Order>): List<Customer> {\n    val customerTotals = mutableMapOf<Customer, Double>()\n    for (order in orders) {\n        val customer = order.customer\n        val total = customerTotals.getOrDefault(customer, 0.0)\n        customerTotals[customer] = total + order.total\n    }\n    val result = mutableListOf<Customer>()\n    for ((customer, total) in customerTotals) {\n        if (total > 1000.0) {\n            result.add(customer)\n        }\n    }\n    result.sortByDescending { customerTotals[it] }\n    return result.take(10)\n}\n```\n\n**Requirements**:\n1. Use only immutable data structures\n2. Use collection operations (groupBy, filter, sortedBy, etc.)\n3. Keep it readable\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: Functional Refactoring",
+              "content": "\n",
+              "code": "// FUNCTIONAL SOLUTION\nfun findTopCustomers(orders: List<Order>): List<Customer> =\n    orders\n        .groupBy { it.customer }  // Map<Customer, List<Order>>\n        .mapValues { (_, orders) -> orders.sumOf { it.total } }  // Map<Customer, Double>\n        .filter { (_, total) -> total > 1000.0 }\n        .entries\n        .sortedByDescending { it.value }\n        .take(10)\n        .map { it.key }\n\n// ALTERNATIVE with data class for clarity\ndata class CustomerTotal(val customer: Customer, val total: Double)\n\nfun findTopCustomersAlt(orders: List<Order>): List<Customer> =\n    orders\n        .groupBy { it.customer }\n        .map { (customer, orders) ->\n            CustomerTotal(customer, orders.sumOf { it.total })\n        }\n        .filter { it.total > 1000.0 }\n        .sortedByDescending { it.total }\n        .take(10)\n        .map { it.customer }",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- **Pure functions** are predictable, testable, and cacheable\n- **Immutability** eliminates bugs from shared mutable state\n- **Function composition** builds complex behavior from simple parts\n- **Referential transparency** enables safe refactoring and optimization\n- Use **data classes with copy()** for immutable updates\n- Prefer **sequences** for large collection transformations\n- FP is about **clarity and correctness**, not complexity\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "9.2",
+          "title": "Lesson 9.2: Kotlin's Built-in Result Type",
+          "moduleId": "module-09",
+          "order": 2,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nExceptions have problems: they're invisible in type signatures, easy to forget, and create hidden control flow. Kotlin's `Result<T>` type provides a functional alternative for error handling.\n\nIn this lesson, you'll learn:\n- How to use `Result<T>` for explicit error handling\n- Chaining operations with `map`, `mapCatching`, and `fold`\n- Converting between Result and exceptions\n- When to use Result vs exceptions\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "The Problem with Exceptions",
+              "content": "\n### Hidden Control Flow\n\n```kotlin\n// What can throw? No way to know from signature!\nfun processOrder(orderId: String): Order {\n    val order = orderRepository.findById(orderId)  // Throws?\n    val validated = validator.validate(order)       // Throws?\n    val saved = orderRepository.save(validated)     // Throws?\n    return saved\n}\n\n// Caller must read implementation or docs to know!\ntry {\n    val order = processOrder(\"123\")\n} catch (e: OrderNotFoundException) {\n    // Did I catch everything?\n} catch (e: ValidationException) {\n    // What about database errors?\n}\n```\n\n### The Functional Alternative\n\nMake errors explicit in the type system:\n\n```kotlin\n// Now errors are visible!\nfun processOrder(orderId: String): Result<Order>\n\n// Caller knows to handle errors\nprocessOrder(\"123\")\n    .onSuccess { order -> /* use order */ }\n    .onFailure { error -> /* handle error */ }\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating Results",
+              "content": "\nMultiple ways to create Result values:\n\n",
+              "code": "// Using runCatching - wraps exceptions\nfun parseNumber(s: String): Result<Int> = runCatching {\n    s.toInt()\n}\n\n// Success case\nval success: Result<Int> = Result.success(42)\n\n// Failure case\nval failure: Result<Int> = Result.failure(IllegalArgumentException(\"Invalid\"))\n\n// From nullable with custom error\nfun findUser(id: Long): Result<User> = runCatching {\n    userRepository.findById(id)\n        ?: throw NoSuchElementException(\"User $id not found\")\n}\n\n// Combining with require/check\nfun divide(a: Int, b: Int): Result<Double> = runCatching {\n    require(b != 0) { \"Cannot divide by zero\" }\n    a.toDouble() / b\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Extracting Values",
+              "content": "\nGetting values from Result:\n\n",
+              "code": "val result: Result<Int> = parseNumber(\"42\")\n\n// Get value or throw\nval value1: Int = result.getOrThrow()  // Throws if failure\n\n// Get value or null\nval value2: Int? = result.getOrNull()  // null if failure\n\n// Get value or default\nval value3: Int = result.getOrDefault(0)\n\n// Get value or compute\nval value4: Int = result.getOrElse { error ->\n    println(\"Failed: ${error.message}\")\n    -1  // Fallback value\n}\n\n// Get exception or null\nval exception: Throwable? = result.exceptionOrNull()\n\n// Check status\nval isSuccess: Boolean = result.isSuccess\nval isFailure: Boolean = result.isFailure",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Transforming Results with map",
+              "content": "\nTransform success values while preserving errors:\n\n",
+              "code": "fun parseNumber(s: String): Result<Int> = runCatching { s.toInt() }\n\n// map - transform success value (failure passes through)\nval doubled: Result<Int> = parseNumber(\"21\").map { it * 2 }\nprintln(doubled.getOrNull())  // 42\n\nval failed: Result<Int> = parseNumber(\"abc\").map { it * 2 }\nprintln(failed.isFailure)  // true - error preserved\n\n// mapCatching - transform with potential failure\nfun parseAndDouble(s: String): Result<Int> =\n    parseNumber(s)\n        .mapCatching { number ->\n            require(number > 0) { \"Must be positive\" }\n            number * 2\n        }\n\nprintln(parseAndDouble(\"5\").getOrNull())   // 10\nprintln(parseAndDouble(\"-5\").isFailure)    // true\nprintln(parseAndDouble(\"abc\").isFailure)   // true",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Chaining Operations",
+              "content": "\nBuild pipelines that short-circuit on errors:\n\n",
+              "code": "fun parseNumber(s: String): Result<Int> = runCatching { s.toInt() }\n\nfun divide(a: Int, b: Int): Result<Double> = runCatching {\n    require(b != 0) { \"Cannot divide by zero\" }\n    a.toDouble() / b\n}\n\n// Chain operations - any failure stops the chain\nfun calculate(input: String): Result<String> =\n    parseNumber(input)\n        .mapCatching { it * 2 }\n        .mapCatching { divide(it, 3).getOrThrow() }\n        .map { \"Result: $it\" }\n\nprintln(calculate(\"15\").getOrNull())   // \"Result: 10.0\"\nprintln(calculate(\"abc\").isFailure)    // true (parse failed)\nprintln(calculate(\"0\").getOrNull())    // \"Result: 0.0\"\n\n// Recovering from errors mid-chain\nfun calculateWithRecovery(input: String): Result<String> =\n    parseNumber(input)\n        .recover { 0 }  // Recover parse errors with default\n        .mapCatching { it * 2 }\n        .map { \"Result: $it\" }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Handling Results with fold",
+              "content": "\nProcess both success and failure cases:\n\n",
+              "code": "fun processInput(input: String): String {\n    val result = parseNumber(input)\n\n    // fold - handle both cases, return single value\n    return result.fold(\n        onSuccess = { number -> \"Parsed: $number\" },\n        onFailure = { error -> \"Error: ${error.message}\" }\n    )\n}\n\nprintln(processInput(\"42\"))   // \"Parsed: 42\"\nprintln(processInput(\"abc\"))  // \"Error: For input string: \\\"abc\\\"\"\n\n// Side effects with onSuccess/onFailure\nfun logResult(result: Result<Int>) {\n    result\n        .onSuccess { println(\"Got value: $it\") }\n        .onFailure { println(\"Got error: ${it.message}\") }\n}\n\n// Using when for pattern matching\nfun handleResult(result: Result<Int>): String = when {\n    result.isSuccess -> \"Value: ${result.getOrThrow()}\"\n    else -> \"Error: ${result.exceptionOrNull()?.message}\"\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Recovering from Errors",
+              "content": "\nTransform failures back to successes:\n\n",
+              "code": "fun parseNumber(s: String): Result<Int> = runCatching { s.toInt() }\n\n// recover - transform failure to success\nval recovered: Result<Int> = parseNumber(\"abc\")\n    .recover { 0 }  // On any error, use 0\n\nprintln(recovered.getOrThrow())  // 0\n\n// recoverCatching - recover but might fail again\nval partialRecover: Result<Int> = parseNumber(\"abc\")\n    .recoverCatching { error ->\n        // Try parsing as hex\n        error.message?.let { Integer.parseInt(it, 16) }\n            ?: throw error\n    }\n\n// Selective recovery\nfun parseWithDefault(s: String, default: Int): Result<Int> =\n    parseNumber(s).recover { error ->\n        when (error) {\n            is NumberFormatException -> default\n            else -> throw error  // Re-throw other errors\n        }\n    }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World Example: API Calls",
+              "content": "\nUsing Result for HTTP operations:\n\n",
+              "code": "data class User(val id: Long, val name: String, val email: String)\n\nclass UserService(private val httpClient: HttpClient) {\n\n    fun getUser(id: Long): Result<User> = runCatching {\n        val response = httpClient.get(\"https://api.example.com/users/$id\")\n        require(response.status == 200) {\n            \"HTTP ${response.status}: ${response.body}\"\n        }\n        Json.decodeFromString<User>(response.body)\n    }\n\n    fun updateUser(user: User): Result<User> = runCatching {\n        val response = httpClient.put(\"https://api.example.com/users/${user.id}\") {\n            setBody(Json.encodeToString(user))\n        }\n        require(response.status in 200..299) {\n            \"Update failed: ${response.body}\"\n        }\n        user\n    }\n}\n\n// Usage\nfun displayUser(id: Long) {\n    userService.getUser(id).fold(\n        onSuccess = { user ->\n            showUserProfile(user)\n        },\n        onFailure = { error ->\n            when (error) {\n                is java.net.UnknownHostException -> showOfflineMessage()\n                is java.net.SocketTimeoutException -> showTimeoutMessage()\n                else -> showGenericError(error.message)\n            }\n        }\n    )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Result",
+              "content": "\n### Good Use Cases\n\n1. **Operations that commonly fail**: Parsing, I/O, network calls\n2. **Public API boundaries**: Make errors explicit to callers\n3. **Functional pipelines**: Chain operations cleanly\n4. **When you want exhaustive handling**: Compiler helps catch unhandled cases\n\n### When to Stick with Exceptions\n\n1. **Programming errors**: NullPointerException, IndexOutOfBounds\n2. **Unrecoverable situations**: OutOfMemory, StackOverflow\n3. **Deep call stacks**: Result doesn't propagate automatically\n4. **Library integration**: When libraries throw exceptions\n\n### Best Practice\n\n```kotlin\n// Use exceptions at boundaries, Result internally\nclass MyService {\n    // Public API can throw\n    fun doWork(): Output {\n        return doWorkSafe().getOrThrow()\n    }\n    \n    // Internal operations use Result\n    private fun doWorkSafe(): Result<Output> = runCatching {\n        // ...\n    }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "WARNING",
+              "title": "Result Limitations",
+              "content": "\n### Cannot Use as Return Type Directly\n\n```kotlin\n// This is discouraged by Kotlin\nfun getValue(): Result<Int> = Result.success(42)  // Works but warned\n\n// Prefer inline functions or suspend functions\nsuspend fun getValue(): Result<Int> = runCatching { \n    fetchValue() \n}\n```\n\n### Single Error Type\n\nResult only holds `Throwable`, limiting typed error handling:\n\n```kotlin\n// You lose error type information\nfun parse(s: String): Result<Int>  // What kind of error?\n\n// For typed errors, use Arrow's Either (next lesson)\nfun parse(s: String): Either<ParseError, Int>  // Error type is explicit!\n```\n\n### No Accumulation\n\nCan't collect multiple errors:\n\n```kotlin\n// First error stops everything\nval results = listOf(\"1\", \"a\", \"2\", \"b\")\n    .map { parseNumber(it) }\n// Only know about first failure, not all\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Build a Validation Pipeline",
+              "content": "\n**Goal**: Create a user registration validator using Result.\n\n**Requirements**:\n```kotlin\ndata class RegistrationRequest(\n    val username: String,\n    val email: String,\n    val password: String,\n    val age: Int\n)\n\ndata class ValidatedUser(\n    val username: String,\n    val email: String,\n    val passwordHash: String,\n    val age: Int\n)\n\nfun validateRegistration(request: RegistrationRequest): Result<ValidatedUser>\n```\n\n**Validation Rules**:\n- Username: 3-20 characters, alphanumeric\n- Email: Must contain @\n- Password: At least 8 characters\n- Age: 18 or older\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: Validation Pipeline",
+              "content": "\n",
+              "code": "fun validateRegistration(request: RegistrationRequest): Result<ValidatedUser> =\n    validateUsername(request.username)\n        .mapCatching { username ->\n            validateEmail(request.email)\n                .getOrThrow()  // Propagate email errors\n            username\n        }\n        .mapCatching { username ->\n            validatePassword(request.password)\n                .getOrThrow()\n            username\n        }\n        .mapCatching { username ->\n            validateAge(request.age)\n                .getOrThrow()\n            username\n        }\n        .map { username ->\n            ValidatedUser(\n                username = username,\n                email = request.email,\n                passwordHash = hashPassword(request.password),\n                age = request.age\n            )\n        }\n\nprivate fun validateUsername(username: String): Result<String> = runCatching {\n    require(username.length in 3..20) { \n        \"Username must be 3-20 characters\" \n    }\n    require(username.all { it.isLetterOrDigit() }) { \n        \"Username must be alphanumeric\" \n    }\n    username\n}\n\nprivate fun validateEmail(email: String): Result<String> = runCatching {\n    require(\"@\" in email) { \"Invalid email format\" }\n    email\n}\n\nprivate fun validatePassword(password: String): Result<String> = runCatching {\n    require(password.length >= 8) { \n        \"Password must be at least 8 characters\" \n    }\n    password\n}\n\nprivate fun validateAge(age: Int): Result<Int> = runCatching {\n    require(age >= 18) { \"Must be 18 or older\" }\n    age\n}\n\nprivate fun hashPassword(password: String): String = \n    password.hashCode().toString()  // Simplified",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- `Result<T>` makes errors explicit in the type system\n- Use `runCatching { }` to wrap code that might throw\n- `map` transforms success values, `mapCatching` can fail\n- `fold` handles both success and failure cases\n- `recover` transforms failures back to successes\n- Result is best for operations that commonly fail\n- For typed errors, see Arrow's `Either` in the next lesson\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "9.3",
+          "title": "Lesson 9.3: Arrow Core - Either, Option, Validated",
+          "moduleId": "module-09",
+          "order": 3,
+          "estimatedMinutes": 75,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 75 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nArrow is the functional programming library for Kotlin. It provides powerful types for error handling that go beyond what `Result<T>` offers, including typed errors and error accumulation.\n\nIn this lesson, you'll learn:\n- `Either<L, R>` for typed error handling\n- `Option<A>` for explicit nullability\n- `Validated` for accumulating multiple errors\n- When to use each type\n\n**Prerequisites**: Add Arrow to your project:\n```kotlin\n// build.gradle.kts\ndependencies {\n    implementation(\"io.arrow-kt:arrow-core:1.2.4\")\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Either - Typed Error Handling",
+              "content": "\n### What is Either?\n\n`Either<L, R>` represents a value that is one of two types:\n- `Left(value)` - conventionally the \"error\" case\n- `Right(value)` - conventionally the \"success\" case (mnemonic: \"right\" means correct)\n\n### Compared to Result\n\n| Feature | `Result<T>` | `Either<E, T>` |\n|---------|-------------|----------------|\n| Error type | `Throwable` only | Any type `E` |\n| Type safety | Limited | Full |\n| Pattern matching | Limited | Exhaustive |\n| Chaining | `mapCatching` | `flatMap`, `either { }` |\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Defining Error Types",
+              "content": "\nCreate domain-specific error hierarchies:\n\n",
+              "code": "import arrow.core.*\n\n// Define your error types\nsealed interface UserError {\n    data class NotFound(val id: Long) : UserError\n    data class InvalidEmail(val email: String) : UserError\n    data class AlreadyExists(val email: String) : UserError\n    data object Unauthorized : UserError\n}\n\n// Your domain types\ndata class User(val id: Long, val name: String, val email: String)\n\n// Functions return Either\nfun getUser(id: Long): Either<UserError, User> =\n    if (id <= 0) {\n        UserError.NotFound(id).left()\n    } else {\n        User(id, \"John\", \"john@example.com\").right()\n    }\n\nfun validateEmail(email: String): Either<UserError, String> =\n    if (\"@\" in email) {\n        email.right()\n    } else {\n        UserError.InvalidEmail(email).left()\n    }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Working with Either",
+              "content": "\nBasic operations on Either values:\n\n",
+              "code": "import arrow.core.*\n\n// Creating Either values\nval success: Either<String, Int> = 42.right()\nval failure: Either<String, Int> = \"Error\".left()\n\n// Extracting values\nval value1: Int? = success.getOrNull()  // 42\nval value2: Int? = failure.getOrNull()  // null\n\nval value3: Int = success.getOrElse { 0 }  // 42\nval value4: Int = failure.getOrElse { 0 }  // 0\n\n// Checking state\nval isRight: Boolean = success.isRight()  // true\nval isLeft: Boolean = failure.isLeft()     // true\n\n// Pattern matching with fold\nfun describe(either: Either<String, Int>): String =\n    either.fold(\n        ifLeft = { error -> \"Error: $error\" },\n        ifRight = { value -> \"Success: $value\" }\n    )\n\n// Using when (with sealed types)\nfun handleUser(result: Either<UserError, User>): String =\n    when (result) {\n        is Either.Left -> when (val error = result.value) {\n            is UserError.NotFound -> \"User ${error.id} not found\"\n            is UserError.InvalidEmail -> \"Invalid email: ${error.email}\"\n            is UserError.AlreadyExists -> \"User exists: ${error.email}\"\n            UserError.Unauthorized -> \"Not authorized\"\n        }\n        is Either.Right -> \"Found user: ${result.value.name}\"\n    }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Chaining with flatMap",
+              "content": "\nSequentially compose operations that can fail:\n\n",
+              "code": "import arrow.core.*\n\n// Each function can fail with UserError\nfun getUser(id: Long): Either<UserError, User> = /* ... */\nfun validateEmail(email: String): Either<UserError, String> = /* ... */\nfun updateEmail(user: User, email: String): Either<UserError, User> = /* ... */\n\n// Chain with flatMap - short-circuits on first error\nfun changeUserEmail(userId: Long, newEmail: String): Either<UserError, User> =\n    getUser(userId)\n        .flatMap { user ->\n            validateEmail(newEmail).map { email ->\n                user to email\n            }\n        }\n        .flatMap { (user, email) ->\n            updateEmail(user, email)\n        }\n\n// map transforms Right values (Left passes through)\nval lengthResult: Either<String, Int> = \"hello\".right().map { it.length }  // Right(5)\n\nval failedLength: Either<String, Int> = \"error\".left<String, String>().map { it.length }  // Left(\"error\")",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The either { } Builder",
+              "content": "\nCleaner syntax for chaining operations:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.either\n\n// The either { } builder provides bind() for short-circuit evaluation\nfun updateUserEmail(userId: Long, newEmail: String): Either<UserError, User> =\n    either {\n        // bind() extracts Right value or short-circuits with Left\n        val user = getUser(userId).bind()\n        val validEmail = validateEmail(newEmail).bind()\n        \n        // Continue with the happy path\n        val updatedUser = user.copy(email = validEmail)\n        updateInDatabase(updatedUser).bind()\n    }\n\n// Equivalent to nested flatMap, but much cleaner!\nfun updateUserEmailFlatMap(userId: Long, newEmail: String): Either<UserError, User> =\n    getUser(userId).flatMap { user ->\n        validateEmail(newEmail).flatMap { validEmail ->\n            val updatedUser = user.copy(email = validEmail)\n            updateInDatabase(updatedUser)\n        }\n    }\n\n// Complex example\nfun processOrder(orderId: Long): Either<OrderError, Receipt> = either {\n    val order = findOrder(orderId).bind()\n    val customer = getCustomer(order.customerId).bind()\n    val inventory = checkInventory(order.items).bind()\n    val payment = processPayment(customer, order.total).bind()\n    val shipment = createShipment(order, customer.address).bind()\n    \n    Receipt(order, customer, payment, shipment)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Option - Explicit Nullability",
+              "content": "\n### What is Option?\n\n`Option<A>` explicitly represents an optional value:\n- `Some(value)` - value is present\n- `None` - value is absent\n\n### Why Option When Kotlin Has Nullable Types?\n\n```kotlin\n// Nullable types work great most of the time\nval user: User? = findUser(id)\nuser?.let { println(it.name) }\n\n// But Option provides:\n// 1. Chaining with flatMap/map\n// 2. Better interop with Either\n// 3. No null ambiguity (is null intentional or a bug?)\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Working with Option",
+              "content": "\nOption for explicit optionality:\n\n",
+              "code": "import arrow.core.*\n\n// Creating Options\nval some: Option<Int> = Some(42)\nval none: Option<Int> = None\n\n// From nullable\nval fromNullable: Option<String> = \"hello\".toOption()  // Some(\"hello\")\nval fromNull: Option<String> = null.toOption()         // None\n\n// Extracting values\nval value1: Int? = some.getOrNull()        // 42\nval value2: Int = some.getOrElse { 0 }     // 42\nval value3: Int = none.getOrElse { 0 }     // 0\n\n// Transforming\nval doubled: Option<Int> = some.map { it * 2 }  // Some(84)\n\n// Chaining\nfun findUser(id: Long): Option<User> = /* ... */\nfun getAddress(user: User): Option<Address> = /* ... */\n\nval address: Option<Address> = findUser(1)\n    .flatMap { user -> getAddress(user) }\n\n// With either { } builder\nfun getUserAddress(userId: Long): Either<String, Address> = either {\n    val user = findUser(userId).toEither { \"User not found\" }.bind()\n    val address = getAddress(user).toEither { \"No address\" }.bind()\n    address\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Validated - Accumulating Errors",
+              "content": "\n### The Problem with Either\n\nEither short-circuits on first error:\n\n```kotlin\n// Only shows first error!\neither {\n    validateName(name).bind()    // Fails here\n    validateEmail(email).bind()   // Never checked\n    validateAge(age).bind()       // Never checked\n}\n```\n\n### Validated Collects All Errors\n\n```kotlin\nvalidateName(name)\n    .zip(validateEmail(email), validateAge(age)) { n, e, a ->\n        User(n, e, a)\n    }\n// Returns ALL validation errors at once!\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Validated for Form Validation",
+              "content": "\nCollect all validation errors:\n\n",
+              "code": "import arrow.core.*\n\n// ValidatedNel = Validated with NonEmptyList of errors\nfun validateUsername(name: String): ValidatedNel<String, String> =\n    if (name.length >= 3) name.validNel()\n    else \"Username must be at least 3 characters\".invalidNel()\n\nfun validateEmail(email: String): ValidatedNel<String, String> =\n    if (\"@\" in email) email.validNel()\n    else \"Invalid email format\".invalidNel()\n\nfun validatePassword(pass: String): ValidatedNel<String, String> =\n    if (pass.length >= 8) pass.validNel()\n    else \"Password must be at least 8 characters\".invalidNel()\n\nfun validateAge(age: Int): ValidatedNel<String, Int> =\n    if (age >= 18) age.validNel()\n    else \"Must be 18 or older\".invalidNel()\n\ndata class Registration(val username: String, val email: String, val password: String, val age: Int)\n\n// Combine all validations - collects ALL errors\nfun validateRegistration(\n    username: String,\n    email: String,\n    password: String,\n    age: Int\n): ValidatedNel<String, Registration> =\n    validateUsername(username)\n        .zip(\n            validateEmail(email),\n            validatePassword(password),\n            validateAge(age)\n        ) { u, e, p, a ->\n            Registration(u, e, p, a)\n        }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using Validated",
+              "content": "\nHandling Validated results:\n\n",
+              "code": "// Usage - shows all errors at once!\nval result = validateRegistration(\"ab\", \"invalid\", \"123\", 16)\n\nwhen (result) {\n    is Validated.Valid -> {\n        println(\"Registration successful: ${result.value}\")\n    }\n    is Validated.Invalid -> {\n        println(\"Errors:\")\n        result.value.forEach { error ->\n            println(\"  - $error\")\n        }\n    }\n}\n\n// Output:\n// Errors:\n//   - Username must be at least 3 characters\n//   - Invalid email format\n//   - Password must be at least 8 characters\n//   - Must be 18 or older\n\n// Convert to Either when done validating\nval either: Either<NonEmptyList<String>, Registration> = result.toEither()\n\n// Or use fold\nval message: String = result.fold(\n    { errors -> \"Failed: ${errors.joinToString(\", \")}\" },\n    { registration -> \"Welcome, ${registration.username}!\" }\n)",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Each Type",
+              "content": "\n### Quick Reference\n\n| Scenario | Type | Reason |\n|----------|------|--------|\n| Operation may fail with typed error | `Either<E, A>` | Error type in signature |\n| Need to accumulate all errors | `Validated<E, A>` | Doesn't short-circuit |\n| Value may be absent | `Option<A>` | Explicit optionality |\n| Interop with exception-throwing code | `Result<T>` | Built into Kotlin |\n\n### Decision Tree\n\n```\nCan it fail?\n|-- No -> Use plain value\n+-- Yes -> What kind of failure?\n    |-- Typed domain error -> Either\n    |   +-- Need all errors at once? -> Validated first, then Either\n    |-- Exception-based -> Result\n    +-- Value absent -> Option (or nullable)\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Combining Types",
+              "content": "\nReal-world pattern: Validated for input, Either for processing:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.either\n\nsealed interface RegistrationError {\n    data class ValidationErrors(val errors: NonEmptyList<String>) : RegistrationError\n    data class DuplicateEmail(val email: String) : RegistrationError\n    data class DatabaseError(val cause: Throwable) : RegistrationError\n}\n\nfun registerUser(\n    username: String,\n    email: String,\n    password: String,\n    age: Int\n): Either<RegistrationError, User> = either {\n    // Step 1: Validate inputs (accumulate all errors)\n    val validated = validateRegistration(username, email, password, age)\n        .toEither()\n        .mapLeft { errors -> RegistrationError.ValidationErrors(errors) }\n        .bind()\n    \n    // Step 2: Check business rules (short-circuit on first error)\n    val emailExists = checkEmailExists(validated.email).bind()\n    ensure(!emailExists) { RegistrationError.DuplicateEmail(validated.email) }\n    \n    // Step 3: Save to database\n    val user = saveUser(validated)\n        .mapLeft { e -> RegistrationError.DatabaseError(e) }\n        .bind()\n    \n    user\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Mistakes",
+              "content": "\n### Using Validated for Sequential Operations\n\n```kotlin\n// WRONG - Validated is for parallel/independent validations\nval result = validateEmail(email).andThen { \n    checkEmailNotTaken(it)  // This depends on email being valid!\n}\n\n// RIGHT - Use Either for dependent operations\nval result = either {\n    val validEmail = validateEmail(email).toEither().bind()\n    val available = checkEmailNotTaken(validEmail).bind()\n    available\n}\n```\n\n### Mixing Left and Right\n\n```kotlin\n// Remember: Left = Error, Right = Success\nfun findUser(id: Long): Either<UserError, User> =\n    if (id > 0) User(id, \"John\").right()  // Success goes RIGHT\n    else UserError.NotFound(id).left()     // Error goes LEFT\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Build a User Service",
+              "content": "\n**Goal**: Create a complete user service using Arrow types.\n\n**Requirements**:\n1. Define `UserError` sealed interface with `NotFound`, `InvalidData`, `Conflict`\n2. Create validation functions using `Validated`\n3. Implement CRUD operations returning `Either`\n4. Combine validation and business logic\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: User Service",
+              "content": "\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.either\n\nsealed interface UserError {\n    data class NotFound(val id: Long) : UserError\n    data class InvalidData(val errors: NonEmptyList<String>) : UserError\n    data class Conflict(val message: String) : UserError\n}\n\ndata class User(val id: Long, val name: String, val email: String)\ndata class CreateUserRequest(val name: String, val email: String)\n\nclass UserService(private val repository: UserRepository) {\n\n    fun createUser(request: CreateUserRequest): Either<UserError, User> = either {\n        // Validate input (accumulate errors)\n        val validated = validateCreateRequest(request)\n            .toEither()\n            .mapLeft { UserError.InvalidData(it) }\n            .bind()\n        \n        // Check email uniqueness\n        val exists = repository.existsByEmail(validated.email)\n        ensure(!exists) { UserError.Conflict(\"Email already registered\") }\n        \n        // Create user\n        repository.save(User(0, validated.name, validated.email))\n    }\n\n    fun getUser(id: Long): Either<UserError, User> =\n        repository.findById(id)\n            .toEither { UserError.NotFound(id) }\n\n    fun updateEmail(userId: Long, newEmail: String): Either<UserError, User> = either {\n        val user = getUser(userId).bind()\n        val validEmail = validateEmail(newEmail)\n            .toEither()\n            .mapLeft { UserError.InvalidData(it) }\n            .bind()\n        \n        val updated = user.copy(email = validEmail)\n        repository.save(updated)\n    }\n\n    private fun validateCreateRequest(request: CreateUserRequest): ValidatedNel<String, CreateUserRequest> =\n        validateName(request.name)\n            .zip(validateEmail(request.email)) { n, e -> CreateUserRequest(n, e) }\n\n    private fun validateName(name: String): ValidatedNel<String, String> =\n        if (name.isNotBlank()) name.validNel()\n        else \"Name cannot be blank\".invalidNel()\n\n    private fun validateEmail(email: String): ValidatedNel<String, String> =\n        if (\"@\" in email) email.validNel()\n        else \"Invalid email format\".invalidNel()\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- `Either<E, A>` provides typed error handling with explicit error types\n- Use `either { }` builder with `bind()` for clean chaining\n- `Validated<E, A>` accumulates all errors (use for form validation)\n- `Option<A>` makes optionality explicit\n- Combine types: Validated for input, Either for processing\n- Arrow Core 1.2.4 is production-ready and widely used\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "9.4",
+          "title": "Lesson 9.4: Railway-Oriented Programming",
+          "moduleId": "module-09",
+          "order": 4,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nRailway-oriented programming (ROP) is a visual metaphor for functional error handling. Think of your code as a railway with two tracks: success and failure. Each function can switch between tracks.\n\nIn this lesson, you'll learn:\n- The railway metaphor for error handling\n- How to chain operations that can fail\n- Handling errors at the end of pipelines\n- Applying ROP to real business workflows\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "The Railway Metaphor",
+              "content": "\n### Two-Track Functions\n\nImagine a railway with two parallel tracks:\n\n```\nSuccess track: ======================================>\n                         \\                    \nFailure track:            ================================>\n```\n\n**Normal functions** keep data on the same track:\n```\ninput --[validate]--> validInput --[transform]--> output\n```\n\n**Two-track functions** can switch to the failure track:\n```\ninput --[validate]--\\\n                     \\--> error\n```\n\nOnce on the failure track, you stay there (short-circuit):\n```\n--[step1]-- error ==[step2]=======[step3]===========> error\n              (skipped)    (skipped)\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Railway Pattern",
+              "content": "\nBuilding a two-track pipeline:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.either\nimport arrow.core.raise.ensure\n\n// Each function returns Either - can switch tracks\nsealed interface OrderError {\n    data class ValidationFailed(val reason: String) : OrderError\n    data class PaymentFailed(val reason: String) : OrderError\n    data class InventoryError(val productId: Long) : OrderError\n    data class ShippingError(val reason: String) : OrderError\n}\n\ndata class Order(\n    val id: Long,\n    val items: List<OrderItem>,\n    val customerId: Long,\n    val status: OrderStatus\n)\n\ndata class OrderItem(val productId: Long, val quantity: Int)\n\nenum class OrderStatus { CREATED, VALIDATED, PAID, SHIPPED }\n\n// Step 1: Validate order (can switch to failure track)\nfun validateOrder(order: Order): Either<OrderError, Order> = either {\n    ensure(order.items.isNotEmpty()) {\n        OrderError.ValidationFailed(\"Order must have items\")\n    }\n    ensure(order.items.all { it.quantity > 0 }) {\n        OrderError.ValidationFailed(\"Invalid quantities\")\n    }\n    order.copy(status = OrderStatus.VALIDATED)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building the Railway",
+              "content": "\nComplete order processing pipeline:\n\n",
+              "code": "// Each step can fail, switching to failure track\n\nfun checkInventory(order: Order): Either<OrderError, Order> = either {\n    order.items.forEach { item ->\n        val available = inventoryService.getStock(item.productId)\n        ensure(available >= item.quantity) {\n            OrderError.InventoryError(item.productId)\n        }\n    }\n    order\n}\n\nfun processPayment(order: Order): Either<OrderError, Order> = either {\n    val result = paymentService.charge(order.customerId, calculateTotal(order))\n    ensure(result.isSuccess) {\n        OrderError.PaymentFailed(result.message)\n    }\n    order.copy(status = OrderStatus.PAID)\n}\n\nfun arrangeShipping(order: Order): Either<OrderError, Order> = either {\n    val tracking = shippingService.createShipment(order)\n    ensure(tracking != null) {\n        OrderError.ShippingError(\"Shipment creation failed\")\n    }\n    order.copy(status = OrderStatus.SHIPPED)\n}\n\n// The complete railway - chain all steps\nfun processOrder(order: Order): Either<OrderError, Order> = either {\n    val validated = validateOrder(order).bind()\n    val inventoryChecked = checkInventory(validated).bind()\n    val paid = processPayment(inventoryChecked).bind()\n    val shipped = arrangeShipping(paid).bind()\n    shipped\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Alternative: flatMap Chain",
+              "content": "\nThe same railway using flatMap:\n\n",
+              "code": "// Using flatMap - equivalent to either { } with bind()\nfun processOrderChain(order: Order): Either<OrderError, Order> =\n    validateOrder(order)\n        .flatMap { validated -> checkInventory(validated) }\n        .flatMap { checked -> processPayment(checked) }\n        .flatMap { paid -> arrangeShipping(paid) }\n\n// Even more concise with function references\nfun processOrderConcise(order: Order): Either<OrderError, Order> =\n    validateOrder(order)\n        .flatMap(::checkInventory)\n        .flatMap(::processPayment)\n        .flatMap(::arrangeShipping)\n\n// Visual representation:\n//\n// validateOrder --+-> checkInventory --+-> processPayment --+-> arrangeShipping --+-> Success!\n//                 |                    |                    |                     |\n//                 +-> ValidationFailed +-> InventoryError   +-> PaymentFailed     +-> ShippingError\n//                          |                   |                    |                    |\n//                          +===================================================+==+===+=> Failure!",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Handling at the End",
+              "content": "\nProcess the result at the end of the railway:\n\n",
+              "code": "fun handleOrder(order: Order) {\n    processOrder(order).fold(\n        ifLeft = { error ->\n            when (error) {\n                is OrderError.ValidationFailed -> {\n                    showValidationError(error.reason)\n                }\n                is OrderError.PaymentFailed -> {\n                    logPaymentError(error.reason)\n                    suggestRetry(order)\n                }\n                is OrderError.InventoryError -> {\n                    suggestAlternatives(error.productId)\n                }\n                is OrderError.ShippingError -> {\n                    queueForManualReview(order)\n                    notifyOperations(error.reason)\n                }\n            }\n        },\n        ifRight = { completedOrder ->\n            sendConfirmationEmail(completedOrder)\n            updateDashboard(completedOrder)\n            notifyWarehouse(completedOrder)\n        }\n    )\n}\n\n// Or using when for pattern matching\nfun handleOrderResult(result: Either<OrderError, Order>): String = when (result) {\n    is Either.Left -> \"Order failed: ${describeError(result.value)}\"\n    is Either.Right -> \"Order ${result.value.id} completed!\"\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Railway Operations",
+              "content": "\n### Common Track Operations\n\n| Operation | Purpose | Track Behavior |\n|-----------|---------|----------------|\n| `map` | Transform success value | Stays on success track |\n| `flatMap` | Chain with another Either | Can switch to failure |\n| `mapLeft` | Transform error value | Stays on failure track |\n| `fold` | Handle both tracks | Exits the railway |\n| `getOrElse` | Exit with default | Exits the railway |\n| `recover` | Switch from failure to success | Leaves failure track |\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Transforming Tracks",
+              "content": "\nOperations that stay on or switch tracks:\n\n",
+              "code": "import arrow.core.*\n\n// map - transform success value (stays on success track)\nval doubled: Either<String, Int> = 21.right().map { it * 2 }  // Right(42)\n\n// mapLeft - transform error value (stays on failure track)\nval translated: Either<String, Int> = \"error\".left<String, Int>()\n    .mapLeft { it.uppercase() }  // Left(\"ERROR\")\n\n// bimap - transform both tracks\nval both: Either<String, Int> = 21.right<String, Int>()\n    .bimap(\n        leftOperation = { it.uppercase() },\n        rightOperation = { it * 2 }\n    )  // Right(42)\n\n// recover - switch from failure to success\nfun parseNumber(s: String): Either<String, Int> =\n    Either.catch { s.toInt() }\n        .mapLeft { \"Not a number: $s\" }\n\nval recovered: Either<String, Int> = parseNumber(\"abc\")\n    .recover { 0 }  // Right(0)\n\n// handleErrorWith - switch from failure with another Either\nfun parseWithFallback(s: String): Either<String, Int> =\n    parseNumber(s)\n        .handleErrorWith { error ->\n            parseNumber(s.trim())  // Try again with trimmed input\n        }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World: User Registration",
+              "content": "\nComplete railway for user registration:\n\n",
+              "code": "sealed interface RegistrationError {\n    data class InvalidInput(val errors: NonEmptyList<String>) : RegistrationError\n    data class EmailTaken(val email: String) : RegistrationError\n    data class WeakPassword(val reason: String) : RegistrationError\n    data class DatabaseError(val cause: Throwable) : RegistrationError\n}\n\ndata class RegistrationRequest(\n    val email: String,\n    val password: String,\n    val name: String\n)\n\nfun registerUser(request: RegistrationRequest): Either<RegistrationError, User> = either {\n    // Track 1: Validate input (accumulate errors)\n    val validated = validateInput(request)\n        .mapLeft { RegistrationError.InvalidInput(it) }\n        .bind()\n    \n    // Track 2: Check email availability\n    val emailAvailable = checkEmailAvailable(validated.email)\n        .mapLeft { RegistrationError.EmailTaken(validated.email) }\n        .bind()\n    \n    // Track 3: Check password strength\n    val strongPassword = checkPasswordStrength(validated.password)\n        .mapLeft { RegistrationError.WeakPassword(it) }\n        .bind()\n    \n    // Track 4: Create user\n    val user = createUser(validated.name, validated.email, strongPassword)\n        .mapLeft { RegistrationError.DatabaseError(it) }\n        .bind()\n    \n    // Track 5: Send welcome email (don't fail on this)\n    sendWelcomeEmail(user).getOrElse {\n        logWarning(\"Failed to send welcome email: $it\")\n    }\n    \n    user\n}\n\nfun validateInput(request: RegistrationRequest): Either<NonEmptyList<String>, RegistrationRequest> =\n    validateEmail(request.email)\n        .zip(validateName(request.name)) { e, n -> request }\n        .toEither()\n\nfun checkEmailAvailable(email: String): Either<Unit, Unit> =\n    if (!userRepository.existsByEmail(email)) Unit.right()\n    else Unit.left()\n\nfun checkPasswordStrength(password: String): Either<String, String> =\n    when {\n        password.length < 8 -> \"Password too short\".left()\n        !password.any { it.isDigit() } -> \"Password needs a digit\".left()\n        else -> password.right()\n    }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Parallel Tracks",
+              "content": "\nWhen operations are independent, run them in parallel:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.either\nimport kotlinx.coroutines.*\n\n// Independent operations can run in parallel\nsuspend fun processOrderParallel(order: Order): Either<OrderError, ProcessedOrder> = either {\n    // Validate first (must complete before parallel work)\n    val validated = validateOrder(order).bind()\n    \n    // These are independent - run in parallel\n    coroutineScope {\n        val inventoryDeferred = async { checkInventory(validated) }\n        val customerDeferred = async { verifyCustomer(validated.customerId) }\n        val fraudDeferred = async { checkFraud(validated) }\n        \n        // Await all and bind\n        val inventory = inventoryDeferred.await().bind()\n        val customer = customerDeferred.await().bind()\n        val fraudClear = fraudDeferred.await().bind()\n        \n        // Continue with sequential steps\n        val paid = processPayment(validated, customer).bind()\n        val shipped = arrangeShipping(paid).bind()\n        \n        ProcessedOrder(shipped, inventory, customer)\n    }\n}\n\n// Using parZip for cleaner parallel execution\nsuspend fun processOrderParZip(order: Order): Either<OrderError, ProcessedOrder> = either {\n    val validated = validateOrder(order).bind()\n    \n    // parZip runs operations in parallel and combines results\n    parZip(\n        { checkInventory(validated).bind() },\n        { verifyCustomer(validated.customerId).bind() },\n        { checkFraud(validated).bind() }\n    ) { inventory, customer, _ ->\n        Triple(inventory, customer, validated)\n    }.let { (inventory, customer, validated) ->\n        val paid = processPayment(validated, customer).bind()\n        val shipped = arrangeShipping(paid).bind()\n        ProcessedOrder(shipped, inventory, customer)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common ROP Mistakes",
+              "content": "\n### Catching Everything\n\n```kotlin\n// WRONG - hides the error type\nfun processOrder(order: Order): Either<Throwable, Order> = either {\n    // Error type is too generic!\n}\n\n// RIGHT - specific error types\nfun processOrder(order: Order): Either<OrderError, Order> = either {\n    // Caller knows exactly what can go wrong\n}\n```\n\n### Not Handling Errors\n\n```kotlin\n// WRONG - ignoring the Either\nprocessOrder(order)  // Result discarded!\n\n// RIGHT - always handle the result\nprocessOrder(order).fold(\n    ifLeft = { handleError(it) },\n    ifRight = { handleSuccess(it) }\n)\n```\n\n### Mixing Exceptions and Either\n\n```kotlin\n// WRONG - throws inside either block\neither {\n    val user = getUser(id).bind()\n    if (user.isBanned) throw IllegalStateException()  // Escapes!\n}\n\n// RIGHT - use ensure or raise\neither {\n    val user = getUser(id).bind()\n    ensure(!user.isBanned) { UserError.Banned(user.id) }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Build an Order Pipeline",
+              "content": "\n**Goal**: Create a complete order processing railway.\n\n**Steps**:\n1. Validate order (check items, quantities)\n2. Check customer credit\n3. Reserve inventory\n4. Process payment\n5. Generate invoice\n6. Send confirmation\n\n**Requirements**:\n- Each step has its own error type\n- Short-circuit on any failure\n- Handle all error types at the end\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- Railway-oriented programming visualizes error handling as two tracks\n- `flatMap` and `either { }` with `bind()` chain operations\n- Errors short-circuit the pipeline (stay on failure track)\n- Handle errors at the end of the railway with `fold`\n- Use specific error types for clear error handling\n- Independent operations can run in parallel with `parZip`\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "9.5",
+          "title": "Lesson 9.5: Effect System with Arrow",
+          "moduleId": "module-09",
+          "order": 5,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nArrow 1.2+ introduces a powerful effect system based on `Raise<E>`. This provides an alternative to returning `Either<E, A>` that feels more like writing imperative code while maintaining functional safety.\n\nIn this lesson, you'll learn:\n- Understanding `Raise<E>` for effect-based error handling\n- Using `ensure` and `ensureNotNull`\n- Composing effects with the `either { }` builder\n- Integrating effects with coroutines\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What is Raise?",
+              "content": "\n### The Problem with Either Everywhere\n\n```kotlin\n// Every function must return Either\nfun getUser(id: Long): Either<UserError, User>\nfun validateUser(user: User): Either<UserError, User>\nfun saveUser(user: User): Either<UserError, User>\n\n// Lots of .bind() calls\neither {\n    val user = getUser(id).bind()\n    val validated = validateUser(user).bind()\n    val saved = saveUser(validated).bind()\n    saved\n}\n```\n\n### Raise Makes It Cleaner\n\n```kotlin\n// Functions declare they can raise errors via context\ncontext(Raise<UserError>)\nfun getUser(id: Long): User\n\ncontext(Raise<UserError>)\nfun validateUser(user: User): User\n\n// No .bind() needed!\neither {\n    val user = getUser(id)\n    val validated = validateUser(user)\n    val saved = saveUser(validated)\n    saved\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Raise Usage",
+              "content": "\nUsing Raise for error handling:\n\n",
+              "code": "import arrow.core.raise.*\nimport arrow.core.*\n\nsealed interface UserError {\n    data class NotFound(val id: Long) : UserError\n    data class InvalidId(val id: Long) : UserError\n    data object Unauthorized : UserError\n}\n\ndata class User(val id: Long, val name: String, val email: String)\n\n// Function that can raise UserError\ncontext(Raise<UserError>)\nfun getUser(id: Long): User {\n    // ensure - like require() but raises typed error\n    ensure(id > 0) { UserError.InvalidId(id) }\n    \n    // raise - immediately fail with error\n    val user = userRepository.findById(id)\n        ?: raise(UserError.NotFound(id))\n    \n    return user\n}\n\n// Composing functions with Raise\ncontext(Raise<UserError>)\nfun getUserEmail(id: Long): String {\n    val user = getUser(id)  // No .bind()!\n    return user.email\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Running Raise Effects",
+              "content": "\nConverting Raise to Either or handling directly:\n\n",
+              "code": "import arrow.core.raise.*\nimport arrow.core.*\n\n// either { } provides Raise<E> context and returns Either<E, A>\nval result: Either<UserError, User> = either {\n    getUser(123)  // Has access to Raise<UserError>\n}\n\n// fold - handle both cases\nfold(\n    block = { getUser(123) },\n    recover = { error: UserError ->\n        when (error) {\n            is UserError.NotFound -> println(\"User not found\")\n            is UserError.InvalidId -> println(\"Invalid ID\")\n            UserError.Unauthorized -> println(\"Not authorized\")\n        }\n        null\n    },\n    transform = { user ->\n        println(\"Found: ${user.name}\")\n        user\n    }\n)\n\n// recover - handle errors and potentially continue\nval recovered: User? = recover(\n    block = { getUser(123) },\n    recover = { error ->\n        when (error) {\n            is UserError.NotFound -> createDefaultUser()\n            else -> null\n        }\n    }\n)",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Ensure and EnsureNotNull",
+              "content": "\nBuilt-in validation helpers:\n\n",
+              "code": "import arrow.core.raise.*\n\nsealed interface ValidationError {\n    data class EmptyField(val field: String) : ValidationError\n    data class InvalidFormat(val field: String, val value: String) : ValidationError\n    data class OutOfRange(val field: String, val value: Int) : ValidationError\n}\n\ndata class ValidatedUser(val name: String, val email: String, val age: Int)\n\ncontext(Raise<ValidationError>)\nfun validateUser(name: String?, email: String?, age: Int?): ValidatedUser {\n    // ensureNotNull - fail if null\n    val validName = ensureNotNull(name) {\n        ValidationError.EmptyField(\"name\")\n    }\n    \n    val validEmail = ensureNotNull(email) {\n        ValidationError.EmptyField(\"email\")\n    }\n    \n    val validAge = ensureNotNull(age) {\n        ValidationError.EmptyField(\"age\")\n    }\n    \n    // ensure - fail if condition is false\n    ensure(validName.isNotBlank()) {\n        ValidationError.EmptyField(\"name\")\n    }\n    \n    ensure(\"@\" in validEmail) {\n        ValidationError.InvalidFormat(\"email\", validEmail)\n    }\n    \n    ensure(validAge in 0..150) {\n        ValidationError.OutOfRange(\"age\", validAge)\n    }\n    \n    return ValidatedUser(validName, validEmail, validAge)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Composing Multiple Error Types",
+              "content": "\nHandling functions with different error types:\n\n",
+              "code": "import arrow.core.raise.*\nimport arrow.core.*\n\nsealed interface UserError { /* ... */ }\nsealed interface PaymentError { /* ... */ }\nsealed interface OrderError { /* ... */ }\n\n// Union error type\nsealed interface AppError {\n    data class User(val error: UserError) : AppError\n    data class Payment(val error: PaymentError) : AppError\n    data class Order(val error: OrderError) : AppError\n}\n\n// Functions with different error types\ncontext(Raise<UserError>)\nfun getUser(id: Long): User = /* ... */\n\ncontext(Raise<PaymentError>)\nfun processPayment(amount: Double): Receipt = /* ... */\n\n// Compose by mapping errors\ncontext(Raise<AppError>)\nfun processOrder(userId: Long, amount: Double): OrderResult {\n    // withError maps the error type\n    val user = withError({ AppError.User(it) }) {\n        getUser(userId)\n    }\n    \n    val receipt = withError({ AppError.Payment(it) }) {\n        processPayment(amount)\n    }\n    \n    return OrderResult(user, receipt)\n}\n\n// Usage\neither<AppError, OrderResult> {\n    processOrder(123, 99.99)\n}.fold(\n    ifLeft = { error ->\n        when (error) {\n            is AppError.User -> handleUserError(error.error)\n            is AppError.Payment -> handlePaymentError(error.error)\n            is AppError.Order -> handleOrderError(error.error)\n        }\n    },\n    ifRight = { result -> handleSuccess(result) }\n)",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Raise with Coroutines",
+              "content": "\nIntegrating Raise with suspend functions:\n\n",
+              "code": "import arrow.core.raise.*\nimport arrow.core.*\nimport kotlinx.coroutines.*\n\nsealed interface ApiError {\n    data class NetworkError(val cause: Throwable) : ApiError\n    data class NotFound(val id: Long) : ApiError\n    data object RateLimited : ApiError\n}\n\n// Suspend function with Raise\ncontext(Raise<ApiError>)\nsuspend fun fetchUser(id: Long): User {\n    ensure(id > 0) { ApiError.NotFound(id) }\n    \n    return try {\n        apiClient.get(\"/users/$id\")\n    } catch (e: IOException) {\n        raise(ApiError.NetworkError(e))\n    }\n}\n\ncontext(Raise<ApiError>)\nsuspend fun fetchUserPosts(user: User): List<Post> {\n    return try {\n        apiClient.get(\"/users/${user.id}/posts\")\n    } catch (e: IOException) {\n        raise(ApiError.NetworkError(e))\n    }\n}\n\n// Compose suspend functions with Raise\ncontext(Raise<ApiError>)\nsuspend fun getUserWithPosts(userId: Long): UserWithPosts {\n    val user = fetchUser(userId)\n    val posts = fetchUserPosts(user)\n    return UserWithPosts(user, posts)\n}\n\n// Run and handle\nsuspend fun main() {\n    val result: Either<ApiError, UserWithPosts> = either {\n        getUserWithPosts(123)\n    }\n    \n    result.fold(\n        ifLeft = { error -> println(\"Error: $error\") },\n        ifRight = { data -> println(\"Got ${data.posts.size} posts\") }\n    )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Catch for Exception Conversion",
+              "content": "\nConverting exceptions to typed errors:\n\n",
+              "code": "import arrow.core.raise.*\nimport java.io.IOException\nimport java.net.SocketTimeoutException\n\nsealed interface FetchError {\n    data class Network(val message: String) : FetchError\n    data object Timeout : FetchError\n    data class Parse(val body: String) : FetchError\n}\n\ncontext(Raise<FetchError>)\nsuspend fun fetchData(url: String): Data {\n    // catch converts exceptions to typed errors\n    val response = catch(\n        block = { httpClient.get(url) },\n        catch = { e ->\n            when (e) {\n                is SocketTimeoutException -> raise(FetchError.Timeout)\n                is IOException -> raise(FetchError.Network(e.message ?: \"Unknown\"))\n                else -> throw e  // Re-throw unexpected exceptions\n            }\n        }\n    )\n    \n    // Another catch for parsing\n    return catch(\n        block = { json.decodeFromString<Data>(response.body) },\n        catch = { raise(FetchError.Parse(response.body)) }\n    )\n}\n\n// Simpler version with mapError\ncontext(Raise<FetchError>)\nsuspend fun fetchDataSimple(url: String): Data {\n    val response = Either.catch { httpClient.get(url) }\n        .mapLeft { FetchError.Network(it.message ?: \"Unknown\") }\n        .bind()\n    \n    return Either.catch { json.decodeFromString<Data>(response.body) }\n        .mapLeft { FetchError.Parse(response.body) }\n        .bind()\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Raise vs Either Return",
+              "content": "\n### When to Use Raise (context receiver)\n\n1. **Internal implementation**: Functions called within `either { }` blocks\n2. **Many operations**: When you'd have many `.bind()` calls\n3. **Clean imperative style**: When you want code that reads naturally\n\n### When to Return Either\n\n1. **Public API**: Library boundaries where callers might not use Raise\n2. **Interop**: When working with code that expects Either\n3. **Explicit error handling**: When you want the type signature to show errors\n\n### Conversion\n\n```kotlin\n// Either-returning function\nfun getUser(id: Long): Either<UserError, User>\n\n// Inside Raise context\ncontext(Raise<UserError>)\nfun doWork() {\n    val user = getUser(123).bind()  // Either -> Raise\n}\n\n// Raise function\ncontext(Raise<UserError>)\nfun getUser(id: Long): User\n\n// Get Either from Raise\nval result: Either<UserError, User> = either {\n    getUser(123)  // Raise -> Either\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "WARNING",
+              "title": "Context Receiver Limitations",
+              "content": "\n### Experimental Feature\n\nContext receivers require a compiler flag:\n\n```kotlin\n// build.gradle.kts\nkotlin {\n    compilerOptions {\n        freeCompilerArgs.add(\"-Xcontext-receivers\")\n    }\n}\n```\n\n### Alternative: Use either { } Blocks\n\nIf you can't use context receivers:\n\n```kotlin\n// Instead of:\ncontext(Raise<E>)\nfun doWork(): A\n\n// Use:\nfun doWork(): Either<E, A> = either {\n    // Your logic here\n}\n```\n\n### IDE Support\n\nIDE support for context receivers is improving but may have issues. The `either { }` builder approach works reliably.\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Exercise: Build an Effect-Based Service",
+              "content": "\n**Goal**: Create a user service using Raise effects.\n\n**Requirements**:\n1. Define error types (NotFound, ValidationFailed, Conflict)\n2. Implement getUser, createUser, updateUser with Raise\n3. Compose operations in a higher-level function\n4. Handle errors at the boundary\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Solution: Effect-Based Service",
+              "content": "\n",
+              "code": "import arrow.core.raise.*\nimport arrow.core.*\n\nsealed interface UserServiceError {\n    data class NotFound(val id: Long) : UserServiceError\n    data class ValidationFailed(val message: String) : UserServiceError\n    data class EmailConflict(val email: String) : UserServiceError\n}\n\nclass UserService(private val repository: UserRepository) {\n\n    context(Raise<UserServiceError>)\n    suspend fun getUser(id: Long): User {\n        ensure(id > 0) { UserServiceError.ValidationFailed(\"Invalid ID: $id\") }\n        return repository.findById(id) \n            ?: raise(UserServiceError.NotFound(id))\n    }\n\n    context(Raise<UserServiceError>)\n    suspend fun createUser(name: String, email: String): User {\n        ensure(name.isNotBlank()) { \n            UserServiceError.ValidationFailed(\"Name is required\") \n        }\n        ensure(\"@\" in email) { \n            UserServiceError.ValidationFailed(\"Invalid email\") \n        }\n        \n        val exists = repository.existsByEmail(email)\n        ensure(!exists) { UserServiceError.EmailConflict(email) }\n        \n        return repository.save(User(0, name, email))\n    }\n\n    context(Raise<UserServiceError>)\n    suspend fun updateEmail(userId: Long, newEmail: String): User {\n        val user = getUser(userId)\n        ensure(\"@\" in newEmail) { \n            UserServiceError.ValidationFailed(\"Invalid email\") \n        }\n        \n        if (newEmail != user.email) {\n            val exists = repository.existsByEmail(newEmail)\n            ensure(!exists) { UserServiceError.EmailConflict(newEmail) }\n        }\n        \n        return repository.save(user.copy(email = newEmail))\n    }\n}\n\n// Usage at boundary\nclass UserController(private val userService: UserService) {\n    \n    suspend fun handleGetUser(id: Long): Response = \n        either<UserServiceError, User> {\n            userService.getUser(id)\n        }.fold(\n            ifLeft = { error ->\n                when (error) {\n                    is UserServiceError.NotFound -> Response.notFound()\n                    is UserServiceError.ValidationFailed -> Response.badRequest(error.message)\n                    is UserServiceError.EmailConflict -> Response.conflict(error.email)\n                }\n            },\n            ifRight = { user -> Response.ok(user) }\n        )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Takeaways",
+              "content": "\n- `Raise<E>` provides imperative-style error handling with functional safety\n- Use `ensure` and `ensureNotNull` for validation\n- `raise(error)` immediately fails with the error\n- `either { }` provides `Raise<E>` context and returns `Either<E, A>`\n- `withError` maps between different error types\n- `catch` converts exceptions to typed errors\n- Context receivers are experimental; `either { }` blocks work reliably\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "9.6",
+          "title": "Lesson 9.6: Practical Patterns - Error Handling Without Exceptions",
+          "moduleId": "module-09",
+          "order": 6,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nThis lesson brings together everything you've learned about functional error handling. We'll look at practical patterns used in production Kotlin applications.\n\nIn this lesson, you'll learn:\n- Designing error hierarchies for domains\n- Converting between exceptions and typed errors\n- Applying functional patterns to Ktor and Android\n- Testing functional error handling\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Designing Error Hierarchies",
+              "content": "\nCreate clear, domain-specific error types:\n\n",
+              "code": "// Layer your errors by domain\n\n// API Layer errors\nsealed interface ApiError {\n    data class NetworkError(val cause: Throwable) : ApiError\n    data class ServerError(val code: Int, val message: String) : ApiError\n    data class DeserializationError(val body: String) : ApiError\n    data object Timeout : ApiError\n    data object Unauthorized : ApiError\n}\n\n// Domain Layer errors\nsealed interface OrderError {\n    data class NotFound(val id: Long) : OrderError\n    data class InvalidStatus(val current: String, val expected: String) : OrderError\n    data class InsufficientInventory(val productId: Long, val requested: Int, val available: Int) : OrderError\n}\n\n// Validation errors (for form validation)\nsealed interface ValidationError {\n    data class Required(val field: String) : ValidationError\n    data class InvalidFormat(val field: String, val expected: String) : ValidationError\n    data class OutOfRange(val field: String, val min: Int, val max: Int) : ValidationError\n}\n\n// Combine at boundaries\nsealed interface AppError {\n    data class Api(val error: ApiError) : AppError\n    data class Order(val error: OrderError) : AppError\n    data class Validation(val errors: NonEmptyList<ValidationError>) : AppError\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Safe API Calls Pattern",
+              "content": "\nConvert HTTP exceptions to typed errors:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.*\nimport io.ktor.client.*\nimport io.ktor.client.call.*\nimport io.ktor.client.request.*\nimport java.io.IOException\nimport java.net.SocketTimeoutException\n\nsealed interface ApiError {\n    data class NetworkError(val cause: Throwable) : ApiError\n    data class ServerError(val code: Int, val message: String) : ApiError\n    data class DeserializationError(val body: String) : ApiError\n    data object Timeout : ApiError\n}\n\n// Generic safe API call wrapper\ncontext(Raise<ApiError>)\nsuspend inline fun <reified T> HttpClient.safeGet(url: String): T {\n    val response = catch(\n        block = { get(url) },\n        catch = { e ->\n            when (e) {\n                is SocketTimeoutException -> raise(ApiError.Timeout)\n                is IOException -> raise(ApiError.NetworkError(e))\n                else -> throw e\n            }\n        }\n    )\n    \n    ensure(response.status.value in 200..299) {\n        ApiError.ServerError(response.status.value, response.bodyAsText())\n    }\n    \n    return catch(\n        block = { response.body<T>() },\n        catch = { raise(ApiError.DeserializationError(response.bodyAsText())) }\n    )\n}\n\n// Usage in repository\nclass UserRepository(private val client: HttpClient) {\n    \n    suspend fun getUser(id: Long): Either<ApiError, User> = either {\n        client.safeGet(\"https://api.example.com/users/$id\")\n    }\n    \n    suspend fun getUsers(): Either<ApiError, List<User>> = either {\n        client.safeGet(\"https://api.example.com/users\")\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Android ViewModel Pattern",
+              "content": "\nIntegrating with Android architecture:\n\n",
+              "code": "import arrow.core.*\nimport kotlinx.coroutines.flow.*\nimport androidx.lifecycle.*\n\nsealed interface UserState {\n    data object Loading : UserState\n    data class Success(val user: User) : UserState\n    data class Error(val message: String) : UserState\n    data object Offline : UserState\n}\n\nclass UserViewModel(\n    private val repository: UserRepository\n) : ViewModel() {\n    \n    private val _state = MutableStateFlow<UserState>(UserState.Loading)\n    val state: StateFlow<UserState> = _state.asStateFlow()\n    \n    fun loadUser(id: Long) {\n        viewModelScope.launch {\n            _state.value = UserState.Loading\n            \n            repository.getUser(id).fold(\n                ifLeft = { error ->\n                    _state.value = when (error) {\n                        is ApiError.NetworkError -> UserState.Offline\n                        is ApiError.Timeout -> UserState.Error(\"Request timed out\")\n                        is ApiError.ServerError -> UserState.Error(error.message)\n                        is ApiError.DeserializationError -> UserState.Error(\"Invalid response\")\n                    }\n                },\n                ifRight = { user ->\n                    _state.value = UserState.Success(user)\n                }\n            )\n        }\n    }\n    \n    fun updateUser(user: User) {\n        viewModelScope.launch {\n            repository.updateUser(user)\n                .onRight { updated ->\n                    _state.value = UserState.Success(updated)\n                }\n                .onLeft { error ->\n                    // Keep current user, show error message\n                    showErrorToast(errorToMessage(error))\n                }\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Ktor Server Pattern",
+              "content": "\nError handling in Ktor routes:\n\n",
+              "code": "import arrow.core.*\nimport io.ktor.server.application.*\nimport io.ktor.server.response.*\nimport io.ktor.server.routing.*\nimport io.ktor.http.*\n\nsealed interface DomainError {\n    data class NotFound(val resource: String, val id: String) : DomainError\n    data class Validation(val errors: List<String>) : DomainError\n    data class Unauthorized(val reason: String) : DomainError\n    data class Conflict(val message: String) : DomainError\n}\n\n// Extension function to respond with Either\nsuspend fun <E : DomainError, A : Any> ApplicationCall.respondEither(\n    result: Either<E, A>\n) {\n    result.fold(\n        ifLeft = { error ->\n            when (error) {\n                is DomainError.NotFound -> {\n                    respond(HttpStatusCode.NotFound, \n                        mapOf(\"error\" to \"${error.resource} not found\", \"id\" to error.id))\n                }\n                is DomainError.Validation -> {\n                    respond(HttpStatusCode.BadRequest,\n                        mapOf(\"errors\" to error.errors))\n                }\n                is DomainError.Unauthorized -> {\n                    respond(HttpStatusCode.Unauthorized,\n                        mapOf(\"error\" to error.reason))\n                }\n                is DomainError.Conflict -> {\n                    respond(HttpStatusCode.Conflict,\n                        mapOf(\"error\" to error.message))\n                }\n            }\n        },\n        ifRight = { value ->\n            respond(HttpStatusCode.OK, value)\n        }\n    )\n}\n\n// Usage in routes\nfun Route.userRoutes(userService: UserService) {\n    route(\"/users\") {\n        get(\"/{id}\") {\n            val id = call.parameters[\"id\"]?.toLongOrNull()\n                ?: return@get call.respond(HttpStatusCode.BadRequest, \"Invalid ID\")\n            \n            call.respondEither(userService.getUser(id))\n        }\n        \n        post {\n            val request = call.receive<CreateUserRequest>()\n            call.respondEither(userService.createUser(request))\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Functional Code",
+              "content": "\nTest patterns for Either-returning functions:\n\n",
+              "code": "import arrow.core.*\nimport kotlin.test.*\n\nclass UserServiceTest {\n    private val repository = FakeUserRepository()\n    private val service = UserService(repository)\n    \n    @Test\n    fun `getUser returns user when found`() = runTest {\n        // Arrange\n        val user = User(1, \"John\", \"john@example.com\")\n        repository.save(user)\n        \n        // Act\n        val result = service.getUser(1)\n        \n        // Assert\n        assertTrue(result.isRight())\n        assertEquals(user, result.getOrNull())\n    }\n    \n    @Test\n    fun `getUser returns NotFound when user doesn't exist`() = runTest {\n        // Act\n        val result = service.getUser(999)\n        \n        // Assert\n        assertTrue(result.isLeft())\n        val error = result.leftOrNull()\n        assertIs<UserError.NotFound>(error)\n        assertEquals(999, error.id)\n    }\n    \n    @Test\n    fun `createUser validates email format`() = runTest {\n        // Act\n        val result = service.createUser(\"John\", \"invalid-email\")\n        \n        // Assert\n        assertTrue(result.isLeft())\n        val error = result.leftOrNull()\n        assertIs<UserError.ValidationFailed>(error)\n        assertTrue(error.message.contains(\"email\"))\n    }\n    \n    @Test\n    fun `createUser returns Conflict when email exists`() = runTest {\n        // Arrange\n        repository.save(User(1, \"Existing\", \"taken@example.com\"))\n        \n        // Act\n        val result = service.createUser(\"New\", \"taken@example.com\")\n        \n        // Assert\n        assertTrue(result.isLeft())\n        assertIs<UserError.EmailConflict>(result.leftOrNull())\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Validated",
+              "content": "\nTest patterns for Validated-returning functions:\n\n",
+              "code": "import arrow.core.*\nimport kotlin.test.*\n\nclass RegistrationValidatorTest {\n    \n    @Test\n    fun `valid input returns Valid`() {\n        val result = validateRegistration(\n            username = \"johndoe\",\n            email = \"john@example.com\",\n            password = \"password123\",\n            age = 25\n        )\n        \n        assertTrue(result is Validated.Valid)\n        assertEquals(\"johndoe\", result.value.username)\n    }\n    \n    @Test\n    fun `collects all validation errors`() {\n        val result = validateRegistration(\n            username = \"ab\",           // Too short\n            email = \"invalid\",         // No @\n            password = \"123\",          // Too short\n            age = 16                   // Too young\n        )\n        \n        assertTrue(result is Validated.Invalid)\n        val errors = result.value\n        \n        assertEquals(4, errors.size)\n        assertTrue(errors.any { \"username\" in it.lowercase() })\n        assertTrue(errors.any { \"email\" in it.lowercase() })\n        assertTrue(errors.any { \"password\" in it.lowercase() })\n        assertTrue(errors.any { \"18\" in it || \"age\" in it.lowercase() })\n    }\n    \n    @Test\n    fun `single error returns NonEmptyList with one element`() {\n        val result = validateRegistration(\n            username = \"validuser\",\n            email = \"valid@email.com\",\n            password = \"validpassword\",\n            age = 16  // Only this fails\n        )\n        \n        assertTrue(result is Validated.Invalid)\n        assertEquals(1, result.value.size)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Best Practices Summary",
+              "content": "\n### Do\n\n1. **Define clear error hierarchies** - Sealed interfaces for each domain\n2. **Use Validated for input validation** - Collect all errors at once\n3. **Use Either for business logic** - Short-circuit on first error\n4. **Handle errors at boundaries** - Controllers, CLI, etc.\n5. **Test both success and failure paths** - Errors are first-class\n6. **Keep error messages user-friendly** - Map to presentation layer\n\n### Don't\n\n1. **Don't use generic Throwable** - Lose type safety\n2. **Don't ignore Either/Result** - Always handle the error case\n3. **Don't mix exceptions and Either randomly** - Choose at boundaries\n4. **Don't over-engineer** - Simple nullables are fine for simple cases\n5. **Don't forget logging** - Errors still need observability\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Example: Order Service",
+              "content": "\nPutting it all together:\n\n",
+              "code": "import arrow.core.*\nimport arrow.core.raise.*\n\n// Error types\nsealed interface OrderError {\n    data class NotFound(val id: Long) : OrderError\n    data class InvalidStatus(val message: String) : OrderError\n    data class PaymentFailed(val reason: String) : OrderError\n    data class InsufficientStock(val productId: Long) : OrderError\n}\n\n// Service with Raise-based implementation\nclass OrderService(\n    private val orderRepository: OrderRepository,\n    private val inventoryService: InventoryService,\n    private val paymentService: PaymentService\n) {\n    // Public API returns Either\n    suspend fun processOrder(orderId: Long): Either<OrderError, Order> = either {\n        processOrderInternal(orderId)\n    }\n    \n    // Internal implementation uses Raise\n    context(Raise<OrderError>)\n    private suspend fun processOrderInternal(orderId: Long): Order {\n        // Get order\n        val order = orderRepository.findById(orderId)\n            ?: raise(OrderError.NotFound(orderId))\n        \n        // Validate status\n        ensure(order.status == OrderStatus.PENDING) {\n            OrderError.InvalidStatus(\"Order is ${order.status}, expected PENDING\")\n        }\n        \n        // Check inventory\n        for (item in order.items) {\n            val available = inventoryService.getStock(item.productId)\n            ensure(available >= item.quantity) {\n                OrderError.InsufficientStock(item.productId)\n            }\n        }\n        \n        // Reserve inventory\n        inventoryService.reserve(order.items)\n        \n        // Process payment\n        val paymentResult = paymentService.charge(order.customerId, order.total)\n        ensure(paymentResult.success) {\n            // Rollback inventory reservation on payment failure\n            inventoryService.release(order.items)\n            OrderError.PaymentFailed(paymentResult.message)\n        }\n        \n        // Update order\n        return orderRepository.save(\n            order.copy(status = OrderStatus.PROCESSING, paymentId = paymentResult.id)\n        )\n    }\n}\n\n// Controller using the service\nclass OrderController(private val orderService: OrderService) {\n    \n    suspend fun processOrder(orderId: Long): Response = \n        orderService.processOrder(orderId).fold(\n            ifLeft = { error ->\n                when (error) {\n                    is OrderError.NotFound -> \n                        Response.notFound(\"Order $orderId not found\")\n                    is OrderError.InvalidStatus -> \n                        Response.badRequest(error.message)\n                    is OrderError.PaymentFailed -> \n                        Response.paymentRequired(error.reason)\n                    is OrderError.InsufficientStock -> \n                        Response.conflict(\"Product ${error.productId} out of stock\")\n                }\n            },\n            ifRight = { order ->\n                Response.ok(order)\n            }\n        )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Module Summary",
+              "content": "\nCongratulations on completing Module 09: Functional Kotlin with Arrow!\n\nYou've learned:\n\n**Functional Programming Principles**\n- Pure functions and immutability\n- Function composition and higher-order functions\n- Referential transparency\n\n**Error Handling Types**\n- `Result<T>` for basic error handling\n- `Either<E, A>` for typed errors\n- `Validated<E, A>` for error accumulation\n- `Option<A>` for explicit optionality\n\n**Railway-Oriented Programming**\n- The two-track metaphor\n- Chaining with flatMap and either { }\n- Handling errors at boundaries\n\n**Effect System**\n- `Raise<E>` for clean error handling\n- `ensure` and `ensureNotNull`\n- Composing effects with coroutines\n\n**Practical Patterns**\n- Error hierarchies\n- Safe API calls\n- ViewModel integration\n- Ktor routes\n- Testing strategies\n\nThese skills enable you to write safer, more maintainable Kotlin code that handles errors gracefully and explicitly.\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        }
+      ]
     }
   ]
 }
