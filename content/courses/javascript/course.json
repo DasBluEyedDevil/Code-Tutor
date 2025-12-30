@@ -2815,9 +2815,75 @@
         },
         {
           "id": "8.3",
-          "title": "The Modern, Clean Way (async and await)",
+          "title": "Import Attributes (The Customs Declaration Analogy)",
           "moduleId": "module-08",
           "order": 3,
+          "estimatedMinutes": 20,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Customs Declaration",
+              "content": "Imagine you're receiving packages at a shipping dock. Some packages contain food, others contain electronics, and some might even contain hazardous materials. You wouldn't want to handle them all the same way!\n\nImport Attributes work like customs declarations. When you import a file, you tell JavaScript EXACTLY what type of content you're expecting. This prevents security issues where a .json file could secretly contain executable code."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Import Attributes Syntax",
+              "content": "Use the `with` keyword to declare what type of content you're importing:",
+              "language": "javascript",
+              "code": "// Import JSON with type assertion\nimport config from './config.json' with { type: 'json' };\nimport packageJson from '../package.json' with { type: 'json' };\n\nconsole.log(`Running ${packageJson.name} v${packageJson.version}`);\nconsole.log(`Database: ${config.database.host}`);\n\n// Import CSS (browser/bundler contexts)\nimport styles from './styles.css' with { type: 'css' };\n\n// Dynamic import with attributes\nconst data = await import('./data.json', { with: { type: 'json' } });"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Import Attributes Matter",
+              "content": "Import Attributes (ES2025) solve three problems:\n\n**1. Security**\n```javascript\n// Without attributes - what if evil.json contains executable code?\nimport data from './evil.json';  // DANGEROUS\n\n// With attributes - JavaScript enforces it's ONLY JSON\nimport data from './evil.json' with { type: 'json' };  // SAFE\n```\n\n**2. Clarity**\nAnyone reading your code knows exactly what type of file you're importing.\n\n**3. Portability**\nThe same syntax works across Bun, Node.js, Deno, and browsers. No more runtime-specific import hacks!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "1. **Forgetting the `with` keyword**: It's `with { type: 'json' }`, not `as json` or `type: 'json'`\n\n2. **Wrong type value**: The type must match the file content. `{ type: 'json' }` for JSON, `{ type: 'css' }` for CSS.\n\n3. **Dynamic imports use different syntax**:\n```javascript\n// Static import\nimport data from './data.json' with { type: 'json' };\n\n// Dynamic import - note the nested object\nconst data = await import('./data.json', { with: { type: 'json' } });\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "8.3-challenge",
+              "title": "Import Configuration Safely",
+              "description": "Import the config.json file using Import Attributes and log the app name.",
+              "instructions": "Import the config.json file using Import Attributes and log the app name.",
+              "starterCode": "// Import config.json with proper type attribute\n// YOUR CODE HERE\n\nconsole.log(config.appName);",
+              "solution": "import config from './config.json' with { type: 'json' };\n\nconsole.log(config.appName);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses import with type attribute",
+                  "expectedOutput": "MyApp",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use the 'with' keyword after the import path: with { type: 'json' }"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using require() instead of import",
+                  "consequence": "require() is CommonJS and doesn't support Import Attributes",
+                  "correction": "import config from './config.json' with { type: 'json' };"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "8.4",
+          "title": "The Modern, Clean Way (async and await)",
+          "moduleId": "module-08",
+          "order": 4,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
           "contentSections": [
@@ -2847,7 +2913,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "8.3-challenge",
+              "id": "8.4-challenge",
               "title": "Practice Challenge",
               "description": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
               "instructions": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
@@ -2902,10 +2968,10 @@
           ]
         },
         {
-          "id": "8.4",
+          "id": "8.5",
           "title": "Ordering from the Menu (Using fetch() to Get API Data)",
           "moduleId": "module-08",
-          "order": 4,
+          "order": 5,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
           "contentSections": [
@@ -2935,7 +3001,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "8.4-challenge",
+              "id": "8.5-challenge",
               "title": "Practice Challenge",
               "description": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
               "instructions": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
