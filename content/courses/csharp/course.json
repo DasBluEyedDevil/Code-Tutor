@@ -9770,6 +9770,505 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-17",
+      "title": "Native AOT and Performance Optimization",
+      "description": "Build lightning-fast applications with Native AOT compilation. Learn trimming, source generators, and performance profiling for minimal deployments.",
+      "difficulty": "advanced",
+      "estimatedHours": 2,
+      "lessons": [
+        {
+          "id": "lesson-17-01",
+          "title": "What is Native AOT? (No JIT Required!)",
+          "moduleId": "module-17",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're a chef who speaks only French, cooking for English-speaking customers. You have TWO options:\n\nTRADITIONAL WAY (JIT - Just-In-Time):\n- Hire a translator who stands in the kitchen\n- Every time you say something, translator converts it live\n- Works great, but there's always a slight delay\n- Translator needs space and resources\n\nNATIVE AOT WAY (Ahead-Of-Time):\n- Before opening the restaurant, translate ALL your recipes to English\n- Print them in a cookbook\n- No translator needed at runtime!\n- Faster service, smaller kitchen staff\n\n.NET COMPILATION EXPLAINED:\n\nNORMAL .NET:\n1. C# code -> IL (Intermediate Language)\n2. IL ships with your app\n3. JIT compiles IL to machine code AT RUNTIME\n4. First call is slow (compilation), subsequent calls are fast\n\nNATIVE AOT:\n1. C# code -> IL -> Native machine code\n2. Machine code ships with your app\n3. NO JIT needed at runtime!\n4. Instant startup, smaller memory footprint\n\nTRADEOFFS:\n- Pro: Lightning-fast startup (great for serverless, CLI tools)\n- Pro: Smaller memory footprint\n- Pro: Single file deployment\n- Con: Larger file size\n- Con: No runtime code generation\n- Con: Some reflection limitations\n\nThink: 'Native AOT is like compiling your recipe book before opening the restaurant - slower to prepare, but faster to serve!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== COMPARING JIT vs NATIVE AOT =====\n\n// TRADITIONAL .NET (JIT)\n// dotnet run\n// 1. Load .NET runtime\n// 2. Load IL assemblies\n// 3. JIT compile methods on first call\n// 4. Execute\n// Startup: ~100-500ms for simple apps\n\n// NATIVE AOT\n// dotnet publish -c Release\n// 1. Load native executable\n// 2. Execute\n// Startup: ~10-50ms for simple apps!\n\n// ===== ENABLING NATIVE AOT =====\n// In your .csproj file:\n\n// <Project Sdk=\"Microsoft.NET.Sdk\">\n//   <PropertyGroup>\n//     <OutputType>Exe</OutputType>\n//     <TargetFramework>net8.0</TargetFramework>\n//     \n//     <!-- Enable Native AOT -->\n//     <PublishAot>true</PublishAot>\n//     \n//     <!-- Optional: Further reduce size -->\n//     <InvariantGlobalization>true</InvariantGlobalization>\n//     <IlcOptimizationPreference>Size</IlcOptimizationPreference>\n//   </PropertyGroup>\n// </Project>\n\n// ===== SIMPLE AOT EXAMPLE =====\nusing System.Text.Json;\n\nConsole.WriteLine(\"Native AOT Demo!\");\nConsole.WriteLine($\"Process ID: {Environment.ProcessId}\");\nConsole.WriteLine($\"64-bit: {Environment.Is64BitProcess}\");\n\n// This works great in AOT!\nvar numbers = new[] { 1, 2, 3, 4, 5 };\nvar sum = numbers.Sum();\nConsole.WriteLine($\"Sum: {sum}\");\n\n// Simple JSON (but needs source generators for AOT!)\nvar person = new Person(\"Alice\", 30);\nConsole.WriteLine($\"Person: {person.Name}, Age {person.Age}\");\n\npublic record Person(string Name, int Age);\n\n// ===== PUBLISH COMMANDS =====\n\n// Development (JIT)\n// dotnet run\n\n// Production AOT (single file!)\n// dotnet publish -c Release -r win-x64\n// dotnet publish -c Release -r linux-x64\n// dotnet publish -c Release -r osx-arm64\n\n// ===== OUTPUT COMPARISON =====\n// JIT publish:    ~80 MB (with runtime)\n// AOT publish:    ~10-15 MB (self-contained)\n// AOT trimmed:    ~3-8 MB (minimal)\n\n// ===== MEMORY COMPARISON =====\n// JIT startup:    ~50-100 MB working set\n// AOT startup:    ~10-20 MB working set\n\nConsole.WriteLine(\"\\nNative AOT Benefits:\");\nConsole.WriteLine(\"- Instant startup (no JIT warmup)\");\nConsole.WriteLine(\"- Smaller memory footprint\");\nConsole.WriteLine(\"- Single file deployment\");\nConsole.WriteLine(\"- No .NET runtime required on target\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`<PublishAot>true</PublishAot>`**: The magic switch! Tells the .NET SDK to compile to native code instead of IL. Only affects 'dotnet publish', not 'dotnet run'.\n\n**`<InvariantGlobalization>true</InvariantGlobalization>`**: Disables culture-specific formatting (dates, numbers). Reduces binary size significantly. Use when you don't need localization.\n\n**`<IlcOptimizationPreference>Size</IlcOptimizationPreference>`**: Optimize for smaller binary size instead of speed. Options: Speed (default), Size, or blank for balanced.\n\n**`-r win-x64 / linux-x64 / osx-arm64`**: Runtime Identifier (RID). AOT produces platform-specific binaries. You must specify the target platform.\n\n**Single File Output**: AOT produces ONE executable file. No DLLs, no runtime folder. Just copy and run!\n\n**Startup Time**: AOT apps start in milliseconds because there's no JIT compilation. Perfect for CLI tools, serverless functions, microservices."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-17-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a simple console application that demonstrates AOT compatibility!\n\n1. Create a record called 'AppInfo' with properties:\n   - Name (string)\n   - Version (string)\n   - StartTime (DateTime)\n\n2. In your main code:\n   - Create an AppInfo instance with your app's details\n   - Print the app name and version\n   - Calculate and print how long since the app started (use Stopwatch)\n   - Print whether the process is 64-bit\n   - Print the working set memory in MB\n\n3. Add comments indicating which parts are AOT-compatible\n\nFocus on AOT-safe patterns (no reflection, no dynamic code generation).",
+              "starterCode": "using System.Diagnostics;\n\n// TODO: Define AppInfo record with Name, Version, StartTime\n\n// Track startup time\nvar stopwatch = Stopwatch.StartNew();\n\nConsole.WriteLine(\"=== Native AOT Demo ===\");\n\n// TODO: Create AppInfo instance\n\n// TODO: Print app name and version\n\n// Simulate some work\nThread.Sleep(100);\n\n// TODO: Stop the stopwatch and print elapsed time\n\n// TODO: Print if process is 64-bit (Environment.Is64BitProcess)\n\n// TODO: Print working set memory in MB\n// Hint: Environment.WorkingSet / (1024 * 1024)\n\nConsole.WriteLine(\"\\nAll operations are AOT-compatible!\");",
+              "solution": "using System.Diagnostics;\n\n// Record types are fully AOT-compatible!\npublic record AppInfo(string Name, string Version, DateTime StartTime);\n\n// Track startup time - Stopwatch is AOT-safe\nvar stopwatch = Stopwatch.StartNew();\n\nConsole.WriteLine(\"=== Native AOT Demo ===\");\n\n// Create instance - no reflection needed!\nvar appInfo = new AppInfo(\n    Name: \"AOT Demo App\",\n    Version: \"1.0.0\",\n    StartTime: DateTime.Now\n);\n\n// String interpolation is AOT-compatible\nConsole.WriteLine($\"App: {appInfo.Name}\");\nConsole.WriteLine($\"Version: {appInfo.Version}\");\nConsole.WriteLine($\"Started: {appInfo.StartTime:HH:mm:ss}\");\n\n// Simulate some work\nThread.Sleep(100);\n\n// Stop and report elapsed time\nstopwatch.Stop();\nConsole.WriteLine($\"\\nElapsed: {stopwatch.ElapsedMilliseconds}ms\");\n\n// Environment properties are AOT-safe\nConsole.WriteLine($\"64-bit process: {Environment.Is64BitProcess}\");\n\n// Memory info - no reflection required\nvar memoryMB = Environment.WorkingSet / (1024.0 * 1024.0);\nConsole.WriteLine($\"Working set: {memoryMB:F2} MB\");\n\n// Process info is AOT-compatible\nConsole.WriteLine($\"Process ID: {Environment.ProcessId}\");\n\nConsole.WriteLine(\"\\nAll operations are AOT-compatible!\");\nConsole.WriteLine(\"Publish with: dotnet publish -c Release -r win-x64\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should show app info",
+                  "expectedOutput": "App:",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should confirm AOT compatibility",
+                  "expectedOutput": "AOT-compatible",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Record types: public record AppInfo(string Name, string Version, DateTime StartTime); - single line definition!"
+                },
+                {
+                  "level": 2,
+                  "text": "Stopwatch: var sw = Stopwatch.StartNew(); then sw.Stop(); then sw.ElapsedMilliseconds"
+                },
+                {
+                  "level": 3,
+                  "text": "Environment.Is64BitProcess returns bool. Environment.WorkingSet returns long (bytes)."
+                },
+                {
+                  "level": 4,
+                  "text": "Format memory: (Environment.WorkingSet / (1024.0 * 1024.0)).ToString(\"F2\") for 2 decimal places."
+                },
+                {
+                  "level": 5,
+                  "text": "String interpolation with format: $\"{value:F2}\" formats as fixed-point with 2 decimals."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using reflection for property access",
+                  "consequence": "typeof(T).GetProperties() may not work in AOT! Reflection is limited without special annotations.",
+                  "correction": "Access properties directly: appInfo.Name, not reflection. AOT needs to know types at compile time."
+                },
+                {
+                  "mistake": "Using dynamic keyword",
+                  "consequence": "dynamic requires runtime compilation which doesn't exist in AOT. Will throw at runtime!",
+                  "correction": "Use strong typing. Replace 'dynamic' with concrete types or generics."
+                },
+                {
+                  "mistake": "Forgetting to specify runtime identifier",
+                  "consequence": "dotnet publish without -r fails for AOT! Native code is platform-specific.",
+                  "correction": "Always specify: -r win-x64, -r linux-x64, -r osx-arm64, etc."
+                },
+                {
+                  "mistake": "Integer division for memory calculation",
+                  "consequence": "WorkingSet / (1024 * 1024) uses integer division, losing precision!",
+                  "correction": "Use 1024.0 * 1024.0 to force floating-point division for accurate MB values."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-17-02",
+          "title": "Enabling AOT in Your Projects",
+          "moduleId": "module-17",
+          "order": 2,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Think of Native AOT configuration like preparing for a camping trip where you'll have NO stores nearby:\n\nREGULAR .NET (City Living):\n- Need something? Just go to the store (JIT compiles on demand)\n- Bring a credit card (the .NET runtime)\n- Flexible but dependent on infrastructure\n\nNATIVE AOT (Remote Camping):\n- Pack EVERYTHING you need beforehand\n- No stores, no help available\n- Must decide what to bring (trim unused code)\n- Lighter pack = easier travel (smaller binary)\n\nPROJECT FILE SETTINGS:\n\n<PublishAot>true</PublishAot>\n- 'We're going camping!'\n- Enables AOT compilation on publish\n\n<TrimMode>full</TrimMode>\n- 'Only pack what we'll actually use'\n- Removes unused code aggressively\n\n<InvariantGlobalization>true</InvariantGlobalization>\n- 'We don't need the phrase book'\n- Removes localization data\n\n<IlcOptimizationPreference>Size</IlcOptimizationPreference>\n- 'Smallest backpack possible'\n- Optimize for binary size over speed\n\nWARNINGS AND ANALYSIS:\n- AOT analyzer warns about incompatible patterns\n- Like a packing checklist saying 'You forgot a tent!'\n- Fix warnings BEFORE deployment\n\nThink: 'AOT configuration is your packing list - include only what you need, and verify everything fits!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== COMPLETE AOT PROJECT FILE =====\n// MyApp.csproj\n\n// <Project Sdk=\"Microsoft.NET.Sdk\">\n//   <PropertyGroup>\n//     <OutputType>Exe</OutputType>\n//     <TargetFramework>net8.0</TargetFramework>\n//     <Nullable>enable</Nullable>\n//     <ImplicitUsings>enable</ImplicitUsings>\n//     \n//     <!-- NATIVE AOT SETTINGS -->\n//     <PublishAot>true</PublishAot>\n//     \n//     <!-- TRIMMING (removes unused code) -->\n//     <TrimMode>full</TrimMode>\n//     <IsTrimmable>true</IsTrimmable>\n//     \n//     <!-- SIZE OPTIMIZATION -->\n//     <InvariantGlobalization>true</InvariantGlobalization>\n//     <IlcOptimizationPreference>Size</IlcOptimizationPreference>\n//     \n//     <!-- SINGLE FILE OUTPUT -->\n//     <PublishSingleFile>true</PublishSingleFile>\n//     <SelfContained>true</SelfContained>\n//     \n//     <!-- AOT WARNINGS AS ERRORS (recommended!) -->\n//     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>\n//     <EnableTrimAnalyzer>true</EnableTrimAnalyzer>\n//     <EnableAotAnalyzer>true</EnableAotAnalyzer>\n//   </PropertyGroup>\n// </Project>\n\n// ===== AOT-COMPATIBLE CODE =====\nusing System.Text.Json;\nusing System.Text.Json.Serialization;\n\n// Source generator for JSON (AOT-compatible!)\n[JsonSerializable(typeof(Config))]\n[JsonSerializable(typeof(List<string>))]\ninternal partial class AppJsonContext : JsonSerializerContext { }\n\npublic class Config\n{\n    public string AppName { get; set; } = \"\";\n    public int MaxConnections { get; set; }\n    public List<string> AllowedHosts { get; set; } = new();\n}\n\nclass Program\n{\n    static void Main()\n    {\n        Console.WriteLine(\"AOT-Enabled Application\");\n        \n        // Create configuration\n        var config = new Config\n        {\n            AppName = \"My AOT App\",\n            MaxConnections = 100,\n            AllowedHosts = new List<string> { \"localhost\", \"api.example.com\" }\n        };\n        \n        // AOT-compatible JSON serialization (using source generator!)\n        var json = JsonSerializer.Serialize(config, AppJsonContext.Default.Config);\n        Console.WriteLine($\"Serialized: {json}\");\n        \n        // Deserialize back\n        var loaded = JsonSerializer.Deserialize(json, AppJsonContext.Default.Config);\n        Console.WriteLine($\"Loaded: {loaded?.AppName}\");\n        \n        // LINQ works in AOT!\n        var hosts = config.AllowedHosts.Where(h => h.Contains(\".\")).ToList();\n        Console.WriteLine($\"Filtered hosts: {string.Join(\", \", hosts)}\");\n        \n        // Collections work fine\n        var numbers = Enumerable.Range(1, 10).Select(n => n * 2).ToArray();\n        Console.WriteLine($\"Doubled: {string.Join(\", \", numbers)}\");\n    }\n}\n\n// ===== PUBLISH COMMANDS =====\n// Windows:\n//   dotnet publish -c Release -r win-x64\n//\n// Linux:\n//   dotnet publish -c Release -r linux-x64\n//\n// macOS (Apple Silicon):\n//   dotnet publish -c Release -r osx-arm64\n//\n// Output: bin/Release/net8.0/[rid]/publish/MyApp.exe\n\n// ===== VERIFY AOT OUTPUT =====\n// - Single executable file\n// - No .dll files\n// - No runtimeconfig.json needed\n// - Just copy and run!\n\nConsole.WriteLine(\"\\nPublish with: dotnet publish -c Release -r win-x64\");\nConsole.WriteLine(\"Output will be a single native executable!\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`<PublishAot>true</PublishAot>`**: Master switch for AOT. Only affects 'dotnet publish'. Development with 'dotnet run' still uses JIT for fast iteration.\n\n**`<TrimMode>full</TrimMode>`**: Aggressive tree-shaking. Removes ALL code not provably used. Some reflection patterns may break - test thoroughly!\n\n**`<EnableTrimAnalyzer>true</EnableTrimAnalyzer>`**: Static analysis for trim compatibility. Warns about patterns that might break. Fix these warnings!\n\n**`<EnableAotAnalyzer>true</EnableAotAnalyzer>`**: Warns about AOT-incompatible patterns. Catches issues at compile time, not runtime.\n\n**`[JsonSerializable(typeof(T))]`**: Source generator attribute. Tells JSON serializer to generate code for type T at compile time instead of using reflection.\n\n**`JsonSerializerContext`**: Base class for source-generated JSON. AppJsonContext.Default.Config provides pre-generated serialization logic.\n\n**`-r win-x64 / linux-x64`**: Runtime Identifier. Required for AOT because native code is platform-specific. Cross-compilation is supported!"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-17-02-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create an AOT-ready configuration system!\n\n1. Create a 'ServerSettings' class with:\n   - Port (int)\n   - Host (string)\n   - EnableSsl (bool)\n   - AllowedOrigins (List<string>)\n\n2. Create a JsonSerializerContext with [JsonSerializable] for:\n   - ServerSettings\n   - List<ServerSettings>\n\n3. Write code that:\n   - Creates a ServerSettings instance with sample values\n   - Serializes it to JSON using the source-generated context\n   - Prints the JSON (indented)\n   - Deserializes it back and verifies the values\n\n4. Print the .csproj settings needed for AOT\n\nUse JsonSerializer with the source-generated context!",
+              "starterCode": "using System.Text.Json;\nusing System.Text.Json.Serialization;\n\n// TODO: Create ServerSettings class with:\n// - Port (int)\n// - Host (string)\n// - EnableSsl (bool)\n// - AllowedOrigins (List<string>)\n\n// TODO: Create JsonSerializerContext with [JsonSerializable] attributes\n// Hint: [JsonSerializable(typeof(ServerSettings))]\n//       internal partial class SettingsJsonContext : JsonSerializerContext { }\n\n// Main code\nConsole.WriteLine(\"=== AOT-Ready Configuration System ===\");\n\n// TODO: Create sample ServerSettings\n\n// TODO: Serialize to JSON using source-generated context\n// Hint: JsonSerializer.Serialize(settings, SettingsJsonContext.Default.ServerSettings)\n\n// TODO: Print JSON (use JsonSerializerOptions for indentation)\n\n// TODO: Deserialize and verify\n\n// Print .csproj settings\nConsole.WriteLine(\"\\n=== Required .csproj Settings ===\");\nConsole.WriteLine(\"<PublishAot>true</PublishAot>\");",
+              "solution": "using System.Text.Json;\nusing System.Text.Json.Serialization;\n\n// AOT-compatible configuration class\npublic class ServerSettings\n{\n    public int Port { get; set; }\n    public string Host { get; set; } = \"\";\n    public bool EnableSsl { get; set; }\n    public List<string> AllowedOrigins { get; set; } = new();\n}\n\n// Source-generated JSON context for AOT compatibility\n[JsonSerializable(typeof(ServerSettings))]\n[JsonSerializable(typeof(List<ServerSettings>))]\n[JsonSourceGenerationOptions(WriteIndented = true)]\ninternal partial class SettingsJsonContext : JsonSerializerContext { }\n\n// Main code\nConsole.WriteLine(\"=== AOT-Ready Configuration System ===\");\n\n// Create sample settings\nvar settings = new ServerSettings\n{\n    Port = 8080,\n    Host = \"api.example.com\",\n    EnableSsl = true,\n    AllowedOrigins = new List<string>\n    {\n        \"https://app.example.com\",\n        \"https://admin.example.com\"\n    }\n};\n\nConsole.WriteLine(\"\\nOriginal settings:\");\nConsole.WriteLine($\"  Host: {settings.Host}:{settings.Port}\");\nConsole.WriteLine($\"  SSL: {settings.EnableSsl}\");\nConsole.WriteLine($\"  Origins: {settings.AllowedOrigins.Count}\");\n\n// Serialize using source-generated context (AOT-safe!)\nvar json = JsonSerializer.Serialize(settings, SettingsJsonContext.Default.ServerSettings);\n\nConsole.WriteLine(\"\\nSerialized JSON:\");\nConsole.WriteLine(json);\n\n// Deserialize back\nvar loaded = JsonSerializer.Deserialize(json, SettingsJsonContext.Default.ServerSettings);\n\nConsole.WriteLine(\"\\nDeserialized and verified:\");\nConsole.WriteLine($\"  Port matches: {loaded?.Port == settings.Port}\");\nConsole.WriteLine($\"  Host matches: {loaded?.Host == settings.Host}\");\nConsole.WriteLine($\"  SSL matches: {loaded?.EnableSsl == settings.EnableSsl}\");\n\n// Print .csproj settings\nConsole.WriteLine(\"\\n=== Required .csproj Settings ===\");\nConsole.WriteLine(\"<PublishAot>true</PublishAot>\");\nConsole.WriteLine(\"<TrimMode>full</TrimMode>\");\nConsole.WriteLine(\"<InvariantGlobalization>true</InvariantGlobalization>\");\nConsole.WriteLine(\"<EnableAotAnalyzer>true</EnableAotAnalyzer>\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should show serialized JSON",
+                  "expectedOutput": "JSON",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should show AOT settings",
+                  "expectedOutput": "PublishAot",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "[JsonSerializable(typeof(ServerSettings))] tells source generator to create code for ServerSettings."
+                },
+                {
+                  "level": 2,
+                  "text": "JsonSerializerContext is abstract - use 'partial class' and the generator fills in the implementation."
+                },
+                {
+                  "level": 3,
+                  "text": "[JsonSourceGenerationOptions(WriteIndented = true)] on the context class enables pretty-printing."
+                },
+                {
+                  "level": 4,
+                  "text": "Access pre-generated serializer: SettingsJsonContext.Default.ServerSettings (not typeof!)."
+                },
+                {
+                  "level": 5,
+                  "text": "Multiple [JsonSerializable] attributes can stack on one context class for multiple types."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using JsonSerializer.Serialize<T>() without context",
+                  "consequence": "JsonSerializer.Serialize(obj) uses reflection internally - not AOT compatible!",
+                  "correction": "Always pass the context: JsonSerializer.Serialize(obj, Context.Default.TypeName)"
+                },
+                {
+                  "mistake": "Forgetting 'partial' on the context class",
+                  "consequence": "Source generator can't add the implementation. You get compile errors!",
+                  "correction": "internal partial class MyJsonContext : JsonSerializerContext { } - 'partial' is required!"
+                },
+                {
+                  "mistake": "Not including all needed types in [JsonSerializable]",
+                  "consequence": "Nested types or collections fail at runtime if not registered!",
+                  "correction": "Add [JsonSerializable(typeof(List<T>))] for any generic collections you use."
+                },
+                {
+                  "mistake": "Using object or dynamic in serialized types",
+                  "consequence": "Source generator can't know the actual type. Serialization fails or produces wrong output.",
+                  "correction": "Use concrete types. Replace 'object Data' with 'Dictionary<string, string> Data' or similar."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-17-03",
+          "title": "Source Generators for AOT",
+          "moduleId": "module-17",
+          "order": 3,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you run a custom t-shirt printing shop. You have TWO business models:\n\nON-DEMAND PRINTING (Reflection at Runtime):\n- Customer orders a shirt\n- You design it on the spot\n- Print it while they wait\n- Flexible but slow\n- Requires full printing equipment everywhere\n\nPRE-PRINTED CATALOG (Source Generators):\n- Before opening, design ALL possible shirts\n- Print them in advance\n- Customer picks from ready stock\n- Instant delivery, no equipment needed at stores\n\nSOURCE GENERATORS:\n- Run during compilation (not runtime)\n- Generate C# code that gets compiled with your app\n- No reflection needed at runtime\n- Perfect for AOT because all code exists at compile time\n\nBUILT-IN SOURCE GENERATORS:\n\n1. JSON Source Generator:\n   - [JsonSerializable(typeof(T))]\n   - Generates serialization code for your types\n   - No reflection for JSON parsing!\n\n2. Regex Source Generator:\n   - [GeneratedRegex(pattern)]\n   - Compiles regex at build time\n   - Faster than runtime compilation\n\n3. Logging Source Generator:\n   - [LoggerMessage(...)]\n   - Generates high-performance logging\n   - Zero allocations for log messages\n\nWHY SOURCE GENERATORS MATTER FOR AOT:\n- AOT can't generate code at runtime\n- Source generators move that work to compile time\n- Result: All code exists in the final binary\n\nThink: 'Source generators are like pre-cooking meals - all the work happens in the kitchen, so serving is instant!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "using System.Text.Json;\nusing System.Text.Json.Serialization;\nusing System.Text.RegularExpressions;\nusing Microsoft.Extensions.Logging;\n\n// ===== JSON SOURCE GENERATOR =====\n// Generates serialization code at compile time\n\npublic record Product(int Id, string Name, decimal Price, string[] Tags);\npublic record Order(int OrderId, List<Product> Items, DateTime Created);\n\n[JsonSerializable(typeof(Product))]\n[JsonSerializable(typeof(Order))]\n[JsonSerializable(typeof(List<Product>))]\n[JsonSourceGenerationOptions(\n    WriteIndented = true,\n    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]\ninternal partial class AppJsonContext : JsonSerializerContext { }\n\n// Usage - NO reflection at runtime!\nvar product = new Product(1, \"Widget\", 29.99m, new[] { \"tools\", \"gadgets\" });\nvar json = JsonSerializer.Serialize(product, AppJsonContext.Default.Product);\nConsole.WriteLine($\"JSON: {json}\");\n\nvar parsed = JsonSerializer.Deserialize(json, AppJsonContext.Default.Product);\nConsole.WriteLine($\"Parsed: {parsed?.Name}\");\n\n// ===== REGEX SOURCE GENERATOR =====\n// Compiles regex at build time for better performance\n\npublic partial class Validators\n{\n    // Email validation - compiled at build time!\n    [GeneratedRegex(@\"^[\\w.-]+@[\\w.-]+\\.\\w+$\", RegexOptions.IgnoreCase)]\n    public static partial Regex EmailRegex();\n    \n    // Phone number - US format\n    [GeneratedRegex(@\"^\\(?\\d{3}\\)?[-.]?\\d{3}[-.]?\\d{4}$\")]\n    public static partial Regex PhoneRegex();\n    \n    // URL validation\n    [GeneratedRegex(@\"^https?://[\\w.-]+(/[\\w./]*)?$\", RegexOptions.IgnoreCase)]\n    public static partial Regex UrlRegex();\n}\n\n// Usage - instant, no runtime compilation\nConsole.WriteLine($\"\\nEmail valid: {Validators.EmailRegex().IsMatch(\"test@example.com\")}\");\nConsole.WriteLine($\"Phone valid: {Validators.PhoneRegex().IsMatch(\"(555) 123-4567\")}\");\nConsole.WriteLine($\"URL valid: {Validators.UrlRegex().IsMatch(\"https://example.com/path\")}\");\n\n// ===== LOGGING SOURCE GENERATOR =====\n// High-performance, zero-allocation logging\n\npublic static partial class LogMessages\n{\n    [LoggerMessage(\n        Level = LogLevel.Information,\n        Message = \"Processing order {OrderId} with {ItemCount} items\")]\n    public static partial void LogOrderProcessing(\n        ILogger logger, int orderId, int itemCount);\n    \n    [LoggerMessage(\n        Level = LogLevel.Warning,\n        Message = \"Order {OrderId} total {Total:C} exceeds limit\")]\n    public static partial void LogOrderLimitExceeded(\n        ILogger logger, int orderId, decimal total);\n    \n    [LoggerMessage(\n        Level = LogLevel.Error,\n        Message = \"Failed to process order {OrderId}\")]\n    public static partial void LogOrderFailed(\n        ILogger logger, int orderId, Exception ex);\n}\n\n// Usage with ILogger\n// LogMessages.LogOrderProcessing(logger, 12345, 5);\n// LogMessages.LogOrderLimitExceeded(logger, 12345, 10000m);\n// LogMessages.LogOrderFailed(logger, 12345, exception);\n\nConsole.WriteLine(\"\\nSource generators active:\");\nConsole.WriteLine(\"- JSON: Serialization without reflection\");\nConsole.WriteLine(\"- Regex: Patterns compiled at build time\");\nConsole.WriteLine(\"- Logging: Zero-allocation log messages\");\nConsole.WriteLine(\"\\nAll code generated at compile time = AOT ready!\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`[JsonSerializable(typeof(T))]`**: Register type T for source generation. The generator creates Serialize/Deserialize methods specifically for T. No reflection!\n\n**`[JsonSourceGenerationOptions(...)]`**: Configure all generated serializers. WriteIndented, PropertyNamingPolicy, etc. apply to all types in this context.\n\n**`[GeneratedRegex(pattern)]`**: Marks a partial method to receive generated regex. The generator compiles the pattern at build time into optimized IL.\n\n**`public static partial Regex MethodName()`**: The signature for generated regex. Must be static, partial, return Regex, take no parameters. Generator fills in the body.\n\n**`[LoggerMessage(Level, Message)]`**: Generates high-performance logging method. Message uses {placeholders} that map to method parameters.\n\n**`public static partial void LogXxx(ILogger, params...)`**: Logger is first param. Additional params match {placeholders} in order. Generator creates the implementation.\n\n**Why partial?**: Source generators ADD code to partial classes/methods. You declare the signature, generator provides implementation."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-17-03-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a validation library using source-generated regex!\n\n1. Create a partial class 'InputValidators' with generated regex methods:\n   - CreditCard: 16 digits (with optional dashes/spaces every 4)\n   - PostalCode: 5 digits or 5+4 format (12345 or 12345-6789)\n   - Username: 3-20 alphanumeric characters, underscores allowed\n   - StrongPassword: At least 8 chars, must have upper, lower, digit, special\n\n2. Create a Validate() method that tests each pattern\n\n3. Test with sample valid and invalid inputs\n\n4. Print results showing which validations pass/fail\n\nUse [GeneratedRegex] attribute for AOT compatibility!",
+              "starterCode": "using System.Text.RegularExpressions;\n\n// TODO: Create partial class InputValidators with generated regex methods\n// Patterns needed:\n// - CreditCard: 16 digits, optional separators (1234-5678-9012-3456)\n// - PostalCode: 5 digits or 5+4 (12345 or 12345-6789)\n// - Username: 3-20 chars, alphanumeric + underscore\n// - StrongPassword: 8+ chars, upper, lower, digit, special\n\npublic partial class InputValidators\n{\n    // TODO: [GeneratedRegex(...)] for CreditCard\n    \n    // TODO: [GeneratedRegex(...)] for PostalCode\n    \n    // TODO: [GeneratedRegex(...)] for Username\n    \n    // TODO: [GeneratedRegex(...)] for StrongPassword\n}\n\n// Test the validators\nConsole.WriteLine(\"=== AOT-Ready Input Validation ===\");\n\n// Test data\nvar testCreditCard = \"1234-5678-9012-3456\";\nvar testPostalCode = \"12345-6789\";\nvar testUsername = \"user_123\";\nvar testPassword = \"Secure@123\";\n\n// TODO: Run validations and print results\n\nConsole.WriteLine(\"\\nAll regex compiled at build time - AOT ready!\");",
+              "solution": "using System.Text.RegularExpressions;\n\npublic partial class InputValidators\n{\n    // Credit card: 16 digits with optional dashes or spaces every 4\n    [GeneratedRegex(@\"^\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}$\")]\n    public static partial Regex CreditCardRegex();\n    \n    // Postal code: 5 digits or 5+4 format\n    [GeneratedRegex(@\"^\\d{5}(-\\d{4})?$\")]\n    public static partial Regex PostalCodeRegex();\n    \n    // Username: 3-20 alphanumeric + underscore\n    [GeneratedRegex(@\"^[a-zA-Z0-9_]{3,20}$\")]\n    public static partial Regex UsernameRegex();\n    \n    // Strong password: 8+ chars, upper, lower, digit, special\n    [GeneratedRegex(@\"^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$\")]\n    public static partial Regex StrongPasswordRegex();\n    \n    // Helper methods for cleaner API\n    public static bool IsValidCreditCard(string input) => \n        CreditCardRegex().IsMatch(input);\n    \n    public static bool IsValidPostalCode(string input) => \n        PostalCodeRegex().IsMatch(input);\n    \n    public static bool IsValidUsername(string input) => \n        UsernameRegex().IsMatch(input);\n    \n    public static bool IsStrongPassword(string input) => \n        StrongPasswordRegex().IsMatch(input);\n}\n\n// Test the validators\nConsole.WriteLine(\"=== AOT-Ready Input Validation ===\");\n\n// Valid test data\nvar validCard = \"1234-5678-9012-3456\";\nvar validPostal = \"12345-6789\";\nvar validUser = \"user_123\";\nvar validPassword = \"Secure@123\";\n\n// Invalid test data\nvar invalidCard = \"1234-5678\";\nvar invalidPostal = \"1234\";\nvar invalidUser = \"ab\";\nvar invalidPassword = \"weak\";\n\nConsole.WriteLine(\"\\n--- Valid Inputs ---\");\nConsole.WriteLine($\"Credit Card '{validCard}': {InputValidators.IsValidCreditCard(validCard)}\");\nConsole.WriteLine($\"Postal Code '{validPostal}': {InputValidators.IsValidPostalCode(validPostal)}\");\nConsole.WriteLine($\"Username '{validUser}': {InputValidators.IsValidUsername(validUser)}\");\nConsole.WriteLine($\"Password '{validPassword}': {InputValidators.IsStrongPassword(validPassword)}\");\n\nConsole.WriteLine(\"\\n--- Invalid Inputs ---\");\nConsole.WriteLine($\"Credit Card '{invalidCard}': {InputValidators.IsValidCreditCard(invalidCard)}\");\nConsole.WriteLine($\"Postal Code '{invalidPostal}': {InputValidators.IsValidPostalCode(invalidPostal)}\");\nConsole.WriteLine($\"Username '{invalidUser}': {InputValidators.IsValidUsername(invalidUser)}\");\nConsole.WriteLine($\"Password '{invalidPassword}': {InputValidators.IsStrongPassword(invalidPassword)}\");\n\nConsole.WriteLine(\"\\nAll regex compiled at build time - AOT ready!\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should show validation results",
+                  "expectedOutput": "True",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should confirm AOT readiness",
+                  "expectedOutput": "AOT ready",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "[GeneratedRegex(@\"pattern\")] on a partial static method. The @ allows backslashes without escaping."
+                },
+                {
+                  "level": 2,
+                  "text": "Lookaheads for password: (?=.*[a-z]) means 'somewhere has lowercase'. Stack multiple lookaheads for AND logic."
+                },
+                {
+                  "level": 3,
+                  "text": "Optional groups: (-\\d{4})? matches dash + 4 digits, or nothing. The ? makes it optional."
+                },
+                {
+                  "level": 4,
+                  "text": "Character class [-\\s] matches dash or whitespace. Use for flexible separators in credit cards."
+                },
+                {
+                  "level": 5,
+                  "text": "Quantifiers: {3,20} means 3 to 20 occurrences. {8,} means 8 or more."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Making the method non-static or non-partial",
+                  "consequence": "[GeneratedRegex] requires 'static partial' method signature. Otherwise generator ignores it!",
+                  "correction": "public static partial Regex MethodName(); - both static AND partial required."
+                },
+                {
+                  "mistake": "Using Regex.Match instead of generated method",
+                  "consequence": "Regex.Match(input, pattern) compiles pattern at runtime - not AOT compatible!",
+                  "correction": "Call the generated method: MyRegex().IsMatch(input) uses precompiled pattern."
+                },
+                {
+                  "mistake": "Forgetting to escape special characters",
+                  "consequence": "Pattern [a-z]+ might need \\[ or \\. for literal brackets/dots. Wrong escaping = wrong matches.",
+                  "correction": "Use @ verbatim strings: @\"\\d+\" - one backslash in the pattern. Or regular: \"\\\\d+\" - escaped backslash."
+                },
+                {
+                  "mistake": "Overly complex password regex",
+                  "consequence": "Regex with many lookaheads can be slow or hit catastrophic backtracking.",
+                  "correction": "Keep it simple, or validate in steps: check length, then check each requirement separately."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-17-04",
+          "title": "Minimal APIs with AOT",
+          "moduleId": "module-17",
+          "order": 4,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Think of building a web API like opening a food stand:\n\nTRADITIONAL API (Full Restaurant):\n- Full kitchen with every appliance\n- Wait staff, hosts, managers\n- Menu changes handled at runtime\n- Flexible but heavy setup\n\nMINIMAL API (Food Truck):\n- Just what you need to serve food\n- Streamlined operations\n- Fixed menu, optimized workflow\n- Light, fast, mobile\n\nMINIMAL API + AOT (Pre-Packaged Food Truck):\n- Everything prepared before opening\n- No cooking at runtime, just serving\n- Fastest possible service\n- Perfect for specific, focused menus\n\nWHY MINIMAL APIS FOR AOT:\n- Less framework overhead\n- Explicit type declarations (no reflection)\n- Source generators for JSON\n- Optimized for startup time\n\nKEY DIFFERENCES:\n\nTraditional Controllers:\n- [ApiController], [Route], [HttpGet] attributes\n- Model binding via reflection\n- Complex routing rules\n\nMinimal APIs:\n- app.MapGet(\"/path\", handler)\n- Explicit parameter types\n- Simple, direct routing\n\nAOT REQUIREMENTS:\n- Use source-generated JSON contexts\n- Explicit type parameters\n- Avoid dynamic features\n- Configure AOT in project file\n\nThink: 'Minimal APIs + AOT = Food truck with everything pre-packaged. Setup once, serve instantly!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== AOT-COMPATIBLE MINIMAL API =====\n// Project file settings:\n// <PublishAot>true</PublishAot>\n// <InvariantGlobalization>true</InvariantGlobalization>\n\nusing System.Text.Json;\nusing System.Text.Json.Serialization;\n\nvar builder = WebApplication.CreateSlimBuilder(args);\n\n// Configure JSON with source generator (required for AOT!)\nbuilder.Services.ConfigureHttpJsonOptions(options =>\n{\n    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonContext.Default);\n});\n\nvar app = builder.Build();\n\n// ===== ENDPOINTS =====\n\n// Simple GET\napp.MapGet(\"/\", () => \"Hello, AOT World!\");\n\n// GET with typed response\napp.MapGet(\"/health\", () => new HealthStatus(\"Healthy\", DateTime.UtcNow));\n\n// GET with route parameter\napp.MapGet(\"/products/{id}\", (int id) =>\n{\n    var product = new Product(id, $\"Product {id}\", 19.99m);\n    return Results.Ok(product);\n});\n\n// GET all products\napp.MapGet(\"/products\", () =>\n{\n    var products = new List<Product>\n    {\n        new(1, \"Widget\", 29.99m),\n        new(2, \"Gadget\", 49.99m),\n        new(3, \"Gizmo\", 39.99m)\n    };\n    return Results.Ok(products);\n});\n\n// POST with typed body\napp.MapPost(\"/products\", (Product product) =>\n{\n    // In real app, save to database\n    Console.WriteLine($\"Created: {product.Name}\");\n    return Results.Created($\"/products/{product.Id}\", product);\n});\n\n// PUT with route param and body\napp.MapPut(\"/products/{id}\", (int id, Product product) =>\n{\n    if (id != product.Id)\n        return Results.BadRequest(\"ID mismatch\");\n    \n    Console.WriteLine($\"Updated: {product.Name}\");\n    return Results.Ok(product);\n});\n\n// DELETE\napp.MapDelete(\"/products/{id}\", (int id) =>\n{\n    Console.WriteLine($\"Deleted product {id}\");\n    return Results.NoContent();\n});\n\n// ===== QUERY PARAMETERS =====\napp.MapGet(\"/search\", (string? query, int page = 1, int size = 10) =>\n{\n    var result = new SearchResult(query ?? \"\", page, size, Array.Empty<Product>());\n    return Results.Ok(result);\n});\n\napp.Run();\n\n// ===== MODELS =====\npublic record Product(int Id, string Name, decimal Price);\npublic record HealthStatus(string Status, DateTime CheckedAt);\npublic record SearchResult(string Query, int Page, int Size, Product[] Results);\n\n// ===== JSON SOURCE GENERATOR (Required for AOT!) =====\n[JsonSerializable(typeof(Product))]\n[JsonSerializable(typeof(List<Product>))]\n[JsonSerializable(typeof(Product[]))]\n[JsonSerializable(typeof(HealthStatus))]\n[JsonSerializable(typeof(SearchResult))]\n[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]\ninternal partial class AppJsonContext : JsonSerializerContext { }\n\n// ===== OUTPUT =====\nConsole.WriteLine(\"Minimal API with AOT support!\");\nConsole.WriteLine(\"Endpoints:\");\nConsole.WriteLine(\"  GET  / - Hello world\");\nConsole.WriteLine(\"  GET  /health - Health check\");\nConsole.WriteLine(\"  GET  /products - List all\");\nConsole.WriteLine(\"  GET  /products/{id} - Get one\");\nConsole.WriteLine(\"  POST /products - Create\");\nConsole.WriteLine(\"  PUT  /products/{id} - Update\");\nConsole.WriteLine(\"  DELETE /products/{id} - Delete\");\nConsole.WriteLine(\"\\nPublish: dotnet publish -c Release -r linux-x64\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`WebApplication.CreateSlimBuilder(args)`**: Lighter than CreateBuilder(). Excludes features not needed for minimal APIs. Better for AOT size optimization.\n\n**`ConfigureHttpJsonOptions`**: Registers your JSON context with the HTTP pipeline. Without this, serialization fails in AOT!\n\n**`TypeInfoResolverChain.Insert(0, Context.Default)`**: Puts your source-generated context first in the resolver chain. Ensures AOT-compatible serialization is used.\n\n**`app.MapGet(\"/path\", handler)`**: Registers GET endpoint. Handler can be lambda or method. Return type determines response format.\n\n**`Results.Ok(value)`**: Returns 200 OK with serialized body. Results class provides all common HTTP responses.\n\n**`Results.Created(location, value)`**: Returns 201 Created with Location header and body. Used for POST endpoints.\n\n**Route parameters**: `/products/{id}` - curly braces define route parameters. Lambda parameter `(int id)` receives the value.\n\n**Query parameters**: Method parameters not in route come from query string. `?query=test&page=2`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-17-04-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create an AOT-ready Todo API with Minimal APIs!\n\n1. Create models:\n   - TodoItem: Id (int), Title (string), IsComplete (bool), DueDate (DateTime?)\n   - CreateTodoRequest: Title (string), DueDate (DateTime?)\n   - TodoList: Items (List<TodoItem>), TotalCount (int)\n\n2. Create JSON source generator context for all types\n\n3. Implement endpoints:\n   - GET /todos - returns TodoList\n   - GET /todos/{id} - returns single TodoItem or 404\n   - POST /todos - accepts CreateTodoRequest, returns created TodoItem\n   - PUT /todos/{id}/complete - marks item complete, returns updated item\n   - DELETE /todos/{id} - removes item\n\n4. Use in-memory list for storage (simulated database)\n\n5. Configure JSON options to use the source generator",
+              "starterCode": "using System.Text.Json;\nusing System.Text.Json.Serialization;\n\nvar builder = WebApplication.CreateSlimBuilder(args);\n\n// TODO: Configure HTTP JSON options with source generator\n\nvar app = builder.Build();\n\n// In-memory storage (simulated database)\nvar todos = new List<TodoItem>\n{\n    new(1, \"Learn AOT\", false, DateTime.Now.AddDays(1)),\n    new(2, \"Build Minimal API\", false, null)\n};\nvar nextId = 3;\n\n// TODO: Implement endpoints\n// GET /todos - returns TodoList with all items\n\n// GET /todos/{id} - returns item or 404\n\n// POST /todos - create new item from CreateTodoRequest\n\n// PUT /todos/{id}/complete - mark complete\n\n// DELETE /todos/{id} - remove item\n\napp.Run();\n\n// TODO: Define models (TodoItem, CreateTodoRequest, TodoList)\n\n// TODO: Create JsonSerializerContext with all types\n\nConsole.WriteLine(\"Todo API ready!\");",
+              "solution": "using System.Text.Json;\nusing System.Text.Json.Serialization;\n\nvar builder = WebApplication.CreateSlimBuilder(args);\n\n// Configure JSON with source generator for AOT\nbuilder.Services.ConfigureHttpJsonOptions(options =>\n{\n    options.SerializerOptions.TypeInfoResolverChain.Insert(0, TodoJsonContext.Default);\n});\n\nvar app = builder.Build();\n\n// In-memory storage (simulated database)\nvar todos = new List<TodoItem>\n{\n    new(1, \"Learn AOT\", false, DateTime.Now.AddDays(1)),\n    new(2, \"Build Minimal API\", false, null)\n};\nvar nextId = 3;\n\n// GET /todos - List all todos\napp.MapGet(\"/todos\", () =>\n{\n    var result = new TodoList(todos.ToList(), todos.Count);\n    return Results.Ok(result);\n});\n\n// GET /todos/{id} - Get single todo\napp.MapGet(\"/todos/{id}\", (int id) =>\n{\n    var todo = todos.FirstOrDefault(t => t.Id == id);\n    return todo is null \n        ? Results.NotFound() \n        : Results.Ok(todo);\n});\n\n// POST /todos - Create new todo\napp.MapPost(\"/todos\", (CreateTodoRequest request) =>\n{\n    var newTodo = new TodoItem(nextId++, request.Title, false, request.DueDate);\n    todos.Add(newTodo);\n    return Results.Created($\"/todos/{newTodo.Id}\", newTodo);\n});\n\n// PUT /todos/{id}/complete - Mark as complete\napp.MapPut(\"/todos/{id}/complete\", (int id) =>\n{\n    var index = todos.FindIndex(t => t.Id == id);\n    if (index < 0)\n        return Results.NotFound();\n    \n    var updated = todos[index] with { IsComplete = true };\n    todos[index] = updated;\n    return Results.Ok(updated);\n});\n\n// DELETE /todos/{id} - Remove todo\napp.MapDelete(\"/todos/{id}\", (int id) =>\n{\n    var removed = todos.RemoveAll(t => t.Id == id);\n    return removed > 0 \n        ? Results.NoContent() \n        : Results.NotFound();\n});\n\nConsole.WriteLine(\"Todo API ready!\");\nConsole.WriteLine(\"Endpoints:\");\nConsole.WriteLine(\"  GET    /todos\");\nConsole.WriteLine(\"  GET    /todos/{id}\");\nConsole.WriteLine(\"  POST   /todos\");\nConsole.WriteLine(\"  PUT    /todos/{id}/complete\");\nConsole.WriteLine(\"  DELETE /todos/{id}\");\n\napp.Run();\n\n// Models\npublic record TodoItem(int Id, string Title, bool IsComplete, DateTime? DueDate);\npublic record CreateTodoRequest(string Title, DateTime? DueDate);\npublic record TodoList(List<TodoItem> Items, int TotalCount);\n\n// JSON Source Generator for AOT\n[JsonSerializable(typeof(TodoItem))]\n[JsonSerializable(typeof(List<TodoItem>))]\n[JsonSerializable(typeof(CreateTodoRequest))]\n[JsonSerializable(typeof(TodoList))]\n[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]\ninternal partial class TodoJsonContext : JsonSerializerContext { }",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should list endpoints",
+                  "expectedOutput": "GET",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention Todo API",
+                  "expectedOutput": "Todo API",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "CreateSlimBuilder for lighter AOT builds. ConfigureHttpJsonOptions to register your JSON context."
+                },
+                {
+                  "level": 2,
+                  "text": "Results.Ok(), Results.NotFound(), Results.Created(), Results.NoContent() for HTTP responses."
+                },
+                {
+                  "level": 3,
+                  "text": "Record 'with' expression for immutable updates: updated = original with { Property = newValue };"
+                },
+                {
+                  "level": 4,
+                  "text": "FirstOrDefault returns null if not found. Use is null pattern for cleaner checks."
+                },
+                {
+                  "level": 5,
+                  "text": "[JsonSerializable] for every type that gets serialized - including List<T> variations!"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to register JSON context",
+                  "consequence": "Serialization falls back to reflection, which fails in AOT! Runtime exception on first request.",
+                  "correction": "Always ConfigureHttpJsonOptions and Insert your context into TypeInfoResolverChain."
+                },
+                {
+                  "mistake": "Using CreateBuilder instead of CreateSlimBuilder",
+                  "consequence": "Works, but includes unnecessary features. Larger binary, slower startup.",
+                  "correction": "Use CreateSlimBuilder for AOT APIs. It's optimized for minimal footprint."
+                },
+                {
+                  "mistake": "Not registering List<T> in JSON context",
+                  "consequence": "Single item works, but endpoints returning lists fail!",
+                  "correction": "[JsonSerializable(typeof(List<TodoItem>))] - explicit List<T> registration needed."
+                },
+                {
+                  "mistake": "Modifying records directly",
+                  "consequence": "Records are immutable! todo.IsComplete = true doesn't compile.",
+                  "correction": "Use 'with' expression: var updated = todo with { IsComplete = true };"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "lesson-17-05",
+          "title": "Benchmarking with BenchmarkDotNet",
+          "moduleId": "module-17",
+          "order": 5,
+          "estimatedMinutes": 20,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding the Concept",
+              "content": "Imagine you're testing which route is fastest to work. You have TWO approaches:\n\nCAUSAL TESTING (Unreliable):\n- Drive Route A once: 20 minutes\n- Drive Route B once: 25 minutes\n- Conclusion: Route A is faster!\n- Problem: What about traffic? Weather? Red lights?\n\nSCIENTIFIC TESTING (BenchmarkDotNet):\n- Drive each route 100 times\n- At different times, different days\n- Warm up first (learn the route)\n- Measure average, min, max, variance\n- Control for variables\n- Statistical confidence in results\n\nWHY BENCHMARKING MATTERS:\n- 'I think this is faster' is NOT evidence\n- Micro-optimizations can backfire\n- JIT warmup affects first runs\n- Memory allocations matter for GC\n- Different inputs yield different results\n\nBENCHMARKDOTNET FEATURES:\n- Automatic warmup iterations\n- Statistical analysis\n- Memory allocation tracking\n- Multiple runtimes comparison\n- Markdown/HTML reports\n- Baseline comparisons\n\nKEY METRICS:\n- Mean: Average execution time\n- Error: Margin of error (confidence)\n- StdDev: How consistent are the results?\n- Allocated: Memory allocated per operation\n- Gen0/Gen1/Gen2: GC collections triggered\n\nCOMMON FINDINGS:\n- LINQ is convenient but allocates memory\n- String concatenation vs StringBuilder\n- Span<T> vs arrays for slicing\n- Source generators vs reflection\n\nThink: 'BenchmarkDotNet is your performance laboratory - don't guess, measure!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "This example demonstrates the concepts in action.",
+              "code": "// ===== BENCHMARKDOTNET SETUP =====\n// Install: dotnet add package BenchmarkDotNet\n\n// Run benchmarks:\n// dotnet run -c Release\n// IMPORTANT: Must be Release mode for accurate results!\n\nusing BenchmarkDotNet.Attributes;\nusing BenchmarkDotNet.Running;\nusing System.Text;\nusing System.Text.Json;\nusing System.Text.Json.Serialization;\n\n// Entry point\nBenchmarkRunner.Run<StringConcatBenchmarks>();\n// BenchmarkRunner.Run<JsonBenchmarks>();\n// BenchmarkRunner.Run<CollectionBenchmarks>();\n\n// ===== STRING CONCATENATION BENCHMARKS =====\n[MemoryDiagnoser]  // Track memory allocations\n[RankColumn]       // Show ranking\npublic class StringConcatBenchmarks\n{\n    private readonly string[] _items = Enumerable.Range(1, 100)\n        .Select(i => $\"Item{i}\")\n        .ToArray();\n    \n    [Benchmark(Baseline = true)]  // This is the baseline for comparison\n    public string StringConcat()\n    {\n        var result = \"\";\n        foreach (var item in _items)\n            result += item + \", \";  // Creates new string each time!\n        return result;\n    }\n    \n    [Benchmark]\n    public string StringBuilder_Approach()\n    {\n        var sb = new StringBuilder();\n        foreach (var item in _items)\n            sb.Append(item).Append(\", \");\n        return sb.ToString();\n    }\n    \n    [Benchmark]\n    public string StringJoin()\n    {\n        return string.Join(\", \", _items);\n    }\n}\n\n// ===== JSON SERIALIZATION BENCHMARKS =====\n[MemoryDiagnoser]\npublic class JsonBenchmarks\n{\n    private readonly Product _product = new(1, \"Widget\", 29.99m);\n    private readonly string _json = \"{\\\"Id\\\":1,\\\"Name\\\":\\\"Widget\\\",\\\"Price\\\":29.99}\";\n    \n    // Reflection-based (traditional)\n    [Benchmark(Baseline = true)]\n    public string Serialize_Reflection()\n    {\n        return JsonSerializer.Serialize(_product);\n    }\n    \n    // Source-generated (AOT-compatible)\n    [Benchmark]\n    public string Serialize_SourceGen()\n    {\n        return JsonSerializer.Serialize(_product, BenchJsonContext.Default.Product);\n    }\n    \n    [Benchmark]\n    public Product? Deserialize_Reflection()\n    {\n        return JsonSerializer.Deserialize<Product>(_json);\n    }\n    \n    [Benchmark]\n    public Product? Deserialize_SourceGen()\n    {\n        return JsonSerializer.Deserialize(_json, BenchJsonContext.Default.Product);\n    }\n}\n\n[JsonSerializable(typeof(Product))]\ninternal partial class BenchJsonContext : JsonSerializerContext { }\n\npublic record Product(int Id, string Name, decimal Price);\n\n// ===== COLLECTION BENCHMARKS =====\n[MemoryDiagnoser]\npublic class CollectionBenchmarks\n{\n    private readonly int[] _numbers = Enumerable.Range(1, 1000).ToArray();\n    \n    [Benchmark(Baseline = true)]\n    public int LinqSum()\n    {\n        return _numbers.Where(n => n % 2 == 0).Sum();\n    }\n    \n    [Benchmark]\n    public int ForLoopSum()\n    {\n        var sum = 0;\n        for (var i = 0; i < _numbers.Length; i++)\n        {\n            if (_numbers[i] % 2 == 0)\n                sum += _numbers[i];\n        }\n        return sum;\n    }\n    \n    [Benchmark]\n    public int SpanSum()\n    {\n        var sum = 0;\n        var span = _numbers.AsSpan();\n        foreach (var n in span)\n        {\n            if (n % 2 == 0)\n                sum += n;\n        }\n        return sum;\n    }\n}\n\n// ===== SAMPLE OUTPUT =====\n// |             Method |        Mean |    Allocated |\n// |------------------- |------------:|-------------:|\n// |       StringConcat | 45,234.5 ns |    123,456 B |\n// | StringBuilder_     |    567.8 ns |      1,024 B |\n// |         StringJoin |    234.5 ns |        512 B |\n\nConsole.WriteLine(\"Benchmark complete!\");\nConsole.WriteLine(\"Key insights:\");\nConsole.WriteLine(\"- String += in loop is VERY slow (creates new strings)\");\nConsole.WriteLine(\"- StringBuilder is ~100x faster for many concatenations\");\nConsole.WriteLine(\"- string.Join is even faster for simple cases\");\nConsole.WriteLine(\"- Source-generated JSON is faster than reflection\");\nConsole.WriteLine(\"- For loops often beat LINQ for raw performance\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "## Breaking Down the Syntax\n\n**`BenchmarkRunner.Run<T>()`**: Entry point. Runs all [Benchmark] methods in class T. Must run in Release mode!\n\n**`[Benchmark]`**: Marks a method for benchmarking. Method should return something to prevent dead code elimination.\n\n**`[Benchmark(Baseline = true)]`**: This is the baseline. Other results shown as ratio to baseline (1.5x slower, 2x faster, etc.).\n\n**`[MemoryDiagnoser]`**: Class attribute. Tracks memory allocations per operation. Shows Gen0/1/2 GC collections.\n\n**`[RankColumn]`**: Adds ranking column to results. Shows which method is fastest (1st), second (2nd), etc.\n\n**`[Params(10, 100, 1000)]`**: Vary input size. Benchmark runs for each value. Great for seeing how performance scales.\n\n**`[GlobalSetup]`**: Run once before all benchmarks. Use for expensive initialization that shouldn't be measured.\n\n**Mean, Error, StdDev**: Mean is average. Error is confidence interval. StdDev shows consistency. Low StdDev = reliable results."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-17-05-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Apply what you've learned in this interactive coding challenge.",
+              "instructions": "Create a comprehensive benchmark comparing different approaches!\n\n1. Create 'SearchBenchmarks' class with [MemoryDiagnoser]\n\n2. Setup data:\n   - Array of 10,000 Person records (Id, Name, Age)\n   - Dictionary<int, Person> for O(1) lookup\n   - Target ID to search for (5000)\n\n3. Benchmark these search approaches:\n   - LINQ FirstOrDefault (baseline)\n   - For loop search\n   - Array.Find\n   - Dictionary lookup (expected fastest)\n\n4. Add [Params(100, 1000, 10000)] to test different sizes\n\n5. Print expected results analysis\n\nFocus on demonstrating how data structures affect performance!",
+              "starterCode": "using BenchmarkDotNet.Attributes;\nusing BenchmarkDotNet.Running;\n\n// TODO: Create Person record (Id, Name, Age)\n\n// TODO: Create SearchBenchmarks class\n// - [MemoryDiagnoser]\n// - [Params(100, 1000, 10000)] for Size property\n// - [GlobalSetup] to initialize data based on Size\n// - Array of Person\n// - Dictionary<int, Person>\n// - Target ID to find\n\n// Benchmark methods:\n// - LinqSearch (Baseline = true)\n// - ForLoopSearch\n// - ArrayFind\n// - DictionaryLookup\n\npublic class SearchBenchmarks\n{\n    // TODO: Implement benchmarks\n}\n\n// Print analysis\nConsole.WriteLine(\"=== Search Performance Analysis ===\");\nConsole.WriteLine(\"Expected results:\");\nConsole.WriteLine(\"- LINQ FirstOrDefault: O(n) - scans until found\");\nConsole.WriteLine(\"- For loop: O(n) - similar but less overhead\");\nConsole.WriteLine(\"- Array.Find: O(n) - optimized but still linear\");\nConsole.WriteLine(\"- Dictionary: O(1) - constant time lookup!\");\n\n// BenchmarkRunner.Run<SearchBenchmarks>();",
+              "solution": "using BenchmarkDotNet.Attributes;\nusing BenchmarkDotNet.Running;\n\npublic record Person(int Id, string Name, int Age);\n\n[MemoryDiagnoser]\n[RankColumn]\npublic class SearchBenchmarks\n{\n    [Params(100, 1000, 10000)]\n    public int Size { get; set; }\n    \n    private Person[] _people = Array.Empty<Person>();\n    private Dictionary<int, Person> _dictionary = new();\n    private int _targetId;\n    \n    [GlobalSetup]\n    public void Setup()\n    {\n        // Generate test data\n        _people = Enumerable.Range(1, Size)\n            .Select(i => new Person(i, $\"Person{i}\", 20 + (i % 50)))\n            .ToArray();\n        \n        // Build dictionary for O(1) lookups\n        _dictionary = _people.ToDictionary(p => p.Id);\n        \n        // Search for item in middle (worst-case for linear search)\n        _targetId = Size / 2;\n    }\n    \n    [Benchmark(Baseline = true)]\n    public Person? LinqSearch()\n    {\n        return _people.FirstOrDefault(p => p.Id == _targetId);\n    }\n    \n    [Benchmark]\n    public Person? ForLoopSearch()\n    {\n        for (var i = 0; i < _people.Length; i++)\n        {\n            if (_people[i].Id == _targetId)\n                return _people[i];\n        }\n        return null;\n    }\n    \n    [Benchmark]\n    public Person? ArrayFind()\n    {\n        return Array.Find(_people, p => p.Id == _targetId);\n    }\n    \n    [Benchmark]\n    public Person? DictionaryLookup()\n    {\n        return _dictionary.TryGetValue(_targetId, out var person) ? person : null;\n    }\n}\n\n// Print analysis\nConsole.WriteLine(\"=== Search Performance Analysis ===\");\nConsole.WriteLine();\nConsole.WriteLine(\"Benchmark setup:\");\nConsole.WriteLine(\"- Array sizes: 100, 1000, 10000 elements\");\nConsole.WriteLine(\"- Search target: middle element (worst case for linear)\");\nConsole.WriteLine(\"- MemoryDiagnoser: tracks allocations\");\nConsole.WriteLine();\nConsole.WriteLine(\"Expected results:\");\nConsole.WriteLine(\"- LINQ FirstOrDefault: O(n) - enumerator overhead + delegate calls\");\nConsole.WriteLine(\"- For loop: O(n) - minimal overhead, direct array access\");\nConsole.WriteLine(\"- Array.Find: O(n) - optimized native code, but still linear\");\nConsole.WriteLine(\"- Dictionary: O(1) - constant time regardless of size!\");\nConsole.WriteLine();\nConsole.WriteLine(\"Memory allocations:\");\nConsole.WriteLine(\"- LINQ: Allocates enumerator\");\nConsole.WriteLine(\"- For loop: Zero allocations\");\nConsole.WriteLine(\"- Array.Find: Zero allocations\");\nConsole.WriteLine(\"- Dictionary: Zero allocations (after setup)\");\nConsole.WriteLine();\nConsole.WriteLine(\"Key insight:\");\nConsole.WriteLine(\"Dictionary lookup stays CONSTANT while others grow linearly!\");\nConsole.WriteLine(\"At 10,000 items, Dictionary can be 1000x+ faster.\");\nConsole.WriteLine();\nConsole.WriteLine(\"Run with: dotnet run -c Release\");\n\n// Uncomment to run actual benchmarks:\n// BenchmarkRunner.Run<SearchBenchmarks>();",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should explain search performance",
+                  "expectedOutput": "O(1)",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention Dictionary advantage",
+                  "expectedOutput": "Dictionary",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "[GlobalSetup] runs once before benchmarks. Use for data initialization that shouldn't be measured."
+                },
+                {
+                  "level": 2,
+                  "text": "[Params(100, 1000, 10000)] creates three benchmark runs with different Size values."
+                },
+                {
+                  "level": 3,
+                  "text": "Dictionary.TryGetValue is O(1) - single hash lookup regardless of size."
+                },
+                {
+                  "level": 4,
+                  "text": "Search for middle element to demonstrate worst-case linear search (n/2 iterations)."
+                },
+                {
+                  "level": 5,
+                  "text": "[Benchmark(Baseline = true)] marks the reference. Other methods shown as ratio (2x faster, 0.5x = half speed)."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Running benchmarks in Debug mode",
+                  "consequence": "Debug builds include extra checks, no optimizations. Results are meaningless!",
+                  "correction": "Always: dotnet run -c Release. Debug performance can be 10-100x slower."
+                },
+                {
+                  "mistake": "Not returning values from benchmark methods",
+                  "consequence": "Compiler might optimize away unused computations. Benchmark measures nothing!",
+                  "correction": "Always return the result. BenchmarkDotNet uses it to prevent dead code elimination."
+                },
+                {
+                  "mistake": "Including setup in benchmark method",
+                  "consequence": "Measuring data creation instead of the actual operation. Misleading results!",
+                  "correction": "Use [GlobalSetup] for initialization. Benchmark method should only measure the target operation."
+                },
+                {
+                  "mistake": "Benchmarking tiny operations without warmup",
+                  "consequence": "JIT compilation included in first runs. Inconsistent, inflated times.",
+                  "correction": "BenchmarkDotNet handles warmup automatically. Trust its warmup iterations."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
