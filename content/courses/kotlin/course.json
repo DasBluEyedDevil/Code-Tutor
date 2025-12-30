@@ -12137,6 +12137,380 @@
           "challenges": []
         }
       ]
+    },
+    {
+      "id": "module-10",
+      "title": "The K2 Era - Modern Kotlin Tooling",
+      "description": "Master the K2 compiler, migrate from kapt to KSP, and explore Kotlin's cutting-edge features including context receivers.",
+      "difficulty": "advanced",
+      "estimatedHours": 5,
+      "lessons": [
+        {
+          "id": "10.1",
+          "title": "Lesson 10.1: K2 Compiler - What's New and Why It Matters",
+          "moduleId": "module-10",
+          "order": 1,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nKotlin 2.0 introduces the K2 compiler, a complete rewrite of the Kotlin compiler frontend. This represents the most significant compiler change in Kotlin's history.\n\nIn this lesson, you'll learn:\n- What the K2 compiler is and why JetBrains rewrote it\n- The performance improvements you can expect\n- New language features enabled by K2\n- How to prepare your projects for K2\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "What is the K2 Compiler?",
+              "content": "\n### The K2 Revolution\n\nThe K2 compiler is a complete rewrite of Kotlin's compiler frontend. The name \"K2\" comes from it being the second major version of the Kotlin compiler.\n\n**Why Rewrite?**\n\nThe original Kotlin compiler (K1) was built incrementally over many years. As Kotlin evolved, the compiler accumulated technical debt:\n\n1. **Performance bottlenecks** - Some analysis phases couldn't be parallelized\n2. **Complex codebase** - Hard to add new features\n3. **Incremental compilation limitations** - More rebuilds than necessary\n4. **IDE integration challenges** - Separate analysis for compiler and IDE\n\n**K2 Architecture**\n\nK2 uses a new architecture called FIR (Frontend IR):\n\n- **Unified representation** - Same data structures for compiler and IDE\n- **Lazy analysis** - Only analyze what's needed\n- **Better parallelization** - Analyze files concurrently\n- **Cleaner design** - Easier to extend and maintain\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Performance Improvements",
+              "content": "\n### Up to 2x Faster Compilation\n\nK2 delivers significant performance improvements across the board:\n\n**Compilation Speed**\n- Clean builds: 1.5-2x faster\n- Incremental builds: Up to 2x faster\n- IDE analysis: Noticeably faster\n\n**Memory Usage**\n- Lower memory footprint during compilation\n- Better garbage collection behavior\n- Reduced peak memory usage\n\n**Real-World Results (JetBrains Data)**\n\n| Project | K1 Clean Build | K2 Clean Build | Improvement |\n|---------|---------------|----------------|-------------|\n| Kotlin Compiler | 54s | 29s | 1.9x |\n| IntelliJ IDEA | 8m 12s | 4m 45s | 1.7x |\n| YouTrack | 2m 15s | 1m 20s | 1.7x |\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Improved Type Inference",
+              "content": "\nK2 has smarter type inference that handles complex cases better:\n\n",
+              "code": "// K2 handles builder patterns better\n\n// Before K2 (K1 - sometimes failed):\n// val result = buildList {\n//     add(\"string\")\n//     add(if (condition) 1 else \"fallback\")  // Type error in K1\n// }\n\n// With K2 (works correctly):\nval condition = true\nval result = buildList {\n    add(\"string\")\n    if (condition) add(1) else add(\"fallback\")  // OK, infers List<Any>\n}\n\n// K2 infers types through complex expressions\nval data = mapOf(\n    \"users\" to listOf(\n        mapOf(\"name\" to \"Alice\", \"age\" to 30),\n        mapOf(\"name\" to \"Bob\", \"age\" to 25)\n    )\n)\n\n// K2 correctly infers: Map<String, List<Map<String, Any>>>\nval users = data[\"users\"]\nval firstUser = users?.firstOrNull()\n\n// K2 also handles when expressions better\nval value: Any = \"test\"\nval length = when (value) {\n    is String -> value.length  // Smart cast works\n    is List<*> -> value.size   // Smart cast works\n    else -> 0\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Smarter Smart Casts",
+              "content": "\nK2 tracks types through more complex control flow:\n\n",
+              "code": "// K2 handles compound conditions better\nfun process(value: Any) {\n    // K2: Smart cast works through && conditions\n    if (value is String && value.length > 5) {\n        // value is smart-cast to String in BOTH parts of the condition\n        println(value.uppercase())  // Works!\n    }\n\n    // K2 handles when expressions with complex conditions\n    when {\n        value is List<*> && value.isNotEmpty() -> {\n            // value is List<*> here\n            println(\"First element: ${value.first()}\")\n        }\n        value is Map<*, *> && value.containsKey(\"id\") -> {\n            // value is Map<*, *> here\n            println(\"Has ID: ${value[\"id\"]}\")\n        }\n    }\n}\n\n// K2 tracks through variable assignments\nfun processNullable(input: String?) {\n    val value = input\n    if (value != null) {\n        // K2 knows both 'value' and 'input' are non-null here\n        println(value.length)\n        println(input.length)  // Also works in K2!\n    }\n}\n\n// K2 handles inline function contracts better\nfun example(list: List<Any>) {\n    val strings = list.filterIsInstance<String>()\n    // K2 correctly infers List<String>\n    strings.forEach { println(it.uppercase()) }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Better Diagnostics",
+              "content": "\n### Clearer Error Messages\n\nK2 provides more helpful error messages with actionable suggestions:\n\n**Before (K1)**\n```\nType mismatch: inferred type is Int but String was expected\n```\n\n**After (K2)**\n```\nType mismatch: expected String, found Int.\nDid you mean to call .toString()?\n```\n\n**More Examples of K2 Diagnostics**\n\n```\n// Unused variable warning with suggestion\nWarning: Variable 'result' is never used.\nConsider using '_' if the variable is intentionally unused.\n\n// Deprecation with migration path\nWarning: 'oldFunction()' is deprecated.\nUse 'newFunction()' instead. Quick-fix available.\n\n// Null safety with context\nError: Only safe (?.) or non-null asserted (!!.) calls are allowed\non a nullable receiver of type String?.\nThe value could be null because 'getUserInput()' returns String?.\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Enabling K2 in Your Project",
+              "content": "\nHow to configure K2 in your build:\n\n",
+              "code": "// build.gradle.kts\n\nplugins {\n    kotlin(\"jvm\") version \"2.0.21\"\n}\n\nkotlin {\n    compilerOptions {\n        // Use Kotlin 2.0 language version (enables K2)\n        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n        \n        // Optional: Enable all warnings as errors\n        allWarningsAsErrors.set(true)\n        \n        // Optional: Enable progressive mode for latest fixes\n        progressiveMode.set(true)\n    }\n}\n\n// For multiplatform projects:\nkotlin {\n    jvm {\n        compilerOptions {\n            languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n        }\n    }\n    \n    // Applies to all targets\n    sourceSets.all {\n        languageSettings {\n            languageVersion = \"2.0\"\n            apiVersion = \"2.0\"\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "K2 Compatibility",
+              "content": "\n### What Works with K2\n\nK2 is designed to be backward compatible with existing Kotlin code:\n\n**Fully Compatible**\n- All standard Kotlin language features\n- Coroutines and Flow\n- Kotlin Multiplatform\n- Most annotation processors (via KSP)\n- Compose Compiler\n\n**Migration Required**\n- kapt (migrate to KSP where possible)\n- Some compiler plugins need updates\n- Custom compiler plugins need rewrite\n\n**IDE Support**\n- IntelliJ IDEA 2024.1+ has full K2 IDE support\n- Android Studio Koala+ supports K2\n- Fleet uses K2 by default\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lesson Summary",
+              "content": "\n### Key Takeaways\n\n1. **K2 is a complete rewrite** of the Kotlin compiler frontend\n2. **2x faster compilation** in many projects\n3. **Smarter type inference** handles complex cases better\n4. **Better smart casts** through complex control flow\n5. **Clearer error messages** with actionable suggestions\n6. **Unified architecture** benefits both compiler and IDE\n\n### When to Adopt K2\n\n- **New projects**: Start with K2 immediately\n- **Existing projects**: Test with K2, migrate when dependencies support it\n- **Library authors**: Ensure your libraries work with K2\n\n### Next Steps\n\nIn the next lesson, you'll learn how to migrate existing projects to K2 and handle common migration issues.\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "10.2",
+          "title": "Lesson 10.2: Migrating Projects to K2",
+          "moduleId": "module-10",
+          "order": 2,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nMigrating to K2 is generally straightforward, but some projects may encounter breaking changes. This lesson covers the migration process systematically.\n\nIn this lesson, you'll learn:\n- How to assess your project's K2 readiness\n- Common migration issues and how to fix them\n- A step-by-step migration checklist\n- How to handle breaking changes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Migration Checklist",
+              "content": "\n### Pre-Migration Checklist\n\nBefore enabling K2, verify these items:\n\n**1. Kotlin Version**\n- Update to Kotlin 2.0.21 or later\n- Update Kotlin Gradle Plugin\n\n**2. Dependencies**\n- Check all Kotlin libraries support 2.0\n- Update kotlinx libraries (coroutines, serialization, etc.)\n- Verify annotation processors support K2/KSP\n\n**3. Build Plugins**\n- Update Compose compiler plugin (now bundled)\n- Migrate kapt to KSP where possible\n- Update any custom compiler plugins\n\n**4. IDE**\n- Update to IntelliJ IDEA 2024.1+ or Android Studio Koala+\n- Enable K2 IDE mode for testing\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Enabling K2 Progressively",
+              "content": "\nStart with language version, then move to API version:\n\n",
+              "code": "// gradle/libs.versions.toml\n[versions]\nkotlin = \"2.0.21\"\nkotlinx-coroutines = \"1.9.0\"\nkotlinx-serialization = \"1.7.3\"\n\n// Step 1: Update Kotlin version in build.gradle.kts\nplugins {\n    kotlin(\"jvm\") version libs.versions.kotlin\n}\n\n// Step 2: Enable K2 with language version first\nkotlin {\n    compilerOptions {\n        // Start with just language version\n        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n        \n        // Build and test your project\n        // Fix any issues that arise\n    }\n}\n\n// Step 3: After successful testing, also set API version\nkotlin {\n    compilerOptions {\n        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Stricter Null Checking",
+              "content": "\nK2 is stricter about null safety:\n\n",
+              "code": "// Issue: K2 catches guaranteed null dereferences\n\n// Before (K1 allowed this):\nval map: Map<String, String> = mapOf()\nval value: String = map[\"key\"]!!  // K2 warns: always null\n\n// After (fix the logic):\nval value: String = map[\"key\"] ?: error(\"Key not found\")\n// Or:\nval value: String = map.getValue(\"key\")  // Throws if missing\n\n// Issue: Platform type handling is stricter\n// Java method: String getName() - could return null\n\n// Before (K1 was lenient):\nval name: String = javaObject.name  // Might crash at runtime\n\n// After (K2 warns):\nval name: String = javaObject.name ?: \"\"  // Handle null explicitly\n// Or:\nval name: String = requireNotNull(javaObject.name) { \"Name cannot be null\" }\n\n// Issue: Nullable receivers in extensions\n// Before:\nfun String.process() = this.uppercase()\nval result = nullableString.process()  // K1 allowed\n\n// After (K2 requires safe call):\nval result = nullableString?.process()\n// Or define extension on nullable:\nfun String?.processSafe() = this?.uppercase() ?: \"\"",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Property Inference Changes",
+              "content": "\nSome type inference may differ:\n\n",
+              "code": "// Issue: Complex expression inference\n\n// K1 might infer differently than K2 in edge cases\nval items = listOf(1, 2, 3)\n\n// Before (K1):\nval processed = items.map { \n    if (it > 0) it.toString() else null \n}  // K1 might infer List<String?>\n\n// After (K2) - be explicit when needed:\nval processed: List<String?> = items.map { \n    if (it > 0) it.toString() else null \n}\n\n// Issue: Lambda return type inference\nfun process(block: () -> Any): Any = block()\n\n// Before (K1 - worked):\nval result = process {\n    if (condition) \"string\"\n    else 42\n}  // K1 inferred Any\n\n// After (K2) - explicit type may be needed:\nval result: Any = process {\n    if (condition) \"string\" else 42\n}\n\n// Issue: Generic type inference\nfun <T> identity(value: T): T = value\n\n// K2 may require explicit types in complex chains:\nval result = identity(listOf(1, 2, 3))\n    .map { it * 2 }\n    .filter { it > 2 }  // Usually works\n\n// If issues occur, add explicit type:\nval result: List<Int> = identity<List<Int>>(listOf(1, 2, 3))\n    .map { it * 2 }\n    .filter { it > 2 }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Library Compatibility Check",
+              "content": "\nVerify your dependencies support Kotlin 2.0:\n\n",
+              "code": "// Check dependency versions\n// Run: ./gradlew dependencies --configuration compileClasspath\n\n// Common libraries with K2 support:\n\n// gradle/libs.versions.toml\n[versions]\nkotlin = \"2.0.21\"\nkotlinx-coroutines = \"1.9.0\"       # Full K2 support\nkotlinx-serialization = \"1.7.3\"    # Full K2 support\nktor = \"3.0.2\"                     # Full K2 support\nkoin = \"4.0.0\"                     # Full K2 support (use ksp)\narrow = \"1.2.4\"                    # Full K2 support\ncompose-multiplatform = \"1.7.1\"    # Full K2 support\n\n// Libraries to check/update:\n// - Room: 2.6.0+ supports KSP\n// - Moshi: 1.15.0+ supports KSP\n// - Dagger/Hilt: Use KSP mode\n\n// build.gradle.kts - Check for kapt usage\ndependencies {\n    // Replace kapt with ksp where possible:\n    // kapt(\"com.google.dagger:hilt-compiler:2.51.1\")  // Old\n    ksp(\"com.google.dagger:hilt-compiler:2.51.1\")     // New\n    \n    // Some libraries still require kapt:\n    // kapt(\"some.legacy:processor:1.0\")  // Check for updates\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Common Migration Issues",
+              "content": "\n### Known Breaking Changes\n\n**1. Overload Resolution**\nK2 may resolve overloads differently in rare cases. If you see unexpected method calls, add explicit types.\n\n**2. Visibility Checks**\nK2 is stricter about visibility. Internal members from dependencies may become inaccessible.\n\n**3. Type Approximation**\nAnonymous types are approximated differently. If types change unexpectedly, add explicit type annotations.\n\n**4. SAM Conversions**\nSome edge cases in SAM conversion work differently. Use explicit lambda types if issues occur.\n\n**5. Annotation Processing**\nkapt works but is slower. Migrate to KSP for better performance.\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Troubleshooting Guide",
+              "content": "\nCommon issues and their solutions:\n\n",
+              "code": "// Issue: \"Cannot access class\" errors\n// Solution: The class visibility changed, use public API instead\n\n// Issue: \"Type mismatch\" after K2 upgrade\n// Solution: Add explicit type annotations\nval data: Map<String, Any> = response.body()  // Be explicit\n\n// Issue: Smart cast stopped working\n// Cause: K2 is stricter about mutability\nvar value: Any? = getValue()\nif (value != null) {\n    // K2 may not smart cast if 'value' could change\n    // Solution: Use val or local copy\n    val localValue = value\n    if (localValue != null) {\n        println(localValue.toString())  // Works\n    }\n}\n\n// Issue: Overload resolution changed\n// K2 may pick a different overload\nfun process(value: Int) = println(\"Int: $value\")\nfun process(value: Number) = println(\"Number: $value\")\n\n// Solution: Be explicit about which overload\nprocess(42)           // May differ\nprocess(42 as Int)    // Explicitly Int\nprocess(42 as Number) // Explicitly Number\n\n// Issue: Build fails with kapt\n// Solution: Migrate to KSP or update kapt version\nplugins {\n    // id(\"org.jetbrains.kotlin.kapt\")  // Remove if possible\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lesson Summary",
+              "content": "\n### Migration Summary\n\n1. **Update Kotlin to 2.0.21+** in your version catalog\n2. **Enable K2 progressively** - language version first, then API version\n3. **Check dependencies** - ensure all libraries support Kotlin 2.0\n4. **Fix stricter null checks** - K2 catches more null issues\n5. **Add explicit types** where inference changes\n6. **Migrate kapt to KSP** for better performance\n\n### Testing Your Migration\n\n```bash\n# Build and run tests\n./gradlew build\n\n# Check for warnings\n./gradlew compileKotlin --warning-mode all\n\n# Run your test suite\n./gradlew test\n```\n\n### Next Steps\n\nIn the next lesson, you'll learn about KSP and how to migrate from kapt for faster builds.\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "10.3",
+          "title": "Lesson 10.3: KSP - Replacing kapt with Speed",
+          "moduleId": "module-10",
+          "order": 3,
+          "estimatedMinutes": 60,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nKSP (Kotlin Symbol Processing) is a modern alternative to kapt that's significantly faster and designed specifically for Kotlin. If you're using kapt for annotation processing, migrating to KSP can cut your build times substantially.\n\nIn this lesson, you'll learn:\n- Why KSP is faster than kapt\n- How to migrate common libraries from kapt to KSP\n- KSP configuration and optimization\n- Troubleshooting KSP issues\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why KSP Over kapt?",
+              "content": "\n### The Problem with kapt\n\nkapt (Kotlin Annotation Processing Tool) works by:\n1. Generating Java stubs from Kotlin code\n2. Running Java annotation processors on those stubs\n3. Processing the generated code\n\nThis has significant drawbacks:\n\n- **Slow**: Stub generation is expensive\n- **Memory intensive**: Maintains two representations\n- **Loses Kotlin information**: Processors see Java, not Kotlin\n- **Limited incremental processing**: Often requires full rebuild\n\n### KSP Advantages\n\n| Feature | kapt | KSP |\n|---------|------|-----|\n| Speed | Baseline | **2x faster** |\n| Memory | High | **Lower** |\n| Kotlin-aware | No | **Yes** |\n| Incremental | Limited | **Full** |\n| K2 Compatible | Works but slow | **Native** |\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migrating Room to KSP",
+              "content": "\nRoom is one of the most common kapt users. Here's how to migrate:\n\n",
+              "code": "// Before: build.gradle.kts with kapt\nplugins {\n    id(\"org.jetbrains.kotlin.kapt\")\n}\n\ndependencies {\n    implementation(\"androidx.room:room-runtime:2.6.1\")\n    implementation(\"androidx.room:room-ktx:2.6.1\")\n    kapt(\"androidx.room:room-compiler:2.6.1\")\n}\n\n// After: build.gradle.kts with KSP\nplugins {\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}\n\ndependencies {\n    implementation(\"androidx.room:room-runtime:2.6.1\")\n    implementation(\"androidx.room:room-ktx:2.6.1\")\n    ksp(\"androidx.room:room-compiler:2.6.1\")  // Changed from kapt\n}\n\n// KSP-specific configuration for Room\nksp {\n    arg(\"room.schemaLocation\", \"$projectDir/schemas\")\n    arg(\"room.incremental\", \"true\")\n    arg(\"room.generateKotlin\", \"true\")  // Generate Kotlin instead of Java\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migrating Moshi to KSP",
+              "content": "\nMoshi code generation also supports KSP:\n\n",
+              "code": "// Before: kapt\nplugins {\n    id(\"org.jetbrains.kotlin.kapt\")\n}\n\ndependencies {\n    implementation(\"com.squareup.moshi:moshi:1.15.1\")\n    kapt(\"com.squareup.moshi:moshi-kotlin-codegen:1.15.1\")\n}\n\n// After: KSP\nplugins {\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}\n\ndependencies {\n    implementation(\"com.squareup.moshi:moshi:1.15.1\")\n    ksp(\"com.squareup.moshi:moshi-kotlin-codegen:1.15.1\")\n}\n\n// Usage remains the same:\n@JsonClass(generateAdapter = true)\ndata class User(\n    @Json(name = \"user_id\") val id: Long,\n    val name: String,\n    val email: String\n)\n\n// KSP generates UserJsonAdapter.kt (not .java!)",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migrating Dagger/Hilt to KSP",
+              "content": "\nDagger and Hilt now support KSP:\n\n",
+              "code": "// Before: kapt for Hilt\nplugins {\n    id(\"org.jetbrains.kotlin.kapt\")\n    id(\"com.google.dagger.hilt.android\")\n}\n\ndependencies {\n    implementation(\"com.google.dagger:hilt-android:2.51.1\")\n    kapt(\"com.google.dagger:hilt-android-compiler:2.51.1\")\n}\n\n// After: KSP for Hilt\nplugins {\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n    id(\"com.google.dagger.hilt.android\")\n}\n\ndependencies {\n    implementation(\"com.google.dagger:hilt-android:2.51.1\")\n    ksp(\"com.google.dagger:hilt-android-compiler:2.51.1\")\n}\n\n// For plain Dagger:\ndependencies {\n    implementation(\"com.google.dagger:dagger:2.51.1\")\n    ksp(\"com.google.dagger:dagger-compiler:2.51.1\")\n}\n\n// Note: Remove kapt plugin if no longer needed\n// plugins {\n//     id(\"org.jetbrains.kotlin.kapt\")  // Remove this\n// }",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migrating Koin Annotations to KSP",
+              "content": "\nKoin annotations use KSP for dependency injection:\n\n",
+              "code": "// build.gradle.kts with KSP for Koin\nplugins {\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}\n\ndependencies {\n    implementation(\"io.insert-koin:koin-core:4.0.0\")\n    implementation(\"io.insert-koin:koin-annotations:1.4.0\")\n    ksp(\"io.insert-koin:koin-ksp-compiler:1.4.0\")\n}\n\n// Enable generated code\nkotlin {\n    sourceSets.main {\n        kotlin.srcDir(\"build/generated/ksp/main/kotlin\")\n    }\n}\n\n// Usage with annotations:\n@Module\n@ComponentScan(\"com.example.app\")\nclass AppModule\n\n@Single\nclass UserRepository(\n    private val database: Database\n) {\n    fun getUsers(): List<User> = database.users()\n}\n\n@Factory\nclass GetUsersUseCase(\n    private val repository: UserRepository\n) {\n    operator fun invoke(): List<User> = repository.getUsers()\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "KSP Configuration Options",
+              "content": "\nOptimize KSP for your project:\n\n",
+              "code": "// build.gradle.kts\n\nksp {\n    // Pass arguments to processors\n    arg(\"option.name\", \"value\")\n    \n    // Room-specific arguments\n    arg(\"room.schemaLocation\", \"$projectDir/schemas\")\n    arg(\"room.incremental\", \"true\")\n    arg(\"room.generateKotlin\", \"true\")\n    \n    // Moshi arguments\n    arg(\"moshi.generated\", \"javax.annotation.processing.Generated\")\n}\n\n// For multiplatform projects:\nkotlin {\n    sourceSets {\n        commonMain {\n            kotlin.srcDir(\"build/generated/ksp/metadata/commonMain/kotlin\")\n        }\n    }\n}\n\n// Add generated sources to source sets\nandroid {\n    applicationVariants.all {\n        val variantName = name\n        sourceSets {\n            getByName(\"main\") {\n                java.srcDir(\"build/generated/ksp/$variantName/kotlin\")\n            }\n        }\n    }\n}\n\n// Performance optimization in gradle.properties\n// ksp.incremental=true              # Enable incremental processing\n// ksp.incremental.log=true          # Log incremental decisions",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Libraries Supporting KSP",
+              "content": "\n### Major Libraries with KSP Support\n\n**Android/JVM**\n- Room 2.4+\n- Moshi 1.13+\n- Dagger/Hilt 2.48+\n- Koin 3.5+ (annotations)\n- Glide 4.14+\n- Lyricist (i18n)\n- Ktorfit\n\n**Multiplatform**\n- kotlinx.serialization (built-in, no KSP needed)\n- SQLDelight\n- Apollo GraphQL\n- Koin Annotations\n\n**Still Require kapt**\n- Some older libraries\n- Custom annotation processors not yet migrated\n- MapStruct (migration in progress)\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Mixing kapt and KSP",
+              "content": "\nSome projects need both during migration:\n\n",
+              "code": "// build.gradle.kts - Using both kapt and KSP\nplugins {\n    kotlin(\"jvm\") version \"2.0.21\"\n    id(\"org.jetbrains.kotlin.kapt\")  // Keep for legacy processors\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}\n\ndependencies {\n    // KSP-migrated libraries\n    implementation(\"androidx.room:room-runtime:2.6.1\")\n    ksp(\"androidx.room:room-compiler:2.6.1\")\n    \n    implementation(\"com.squareup.moshi:moshi:1.15.1\")\n    ksp(\"com.squareup.moshi:moshi-kotlin-codegen:1.15.1\")\n    \n    // Legacy library still on kapt\n    implementation(\"some.legacy:library:1.0.0\")\n    kapt(\"some.legacy:processor:1.0.0\")\n}\n\n// Note: Having both adds overhead\n// Plan to remove kapt entirely when possible\n\n// Order matters! KSP runs before kapt by default\n// If you need kapt to run first:\ntasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {\n    dependsOn(\"kaptKotlin\")\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lesson Summary",
+              "content": "\n### KSP Migration Summary\n\n1. **KSP is 2x faster than kapt** - worth the migration effort\n2. **Most major libraries support KSP** - Room, Moshi, Dagger, Koin\n3. **Migration is usually simple** - change `kapt` to `ksp` in dependencies\n4. **Configure KSP arguments** using the `ksp { }` block\n5. **You can mix kapt and KSP** during gradual migration\n6. **Remove kapt plugin** when fully migrated for best performance\n\n### Migration Command\n\n```bash\n# Quick find-and-replace in build files:\n# kapt(...) -> ksp(...)\n# id(\"org.jetbrains.kotlin.kapt\") -> remove if not needed\n```\n\n### Next Steps\n\nIn the next lesson, you'll learn how to write your own KSP processor to generate code.\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "10.4",
+          "title": "Lesson 10.4: Writing Your First KSP Processor",
+          "moduleId": "module-10",
+          "order": 4,
+          "estimatedMinutes": 75,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 75 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nKSP enables you to write your own code generators that run at compile time. This is powerful for reducing boilerplate, enforcing patterns, and generating type-safe code.\n\nIn this lesson, you'll learn:\n- KSP processor architecture\n- How to create a processor project\n- Processing annotations and generating code\n- Using KotlinPoet for code generation\n- Testing your processor\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "KSP Architecture",
+              "content": "\n### How KSP Works\n\nKSP processes Kotlin source files and can generate new source files:\n\n```\nKotlin Source -> KSP Processor -> Generated Kotlin Source\n     |                |                    |\n  @AutoBuilder    Process symbols    UserBuilder.kt\n  data class     Generate code\n  User(...)\n```\n\n**Key Components**\n\n1. **SymbolProcessor** - Your processor implementation\n2. **SymbolProcessorProvider** - Factory for creating processors\n3. **Resolver** - Provides access to symbols (classes, functions, etc.)\n4. **CodeGenerator** - Creates output files\n5. **KSPLogger** - Logs messages and errors\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Project Structure",
+              "content": "\nA KSP processor typically uses a multi-module setup:\n\n",
+              "code": "// Project structure:\n// my-project/\n// ├── annotations/          # Annotation definitions\n// │   ├── build.gradle.kts\n// │   └── src/main/kotlin/\n// │       └── AutoBuilder.kt\n// ├── processor/             # KSP processor\n// │   ├── build.gradle.kts\n// │   └── src/main/kotlin/\n// │       └── AutoBuilderProcessor.kt\n// └── app/                   # Application using the processor\n//     └── build.gradle.kts\n\n// annotations/build.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n}\n\n// This module has no dependencies - just the annotation\n\n// processor/build.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n}\n\ndependencies {\n    implementation(project(\":annotations\"))\n    implementation(\"com.google.devtools.ksp:symbol-processing-api:2.0.21-1.0.28\")\n    implementation(\"com.squareup:kotlinpoet:1.18.1\")\n    implementation(\"com.squareup:kotlinpoet-ksp:1.18.1\")\n}\n\n// app/build.gradle.kts\nplugins {\n    kotlin(\"jvm\")\n    id(\"com.google.devtools.ksp\") version \"2.0.21-1.0.28\"\n}\n\ndependencies {\n    implementation(project(\":annotations\"))\n    ksp(project(\":processor\"))\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Defining the Annotation",
+              "content": "\nStart with a simple annotation:\n\n",
+              "code": "// annotations/src/main/kotlin/com/example/AutoBuilder.kt\npackage com.example\n\n/**\n * Generates a builder class for the annotated data class.\n * \n * Usage:\n * ```\n * @AutoBuilder\n * data class User(val id: Long, val name: String)\n * ```\n * \n * Generates:\n * ```\n * class UserBuilder {\n *     var id: Long? = null\n *     var name: String? = null\n *     \n *     fun id(value: Long) = apply { id = value }\n *     fun name(value: String) = apply { name = value }\n *     fun build(): User = User(id = id!!, name = name!!)\n * }\n * ```\n */\n@Target(AnnotationTarget.CLASS)\n@Retention(AnnotationRetention.SOURCE)  // Only needed at compile time\nannotation class AutoBuilder",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating the Processor",
+              "content": "\nThe core processor implementation:\n\n",
+              "code": "// processor/src/main/kotlin/com/example/AutoBuilderProcessor.kt\npackage com.example\n\nimport com.google.devtools.ksp.processing.*\nimport com.google.devtools.ksp.symbol.*\nimport com.google.devtools.ksp.validate\n\nclass AutoBuilderProcessor(\n    private val codeGenerator: CodeGenerator,\n    private val logger: KSPLogger\n) : SymbolProcessor {\n\n    override fun process(resolver: Resolver): List<KSAnnotated> {\n        // Find all classes annotated with @AutoBuilder\n        val symbols = resolver.getSymbolsWithAnnotation(\n            AutoBuilder::class.qualifiedName!!\n        )\n        \n        // Filter to class declarations that are valid\n        val (valid, invalid) = symbols\n            .filterIsInstance<KSClassDeclaration>()\n            .partition { it.validate() }\n        \n        // Process valid symbols\n        valid.forEach { classDecl ->\n            logger.info(\"Processing: ${classDecl.simpleName.asString()}\")\n            generateBuilder(classDecl)\n        }\n        \n        // Return invalid symbols for reprocessing in next round\n        return invalid\n    }\n    \n    private fun generateBuilder(classDecl: KSClassDeclaration) {\n        val className = classDecl.simpleName.asString()\n        val packageName = classDecl.packageName.asString()\n        val properties = classDecl.getAllProperties().toList()\n        \n        // Validate: must be a data class\n        if (!classDecl.modifiers.contains(Modifier.DATA)) {\n            logger.error(\"@AutoBuilder can only be applied to data classes\", classDecl)\n            return\n        }\n        \n        // Generate builder code using KotlinPoet (next example)\n        generateBuilderWithKotlinPoet(classDecl, packageName, className, properties)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Generation with KotlinPoet",
+              "content": "\nKotlinPoet makes generating Kotlin code easy:\n\n",
+              "code": "// Continue from previous example\nimport com.squareup.kotlinpoet.*\nimport com.squareup.kotlinpoet.ksp.writeTo\nimport com.squareup.kotlinpoet.ksp.toTypeName\n\nprivate fun generateBuilderWithKotlinPoet(\n    classDecl: KSClassDeclaration,\n    packageName: String,\n    className: String,\n    properties: List<KSPropertyDeclaration>\n) {\n    val builderClassName = \"${className}Builder\"\n    \n    // Create the builder class\n    val builderClass = TypeSpec.classBuilder(builderClassName)\n        .apply {\n            // Add nullable properties\n            properties.forEach { prop ->\n                val propName = prop.simpleName.asString()\n                val propType = prop.type.resolve().toTypeName()\n                \n                addProperty(\n                    PropertySpec.builder(propName, propType.copy(nullable = true))\n                        .mutable()\n                        .initializer(\"null\")\n                        .build()\n                )\n            }\n            \n            // Add fluent setter methods\n            properties.forEach { prop ->\n                val propName = prop.simpleName.asString()\n                val propType = prop.type.resolve().toTypeName()\n                \n                addFunction(\n                    FunSpec.builder(propName)\n                        .addParameter(\"value\", propType)\n                        .returns(ClassName(packageName, builderClassName))\n                        .addStatement(\"this.%L = value\", propName)\n                        .addStatement(\"return this\")\n                        .build()\n                )\n            }\n            \n            // Add build() method\n            val buildParams = properties.joinToString(\", \") {\n                \"${it.simpleName.asString()} = ${it.simpleName.asString()}!!\"\n            }\n            \n            addFunction(\n                FunSpec.builder(\"build\")\n                    .returns(ClassName(packageName, className))\n                    .addStatement(\"return %L(%L)\", className, buildParams)\n                    .build()\n            )\n        }\n        .build()\n    \n    // Create the file\n    val fileSpec = FileSpec.builder(packageName, builderClassName)\n        .addType(builderClass)\n        .build()\n    \n    // Write to generated sources\n    fileSpec.writeTo(\n        codeGenerator,\n        Dependencies(true, classDecl.containingFile!!)\n    )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The Provider and Registration",
+              "content": "\nRegister your processor with KSP:\n\n",
+              "code": "// processor/src/main/kotlin/com/example/AutoBuilderProcessorProvider.kt\npackage com.example\n\nimport com.google.devtools.ksp.processing.*\n\nclass AutoBuilderProcessorProvider : SymbolProcessorProvider {\n    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {\n        return AutoBuilderProcessor(\n            codeGenerator = environment.codeGenerator,\n            logger = environment.logger\n        )\n    }\n}\n\n// Register the provider:\n// Create file: processor/src/main/resources/META-INF/services/com.google.devtools.ksp.processing.SymbolProcessorProvider\n// Contents: com.example.AutoBuilderProcessorProvider\n\n// Or use AutoService for automatic registration:\n// processor/build.gradle.kts\ndependencies {\n    implementation(\"com.google.auto.service:auto-service-annotations:1.1.1\")\n    ksp(\"dev.zacsweers.autoservice:auto-service-ksp:1.2.0\")\n}\n\n// Then annotate your provider:\nimport com.google.auto.service.AutoService\n\n@AutoService(SymbolProcessorProvider::class)\nclass AutoBuilderProcessorProvider : SymbolProcessorProvider {\n    // ...\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using the Generated Code",
+              "content": "\nThe generated builder in action:\n\n",
+              "code": "// app/src/main/kotlin/com/example/User.kt\npackage com.example\n\n@AutoBuilder\ndata class User(\n    val id: Long,\n    val name: String,\n    val email: String,\n    val isActive: Boolean\n)\n\n// After compilation, this is generated:\n// build/generated/ksp/main/kotlin/com/example/UserBuilder.kt\n// class UserBuilder {\n//     var id: Long? = null\n//     var name: String? = null\n//     var email: String? = null\n//     var isActive: Boolean? = null\n//     \n//     fun id(value: Long): UserBuilder { this.id = value; return this }\n//     fun name(value: String): UserBuilder { this.name = value; return this }\n//     fun email(value: String): UserBuilder { this.email = value; return this }\n//     fun isActive(value: Boolean): UserBuilder { this.isActive = value; return this }\n//     \n//     fun build(): User = User(\n//         id = id!!,\n//         name = name!!,\n//         email = email!!,\n//         isActive = isActive!!\n//     )\n// }\n\n// Usage:\nfun main() {\n    val user = UserBuilder()\n        .id(1)\n        .name(\"John Doe\")\n        .email(\"john@example.com\")\n        .isActive(true)\n        .build()\n    \n    println(user)  // User(id=1, name=John Doe, email=john@example.com, isActive=true)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Your Processor",
+              "content": "\nUse compile-testing to test your processor:\n\n",
+              "code": "// processor/build.gradle.kts\ndependencies {\n    testImplementation(\"com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0\")\n    testImplementation(kotlin(\"test\"))\n}\n\n// processor/src/test/kotlin/AutoBuilderProcessorTest.kt\npackage com.example\n\nimport com.tschuchort.compiletesting.*\nimport org.junit.jupiter.api.Test\nimport kotlin.test.*\n\nclass AutoBuilderProcessorTest {\n    \n    @Test\n    fun `generates builder for data class`() {\n        val source = SourceFile.kotlin(\n            \"User.kt\",\n            \"\"\"\n            package com.example\n            \n            @AutoBuilder\n            data class User(val id: Long, val name: String)\n            \"\"\".trimIndent()\n        )\n        \n        val result = KotlinCompilation().apply {\n            sources = listOf(source)\n            symbolProcessorProviders = listOf(AutoBuilderProcessorProvider())\n            inheritClassPath = true\n        }.compile()\n        \n        assertEquals(KotlinCompilation.ExitCode.OK, result.exitCode)\n        \n        // Check generated file exists\n        val generatedFile = result.kspSourcesDir\n            .walkTopDown()\n            .find { it.name == \"UserBuilder.kt\" }\n        \n        assertNotNull(generatedFile)\n        assertTrue(generatedFile.readText().contains(\"class UserBuilder\"))\n    }\n    \n    @Test\n    fun `fails for non-data class`() {\n        val source = SourceFile.kotlin(\n            \"RegularClass.kt\",\n            \"\"\"\n            package com.example\n            \n            @AutoBuilder\n            class RegularClass(val id: Long)  // Not a data class\n            \"\"\".trimIndent()\n        )\n        \n        val result = KotlinCompilation().apply {\n            sources = listOf(source)\n            symbolProcessorProviders = listOf(AutoBuilderProcessorProvider())\n            inheritClassPath = true\n        }.compile()\n        \n        // Should have error message\n        assertTrue(result.messages.contains(\"data classes\"))\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lesson Summary",
+              "content": "\n### KSP Processor Development Summary\n\n1. **Three-module structure**: annotations, processor, and app\n2. **SymbolProcessor** processes annotated symbols\n3. **KotlinPoet** generates clean Kotlin code\n4. **Register via META-INF/services** or AutoService\n5. **Test with kotlin-compile-testing-ksp**\n\n### Key Classes\n\n- `SymbolProcessor` - Your processor logic\n- `SymbolProcessorProvider` - Factory for processor\n- `Resolver` - Access to symbols\n- `CodeGenerator` - Write output files\n- `KSClassDeclaration` - Represents a class\n- `KSPropertyDeclaration` - Represents a property\n\n### Best Practices\n\n- Return unvalidated symbols for reprocessing\n- Log errors with `logger.error()` for clear messages\n- Use `Dependencies` to track file relationships\n- Test with compile-testing library\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "10.5",
+          "title": "Lesson 10.5: Context Receivers and Future Features",
+          "moduleId": "module-10",
+          "order": 5,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Topic Introduction",
+              "content": "\nKotlin continues to evolve with powerful new features. Context receivers represent a significant advancement in how we structure code and manage dependencies.\n\nIn this lesson, you'll learn:\n- What context receivers are and why they matter\n- How to use context receivers for cleaner APIs\n- Other upcoming Kotlin features\n- How to prepare your code for future Kotlin versions\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding Context Receivers",
+              "content": "\n### The Problem\n\nKotlin has extension functions that operate on a single receiver:\n\n```kotlin\nfun String.wordCount(): Int = this.split(\" \").size\n\"Hello World\".wordCount()  // String is the receiver\n```\n\nBut what if a function needs multiple \"contexts\" to operate?\n\n```kotlin\nclass Logger { fun info(msg: String) { /* ... */ } }\nclass Database { fun query(sql: String): List<Row> { /* ... */ } }\n\n// How do we write a function that needs both?\n// Traditional approach: pass as parameters\nfun loadUsers(logger: Logger, db: Database): List<User> {\n    logger.info(\"Loading users\")\n    return db.query(\"SELECT * FROM users\").map { /* ... */ }\n}\n```\n\n### The Solution: Context Receivers\n\nContext receivers allow functions to require multiple implicit receivers:\n\n```kotlin\ncontext(Logger, Database)\nfun loadUsers(): List<User> {\n    info(\"Loading users\")  // Logger is in context\n    return query(\"SELECT * FROM users\").map { /* ... */ }  // Database too\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Context Receiver Usage",
+              "content": "\nContext receivers in practice:\n\n",
+              "code": "// Enable with compiler flag:\n// kotlinc -Xcontext-receivers\n// Or in build.gradle.kts:\n// kotlin {\n//     compilerOptions {\n//         freeCompilerArgs.add(\"-Xcontext-receivers\")\n//     }\n// }\n\n// Define context types\nclass Logger {\n    fun info(message: String) = println(\"INFO: $message\")\n    fun error(message: String) = println(\"ERROR: $message\")\n}\n\nclass Database {\n    fun execute(sql: String) = println(\"Executing: $sql\")\n    fun query(sql: String): List<Map<String, Any>> = emptyList()\n}\n\n// Function with context receivers\ncontext(Logger)\nfun loggedOperation(name: String, block: () -> Unit) {\n    info(\"Starting: $name\")\n    block()\n    info(\"Completed: $name\")\n}\n\ncontext(Logger, Database)\nfun createUser(name: String, email: String) {\n    info(\"Creating user: $name\")\n    execute(\"INSERT INTO users (name, email) VALUES ('$name', '$email')\")\n    info(\"User created successfully\")\n}\n\n// Usage: provide contexts with 'with'\nfun main() {\n    val logger = Logger()\n    val database = Database()\n    \n    with(logger) {\n        loggedOperation(\"task\") {\n            println(\"Doing something\")\n        }\n    }\n    \n    with(logger) {\n        with(database) {\n            createUser(\"John\", \"john@example.com\")\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Context Receivers for DSLs",
+              "content": "\nContext receivers enable powerful DSL patterns:\n\n",
+              "code": "// HTML DSL with context receivers\nclass HtmlBuilder {\n    private val content = StringBuilder()\n    \n    fun append(text: String) {\n        content.append(text)\n    }\n    \n    override fun toString() = content.toString()\n}\n\ncontext(HtmlBuilder)\nfun div(cssClass: String? = null, block: context(HtmlBuilder) () -> Unit) {\n    append(\"<div\")\n    cssClass?.let { append(\" class=\\\"$it\\\"\") }\n    append(\">\")\n    block()\n    append(\"</div>\")\n}\n\ncontext(HtmlBuilder)\nfun span(text: String, cssClass: String? = null) {\n    append(\"<span\")\n    cssClass?.let { append(\" class=\\\"$it\\\"\") }\n    append(\">$text</span>\")\n}\n\ncontext(HtmlBuilder)\nfun p(text: String) {\n    append(\"<p>$text</p>\")\n}\n\n// Usage\nfun buildPage(): String {\n    val builder = HtmlBuilder()\n    with(builder) {\n        div(\"container\") {\n            div(\"header\") {\n                span(\"Welcome\", \"title\")\n            }\n            div(\"content\") {\n                p(\"Hello, World!\")\n                p(\"Context receivers are powerful.\")\n            }\n        }\n    }\n    return builder.toString()\n}\n\n// Outputs:\n// <div class=\"container\"><div class=\"header\"><span class=\"title\">Welcome</span></div>\n// <div class=\"content\"><p>Hello, World!</p><p>Context receivers are powerful.</p></div></div>",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Transaction Context Pattern",
+              "content": "\nA real-world pattern for database transactions:\n\n",
+              "code": "// Transaction context for database operations\ninterface TransactionContext {\n    fun execute(sql: String): Int\n    fun query(sql: String): List<Map<String, Any>>\n    fun rollback()\n}\n\nclass Transaction(\n    private val connection: Connection\n) : TransactionContext {\n    override fun execute(sql: String): Int {\n        return connection.prepareStatement(sql).executeUpdate()\n    }\n    \n    override fun query(sql: String): List<Map<String, Any>> {\n        // Implementation\n        return emptyList()\n    }\n    \n    override fun rollback() {\n        connection.rollback()\n    }\n}\n\n// Functions that require transaction context\ncontext(TransactionContext)\nfun transferMoney(from: Long, to: Long, amount: BigDecimal) {\n    execute(\"UPDATE accounts SET balance = balance - $amount WHERE id = $from\")\n    execute(\"UPDATE accounts SET balance = balance + $amount WHERE id = $to\")\n}\n\ncontext(TransactionContext)\nfun createOrder(userId: Long, items: List<OrderItem>): Long {\n    execute(\"INSERT INTO orders (user_id, created_at) VALUES ($userId, NOW())\")\n    val orderId = query(\"SELECT LAST_INSERT_ID()\").first()[\"id\"] as Long\n    \n    items.forEach { item ->\n        execute(\n            \"INSERT INTO order_items (order_id, product_id, quantity) \" +\n            \"VALUES ($orderId, ${item.productId}, ${item.quantity})\"\n        )\n    }\n    \n    return orderId\n}\n\n// Transaction helper\nfun <T> transaction(block: context(TransactionContext) () -> T): T {\n    val tx = Transaction(getConnection())\n    return try {\n        with(tx) {\n            val result = block()\n            execute(\"COMMIT\")\n            result\n        }\n    } catch (e: Exception) {\n        tx.rollback()\n        throw e\n    }\n}\n\n// Usage\nfun main() {\n    transaction {\n        transferMoney(from = 1, to = 2, amount = 100.toBigDecimal())\n        createOrder(userId = 1, items = listOf(OrderItem(productId = 42, quantity = 2)))\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Arrow's Raise with Context Receivers",
+              "content": "\nArrow uses context receivers for effect handling:\n\n",
+              "code": "import arrow.core.raise.*\n\n// Define error types\nsealed interface UserError {\n    data class NotFound(val id: Long) : UserError\n    data class InvalidEmail(val email: String) : UserError\n    data object Unauthorized : UserError\n}\n\n// Functions using Raise context\ncontext(Raise<UserError>)\nsuspend fun getUser(id: Long): User {\n    ensure(id > 0) { UserError.NotFound(id) }\n    \n    return userRepository.findById(id)\n        ?: raise(UserError.NotFound(id))\n}\n\ncontext(Raise<UserError>)\nsuspend fun validateEmail(email: String): String {\n    ensure(email.contains(\"@\")) { UserError.InvalidEmail(email) }\n    ensure(!email.startsWith(\"test@\")) { UserError.InvalidEmail(email) }\n    return email\n}\n\ncontext(Raise<UserError>)\nsuspend fun updateUserEmail(userId: Long, newEmail: String): User {\n    val user = getUser(userId)  // Raise context is available\n    val validEmail = validateEmail(newEmail)\n    return userRepository.save(user.copy(email = validEmail))\n}\n\n// Execute with either { } to get Either result\nsuspend fun main() {\n    val result: Either<UserError, User> = either {\n        updateUserEmail(123, \"new@example.com\")\n    }\n    \n    result.fold(\n        ifLeft = { error -> println(\"Error: $error\") },\n        ifRight = { user -> println(\"Updated: $user\") }\n    )\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Future Kotlin Features",
+              "content": "\n### Upcoming Language Features\n\n**1. Name-Based Destructuring (Under Consideration)**\n```kotlin\n// Current: position-based\nval (first, second) = pair\n\n// Future: name-based\nval (x = first, y = second) = point\n```\n\n**2. Static Extensions (KEEP-348)**\n```kotlin\n// Add static methods to existing classes\nfun String.Companion.randomAlphanumeric(length: Int): String\n\nString.randomAlphanumeric(10)  // Static call\n```\n\n**3. Union Types (Discussion Phase)**\n```kotlin\n// Express \"either A or B\" without sealed classes\nfun parse(input: String): Int | ParseError\n```\n\n**4. Collection Literals (Proposed)**\n```kotlin\n// Simpler collection creation\nval list = [1, 2, 3]  // Instead of listOf(1, 2, 3)\nval map = {\"a\": 1, \"b\": 2}  // Instead of mapOf(\"a\" to 1, \"b\" to 2)\n```\n\n**5. Explicit Backing Fields (Under Development)**\n```kotlin\nclass Counter {\n    var count: Int = 0\n        field = 0  // Explicit backing field\n        set(value) {\n            require(value >= 0)\n            field = value\n        }\n}\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Preparing for Future Kotlin",
+              "content": "\n### Best Practices for Future-Proof Code\n\n**1. Embrace Immutability**\n```kotlin\n// Prefer val over var\nval users = fetchUsers()  // Immutable reference\n\n// Use data classes with copy()\nval updated = user.copy(email = newEmail)\n```\n\n**2. Use Sealed Types**\n```kotlin\n// Exhaustive when expressions\nsealed interface Result<out T> {\n    data class Success<T>(val value: T) : Result<T>\n    data class Failure(val error: Throwable) : Result<Nothing>\n}\n```\n\n**3. Prefer Composition**\n```kotlin\n// Compose small functions\nval processData = ::validate andThen ::transform andThen ::save\n```\n\n**4. Write Pure Functions**\n```kotlin\n// Deterministic, no side effects\nfun calculate(input: Input): Output = /* pure logic */\n```\n\n**5. Follow Kotlin Idioms**\n```kotlin\n// Use scope functions appropriately\nval result = value?.let { process(it) } ?: default\n\n// Use sequences for lazy evaluation\nsequence { yield(expensiveComputation()) }\n```\n\n---\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Module Summary",
+              "content": "\n### Congratulations!\n\nYou've completed Module 10: The K2 Era - Modern Kotlin Tooling!\n\n**What You've Learned:**\n\n1. **K2 Compiler**\n   - 2x faster compilation\n   - Smarter type inference and smart casts\n   - Better error diagnostics\n\n2. **K2 Migration**\n   - Progressive enablement strategy\n   - Handling breaking changes\n   - Library compatibility\n\n3. **KSP**\n   - 2x faster than kapt\n   - Migrating Room, Moshi, Dagger, Koin\n   - KSP configuration\n\n4. **Writing KSP Processors**\n   - Project structure\n   - SymbolProcessor implementation\n   - KotlinPoet code generation\n   - Testing processors\n\n5. **Context Receivers**\n   - Multiple implicit receivers\n   - DSL patterns\n   - Transaction contexts\n   - Arrow integration\n\n**Key Versions:**\n- Kotlin: 2.0.21\n- KSP: 2.0.21-1.0.28\n- KotlinPoet: 1.18.1\n\nYou're now equipped with cutting-edge Kotlin knowledge to build faster, safer, and more maintainable applications!\n\n---\n\n"
+            }
+          ],
+          "challenges": []
+        }
+      ]
     }
   ]
 }
