@@ -7012,6 +7012,72 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "16_02",
+          "title": "Typer Applications and Subcommands",
+          "moduleId": "module-16",
+          "order": 2,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Understanding the Concept",
+              "content": "Real-world CLIs have multiple commands. Think of `git`: you run `git commit`, `git push`, `git log` - these are **subcommands** under the main `git` command.\n\nTyper makes this easy with `typer.Typer()` - an application object that groups commands together.\n\n**When to use subcommands:**\n- Your tool does multiple distinct things\n- You want organized, discoverable commands\n- You're building something like: `myapp users add`, `myapp users list`, `myapp config set`"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Code Example",
+              "content": "**Expected Output:**\n```\n$ python tasks.py --help\nUsage: tasks.py [OPTIONS] COMMAND [ARGS]...\n\n  Task Manager CLI - manage your todo items.\n\nCommands:\n  add     Add a new task.\n  done    Mark a task as complete.\n  list    List all tasks.\n\n$ python tasks.py add \"Buy groceries\"\nAdded task: Buy groceries\n\n$ python tasks.py list\n1. [ ] Buy groceries\n\n$ python tasks.py done 1\nCompleted: Buy groceries\n```",
+              "code": "import typer\nfrom typing import Optional\n\napp = typer.Typer(help=\"Task Manager CLI - manage your todo items.\")\n\n# In-memory task storage (use a file or DB in real apps)\ntasks: list[dict] = []\n\n@app.command()\ndef add(task: str):\n    \"\"\"Add a new task.\"\"\"\n    tasks.append({\"text\": task, \"done\": False})\n    print(f\"Added task: {task}\")\n\n@app.command()\ndef list():\n    \"\"\"List all tasks.\"\"\"\n    if not tasks:\n        print(\"No tasks yet!\")\n        return\n    for i, task in enumerate(tasks, 1):\n        status = \"x\" if task[\"done\"] else \" \"\n        print(f\"{i}. [{status}] {task['text']}\")\n\n@app.command()\ndef done(task_id: int):\n    \"\"\"Mark a task as complete.\"\"\"\n    if 1 <= task_id <= len(tasks):\n        tasks[task_id - 1][\"done\"] = True\n        print(f\"Completed: {tasks[task_id - 1]['text']}\")\n    else:\n        print(f\"Task {task_id} not found\")\n        raise typer.Exit(code=1)\n\nif __name__ == \"__main__\":\n    app()\n",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Syntax Breakdown",
+              "content": "**Key patterns:**\n\n- **`app = typer.Typer()`** - Creates an application object\n- **`@app.command()`** - Registers a function as a subcommand\n- **`app()`** - Runs the application (replaces `typer.run()`)\n- **`typer.Exit(code=1)`** - Exit with error code\n\n**Command naming:**\n- By default, function name = command name\n- Use `@app.command(name=\"custom-name\")` to override\n\n**Help customization:**\n- `typer.Typer(help=\"Main help\")` - Application description\n- Function docstrings - Command descriptions\n- `typer.Argument(help=\"...\")` - Argument descriptions"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **`typer.Typer()`** creates a multi-command application\n- **`@app.command()`** decorates functions to become subcommands\n- Call **`app()`** instead of `typer.run()` for applications\n- **`typer.Exit(code=1)`** exits with an error code\n- Function docstrings become command help text"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "16_02-challenge-1",
+              "title": "Practice Exercise",
+              "description": "Create a note-taking CLI with `add`, `show`, and `clear` commands.\n\n**Requirements:**\n- `add <text>` - Add a note\n- `show` - Display all notes numbered\n- `clear` - Remove all notes\n\n**Example:**\n```\n$ python notes.py add \"Remember to call mom\"\nNote added!\n$ python notes.py show\n1. Remember to call mom\n$ python notes.py clear\nAll notes cleared!\n```",
+              "instructions": "Build a notes CLI with add, show, and clear subcommands.",
+              "starterCode": "import typer\n\napp = typer.Typer(help=\"Simple notes CLI\")\nnotes: list[str] = []\n\n@app.command()\ndef add(text: ____):\n    \"\"\"Add a new note.\"\"\"\n    notes.append(____)\n    print(\"Note added!\")\n\n@app.command()\ndef show():\n    \"\"\"Show all notes.\"\"\"\n    for i, note in enumerate(notes, 1):\n        print(f\"{i}. {____}\")\n\n@app.command()\ndef clear():\n    \"\"\"Clear all notes.\"\"\"\n    notes.____\n    print(\"All notes cleared!\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "solution": "import typer\n\napp = typer.Typer(help=\"Simple notes CLI\")\nnotes: list[str] = []\n\n@app.command()\ndef add(text: str):\n    \"\"\"Add a new note.\"\"\"\n    notes.append(text)\n    print(\"Note added!\")\n\n@app.command()\ndef show():\n    \"\"\"Show all notes.\"\"\"\n    for i, note in enumerate(notes, 1):\n        print(f\"{i}. {note}\")\n\n@app.command()\ndef clear():\n    \"\"\"Clear all notes.\"\"\"\n    notes.clear()\n    print(\"All notes cleared!\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "App has three commands",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** The `add` function needs `text: str`. Use `notes.clear()` to empty the list."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using notes = [] to clear instead of notes.clear()",
+                  "consequence": "Creates a new local variable instead of clearing the global list",
+                  "correction": "Use notes.clear() to modify the existing list"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     }
