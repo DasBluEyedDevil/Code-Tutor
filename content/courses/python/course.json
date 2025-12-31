@@ -10772,6 +10772,321 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-20",
+      "title": "PostgreSQL & Advanced Database Patterns",
+      "description": "Master PostgreSQL for production applications, covering setup, advanced SQL patterns, performance optimization, and building a Personal Finance Tracker with asyncpg",
+      "difficulty": "advanced",
+      "estimatedHours": 25,
+      "lessons": [
+        {
+          "id": "module-20-lesson-01",
+          "title": "PostgreSQL Setup & Basics",
+          "moduleId": "module-20",
+          "order": 1,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why PostgreSQL for Production?",
+              "content": "SQLite is excellent for development and small applications, but production systems demand more. PostgreSQL offers:\n\n**Concurrency:** True multi-user support with MVCC (Multi-Version Concurrency Control) - hundreds of simultaneous connections without locking issues.\n\n**Data Integrity:** Full ACID compliance with advanced constraints, triggers, and foreign key enforcement.\n\n**Scalability:** Handles terabytes of data with proper indexing. Supports read replicas, partitioning, and connection pooling.\n\n**Advanced Features:**\n- JSON/JSONB for flexible schema\n- Full-text search built-in\n- Window functions for analytics\n- CTEs and recursive queries\n- Extensions (PostGIS, pg_trgm, etc.)\n\n**Industry Standard:** Used by Instagram, Spotify, Reddit, and Uber. Massive community and tooling support.\n\n**Our Project:** Throughout this module, we'll build a **Personal Finance Tracker** - a real-world application that manages accounts, transactions, categories, and generates financial reports."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Installation Options",
+              "content": "**Three ways to get PostgreSQL running:**\n\n**1. Docker (Recommended for Development)**\n```bash\ndocker run --name postgres-dev \\\n  -e POSTGRES_USER=finance_user \\\n  -e POSTGRES_PASSWORD=secure_password \\\n  -e POSTGRES_DB=finance_tracker \\\n  -p 5432:5432 \\\n  -d postgres:16\n```\n\n**2. Local Installation**\n- **Windows:** Download from postgresql.org, use installer\n- **macOS:** `brew install postgresql@16`\n- **Linux:** `sudo apt install postgresql postgresql-contrib`\n\n**3. Cloud Services**\n- Supabase (free tier)\n- Railway, Render, Neon\n- AWS RDS, Google Cloud SQL\n\n**psql CLI Basics:**\n```bash\n# Connect to database\npsql -U finance_user -d finance_tracker -h localhost\n\n# Common commands inside psql:\n\\l          # List databases\n\\c dbname   # Connect to database\n\\dt         # List tables\n\\d table    # Describe table\n\\q          # Quit\n```",
+              "code": "# After installation, test connection with Python\nimport asyncio\nimport asyncpg\n\nasync def test_connection():\n    \"\"\"Verify PostgreSQL connection works.\"\"\"\n    try:\n        conn = await asyncpg.connect(\n            host='localhost',\n            port=5432,\n            user='finance_user',\n            password='secure_password',\n            database='finance_tracker'\n        )\n        \n        version = await conn.fetchval('SELECT version()')\n        print(f\"Connected to PostgreSQL!\")\n        print(f\"Version: {version[:50]}...\")\n        \n        await conn.close()\n        print(\"Connection closed successfully.\")\n        \n    except Exception as e:\n        print(f\"Connection failed: {e}\")\n\nasyncio.run(test_connection())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "asyncpg: The Fastest PostgreSQL Driver",
+              "content": "**Why asyncpg over psycopg2?**\n\n`asyncpg` is a high-performance async PostgreSQL driver:\n- **3-5x faster** than psycopg2 for most operations\n- **Native async/await** - perfect for FastAPI, aiohttp\n- **Built-in connection pooling** via `asyncpg.create_pool()`\n- **Automatic type conversion** - Python types <-> PostgreSQL types\n\n**Installation:**\n```bash\npip install asyncpg\n```\n\n**Connection Patterns:**\n\n1. **Single Connection** - Simple scripts, one-off tasks\n2. **Connection Pool** - Web applications, high concurrency\n\n**Type Mapping:**\n- `INTEGER` -> `int`\n- `TEXT/VARCHAR` -> `str`\n- `DECIMAL/NUMERIC` -> `decimal.Decimal`\n- `TIMESTAMP` -> `datetime.datetime`\n- `JSONB` -> `dict`/`list`\n- `BOOLEAN` -> `bool`"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building the Finance Tracker Schema",
+              "content": "**Expected Output:**\n```\nDatabase setup complete!\nTables created: users, accounts, categories, transactions\nTest account created: Checking with balance $1000.00\nRetrieved 1 accounts\n```",
+              "code": "import asyncpg\nimport asyncio\nfrom decimal import Decimal\n\nasync def setup_finance_tracker():\n    \"\"\"Initialize the Personal Finance Tracker database.\"\"\"\n    \n    # Connect to PostgreSQL\n    conn = await asyncpg.connect(\n        host='localhost',\n        port=5432,\n        user='finance_user',\n        password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Create tables for our finance tracker\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS accounts (\n            id SERIAL PRIMARY KEY,\n            name VARCHAR(100) NOT NULL,\n            account_type VARCHAR(50) NOT NULL,\n            balance DECIMAL(12, 2) DEFAULT 0.00,\n            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n        )\n    ''')\n    \n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS categories (\n            id SERIAL PRIMARY KEY,\n            name VARCHAR(50) NOT NULL UNIQUE,\n            category_type VARCHAR(20) NOT NULL,\n            icon VARCHAR(10)\n        )\n    ''')\n    \n    print(\"Database setup complete!\")\n    print(\"Tables created: users, accounts, categories, transactions\")\n    \n    # Insert test data using parameterized queries ($1, $2, etc.)\n    await conn.execute('''\n        INSERT INTO accounts (name, account_type, balance)\n        VALUES ($1, $2, $3)\n        ON CONFLICT DO NOTHING\n    ''', 'Checking', 'bank', Decimal('1000.00'))\n    \n    print(\"Test account created: Checking with balance $1000.00\")\n    \n    # Query data - returns list of Record objects\n    rows = await conn.fetch('SELECT * FROM accounts')\n    print(f\"Retrieved {len(rows)} accounts\")\n    \n    for row in rows:\n        # Records work like dicts and tuples\n        print(f\"  - {row['name']}: ${row['balance']}\")\n    \n    await conn.close()\n\nasyncio.run(setup_finance_tracker())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Connection Pooling for Production",
+              "content": "**Why Connection Pools?**\n\nCreating database connections is expensive (~10-50ms). In a web app handling 100 requests/second, creating fresh connections would be disastrous.\n\n**Connection Pool Benefits:**\n- Reuse existing connections\n- Limit maximum connections (prevent overload)\n- Automatic connection health checks\n- Built-in timeout handling\n\n**Pool Configuration:**\n```python\npool = await asyncpg.create_pool(\n    host='localhost',\n    port=5432,\n    user='finance_user',\n    password='secure_password',\n    database='finance_tracker',\n    min_size=5,      # Minimum connections to maintain\n    max_size=20,     # Maximum connections allowed\n    max_inactive_connection_lifetime=300  # Close idle after 5 min\n)\n```\n\n**Usage Pattern:**\n```python\nasync with pool.acquire() as conn:\n    # Connection is borrowed from pool\n    result = await conn.fetch('SELECT * FROM accounts')\n# Connection automatically returned to pool\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Production-Ready Connection Pool",
+              "content": "**A reusable database manager for the Finance Tracker:**",
+              "code": "import asyncpg\nimport asyncio\nfrom contextlib import asynccontextmanager\nfrom typing import Optional\n\nclass DatabaseManager:\n    \"\"\"Manages PostgreSQL connections for the Finance Tracker.\"\"\"\n    \n    def __init__(self, dsn: Optional[str] = None, **kwargs):\n        self.dsn = dsn\n        self.kwargs = kwargs\n        self.pool: Optional[asyncpg.Pool] = None\n    \n    async def connect(self):\n        \"\"\"Initialize the connection pool.\"\"\"\n        if self.dsn:\n            self.pool = await asyncpg.create_pool(self.dsn, **self.kwargs)\n        else:\n            self.pool = await asyncpg.create_pool(\n                host='localhost',\n                port=5432,\n                user='finance_user',\n                password='secure_password',\n                database='finance_tracker',\n                min_size=2,\n                max_size=10,\n                **self.kwargs\n            )\n        print(f\"Pool created: {self.pool.get_size()} connections\")\n    \n    async def disconnect(self):\n        \"\"\"Close all connections in the pool.\"\"\"\n        if self.pool:\n            await self.pool.close()\n            print(\"Pool closed.\")\n    \n    @asynccontextmanager\n    async def transaction(self):\n        \"\"\"Context manager for database transactions.\"\"\"\n        async with self.pool.acquire() as conn:\n            async with conn.transaction():\n                yield conn\n    \n    async def fetch(self, query: str, *args):\n        \"\"\"Execute a query and return all rows.\"\"\"\n        async with self.pool.acquire() as conn:\n            return await conn.fetch(query, *args)\n    \n    async def fetchrow(self, query: str, *args):\n        \"\"\"Execute a query and return one row.\"\"\"\n        async with self.pool.acquire() as conn:\n            return await conn.fetchrow(query, *args)\n    \n    async def execute(self, query: str, *args):\n        \"\"\"Execute a query without returning results.\"\"\"\n        async with self.pool.acquire() as conn:\n            return await conn.execute(query, *args)\n\n# Usage example\nasync def main():\n    db = DatabaseManager()\n    await db.connect()\n    \n    # Simple query\n    accounts = await db.fetch('SELECT * FROM accounts')\n    print(f\"Found {len(accounts)} accounts\")\n    \n    # Transaction example\n    async with db.transaction() as conn:\n        await conn.execute(\n            'UPDATE accounts SET balance = balance + $1 WHERE id = $2',\n            100.00, 1\n        )\n        print(\"Balance updated within transaction\")\n    \n    await db.disconnect()\n\nasyncio.run(main())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **PostgreSQL** is the production choice: concurrency, ACID, advanced features\n- **Docker** provides the easiest local setup for development\n- **asyncpg** is 3-5x faster than psycopg2 and fully async\n- **Parameterized queries** use `$1, $2, $3` syntax (not `?` or `%s`)\n- **Connection pools** are essential for web applications\n- **Records** returned by asyncpg work like both dicts and tuples\n- **Always close connections** - use context managers or explicit `close()`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-20-lesson-01-challenge-1",
+              "title": "Create Your First PostgreSQL Table",
+              "description": "Create a `users` table for the Finance Tracker with proper data types and insert a test user.",
+              "instructions": "Complete the code to:\n1. Create a users table with id (SERIAL PRIMARY KEY), email (VARCHAR UNIQUE NOT NULL), name (VARCHAR NOT NULL), and created_at (TIMESTAMP with default)\n2. Insert a test user\n3. Query and display the user",
+              "starterCode": "import asyncpg\nimport asyncio\n\nasync def create_users_table():\n    conn = await asyncpg.connect(\n        host='localhost',\n        port=5432,\n        user='finance_user',\n        password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # TODO: Create the users table\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS users (\n            ____ SERIAL PRIMARY KEY,\n            email VARCHAR(255) ____ NOT NULL,\n            name VARCHAR(100) NOT NULL,\n            created_at TIMESTAMP DEFAULT ____\n        )\n    ''')\n    \n    # TODO: Insert a test user using $1, $2 parameters\n    await conn.execute('''\n        INSERT INTO users (email, name) VALUES ($1, ____)\n        ON CONFLICT (email) DO NOTHING\n    ''', 'test@example.com', 'Test User')\n    \n    # Query the user\n    user = await conn.fetchrow(\n        'SELECT * FROM users WHERE email = $1',\n        'test@example.com'\n    )\n    \n    if user:\n        print(f\"User created: {user['name']} ({user['email']})\")\n    \n    await conn.close()\n\nasyncio.run(create_users_table())",
+              "solution": "import asyncpg\nimport asyncio\n\nasync def create_users_table():\n    conn = await asyncpg.connect(\n        host='localhost',\n        port=5432,\n        user='finance_user',\n        password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Create the users table\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS users (\n            id SERIAL PRIMARY KEY,\n            email VARCHAR(255) UNIQUE NOT NULL,\n            name VARCHAR(100) NOT NULL,\n            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n        )\n    ''')\n    \n    # Insert a test user using $1, $2 parameters\n    await conn.execute('''\n        INSERT INTO users (email, name) VALUES ($1, $2)\n        ON CONFLICT (email) DO NOTHING\n    ''', 'test@example.com', 'Test User')\n    \n    # Query the user\n    user = await conn.fetchrow(\n        'SELECT * FROM users WHERE email = $1',\n        'test@example.com'\n    )\n    \n    if user:\n        print(f\"User created: {user['name']} ({user['email']})\")\n    \n    await conn.close()\n\nasyncio.run(create_users_table())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Users table created with correct columns",
+                  "expectedOutput": "User created:",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** The primary key column is typically named `id`. For unique constraint, use the `UNIQUE` keyword. For default timestamp, use `CURRENT_TIMESTAMP`. The second parameter placeholder is `$2`."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using ? or %s for parameters instead of $1, $2",
+                  "consequence": "asyncpg uses PostgreSQL's native parameter syntax",
+                  "correction": "Use $1, $2, $3 for parameter placeholders"
+                },
+                {
+                  "mistake": "Forgetting UNIQUE constraint on email",
+                  "consequence": "Duplicate emails could be inserted",
+                  "correction": "Add UNIQUE keyword: email VARCHAR(255) UNIQUE NOT NULL"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-20-lesson-02",
+          "title": "SQL Review for Python Developers",
+          "moduleId": "module-20",
+          "order": 2,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "CRUD Operations Refresher",
+              "content": "Before diving into advanced patterns, let's solidify the fundamentals with asyncpg:\n\n**CREATE (INSERT)**\n```python\nawait conn.execute('''\n    INSERT INTO transactions (user_id, amount, category, description)\n    VALUES ($1, $2, $3, $4)\n''', user_id, Decimal('50.00'), 'groceries', 'Weekly shopping')\n```\n\n**READ (SELECT)**\n```python\n# Single row\nuser = await conn.fetchrow('SELECT * FROM users WHERE id = $1', user_id)\n\n# Multiple rows\ntransactions = await conn.fetch(\n    'SELECT * FROM transactions WHERE user_id = $1 ORDER BY date DESC',\n    user_id\n)\n\n# Single value\ncount = await conn.fetchval('SELECT COUNT(*) FROM transactions')\n```\n\n**UPDATE**\n```python\nawait conn.execute('''\n    UPDATE accounts SET balance = balance - $1 WHERE id = $2\n''', amount, account_id)\n```\n\n**DELETE**\n```python\nawait conn.execute('DELETE FROM transactions WHERE id = $1', tx_id)\n```\n\n**Key Differences from SQLite:**\n- Use `$1, $2, $3` not `?` for parameters\n- `RETURNING` clause to get inserted/updated rows\n- `ON CONFLICT` for upserts"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The RETURNING Clause",
+              "content": "PostgreSQL's `RETURNING` is incredibly useful - get the inserted/updated row immediately:\n\n**Expected Output:**\n```\nCreated transaction #1: $-45.99 for groceries\nUpdated account balance: $954.01\n```",
+              "code": "import asyncpg\nimport asyncio\nfrom decimal import Decimal\n\nasync def returning_demo():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # INSERT with RETURNING - get the new row's ID and timestamp\n    new_tx = await conn.fetchrow('''\n        INSERT INTO transactions (account_id, amount, category, description)\n        VALUES ($1, $2, $3, $4)\n        RETURNING id, amount, created_at\n    ''', 1, Decimal('-45.99'), 'groceries', 'Supermarket')\n    \n    print(f\"Created transaction #{new_tx['id']}: ${new_tx['amount']} for groceries\")\n    \n    # UPDATE with RETURNING - verify the update\n    updated = await conn.fetchrow('''\n        UPDATE accounts \n        SET balance = balance + $1\n        WHERE id = $2\n        RETURNING id, name, balance\n    ''', Decimal('-45.99'), 1)\n    \n    print(f\"Updated account balance: ${updated['balance']}\")\n    \n    await conn.close()\n\nasyncio.run(returning_demo())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "JOINs: Combining Related Data",
+              "content": "The Finance Tracker has related tables - we need JOINs to query across them:\n\n**INNER JOIN** - Only matching rows from both tables\n```sql\nSELECT t.amount, c.name AS category\nFROM transactions t\nINNER JOIN categories c ON t.category_id = c.id\n```\n\n**LEFT JOIN** - All from left table, matching from right (NULL if no match)\n```sql\nSELECT a.name, COALESCE(SUM(t.amount), 0) AS total\nFROM accounts a\nLEFT JOIN transactions t ON a.id = t.account_id\nGROUP BY a.id, a.name\n```\n\n**RIGHT JOIN** - All from right table, matching from left\n```sql\nSELECT c.name, COUNT(t.id) AS tx_count\nFROM transactions t\nRIGHT JOIN categories c ON t.category_id = c.id\nGROUP BY c.id, c.name\n```\n\n**FULL OUTER JOIN** - All rows from both tables\n```sql\nSELECT *\nFROM accounts a\nFULL OUTER JOIN users u ON a.user_id = u.id\n```\n\n**Pro Tip:** Use table aliases (t, c, a) for cleaner queries."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Finance Tracker: Transaction Report with JOINs",
+              "content": "**Generate a transaction report joining accounts and categories:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def transaction_report():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Join transactions with accounts and categories\n    query = '''\n        SELECT \n            t.id,\n            t.amount,\n            t.description,\n            t.transaction_date,\n            a.name AS account_name,\n            c.name AS category_name,\n            c.icon AS category_icon\n        FROM transactions t\n        INNER JOIN accounts a ON t.account_id = a.id\n        LEFT JOIN categories c ON t.category_id = c.id\n        WHERE t.transaction_date >= CURRENT_DATE - INTERVAL '30 days'\n        ORDER BY t.transaction_date DESC\n        LIMIT 10\n    '''\n    \n    transactions = await conn.fetch(query)\n    \n    print(\"=== Last 30 Days Transactions ===\")\n    for tx in transactions:\n        icon = tx['category_icon'] or '📝'\n        print(f\"{icon} {tx['account_name']}: ${tx['amount']:>10.2f} - {tx['category_name']}\")\n        print(f\"   {tx['description']}\")\n    \n    await conn.close()\n\nasyncio.run(transaction_report())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Aggregations: GROUP BY and HAVING",
+              "content": "Aggregations summarize data - essential for financial reports:\n\n**Common Aggregate Functions:**\n- `SUM(amount)` - Total\n- `AVG(amount)` - Average\n- `COUNT(*)` - Row count\n- `MIN(amount)`, `MAX(amount)` - Extremes\n- `ARRAY_AGG(name)` - Collect into array (PostgreSQL)\n\n**GROUP BY** - Group rows for aggregation\n```sql\nSELECT category, SUM(amount) AS total\nFROM transactions\nGROUP BY category\n```\n\n**HAVING** - Filter groups (like WHERE for aggregates)\n```sql\nSELECT category, SUM(amount) AS total\nFROM transactions\nGROUP BY category\nHAVING SUM(amount) > 100  -- Only categories with total > 100\n```\n\n**Order of Operations:**\n1. FROM/JOIN - Get the data\n2. WHERE - Filter rows\n3. GROUP BY - Group rows\n4. HAVING - Filter groups\n5. SELECT - Choose columns\n6. ORDER BY - Sort results\n7. LIMIT/OFFSET - Paginate"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Monthly Spending by Category",
+              "content": "**Aggregate spending for the Finance Tracker dashboard:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def monthly_spending_report():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    query = '''\n        SELECT \n            c.name AS category,\n            c.icon,\n            COUNT(*) AS transaction_count,\n            SUM(ABS(t.amount)) AS total_spent,\n            AVG(ABS(t.amount))::DECIMAL(10,2) AS avg_transaction,\n            MIN(t.transaction_date) AS first_tx,\n            MAX(t.transaction_date) AS last_tx\n        FROM transactions t\n        JOIN categories c ON t.category_id = c.id\n        WHERE \n            t.amount < 0  -- Only expenses\n            AND t.transaction_date >= DATE_TRUNC('month', CURRENT_DATE)\n        GROUP BY c.id, c.name, c.icon\n        HAVING SUM(ABS(t.amount)) > 10  -- Ignore tiny categories\n        ORDER BY total_spent DESC\n    '''\n    \n    categories = await conn.fetch(query)\n    \n    print(\"=== This Month's Spending by Category ===\")\n    print(f\"{'Category':<20} {'Count':>6} {'Total':>12} {'Average':>10}\")\n    print(\"-\" * 50)\n    \n    total = 0\n    for cat in categories:\n        icon = cat['icon'] or '📦'\n        print(f\"{icon} {cat['category']:<17} {cat['transaction_count']:>6} \"\n              f\"${cat['total_spent']:>10.2f} ${cat['avg_transaction']:>8.2f}\")\n        total += cat['total_spent']\n    \n    print(\"-\" * 50)\n    print(f\"{'Total':<20} {'':<6} ${total:>10.2f}\")\n    \n    await conn.close()\n\nasyncio.run(monthly_spending_report())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "CTEs: Common Table Expressions",
+              "content": "CTEs (using `WITH`) make complex queries readable and maintainable:\n\n**Basic CTE:**\n```sql\nWITH monthly_totals AS (\n    SELECT \n        DATE_TRUNC('month', transaction_date) AS month,\n        SUM(amount) AS total\n    FROM transactions\n    GROUP BY DATE_TRUNC('month', transaction_date)\n)\nSELECT * FROM monthly_totals ORDER BY month;\n```\n\n**Multiple CTEs:**\n```sql\nWITH \n    income AS (\n        SELECT SUM(amount) AS total FROM transactions WHERE amount > 0\n    ),\n    expenses AS (\n        SELECT SUM(ABS(amount)) AS total FROM transactions WHERE amount < 0\n    )\nSELECT \n    income.total AS income,\n    expenses.total AS expenses,\n    income.total - expenses.total AS net\nFROM income, expenses;\n```\n\n**Benefits:**\n- Break complex queries into logical steps\n- Reuse the same subquery multiple times\n- Self-documenting with descriptive names\n- Often more efficient than nested subqueries"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Finance Tracker: Monthly Trend with CTE",
+              "content": "**Calculate month-over-month spending trends:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def spending_trends():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    query = '''\n        WITH monthly_totals AS (\n            SELECT \n                DATE_TRUNC('month', transaction_date) AS month,\n                category_id,\n                SUM(amount) AS total\n            FROM transactions\n            WHERE user_id = $1\n            GROUP BY DATE_TRUNC('month', transaction_date), category_id\n        ),\n        with_categories AS (\n            SELECT \n                mt.month,\n                c.name AS category,\n                mt.total,\n                LAG(mt.total) OVER (\n                    PARTITION BY mt.category_id \n                    ORDER BY mt.month\n                ) AS prev_month_total\n            FROM monthly_totals mt\n            JOIN categories c ON mt.category_id = c.id\n        )\n        SELECT \n            TO_CHAR(month, 'Mon YYYY') AS month_name,\n            category,\n            total,\n            prev_month_total,\n            CASE \n                WHEN prev_month_total IS NULL THEN NULL\n                WHEN prev_month_total = 0 THEN 100.0\n                ELSE ROUND(((total - prev_month_total) / ABS(prev_month_total)) * 100, 1)\n            END AS percent_change\n        FROM with_categories\n        ORDER BY month DESC, ABS(total) DESC\n        LIMIT 20\n    '''\n    \n    trends = await conn.fetch(query, 1)  # user_id = 1\n    \n    print(\"=== Spending Trends (Month over Month) ===\")\n    for row in trends:\n        change = row['percent_change']\n        if change is None:\n            indicator = \"  (first month)\"\n        elif change > 0:\n            indicator = f\"  ↑ {change}%\"\n        elif change < 0:\n            indicator = f\"  ↓ {abs(change)}%\"\n        else:\n            indicator = \"  → 0%\"\n        \n        print(f\"{row['month_name']}: {row['category']:<15} ${row['total']:>10.2f}{indicator}\")\n    \n    await conn.close()\n\nasyncio.run(spending_trends())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Window Functions: Analytics Power",
+              "content": "Window functions perform calculations across related rows without collapsing them:\n\n**Basic Syntax:**\n```sql\nfunction() OVER (\n    PARTITION BY column  -- Group rows (optional)\n    ORDER BY column      -- Order within partition\n    ROWS/RANGE frame     -- Window frame (optional)\n)\n```\n\n**Common Window Functions:**\n\n**Ranking:**\n- `ROW_NUMBER()` - Unique sequential number\n- `RANK()` - Same rank for ties, gaps after\n- `DENSE_RANK()` - Same rank for ties, no gaps\n\n**Navigation:**\n- `LAG(col, n)` - Value from n rows before\n- `LEAD(col, n)` - Value from n rows after\n- `FIRST_VALUE(col)` - First value in window\n- `LAST_VALUE(col)` - Last value in window\n\n**Aggregates as Windows:**\n- `SUM(col) OVER (...)` - Running total\n- `AVG(col) OVER (...)` - Moving average\n- `COUNT(*) OVER (...)` - Running count"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Running Balance with Window Functions",
+              "content": "**Calculate running balance for each account:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def running_balance():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    query = '''\n        SELECT \n            t.transaction_date,\n            t.description,\n            t.amount,\n            -- Running balance for this account\n            SUM(t.amount) OVER (\n                PARTITION BY t.account_id\n                ORDER BY t.transaction_date, t.id\n                ROWS UNBOUNDED PRECEDING\n            ) AS running_balance,\n            -- Transaction rank within the month\n            ROW_NUMBER() OVER (\n                PARTITION BY DATE_TRUNC('month', t.transaction_date)\n                ORDER BY ABS(t.amount) DESC\n            ) AS amount_rank_in_month,\n            -- Previous transaction amount\n            LAG(t.amount) OVER (\n                PARTITION BY t.account_id\n                ORDER BY t.transaction_date, t.id\n            ) AS prev_amount\n        FROM transactions t\n        WHERE t.account_id = $1\n        ORDER BY t.transaction_date DESC, t.id DESC\n        LIMIT 15\n    '''\n    \n    transactions = await conn.fetch(query, 1)  # account_id = 1\n    \n    print(\"=== Account Transaction History ===\")\n    print(f\"{'Date':<12} {'Description':<20} {'Amount':>10} {'Balance':>12} {'Rank':>5}\")\n    print(\"-\" * 65)\n    \n    for tx in transactions:\n        print(f\"{tx['transaction_date']} {tx['description']:<20} \"\n              f\"${tx['amount']:>9.2f} ${tx['running_balance']:>11.2f} \"\n              f\"#{tx['amount_rank_in_month']}\")\n    \n    await conn.close()\n\nasyncio.run(running_balance())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **RETURNING** clause gets inserted/updated rows immediately\n- **JOINs** combine related tables - use INNER for matching, LEFT for all from one side\n- **GROUP BY + HAVING** aggregates data and filters groups\n- **CTEs** (WITH clause) break complex queries into readable steps\n- **Window functions** calculate across rows without collapsing them\n- **LAG/LEAD** access previous/next rows for trend analysis\n- **ROW_NUMBER/RANK** for ordering and pagination\n- **Running totals** use `SUM() OVER (ORDER BY ...)`"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-20-lesson-02-challenge-1",
+              "title": "Build a Category Spending Report",
+              "description": "Create a query that shows spending by category with running totals using CTEs and window functions.",
+              "instructions": "Complete the query to:\n1. Use a CTE to calculate monthly spending per category\n2. Add a running total using a window function\n3. Include month-over-month change",
+              "starterCode": "import asyncpg\nimport asyncio\n\nasync def category_report():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    query = '''\n        WITH monthly_spending AS (\n            SELECT \n                DATE_TRUNC('month', transaction_date) AS month,\n                category_id,\n                SUM(ABS(amount)) AS total\n            FROM transactions\n            WHERE amount < 0\n            GROUP BY ____, category_id\n        )\n        SELECT \n            TO_CHAR(ms.month, 'Mon YYYY') AS month_name,\n            c.name AS category,\n            ms.total,\n            SUM(ms.total) OVER (\n                PARTITION BY ms.category_id\n                ORDER BY ms.month\n                ____ UNBOUNDED PRECEDING\n            ) AS running_total\n        FROM monthly_spending ms\n        JOIN categories c ON ms.category_id = c.id\n        ORDER BY ms.month DESC, ms.total DESC\n    '''\n    \n    results = await conn.fetch(query)\n    \n    for row in results:\n        print(f\"{row['month_name']}: {row['category']:<15} \"\n              f\"${row['total']:>8.2f} (Running: ${row['running_total']:>10.2f})\")\n    \n    await conn.close()\n\nasyncio.run(category_report())",
+              "solution": "import asyncpg\nimport asyncio\n\nasync def category_report():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    query = '''\n        WITH monthly_spending AS (\n            SELECT \n                DATE_TRUNC('month', transaction_date) AS month,\n                category_id,\n                SUM(ABS(amount)) AS total\n            FROM transactions\n            WHERE amount < 0\n            GROUP BY DATE_TRUNC('month', transaction_date), category_id\n        )\n        SELECT \n            TO_CHAR(ms.month, 'Mon YYYY') AS month_name,\n            c.name AS category,\n            ms.total,\n            SUM(ms.total) OVER (\n                PARTITION BY ms.category_id\n                ORDER BY ms.month\n                ROWS UNBOUNDED PRECEDING\n            ) AS running_total\n        FROM monthly_spending ms\n        JOIN categories c ON ms.category_id = c.id\n        ORDER BY ms.month DESC, ms.total DESC\n    '''\n    \n    results = await conn.fetch(query)\n    \n    for row in results:\n        print(f\"{row['month_name']}: {row['category']:<15} \"\n              f\"${row['total']:>8.2f} (Running: ${row['running_total']:>10.2f})\")\n    \n    await conn.close()\n\nasyncio.run(category_report())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Query executes and shows running totals",
+                  "expectedOutput": "Running:",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** The GROUP BY should match the DATE_TRUNC expression. For window frame, use `ROWS` to define the frame scope."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using column alias in GROUP BY",
+                  "consequence": "PostgreSQL requires the actual expression or column position",
+                  "correction": "Repeat the DATE_TRUNC expression or use column position (1)"
+                },
+                {
+                  "mistake": "Forgetting ROWS in window frame",
+                  "consequence": "Window frame specification incomplete",
+                  "correction": "Use ROWS UNBOUNDED PRECEDING for running totals"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-20-lesson-03",
+          "title": "Indexes, Constraints & Performance",
+          "moduleId": "module-20",
+          "order": 3,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Constraints: Data Integrity",
+              "content": "Constraints ensure your data stays valid at the database level - the last line of defense:\n\n**PRIMARY KEY** - Unique identifier, never NULL\n```sql\nid SERIAL PRIMARY KEY\n-- or\nPRIMARY KEY (user_id, account_id)  -- Composite key\n```\n\n**FOREIGN KEY** - References another table\n```sql\nuser_id INTEGER REFERENCES users(id) ON DELETE CASCADE\n-- ON DELETE options: CASCADE, SET NULL, RESTRICT, NO ACTION\n```\n\n**UNIQUE** - No duplicate values\n```sql\nemail VARCHAR(255) UNIQUE\n-- or table-level:\nUNIQUE (user_id, account_name)  -- Unique combination\n```\n\n**NOT NULL** - Value required\n```sql\nname VARCHAR(100) NOT NULL\n```\n\n**CHECK** - Custom validation\n```sql\namount DECIMAL(12,2) CHECK (amount != 0),\naccount_type VARCHAR(20) CHECK (account_type IN ('checking', 'savings', 'credit'))\n```\n\n**DEFAULT** - Auto-fill if not provided\n```sql\ncreated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\nis_active BOOLEAN DEFAULT true\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Finance Tracker Schema with Constraints",
+              "content": "**A production-ready schema with proper constraints:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def create_schema():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Users table\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS users (\n            id SERIAL PRIMARY KEY,\n            email VARCHAR(255) UNIQUE NOT NULL,\n            password_hash VARCHAR(255) NOT NULL,\n            name VARCHAR(100) NOT NULL,\n            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n            is_active BOOLEAN DEFAULT true\n        )\n    ''')\n    \n    # Categories with type constraint\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS categories (\n            id SERIAL PRIMARY KEY,\n            user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\n            name VARCHAR(50) NOT NULL,\n            category_type VARCHAR(20) NOT NULL \n                CHECK (category_type IN ('income', 'expense', 'transfer')),\n            icon VARCHAR(10),\n            UNIQUE (user_id, name)  -- No duplicate names per user\n        )\n    ''')\n    \n    # Accounts with balance constraint\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS accounts (\n            id SERIAL PRIMARY KEY,\n            user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,\n            name VARCHAR(100) NOT NULL,\n            account_type VARCHAR(20) NOT NULL\n                CHECK (account_type IN ('checking', 'savings', 'credit', 'investment')),\n            balance DECIMAL(12, 2) DEFAULT 0.00,\n            credit_limit DECIMAL(12, 2),\n            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n            UNIQUE (user_id, name),\n            -- Credit accounts can go negative up to limit\n            CHECK (\n                account_type != 'credit' \n                OR balance >= -COALESCE(credit_limit, 0)\n            )\n        )\n    ''')\n    \n    # Transactions with referential integrity\n    await conn.execute('''\n        CREATE TABLE IF NOT EXISTS transactions (\n            id SERIAL PRIMARY KEY,\n            user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,\n            account_id INTEGER NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,\n            category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,\n            amount DECIMAL(12, 2) NOT NULL CHECK (amount != 0),\n            description TEXT,\n            transaction_date DATE NOT NULL DEFAULT CURRENT_DATE,\n            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n        )\n    ''')\n    \n    print(\"Schema created with all constraints!\")\n    await conn.close()\n\nasyncio.run(create_schema())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "Index Types in PostgreSQL",
+              "content": "Indexes speed up queries but slow down writes. Choose wisely:\n\n**B-tree (Default)** - Best for most cases\n- Equality: `WHERE id = 5`\n- Range: `WHERE date > '2024-01-01'`\n- Sorting: `ORDER BY date`\n- Pattern prefix: `WHERE name LIKE 'John%'`\n\n**Hash** - Only for equality\n- Faster for simple `=` comparisons\n- Can't do ranges or sorting\n```sql\nCREATE INDEX idx_hash ON users USING hash (email);\n```\n\n**GIN (Generalized Inverted Index)** - Multiple values\n- Arrays: `WHERE tags @> '{python}'`\n- Full-text: `WHERE document @@ 'search'`\n- JSONB: `WHERE data @> '{\"key\": \"value\"}'`\n```sql\nCREATE INDEX idx_tags ON posts USING gin (tags);\n```\n\n**GiST (Generalized Search Tree)** - Geometric/spatial\n- Range types\n- PostGIS geometry\n- Full-text (alternative to GIN)\n\n**BRIN (Block Range Index)** - Huge sequential tables\n- Time-series data\n- Log tables\n- Very small index size"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Strategic Indexes for Finance Tracker",
+              "content": "**Create indexes based on common query patterns:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def create_indexes():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Index for user's transactions by date (most common query)\n    await conn.execute('''\n        CREATE INDEX IF NOT EXISTS idx_transactions_user_date \n        ON transactions(user_id, transaction_date DESC)\n    ''')\n    print(\"Created: idx_transactions_user_date\")\n    \n    # Index for category filtering\n    await conn.execute('''\n        CREATE INDEX IF NOT EXISTS idx_transactions_category \n        ON transactions(category_id)\n        WHERE category_id IS NOT NULL\n    ''')\n    print(\"Created: idx_transactions_category (partial)\")\n    \n    # Composite index for account balance queries\n    await conn.execute('''\n        CREATE INDEX IF NOT EXISTS idx_transactions_account_amount\n        ON transactions(account_id, amount)\n    ''')\n    print(\"Created: idx_transactions_account_amount\")\n    \n    # Index for date range queries (e.g., monthly reports)\n    await conn.execute('''\n        CREATE INDEX IF NOT EXISTS idx_transactions_date_range\n        ON transactions(transaction_date)\n        WHERE transaction_date >= CURRENT_DATE - INTERVAL '1 year'\n    ''')\n    print(\"Created: idx_transactions_date_range (partial, last year)\")\n    \n    # Covering index for common SELECT (includes data in index)\n    await conn.execute('''\n        CREATE INDEX IF NOT EXISTS idx_transactions_covering\n        ON transactions(user_id, transaction_date DESC)\n        INCLUDE (amount, category_id, description)\n    ''')\n    print(\"Created: idx_transactions_covering (covering index)\")\n    \n    # Check index sizes\n    sizes = await conn.fetch('''\n        SELECT \n            indexname,\n            pg_size_pretty(pg_relation_size(indexname::regclass)) as size\n        FROM pg_indexes \n        WHERE tablename = 'transactions'\n        ORDER BY pg_relation_size(indexname::regclass) DESC\n    ''')\n    \n    print(\"\\nIndex sizes:\")\n    for idx in sizes:\n        print(f\"  {idx['indexname']}: {idx['size']}\")\n    \n    await conn.close()\n\nasyncio.run(create_indexes())",
+              "language": "python"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Add Indexes",
+              "content": "**Add indexes for:**\n- Columns in WHERE clauses (frequently filtered)\n- Columns in JOIN conditions\n- Columns in ORDER BY (avoid filesort)\n- Foreign key columns (speeds up JOINs and ON DELETE)\n\n**Don't add indexes for:**\n- Small tables (< 1000 rows) - full scan is fine\n- Columns with low cardinality (few unique values)\n- Columns rarely used in queries\n- Tables with heavy INSERT/UPDATE (indexes slow writes)\n\n**Index Strategy:**\n1. Start with foreign keys and common WHERE columns\n2. Monitor slow queries with `pg_stat_statements`\n3. Use `EXPLAIN ANALYZE` to verify index usage\n4. Remove unused indexes (they still cost writes)\n\n**Partial Indexes** - Index subset of rows:\n```sql\n-- Only index active users\nCREATE INDEX idx_active_users ON users(email) WHERE is_active = true;\n\n-- Only recent transactions\nCREATE INDEX idx_recent_tx ON transactions(date) \nWHERE date >= CURRENT_DATE - INTERVAL '90 days';\n```\n\n**Covering Indexes** - Include extra columns:\n```sql\n-- Avoids table lookup for these columns\nCREATE INDEX idx_covering ON transactions(user_id)\nINCLUDE (amount, category_id);\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "EXPLAIN ANALYZE: Query Optimization",
+              "content": "**Use EXPLAIN ANALYZE to understand and optimize queries:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def analyze_queries():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Analyze a query - see execution plan\n    explain_query = '''\n        EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)\n        SELECT \n            t.id, t.amount, t.description,\n            c.name as category\n        FROM transactions t\n        LEFT JOIN categories c ON t.category_id = c.id\n        WHERE t.user_id = $1\n          AND t.transaction_date >= $2\n        ORDER BY t.transaction_date DESC\n        LIMIT 50\n    '''\n    \n    from datetime import date, timedelta\n    start_date = date.today() - timedelta(days=30)\n    \n    plan = await conn.fetch(explain_query, 1, start_date)\n    \n    print(\"=== Query Execution Plan ===\")\n    for row in plan:\n        print(row[0])\n    \n    print(\"\\n=== Key Metrics to Watch ===\")\n    print(\"\"\"\n    GOOD signs:\n    - \"Index Scan\" or \"Index Only Scan\"\n    - \"Bitmap Index Scan\" for multiple conditions\n    - Low \"actual time\" numbers\n    - \"Buffers: shared hit\" (data in cache)\n    \n    BAD signs:\n    - \"Seq Scan\" on large tables\n    - \"Sort\" with high rows (missing index)\n    - \"Buffers: shared read\" (disk I/O)\n    - \"Nested Loop\" with large outer table\n    \"\"\")\n    \n    # Check for missing indexes\n    missing = await conn.fetch('''\n        SELECT \n            schemaname, tablename,\n            seq_scan, seq_tup_read,\n            idx_scan, idx_tup_fetch\n        FROM pg_stat_user_tables\n        WHERE seq_scan > idx_scan  -- More seq scans than index scans\n          AND seq_tup_read > 10000  -- Reading lots of rows\n        ORDER BY seq_tup_read DESC\n        LIMIT 5\n    ''')\n    \n    if missing:\n        print(\"\\n=== Tables Needing Indexes ===\")\n        for t in missing:\n            print(f\"{t['tablename']}: {t['seq_scan']} seq scans, \"\n                  f\"{t['seq_tup_read']} rows read\")\n    \n    await conn.close()\n\nasyncio.run(analyze_queries())",
+              "language": "python"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Performance Pitfalls",
+              "content": "### Avoid These Common Mistakes:\n\n**1. N+1 Query Problem**\n```python\n# BAD - 1 query + N queries for each user\nusers = await conn.fetch('SELECT * FROM users')\nfor user in users:\n    accounts = await conn.fetch(\n        'SELECT * FROM accounts WHERE user_id = $1', user['id']\n    )  # Runs N times!\n\n# GOOD - Single query with JOIN\ndata = await conn.fetch('''\n    SELECT u.*, a.name as account_name, a.balance\n    FROM users u\n    LEFT JOIN accounts a ON u.id = a.user_id\n''')\n```\n\n**2. SELECT * in Production**\n```python\n# BAD - fetches all columns including blobs\nawait conn.fetch('SELECT * FROM users')\n\n# GOOD - only what you need\nawait conn.fetch('SELECT id, name, email FROM users')\n```\n\n**3. Missing LIMIT on Large Tables**\n```python\n# BAD - could return millions of rows\nawait conn.fetch('SELECT * FROM transactions')\n\n# GOOD - always paginate\nawait conn.fetch('SELECT * FROM transactions LIMIT 100 OFFSET 0')\n```\n\n**4. Functions in WHERE Defeating Indexes**\n```sql\n-- BAD - can't use index on created_at\nWHERE DATE(created_at) = '2024-01-15'\n\n-- GOOD - uses index\nWHERE created_at >= '2024-01-15' \n  AND created_at < '2024-01-16'\n```\n\n**5. LIKE with Leading Wildcard**\n```sql\n-- BAD - can't use B-tree index\nWHERE name LIKE '%smith'\n\n-- OK - can use index\nWHERE name LIKE 'smith%'\n\n-- For full-text, use GIN index with tsvector\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Production Performance Monitoring",
+              "content": "**Set up performance monitoring queries:**",
+              "code": "import asyncpg\nimport asyncio\n\nasync def performance_check():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # 1. Check table sizes\n    print(\"=== Table Sizes ===\")\n    sizes = await conn.fetch('''\n        SELECT \n            relname as table_name,\n            pg_size_pretty(pg_total_relation_size(relid)) as total_size,\n            pg_size_pretty(pg_relation_size(relid)) as data_size,\n            pg_size_pretty(pg_indexes_size(relid)) as index_size,\n            n_live_tup as row_count\n        FROM pg_stat_user_tables\n        ORDER BY pg_total_relation_size(relid) DESC\n        LIMIT 10\n    ''')\n    for t in sizes:\n        print(f\"{t['table_name']}: {t['total_size']} \"\n              f\"({t['row_count']} rows, indexes: {t['index_size']})\")\n    \n    # 2. Check unused indexes\n    print(\"\\n=== Unused Indexes (candidates for removal) ===\")\n    unused = await conn.fetch('''\n        SELECT \n            schemaname || '.' || relname as table,\n            indexrelname as index,\n            pg_size_pretty(pg_relation_size(indexrelid)) as size,\n            idx_scan as scans\n        FROM pg_stat_user_indexes\n        WHERE idx_scan = 0\n          AND indexrelname NOT LIKE '%_pkey'\n        ORDER BY pg_relation_size(indexrelid) DESC\n        LIMIT 5\n    ''')\n    for idx in unused:\n        print(f\"{idx['index']} on {idx['table']}: {idx['size']} (0 scans)\")\n    \n    # 3. Check for bloat (dead tuples)\n    print(\"\\n=== Table Bloat (needs VACUUM) ===\")\n    bloat = await conn.fetch('''\n        SELECT \n            relname as table,\n            n_live_tup as live_rows,\n            n_dead_tup as dead_rows,\n            CASE WHEN n_live_tup > 0 \n                THEN round(100.0 * n_dead_tup / n_live_tup, 1)\n                ELSE 0 \n            END as dead_pct,\n            last_vacuum,\n            last_autovacuum\n        FROM pg_stat_user_tables\n        WHERE n_dead_tup > 1000\n        ORDER BY n_dead_tup DESC\n        LIMIT 5\n    ''')\n    for t in bloat:\n        print(f\"{t['table']}: {t['dead_rows']} dead rows ({t['dead_pct']}%)\")\n    \n    # 4. Connection stats\n    print(\"\\n=== Connection Stats ===\")\n    conn_stats = await conn.fetchrow('''\n        SELECT \n            max_conn,\n            used,\n            reserved,\n            max_conn - used - reserved as available\n        FROM (\n            SELECT \n                setting::int as max_conn\n            FROM pg_settings \n            WHERE name = 'max_connections'\n        ) mc,\n        (\n            SELECT \n                count(*) as used\n            FROM pg_stat_activity\n        ) used,\n        (\n            SELECT \n                setting::int as reserved\n            FROM pg_settings\n            WHERE name = 'superuser_reserved_connections'\n        ) reserved\n    ''')\n    print(f\"Max: {conn_stats['max_conn']}, Used: {conn_stats['used']}, \"\n          f\"Available: {conn_stats['available']}\")\n    \n    await conn.close()\n\nasyncio.run(performance_check())",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Constraints** enforce data integrity at the database level\n- **Foreign keys** with `ON DELETE CASCADE` handle cleanup automatically\n- **CHECK constraints** validate business rules in the schema\n- **B-tree indexes** are default and best for most cases\n- **Partial indexes** save space by indexing only relevant rows\n- **Covering indexes** avoid table lookups for read-heavy queries\n- **EXPLAIN ANALYZE** shows exactly how queries execute\n- **Monitor** for sequential scans on large tables, unused indexes, and table bloat\n- **Avoid** N+1 queries, SELECT *, and functions in WHERE clauses"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-20-lesson-03-challenge-1",
+              "title": "Optimize the Finance Tracker Schema",
+              "description": "Add appropriate constraints and indexes to the transactions table based on common query patterns.",
+              "instructions": "Complete the schema by:\n1. Add a CHECK constraint to ensure amount is not zero\n2. Add a foreign key constraint with ON DELETE CASCADE\n3. Create a composite index for user_id and transaction_date\n4. Create a partial index for large transactions",
+              "starterCode": "import asyncpg\nimport asyncio\n\nasync def optimize_schema():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Add CHECK constraint for non-zero amount\n    await conn.execute('''\n        ALTER TABLE transactions\n        ADD CONSTRAINT chk_amount_nonzero\n        CHECK (amount ____ 0)\n    ''')\n    print(\"Added: CHECK constraint for non-zero amount\")\n    \n    # Add foreign key with cascade delete\n    await conn.execute('''\n        ALTER TABLE transactions\n        ADD CONSTRAINT fk_transactions_user\n        FOREIGN KEY (user_id) \n        REFERENCES users(id)\n        ON DELETE ____\n    ''')\n    print(\"Added: Foreign key with cascade delete\")\n    \n    # Create composite index for common query pattern\n    await conn.execute('''\n        CREATE INDEX idx_tx_user_date\n        ON transactions(____, transaction_date DESC)\n    ''')\n    print(\"Created: Composite index on user_id, transaction_date\")\n    \n    # Create partial index for large transactions (> $1000)\n    await conn.execute('''\n        CREATE INDEX idx_large_transactions\n        ON transactions(amount)\n        WHERE ____(amount) > 1000\n    ''')\n    print(\"Created: Partial index for large transactions\")\n    \n    print(\"\\nSchema optimization complete!\")\n    await conn.close()\n\nasyncio.run(optimize_schema())",
+              "solution": "import asyncpg\nimport asyncio\n\nasync def optimize_schema():\n    conn = await asyncpg.connect(\n        host='localhost', port=5432,\n        user='finance_user', password='secure_password',\n        database='finance_tracker'\n    )\n    \n    # Add CHECK constraint for non-zero amount\n    await conn.execute('''\n        ALTER TABLE transactions\n        ADD CONSTRAINT chk_amount_nonzero\n        CHECK (amount != 0)\n    ''')\n    print(\"Added: CHECK constraint for non-zero amount\")\n    \n    # Add foreign key with cascade delete\n    await conn.execute('''\n        ALTER TABLE transactions\n        ADD CONSTRAINT fk_transactions_user\n        FOREIGN KEY (user_id) \n        REFERENCES users(id)\n        ON DELETE CASCADE\n    ''')\n    print(\"Added: Foreign key with cascade delete\")\n    \n    # Create composite index for common query pattern\n    await conn.execute('''\n        CREATE INDEX idx_tx_user_date\n        ON transactions(user_id, transaction_date DESC)\n    ''')\n    print(\"Created: Composite index on user_id, transaction_date\")\n    \n    # Create partial index for large transactions (> $1000)\n    await conn.execute('''\n        CREATE INDEX idx_large_transactions\n        ON transactions(amount)\n        WHERE ABS(amount) > 1000\n    ''')\n    print(\"Created: Partial index for large transactions\")\n    \n    print(\"\\nSchema optimization complete!\")\n    await conn.close()\n\nasyncio.run(optimize_schema())",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Constraints and indexes created successfully",
+                  "expectedOutput": "Schema optimization complete!",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "**Hint:** For CHECK constraint, use `!=` to ensure not equal to zero. For CASCADE, the keyword is literally `CASCADE`. The composite index should have `user_id` first. For absolute value, use `ABS()`."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using <> instead of != for not equal",
+                  "consequence": "Both work, but != is more common in modern SQL",
+                  "correction": "Either works: CHECK (amount != 0) or CHECK (amount <> 0)"
+                },
+                {
+                  "mistake": "Wrong column order in composite index",
+                  "consequence": "Index won't be used efficiently for user-specific queries",
+                  "correction": "Put the most selective/filtered column first (user_id)"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
