@@ -7210,10 +7210,122 @@
           ]
         },
         {
+          "id": "module-14-lesson-postgresql",
+          "title": "PostgreSQL for Production",
+          "moduleId": "module-14",
+          "order": 9,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why PostgreSQL?",
+              "content": "**PostgreSQL: The Industry Standard for Production**\n\nWhen your application moves from development to production, PostgreSQL is the database of choice for most Python applications.\n\n**Why PostgreSQL?**\n\n1. **Concurrent Connections:**\n   - Handles thousands of simultaneous connections\n   - Connection pooling for efficient resource use\n   - No write locks like SQLite\n\n2. **ACID Compliance:**\n   - Atomicity: Transactions are all-or-nothing\n   - Consistency: Data integrity is maintained\n   - Isolation: Concurrent transactions don't interfere\n   - Durability: Committed data survives crashes\n\n3. **Advanced Features:**\n   - **JSONB**: Native JSON storage with indexing\n   - **Full-text search**: Built-in search without external tools\n   - **Array columns**: Store lists directly in columns\n   - **Geospatial**: PostGIS extension for location data\n\n4. **Cloud Options:**\n   - **Supabase**: PostgreSQL with instant APIs\n   - **Neon**: Serverless PostgreSQL with branching\n   - **Railway**: One-click deployment\n   - **AWS RDS / Azure / GCP**: Enterprise-grade managed services\n\n**SQLite vs PostgreSQL:**\n\n| Feature | SQLite | PostgreSQL |\n|---------|--------|------------|\n| Setup | Zero config | Requires server |\n| Concurrent writes | Single writer | Many writers |\n| Scale | Small/medium | Large/enterprise |\n| Features | Basic | Advanced |\n| Best for | Development | Production |"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Setting Up PostgreSQL",
+              "content": "**Three Ways to Get PostgreSQL Running:**\n\n**Option 1: Docker (Recommended for Development)**\n```bash\n# Start PostgreSQL container\ndocker run --name postgres \\\n  -e POSTGRES_PASSWORD=secret \\\n  -e POSTGRES_USER=myuser \\\n  -e POSTGRES_DB=mydb \\\n  -p 5432:5432 \\\n  -d postgres:16\n\n# Verify it's running\ndocker ps\n\n# Connect with psql\ndocker exec -it postgres psql -U myuser -d mydb\n```\n\n**Option 2: Local Installation**\n```bash\n# macOS\nbrew install postgresql@16\nbrew services start postgresql@16\n\n# Ubuntu/Debian\nsudo apt update\nsudo apt install postgresql postgresql-contrib\nsudo systemctl start postgresql\n\n# Windows\n# Download installer from postgresql.org\n```\n\n**Option 3: Cloud Services (Easiest for Production)**\n- **Supabase**: Free tier, instant setup at supabase.com\n- **Neon**: Serverless, generous free tier at neon.tech\n- **Railway**: Simple deployment at railway.app\n\nAll provide a connection string like:\n```\npostgresql://user:password@host:5432/database\n```",
+              "code": "# PostgreSQL Setup Options\n\nprint(\"=== PostgreSQL Setup Guide ===\")\nprint(\"\")\nprint(\"Option 1: Docker (Recommended for Development)\")\nprint(\"-\" * 50)\nprint(\"\"\"docker run --name postgres \\\\\\n  -e POSTGRES_PASSWORD=secret \\\\\\n  -e POSTGRES_USER=myuser \\\\\\n  -e POSTGRES_DB=mydb \\\\\\n  -p 5432:5432 \\\\\\n  -d postgres:16\"\"\")\nprint(\"\")\nprint(\"Option 2: Local Installation\")\nprint(\"-\" * 50)\nprint(\"macOS:  brew install postgresql@16\")\nprint(\"Ubuntu: sudo apt install postgresql\")\nprint(\"\")\nprint(\"Option 3: Cloud Services\")\nprint(\"-\" * 50)\nprint(\"Supabase: https://supabase.com (free tier available)\")\nprint(\"Neon:     https://neon.tech (serverless PostgreSQL)\")\nprint(\"Railway:  https://railway.app (one-click deploy)\")\nprint(\"\")\nprint(\"All options provide a connection string:\")\nprint(\"  postgresql://user:password@host:5432/database\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Connecting with asyncpg",
+              "content": "**asyncpg: The Fastest PostgreSQL Driver for Python**\n\nFor async FastAPI applications, `asyncpg` provides excellent performance.\n\n**Installation:**\n```bash\n# Using uv (recommended)\nuv add asyncpg\n\n# Or using pip\npip install asyncpg\n```\n\n**Connection URL Format:**\n```\npostgresql+asyncpg://username:password@host:port/database\n```\n\n**Key Configuration Options:**\n- `pool_size`: Number of connections to keep open (default: 5)\n- `max_overflow`: Extra connections allowed above pool_size (default: 10)\n- `pool_timeout`: Seconds to wait for a connection (default: 30)\n- `echo`: Log all SQL statements (useful for debugging)",
+              "code": "# PostgreSQL connection with asyncpg\n# Install: uv add asyncpg\n\nfrom sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker\n\n# PostgreSQL URL format\n# postgresql+asyncpg://username:password@host:port/database\nDATABASE_URL = \"postgresql+asyncpg://myuser:secret@localhost:5432/mydb\"\n\n# Create async engine with connection pooling\nengine = create_async_engine(\n    DATABASE_URL,\n    pool_size=10,        # Keep 10 connections open\n    max_overflow=20,     # Allow 20 extra connections if needed\n    pool_timeout=30,     # Wait 30 seconds for connection\n    echo=True            # Log SQL statements (disable in production)\n)\n\n# Create async session factory\nasync_session = async_sessionmaker(\n    engine,\n    expire_on_commit=False\n)\n\nprint(\"=== PostgreSQL + asyncpg Configuration ===\")\nprint(f\"\")\nprint(f\"Database URL format:\")\nprint(f\"  postgresql+asyncpg://user:pass@host:5432/db\")\nprint(f\"\")\nprint(f\"Connection Pool Settings:\")\nprint(f\"  pool_size=10      # Base connections\")\nprint(f\"  max_overflow=20   # Extra connections allowed\")\nprint(f\"  pool_timeout=30   # Seconds to wait\")\nprint(f\"\")\nprint(f\"Why connection pooling matters:\")\nprint(f\"  - Creating connections is expensive\")\nprint(f\"  - Pool reuses existing connections\")\nprint(f\"  - Prevents connection exhaustion\")\nprint(f\"  - Handles concurrent requests efficiently\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Key Differences from SQLite",
+              "content": "**PostgreSQL-Specific Features in SQLAlchemy:**\n\nPostgreSQL offers powerful data types not available in SQLite.\n\n**1. JSONB Columns:**\nStore JSON with full indexing and query support.\n\n**2. Array Columns:**\nStore lists directly without separate tables.\n\n**3. Full-Text Search:**\nBuilt-in search without external services.\n\n**4. UUID Primary Keys:**\nNative UUID support for distributed systems.\n\n**Note:** These features are PostgreSQL-specific. If you use them, your code won't work with SQLite. For development/production parity, consider using Docker to run PostgreSQL locally.",
+              "code": "# PostgreSQL-specific features in SQLAlchemy\n# These features are NOT available in SQLite\n\nfrom sqlalchemy import Column, Integer, String\nfrom sqlalchemy.orm import declarative_base, Mapped, mapped_column\nfrom sqlalchemy.dialects.postgresql import JSONB, ARRAY, UUID\nimport uuid\n\nBase = declarative_base()\n\nclass Transaction(Base):\n    \"\"\"Example model using PostgreSQL-specific types\"\"\"\n    __tablename__ = 'transactions'\n    \n    # UUID primary key (great for distributed systems)\n    id: Mapped[uuid.UUID] = mapped_column(\n        UUID(as_uuid=True), \n        primary_key=True, \n        default=uuid.uuid4\n    )\n    \n    # JSONB column - store structured data with indexing\n    metadata_: Mapped[dict] = mapped_column(\n        JSONB, \n        default={},\n        nullable=False\n    )\n    \n    # Array column - store lists directly\n    tags: Mapped[list[str]] = mapped_column(\n        ARRAY(String),\n        default=[]\n    )\n    \n    amount: Mapped[int] = mapped_column(Integer)\n\nprint(\"=== PostgreSQL-Specific Features ===\")\nprint(\"\")\nprint(\"1. JSONB Columns:\")\nprint(\"   - Store JSON with full query support\")\nprint(\"   - Example: metadata_->>'key' = 'value'\")\nprint(\"   - Can be indexed for performance\")\nprint(\"\")\nprint(\"2. Array Columns:\")\nprint(\"   - Store lists without separate tables\")\nprint(\"   - Example: tags = ['python', 'api']\")\nprint(\"   - Query: ANY(tags) = 'python'\")\nprint(\"\")\nprint(\"3. UUID Primary Keys:\")\nprint(\"   - Globally unique identifiers\")\nprint(\"   - Great for distributed systems\")\nprint(\"   - No central ID generator needed\")\nprint(\"\")\nprint(\"4. Full-Text Search:\")\nprint(\"   - Built into PostgreSQL\")\nprint(\"   - No external service needed\")\nprint(\"   - Supports ranking and highlighting\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Environment-Based Configuration",
+              "content": "**Use Environment Variables for Database URLs**\n\nThe best practice is to use different databases for different environments:\n- **Development**: SQLite (zero config, easy reset)\n- **Testing**: SQLite in-memory or Docker PostgreSQL\n- **Production**: Managed PostgreSQL (Supabase, Neon, RDS)\n\n**Pydantic Settings** makes this easy by automatically reading from environment variables and `.env` files.\n\n**Key Principle:** Your code should work identically regardless of which database is configured. SQLAlchemy abstracts the differences.",
+              "code": "# Environment-based database configuration\n# Works with both SQLite (dev) and PostgreSQL (prod)\n\nfrom pydantic_settings import BaseSettings\nfrom sqlalchemy.ext.asyncio import create_async_engine\n\nclass Settings(BaseSettings):\n    \"\"\"Application settings with environment variable support\"\"\"\n    \n    # Default to SQLite for local development\n    database_url: str = \"sqlite+aiosqlite:///./dev.db\"\n    \n    # Load from .env file automatically\n    model_config = {\"env_file\": \".env\"}\n\nsettings = Settings()\n\n# Engine configuration based on database type\ndef get_engine_kwargs():\n    \"\"\"Return appropriate engine kwargs based on database type\"\"\"\n    if \"sqlite\" in settings.database_url:\n        return {\n            \"connect_args\": {\"check_same_thread\": False}\n        }\n    else:\n        # PostgreSQL settings\n        return {\n            \"pool_size\": 10,\n            \"max_overflow\": 20,\n            \"pool_timeout\": 30\n        }\n\nengine = create_async_engine(\n    settings.database_url,\n    echo=True,\n    **get_engine_kwargs()\n)\n\nprint(\"=== Environment-Based Configuration ===\")\nprint(\"\")\nprint(\".env for Development:\")\nprint(\"-\" * 40)\nprint(\"# No DATABASE_URL needed - uses SQLite default\")\nprint(\"# Or explicitly:\")\nprint(\"DATABASE_URL=sqlite+aiosqlite:///./dev.db\")\nprint(\"\")\nprint(\".env for Production:\")\nprint(\"-\" * 40)\nprint(\"DATABASE_URL=postgresql+asyncpg://user:pass@host:5432/db\")\nprint(\"\")\nprint(f\"Current URL: {settings.database_url}\")\nprint(\"\")\nprint(\"Benefits:\")\nprint(\"  - Same code works in all environments\")\nprint(\"  - No secrets in source code\")\nprint(\"  - Easy to switch databases\")\nprint(\"  - SQLAlchemy handles the differences\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "PostgreSQL Production Takeaways",
+              "content": "**Core Concepts:**\n\n1. **PostgreSQL is the production standard** - Handles concurrent users, advanced features, and scales well\n\n2. **asyncpg for async Python** - Fastest PostgreSQL driver, perfect for FastAPI\n\n3. **Connection pooling is essential** - Reuse connections, prevent exhaustion\n\n**Setup Options:**\n```bash\n# Docker (development)\ndocker run -d postgres:16 ...\n\n# Cloud (production)\n# Supabase, Neon, Railway - get connection string\n```\n\n**Connection URL:**\n```python\npostgresql+asyncpg://user:pass@host:5432/dbname\n```\n\n**PostgreSQL-Only Features:**\n- JSONB columns for structured data\n- Array columns for lists\n- Full-text search built-in\n- UUID primary keys\n\n**Environment Configuration:**\n```python\nfrom pydantic_settings import BaseSettings\n\nclass Settings(BaseSettings):\n    database_url: str = \"sqlite+aiosqlite:///./dev.db\"\n    model_config = {\"env_file\": \".env\"}\n```\n\n**Best Practice:**\n- SQLite for local development (zero config)\n- PostgreSQL for production (full features)\n- Same SQLAlchemy code works with both"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-postgresql-challenge",
+              "title": "Create a Production-Ready Database Configuration",
+              "description": "Create a database configuration module that works with both SQLite (development) and PostgreSQL (production) based on environment variables.",
+              "instructions": "Create a database.py module that:\n\n1. Uses Pydantic Settings to load DATABASE_URL from environment\n2. Defaults to SQLite for development\n3. Configures appropriate engine settings based on database type:\n   - SQLite: check_same_thread=False\n   - PostgreSQL: pool_size, max_overflow, pool_timeout\n4. Creates an async engine and session factory\n5. Works seamlessly with both databases",
+              "starterCode": "# database.py - Production-ready database configuration\nfrom pydantic_settings import BaseSettings\nfrom sqlalchemy.ext.asyncio import (\n    create_async_engine,\n    async_sessionmaker,\n    AsyncSession\n)\nfrom sqlalchemy.orm import declarative_base\n\nclass Settings(BaseSettings):\n    # TODO: Define database_url with SQLite default\n    pass\n\nsettings = Settings()\n\n# TODO: Create function to return engine kwargs based on DB type\ndef get_engine_kwargs() -> dict:\n    pass\n\n# TODO: Create async engine with appropriate settings\nengine = None\n\n# TODO: Create async session factory\nasync_session = None\n\n# Base class for models\nBase = declarative_base()\n\n# Test the configuration\nif __name__ == \"__main__\":\n    print(f\"Database URL: {settings.database_url}\")\n    print(f\"Engine kwargs: {get_engine_kwargs()}\")",
+              "solution": "# database.py - Production-ready database configuration\nfrom pydantic_settings import BaseSettings\nfrom sqlalchemy.ext.asyncio import (\n    create_async_engine,\n    async_sessionmaker,\n    AsyncSession\n)\nfrom sqlalchemy.orm import declarative_base\n\nclass Settings(BaseSettings):\n    # Default to SQLite for local development\n    database_url: str = \"sqlite+aiosqlite:///./dev.db\"\n    \n    model_config = {\"env_file\": \".env\"}\n\nsettings = Settings()\n\ndef get_engine_kwargs() -> dict:\n    \"\"\"Return appropriate engine kwargs based on database type.\"\"\"\n    if \"sqlite\" in settings.database_url:\n        # SQLite-specific settings\n        return {\n            \"connect_args\": {\"check_same_thread\": False}\n        }\n    else:\n        # PostgreSQL settings with connection pooling\n        return {\n            \"pool_size\": 10,\n            \"max_overflow\": 20,\n            \"pool_timeout\": 30\n        }\n\n# Create async engine with appropriate settings\nengine = create_async_engine(\n    settings.database_url,\n    echo=True,  # Set to False in production\n    **get_engine_kwargs()\n)\n\n# Create async session factory\nasync_session = async_sessionmaker(\n    engine,\n    expire_on_commit=False,\n    class_=AsyncSession\n)\n\n# Base class for models\nBase = declarative_base()\n\n# Test the configuration\nif __name__ == \"__main__\":\n    print(f\"Database URL: {settings.database_url}\")\n    print(f\"Engine kwargs: {get_engine_kwargs()}\")\n    print(\"Configuration loaded successfully!\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Settings class has database_url with SQLite default",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "get_engine_kwargs returns check_same_thread for SQLite",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "get_engine_kwargs returns pool settings for PostgreSQL",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'sqlite' in settings.database_url to check the database type."
+                },
+                {
+                  "level": 2,
+                  "text": "For PostgreSQL, include pool_size, max_overflow, and pool_timeout in the kwargs."
+                },
+                {
+                  "level": 3,
+                  "text": "Use **get_engine_kwargs() to spread the dictionary when creating the engine."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Hardcoding database URL instead of using environment variables",
+                  "consequence": "Secrets exposed in source code, inflexible configuration",
+                  "correction": "Use Pydantic Settings with env_file support"
+                },
+                {
+                  "mistake": "Using same engine kwargs for SQLite and PostgreSQL",
+                  "consequence": "SQLite errors with pool settings, PostgreSQL misses optimization",
+                  "correction": "Check database type and return appropriate settings"
+                },
+                {
+                  "mistake": "Forgetting pool_timeout for PostgreSQL",
+                  "consequence": "Requests hang indefinitely when pool is exhausted",
+                  "correction": "Always set pool_timeout to a reasonable value like 30 seconds"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
-          "order": 9,
+          "order": 10,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
@@ -7279,7 +7391,7 @@
           "id": "module-14-lesson-04",
           "title": "Authentication and API Security",
           "moduleId": "module-14",
-          "order": 10,
+          "order": 11,
           "estimatedMinutes": 45,
           "difficulty": "advanced",
           "contentSections": [
@@ -7362,7 +7474,7 @@
           "id": "module-13-lesson-05",
           "title": "API Testing and Documentation",
           "moduleId": "module-14",
-          "order": 11,
+          "order": 12,
           "estimatedMinutes": 30,
           "difficulty": "beginner",
           "contentSections": [
@@ -7440,7 +7552,7 @@
           "id": "module-13-lesson-06",
           "title": "Mini-Project: Complete Blog API with Authentication",
           "moduleId": "module-14",
-          "order": 12,
+          "order": 13,
           "estimatedMinutes": 30,
           "difficulty": "beginner",
           "contentSections": [
