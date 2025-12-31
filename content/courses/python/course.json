@@ -7322,6 +7322,128 @@
           ]
         },
         {
+          "id": "module-14-lesson-password-hashing",
+          "title": "Password Hashing",
+          "moduleId": "module-14",
+          "order": 10,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Password Hashing?",
+              "content": "**Never Store Plain Text Passwords**\n\nOne of the most critical security rules in software development: **NEVER store passwords in plain text**. If your database is breached, attackers would have immediate access to every user's password.\n\n**Hashing is One-Way**\n\nUnlike encryption (which can be reversed with a key), hashing is a **one-way function**:\n- Input: `\"secretpassword123\"` → Output: `\"$2b$12$LQv3c1y...\"` (irreversible)\n- You cannot convert the hash back to the original password\n- To verify a password, you hash the attempt and compare hashes\n\n**Why Bcrypt?**\n\nBcrypt is the **industry standard** for password hashing:\n\n1. **Intentionally Slow** - Takes ~100ms to hash, making brute-force attacks impractical\n2. **Built-in Salt** - Each password gets a unique random salt\n3. **Adjustable Cost** - Can increase computation as hardware gets faster\n4. **Battle-Tested** - Used by major companies for decades\n\n**Salt Prevents Rainbow Table Attacks**\n\nA **rainbow table** is a precomputed table of common password hashes. Without salt:\n- `hash(\"password123\")` always produces the same hash\n- Attackers can look up hashes in rainbow tables\n\nWith salt (random data added before hashing):\n- `hash(\"password123\" + random_salt)` produces a unique hash every time\n- Rainbow tables become useless\n- Bcrypt handles salting automatically\n\n**Security Comparison:**\n\n| Method | Security | Use Case |\n|--------|----------|----------|\n| Plain text | None | Never! |\n| MD5/SHA1 | Weak | Never for passwords |\n| SHA256 | Medium | Not for passwords |\n| Bcrypt | Strong | Passwords |\n| Argon2 | Strongest | Passwords (newer) |"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using passlib with bcrypt",
+              "content": "**passlib: The Recommended Library**\n\n`passlib` provides a clean, secure interface for password hashing. It handles all the complexity of salting, hashing, and verification.\n\n**Installation:**\n```bash\nuv add \"passlib[bcrypt]\"\n# or: pip install \"passlib[bcrypt]\"\n```\n\n**Key Concepts:**\n- `CryptContext`: Manages hashing schemes and configuration\n- `hash()`: Creates a secure hash from a password\n- `verify()`: Checks if a password matches a hash\n- `deprecated=\"auto\"`: Automatically handles scheme upgrades",
+              "code": "# uv add \"passlib[bcrypt]\"\n\nfrom passlib.context import CryptContext\n\n# Configure password hashing context\n# - schemes: List of allowed hashing algorithms\n# - deprecated: Automatically rehash old schemes\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\ndef hash_password(password: str) -> str:\n    \"\"\"Hash a password for storage.\n    \n    This creates a secure bcrypt hash with automatic salt.\n    Each call produces a different hash for the same password!\n    \"\"\"\n    return pwd_context.hash(password)\n\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    \"\"\"Verify a password against its hash.\n    \n    Returns True if the password matches, False otherwise.\n    Timing-safe comparison prevents timing attacks.\n    \"\"\"\n    return pwd_context.verify(plain_password, hashed_password)\n\n# Demonstration\nprint(\"=== Password Hashing Demo ===\")\nprint()\n\n# Hash a password\npassword = \"secretpassword123\"\nhashed = hash_password(password)\n\nprint(f\"Original password: {password}\")\nprint(f\"Hashed password:   {hashed}\")\nprint(f\"Hash length:       {len(hashed)} characters\")\nprint()\n\n# Notice: Same password produces different hashes (due to salt)\nprint(\"Same password, different hashes (salt makes each unique):\")\nfor i in range(3):\n    h = hash_password(password)\n    print(f\"  Hash {i+1}: {h[:30]}...\")\nprint()\n\n# Verify passwords\nprint(\"Password verification:\")\nprint(f\"  Correct password: {verify_password('secretpassword123', hashed)}\")\nprint(f\"  Wrong password:   {verify_password('wrongpassword', hashed)}\")\nprint(f\"  Empty password:   {verify_password('', hashed)}\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "User Registration Flow",
+              "content": "**Secure Registration Pattern**\n\nWhen a user registers, you must:\n1. Validate the email format (use `EmailStr`)\n2. Check if the email is already registered\n3. Hash the password before storing\n4. Never log or return the password hash\n\n**Important Security Points:**\n- Store `hashed_password`, never `password`\n- Use `EmailStr` for automatic email validation\n- Return minimal user info (no password hash)\n- Use proper HTTP status codes (400 for validation errors)",
+              "code": "from fastapi import FastAPI, HTTPException, Depends\nfrom pydantic import BaseModel, EmailStr\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom sqlalchemy import select\nfrom passlib.context import CryptContext\n\napp = FastAPI()\n\n# Password hashing setup\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\ndef hash_password(password: str) -> str:\n    return pwd_context.hash(password)\n\n# Pydantic models\nclass UserCreate(BaseModel):\n    \"\"\"User registration request.\"\"\"\n    email: EmailStr  # Automatic email format validation\n    password: str    # Plain text from user (will be hashed)\n\nclass UserResponse(BaseModel):\n    \"\"\"User response (never includes password!).\"\"\"\n    id: int\n    email: str\n    # Note: No password or hashed_password field!\n\n# Example User SQLAlchemy model (simplified)\n# class User(Base):\n#     __tablename__ = \"users\"\n#     id = Column(Integer, primary_key=True)\n#     email = Column(String, unique=True, nullable=False)\n#     hashed_password = Column(String, nullable=False)\n\n@app.post(\"/register\", response_model=UserResponse, status_code=201)\nasync def register(user: UserCreate, db: AsyncSession = Depends(get_db)):\n    \"\"\"Register a new user with secure password hashing.\"\"\"\n    \n    # Step 1: Check if user already exists\n    result = await db.execute(\n        select(User).where(User.email == user.email)\n    )\n    existing_user = result.scalar_one_or_none()\n    \n    if existing_user:\n        raise HTTPException(\n            status_code=400,\n            detail=\"Email already registered\"\n        )\n    \n    # Step 2: Hash password BEFORE storing\n    # CRITICAL: Never store plain text passwords!\n    hashed = hash_password(user.password)\n    \n    # Step 3: Create user with hashed password\n    db_user = User(\n        email=user.email,\n        hashed_password=hashed  # Store the HASH, not the password\n    )\n    \n    db.add(db_user)\n    await db.commit()\n    await db.refresh(db_user)\n    \n    # Step 4: Return user WITHOUT password info\n    return db_user\n\n# Demonstration of the flow\nprint(\"=== User Registration Flow ===\")\nprint()\nprint(\"1. User submits: { email: 'alice@example.com', password: 'secret123' }\")\nprint()\nprint(\"2. Server validates email format (EmailStr)\")\nprint()\nprint(\"3. Server checks database for existing user\")\nprint()\nprint(\"4. Server hashes password:\")\nexample_hash = hash_password(\"secret123\")\nprint(f\"   'secret123' -> '{example_hash[:40]}...'\")\nprint()\nprint(\"5. Server stores in database:\")\nprint(\"   { id: 1, email: 'alice@example.com', hashed_password: '$2b$12...' }\")\nprint()\nprint(\"6. Server responds with:\")\nprint(\"   { id: 1, email: 'alice@example.com' }\")\nprint(\"   (No password in response!)\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Login Verification",
+              "content": "**Secure Login Pattern**\n\nDuring login, verify the password against the stored hash:\n1. Find the user by email\n2. Use `verify_password()` to compare\n3. Return generic error messages (don't reveal which field was wrong)\n4. Never log password attempts\n\n**Security Best Practice:**\nAlways return the same error message for \"user not found\" and \"wrong password\". This prevents attackers from discovering valid emails.",
+              "code": "from fastapi import FastAPI, HTTPException, Depends\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom sqlalchemy import select\nfrom passlib.context import CryptContext\n\napp = FastAPI()\n\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    \"\"\"Verify a password against its hash.\"\"\"\n    return pwd_context.verify(plain_password, hashed_password)\n\nasync def get_user_by_email(db: AsyncSession, email: str):\n    \"\"\"Retrieve user from database by email.\"\"\"\n    result = await db.execute(\n        select(User).where(User.email == email)\n    )\n    return result.scalar_one_or_none()\n\n@app.post(\"/login\")\nasync def login(\n    email: str,\n    password: str,\n    db: AsyncSession = Depends(get_db)\n):\n    \"\"\"Authenticate user with email and password.\"\"\"\n    \n    # Step 1: Find user by email\n    user = await get_user_by_email(db, email)\n    \n    # Step 2: Verify password (also handles user not found)\n    # SECURITY: Use same error message for both cases!\n    # This prevents email enumeration attacks.\n    if not user or not verify_password(password, user.hashed_password):\n        raise HTTPException(\n            status_code=401,\n            detail=\"Invalid credentials\"  # Generic message!\n        )\n    \n    # Step 3: Login successful\n    # In a real app, you'd create a JWT token here\n    return {\n        \"message\": \"Login successful\",\n        \"user_id\": user.id\n    }\n\n# Demonstration\nprint(\"=== Login Verification Flow ===\")\nprint()\n\n# Simulate stored hash\nstored_hash = pwd_context.hash(\"correctpassword\")\n\nprint(\"Stored in database:\")\nprint(f\"  email: 'alice@example.com'\")\nprint(f\"  hashed_password: '{stored_hash[:40]}...'\")\nprint()\n\nprint(\"Login attempt 1: Correct password\")\nresult = verify_password(\"correctpassword\", stored_hash)\nprint(f\"  verify_password('correctpassword', hash) = {result}\")\nprint(\"  Response: { message: 'Login successful' }\")\nprint()\n\nprint(\"Login attempt 2: Wrong password\")\nresult = verify_password(\"wrongpassword\", stored_hash)\nprint(f\"  verify_password('wrongpassword', hash) = {result}\")\nprint(\"  Response: 401 'Invalid credentials'\")\nprint()\n\nprint(\"SECURITY NOTE:\")\nprint(\"  Same error for 'user not found' and 'wrong password'\")\nprint(\"  Prevents attackers from discovering valid emails!\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Password Hashing Takeaways",
+              "content": "**Core Principles:**\n\n1. **Use bcrypt via passlib** - Battle-tested, industry standard\n   ```python\n   from passlib.context import CryptContext\n   pwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n   ```\n\n2. **Never log or expose password hashes** - Even hashes are sensitive\n   - Don't include in API responses\n   - Don't log in application logs\n   - Don't store in client-side storage\n\n3. **Use EmailStr for email validation** - Automatic format checking\n   ```python\n   from pydantic import EmailStr\n   email: EmailStr  # Validates email format\n   ```\n\n4. **Generic error messages** - Prevent information disclosure\n   - Bad: \"Email not found\" / \"Wrong password\"\n   - Good: \"Invalid credentials\"\n\n**Quick Reference:**\n\n```python\n# Installation\nuv add \"passlib[bcrypt]\"\n\n# Setup\nfrom passlib.context import CryptContext\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\n# Hash (for registration)\nhashed = pwd_context.hash(password)\n\n# Verify (for login)\nif pwd_context.verify(provided_password, stored_hash):\n    # Login success\n```\n\n**Security Checklist:**\n- [ ] Never store plain text passwords\n- [ ] Use bcrypt (not MD5, SHA1, or SHA256)\n- [ ] Hash on the server, not client\n- [ ] Use generic authentication errors\n- [ ] Never log passwords or hashes"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-password-hashing-challenge",
+              "title": "Build a Secure Authentication Module",
+              "description": "Create a complete authentication module with password hashing that can be used in a FastAPI application.",
+              "instructions": "Create an authentication module that:\n\n1. Sets up passlib with bcrypt for password hashing\n2. Implements `hash_password()` function\n3. Implements `verify_password()` function\n4. Creates a Pydantic model for user registration with email validation\n5. Creates a Pydantic model for user response (without password)\n6. Implements a mock `register_user()` function that:\n   - Validates the email isn't already taken\n   - Hashes the password before storing\n   - Returns the user without password info\n7. Implements a mock `authenticate_user()` function that:\n   - Looks up user by email\n   - Verifies password against stored hash\n   - Returns None if authentication fails",
+              "starterCode": "from pydantic import BaseModel, EmailStr\nfrom passlib.context import CryptContext\nfrom typing import Optional, Dict\n\n# TODO: Set up password hashing context with bcrypt\npwd_context = None\n\n# TODO: Implement hash_password function\ndef hash_password(password: str) -> str:\n    \"\"\"Hash a password for secure storage.\"\"\"\n    pass\n\n# TODO: Implement verify_password function\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    \"\"\"Verify a password against its hash.\"\"\"\n    pass\n\n# TODO: Create UserCreate model with email (EmailStr) and password (str)\nclass UserCreate(BaseModel):\n    pass\n\n# TODO: Create UserResponse model with id (int) and email (str)\nclass UserResponse(BaseModel):\n    pass\n\n# Mock database\nusers_db: Dict[str, dict] = {}\nnext_id = 1\n\n# TODO: Implement register_user\ndef register_user(user_data: UserCreate) -> Optional[UserResponse]:\n    \"\"\"Register a new user with hashed password.\n    \n    Returns UserResponse on success, None if email exists.\n    \"\"\"\n    pass\n\n# TODO: Implement authenticate_user\ndef authenticate_user(email: str, password: str) -> Optional[UserResponse]:\n    \"\"\"Authenticate user with email and password.\n    \n    Returns UserResponse on success, None if authentication fails.\n    \"\"\"\n    pass\n\n# Test your implementation\nif __name__ == \"__main__\":\n    # Test registration\n    user = UserCreate(email=\"alice@example.com\", password=\"secret123\")\n    result = register_user(user)\n    print(f\"Registered: {result}\")\n    \n    # Test duplicate registration\n    result2 = register_user(user)\n    print(f\"Duplicate: {result2}\")\n    \n    # Test authentication\n    auth = authenticate_user(\"alice@example.com\", \"secret123\")\n    print(f\"Auth success: {auth}\")\n    \n    # Test wrong password\n    auth_fail = authenticate_user(\"alice@example.com\", \"wrong\")\n    print(f\"Auth fail: {auth_fail}\")",
+              "solution": "from pydantic import BaseModel, EmailStr\nfrom passlib.context import CryptContext\nfrom typing import Optional, Dict\n\n# Password hashing context with bcrypt\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\ndef hash_password(password: str) -> str:\n    \"\"\"Hash a password for secure storage.\n    \n    Uses bcrypt with automatic salt generation.\n    Each call produces a different hash for the same password.\n    \"\"\"\n    return pwd_context.hash(password)\n\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    \"\"\"Verify a password against its hash.\n    \n    Uses timing-safe comparison to prevent timing attacks.\n    Returns True if password matches, False otherwise.\n    \"\"\"\n    return pwd_context.verify(plain_password, hashed_password)\n\nclass UserCreate(BaseModel):\n    \"\"\"User registration request model.\"\"\"\n    email: EmailStr  # Automatic email format validation\n    password: str\n\nclass UserResponse(BaseModel):\n    \"\"\"User response model (never includes password).\"\"\"\n    id: int\n    email: str\n\n# Mock database\nusers_db: Dict[str, dict] = {}\nnext_id = 1\n\ndef register_user(user_data: UserCreate) -> Optional[UserResponse]:\n    \"\"\"Register a new user with hashed password.\n    \n    Returns UserResponse on success, None if email exists.\n    \"\"\"\n    global next_id\n    \n    # Check if email already exists\n    if user_data.email in users_db:\n        return None\n    \n    # Hash password before storing\n    hashed = hash_password(user_data.password)\n    \n    # Create user record\n    user_record = {\n        \"id\": next_id,\n        \"email\": user_data.email,\n        \"hashed_password\": hashed  # Store hash, never plain password\n    }\n    \n    users_db[user_data.email] = user_record\n    next_id += 1\n    \n    # Return response without password info\n    return UserResponse(id=user_record[\"id\"], email=user_record[\"email\"])\n\ndef authenticate_user(email: str, password: str) -> Optional[UserResponse]:\n    \"\"\"Authenticate user with email and password.\n    \n    Returns UserResponse on success, None if authentication fails.\n    \"\"\"\n    # Look up user\n    user = users_db.get(email)\n    if not user:\n        return None\n    \n    # Verify password\n    if not verify_password(password, user[\"hashed_password\"]):\n        return None\n    \n    return UserResponse(id=user[\"id\"], email=user[\"email\"])\n\n# Test the implementation\nif __name__ == \"__main__\":\n    print(\"=== Password Hashing Challenge Solution ===\")\n    print()\n    \n    # Test registration\n    user = UserCreate(email=\"alice@example.com\", password=\"secret123\")\n    result = register_user(user)\n    print(f\"1. Registered: {result}\")\n    \n    # Test duplicate registration\n    result2 = register_user(user)\n    print(f\"2. Duplicate attempt: {result2}\")\n    \n    # Test successful authentication\n    auth = authenticate_user(\"alice@example.com\", \"secret123\")\n    print(f\"3. Auth with correct password: {auth}\")\n    \n    # Test wrong password\n    auth_fail = authenticate_user(\"alice@example.com\", \"wrongpassword\")\n    print(f\"4. Auth with wrong password: {auth_fail}\")\n    \n    # Test non-existent user\n    auth_none = authenticate_user(\"nobody@example.com\", \"secret123\")\n    print(f\"5. Auth for non-existent user: {auth_none}\")\n    \n    print()\n    print(\"Database contents (for debugging only):\")\n    for email, data in users_db.items():\n        print(f\"  {email}: hash={data['hashed_password'][:30]}...\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Password hashing produces valid bcrypt hash",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Password verification works correctly",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Registration returns user without password",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Authentication succeeds with correct password",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Authentication fails with wrong password",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\") to set up password hashing."
+                },
+                {
+                  "level": 2,
+                  "text": "For registration, always hash the password with pwd_context.hash() before storing. Never store the plain password."
+                },
+                {
+                  "level": 3,
+                  "text": "For authentication, use pwd_context.verify(plain_password, stored_hash) to check if the password matches."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Storing plain text password instead of hash",
+                  "consequence": "Major security vulnerability - all passwords exposed if database is breached",
+                  "correction": "Always use pwd_context.hash(password) before storing"
+                },
+                {
+                  "mistake": "Including password or hashed_password in UserResponse",
+                  "consequence": "Exposes sensitive data in API responses",
+                  "correction": "UserResponse should only contain id and email"
+                },
+                {
+                  "mistake": "Comparing hashes directly with == instead of verify()",
+                  "consequence": "Vulnerable to timing attacks",
+                  "correction": "Use pwd_context.verify() which uses timing-safe comparison"
+                },
+                {
+                  "mistake": "Different error messages for 'user not found' vs 'wrong password'",
+                  "consequence": "Allows attackers to enumerate valid emails",
+                  "correction": "Return the same error/None for both cases"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
