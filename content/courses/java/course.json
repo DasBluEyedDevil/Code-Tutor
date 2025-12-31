@@ -5637,7 +5637,22 @@
               "content": "JUnit is Java's most popular testing framework.\n\nExample test:\n\n@Test\npublic void testAdd() {\n    int result = Calculator.add(2, 3);\n    assertEquals(5, result);\n}\n\nIf add(2,3) returns 5, test PASSES ✓\nIf it returns anything else, test FAILS ✗"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-8-1-testing-benefits",
+              "title": "Why Write Tests?",
+              "description": "What is the PRIMARY benefit of automated tests over manual testing?",
+              "options": [
+                "Tests are faster to write",
+                "Tests can run automatically and repeatedly without human effort",
+                "Tests are always 100% accurate",
+                "Tests eliminate the need for debugging"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Automated tests run instantly and consistently every time. Manual testing is slow, error-prone, and doesn't scale."
+            }
+          ]
         },
         {
           "id": "epoch-4-lesson-2",
@@ -5840,7 +5855,22 @@
               "content": "AVOID THESE TDD PITFALLS:\n\n1. WRITING TOO MUCH CODE AT ONCE\n   Only write code to pass the CURRENT test.\n\n2. SKIPPING THE REFACTOR STEP\n   Clean code is as important as working code.\n\n3. TESTING IMPLEMENTATION DETAILS\n   Test BEHAVIOR, not internal structure.\n\n4. NOT RUNNING TESTS FREQUENTLY\n   Run tests after every small change.\n\n5. WRITING TESTS THAT DEPEND ON EACH OTHER\n   Each test should be independent.\n\nGood TDD: Small steps, frequent feedback."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-8-3-tdd-order",
+              "title": "TDD Cycle",
+              "description": "What is the correct order of the TDD cycle?",
+              "options": [
+                "Write code, write test, refactor",
+                "Write test, write code, refactor",
+                "Refactor, write test, write code",
+                "Write code, refactor, write test"
+              ],
+              "correctAnswer": 1,
+              "explanation": "TDD follows Red-Green-Refactor: Write a failing test (Red), write minimal code to pass (Green), then clean up (Refactor)."
+            }
+          ]
         },
         {
           "id": "epoch-4-lesson-4",
@@ -5896,7 +5926,22 @@
               "content": "AVOID THESE MISTAKES:\n\n1. NOT USING DEPENDENCY MANAGEMENT\n   In multi-module projects, use <dependencyManagement> to centralize versions.\n\n2. USING SNAPSHOT VERSIONS IN PRODUCTION\n   SNAPSHOT versions can change unexpectedly. Use release versions for production.\n\n3. NOT SPECIFYING ENCODING\n   Add <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> to properties.\n\n4. FORGETTING MAVEN WRAPPER\n   Use mvnw (Maven Wrapper) so all developers use the same Maven version.\n\n5. IGNORING DEPENDENCY CONFLICTS\n   Run 'mvn dependency:tree' to check for version conflicts."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-8-4-maven-commands",
+              "title": "Maven Commands",
+              "description": "Which Maven command compiles code, runs tests, and creates a JAR file?",
+              "options": [
+                "mvn compile",
+                "mvn test",
+                "mvn package",
+                "mvn install"
+              ],
+              "correctAnswer": 2,
+              "explanation": "mvn package runs the full lifecycle: compile -> test -> package (create JAR). mvn install goes further by copying to local repository."
+            }
+          ]
         },
         {
           "id": "epoch-4-lesson-5-gradle",
@@ -6048,7 +6093,22 @@
               "content": "AVOID THESE MISTAKES:\n\n1. LEAVING DEBUG PRINTLNS IN CODE\n   Remove System.out.println() before committing. Use proper logging instead.\n\n2. LOGGING SENSITIVE DATA\n   NEVER log passwords, credit cards, or personal data. Logs can be accessed by many people.\n\n3. NOT LOGGING ENOUGH CONTEXT\n   Bad: logger.error(\"Failed\")\n   Good: logger.error(\"Failed to process order {} for user {}\", orderId, userId)\n\n4. IGNORING EXCEPTION STACK TRACES\n   Always include the exception: logger.error(\"Error processing\", exception)\n\n5. DEBUGGING IN PRODUCTION\n   Use logging for production issues. Debuggers are for development only."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-8-6-logging",
+              "title": "Logging Best Practices",
+              "description": "Which logging level should you use for 'User logged in successfully'?",
+              "options": [
+                "DEBUG - it's implementation detail",
+                "INFO - it's a normal business event",
+                "WARN - something might be wrong",
+                "ERROR - something failed"
+              ],
+              "correctAnswer": 1,
+              "explanation": "INFO is for normal, significant business events. DEBUG is for development details. WARN/ERROR are for problems."
+            }
+          ]
         }
       ],
       "order": 8
