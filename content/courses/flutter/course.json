@@ -11943,39 +11943,117 @@
               "language": "dart"
             },
             {
-              "type": "EXPERIMENT",
-              "title": "Best Practices",
-              "content": "\n1. **Always Compress Images**\n   ```dart\n   await _picker.pickImage(\n     source: ImageSource.gallery,\n     imageQuality: 80,  // 80% quality is usually enough\n     maxWidth: 1920,    // Limit dimensions\n   );\n   ```\n\n2. **Handle Permissions Gracefully**\n   - Explain **why** you need permission (in Info.plist/AndroidManifest)\n   - Provide fallback if permission denied\n   - Guide users to settings if permanently denied\n\n3. **Dispose of Large Images**\n   ```dart\n   @override\n   void dispose() {\n     _selectedImage?.delete();  // Clean up temp files\n     super.dispose();\n   }\n   ```\n\n4. **Show Loading Indicators**\n   - Picking/compressing images takes time\n   - Always show progress to user\n\n5. **Validate Image Files**\n   ```dart\n   Future<bool> _isValidImage(File file) async {\n     final bytes = await file.length();\n     final maxSize = 10 * 1024 * 1024;  // 10 MB\n\n     if (bytes > maxSize) {\n       ScaffoldMessenger.of(context).showSnackBar(\n         SnackBar(content: Text('Image too large! Max 10 MB')),\n       );\n       return false;\n     }\n\n     return true;\n   }\n   ```\n\n"
+              "type": "THEORY",
+              "title": "Testing Async Code",
+              "content": "\nBackend code is heavily asynchronous - database calls, HTTP requests, file operations all use `Future` or `Stream`. Testing async code requires special attention.\n\n**Basic Async Test:**\n\n```dart\ntest('fetches data asynchronously', () async {\n  // Mark test function as async\n  final result = await fetchData();\n  expect(result, isNotNull);\n});\n```\n\n**Testing Futures:**\n\n```dart\ntest('completes with expected value', () async {\n  final future = computeValue();\n  \n  // Wait for completion and check result\n  expect(await future, equals(42));\n  \n  // Or use completion matcher\n  expect(future, completion(equals(42)));\n});\n\ntest('throws expected exception', () async {\n  final future = fetchInvalidData();\n  \n  // Use throwsA for async exceptions\n  expect(future, throwsA(isA<NotFoundException>()));\n});\n```\n\n**Testing Streams:**\n\n```dart\ntest('emits expected values', () async {\n  final stream = countTo(3);\n  \n  // Check all emitted values\n  expect(stream, emitsInOrder([1, 2, 3]));\n});\n\ntest('stream emits error', () {\n  final stream = failingStream();\n  \n  expect(stream, emitsError(isA<Exception>()));\n});\n\ntest('stream completes', () {\n  final stream = finiteStream();\n  \n  expect(stream, emitsDone);\n});\n```\n\n**Timeout for Slow Operations:**\n\n```dart\ntest('completes within timeout', () async {\n  final result = await slowOperation();\n  expect(result, isNotNull);\n}, timeout: Timeout(Duration(seconds: 10)));\n```\n\n"
             },
             {
               "type": "THEORY",
-              "title": "Common Issues & Solutions",
-              "content": "\n**Issue 1: \"Lost connection to device\" when using camera**\n- **Solution**: Run on physical device, not simulator\n- Camera doesn't work in iOS Simulator\n\n**Issue 2: Permission permanently denied**\n- **Solution**: Guide user to app settings\n  ```dart\n  await openAppSettings();\n  ```\n\n**Issue 3: Large images cause memory issues**\n- **Solution**: Always use `maxWidth`, `maxHeight`, `imageQuality`\n\n**Issue 4: Images don't persist after app restart**\n- **Solution**: Copy from temp directory to app documents\n  ```dart\n  final appDir = await getApplicationDocumentsDirectory();\n  final fileName = basename(image.path);\n  final savedImage = await File(image.path).copy('${appDir.path}/$fileName');\n  ```\n\n"
+              "title": "Grouping and Organizing Tests",
+              "content": "\nWell-organized tests are easier to maintain and debug. Use `group()` to create logical hierarchies.\n\n**Basic Grouping:**\n\n```dart\nvoid main() {\n  group('UserService', () {\n    group('registration', () {\n      test('creates new user', () { /* ... */ });\n      test('validates email format', () { /* ... */ });\n      test('hashes password', () { /* ... */ });\n    });\n    \n    group('authentication', () {\n      test('returns token for valid credentials', () { /* ... */ });\n      test('throws for invalid password', () { /* ... */ });\n      test('locks account after 5 failed attempts', () { /* ... */ });\n    });\n  });\n}\n```\n\n**Output:**\n```\nUserService\n  registration\n    creates new user\n    validates email format\n    hashes password\n  authentication\n    returns token for valid credentials\n    throws for invalid password\n    locks account after 5 failed attempts\n```\n\n**Naming Conventions:**\n\n```dart\n// Pattern: [unit] [condition] [expected result]\ntest('divide throws ArgumentError when divisor is zero', () { });\ntest('findUser returns null when user does not exist', () { });\ntest('hashPassword produces different hash for same password with different salt', () { });\n```\n\n"
             },
             {
-              "type": "THEORY",
-              "title": "Quiz",
-              "content": "\n**Question 1:** Which ImageSource would you use to let users take a new photo?\nA) ImageSource.gallery\nB) ImageSource.camera\nC) ImageSource.files\nD) ImageSource.photos\n\n**Question 2:** Why should you compress images before uploading?\nA) To make them look better\nB) To reduce memory usage and upload time\nC) Because it's required by image_picker\nD) To increase image quality\n\n**Question 3:** What happens if a user permanently denies camera permission?\nA) The app crashes\nB) You can force enable it programmatically\nC) You should guide them to app settings to enable it manually\nD) The permission request will keep showing\n\n"
+              "type": "EXAMPLE",
+              "title": "Setup and Teardown",
+              "content": "\nUse `setUp` and `tearDown` to prepare test environments and clean up afterward:\n\n",
+              "code": "import 'package:test/test.dart';\n\nvoid main() {\n  // Runs once before ALL tests in this file\n  setUpAll(() async {\n    print('Initializing test database...');\n    await TestDatabase.initialize();\n  });\n  \n  // Runs once after ALL tests complete\n  tearDownAll(() async {\n    print('Closing test database...');\n    await TestDatabase.close();\n  });\n  \n  group('UserRepository', () {\n    late UserRepository repository;\n    late TestDatabase db;\n    \n    // Runs before EACH test in this group\n    setUp(() async {\n      db = await TestDatabase.create();\n      repository = UserRepository(db);\n      \n      // Seed test data\n      await db.seed([\n        {'id': '1', 'name': 'Alice', 'email': 'alice@test.com'},\n        {'id': '2', 'name': 'Bob', 'email': 'bob@test.com'},\n      ]);\n    });\n    \n    // Runs after EACH test in this group\n    tearDown(() async {\n      // Clean up test data\n      await db.clear();\n      await db.disconnect();\n    });\n    \n    test('finds existing user by ID', () async {\n      final user = await repository.findById('1');\n      \n      expect(user, isNotNull);\n      expect(user!.name, 'Alice');\n    });\n    \n    test('returns null for non-existent user', () async {\n      final user = await repository.findById('999');\n      \n      expect(user, isNull);\n    });\n    \n    test('saves new user to database', () async {\n      final newUser = User(id: '3', name: 'Charlie', email: 'charlie@test.com');\n      await repository.save(newUser);\n      \n      final saved = await repository.findById('3');\n      expect(saved?.name, 'Charlie');\n    });\n  });\n}",
+              "language": "dart"
             },
             {
-              "type": "THEORY",
-              "title": "Exercise: Mini Photo Editor",
-              "content": "\nBuild a screen that:\n1. Lets users pick an image from gallery or camera\n2. Displays the image with filter options (grayscale, sepia, etc.)\n3. Has a \"Save\" button that shows a success message\n4. Handles all permissions properly\n\n**Bonus Challenge:**\n- Add image rotation (90° increments)\n- Add crop functionality\n- Save edited image to device\n\n**Hint:** Use the `image` package for filters:\n\n",
-              "code": "dependencies:\n  image: ^4.2.0",
-              "language": "yaml"
+              "type": "WARNING",
+              "title": "Common Async Testing Mistakes",
+              "content": "\n**1. Forgetting to await async operations:**\n\n```dart\n// BAD - Test passes immediately, async operation runs after test ends\ntest('saves user', () {\n  repository.save(user); // Missing await!\n  // Test ends before save completes\n});\n\n// GOOD - Wait for operation to complete\ntest('saves user', () async {\n  await repository.save(user);\n  final saved = await repository.findById(user.id);\n  expect(saved, isNotNull);\n});\n```\n\n**2. Not handling async errors properly:**\n\n```dart\n// BAD - Error might be swallowed\ntest('handles error', () async {\n  try {\n    await failingOperation();\n  } catch (e) {\n    // Test might pass even if wrong exception\n  }\n});\n\n// GOOD - Use expect with throwsA\ntest('handles error', () async {\n  expect(\n    () => failingOperation(),\n    throwsA(isA<SpecificException>()),\n  );\n});\n```\n\n**3. Relying on timing instead of completion:**\n\n```dart\n// BAD - Flaky, depends on system speed\ntest('updates after delay', () async {\n  triggerUpdate();\n  await Future.delayed(Duration(milliseconds: 100));\n  expect(getValue(), 'updated');\n});\n\n// GOOD - Wait for the actual completion\ntest('updates after operation completes', () async {\n  await triggerUpdateAndWait();\n  expect(getValue(), 'updated');\n});\n```\n\n"
             },
             {
               "type": "KEY_POINT",
-              "title": "Summary",
-              "content": "\nYou've mastered camera and gallery access in Flutter! Here's what we covered:\n\n- **Setup**: Platform-specific permissions (Android & iOS)\n- **ImagePicker**: Simple API for camera and gallery\n- **Permissions**: Proper permission handling with fallbacks\n- **Multiple Images**: Picking and displaying image grids\n- **Best Practices**: Compression, validation, and error handling\n\nWith these skills, you can build photo-centric features for profiles, social media, marketplaces, and more!\n\n"
-            },
-            {
-              "type": "KEY_POINT",
-              "title": "Answer Key",
-              "content": "\n**Answer 1:** B) ImageSource.camera\n\n`ImageSource.camera` opens the device camera to take a new photo. `ImageSource.gallery` opens the photo library/gallery to select existing photos.\n\n**Answer 2:** B) To reduce memory usage and upload time\n\nCompressing images (via `imageQuality`, `maxWidth`, `maxHeight`) reduces file size significantly, saving memory and making uploads faster. High-resolution photos can be 5-10 MB; compressed versions might be 500 KB.\n\n**Answer 3:** C) You should guide them to app settings to enable it manually\n\nWhen permanently denied, you cannot request permission again. Use `openAppSettings()` from `permission_handler` to help users navigate to settings where they can manually enable permissions.\n\n"
+              "title": "Lesson Summary",
+              "content": "\nYou now have the skills to write comprehensive unit tests for Dart backend code:\n\n**dart test Package:**\n- Install as dev dependency\n- Test files end with `_test.dart`\n- Run with `dart test` command\n\n**Writing Tests:**\n- Use `test()` function with descriptive names\n- Use `expect()` with matchers for assertions\n- Group related tests with `group()`\n\n**Matchers:**\n- Equality: `equals()`, `isNot()`, `same()`\n- Types: `isA<T>()`, `isNull`, `isNotNull`\n- Numbers: `greaterThan()`, `lessThan()`, `closeTo()`\n- Collections: `contains()`, `hasLength()`, `isEmpty`\n\n**Mocking with Mocktail:**\n- Create mock classes extending `Mock`\n- Use `when()` to define mock behavior\n- Use `verify()` to check mock was called correctly\n\n**Async Testing:**\n- Mark tests as `async`\n- Use `await` for Future operations\n- Use `emitsInOrder()` for Stream testing\n\n**Setup and Teardown:**\n- `setUp()` runs before each test\n- `tearDown()` runs after each test\n- `setUpAll()` and `tearDownAll()` for one-time setup\n\nIn the next lesson, we will apply these skills to testing Dart Frog routes specifically.\n\n"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "9.2-quiz-1",
+              "title": "Unit Testing Quiz",
+              "description": "Test your understanding of unit testing concepts in Dart.",
+              "questions": [
+                {
+                  "id": "q1",
+                  "text": "Which matcher would you use to check if a list contains exactly 5 elements?",
+                  "options": [
+                    "contains(5)",
+                    "equals(5)",
+                    "hasLength(5)",
+                    "isLength(5)"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "hasLength(5) checks if a collection has exactly 5 elements. contains(5) checks if the number 5 is in the list, which is different."
+                },
+                {
+                  "id": "q2",
+                  "text": "When using Mocktail, what method do you use to define what a mock should return?",
+                  "options": [
+                    "expect()",
+                    "when()",
+                    "verify()",
+                    "mock()"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "when() is used to stub mock behavior. For example: when(() => mock.method()).thenReturn(value). verify() is used after the test to check if methods were called."
+                },
+                {
+                  "id": "q3",
+                  "text": "What happens if you forget to use 'await' in an async test?",
+                  "options": [
+                    "The test will fail immediately",
+                    "The test may pass before the async operation completes",
+                    "Dart will automatically add await",
+                    "The test runner will show a warning"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Without await, the test function returns immediately while the async operation runs in the background. The test may incorrectly pass because assertions run before the operation completes."
+                },
+                {
+                  "id": "q4",
+                  "text": "Which function runs before EACH test in a group?",
+                  "options": [
+                    "setUpAll()",
+                    "setUp()",
+                    "beforeEach()",
+                    "init()"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "setUp() runs before each individual test. setUpAll() runs once before all tests in the file or group. beforeEach() is not a Dart test function."
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "9.2-challenge-1",
+              "title": "Write Tests for a Password Validator",
+              "description": "Create unit tests for a password validation function.",
+              "instructions": "You have a `PasswordValidator` class with a `validate(String password)` method that returns a `ValidationResult` containing `isValid` (bool) and `errors` (List<String>).\n\nPassword requirements:\n- At least 8 characters\n- Contains at least one uppercase letter\n- Contains at least one number\n- Contains at least one special character (!@#$%^&*)\n\nWrite tests covering:\n1. A valid password passes all checks\n2. Password too short fails\n3. Missing uppercase fails\n4. Missing number fails\n5. Missing special character fails\n6. Multiple errors are collected",
+              "starterCode": "import 'package:test/test.dart';\n\n// Assume these classes exist:\n// class ValidationResult {\n//   final bool isValid;\n//   final List<String> errors;\n//   ValidationResult(this.isValid, this.errors);\n// }\n//\n// class PasswordValidator {\n//   ValidationResult validate(String password) { ... }\n// }\n\nvoid main() {\n  group('PasswordValidator', () {\n    late PasswordValidator validator;\n    \n    setUp(() {\n      validator = PasswordValidator();\n    });\n    \n    // TODO: Write test for valid password\n    test('accepts valid password with all requirements', () {\n      // A valid password: 'MyP@ssw0rd'\n    });\n    \n    // TODO: Write test for password too short\n    \n    // TODO: Write test for missing uppercase\n    \n    // TODO: Write test for missing number\n    \n    // TODO: Write test for missing special character\n    \n    // TODO: Write test for multiple errors\n  });\n}",
+              "solution": "import 'package:test/test.dart';\n\n// These classes would be in your lib folder\nclass ValidationResult {\n  final bool isValid;\n  final List<String> errors;\n  ValidationResult(this.isValid, this.errors);\n}\n\nclass PasswordValidator {\n  ValidationResult validate(String password) {\n    final errors = <String>[];\n    \n    if (password.length < 8) {\n      errors.add('Password must be at least 8 characters');\n    }\n    if (!password.contains(RegExp(r'[A-Z]'))) {\n      errors.add('Password must contain an uppercase letter');\n    }\n    if (!password.contains(RegExp(r'[0-9]'))) {\n      errors.add('Password must contain a number');\n    }\n    if (!password.contains(RegExp(r'[!@#$%^&*]'))) {\n      errors.add('Password must contain a special character');\n    }\n    \n    return ValidationResult(errors.isEmpty, errors);\n  }\n}\n\nvoid main() {\n  group('PasswordValidator', () {\n    late PasswordValidator validator;\n    \n    setUp(() {\n      validator = PasswordValidator();\n    });\n    \n    test('accepts valid password with all requirements', () {\n      final result = validator.validate('MyP@ssw0rd');\n      \n      expect(result.isValid, isTrue);\n      expect(result.errors, isEmpty);\n    });\n    \n    test('rejects password shorter than 8 characters', () {\n      final result = validator.validate('Ab1!');\n      \n      expect(result.isValid, isFalse);\n      expect(result.errors, contains('Password must be at least 8 characters'));\n    });\n    \n    test('rejects password without uppercase letter', () {\n      final result = validator.validate('myp@ssw0rd');\n      \n      expect(result.isValid, isFalse);\n      expect(result.errors, contains('Password must contain an uppercase letter'));\n    });\n    \n    test('rejects password without number', () {\n      final result = validator.validate('MyP@ssword');\n      \n      expect(result.isValid, isFalse);\n      expect(result.errors, contains('Password must contain a number'));\n    });\n    \n    test('rejects password without special character', () {\n      final result = validator.validate('MyPassw0rd');\n      \n      expect(result.isValid, isFalse);\n      expect(result.errors, contains('Password must contain a special character'));\n    });\n    \n    test('collects multiple errors for invalid password', () {\n      final result = validator.validate('abc');\n      \n      expect(result.isValid, isFalse);\n      expect(result.errors, hasLength(greaterThanOrEqualTo(3)));\n      expect(result.errors, contains('Password must be at least 8 characters'));\n      expect(result.errors, contains('Password must contain an uppercase letter'));\n      expect(result.errors, contains('Password must contain a number'));\n    });\n  });\n}",
+              "language": "dart",
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use expect(result.isValid, isTrue) or expect(result.isValid, isFalse) to check validity."
+                },
+                {
+                  "level": 2,
+                  "text": "Use expect(result.errors, contains('error message')) to check for specific errors."
+                },
+                {
+                  "level": 3,
+                  "text": "For the multiple errors test, use hasLength(greaterThanOrEqualTo(3)) to verify at least 3 errors exist."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         },
         {
           "id": "9.3",
@@ -11988,82 +12066,229 @@
             {
               "type": "THEORY",
               "title": "What You Will Learn",
-              "content": "- Understanding local storage options in Flutter\n- Setting up and using Hive (fast NoSQL database)\n- Storing simple data with SharedPreferences\n- Type adapters for custom objects\n- Lazy boxes for memory efficiency\n- Building a complete notes app with local storage\n\n"
+              "content": "In this lesson, you will master testing Dart Frog backend routes. Testing your API endpoints ensures your backend behaves correctly, handles edge cases gracefully, and remains reliable as your codebase grows.\n\nTopics covered:\n- Testing request and response handlers\n- Mocking RequestContext for isolated tests\n- Testing middleware chains\n- Testing route parameters (path and query)\n- Testing JSON body parsing and validation\n- Integration test patterns for Dart Frog\n\nBy the end, you will be able to write comprehensive tests that give you confidence in your Dart Frog API."
             },
             {
               "type": "THEORY",
-              "title": "Concept First: Why Local Storage?",
-              "content": "\n### Real-World Analogy\nThink of local storage like your phone's contacts app. When you save a contact, it's stored **on your device** - not in the cloud. This means:\n- ✅ Works without internet\n- ✅ Instant access (no network delays)\n- ✅ Privacy (data stays on device)\n- ✅ Survives app restarts\n\nLocal storage is like having a filing cabinet in your office vs. a warehouse across town. Your local cabinet is much faster to access!\n\n### Why This Matters\nLocal storage is essential for:\n\n1. **Offline Functionality**: Apps work without internet\n2. **Settings & Preferences**: Remember user choices\n3. **Caching**: Store data for faster loading\n4. **Draft Content**: Save work-in-progress\n5. **Performance**: Instant access vs. network calls\n\nAccording to Google, users expect apps to work offline. 87% of users get frustrated when apps don't save their data locally!\n\n"
+              "title": "Why Test Your Backend Routes?",
+              "content": "Backend testing is fundamentally different from frontend testing. Your API is the contract between your server and clients - if it breaks, every app depending on it fails.\n\nKey reasons to test Dart Frog routes:\n\n1. **Contract Verification**: Ensure your API returns exactly what clients expect\n2. **Regression Prevention**: Catch breaking changes before deployment\n3. **Edge Case Coverage**: Handle malformed requests, missing data, unauthorized access\n4. **Documentation**: Tests serve as executable documentation of API behavior\n5. **Refactoring Safety**: Change implementation without breaking functionality\n\nDart Frog provides excellent testing utilities that make writing route tests straightforward and expressive."
             },
             {
               "type": "THEORY",
-              "title": "Storage Options Comparison",
-              "content": "\n| Option | Use Case | Performance | Complexity |\n|--------|----------|-------------|------------|\n| **SharedPreferences** | Simple key-value (settings, flags) | Fast | Easy ⭐ |\n| **Hive** | Structured data (notes, todos, cache) | Very Fast | Medium ⭐⭐ |\n| **SQLite** | Relational data, complex queries | Fast | Hard ⭐⭐⭐ |\n| **Secure Storage** | Sensitive data (tokens, passwords) | Medium | Easy ⭐ |\n\n**This lesson focuses on Hive and SharedPreferences** (we'll cover SQLite in the next lesson).\n\n"
+              "title": "Setting Up Your Test Environment",
+              "content": "Before writing tests, you need to configure your Dart Frog project for testing.\n\nFirst, ensure you have the test dependencies in your pubspec.yaml:\n\n```yaml\ndev_dependencies:\n  test: ^1.24.0\n  mocktail: ^1.0.0\n  dart_frog_test: ^0.1.0\n```\n\nCreate a test directory structure that mirrors your routes:\n\n```\nmy_api/\n  routes/\n    index.dart\n    users/\n      index.dart\n      [id].dart\n  test/\n    routes/\n      index_test.dart\n      users/\n        index_test.dart\n        user_id_test.dart\n```\n\nThis structure keeps your tests organized and easy to locate."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing a Simple Route Handler",
+              "content": "Let us start with the most basic test - verifying a simple route returns the expected response.\n\nConsider this route handler in routes/health.dart:\n\n```dart\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  return Response.json({\n    'status': 'healthy',\n    'timestamp': DateTime.now().toIso8601String(),\n  });\n}\n```\n\nHere is how to test it:",
+              "code": "// test/routes/health_test.dart\nimport 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nimport '../../routes/health.dart' as route;\n\nclass MockRequestContext extends Mock implements RequestContext {}\n\nvoid main() {\n  group('GET /health', () {\n    late MockRequestContext context;\n\n    setUp(() {\n      context = MockRequestContext();\n    });\n\n    test('returns 200 with healthy status', () async {\n      final response = route.onRequest(context);\n\n      expect(response.statusCode, equals(200));\n\n      final body = await response.body();\n      final json = jsonDecode(body) as Map<String, dynamic>;\n\n      expect(json['status'], equals('healthy'));\n      expect(json['timestamp'], isNotNull);\n    });\n\n    test('returns JSON content type', () async {\n      final response = route.onRequest(context);\n\n      expect(\n        response.headers['content-type'],\n        contains('application/json'),\n      );\n    });\n  });\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Testing Pattern",
+              "content": "Every Dart Frog route test follows this pattern:\n\n1. **Arrange**: Create a MockRequestContext and configure it with the data your handler needs\n2. **Act**: Call your route handler function with the mock context\n3. **Assert**: Verify the response status code, headers, and body match expectations\n\nThis is the Arrange-Act-Assert pattern, and it keeps your tests clean and readable."
             },
             {
               "type": "THEORY",
-              "title": "Part 1: SharedPreferences (Simple Storage)",
-              "content": "\n### Setup\n\n\n\n### Basic Usage\n\n\n**Available Methods:**\n\n",
-              "code": "// Save\nawait prefs.setBool('key', true);\nawait prefs.setString('key', 'value');\nawait prefs.setInt('key', 42);\nawait prefs.setDouble('key', 3.14);\nawait prefs.setStringList('key', ['a', 'b', 'c']);\n\n// Read (with defaults)\nfinal boolValue = prefs.getBool('key') ?? false;\nfinal stringValue = prefs.getString('key') ?? '';\nfinal intValue = prefs.getInt('key') ?? 0;\nfinal doubleValue = prefs.getDouble('key') ?? 0.0;\nfinal listValue = prefs.getStringList('key') ?? [];\n\n// Check existence\nfinal exists = prefs.containsKey('key');\n\n// Remove single key\nawait prefs.remove('key');\n\n// Clear all\nawait prefs.clear();",
+              "title": "Mocking RequestContext",
+              "content": "The RequestContext is the heart of every Dart Frog handler. It provides access to:\n\n- The HTTP request (method, headers, body, URI)\n- Route parameters\n- Query parameters\n- Dependency injection (via context.read)\n- Request/response lifecycle\n\nTo test handlers in isolation, you must mock the RequestContext and configure it to return the data your handler expects."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete RequestContext Mocking",
+              "content": "Here is a comprehensive example showing how to mock various aspects of RequestContext:",
+              "code": "// test/helpers/mock_context.dart\nimport 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\n\nclass MockRequestContext extends Mock implements RequestContext {}\nclass MockRequest extends Mock implements Request {}\nclass MockUri extends Mock implements Uri {}\n\n/// Creates a fully configured mock context for testing\nMockRequestContext createMockContext({\n  String method = 'GET',\n  Map<String, String>? headers,\n  Map<String, String>? pathParameters,\n  Map<String, String>? queryParameters,\n  Object? body,\n  String path = '/',\n}) {\n  final context = MockRequestContext();\n  final request = MockRequest();\n  final uri = MockUri();\n\n  // Configure URI\n  when(() => uri.path).thenReturn(path);\n  when(() => uri.queryParameters).thenReturn(queryParameters ?? {});\n\n  // Configure Request\n  when(() => request.method).thenReturn(HttpMethod(method));\n  when(() => request.headers).thenReturn(headers ?? {});\n  when(() => request.uri).thenReturn(uri);\n\n  if (body != null) {\n    final jsonBody = jsonEncode(body);\n    when(() => request.body()).thenAnswer((_) async => jsonBody);\n    when(() => request.json()).thenAnswer((_) async => body);\n  } else {\n    when(() => request.body()).thenAnswer((_) async => '');\n  }\n\n  // Configure Context\n  when(() => context.request).thenReturn(request);\n\n  return context;\n}",
+              "language": "dart"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Mocking Mistakes",
+              "content": "Avoid these common pitfalls when mocking RequestContext:\n\n1. **Forgetting to mock nested objects**: If your handler calls context.request.uri.queryParameters, you must mock the entire chain\n\n2. **Not handling async body methods**: Request.body() and request.json() are async - use thenAnswer, not thenReturn\n\n3. **Ignoring HTTP method checks**: If your handler behaves differently for GET vs POST, test both paths\n\n4. **Missing dependency mocks**: If your handler uses context.read<SomeService>(), you must mock that service\n\n5. **Not resetting mocks between tests**: Use setUp() to create fresh mocks for each test"
+            },
+            {
+              "type": "THEORY",
+              "title": "Testing Middleware",
+              "content": "Middleware in Dart Frog wraps your route handlers to add cross-cutting concerns like authentication, logging, and CORS. Testing middleware ensures these concerns work correctly.\n\nMiddleware has a different signature than route handlers - it receives the handler and returns a new handler. This requires a slightly different testing approach."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Authentication Middleware",
+              "content": "Here is how to test authentication middleware that validates Bearer tokens:",
+              "code": "// test/middleware/auth_middleware_test.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nimport '../../routes/_middleware.dart';\nimport '../helpers/mock_context.dart';\n\nvoid main() {\n  group('authMiddleware', () {\n    late Handler mockNextHandler;\n\n    setUp(() {\n      mockNextHandler = (_) async => Response(body: 'success');\n    });\n\n    test('returns 401 when no authorization header', () async {\n      final context = createMockContext(headers: {});\n\n      final middleware = authMiddleware(mockNextHandler);\n      final response = await middleware(context);\n\n      expect(response.statusCode, equals(401));\n      expect(await response.body(), equals('Unauthorized'));\n    });\n\n    test('returns 401 when authorization is not Bearer', () async {\n      final context = createMockContext(\n        headers: {'authorization': 'Basic abc123'},\n      );\n\n      final middleware = authMiddleware(mockNextHandler);\n      final response = await middleware(context);\n\n      expect(response.statusCode, equals(401));\n    });\n\n    test('returns 403 when token is invalid', () async {\n      final context = createMockContext(\n        headers: {'authorization': 'Bearer invalid_token'},\n      );\n\n      final middleware = authMiddleware(mockNextHandler);\n      final response = await middleware(context);\n\n      expect(response.statusCode, equals(403));\n    });\n\n    test('calls next handler when token is valid', () async {\n      var handlerCalled = false;\n      final testHandler = (RequestContext ctx) async {\n        handlerCalled = true;\n        return Response(body: 'protected content');\n      };\n\n      final context = createMockContext(\n        headers: {'authorization': 'Bearer valid_test_token'},\n      );\n\n      final middleware = authMiddleware(testHandler);\n      await middleware(context);\n\n      expect(handlerCalled, isTrue);\n    });\n  });\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Route Parameters",
+              "content": "Here is how to test dynamic route parameters like /users/[id]:",
+              "code": "// test/routes/users/user_id_test.dart\nimport 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nimport '../../../routes/users/[id].dart' as route;\n\nclass MockUserRepository extends Mock implements UserRepository {}\n\nvoid main() {\n  group('GET /users/:id', () {\n    late MockRequestContext context;\n    late MockUserRepository userRepository;\n\n    setUp(() {\n      context = MockRequestContext();\n      userRepository = MockUserRepository();\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n    });\n\n    test('returns 400 when id is empty', () async {\n      final response = await route.onRequest(context, '');\n\n      expect(response.statusCode, equals(400));\n      expect(await response.body(), contains('required'));\n    });\n\n    test('returns 404 when user not found', () async {\n      when(() => userRepository.findById('nonexistent'))\n          .thenAnswer((_) async => null);\n\n      final response = await route.onRequest(context, 'nonexistent');\n\n      expect(response.statusCode, equals(404));\n    });\n\n    test('returns user when found', () async {\n      final testUser = User(id: '123', name: 'John Doe', email: 'john@example.com');\n      when(() => userRepository.findById('123'))\n          .thenAnswer((_) async => testUser);\n\n      final response = await route.onRequest(context, '123');\n\n      expect(response.statusCode, equals(200));\n      final body = jsonDecode(await response.body()) as Map<String, dynamic>;\n      expect(body['id'], equals('123'));\n      expect(body['name'], equals('John Doe'));\n    });\n  });\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing Query Parameters and Pagination",
+              "content": "Here is how to test query parameters for pagination and filtering:",
+              "code": "// test/routes/users/index_test.dart\nimport 'dart:convert';\nimport 'package:test/test.dart';\nimport '../../../routes/users/index.dart' as route;\nimport '../../helpers/mock_context.dart';\n\nvoid main() {\n  group('GET /users', () {\n    late MockUserRepository userRepository;\n\n    setUp(() {\n      userRepository = MockUserRepository();\n    });\n\n    test('uses default pagination when no params', () async {\n      final context = createMockContext(queryParameters: {});\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n      when(() => userRepository.findAll(page: 1, limit: 10, status: null))\n          .thenAnswer((_) async => []);\n\n      final response = await route.onRequest(context);\n      final body = jsonDecode(await response.body()) as Map<String, dynamic>;\n\n      expect(body['page'], equals(1));\n      expect(body['limit'], equals(10));\n    });\n\n    test('respects custom pagination', () async {\n      final context = createMockContext(\n        queryParameters: {'page': '3', 'limit': '25'},\n      );\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n      when(() => userRepository.findAll(page: 3, limit: 25, status: null))\n          .thenAnswer((_) async => []);\n\n      final response = await route.onRequest(context);\n      final body = jsonDecode(await response.body()) as Map<String, dynamic>;\n\n      expect(body['page'], equals(3));\n      expect(body['limit'], equals(25));\n    });\n\n    test('returns 400 when limit exceeds 100', () async {\n      final context = createMockContext(\n        queryParameters: {'limit': '150'},\n      );\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n\n      final response = await route.onRequest(context);\n\n      expect(response.statusCode, equals(400));\n      expect(await response.body(), contains('cannot exceed'));\n    });\n\n    test('filters by status when provided', () async {\n      final context = createMockContext(\n        queryParameters: {'status': 'active'},\n      );\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n      when(() => userRepository.findAll(\n        page: any(named: 'page'),\n        limit: any(named: 'limit'),\n        status: 'active',\n      )).thenAnswer((_) async => []);\n\n      await route.onRequest(context);\n\n      verify(() => userRepository.findAll(\n        page: any(named: 'page'),\n        limit: any(named: 'limit'),\n        status: 'active',\n      )).called(1);\n    });\n  });\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Testing JSON Body Parsing",
+              "content": "Here is how to test POST requests with JSON body validation:",
+              "code": "// test/routes/users/create_user_test.dart\nimport 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nvoid main() {\n  group('POST /users', () {\n    late MockRequestContext context;\n    late MockRequest request;\n    late MockUserRepository userRepository;\n\n    setUp(() {\n      context = MockRequestContext();\n      request = MockRequest();\n      userRepository = MockUserRepository();\n\n      when(() => context.request).thenReturn(request);\n      when(() => request.method).thenReturn(HttpMethod.post);\n      when(() => context.read<UserRepository>()).thenReturn(userRepository);\n    });\n\n    test('creates user with valid data', () async {\n      when(() => request.json()).thenAnswer((_) async => {\n        'name': 'John Doe',\n        'email': 'john@example.com',\n      });\n\n      final createdUser = User(id: '123', name: 'John Doe', email: 'john@example.com');\n      when(() => userRepository.create(\n        name: 'John Doe',\n        email: 'john@example.com',\n      )).thenAnswer((_) async => createdUser);\n\n      final response = await route.onRequest(context);\n\n      expect(response.statusCode, equals(201));\n      final body = jsonDecode(await response.body()) as Map<String, dynamic>;\n      expect(body['id'], equals('123'));\n    });\n\n    test('returns 400 when name is missing', () async {\n      when(() => request.json()).thenAnswer((_) async => {\n        'email': 'john@example.com',\n      });\n\n      final response = await route.onRequest(context);\n\n      expect(response.statusCode, equals(400));\n    });\n\n    test('returns 400 for invalid JSON', () async {\n      when(() => request.json()).thenThrow(FormatException('Invalid JSON'));\n\n      final response = await route.onRequest(context);\n\n      expect(response.statusCode, equals(400));\n    });\n  });\n}",
               "language": "dart"
             },
             {
               "type": "THEORY",
-              "title": "Part 2: Hive (NoSQL Database)",
-              "content": "\nHive is **blazing fast** (10x faster than SQLite for reads) and works great for structured data.\n\n### Setup\n\n\n\n### Initialize Hive\n\n\n### Simple Usage (Key-Value)\n\n\n",
-              "code": "import 'package:hive_flutter/hive_flutter.dart';\n\nclass HiveSimpleExample extends StatefulWidget {\n  @override\n  State<HiveSimpleExample> createState() => _HiveSimpleExampleState();\n}\n\nclass _HiveSimpleExampleState extends State<HiveSimpleExample> {\n  final box = Hive.box('notes');\n\n  void _saveNote() {\n    box.put('note1', 'My first note');\n    box.put('note2', 'Another note');\n    box.put('counter', 42);\n\n    setState(() {});\n  }\n\n  void _readNote() {\n    final note1 = box.get('note1', defaultValue: 'No note');\n    final counter = box.get('counter', defaultValue: 0);\n\n    print('Note: $note1, Counter: $counter');\n  }\n\n  void _deleteNote() {\n    box.delete('note1');\n    setState(() {});\n  }\n\n  void _deleteAll() {\n    box.clear();\n    setState(() {});\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Hive Simple Demo')),\n      body: Column(\n        children: [\n          ElevatedButton(onPressed: _saveNote, child: Text('Save Notes')),\n          ElevatedButton(onPressed: _readNote, child: Text('Read Note')),\n          ElevatedButton(onPressed: _deleteNote, child: Text('Delete Note 1')),\n          ElevatedButton(onPressed: _deleteAll, child: Text('Delete All')),\n\n          SizedBox(height: 20),\n\n          Text('All Keys: ${box.keys.toList()}'),\n          Text('All Values: ${box.values.toList()}'),\n        ],\n      ),\n    );\n  }\n}",
+              "title": "Integration Testing for Dart Frog",
+              "content": "While unit tests mock dependencies, integration tests verify the entire request/response cycle. Integration tests catch issues that unit tests miss:\n\n- Route configuration errors\n- Middleware ordering problems\n- Dependency injection issues\n- Real database interactions\n\nDart Frog provides testing utilities that let you make real HTTP requests to your handlers."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Integration Test Setup",
+              "content": "Here is how to set up integration tests for a complete API flow:",
+              "code": "// test/integration/api_integration_test.dart\nimport 'dart:convert';\nimport 'dart:io';\nimport 'package:http/http.dart' as http;\nimport 'package:test/test.dart';\n\nvoid main() {\n  late HttpServer server;\n  late Uri baseUri;\n\n  setUpAll(() async {\n    server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);\n    baseUri = Uri.parse('http://localhost:${server.port}');\n  });\n\n  tearDownAll(() async {\n    await server.close();\n  });\n\n  group('API Integration Tests', () {\n    test('GET /health returns healthy status', () async {\n      final response = await http.get(baseUri.resolve('/health'));\n\n      expect(response.statusCode, equals(200));\n      final body = jsonDecode(response.body) as Map<String, dynamic>;\n      expect(body['status'], equals('healthy'));\n    });\n\n    test('full user CRUD flow', () async {\n      // Create\n      final createResponse = await http.post(\n        baseUri.resolve('/users'),\n        headers: {'content-type': 'application/json'},\n        body: jsonEncode({'name': 'Test User', 'email': 'test@example.com'}),\n      );\n      expect(createResponse.statusCode, equals(201));\n      final created = jsonDecode(createResponse.body) as Map<String, dynamic>;\n      final userId = created['id'];\n\n      // Read\n      final getResponse = await http.get(baseUri.resolve('/users/$userId'));\n      expect(getResponse.statusCode, equals(200));\n\n      // Update\n      final updateResponse = await http.put(\n        baseUri.resolve('/users/$userId'),\n        headers: {'content-type': 'application/json'},\n        body: jsonEncode({'name': 'Updated Name'}),\n      );\n      expect(updateResponse.statusCode, equals(200));\n\n      // Delete\n      final deleteResponse = await http.delete(baseUri.resolve('/users/$userId'));\n      expect(deleteResponse.statusCode, equals(204));\n\n      // Verify deleted\n      final verifyResponse = await http.get(baseUri.resolve('/users/$userId'));\n      expect(verifyResponse.statusCode, equals(404));\n    });\n  });\n}",
               "language": "dart"
             },
             {
-              "type": "THEORY",
-              "title": "Storing Custom Objects with Type Adapters",
-              "content": "\n### Step 1: Create a Model\n\n\n### Step 2: Generate Type Adapter\n\nRun this command:\n\nThis creates `note.g.dart` with the type adapter code.\n\n### Step 3: Register and Use\n\n\n**Key Methods:**\n\n",
-              "code": "// Add (returns auto-increment key)\nfinal key = box.add(note);\n\n// Put with custom key\nbox.put('my-key', note);\n\n// Get by key\nfinal note = box.get('my-key');\n\n// Get by index\nfinal note = box.getAt(0);\n\n// Update (for HiveObject subclasses)\nnote.title = 'New Title';\nnote.save();\n\n// Delete\nbox.delete('my-key');\nbox.deleteAt(0);\n\n// Get all values\nfinal allNotes = box.values.toList();\n\n// Get all keys\nfinal allKeys = box.keys.toList();\n\n// Count\nfinal count = box.length;\n\n// Clear all\nbox.clear();",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "Lazy Boxes (For Large Data)",
-              "content": "\nUse lazy boxes when you have **lots of data** and don't want to load everything into memory.\n\n\n**When to use:**\n- Regular Box: < 1000 items (loads all into memory)\n- Lazy Box: > 1000 items (loads on demand)\n\n",
-              "code": "// Open lazy box\nfinal lazyBox = await Hive.openLazyBox<Note>('large_notes');\n\n// Read (async because it loads from disk on demand)\nfinal note = await lazyBox.get('key');\n\n// Write (same as regular box)\nawait lazyBox.put('key', note);",
-              "language": "dart"
-            },
-            {
-              "type": "EXPERIMENT",
-              "title": "Best Practices",
-              "content": "\n1. **Initialize Once**\n   ```dart\n   void main() async {\n     await Hive.initFlutter();  // Call once at app start\n     // ...\n   }\n   ```\n\n2. **Use ValueListenableBuilder**\n   - Automatically rebuilds UI when data changes\n   - No need for setState()\n\n3. **Don't Close Boxes Frequently**\n   ```dart\n   // ❌ Bad\n   final box = await Hive.openBox('data');\n   // ... use box\n   await box.close();\n\n   // ✅ Good\n   final box = await Hive.openBox('data');  // Open once\n   // ... use throughout app lifecycle\n   // Close only when app exits\n   ```\n\n4. **Use Type Safety**\n   ```dart\n   // ✅ Good\n   final box = Hive.box<Note>('notes');\n\n   // ❌ Bad (no type checking)\n   final box = Hive.box('notes');\n   ```\n\n5. **Handle Migrations**\n   ```dart\n   @HiveField(4, defaultValue: false)  // Add default for new fields\n   bool isPinned;\n   ```\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Hive vs SharedPreferences vs SQLite",
-              "content": "\n**Use SharedPreferences for:**\n- Settings (dark mode, language)\n- Simple flags (onboarding completed)\n- Small primitive values\n\n**Use Hive for:**\n- Structured data (notes, todos, user profiles)\n- Offline-first apps\n- Fast read/write performance\n- 100s-1000s of records\n\n**Use SQLite for:**\n- Complex relationships (foreign keys)\n- Advanced queries (JOIN, GROUP BY)\n- 10,000s+ records\n- When you need SQL\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Quiz",
-              "content": "\n**Question 1:** What's the main difference between Hive boxes and lazy boxes?\nA) Lazy boxes are slower\nB) Regular boxes load all data into memory; lazy boxes load on demand\nC) Lazy boxes can't store custom objects\nD) There is no difference\n\n**Question 2:** Which storage solution is best for saving a user's theme preference?\nA) SQLite\nB) Hive\nC) SharedPreferences\nD) Firebase\n\n**Question 3:** When using custom objects with Hive, what must you do?\nA) Nothing, it works automatically\nB) Create a type adapter and register it\nC) Use JSON encoding manually\nD) Store objects as strings\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Exercise: Todo App with Local Storage",
-              "content": "\nBuild a todo app that:\n1. Stores todos locally with Hive\n2. Has categories (Work, Personal, Shopping)\n3. Supports marking todos as complete\n4. Persists data across app restarts\n5. Shows todo count by category\n\n**Bonus:**\n- Add due dates with reminders\n- Search functionality\n- Export todos to text file\n\n"
+              "type": "WARNING",
+              "title": "Integration Test Considerations",
+              "content": "Keep these points in mind for integration tests:\n\n1. **Database State**: Use a test database and clean it between tests\n\n2. **Test Isolation**: Each test should be independent - do not rely on state from previous tests\n\n3. **Port Conflicts**: Use port 0 to let the OS assign an available port\n\n4. **Timeouts**: Network operations can be slow - set appropriate timeouts\n\n5. **CI/CD Environment**: Ensure your CI has Docker or databases available\n\n6. **Test Order**: Do not assume tests run in a specific order"
             },
             {
               "type": "KEY_POINT",
               "title": "Summary",
-              "content": "\nYou've mastered local storage in Flutter! Here's what we covered:\n\n- **SharedPreferences**: Simple key-value storage for settings\n- **Hive Setup**: Fast NoSQL database initialization\n- **Type Adapters**: Storing custom objects with code generation\n- **CRUD Operations**: Add, read, update, delete data\n- **ValueListenableBuilder**: Reactive UI updates\n- **Best Practices**: When to use each storage solution\n\nWith local storage, your apps can work offline and provide instant user experiences!\n\n"
-            },
-            {
-              "type": "KEY_POINT",
-              "title": "Answer Key",
-              "content": "\n**Answer 1:** B) Regular boxes load all data into memory; lazy boxes load on demand\n\nRegular Hive boxes load all data into memory for fast access. Lazy boxes only load data when explicitly requested, making them better for large datasets (1000s+ items) but slightly slower for individual reads.\n\n**Answer 2:** C) SharedPreferences\n\nTheme preferences are simple key-value settings - perfect for SharedPreferences. Using Hive or SQLite would be overkill for a single boolean/string value.\n\n**Answer 3:** B) Create a type adapter and register it\n\nHive needs to know how to serialize/deserialize custom objects. You must:\n1. Annotate class with `@HiveType`\n2. Run `build_runner` to generate adapter\n3. Register adapter with `Hive.registerAdapter()`\n\n"
+              "content": "You now have the skills to comprehensively test Dart Frog routes:\n\n- **Unit Testing Handlers**: Mock RequestContext and verify responses\n- **Middleware Testing**: Test the middleware chain in isolation\n- **Route Parameters**: Mock path and query parameters\n- **Body Parsing**: Test JSON validation and error handling\n- **Integration Tests**: Verify the full request/response cycle\n\nGood tests give you confidence to refactor, add features, and deploy without fear. Start with unit tests for fast feedback, then add integration tests for end-to-end confidence."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "9.3-quiz-1",
+              "title": "Dart Frog Testing Concepts",
+              "description": "Test your understanding of Dart Frog route testing patterns.",
+              "questions": [
+                {
+                  "id": "q1",
+                  "text": "When mocking RequestContext for testing, what must you do if your handler accesses context.request.uri.queryParameters?",
+                  "options": [
+                    "Only mock the RequestContext",
+                    "Mock the entire chain: RequestContext, Request, and Uri",
+                    "Use real objects instead of mocks",
+                    "Skip testing query parameters"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "When your handler accesses nested properties like context.request.uri.queryParameters, you must mock the entire object chain. Each object in the chain must be mocked and configured to return the next mock."
+                },
+                {
+                  "id": "q2",
+                  "text": "What is the correct way to mock an async method like request.json() in mocktail?",
+                  "options": [
+                    "when(() => request.json()).thenReturn({'key': 'value'})",
+                    "when(() => request.json()).thenAnswer((_) async => {'key': 'value'})",
+                    "when(() => request.json()).returns({'key': 'value'})",
+                    "when(request.json).thenReturn({'key': 'value'})"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Async methods that return Future must use thenAnswer with an async callback. thenReturn is for synchronous values, while thenAnswer allows you to return a Future."
+                },
+                {
+                  "id": "q3",
+                  "text": "How should you test that a middleware correctly rejects unauthorized requests?",
+                  "options": [
+                    "Test only that the next handler is called",
+                    "Create a mock context without auth headers and verify it returns 401 before calling the next handler",
+                    "Skip middleware testing - only test the final handlers",
+                    "Test middleware only in integration tests"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "To test middleware rejection, create a mock context without the required authorization and verify that the middleware returns an appropriate error response without calling the next handler."
+                },
+                {
+                  "id": "q4",
+                  "text": "What is the main advantage of integration tests over unit tests for Dart Frog routes?",
+                  "options": [
+                    "Integration tests are faster to run",
+                    "Integration tests catch issues with route configuration, middleware ordering, and real dependencies",
+                    "Integration tests do not require any setup",
+                    "Integration tests replace the need for unit tests"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Integration tests verify the full request/response cycle, catching issues that unit tests miss: incorrect route configuration, middleware ordering problems, and dependency injection errors."
+                },
+                {
+                  "id": "q5",
+                  "text": "When testing JSON body parsing, which scenario should NOT be included in your test suite?",
+                  "options": [
+                    "Valid JSON with all required fields",
+                    "Missing required fields",
+                    "Testing with a production database",
+                    "Malformed JSON that cannot be parsed"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Unit tests for body parsing should use mocked dependencies, not production databases. Testing with production data is dangerous and violates test isolation principles."
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "9.3-challenge-1",
+              "title": "Write Complete Route Tests",
+              "description": "Create a comprehensive test suite for a product endpoint.",
+              "instructions": "Write tests for a /products endpoint that handles GET, POST, PUT, and DELETE operations. Include tests for happy paths, validation errors, and not found scenarios.",
+              "starterCode": "import 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nclass MockRequestContext extends Mock implements RequestContext {}\nclass MockRequest extends Mock implements Request {}\nclass MockProductRepository extends Mock implements ProductRepository {}\n\nvoid main() {\n  group('Product API Tests', () {\n    late MockRequestContext context;\n    late MockRequest request;\n    late MockProductRepository repository;\n\n    setUp(() {\n      context = MockRequestContext();\n      request = MockRequest();\n      repository = MockProductRepository();\n      \n      when(() => context.request).thenReturn(request);\n      when(() => context.read<ProductRepository>()).thenReturn(repository);\n    });\n\n    group('GET /products', () {\n      // TODO: Implement tests for listing products\n    });\n\n    group('POST /products', () {\n      // TODO: Implement tests for creating products\n    });\n\n    group('DELETE /products/:id', () {\n      // TODO: Implement tests for deleting products\n    });\n  });\n}",
+              "solutionCode": "import 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nclass MockRequestContext extends Mock implements RequestContext {}\nclass MockRequest extends Mock implements Request {}\nclass MockUri extends Mock implements Uri {}\nclass MockProductRepository extends Mock implements ProductRepository {}\n\nvoid main() {\n  group('Product API Tests', () {\n    late MockRequestContext context;\n    late MockRequest request;\n    late MockUri uri;\n    late MockProductRepository repository;\n\n    setUp(() {\n      context = MockRequestContext();\n      request = MockRequest();\n      uri = MockUri();\n      repository = MockProductRepository();\n      \n      when(() => context.request).thenReturn(request);\n      when(() => request.uri).thenReturn(uri);\n      when(() => context.read<ProductRepository>()).thenReturn(repository);\n    });\n\n    group('GET /products', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.get);\n      });\n\n      test('returns paginated list of products', () async {\n        when(() => uri.queryParameters).thenReturn({'page': '1', 'limit': '10'});\n        when(() => repository.findAll(page: 1, limit: 10))\n            .thenAnswer((_) async => [\n              Product(id: '1', name: 'Widget', price: 9.99),\n            ]);\n        // Verify response\n      });\n\n      test('returns 400 when limit exceeds 100', () async {\n        when(() => uri.queryParameters).thenReturn({'limit': '500'});\n        // Verify 400 response\n      });\n    });\n\n    group('POST /products', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.post);\n      });\n\n      test('creates product with valid data', () async {\n        when(() => request.json()).thenAnswer((_) async => {\n          'name': 'New Product',\n          'price': 29.99,\n        });\n        when(() => repository.create(name: any(named: 'name'), price: any(named: 'price')))\n            .thenAnswer((_) async => Product(id: 'new', name: 'New Product', price: 29.99));\n        // Verify 201 response\n      });\n\n      test('returns 400 when name missing', () async {\n        when(() => request.json()).thenAnswer((_) async => {'price': 29.99});\n        // Verify 400 response\n      });\n    });\n\n    group('DELETE /products/:id', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.delete);\n      });\n\n      test('deletes product and returns 204', () async {\n        when(() => repository.delete('123')).thenAnswer((_) async {});\n        // Verify 204 response\n      });\n\n      test('returns 404 when product not found', () async {\n        when(() => repository.delete('nonexistent'))\n            .thenThrow(Exception('Not found'));\n        // Verify 404 response\n      });\n    });\n  });\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Tests cover all HTTP methods",
+                  "expectedOutput": "All method groups defined",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Tests include error scenarios",
+                  "expectedOutput": "Error tests present",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start by setting up your mock objects in setUp(). Each test should have fresh mocks."
+                },
+                {
+                  "level": 2,
+                  "text": "For GET requests, mock uri.queryParameters. For POST, mock request.json() using thenAnswer with async."
+                },
+                {
+                  "level": 3,
+                  "text": "Use verify() to confirm repository methods are called with expected arguments."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using thenReturn instead of thenAnswer for async methods",
+                  "consequence": "Tests fail with type errors",
+                  "correction": "Always use thenAnswer((_) async => value) for methods returning Future"
+                },
+                {
+                  "mistake": "Not mocking the full object chain",
+                  "consequence": "NullPointerException when accessing nested properties",
+                  "correction": "Mock RequestContext, Request, and Uri when accessing queryParameters"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         },
         {
           "id": "9.4",
-          "title": "Lesson 4: SQLite Database",
+          "title": "Module 9, Lesson 4: Testing Serverpod Endpoints",
           "moduleId": "module-09",
           "order": 4,
           "estimatedMinutes": 60,

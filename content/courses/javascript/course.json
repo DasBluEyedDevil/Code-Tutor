@@ -9800,9 +9800,9 @@
       "estimatedHours": 2,
       "lessons": [
         {
-          "id": "17.1",
+          "id": "18.1",
           "title": "Modern Promise Patterns (Promise.try & withResolvers)",
-          "moduleId": "module-17",
+          "moduleId": "module-18",
           "order": 1,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
@@ -9840,7 +9840,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "17.1-challenge",
+              "id": "18.1-challenge",
               "title": "Build a Timeout Wrapper",
               "description": "Use Promise.withResolvers() to create a timeout wrapper.",
               "instructions": "Create a function that takes a promise and a timeout. If the promise doesn't resolve within the timeout, reject with 'Timeout'.",
@@ -9873,9 +9873,9 @@
           ]
         },
         {
-          "id": "17.2",
+          "id": "18.2",
           "title": "Import Attributes Deep Dive",
-          "moduleId": "module-17",
+          "moduleId": "module-18",
           "order": 2,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
@@ -9906,7 +9906,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "17.2-challenge",
+              "id": "18.2-challenge",
               "title": "Dynamic Config Loading",
               "description": "Load config dynamically based on environment.",
               "instructions": "Create a loadConfig function that dynamically imports a JSON config file based on the environment (development or production). Use import attributes.",
@@ -9939,9 +9939,9 @@
           ]
         },
         {
-          "id": "17.3",
+          "id": "18.3",
           "title": "Top-Level Await in Practice",
-          "moduleId": "module-17",
+          "moduleId": "module-18",
           "order": 3,
           "estimatedMinutes": 20,
           "difficulty": "intermediate",
@@ -9972,7 +9972,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "17.3-challenge",
+              "id": "18.3-challenge",
               "title": "App Initialization",
               "description": "Create a proper app initialization sequence.",
               "instructions": "Use top-level await to load config, validate it, and initialize the app. Log 'App ready' when done.",
@@ -10005,9 +10005,9 @@
           ]
         },
         {
-          "id": "17.4",
+          "id": "18.4",
           "title": "ES2025 RegExp Modifiers",
-          "moduleId": "module-17",
+          "moduleId": "module-18",
           "order": 4,
           "estimatedMinutes": 20,
           "difficulty": "intermediate",
@@ -10038,7 +10038,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "17.4-challenge",
+              "id": "18.4-challenge",
               "title": "Parse Config Lines",
               "description": "Create a regex that matches config keys case-insensitively but preserves value case.",
               "instructions": "Write a regex that matches 'PORT=3000' where 'PORT' is case-insensitive but the value after = is captured exactly.",
@@ -10071,9 +10071,9 @@
           ]
         },
         {
-          "id": "17.5",
+          "id": "18.5",
           "title": "Decorators Preview (Stage 3)",
-          "moduleId": "module-17",
+          "moduleId": "module-18",
           "order": 5,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -10111,7 +10111,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "17.5-challenge",
+              "id": "18.5-challenge",
               "title": "Create a Timing Decorator",
               "description": "Create a decorator that logs how long a method takes.",
               "instructions": "Create a @timed decorator that logs 'methodName took Xms' after each call.",
@@ -10142,6 +10142,194 @@
               "difficulty": "advanced"
             }
           ]
+        },
+        {
+          "id": "18.6",
+          "title": "Iterator Helpers (ES2025)",
+          "moduleId": "module-18",
+          "order": 6,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Assembly Line",
+              "content": "Imagine an assembly line in a factory. Raw materials come in one end, and finished products come out the other. Along the way, workers filter out defective items, transform parts, and count how many pass through.\n\nIterator helpers are like adding built-in stations to this assembly line. Instead of collecting ALL items into an array first (expensive!), you process them one at a time as they flow through. This is called 'lazy evaluation' - work happens only when needed."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Iterator Helpers Matter",
+              "content": "Before ES2025, if you wanted to transform data from an iterator, you had two choices:\n\n1. **Convert to array first** - Wasteful for large datasets\n```javascript\n// Old way: Loads everything into memory\nconst arr = [...hugeIterator];\nconst result = arr.filter(x => x > 10).map(x => x * 2);\n```\n\n2. **Write manual loops** - Verbose and error-prone\n```javascript\n// Old way: Lots of boilerplate\nconst results = [];\nfor (const item of hugeIterator) {\n  if (item > 10) results.push(item * 2);\n}\n```\n\n**Now with Iterator Helpers:**\n```javascript\n// New way: Lazy, memory-efficient, readable\nconst result = hugeIterator\n  .filter(x => x > 10)\n  .map(x => x * 2)\n  .toArray();\n```\n\nThe key insight: Iterator helpers return new iterators, not arrays. They don't execute until you consume the results. This makes them memory-efficient for processing millions of items."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Core Iterator Helper Methods",
+              "content": "ES2025 adds these methods to all iterators (generators, Map.keys(), etc.):",
+              "language": "javascript",
+              "code": "// Create a generator for demonstration\nfunction* numbers() {\n  for (let i = 1; i <= 100; i++) yield i;\n}\n\n// .map() - Transform each value\nconst doubled = numbers().map(x => x * 2);\nconsole.log([...doubled.take(5)]); // [2, 4, 6, 8, 10]\n\n// .filter() - Keep values matching condition\nconst evens = numbers().filter(x => x % 2 === 0);\nconsole.log([...evens.take(5)]); // [2, 4, 6, 8, 10]\n\n// .take(n) - Get first n values\nconst firstThree = numbers().take(3);\nconsole.log([...firstThree]); // [1, 2, 3]\n\n// .drop(n) - Skip first n values\nconst skipFive = numbers().drop(5).take(3);\nconsole.log([...skipFive]); // [6, 7, 8]\n\n// .flatMap() - Map then flatten one level\nfunction* pairs() {\n  yield [1, 2];\n  yield [3, 4];\n}\nconst flat = pairs().flatMap(pair => pair);\nconsole.log([...flat]); // [1, 2, 3, 4]\n\n// .toArray() - Collect into array\nconst arr = numbers().take(5).toArray();\nconsole.log(arr); // [1, 2, 3, 4, 5]"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Predicate Methods: some, every, find",
+              "content": "These methods consume the iterator and return a single value:",
+              "language": "javascript",
+              "code": "function* numbers() {\n  for (let i = 1; i <= 10; i++) yield i;\n}\n\n// .some() - Does any value match?\nconst hasEven = numbers().some(x => x % 2 === 0);\nconsole.log(hasEven); // true (stops at first match!)\n\n// .every() - Do all values match?\nconst allPositive = numbers().every(x => x > 0);\nconsole.log(allPositive); // true (must check all)\n\n// .find() - Get first matching value\nconst firstBigNumber = numbers().find(x => x > 7);\nconsole.log(firstBigNumber); // 8 (stops at first match)\n\n// .forEach() - Execute side effect for each\nnumbers().take(3).forEach(x => console.log(`Value: ${x}`));\n// Value: 1\n// Value: 2\n// Value: 3\n\n// .reduce() - Accumulate into single value\nconst sum = numbers().reduce((acc, x) => acc + x, 0);\nconsole.log(sum); // 55"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World Use Case: Processing Large Files",
+              "content": "Iterator helpers shine when processing data streams:",
+              "language": "javascript",
+              "code": "// Imagine reading a large log file line by line\nasync function* readLogLines(file) {\n  // In real code, this would use Bun.file().stream()\n  for await (const line of file) {\n    yield line;\n  }\n}\n\n// Process without loading entire file into memory\nconst errors = readLogLines(logFile)\n  .filter(line => line.includes('ERROR'))\n  .map(line => {\n    const [timestamp, ...rest] = line.split(' ');\n    return { timestamp, message: rest.join(' ') };\n  })\n  .take(100);  // Only get first 100 errors\n\n// Another example: Paginated API results\nfunction* fetchAllPages(baseUrl) {\n  let page = 1;\n  let hasMore = true;\n  while (hasMore) {\n    const response = await fetch(`${baseUrl}?page=${page}`);\n    const data = await response.json();\n    yield* data.items;  // Yield each item individually\n    hasMore = data.hasNextPage;\n    page++;\n  }\n}\n\n// Process all items across all pages lazily\nconst activeUsers = fetchAllPages('/api/users')\n  .filter(user => user.status === 'active')\n  .map(user => user.email)\n  .take(50);\n\nfor await (const email of activeUsers) {\n  console.log(email);\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Method Reference",
+              "content": "**Transformation methods (return new iterator):**\n| Method | Description | Example |\n|--------|-------------|--------|\n| `.map(fn)` | Transform each value | `iter.map(x => x * 2)` |\n| `.filter(fn)` | Keep matching values | `iter.filter(x => x > 0)` |\n| `.take(n)` | First n values | `iter.take(5)` |\n| `.drop(n)` | Skip first n values | `iter.drop(10)` |\n| `.flatMap(fn)` | Map and flatten | `iter.flatMap(x => [x, x])` |\n\n**Consumption methods (return value, exhaust iterator):**\n| Method | Description | Example |\n|--------|-------------|--------|\n| `.toArray()` | Collect all values | `iter.toArray()` |\n| `.forEach(fn)` | Execute for each | `iter.forEach(console.log)` |\n| `.some(fn)` | Any match? | `iter.some(x => x > 10)` |\n| `.every(fn)` | All match? | `iter.every(x => x > 0)` |\n| `.find(fn)` | First match | `iter.find(x => x > 10)` |\n| `.reduce(fn, init)` | Accumulate | `iter.reduce((a, x) => a + x, 0)` |"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "1. **Iterators are single-use**\n```javascript\nconst iter = [1, 2, 3].values().map(x => x * 2);\nconsole.log([...iter]); // [2, 4, 6]\nconsole.log([...iter]); // [] - Already exhausted!\n\n// Fix: Create a new iterator each time\nconst getData = () => [1, 2, 3].values().map(x => x * 2);\nconsole.log([...getData()]); // [2, 4, 6]\nconsole.log([...getData()]); // [2, 4, 6]\n```\n\n2. **Consumption methods exhaust the iterator**\n```javascript\nconst iter = [1, 2, 3].values();\nconst found = iter.find(x => x > 1);  // 2\nconst arr = iter.toArray();           // [3] - Only remaining values!\n```\n\n3. **Arrays don't have these methods directly**\n```javascript\n// WRONG: Arrays are not iterators\n[1, 2, 3].take(2);  // Error: take is not a function\n\n// RIGHT: Get the iterator first\n[1, 2, 3].values().take(2);  // Works!\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.6-challenge",
+              "title": "Build a Data Pipeline",
+              "description": "Use iterator helpers to process a stream of user data efficiently.",
+              "instructions": "Create a function that takes a generator of user objects and returns the emails of the first 5 active premium users, uppercased.",
+              "starterCode": "function* generateUsers() {\n  const statuses = ['active', 'inactive'];\n  const tiers = ['free', 'premium'];\n  for (let i = 1; i <= 1000; i++) {\n    yield {\n      id: i,\n      email: `user${i}@example.com`,\n      status: statuses[i % 2],\n      tier: tiers[Math.floor(i / 3) % 2]\n    };\n  }\n}\n\nfunction getActivePremiumEmails(userGenerator) {\n  // Use iterator helpers to:\n  // 1. Filter for active users\n  // 2. Filter for premium tier\n  // 3. Map to uppercase email\n  // 4. Take first 5\n  // 5. Convert to array\n}\n\nconsole.log(getActivePremiumEmails(generateUsers()));",
+              "solution": "function* generateUsers() {\n  const statuses = ['active', 'inactive'];\n  const tiers = ['free', 'premium'];\n  for (let i = 1; i <= 1000; i++) {\n    yield {\n      id: i,\n      email: `user${i}@example.com`,\n      status: statuses[i % 2],\n      tier: tiers[Math.floor(i / 3) % 2]\n    };\n  }\n}\n\nfunction getActivePremiumEmails(userGenerator) {\n  return userGenerator\n    .filter(user => user.status === 'active')\n    .filter(user => user.tier === 'premium')\n    .map(user => user.email.toUpperCase())\n    .take(5)\n    .toArray();\n}\n\nconsole.log(getActivePremiumEmails(generateUsers()));",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Returns exactly 5 uppercase emails",
+                  "expectedOutput": "5 uppercase emails",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Chain the methods: .filter().filter().map().take().toArray()"
+                },
+                {
+                  "level": 2,
+                  "text": "Use .toUpperCase() on the email string in the map callback"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Trying to use array methods on the generator directly",
+                  "consequence": "Generators don't have filter/map methods - but their Iterator prototype does!",
+                  "correction": "Generators already have iterator helper methods in ES2025"
+                },
+                {
+                  "mistake": "Forgetting .toArray() at the end",
+                  "consequence": "Returns an iterator instead of an array",
+                  "correction": "Add .toArray() to collect results into an array"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "18.7",
+          "title": "RegExp.escape (ES2025)",
+          "moduleId": "module-18",
+          "order": 7,
+          "estimatedMinutes": 20,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "The Escape Room for Special Characters",
+              "content": "Imagine you're writing a message that will be displayed on a digital sign, but certain characters like '<' and '>' control the sign's formatting. To show these literally, you need to 'escape' them with special codes.\n\nRegular expressions have their own special characters: `.`, `*`, `?`, `+`, `^`, `$`, `{`, `}`, `(`, `)`, `|`, `[`, `]`, and `\\`. If you want to search for these characters literally, you must escape them with a backslash. `RegExp.escape()` does this automatically, saving you from bugs and security issues."
+            },
+            {
+              "type": "THEORY",
+              "title": "The Problem RegExp.escape Solves",
+              "content": "When building regex patterns dynamically from user input, special characters cause bugs or security vulnerabilities:\n\n```javascript\n// User wants to search for 'price: $100'\nconst userInput = 'price: $100';\n\n// WRONG: $ has special meaning in regex (end of string)\nconst badRegex = new RegExp(userInput);\nbadRegex.test('price: $100');     // Unpredictable!\nbadRegex.test('price: 100');       // Might match unexpectedly\n\n// Before ES2025, you needed a helper function:\nfunction escapeRegExp(str) {\n  return str.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n}\nconst goodRegex = new RegExp(escapeRegExp(userInput));\ngoodRegex.test('price: $100');     // true - correct!\n```\n\nThe old approach had problems:\n- Easy to forget or miss characters\n- Different implementations disagreed on which characters to escape\n- Security risk if any character was missed\n\n`RegExp.escape()` standardizes this once and for all."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using RegExp.escape()",
+              "content": "The new standard method escapes all regex special characters:",
+              "language": "javascript",
+              "code": "// Basic usage\nconst escaped = RegExp.escape('Hello. How are you?');\nconsole.log(escaped);  // 'Hello\\\\. How are you\\\\?'\n\n// Building a safe dynamic regex\nconst searchTerm = 'file.txt';\nconst pattern = new RegExp(RegExp.escape(searchTerm));\npattern.test('file.txt');    // true\npattern.test('fileXtxt');    // false (. is literal now)\n\n// With flags\nconst caseInsensitive = new RegExp(RegExp.escape('Price: $50'), 'i');\ncaseInsensitive.test('PRICE: $50');  // true\ncaseInsensitive.test('price: $50');  // true\n\n// Searching for literal regex patterns\nconst codePattern = 'function* generator()';\nconst regex = new RegExp(RegExp.escape(codePattern));\nregex.test('function* generator()');  // true - * is escaped"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World Use Cases",
+              "content": "Common scenarios where RegExp.escape is essential:",
+              "language": "javascript",
+              "code": "// 1. Search and highlight functionality\nfunction highlightText(text, searchTerm) {\n  const escaped = RegExp.escape(searchTerm);\n  const regex = new RegExp(`(${escaped})`, 'gi');\n  return text.replace(regex, '<mark>$1</mark>');\n}\n\nhighlightText(\n  'The price is $100 (plus tax).',\n  '$100 (plus'\n);\n// 'The price is <mark>$100 (plus</mark> tax).'\n\n// 2. Validating exact matches\nfunction exactMatch(input, expected) {\n  const pattern = new RegExp(`^${RegExp.escape(expected)}$`);\n  return pattern.test(input);\n}\n\nexactMatch('hello.world', 'hello.world');  // true\nexactMatch('helloXworld', 'hello.world');  // false\n\n// 3. Building complex patterns with user input\nfunction createPathMatcher(userPath) {\n  // User might enter: './src/**/*.ts'\n  const escaped = RegExp.escape(userPath);\n  // Now safe to use in a larger pattern\n  return new RegExp(`^${escaped}$`);\n}\n\n// 4. Search with word boundaries\nfunction searchWord(text, word) {\n  const escaped = RegExp.escape(word);\n  const pattern = new RegExp(`\\\\b${escaped}\\\\b`, 'g');\n  return [...text.matchAll(pattern)];\n}\n\nsearchWord('C++ is not C# or C.', 'C++');\n// Finds only 'C++', not 'C#' or 'C.'"
+            },
+            {
+              "type": "THEORY",
+              "title": "Characters That Get Escaped",
+              "content": "RegExp.escape() escapes all characters that have special meaning in regular expressions:\n\n| Character | Regex Meaning | Escaped Form |\n|-----------|--------------|---------------|\n| `.` | Any character | `\\.` |\n| `*` | Zero or more | `\\*` |\n| `+` | One or more | `\\+` |\n| `?` | Zero or one | `\\?` |\n| `^` | Start of string | `\\^` |\n| `$` | End of string | `\\$` |\n| `{` `}` | Quantifier | `\\{` `\\}` |\n| `(` `)` | Group | `\\(` `\\)` |\n| `[` `]` | Character class | `\\[` `\\]` |\n| `\\|` | Alternation | `\\\\|` |\n| `\\` | Escape char | `\\\\` |\n\nThe method also escapes some characters for safety in various regex contexts (like `/` for regex literals)."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls",
+              "content": "1. **Don't double-escape**\n```javascript\n// WRONG: Calling escape twice\nconst bad = RegExp.escape(RegExp.escape('test.'));\n// 'test\\\\\\\\.'' - Oops, too many backslashes!\n\n// RIGHT: Escape once\nconst good = RegExp.escape('test.');\n// 'test\\\\.'\n```\n\n2. **Escape before combining, not after**\n```javascript\n// WRONG: Escaping the full pattern\nconst search = 'file';\nconst bad = RegExp.escape(`${search}.*`);\n// 'file\\\\.\\\\*' - Escaped the intentional .* too!\n\n// RIGHT: Escape only the user input\nconst good = `${RegExp.escape(search)}.*`;\n// 'file.*' - .* still works as wildcard\n```\n\n3. **Runtime support check**\n```javascript\n// For older runtimes, check availability\nif (typeof RegExp.escape !== 'function') {\n  // Polyfill or fallback\n  RegExp.escape = (str) => str.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "18.7-challenge",
+              "title": "Build a Safe Search Function",
+              "description": "Create a search function that safely handles any user input including special regex characters.",
+              "instructions": "Create a function called `safeSearch` that takes a text string and a search term, and returns all positions (indices) where the search term appears. The search should be case-insensitive and handle special characters safely.",
+              "starterCode": "function safeSearch(text, searchTerm) {\n  // 1. Escape the search term\n  // 2. Create a case-insensitive global regex\n  // 3. Find all matches and return their indices\n}\n\n// Test with special characters\nconst text = 'The price is $100. Is $100 too much? $100!';\nconst results = safeSearch(text, '$100');\nconsole.log(results);  // Should print [13, 26, 41]",
+              "solution": "function safeSearch(text, searchTerm) {\n  const escaped = RegExp.escape(searchTerm);\n  const regex = new RegExp(escaped, 'gi');\n  const positions = [];\n  let match;\n  while ((match = regex.exec(text)) !== null) {\n    positions.push(match.index);\n  }\n  return positions;\n}\n\nconst text = 'The price is $100. Is $100 too much? $100!';\nconst results = safeSearch(text, '$100');\nconsole.log(results);",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Finds all occurrences with special characters",
+                  "expectedOutput": "[13, 26, 41]",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Works with dots",
+                  "input": "safeSearch('file.txt is not fileXtxt', 'file.txt')",
+                  "expectedOutput": "[0]",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use RegExp.escape() to handle special characters in the search term"
+                },
+                {
+                  "level": 2,
+                  "text": "Use regex.exec() in a while loop to find all matches and collect their .index properties"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using string.indexOf() in a loop",
+                  "consequence": "Works but doesn't demonstrate RegExp.escape usage",
+                  "correction": "Use new RegExp(RegExp.escape(searchTerm), 'gi') with exec()"
+                },
+                {
+                  "mistake": "Forgetting the 'g' flag",
+                  "consequence": "exec() returns the same match infinitely in the while loop",
+                  "correction": "Always use 'g' flag when using exec() in a loop"
+                }
+              ],
+              "difficulty": "beginner"
+            }
+          ]
         }
       ]
     },
@@ -10153,9 +10341,9 @@
       "estimatedHours": 3,
       "lessons": [
         {
-          "id": "18.1",
+          "id": "19.1",
           "title": "Built-in SQLite with bun:sqlite",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 1,
           "estimatedMinutes": 30,
           "difficulty": "intermediate",
@@ -10191,7 +10379,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "18.1-challenge",
+              "id": "19.1-challenge",
               "title": "Build a Todo API",
               "description": "Create a simple todo storage using bun:sqlite.",
               "instructions": "Create a todos table with id, title, and completed. Write functions to add a todo and list all todos.",
@@ -10224,9 +10412,9 @@
           ]
         },
         {
-          "id": "18.2",
+          "id": "19.2",
           "title": "Secure Password Hashing with Bun.password",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 2,
           "estimatedMinutes": 20,
           "difficulty": "intermediate",
@@ -10257,7 +10445,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "18.2-challenge",
+              "id": "19.2-challenge",
               "title": "User Authentication",
               "description": "Build a simple auth system with signup and login.",
               "instructions": "Create signup and login functions using Bun.password. The signup should hash the password, and login should verify it.",
@@ -10290,9 +10478,9 @@
           ]
         },
         {
-          "id": "18.3",
+          "id": "19.3",
           "title": "Shell Scripting with Bun Shell",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 3,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
@@ -10323,7 +10511,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "18.3-challenge",
+              "id": "19.3-challenge",
               "title": "Build Script",
               "description": "Create a build script using Bun Shell.",
               "instructions": "Write a script that creates a dist folder, copies files, and shows the result.",
@@ -10356,9 +10544,9 @@
           ]
         },
         {
-          "id": "18.4",
+          "id": "19.4",
           "title": "Bundling for Production with Bun.build()",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 4,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
@@ -10394,7 +10582,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "18.4-challenge",
+              "id": "19.4-challenge",
               "title": "Production Build Script",
               "description": "Create a production build configuration.",
               "instructions": "Write a build script that minifies code, generates sourcemaps, and reports the output file sizes.",
@@ -10427,9 +10615,9 @@
           ]
         },
         {
-          "id": "18.5",
+          "id": "19.5",
           "title": "Calling Native Code with FFI",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 5,
           "estimatedMinutes": 30,
           "difficulty": "advanced",
@@ -10467,7 +10655,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "18.5-challenge",
+              "id": "19.5-challenge",
               "title": "System Info via FFI",
               "description": "Use FFI to get system information.",
               "instructions": "Use FFI to call getpid() from libc and print the process ID.",
