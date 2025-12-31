@@ -9,6 +9,17 @@ const fs = require('fs');
  * @param {Array} newSections - Array of section objects to add
  */
 function enhanceLesson(coursePath, moduleId, lessonId, newSections) {
+  // Validate inputs
+  if (!fs.existsSync(coursePath)) {
+    throw new Error(`Course file not found: ${coursePath}`);
+  }
+  if (!Array.isArray(newSections)) {
+    throw new Error('newSections must be an array');
+  }
+  if (newSections.some(s => !s.type)) {
+    throw new Error('Each section must have a type property');
+  }
+
   // Read and parse course.json
   const course = JSON.parse(fs.readFileSync(coursePath, 'utf8'));
 
@@ -50,6 +61,11 @@ function enhanceLesson(coursePath, moduleId, lessonId, newSections) {
  * @param {object} updates - Object with fields to update
  */
 function updateSection(coursePath, moduleId, lessonId, sectionType, updates) {
+  // Validate file exists
+  if (!fs.existsSync(coursePath)) {
+    throw new Error(`Course file not found: ${coursePath}`);
+  }
+
   const course = JSON.parse(fs.readFileSync(coursePath, 'utf8'));
 
   const module = course.modules.find(m => m.id === moduleId);
@@ -72,6 +88,11 @@ function updateSection(coursePath, moduleId, lessonId, sectionType, updates) {
  * @param {string} moduleId - Module ID to list
  */
 function listLessons(coursePath, moduleId) {
+  // Validate file exists
+  if (!fs.existsSync(coursePath)) {
+    throw new Error(`Course file not found: ${coursePath}`);
+  }
+
   const course = JSON.parse(fs.readFileSync(coursePath, 'utf8'));
 
   const module = course.modules.find(m => m.id === moduleId);
@@ -91,15 +112,20 @@ module.exports = { enhanceLesson, updateSection, listLessons };
 
 // CLI usage if run directly
 if (require.main === module) {
-  const args = process.argv.slice(2);
+  try {
+    const args = process.argv.slice(2);
 
-  if (args[0] === 'list' && args[1] && args[2]) {
-    listLessons(args[1], args[2]);
-  } else {
-    console.log('Usage:');
-    console.log('  node enhance-lesson.js list <course.json> <module-id>');
-    console.log('');
-    console.log('Or require as module:');
-    console.log('  const { enhanceLesson } = require("./enhance-lesson");');
+    if (args[0] === 'list' && args[1] && args[2]) {
+      listLessons(args[1], args[2]);
+    } else {
+      console.log('Usage:');
+      console.log('  node enhance-lesson.js list <course.json> <module-id>');
+      console.log('');
+      console.log('Or require as module:');
+      console.log('  const { enhanceLesson } = require("./enhance-lesson");');
+    }
+  } catch (error) {
+    console.error('Error:', error.message);
+    process.exit(1);
   }
 }
