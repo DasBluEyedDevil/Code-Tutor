@@ -4781,9 +4781,9 @@
     {
       "id": "module-06",
       "title": "Databases and SQL",
-      "description": "Learn SQL fundamentals and connect Java applications to databases with JDBC.",
+      "description": "Learn SQL fundamentals, JDBC for raw database access, JPA/Hibernate for object-relational mapping, and Flyway for database migrations.",
       "difficulty": "beginner",
-      "estimatedHours": 3.4,
+      "estimatedHours": 4.8,
       "lessons": [
         {
           "id": "epoch-5-lesson-1",
@@ -4996,6 +4996,108 @@
               "type": "KEY_POINT",
               "title": "JDBC Best Practices",
               "content": "1. ALWAYS USE TRY-WITH-RESOURCES\n   - Auto-closes connections, statements, resultsets\n   - Prevents resource leaks\n\n2. USE PREPAREDSTATEMENT, NOT STATEMENT\n   - Security (prevents SQL injection)\n   - Performance (pre-compiled)\n\n3. DON'T CONCATENATE SQL WITH USER INPUT\n   - Use ? placeholders\n   - Set parameters with setString(), setInt(), etc.\n\n4. USE CONNECTION POOLING IN PRODUCTION\n   - Libraries: HikariCP, Apache DBCP\n   - Reuse connections (expensive to create)\n\n5. HANDLE EXCEPTIONS PROPERLY\n   - Log errors\n   - Don't expose SQL details to users\n\n6. CLOSE RESOURCES IN FINALLY OR USE TRY-WITH-RESOURCES\n   - Connection leaks kill performance"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "epoch-5-lesson-6",
+          "title": "Lesson 5.6: JPA and Hibernate - The ORM Solution",
+          "moduleId": "module-06",
+          "order": 6,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: JDBC is Painful",
+              "content": "Look at this JDBC code to get a student:\n\nString sql = \"SELECT * FROM students WHERE id = ?\";\ntry (PreparedStatement pstmt = conn.prepareStatement(sql)) {\n    pstmt.setInt(1, studentId);\n    try (ResultSet rs = pstmt.executeQuery()) {\n        if (rs.next()) {\n            Student s = new Student();\n            s.setId(rs.getInt(\"id\"));\n            s.setName(rs.getString(\"name\"));\n            s.setAge(rs.getInt(\"age\"));\n            s.setEmail(rs.getString(\"email\"));\n            return s;\n        }\n    }\n}\n\nPROBLEMS:\n- Tons of boilerplate for simple operations\n- Manual mapping between ResultSet and objects\n- SQL strings scattered throughout code\n- Easy to make mistakes (wrong column names)\n- Must handle connections, exceptions everywhere\n\nThere MUST be a better way..."
+            },
+            {
+              "type": "THEORY",
+              "title": "JPA - Java Persistence API",
+              "content": "JPA is a SPECIFICATION for Object-Relational Mapping (ORM).\n\nIt lets you work with databases using JAVA OBJECTS instead of SQL:\n\n// With JPA - one line!\nStudent student = entityManager.find(Student.class, 123);\n\n// Save a student\nStudent newStudent = new Student(\"Alice\", 20);\nentityManager.persist(newStudent);\n\n// Update\nstudent.setAge(21);\n// That's it! Changes are automatically saved.\n\nKEY CONCEPT:\nYou work with OBJECTS, JPA handles the SQL.\n\nJPA is a specification. HIBERNATE is the most popular implementation.\nThink of it like: JPA = Interface, Hibernate = Implementation."
+            },
+            {
+              "type": "THEORY",
+              "title": "Entity Classes - Mapping Objects to Tables",
+              "content": "An ENTITY is a Java class that maps to a database table:\n\nimport jakarta.persistence.*;\n\n@Entity\n@Table(name = \"students\")\npublic class Student {\n    \n    @Id\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    \n    @Column(name = \"full_name\", nullable = false)\n    private String name;\n    \n    private int age;  // Maps to 'age' column automatically\n    \n    @Column(unique = true)\n    private String email;\n    \n    // Constructors, getters, setters...\n}\n\nANNOTATIONS EXPLAINED:\n@Entity - This class maps to a table\n@Table - Specify table name (optional if same as class)\n@Id - Primary key\n@GeneratedValue - Auto-increment\n@Column - Column customization (name, constraints)"
+            },
+            {
+              "type": "THEORY",
+              "title": "CRUD Operations with JPA",
+              "content": "CREATE (persist):\nStudent student = new Student(\"Alice\", 20, \"alice@email.com\");\nentityManager.persist(student);\n// Hibernate generates: INSERT INTO students (name, age, email) VALUES (?, ?, ?)\n\nREAD (find):\nStudent student = entityManager.find(Student.class, 1L);\n// Hibernate generates: SELECT * FROM students WHERE id = ?\n\nUPDATE (automatic!):\nstudent.setAge(21);  // Just modify the object\n// Hibernate detects change and generates: UPDATE students SET age = ? WHERE id = ?\n\nDELETE (remove):\nentityManager.remove(student);\n// Hibernate generates: DELETE FROM students WHERE id = ?\n\nTHE MAGIC:\nJPA tracks entity state. Changes to managed entities are automatically persisted!"
+            },
+            {
+              "type": "THEORY",
+              "title": "JPQL - Querying with JPA",
+              "content": "JPQL (Java Persistence Query Language) is like SQL but for entities:\n\n// Find all students\nList<Student> students = entityManager\n    .createQuery(\"SELECT s FROM Student s\", Student.class)\n    .getResultList();\n\n// With conditions\nList<Student> adults = entityManager\n    .createQuery(\"SELECT s FROM Student s WHERE s.age >= :age\", Student.class)\n    .setParameter(\"age\", 18)\n    .getResultList();\n\n// Single result\nStudent student = entityManager\n    .createQuery(\"SELECT s FROM Student s WHERE s.email = :email\", Student.class)\n    .setParameter(\"email\", \"alice@email.com\")\n    .getSingleResult();\n\nKEY DIFFERENCE FROM SQL:\n- Use entity/field names, not table/column names\n- SELECT s FROM Student s (not SELECT * FROM students)"
+            },
+            {
+              "type": "THEORY",
+              "title": "Relationships - Connecting Entities",
+              "content": "@Entity\npublic class Student {\n    @Id\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    private String name;\n    \n    @OneToMany(mappedBy = \"student\", cascade = CascadeType.ALL)\n    private List<Enrollment> enrollments = new ArrayList<>();\n}\n\n@Entity\npublic class Enrollment {\n    @Id\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    \n    @ManyToOne\n    @JoinColumn(name = \"student_id\")\n    private Student student;\n    \n    @ManyToOne\n    @JoinColumn(name = \"course_id\")\n    private Course course;\n}\n\nRELATIONSHIP TYPES:\n@OneToOne - User has one Profile\n@OneToMany - Student has many Enrollments\n@ManyToOne - Enrollment belongs to one Student\n@ManyToMany - Students have many Courses, Courses have many Students"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "JPA vs JDBC - The Comparison",
+              "content": "JDBC (Manual Labor):\n- Write SQL for every operation\n- Manually map ResultSet to objects\n- Handle connections, statements, exceptions\n- ~50 lines for a simple CRUD operation\n\nJPA (Automation):\n- Annotations define the mapping once\n- CRUD is 1-2 lines of code\n- Relationships handled automatically\n- Type-safe queries with JPQL\n\nWHEN TO USE EACH:\nJPA: 90% of applications - simpler, faster development\nJDBC: Complex queries, performance-critical code, legacy systems\n\nBUT: Understanding JDBC helps you debug JPA issues!\nThat's why we learned JDBC first."
+            },
+            {
+              "type": "WARNING",
+              "title": "JPA Pitfalls to Avoid",
+              "content": "1. N+1 QUERY PROBLEM:\n   - Loading a list, then accessing relationships = many queries\n   - Fix: Use JOIN FETCH or @EntityGraph\n\n2. LAZY LOADING EXCEPTIONS:\n   - Accessing lazy relationships outside transaction = error\n   - Fix: Use @Transactional or fetch eagerly when needed\n\n3. ENTITY LIFECYCLE CONFUSION:\n   - Detached entities don't auto-save\n   - Use merge() to reattach\n\n4. OVERFETCHING:\n   - Don't load entire entities when you only need ID\n   - Use projections or DTOs for read operations\n\n5. MISSING @Transactional:\n   - JPA operations need transaction context\n   - Spring Boot: Add @Transactional to service methods\n\n6. BIDIRECTIONAL RELATIONSHIP BUGS:\n   - Must set both sides of relationship\n   - Use helper methods: student.addEnrollment(enrollment)"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "epoch-5-lesson-7",
+          "title": "Lesson 5.7: Database Migrations with Flyway",
+          "moduleId": "module-06",
+          "order": 7,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Schema Changes in Production",
+              "content": "Your app works locally. You deploy to production.\n\nThen you need to add a new column:\n\nALTER TABLE users ADD COLUMN phone VARCHAR(20);\n\nQUESTIONS:\n- Did you run this on production?\n- Did you run it on staging?\n- What about your teammate's database?\n- What about the test environment?\n\nPROBLEMS:\n- Manual SQL execution = human error\n- No record of what changed when\n- Different environments get out of sync\n- Rollbacks are a nightmare\n\nYou version control your CODE. Why not your DATABASE?"
+            },
+            {
+              "type": "THEORY",
+              "title": "Flyway - Version Control for Databases",
+              "content": "Flyway manages database migrations:\n\n1. You write SQL migration files\n2. Flyway tracks which have been applied\n3. On startup, Flyway runs pending migrations\n4. Every environment stays in sync!\n\nHOW IT WORKS:\nsrc/main/resources/db/migration/\n  V1__create_users_table.sql\n  V2__add_email_column.sql\n  V3__create_orders_table.sql\n\nFlyway maintains a history table:\n| version | description          | installed_on        |\n|---------|----------------------|---------------------|\n| 1       | create users table   | 2025-01-15 10:30:00 |\n| 2       | add email column     | 2025-01-16 14:20:00 |\n\nOn startup:\n- Flyway checks: Which migrations are applied?\n- Runs only the NEW ones\n- Updates history table"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setting Up Flyway in Spring Boot",
+              "content": "STEP 1: Add dependency (build.gradle or pom.xml)\n\n// Gradle\ndependencies {\n    implementation 'org.flywaydb:flyway-core'\n}\n\n// Maven\n<dependency>\n    <groupId>org.flywaydb</groupId>\n    <artifactId>flyway-core</artifactId>\n</dependency>\n\nSTEP 2: Configure (application.properties)\n\nspring.flyway.enabled=true\nspring.flyway.locations=classpath:db/migration\n\nSTEP 3: Create migration folder\nsrc/main/resources/db/migration/\n\nThat's it! Spring Boot auto-configures Flyway.\nMigrations run automatically on startup."
+            },
+            {
+              "type": "THEORY",
+              "title": "Writing Migration Files",
+              "content": "NAMING CONVENTION:\nV{version}__{description}.sql\n\nExamples:\nV1__create_users_table.sql\nV2__add_phone_to_users.sql\nV3__create_orders_table.sql\n\nRULES:\n- Version must be unique\n- Double underscore (__) separates version from description\n- Use underscores in description (no spaces)\n- Files are run in version order\n\nEXAMPLE: V1__create_users_table.sql\n\nCREATE TABLE users (\n    id BIGINT PRIMARY KEY AUTO_INCREMENT,\n    username VARCHAR(50) NOT NULL UNIQUE,\n    email VARCHAR(255) NOT NULL UNIQUE,\n    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n);\n\nCREATE INDEX idx_users_email ON users(email);\n\nEXAMPLE: V2__add_phone_to_users.sql\n\nALTER TABLE users ADD COLUMN phone VARCHAR(20);"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Migration Best Practices",
+              "content": "1. MIGRATIONS ARE IMMUTABLE\n   - Never edit an applied migration\n   - Create a new migration to fix mistakes\n   - Flyway checksums prevent tampering\n\n2. EACH MIGRATION = ONE LOGICAL CHANGE\n   - V1: Create users table\n   - V2: Add phone column\n   - Don't mix unrelated changes\n\n3. MAKE MIGRATIONS REVERSIBLE (when possible)\n   - Think: How would I undo this?\n   - Document rollback steps in comments\n\n4. TEST MIGRATIONS BEFORE PRODUCTION\n   - Run on local database first\n   - Test on staging environment\n   - Never run untested migrations in production\n\n5. USE MEANINGFUL VERSION NUMBERS\n   - V1, V2, V3 for small projects\n   - V20250115_1 (date-based) for teams"
+            },
+            {
+              "type": "THEORY",
+              "title": "Handling Migration Failures",
+              "content": "WHAT IF A MIGRATION FAILS?\n\nFlyway stops immediately. You must:\n\n1. Fix the SQL error\n2. Manually repair the database if partially applied\n3. Mark migration as applied or delete from history\n\nCOMMANDS:\n// Check migration status\nmvn flyway:info\n\n// Apply pending migrations\nmvn flyway:migrate\n\n// Repair checksum mismatches\nmvn flyway:repair\n\n// Delete all objects (DANGEROUS!)\nmvn flyway:clean\n\nSPRING BOOT ALTERNATIVE:\nAdd to application.properties:\nspring.flyway.repair=true  // Auto-repair on startup"
+            },
+            {
+              "type": "WARNING",
+              "title": "Migration Gotchas to Avoid",
+              "content": "1. NEVER EDIT APPLIED MIGRATIONS\n   - Flyway checksums will fail\n   - Other environments will break\n   - Create a new migration instead\n\n2. TEST DATA MIGRATIONS\n   - Adding NOT NULL column to existing data = failure\n   - Add column, populate data, then add constraint\n\n3. LARGE DATA MIGRATIONS\n   - Locking tables in production = downtime\n   - Consider batch updates or online schema change tools\n\n4. COORDINATE WITH TEAM\n   - Pull before creating new migrations\n   - Avoid version conflicts (V3 exists twice)\n\n5. BACKUP BEFORE PRODUCTION MIGRATIONS\n   - Always. No exceptions.\n   - Test rollback procedure\n\n6. DON'T USE FLYWAY:CLEAN IN PRODUCTION\n   - It deletes EVERYTHING\n   - Only for local development"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Complete Database Workflow",
+              "content": "LOCAL DEVELOPMENT:\n1. Create entity class with JPA annotations\n2. Write Flyway migration for schema\n3. Run app - Flyway creates table\n4. JPA handles all CRUD operations\n\nDEPLOYMENT:\n1. Push code (includes migration files)\n2. CI/CD deploys application\n3. App starts, Flyway runs pending migrations\n4. Database schema is now updated\n5. Application uses JPA to access data\n\nTHE STACK:\n- Flyway: Schema versioning and migrations\n- JPA/Hibernate: Object-relational mapping\n- JDBC: Low-level (JPA uses it internally)\n- SQL: The language that makes it all work\n\nEach layer builds on the previous one!"
             }
           ],
           "challenges": []
