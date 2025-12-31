@@ -7836,10 +7836,103 @@
           ]
         },
         {
+          "id": "module-14-lesson-drf",
+          "title": "Django REST Framework Basics",
+          "moduleId": "module-14",
+          "order": 15,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Django REST Framework?",
+              "content": "**Django REST Framework (DRF) - Build APIs Fast**\n\nDjango REST Framework is a powerful toolkit for building Web APIs on top of Django.\n\n**Key Components:**\n\n**1. Serializers - Like Pydantic for Django**\nConvert Django models to JSON and validate incoming data:\n```python\nclass BookSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Book\n        fields = ['id', 'title', 'author']\n```\n\n**2. ViewSets - CRUD in One Class**\nHandle all standard operations (list, create, retrieve, update, delete):\n```python\nclass BookViewSet(viewsets.ModelViewSet):\n    queryset = Book.objects.all()\n    serializer_class = BookSerializer\n```\n\n**3. Routers - Auto-Generate URLs**\nNo manual URL patterns needed:\n```python\nrouter = DefaultRouter()\nrouter.register('books', BookViewSet)\n# Creates: /books/, /books/{id}/, etc.\n```\n\n**4. Browsable API**\nBuilt-in web interface for testing your API - no Postman needed!\n\n**Why DRF over FastAPI?**\n\n| Feature | DRF | FastAPI |\n|---------|-----|----------|\n| Ecosystem | Mature, huge plugin library | Growing rapidly |\n| ORM | Django ORM built-in | Bring your own (SQLAlchemy) |\n| Admin | Django Admin included | Build your own |\n| Async | Limited | Native async |\n| Best for | Full-featured web apps | Microservices, high-performance APIs |"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Setting Up DRF",
+              "content": "**Installing and Configuring Django REST Framework**\n\n**1. Install the Package:**\n```bash\nuv add djangorestframework\n# or: pip install djangorestframework\n```\n\n**2. Add to INSTALLED_APPS:**\nDRF must be registered in your Django settings.\n\n**3. Configure Default Settings:**\n- `DEFAULT_PERMISSION_CLASSES` - Who can access your API\n- `DEFAULT_AUTHENTICATION_CLASSES` - How users authenticate\n- `DEFAULT_PAGINATION_CLASS` - How to paginate results\n\n**Common Permission Classes:**\n- `AllowAny` - No authentication required\n- `IsAuthenticated` - Must be logged in\n- `IsAuthenticatedOrReadOnly` - Read for anyone, write needs auth\n- `IsAdminUser` - Only Django admin users\n\n**Common Authentication Classes:**\n- `SessionAuthentication` - Use Django sessions\n- `TokenAuthentication` - API tokens\n- `BasicAuthentication` - HTTP Basic Auth",
+              "code": "# Install\n# uv add djangorestframework\n\n# settings.py\nINSTALLED_APPS = [\n    'django.contrib.admin',\n    'django.contrib.auth',\n    'django.contrib.contenttypes',\n    'django.contrib.sessions',\n    'django.contrib.messages',\n    'django.contrib.staticfiles',\n    'rest_framework',  # Add this\n    'tracker',          # Your app\n]\n\nREST_FRAMEWORK = {\n    'DEFAULT_PERMISSION_CLASSES': [\n        'rest_framework.permissions.IsAuthenticated',\n    ],\n    'DEFAULT_AUTHENTICATION_CLASSES': [\n        'rest_framework.authentication.SessionAuthentication',\n        'rest_framework.authentication.TokenAuthentication',\n    ],\n    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',\n    'PAGE_SIZE': 20,\n}\n\n\nprint(\"=== Django REST Framework Setup ===\")\n\nprint(\"\\n1. Installation:\")\nprint(\"   uv add djangorestframework\")\nprint(\"   # or: pip install djangorestframework\")\n\nprint(\"\\n2. Add to INSTALLED_APPS:\")\nprint(\"   'rest_framework',\")\n\nprint(\"\\n3. Common Settings:\")\nprint(\"   - DEFAULT_PERMISSION_CLASSES: Who can access\")\nprint(\"   - DEFAULT_AUTHENTICATION_CLASSES: How to authenticate\")\nprint(\"   - DEFAULT_PAGINATION_CLASS: How to paginate\")\n\nprint(\"\\n4. Permission Options:\")\nprint(\"   - AllowAny: Public access\")\nprint(\"   - IsAuthenticated: Login required\")\nprint(\"   - IsAuthenticatedOrReadOnly: Read public, write protected\")\nprint(\"   - IsAdminUser: Admin only\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Serializers",
+              "content": "**Serializers - Data Transformation Layer**\n\nSerializers convert complex data (Django models) to Python primitives that can be rendered to JSON.\n\n**ModelSerializer - Quick Setup:**\n```python\nclass CategorySerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Category\n        fields = ['id', 'name', 'description']\n```\n\n**Key Concepts:**\n\n**1. fields - Which Fields to Include**\n- Use `fields = '__all__'` for all fields\n- Use `fields = ['id', 'name']` for specific fields\n- Use `exclude = ['password']` to exclude fields\n\n**2. read_only_fields - Non-Editable Fields**\n```python\nread_only_fields = ['created_at', 'id']\n```\n\n**3. Custom Fields - Computed or Nested Data**\n```python\ncategory_name = serializers.CharField(\n    source='category.name', \n    read_only=True\n)\n```\n\n**4. Nested Serializers**\n```python\ncategory = CategorySerializer(read_only=True)\n```\n\n**Validation:**\nSerializers validate data automatically based on model constraints. Add custom validation with:\n```python\ndef validate_amount(self, value):\n    if value <= 0:\n        raise serializers.ValidationError(\"Must be positive\")\n    return value\n```",
+              "code": "# tracker/serializers.py\nfrom rest_framework import serializers\nfrom .models import Transaction, Category\n\nclass CategorySerializer(serializers.ModelSerializer):\n    \"\"\"Serializer for Category model.\"\"\"\n    \n    class Meta:\n        model = Category\n        fields = ['id', 'name', 'description']\n\n\nclass TransactionSerializer(serializers.ModelSerializer):\n    \"\"\"Serializer for Transaction model with nested category name.\"\"\"\n    \n    # Read-only field from related model\n    category_name = serializers.CharField(\n        source='category.name', \n        read_only=True\n    )\n    \n    class Meta:\n        model = Transaction\n        fields = [\n            'id', \n            'amount', \n            'category',        # Foreign key (ID)\n            'category_name',   # Computed field\n            'transaction_type', \n            'description', \n            'created_at'\n        ]\n        read_only_fields = ['created_at']\n    \n    def validate_amount(self, value):\n        \"\"\"Ensure amount is positive.\"\"\"\n        if value <= 0:\n            raise serializers.ValidationError(\n                \"Amount must be greater than zero.\"\n            )\n        return value\n\n\nprint(\"=== DRF Serializers ===\")\n\nprint(\"\\nCategorySerializer:\")\nprint(\"  - Simple ModelSerializer\")\nprint(\"  - Exposes: id, name, description\")\n\nprint(\"\\nTransactionSerializer:\")\nprint(\"  - category_name: Computed from related model\")\nprint(\"  - read_only_fields: created_at (auto-set)\")\nprint(\"  - validate_amount: Custom validation\")\n\nprint(\"\\nSerialization Examples:\")\nprint(\"  # Model to JSON\")\nprint(\"  serializer = TransactionSerializer(transaction)\")\nprint(\"  serializer.data  # {'id': 1, 'amount': '50.00', ...}\")\n\nprint(\"\\n  # JSON to Model\")\nprint(\"  serializer = TransactionSerializer(data=request.data)\")\nprint(\"  serializer.is_valid(raise_exception=True)\")\nprint(\"  serializer.save()  # Creates/updates model\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "ViewSets and Routers",
+              "content": "**ViewSets - All CRUD Operations in One Class**\n\n`ModelViewSet` provides complete CRUD operations:\n- `list()` - GET /transactions/\n- `create()` - POST /transactions/\n- `retrieve()` - GET /transactions/{id}/\n- `update()` - PUT /transactions/{id}/\n- `partial_update()` - PATCH /transactions/{id}/\n- `destroy()` - DELETE /transactions/{id}/\n\n**Key Methods to Override:**\n\n**get_queryset()** - Filter what users can see:\n```python\ndef get_queryset(self):\n    return Transaction.objects.filter(user=self.request.user)\n```\n\n**perform_create()** - Add extra data on create:\n```python\ndef perform_create(self, serializer):\n    serializer.save(user=self.request.user)\n```\n\n**Routers - Auto-Generate URLs:**\n```python\nrouter = DefaultRouter()\nrouter.register('transactions', TransactionViewSet)\nurlpatterns = router.urls\n```\n\nThis creates:\n- `GET/POST /transactions/`\n- `GET/PUT/PATCH/DELETE /transactions/{id}/`\n\n**DefaultRouter Bonus:**\nAdds an API root view at `/` listing all endpoints.",
+              "code": "# tracker/views.py\nfrom rest_framework import viewsets, status\nfrom rest_framework.decorators import action\nfrom rest_framework.permissions import IsAuthenticated\nfrom rest_framework.response import Response\nfrom .models import Transaction, Category\nfrom .serializers import TransactionSerializer, CategorySerializer\n\n\nclass CategoryViewSet(viewsets.ModelViewSet):\n    \"\"\"API endpoint for categories.\"\"\"\n    queryset = Category.objects.all()\n    serializer_class = CategorySerializer\n    permission_classes = [IsAuthenticated]\n\n\nclass TransactionViewSet(viewsets.ModelViewSet):\n    \"\"\"API endpoint for user transactions.\"\"\"\n    serializer_class = TransactionSerializer\n    permission_classes = [IsAuthenticated]\n    \n    def get_queryset(self):\n        \"\"\"Return only current user's transactions.\"\"\"\n        return Transaction.objects.filter(\n            user=self.request.user\n        ).select_related('category')\n    \n    def perform_create(self, serializer):\n        \"\"\"Set user when creating transaction.\"\"\"\n        serializer.save(user=self.request.user)\n    \n    @action(detail=False, methods=['get'])\n    def summary(self, request):\n        \"\"\"Custom action: GET /transactions/summary/\"\"\"\n        from django.db.models import Sum\n        \n        qs = self.get_queryset()\n        income = qs.filter(\n            transaction_type='income'\n        ).aggregate(total=Sum('amount'))['total'] or 0\n        expenses = qs.filter(\n            transaction_type='expense'\n        ).aggregate(total=Sum('amount'))['total'] or 0\n        \n        return Response({\n            'income': income,\n            'expenses': expenses,\n            'balance': income - expenses\n        })\n\n\n# tracker/urls.py\nfrom rest_framework.routers import DefaultRouter\nfrom .views import TransactionViewSet, CategoryViewSet\n\nrouter = DefaultRouter()\nrouter.register('transactions', TransactionViewSet, basename='transaction')\nrouter.register('categories', CategoryViewSet, basename='category')\n\nurlpatterns = router.urls\n\n\nprint(\"=== DRF ViewSets and Routers ===\")\n\nprint(\"\\nGenerated Endpoints:\")\nprint(\"  GET    /transactions/         - List all\")\nprint(\"  POST   /transactions/         - Create new\")\nprint(\"  GET    /transactions/{id}/    - Get one\")\nprint(\"  PUT    /transactions/{id}/    - Full update\")\nprint(\"  PATCH  /transactions/{id}/    - Partial update\")\nprint(\"  DELETE /transactions/{id}/    - Delete\")\nprint(\"  GET    /transactions/summary/ - Custom action\")\n\nprint(\"\\nKey ViewSet Methods:\")\nprint(\"  get_queryset() - Filter accessible objects\")\nprint(\"  perform_create() - Add data before save\")\nprint(\"  @action() - Add custom endpoints\")\n\nprint(\"\\nRouter Setup:\")\nprint(\"  router = DefaultRouter()\")\nprint(\"  router.register('transactions', TransactionViewSet)\")\nprint(\"  urlpatterns = router.urls\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "**Django REST Framework Essentials:**\n\n**Setup:**\n- Install with `uv add djangorestframework`\n- Add `'rest_framework'` to `INSTALLED_APPS`\n- Configure `REST_FRAMEWORK` settings for auth, permissions, pagination\n\n**Serializers:**\n- `ModelSerializer` auto-generates fields from Django models\n- Use `fields` to specify which fields to expose\n- Add `read_only_fields` for non-editable fields\n- Use `source='related.field'` for computed fields\n- Override `validate_fieldname()` for custom validation\n\n**ViewSets:**\n- `ModelViewSet` provides complete CRUD with minimal code\n- Override `get_queryset()` to filter by user or permissions\n- Override `perform_create()` to inject data (like current user)\n- Use `@action` decorator for custom endpoints\n\n**Routers:**\n- `DefaultRouter` auto-generates RESTful URL patterns\n- `router.register('endpoint', ViewSet)` creates all standard routes\n- No manual URL configuration needed\n\n**Browsable API:**\n- Visit any endpoint in browser for interactive documentation\n- Test POST/PUT/DELETE directly from the browser\n- Built-in, no configuration needed"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-drf-challenge",
+              "title": "Build a Task API with DRF",
+              "description": "Create a REST API for a task management app using Django REST Framework. Implement serializers and viewsets for Task and Project models.",
+              "instructions": "Build a Task API with DRF:\n1. Create a TaskSerializer with fields: id, title, completed, project (FK), project_name (computed), created_at\n2. Create a TaskViewSet that:\n   - Only shows the current user's tasks\n   - Sets the user automatically on create\n   - Has a custom action to mark a task as complete\n3. Register the viewset with a router",
+              "starterCode": "from rest_framework import serializers, viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\nfrom rest_framework.permissions import IsAuthenticated\nfrom rest_framework.routers import DefaultRouter\n\n# Assume these models exist:\n# class Project(models.Model):\n#     name = models.CharField(max_length=100)\n#     user = models.ForeignKey(User, on_delete=models.CASCADE)\n#\n# class Task(models.Model):\n#     title = models.CharField(max_length=200)\n#     completed = models.BooleanField(default=False)\n#     project = models.ForeignKey(Project, on_delete=models.CASCADE)\n#     user = models.ForeignKey(User, on_delete=models.CASCADE)\n#     created_at = models.DateTimeField(auto_now_add=True)\n\n# TODO: Create TaskSerializer\nclass TaskSerializer(serializers.ModelSerializer):\n    pass\n\n# TODO: Create TaskViewSet\nclass TaskViewSet(viewsets.ModelViewSet):\n    pass\n\n# TODO: Setup router\n# router = ...",
+              "solution": "from rest_framework import serializers, viewsets, status\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\nfrom rest_framework.permissions import IsAuthenticated\nfrom rest_framework.routers import DefaultRouter\n\n# TaskSerializer - handles data transformation\nclass TaskSerializer(serializers.ModelSerializer):\n    \"\"\"Serializer for Task model.\"\"\"\n    project_name = serializers.CharField(\n        source='project.name',\n        read_only=True\n    )\n    \n    class Meta:\n        model = Task\n        fields = [\n            'id',\n            'title',\n            'completed',\n            'project',\n            'project_name',\n            'created_at'\n        ]\n        read_only_fields = ['created_at']\n\n\n# TaskViewSet - handles CRUD operations\nclass TaskViewSet(viewsets.ModelViewSet):\n    \"\"\"API endpoint for tasks.\"\"\"\n    serializer_class = TaskSerializer\n    permission_classes = [IsAuthenticated]\n    \n    def get_queryset(self):\n        \"\"\"Return only current user's tasks.\"\"\"\n        return Task.objects.filter(\n            user=self.request.user\n        ).select_related('project')\n    \n    def perform_create(self, serializer):\n        \"\"\"Set user when creating task.\"\"\"\n        serializer.save(user=self.request.user)\n    \n    @action(detail=True, methods=['post'])\n    def complete(self, request, pk=None):\n        \"\"\"Mark a task as complete: POST /tasks/{id}/complete/\"\"\"\n        task = self.get_object()\n        task.completed = True\n        task.save()\n        serializer = self.get_serializer(task)\n        return Response(serializer.data)\n    \n    @action(detail=False, methods=['get'])\n    def pending(self, request):\n        \"\"\"Get all pending tasks: GET /tasks/pending/\"\"\"\n        pending_tasks = self.get_queryset().filter(completed=False)\n        serializer = self.get_serializer(pending_tasks, many=True)\n        return Response(serializer.data)\n\n\n# Router setup\nrouter = DefaultRouter()\nrouter.register('tasks', TaskViewSet, basename='task')\nurlpatterns = router.urls\n\n\nprint(\"=== Task API with DRF ===\")\n\nprint(\"\\nEndpoints Created:\")\nprint(\"  GET    /tasks/              - List user's tasks\")\nprint(\"  POST   /tasks/              - Create task\")\nprint(\"  GET    /tasks/{id}/         - Get task\")\nprint(\"  PUT    /tasks/{id}/         - Update task\")\nprint(\"  DELETE /tasks/{id}/         - Delete task\")\nprint(\"  POST   /tasks/{id}/complete/- Mark complete\")\nprint(\"  GET    /tasks/pending/      - List pending\")\n\nprint(\"\\nSerializer Features:\")\nprint(\"  - project_name computed from related model\")\nprint(\"  - created_at is read-only\")\n\nprint(\"\\nViewSet Features:\")\nprint(\"  - Filtered by current user\")\nprint(\"  - Auto-sets user on create\")\nprint(\"  - Custom complete action\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use serializers.CharField(source='project.name', read_only=True) to create a computed field from a related model."
+                },
+                {
+                  "level": 2,
+                  "text": "Override get_queryset() to filter: return Task.objects.filter(user=self.request.user)"
+                },
+                {
+                  "level": 3,
+                  "text": "For the complete action, use @action(detail=True, methods=['post']) - detail=True means it operates on a single object (requires pk)."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to set basename in router.register()",
+                  "consequence": "Error when viewset doesn't have a queryset attribute",
+                  "correction": "router.register('tasks', TaskViewSet, basename='task')"
+                },
+                {
+                  "mistake": "Using detail=False for actions that operate on single objects",
+                  "consequence": "Action available at /tasks/complete/ instead of /tasks/{id}/complete/",
+                  "correction": "Use detail=True for actions that need a specific object"
+                },
+                {
+                  "mistake": "Not using select_related() in get_queryset()",
+                  "consequence": "N+1 query problem when accessing project.name",
+                  "correction": "Add .select_related('project') to eager-load the relationship"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
-          "order": 15,
+          "order": 16,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
