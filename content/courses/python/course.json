@@ -8765,7 +8765,7 @@
       "title": "Sharing Your Work",
       "description": "Project planning and deployment",
       "difficulty": "advanced",
-      "estimatedHours": 7,
+      "estimatedHours": 8,
       "lessons": [
         {
           "id": "module-15-lesson-01",
@@ -9709,6 +9709,146 @@
                   "mistake": "Mismatched internal_port with Dockerfile EXPOSE",
                   "consequence": "Health checks fail, app unreachable",
                   "correction": "Ensure fly.toml internal_port matches your app's listening port"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-15-lesson-11",
+          "title": "Modern CI Pipeline with GitHub Actions",
+          "moduleId": "module-15",
+          "order": 11,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is CI/CD?",
+              "content": "**CI/CD = Continuous Integration / Continuous Deployment**\n\nAutomation that runs every time you push code:\n\n**Continuous Integration (CI):**\n- Automatically run tests on every push\n- Lint and format check your code\n- Type check with static analysis\n- Catch bugs before they reach production\n- Build confidence in every change\n\n**Continuous Deployment (CD):**\n- Automatically deploy passing builds\n- Staging environment for testing\n- Production deployment after approval\n- Rollback capabilities\n\n**Why CI/CD matters:**\n\n1. **Catch bugs early**\n   - Tests run on every push\n   - Failing tests block merges\n   - Problems found before users see them\n\n2. **Consistent quality**\n   - Same checks every time\n   - No \"it works on my machine\"\n   - Enforced code standards\n\n3. **Faster feedback**\n   - Know within minutes if code is broken\n   - Fix issues while context is fresh\n   - Ship with confidence\n\n4. **Team collaboration**\n   - Everyone's changes tested together\n   - Integration problems caught early\n   - Shared quality standards\n\n**For our Personal Finance Tracker:**\n- Run pytest on every push\n- Lint with ruff\n- Type check with mypy\n- Test against PostgreSQL\n- Deploy to Fly.io on main branch"
+            },
+            {
+              "type": "THEORY",
+              "title": "GitHub Actions Basics",
+              "content": "**GitHub Actions = CI/CD built into GitHub**\n\n**Key concepts:**\n\n1. **Workflow** (`.github/workflows/*.yml`)\n   - Automated process definition\n   - Triggered by events\n   - Contains one or more jobs\n\n2. **Trigger** (`on:`)\n   - When the workflow runs\n   - push, pull_request, schedule, manual\n   - Can filter by branch, path, etc.\n\n3. **Job** (`jobs:`)\n   - Group of steps that run together\n   - Runs on a virtual machine (runner)\n   - Jobs can run in parallel or sequence\n\n4. **Step** (`steps:`)\n   - Individual task within a job\n   - Run commands or use actions\n   - Share data via outputs\n\n5. **Action** (`uses:`)\n   - Reusable workflow component\n   - Published on GitHub Marketplace\n   - Example: `actions/checkout@v4`\n\n**Workflow structure:**\n```yaml\nname: Workflow Name\non: [push, pull_request]\n\njobs:\n  job-name:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - run: echo \"Hello\"\n```\n\n**Common triggers:**\n```yaml\non:\n  push:\n    branches: [main, develop]\n  pull_request:\n    branches: [main]\n  schedule:\n    - cron: '0 0 * * *'  # Daily at midnight\n  workflow_dispatch:  # Manual trigger\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete CI Workflow for Python with uv",
+              "content": "**A production-ready CI pipeline for our Finance Tracker:**\n\nThis workflow:\n1. Triggers on push to main and all PRs\n2. Sets up PostgreSQL as a service container\n3. Installs Python and dependencies with uv\n4. Runs linting, formatting, and type checks\n5. Executes tests with coverage\n6. Has a deploy job that only runs on main",
+              "code": "# .github/workflows/ci.yml\nname: CI\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n\n    services:\n      postgres:\n        image: postgres:16\n        env:\n          POSTGRES_USER: test\n          POSTGRES_PASSWORD: test\n          POSTGRES_DB: test\n        options: >-\n          --health-cmd pg_isready\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n        ports:\n          - 5432:5432\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Install uv\n        uses: astral-sh/setup-uv@v4\n        with:\n          version: \"latest\"\n\n      - name: Set up Python\n        run: uv python install 3.13\n\n      - name: Install dependencies\n        run: uv sync --all-extras --dev\n\n      - name: Lint with ruff\n        run: uv run ruff check .\n\n      - name: Format check with ruff\n        run: uv run ruff format --check .\n\n      - name: Type check with mypy\n        run: uv run mypy src/\n\n      - name: Run tests\n        run: uv run pytest --cov=src tests/\n        env:\n          DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test\n\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Deploy to production\n        run: echo \"Deploy step goes here\"\n        # In production, use:\n        # - uses: superfly/flyctl-actions/setup-flyctl@master\n        # - run: flyctl deploy --remote-only",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Understanding Each Section",
+              "content": "**Let's break down the workflow step by step:**",
+              "code": "# ============================================\n# WORKFLOW NAME AND TRIGGERS\n# ============================================\nname: CI  # Displayed in GitHub Actions UI\n\non:\n  push:\n    branches: [main]  # Run on pushes to main\n  pull_request:\n    branches: [main]  # Run on PRs targeting main\n\n# ============================================\n# SERVICE CONTAINERS\n# ============================================\n# PostgreSQL runs alongside your tests\nservices:\n  postgres:\n    image: postgres:16              # Docker image to use\n    env:\n      POSTGRES_USER: test           # Database credentials\n      POSTGRES_PASSWORD: test\n      POSTGRES_DB: test\n    options: >-                     # Health check settings\n      --health-cmd pg_isready       # Command to check if ready\n      --health-interval 10s         # Check every 10 seconds\n      --health-timeout 5s           # Timeout for each check\n      --health-retries 5            # Retry 5 times before failing\n    ports:\n      - 5432:5432                   # Map container port to host\n\n# ============================================\n# UV AND PYTHON SETUP\n# ============================================\n- name: Install uv\n  uses: astral-sh/setup-uv@v4      # Official uv action\n  with:\n    version: \"latest\"              # Always use latest uv\n\n- name: Set up Python\n  run: uv python install 3.13      # Install Python via uv\n\n- name: Install dependencies\n  run: uv sync --all-extras --dev  # Install all deps from pyproject.toml\n\n# ============================================\n# CODE QUALITY CHECKS\n# ============================================\n- name: Lint with ruff\n  run: uv run ruff check .         # Check for code issues\n\n- name: Format check with ruff\n  run: uv run ruff format --check . # Verify formatting\n\n- name: Type check with mypy\n  run: uv run mypy src/            # Static type analysis\n\n# ============================================\n# TESTING WITH DATABASE\n# ============================================\n- name: Run tests\n  run: uv run pytest --cov=src tests/\n  env:\n    # Connect to the service container\n    DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test\n\n# ============================================\n# CONDITIONAL DEPLOYMENT\n# ============================================\ndeploy:\n  needs: test                      # Wait for test job to pass\n  if: github.ref == 'refs/heads/main'  # Only on main branch\n  # ... deployment steps",
+              "language": "yaml"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Service Containers",
+              "content": "**Service containers run alongside your job:**\n\nGitHub Actions can spin up Docker containers that your tests can connect to:\n\n**PostgreSQL:**\n```yaml\nservices:\n  postgres:\n    image: postgres:16\n    env:\n      POSTGRES_USER: test\n      POSTGRES_PASSWORD: test\n      POSTGRES_DB: test\n    ports:\n      - 5432:5432\n```\n\n**Redis:**\n```yaml\nservices:\n  redis:\n    image: redis:7\n    ports:\n      - 6379:6379\n```\n\n**Health checks ensure the service is ready:**\n```yaml\noptions: >-\n  --health-cmd pg_isready\n  --health-interval 10s\n  --health-timeout 5s\n  --health-retries 5\n```\n\n**Connection from your code:**\n- Use `localhost` and the mapped port\n- Pass as environment variable\n- Service is destroyed after job completes"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Secrets and Environment Variables",
+              "content": "**Keep sensitive data secure in GitHub Actions:**",
+              "code": "# ============================================\n# USING GITHUB SECRETS\n# ============================================\n# First, add secrets in GitHub:\n# Repository Settings > Secrets and variables > Actions\n\n# In your workflow:\nsteps:\n  - name: Deploy to Fly.io\n    run: flyctl deploy --remote-only\n    env:\n      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}\n\n  - name: Configure AWS\n    run: aws configure set aws_access_key_id $AWS_KEY\n    env:\n      AWS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}\n      AWS_SECRET: ${{ secrets.AWS_SECRET_ACCESS_KEY }}\n\n# ============================================\n# BUILT-IN VARIABLES\n# ============================================\nsteps:\n  - name: Show context\n    run: |\n      echo \"Repository: ${{ github.repository }}\"\n      echo \"Branch: ${{ github.ref_name }}\"\n      echo \"SHA: ${{ github.sha }}\"\n      echo \"Actor: ${{ github.actor }}\"\n      echo \"Event: ${{ github.event_name }}\"\n      echo \"Run ID: ${{ github.run_id }}\"\n\n# ============================================\n# ENVIRONMENT FILES\n# ============================================\n# Create a .env file for tests\nsteps:\n  - name: Create test environment\n    run: |\n      cat > .env.test << EOF\n      DATABASE_URL=postgresql+asyncpg://test:test@localhost:5432/test\n      SECRET_KEY=test-secret-key\n      DEBUG=true\n      EOF\n\n# ============================================\n# CONDITIONAL SECRETS (for PRs from forks)\n# ============================================\n# Secrets are NOT available to PRs from forks (security)\nsteps:\n  - name: Deploy (only if secrets available)\n    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository\n    run: flyctl deploy\n    env:\n      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Caching Dependencies for Speed",
+              "content": "**Speed up workflows by caching dependencies:**\n\nuv has built-in caching support with the setup action:",
+              "code": "# ============================================\n# UV CACHING (RECOMMENDED)\n# ============================================\n# The astral-sh/setup-uv action handles caching automatically!\nsteps:\n  - uses: actions/checkout@v4\n  \n  - name: Install uv\n    uses: astral-sh/setup-uv@v4\n    with:\n      version: \"latest\"\n      enable-cache: true  # Enable uv cache (default: true)\n\n  - name: Install dependencies\n    run: uv sync --all-extras --dev\n    # Second run is much faster due to cache!\n\n# ============================================\n# MANUAL CACHING (for other tools)\n# ============================================\nsteps:\n  - uses: actions/checkout@v4\n  \n  - name: Cache pip packages\n    uses: actions/cache@v4\n    with:\n      path: ~/.cache/pip\n      key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}\n      restore-keys: |\n        ${{ runner.os }}-pip-\n\n  - name: Cache mypy\n    uses: actions/cache@v4\n    with:\n      path: .mypy_cache\n      key: ${{ runner.os }}-mypy-${{ hashFiles('src/**/*.py') }}\n\n# ============================================\n# CACHE BEHAVIOR\n# ============================================\n# Cache key: Unique identifier for the cache\n# - Changes when dependencies change (hashFiles)\n# - Different per OS\n# - Restored from closest matching key\n\n# restore-keys: Fallback keys if exact match not found\n# - Uses prefix matching\n# - Allows partial cache restoration\n\n# ============================================\n# CHECKING CACHE EFFECTIVENESS\n# ============================================\n# In workflow logs, look for:\n# - \"Cache hit\" = Cache was restored\n# - \"Cache miss\" = No cache found, will save new one\n# - \"Cache restored from key\" = Partial match used\n\n# Typical speedup:\n# - First run: 60-90 seconds (install all deps)\n# - Cached run: 5-10 seconds (deps already installed)",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Matrix Builds for Multiple Python Versions",
+              "content": "**Test against multiple Python versions simultaneously:**",
+              "code": "# ============================================\n# MATRIX STRATEGY\n# ============================================\nname: CI\n\non: [push, pull_request]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    strategy:\n      fail-fast: false  # Don't cancel other jobs if one fails\n      matrix:\n        python-version: [\"3.11\", \"3.12\", \"3.13\"]\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Install uv\n        uses: astral-sh/setup-uv@v4\n        with:\n          version: \"latest\"\n\n      - name: Set up Python ${{ matrix.python-version }}\n        run: uv python install ${{ matrix.python-version }}\n\n      - name: Install dependencies\n        run: uv sync --all-extras --dev\n\n      - name: Run tests\n        run: uv run pytest\n\n# ============================================\n# MULTI-DIMENSIONAL MATRIX\n# ============================================\njobs:\n  test:\n    runs-on: ${{ matrix.os }}\n    strategy:\n      matrix:\n        os: [ubuntu-latest, windows-latest, macos-latest]\n        python-version: [\"3.11\", \"3.12\", \"3.13\"]\n        exclude:\n          - os: windows-latest\n            python-version: \"3.11\"  # Skip Python 3.11 on Windows\n        include:\n          - os: ubuntu-latest\n            python-version: \"3.13\"\n            experimental: true  # Add custom variable\n\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Install uv\n        uses: astral-sh/setup-uv@v4\n      \n      - name: Set up Python\n        run: uv python install ${{ matrix.python-version }}\n      \n      - name: Run tests\n        run: uv run pytest\n        continue-on-error: ${{ matrix.experimental || false }}\n\n# This creates 9 jobs (3 OS x 3 Python versions)\n# minus 1 exclusion = 8 parallel test runs!",
+              "language": "yaml"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common CI/CD Pitfalls",
+              "content": "### Watch out for these issues:\n\n**1. Secrets in PRs from forks**\n```yaml\n# WRONG - Secrets exposed to fork PRs\n- name: Deploy\n  run: flyctl deploy\n  env:\n    FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}\n\n# CORRECT - Only deploy on push to main\n- name: Deploy\n  if: github.event_name == 'push' && github.ref == 'refs/heads/main'\n  run: flyctl deploy\n  env:\n    FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}\n```\n\n**2. Missing service health checks**\n```yaml\n# WRONG - Tests might start before DB is ready\nservices:\n  postgres:\n    image: postgres:16\n\n# CORRECT - Wait for PostgreSQL to be ready\nservices:\n  postgres:\n    image: postgres:16\n    options: >-\n      --health-cmd pg_isready\n      --health-interval 10s\n      --health-timeout 5s\n      --health-retries 5\n```\n\n**3. Hardcoded Python version**\n```yaml\n# WRONG - Breaks when Python updates\nrun: uv python install 3.12\n\n# BETTER - Use matrix for multiple versions\nmatrix:\n  python-version: [\"3.11\", \"3.12\", \"3.13\"]\n```\n\n**4. Not caching dependencies**\n```yaml\n# SLOW - Downloads everything every time\n- run: uv sync --all-extras --dev\n\n# FAST - Enable caching\n- uses: astral-sh/setup-uv@v4\n  with:\n    enable-cache: true\n```\n\n**5. Deploying on every push**\n```yaml\n# DANGEROUS - Deploys untested PR code\ndeploy:\n  runs-on: ubuntu-latest\n  steps:\n    - run: flyctl deploy\n\n# SAFE - Only deploy after tests pass on main\ndeploy:\n  needs: test\n  if: github.ref == 'refs/heads/main'\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **CI runs automatically** on every push and pull request\n- **Workflows live in** `.github/workflows/` as YAML files\n- **Service containers** provide databases for testing (PostgreSQL, Redis)\n- **`uv sync`** installs all dependencies from pyproject.toml\n- **Ruff** handles both linting and formatting in one fast tool\n- **Mypy** catches type errors before runtime\n- **Secrets** are encrypted and never exposed in logs\n- **Caching** speeds up workflows dramatically (60s to 5s)\n- **Matrix builds** test against multiple Python versions in parallel\n- **`needs:`** creates job dependencies (deploy after test passes)\n- **`if:`** conditions control when jobs or steps run"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-11-challenge-1",
+              "title": "Create a CI Workflow",
+              "description": "Create a GitHub Actions workflow that:\n1. Triggers on push to main and all pull requests\n2. Uses Python 3.13 with uv\n3. Runs ruff check and ruff format --check\n4. Runs pytest with coverage\n5. Includes a PostgreSQL service container",
+              "instructions": "Complete the CI workflow YAML file with proper triggers, Python setup, linting, and testing steps.",
+              "starterCode": "# .github/workflows/ci.yml\nname: CI\n\non:\n  ____:\n    branches: [main]\n  ____:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n\n    services:\n      postgres:\n        image: postgres:16\n        env:\n          POSTGRES_USER: test\n          POSTGRES_PASSWORD: test\n          POSTGRES_DB: test\n        options: >-\n          --health-cmd pg_isready\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n        ports:\n          - 5432:5432\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Install uv\n        uses: ____\n        with:\n          version: \"latest\"\n\n      - name: Set up Python\n        run: uv python install ____\n\n      - name: Install dependencies\n        run: ____\n\n      - name: Lint with ruff\n        run: ____\n\n      - name: Format check\n        run: ____\n\n      - name: Run tests\n        run: ____\n        env:\n          DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test",
+              "solution": "# .github/workflows/ci.yml\nname: CI\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n\n    services:\n      postgres:\n        image: postgres:16\n        env:\n          POSTGRES_USER: test\n          POSTGRES_PASSWORD: test\n          POSTGRES_DB: test\n        options: >-\n          --health-cmd pg_isready\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n        ports:\n          - 5432:5432\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Install uv\n        uses: astral-sh/setup-uv@v4\n        with:\n          version: \"latest\"\n\n      - name: Set up Python\n        run: uv python install 3.13\n\n      - name: Install dependencies\n        run: uv sync --all-extras --dev\n\n      - name: Lint with ruff\n        run: uv run ruff check .\n\n      - name: Format check\n        run: uv run ruff format --check .\n\n      - name: Run tests\n        run: uv run pytest --cov=src tests/\n        env:\n          DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses push and pull_request triggers",
+                  "expectedOutput": "push pull_request",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses astral-sh/setup-uv@v4 action",
+                  "expectedOutput": "astral-sh/setup-uv@v4",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Installs Python 3.13",
+                  "expectedOutput": "3.13",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Runs ruff check and format",
+                  "expectedOutput": "ruff check ruff format",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The trigger events are 'push' and 'pull_request' - these go under the 'on:' key"
+                },
+                {
+                  "level": 2,
+                  "text": "The uv setup action is 'astral-sh/setup-uv@v4' - this is the official action from Astral"
+                },
+                {
+                  "level": 3,
+                  "text": "Use 'uv sync --all-extras --dev' to install all dependencies including dev deps"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting 'uv run' prefix for commands",
+                  "consequence": "Commands fail because tools aren't in PATH",
+                  "correction": "Always use 'uv run ruff check .' not just 'ruff check .'"
+                },
+                {
+                  "mistake": "Using postgres:// instead of postgresql+asyncpg://",
+                  "consequence": "SQLAlchemy asyncpg driver fails to connect",
+                  "correction": "Use postgresql+asyncpg:// for async database connections"
+                },
+                {
+                  "mistake": "Missing health check options for PostgreSQL",
+                  "consequence": "Tests may start before database is ready",
+                  "correction": "Always include --health-cmd pg_isready in service options"
                 }
               ],
               "difficulty": "advanced"
