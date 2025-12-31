@@ -6764,7 +6764,22 @@
               "content": "SPRING BOOT 3.4 MIGRATION NOTES:\n\n1. @MockBean DEPRECATION (Spring Boot 3.4)\n   - @MockBean and @SpyBean are deprecated\n   - Replace with: @MockitoBean and @MockitoSpyBean\n   - Note: Not a direct 1-to-1 replacement\n   - @MockitoBean only works on fields, not types\n\n2. VIRTUAL THREADS CAUTION\n   - Virtual threads require Java 21+\n   - ThreadLocal usage needs review\n   - Some libraries may not be compatible\n   - Test thoroughly before enabling in production\n\n3. STRUCTURED LOGGING SETUP\n   - Choose format: ecs, logstash, or gelf\n   - Configure log aggregation system accordingly\n   - Use spring.application.group for multi-app setups\n\nFUTURE: SPRING BOOT 4.0 (November 2025)\n- All javax.* imports must become jakarta.*\n- Check migration guide at spring.io\n\n4. DEVELOPMENT VS PRODUCTION\n   - This course teaches concepts, not production setup\n   - Production apps need: proper security, monitoring, logging\n   - Consider Spring Cloud for microservices"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-1-spring-benefits",
+              "title": "Why Spring Boot?",
+              "description": "What is the main advantage of Spring Boot over plain Spring Framework?",
+              "options": [
+                "Spring Boot is faster",
+                "Spring Boot auto-configures common patterns",
+                "Spring Boot uses less memory",
+                "Spring Boot is more secure"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Spring Boot's auto-configuration eliminates boilerplate. It detects dependencies and configures them automatically."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-2",
@@ -6805,7 +6820,22 @@
               "content": "AVOID COMMON CONTROLLER MISTAKES:\n\n1. CONTROLLER SHOULD BE THIN\n   - No business logic in controllers\n   - Delegate to service layer\n   - Controllers only handle HTTP concerns\n\n2. USE DTOs (Data Transfer Objects)\n   - Never expose entities directly\n   - DTOs hide internal structure\n   - Separate input/output DTOs if needed\n\n3. PROPER HTTP STATUS CODES\n   - 201 for resource creation (not 200)\n   - 204 for successful deletion\n   - 400 for validation errors\n   - 404 for not found\n\n4. VALIDATION IS REQUIRED\n   - Always use @Valid on @RequestBody\n   - Bean Validation annotations on DTOs\n   - Custom validators for complex rules\n\n5. EXCEPTION HANDLING (Spring Boot 3.4+)\n   - Use @RestControllerAdvice globally\n   - Never expose stack traces\n   - Enable RFC 7807 Problem Details:\n     spring.mvc.problemdetails.enabled=true\n   - Return ProblemDetail objects for errors\n   - Standard format: type, title, status, detail, instance"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-2-rest-annotations",
+              "title": "Controller Annotations",
+              "description": "Which annotation combination creates a REST API controller?",
+              "options": [
+                "@Controller only",
+                "@RestController (or @Controller + @ResponseBody)",
+                "@Service + @RequestMapping",
+                "@Component + @GetMapping"
+              ],
+              "correctAnswer": 1,
+              "explanation": "@RestController = @Controller + @ResponseBody. It returns data directly (not views) as JSON/XML."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-3",
@@ -6851,7 +6881,22 @@
               "content": "CRITICAL JPA CONSIDERATIONS:\n\n1. NEVER USE ddl-auto IN PRODUCTION\n   - Use: spring.jpa.hibernate.ddl-auto=validate\n   - Use Flyway or Liquibase for migrations\n   - ddl-auto=update can cause data loss\n\n2. N+1 QUERY PROBLEM\n   - Lazy loading can cause performance issues\n   - Use @EntityGraph or JOIN FETCH\n   - Monitor with spring.jpa.show-sql=true\n\n3. TRANSACTION MANAGEMENT\n   - Use @Transactional on service methods\n   - Understand propagation and isolation\n   - Avoid long transactions\n\n4. ENTITY RELATIONSHIPS\n   - Prefer @ManyToOne over @OneToMany\n   - Avoid bidirectional if possible\n   - Use cascade carefully (especially REMOVE)\n\n5. CONNECTION POOLING\n   - HikariCP is the default (and best)\n   - Configure pool size appropriately\n   - Monitor connection leaks"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-3-jpa-methods",
+              "title": "Repository Query Methods",
+              "description": "What method does Spring Data JPA generate for 'findByEmailAndActiveTrue'?",
+              "options": [
+                "SELECT * FROM users",
+                "SELECT * FROM users WHERE email = ? AND active = true",
+                "SELECT email FROM users WHERE active = 1",
+                "SELECT * FROM users WHERE email LIKE ?"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Spring Data parses method names into queries. 'findByEmailAndActiveTrue' becomes WHERE email = ? AND active = true."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-4",
@@ -6902,7 +6947,22 @@
               "content": "```java\nRepository:\n\n@Repository\npublic interface BookRepository extends JpaRepository<Book, Long> {\n    // Spring auto-implements CRUD methods\n}\n\nService:\n\n@Service\npublic class BookService {\n    private final BookRepository bookRepository;\n    \n    public BookService(BookRepository bookRepository) {\n        this.bookRepository = bookRepository;\n    }\n    \n    public List<Book> getAllBooks() {\n        return bookRepository.findAll();\n    }\n    \n    public Book saveBook(Book book) {\n        return bookRepository.save(book);\n    }\n}\n\nController:\n\n@RestController\n@RequestMapping(\"/api/books\")\npublic class BookController {\n    private final BookService bookService;\n    \n    public BookController(BookService bookService) {\n        this.bookService = bookService;\n    }\n    \n    @GetMapping\n    public List<Book> getAll() {\n        return bookService.getAllBooks();\n    }\n    \n    @PostMapping\n    public Book create(@RequestBody Book book) {\n        return bookService.saveBook(book);\n    }\n}\n\nThe Dependency Chain:\nBookController → BookService → BookRepository → Database\n\nSpring automatically wires everything!\n```"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-4-di",
+              "title": "Dependency Injection",
+              "description": "What is the recommended way to inject dependencies in Spring?",
+              "options": [
+                "@Autowired on fields",
+                "Constructor injection",
+                "Setter injection",
+                "Static factory methods"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Constructor injection is recommended because: dependencies are explicit, objects are immutable, and testing is easier."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-5",
@@ -6988,7 +7048,22 @@
               "content": "ddl-auto OPTIONS:\n- create: DROP and recreate on startup (DESTROYS DATA!)\n- create-drop: Create on start, drop on shutdown\n- update: Update schema without deleting data\n- validate: Only check if schema matches entities\n- none: Do nothing\n\n❌ PROBLEMS WITH 'update':\n- Cannot remove columns (only adds)\n- Cannot rename columns\n- No rollback capability\n- No version history\n- Different results on different environments\n- Can cause data inconsistencies over time\n\n✓ PRODUCTION SOLUTION: Database Migration Tools\n\n1. FLYWAY (Recommended for simplicity):\n\nDependency:\n<dependency>\n    <groupId>org.flywaydb</groupId>\n    <artifactId>flyway-core</artifactId>\n</dependency>\n\nMigration file: src/main/resources/db/migration/V1__Create_users_table.sql\n\nCREATE TABLE users (\n    id BIGINT AUTO_INCREMENT PRIMARY KEY,\n    name VARCHAR(100) NOT NULL,\n    email VARCHAR(255) UNIQUE NOT NULL\n);\n\nMigration file: V2__Add_age_column.sql\n\nALTER TABLE users ADD COLUMN age INT;\n\n2. LIQUIBASE (More flexible, XML/YAML/JSON):\n\nDependency:\n<dependency>\n    <groupId>org.liquibase</groupId>\n    <artifactId>liquibase-core</artifactId>\n</dependency>\n\nBENEFITS OF MIGRATION TOOLS:\n✓ Version-controlled schema changes\n✓ Rollback support\n✓ Team collaboration (everyone runs same migrations)\n✓ Production-safe deployments\n✓ Audit trail of all changes\n\nPRODUCTION CONFIG:\nspring.jpa.hibernate.ddl-auto=validate  # Only validate, don't modify!\nspring.flyway.enabled=true  # Let Flyway handle schema changes"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-5-config",
+              "title": "External Configuration",
+              "description": "Where does Spring Boot look for application.yml by default?",
+              "options": [
+                "src/main/java/",
+                "src/main/resources/",
+                "project root folder",
+                "~/.spring/"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Spring Boot looks in src/main/resources/ for application.yml or application.properties."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-6",
@@ -7049,7 +7124,22 @@
               "content": "```java\nMODERN APPROACH: Use RFC 7807 ProblemDetail\n\n1. Enable in application.properties:\nspring.mvc.problemdetails.enabled=true\n\n2. Custom Exceptions with ProblemDetail support:\n\npublic class UserNotFoundException extends RuntimeException {\n    private final Long userId;\n    \n    public UserNotFoundException(Long id) {\n        super(\"User not found with id: \" + id);\n        this.userId = id;\n    }\n    \n    public Long getUserId() { return userId; }\n}\n\n3. Global Exception Handler with ProblemDetail:\n\n@RestControllerAdvice\npublic class GlobalExceptionHandler {\n    \n    @ExceptionHandler(UserNotFoundException.class)\n    public ProblemDetail handleUserNotFound(UserNotFoundException ex) {\n        ProblemDetail problem = ProblemDetail.forStatusAndDetail(\n            HttpStatus.NOT_FOUND, ex.getMessage());\n        problem.setTitle(\"User Not Found\");\n        problem.setType(URI.create(\"https://api.example.com/errors/not-found\"));\n        problem.setProperty(\"userId\", ex.getUserId());  // Custom field!\n        return problem;\n    }\n    \n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {\n        ProblemDetail problem = ProblemDetail.forStatusAndDetail(\n            HttpStatus.BAD_REQUEST, \"Validation failed\");\n        problem.setTitle(\"Invalid Request Data\");\n        \n        List<String> errors = ex.getBindingResult().getFieldErrors()\n            .stream()\n            .map(err -> err.getField() + \": \" + err.getDefaultMessage())\n            .toList();\n        problem.setProperty(\"validationErrors\", errors);\n        return problem;\n    }\n}\n\n4. Response format (automatic!):\n\n{\n  \"type\": \"https://api.example.com/errors/not-found\",\n  \"title\": \"User Not Found\",\n  \"status\": 404,\n  \"detail\": \"User not found with id: 999\",\n  \"instance\": \"/api/users/999\",\n  \"userId\": 999\n}\n\nBENEFITS:\n- Industry-standard RFC 7807 format\n- Content-Type: application/problem+json\n- Extensible with custom properties\n- Works automatically when enabled\n```"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-6-exception",
+              "title": "Global Exception Handling",
+              "description": "Which annotation creates a global exception handler in Spring?",
+              "options": [
+                "@ExceptionHandler",
+                "@ControllerAdvice",
+                "@ErrorHandler",
+                "@GlobalHandler"
+              ],
+              "correctAnswer": 1,
+              "explanation": "@ControllerAdvice creates a global handler. @ExceptionHandler inside it handles specific exceptions."
+            }
+          ]
         },
         {
           "id": "epoch-7-lesson-7",
@@ -7120,7 +7210,22 @@
               "content": "HTTP BASIC AUTH (Used in this lesson):\n✓ Simple to implement and understand\n✓ Good for learning and internal tools\n✓ Works with testing tools (Postman, curl)\n\n❌ SECURITY LIMITATIONS:\n- Credentials sent with EVERY request (Base64 encoded, NOT encrypted!)\n- Must ALWAYS use HTTPS in production - without it, credentials are exposed!\n- No built-in token expiration\n- Hard to implement features like 'remember me' or token refresh\n\nPRODUCTION STANDARD - JWT (JSON Web Tokens):\n✓ Token-based: Login once, get token, use token for subsequent requests\n✓ Stateless: Server doesn't store sessions\n✓ Expiration: Tokens auto-expire (e.g., after 1 hour)\n✓ Claims: Can embed user info in token (roles, permissions)\n✓ Industry standard for REST APIs and microservices\n\nOAUTH2 / OpenID Connect:\n✓ For 'Login with Google/GitHub' features\n✓ Delegated authentication to trusted providers\n✓ Required for third-party API access\n\nRECOMMENDATION:\nUse HTTP Basic for:\n- Learning projects\n- Internal admin tools (behind VPN)\n- Simple prototypes\n\nUse JWT for:\n- Production APIs\n- Mobile apps\n- Single Page Applications (React, Angular)\n- Microservices\n\nSpring Security supports all options - we use Basic Auth here for simplicity, but migrate to JWT for production!"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-11-7-security",
+              "title": "Spring Security",
+              "description": "In Spring Security 6, how do you configure authorization rules?",
+              "options": [
+                "Extend WebSecurityConfigurerAdapter",
+                "Create a SecurityFilterChain bean with lambda DSL",
+                "Use @Secured annotations only",
+                "Configure in application.yml"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Spring Security 6 uses SecurityFilterChain beans with lambda DSL. WebSecurityConfigurerAdapter is deprecated."
+            }
+          ]
         }
       ],
       "order": 11
