@@ -8765,7 +8765,7 @@
       "title": "Sharing Your Work",
       "description": "Project planning and deployment",
       "difficulty": "advanced",
-      "estimatedHours": 5,
+      "estimatedHours": 7,
       "lessons": [
         {
           "id": "module-15-lesson-01",
@@ -9366,6 +9366,354 @@
             }
           ],
           "challenges": []
+        },
+        {
+          "id": "module-15-lesson-08",
+          "title": "Deploying to Render",
+          "moduleId": "module-15",
+          "order": 8,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Render?",
+              "content": "**Render = Modern PaaS with excellent free tier**\n\nRender is a modern Platform-as-a-Service (PaaS) that makes deployment simple while offering powerful features:\n\n**Why choose Render?**\n\n1. **Generous free tier**\n   - Free web services (with some limits)\n   - Free PostgreSQL database (90 days)\n   - Free Redis cache\n   - Great for learning and side projects\n\n2. **Simple deployment**\n   - Connect GitHub/GitLab\n   - Automatic deployments on push\n   - Zero-downtime deploys\n\n3. **Infrastructure as Code**\n   - `render.yaml` blueprint defines everything\n   - Version-controlled infrastructure\n   - Reproducible environments\n\n4. **Native Docker support**\n   - Use your Dockerfile\n   - Or let Render detect your app\n   - No Docker knowledge required\n\n**Render vs other platforms:**\n\n| Feature | Render | Railway | Fly.io |\n|---------|--------|---------|--------|\n| Free tier | Yes | Limited | Yes |\n| PostgreSQL | Free 90 days | Add-on | Fly Postgres |\n| Auto-deploy | Yes | Yes | Optional |\n| Docker support | Yes | Yes | Yes |\n| Blueprint file | render.yaml | railway.toml | fly.toml |\n\n**For our Personal Finance Tracker:**\n- Web service running FastAPI\n- PostgreSQL database for data\n- Automatic SSL/HTTPS\n- Environment variables for secrets"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating the render.yaml Blueprint",
+              "content": "**render.yaml = Your deployment blueprint**\n\nThis file tells Render exactly how to deploy your application. Place it in your repository root.",
+              "code": "# render.yaml - Render Blueprint for Personal Finance Tracker\n# Place this file in your repository root\n\nservices:\n  # Web service (FastAPI application)\n  - type: web\n    name: finance-api\n    runtime: docker\n    dockerfilePath: ./Dockerfile\n    \n    # Health check endpoint\n    healthCheckPath: /health\n    \n    # Environment variables\n    envVars:\n      # Database connection (auto-populated from database)\n      - key: DATABASE_URL\n        fromDatabase:\n          name: finance-db\n          property: connectionString\n      \n      # Auto-generate a secure secret key\n      - key: SECRET_KEY\n        generateValue: true\n      \n      # Environment setting\n      - key: ENVIRONMENT\n        value: production\n      \n      # Disable debug mode\n      - key: DEBUG\n        value: \"false\"\n    \n    # Auto-deploy when main branch updates\n    autoDeploy: true\n    \n    # Branch to deploy from\n    branch: main\n\n# PostgreSQL database\ndatabases:\n  - name: finance-db\n    plan: free  # Free tier for 90 days\n    databaseName: finance_tracker\n    user: finance_user",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding render.yaml Structure",
+              "content": "**Let's break down each section:**\n\n**Services section:**\n```yaml\nservices:\n  - type: web       # Web service (receives HTTP traffic)\n    name: finance-api  # Service name in dashboard\n    runtime: docker    # Use Dockerfile for builds\n```\n\n**Supported types:**\n- `web` - HTTP services (FastAPI, Flask, Django)\n- `worker` - Background workers (Celery, RQ)\n- `cron` - Scheduled jobs\n- `static` - Static websites\n\n**Environment variables:**\n```yaml\nenvVars:\n  # Reference database connection\n  - key: DATABASE_URL\n    fromDatabase:\n      name: finance-db\n      property: connectionString\n  \n  # Auto-generate secure value\n  - key: SECRET_KEY\n    generateValue: true\n  \n  # Static value\n  - key: DEBUG\n    value: \"false\"\n```\n\n**Database section:**\n```yaml\ndatabases:\n  - name: finance-db\n    plan: free       # free, basic, standard, etc.\n    databaseName: finance_tracker\n    user: finance_user\n```\n\n**Important:** The `fromDatabase` reference automatically creates the DATABASE_URL when the database is provisioned."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Deploying to Render",
+              "content": "**Step-by-step deployment process:**",
+              "code": "# Step 1: Ensure you have these files in your repo\n# - Dockerfile (from previous lesson)\n# - render.yaml (blueprint)\n# - pyproject.toml / uv.lock\n# - src/ directory with your FastAPI app\n\n# Step 2: Push to GitHub\ngit add .\ngit commit -m \"Add Render deployment configuration\"\ngit push origin main\n\n# Step 3: Connect Render to GitHub\n# 1. Go to https://render.com\n# 2. Sign up / Log in\n# 3. Click \"New +\" > \"Blueprint\"\n# 4. Connect your GitHub repository\n# 5. Render detects render.yaml automatically\n\n# Step 4: Deploy via Render Dashboard\n# 1. Click \"Apply\" to create services from blueprint\n# 2. Wait for build and deploy (5-10 minutes first time)\n# 3. Your app is live at https://finance-api.onrender.com\n\n# Step 5: Verify deployment\ncurl https://finance-api.onrender.com/health\n# Expected: {\"status\": \"healthy\"}\n\n# Useful Render CLI commands (optional)\n# Install: npm install -g @render-cli/cli\nrender login\nrender services list\nrender logs --service finance-api --tail",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Alternative: Native Python Runtime",
+              "content": "**If you prefer not to use Docker, Render can detect Python automatically:**",
+              "code": "# render.yaml - Using Native Python Runtime\n# Render detects Python from requirements.txt or pyproject.toml\n\nservices:\n  - type: web\n    name: finance-api\n    runtime: python\n    \n    # Build command (install dependencies)\n    buildCommand: |\n      pip install uv\n      uv sync --frozen --no-dev\n    \n    # Start command\n    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT\n    \n    # Health check\n    healthCheckPath: /health\n    \n    envVars:\n      - key: DATABASE_URL\n        fromDatabase:\n          name: finance-db\n          property: connectionString\n      - key: SECRET_KEY\n        generateValue: true\n      - key: PYTHON_VERSION\n        value: \"3.13.0\"\n\ndatabases:\n  - name: finance-db\n    plan: free",
+              "language": "yaml"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Render Deployment Issues",
+              "content": "### Watch out for these common problems:\n\n**1. Free tier cold starts**\n```\n# Free services spin down after 15 minutes of inactivity\n# First request after spin-down takes 30-60 seconds\n\n# Solution: Use a health check service like UptimeRobot\n# or upgrade to paid tier for always-on\n```\n\n**2. DATABASE_URL format mismatch**\n```python\n# WRONG - Render uses postgresql://, SQLAlchemy 2.0 needs postgresql+asyncpg://\nDATABASE_URL = os.environ[\"DATABASE_URL\"]\n\n# CORRECT - Convert the URL for async SQLAlchemy\ndb_url = os.environ[\"DATABASE_URL\"]\nif db_url.startswith(\"postgres://\"):\n    db_url = db_url.replace(\"postgres://\", \"postgresql+asyncpg://\", 1)\n```\n\n**3. Missing health check endpoint**\n```python\n# WRONG - No health check, Render can't verify app is running\n# App may show as \"unhealthy\" in dashboard\n\n# CORRECT - Add health check endpoint\n@app.get(\"/health\")\nasync def health_check():\n    return {\"status\": \"healthy\"}\n```\n\n**4. Not setting PORT correctly**\n```python\n# WRONG - Hardcoded port\nuvicorn.run(app, port=8000)\n\n# CORRECT - Use PORT environment variable\nimport os\nport = int(os.environ.get(\"PORT\", 8000))\nuvicorn.run(app, host=\"0.0.0.0\", port=port)\n```\n\n**5. Free database expiration**\n```\n# Free PostgreSQL expires after 90 days\n# Set a reminder to either:\n# - Export your data before expiration\n# - Upgrade to a paid plan\n# - Create a new free database and migrate\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **render.yaml** defines your entire infrastructure as code\n- **Free tier** is great for learning but has cold starts and time limits\n- **`fromDatabase`** automatically links services to databases\n- **`generateValue: true`** creates secure random values for secrets\n- **Health checks** are essential for Render to know your app is running\n- **Auto-deploy** triggers on every push to your connected branch\n- Convert **DATABASE_URL** format for async SQLAlchemy compatibility"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-08-challenge-1",
+              "title": "Create a Render Blueprint",
+              "description": "Create a render.yaml file for a Flask application that:\n1. Uses Docker runtime\n2. Connects to a PostgreSQL database named 'myapp-db'\n3. Generates a SECRET_KEY automatically\n4. Has a health check at /api/health\n5. Auto-deploys from the main branch",
+              "instructions": "Complete the render.yaml blueprint with proper service and database configuration.",
+              "starterCode": "# render.yaml for Flask Application\n\nservices:\n  - type: ____\n    name: myapp-api\n    runtime: ____\n    dockerfilePath: ./Dockerfile\n    healthCheckPath: ____\n    \n    envVars:\n      - key: DATABASE_URL\n        fromDatabase:\n          name: ____\n          property: connectionString\n      \n      - key: SECRET_KEY\n        ____: true\n    \n    autoDeploy: ____\n    branch: ____\n\ndatabases:\n  - name: ____\n    plan: free",
+              "solution": "# render.yaml for Flask Application\n\nservices:\n  - type: web\n    name: myapp-api\n    runtime: docker\n    dockerfilePath: ./Dockerfile\n    healthCheckPath: /api/health\n    \n    envVars:\n      - key: DATABASE_URL\n        fromDatabase:\n          name: myapp-db\n          property: connectionString\n      \n      - key: SECRET_KEY\n        generateValue: true\n    \n    autoDeploy: true\n    branch: main\n\ndatabases:\n  - name: myapp-db\n    plan: free",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Has web service type",
+                  "expectedOutput": "type: web",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses docker runtime",
+                  "expectedOutput": "runtime: docker",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Database name matches in both sections",
+                  "expectedOutput": "myapp-db",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Web services use type: web and runtime: docker for Dockerfile-based builds"
+                },
+                {
+                  "level": 2,
+                  "text": "The database name in fromDatabase must match the name in the databases section"
+                },
+                {
+                  "level": 3,
+                  "text": "Use generateValue: true for SECRET_KEY to auto-generate a secure value"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Mismatched database names between fromDatabase and databases section",
+                  "consequence": "Render can't link the service to the database",
+                  "correction": "Ensure the name in fromDatabase.name matches databases[].name exactly"
+                },
+                {
+                  "mistake": "Forgetting healthCheckPath",
+                  "consequence": "Render can't verify if your app is running correctly",
+                  "correction": "Add healthCheckPath with your health check endpoint"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-15-lesson-09",
+          "title": "Deploying to Railway",
+          "moduleId": "module-15",
+          "order": 9,
+          "estimatedMinutes": 30,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Railway?",
+              "content": "**Railway = Developer-focused PaaS with predictable pricing**\n\nRailway is designed for developers who want simplicity without sacrificing power:\n\n**Why choose Railway?**\n\n1. **Developer experience**\n   - Instant deploys from GitHub\n   - Excellent CLI tool\n   - Real-time logs and metrics\n   - One-click database provisioning\n\n2. **Predictable pricing**\n   - Pay only for resources used\n   - $5 free trial credit monthly (hobby)\n   - No surprise bills\n   - Usage-based, not tier-based\n\n3. **Built-in services**\n   - PostgreSQL, MySQL, Redis, MongoDB\n   - One-click provisioning\n   - Automatic backups\n   - Private networking\n\n4. **Flexible configuration**\n   - Auto-detect or Dockerfile\n   - railway.toml for customization\n   - Environment groups\n   - Preview environments\n\n**Railway workflow:**\n```\nCode Push → Auto Build → Deploy → Monitor\n    ↓\nPull Request → Preview Environment\n```\n\n**For our Personal Finance Tracker:**\n- FastAPI app deployed via Railway CLI or GitHub\n- PostgreSQL plugin for database\n- Environment variables in Railway dashboard\n- Automatic HTTPS and custom domains"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Railway CLI Setup and Deployment",
+              "content": "**The Railway CLI is the fastest way to deploy:**",
+              "code": "# Step 1: Install Railway CLI\n# On macOS/Linux:\ncurl -fsSL https://railway.app/install.sh | sh\n\n# On Windows (PowerShell):\niwr https://railway.app/install.ps1 -useb | iex\n\n# Or via npm (cross-platform):\nnpm install -g @railway/cli\n\n# Step 2: Login to Railway\nrailway login\n# Opens browser for authentication\n\n# Step 3: Initialize project (from your app directory)\ncd finance-tracker\nrailway init\n# Creates new Railway project or links to existing\n\n# Step 4: Add PostgreSQL database\nrailway add --database postgresql\n# Provisions database and sets DATABASE_URL automatically\n\n# Step 5: Set environment variables\nrailway variables set SECRET_KEY=\"your-secret-key-here\"\nrailway variables set ENVIRONMENT=\"production\"\nrailway variables set DEBUG=\"false\"\n\n# Step 6: Deploy\nrailway up\n# Builds and deploys your application\n\n# Step 7: Open in browser\nrailway open\n\n# Useful commands:\nrailway logs          # View logs\nrailway status        # Check deployment status\nrailway run <cmd>     # Run command in Railway environment\nrailway connect postgresql  # Connect to database\nrailway domain        # Get or set custom domain",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Railway Configuration File",
+              "content": "**railway.toml = Fine-tune your deployment**\n\nWhile Railway auto-detects most settings, railway.toml gives you control:",
+              "code": "# railway.toml - Railway Configuration\n# Place in repository root\n\n[build]\n# Use Dockerfile for builds\nbuilder = \"dockerfile\"\ndockerfilePath = \"./Dockerfile\"\n\n# Or use Nixpacks (Railway's buildpack system)\n# builder = \"nixpacks\"\n\n[deploy]\n# Number of instances (default: 1)\nreplicas = 1\n\n# Health check configuration\nhealthcheckPath = \"/health\"\nhealthcheckTimeout = 300\n\n# Restart policy\nrestartPolicyType = \"on_failure\"\nrestartPolicyMaxRetries = 3\n\n# Start command (overrides Dockerfile CMD)\n# startCommand = \"uvicorn src.main:app --host 0.0.0.0 --port $PORT\"\n\n[deploy.resources]\n# Memory limit (optional, for resource control)\n# memory = \"512MB\"\n# cpu = \"0.5\"",
+              "language": "toml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "GitHub Integration Setup",
+              "content": "**Deploy automatically on every push:**",
+              "code": "# Step 1: Go to railway.app and create new project\n# Click \"New Project\" > \"Deploy from GitHub repo\"\n\n# Step 2: Select your repository\n# Railway will auto-detect Python/Docker and configure build\n\n# Step 3: Add PostgreSQL\n# In project dashboard: \"New\" > \"Database\" > \"PostgreSQL\"\n# DATABASE_URL is automatically added to your service\n\n# Step 4: Add environment variables\n# Go to your service > \"Variables\" tab\n# Add:\n#   SECRET_KEY = <generate a secure key>\n#   ENVIRONMENT = production\n#   DEBUG = false\n\n# Step 5: Configure domain\n# Service > \"Settings\" > \"Generate Domain\"\n# Your app is at: https://your-app.up.railway.app\n\n# Optional: railway.json for project settings\n{\n  \"$schema\": \"https://railway.app/railway.schema.json\",\n  \"build\": {\n    \"builder\": \"DOCKERFILE\",\n    \"dockerfilePath\": \"Dockerfile\"\n  },\n  \"deploy\": {\n    \"restartPolicyType\": \"ON_FAILURE\",\n    \"restartPolicyMaxRetries\": 3\n  }\n}",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Connecting to Railway PostgreSQL",
+              "content": "**Access your database for debugging and migrations:**",
+              "code": "# Connect to PostgreSQL via CLI\nrailway connect postgresql\n# Opens psql session connected to your database\n\n# Run database migrations\nrailway run alembic upgrade head\n\n# Run any command in Railway environment\nrailway run python -c \"from src.database import engine; print(engine.url)\"\n\n# Get connection details\nrailway variables\n# Shows all environment variables including DATABASE_URL\n\n# Example DATABASE_URL format:\n# postgresql://user:password@host.railway.internal:5432/railway\n\n# For async SQLAlchemy, convert the URL in your config:\nimport os\n\ndef get_database_url() -> str:\n    \"\"\"Get database URL, converting for async if needed.\"\"\"\n    url = os.environ.get(\"DATABASE_URL\", \"\")\n    \n    # Railway uses postgresql://, convert for asyncpg\n    if url.startswith(\"postgresql://\"):\n        url = url.replace(\"postgresql://\", \"postgresql+asyncpg://\", 1)\n    \n    return url",
+              "language": "bash"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Railway Deployment Issues",
+              "content": "### Watch out for these common problems:\n\n**1. PORT environment variable**\n```python\n# WRONG - Hardcoded port\nuvicorn.run(app, port=8000)\n\n# CORRECT - Railway sets PORT dynamically\nimport os\nport = int(os.environ.get(\"PORT\", 8000))\nuvicorn.run(app, host=\"0.0.0.0\", port=port)\n```\n\n**2. Missing Procfile or start command**\n```\n# Railway needs to know how to start your app\n# Option 1: Procfile\nweb: uvicorn src.main:app --host 0.0.0.0 --port $PORT\n\n# Option 2: railway.toml\n[deploy]\nstartCommand = \"uvicorn src.main:app --host 0.0.0.0 --port $PORT\"\n\n# Option 3: Dockerfile CMD (recommended)\nCMD [\"uvicorn\", \"src.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\n```\n\n**3. Build failures with uv**\n```dockerfile\n# If Railway doesn't have uv, install it in Dockerfile\nFROM python:3.13-slim\nRUN pip install uv\n# ... rest of Dockerfile\n```\n\n**4. Database connection refused**\n```python\n# WRONG - Using localhost\nDATABASE_URL = \"postgresql://localhost/mydb\"\n\n# CORRECT - Use Railway's DATABASE_URL\nDATABASE_URL = os.environ[\"DATABASE_URL\"]\n# Railway provides the full connection string\n```\n\n**5. Running out of free credits**\n```\n# Railway hobby plan: $5 free credit/month\n# Monitor usage in dashboard > Usage tab\n# Tips to reduce usage:\n# - Use smaller memory limits\n# - Stop unused services\n# - Delete old deployments\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Railway CLI** (`railway up`) is the fastest deployment method\n- **`railway add --database postgresql`** provisions database instantly\n- **railway.toml** customizes build and deploy settings\n- **PORT environment variable** is set by Railway - don't hardcode ports\n- **`railway run`** executes commands in the Railway environment\n- **Automatic HTTPS** and custom domains included\n- **Usage-based pricing** is predictable but monitor your credits"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-09-challenge-1",
+              "title": "Create a Railway Configuration",
+              "description": "Create a railway.toml file that:\n1. Uses Dockerfile for builds\n2. Sets health check to /api/health with 300 second timeout\n3. Uses on_failure restart policy with max 5 retries\n4. Configures 2 replicas for high availability",
+              "instructions": "Complete the railway.toml configuration file.",
+              "starterCode": "# railway.toml\n\n[build]\nbuilder = \"____\"\ndockerfilePath = \"./Dockerfile\"\n\n[deploy]\nreplicas = ____\n\nhealthcheckPath = \"____\"\nhealthcheckTimeout = ____\n\nrestartPolicyType = \"____\"\nrestartPolicyMaxRetries = ____",
+              "solution": "# railway.toml\n\n[build]\nbuilder = \"dockerfile\"\ndockerfilePath = \"./Dockerfile\"\n\n[deploy]\nreplicas = 2\n\nhealthcheckPath = \"/api/health\"\nhealthcheckTimeout = 300\n\nrestartPolicyType = \"on_failure\"\nrestartPolicyMaxRetries = 5",
+              "language": "toml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses dockerfile builder",
+                  "expectedOutput": "dockerfile",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Health check path is /api/health",
+                  "expectedOutput": "/api/health",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Uses on_failure restart policy",
+                  "expectedOutput": "on_failure",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Builder should be 'dockerfile' (lowercase) when using a Dockerfile"
+                },
+                {
+                  "level": 2,
+                  "text": "restartPolicyType uses underscores: 'on_failure', not 'on-failure'"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using 'docker' instead of 'dockerfile' for builder",
+                  "consequence": "Railway won't recognize the build configuration",
+                  "correction": "Use builder = \"dockerfile\" for Dockerfile-based builds"
+                },
+                {
+                  "mistake": "Using dashes in restartPolicyType (on-failure)",
+                  "consequence": "Invalid configuration format",
+                  "correction": "Use underscores: on_failure"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-15-lesson-10",
+          "title": "Deploying to Fly.io",
+          "moduleId": "module-15",
+          "order": 10,
+          "estimatedMinutes": 35,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Fly.io?",
+              "content": "**Fly.io = Global edge deployment with low latency**\n\nFly.io runs your apps on lightweight VMs (Firecracker) in data centers worldwide:\n\n**Why choose Fly.io?**\n\n1. **Global edge network**\n   - 30+ regions worldwide\n   - Deploy close to your users\n   - Low latency everywhere\n   - Automatic request routing\n\n2. **VM-based (not containers)**\n   - Full Linux VMs (Firecracker)\n   - More control than containers\n   - Persistent storage options\n   - SSH into running machines\n\n3. **Excellent free tier**\n   - 3 shared VMs free\n   - 1GB persistent storage\n   - 160GB outbound bandwidth\n   - Generous for hobby projects\n\n4. **Fly Postgres**\n   - Managed PostgreSQL\n   - Automatic failover\n   - Read replicas\n   - Point-in-time recovery\n\n**Fly.io architecture:**\n```\nUser Request → Anycast IP → Nearest Region → Your App\n                              ↓\n                         Auto-scaled VMs\n```\n\n**When to choose Fly.io:**\n- Users in multiple geographic regions\n- Need low latency (gaming, real-time apps)\n- Want full VM control\n- Need persistent storage\n\n**For our Personal Finance Tracker:**\n- FastAPI running on Fly Machines\n- Fly Postgres for database\n- Multi-region for global users\n- Automatic HTTPS with certificates"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Installing and Configuring flyctl",
+              "content": "**flyctl is the Fly.io command-line interface:**",
+              "code": "# Step 1: Install flyctl\n\n# On macOS:\nbrew install flyctl\n# Or:\ncurl -L https://fly.io/install.sh | sh\n\n# On Linux:\ncurl -L https://fly.io/install.sh | sh\n\n# On Windows (PowerShell):\niwr https://fly.io/install.ps1 -useb | iex\n\n# Step 2: Sign up / Login\nfly auth signup    # Create new account\n# or\nfly auth login     # Login to existing account\n\n# Step 3: Launch your app (from project directory)\ncd finance-tracker\nfly launch\n\n# fly launch will:\n# 1. Detect your app type (Python/Docker)\n# 2. Generate fly.toml configuration\n# 3. Ask about region, resources, databases\n# 4. Optionally deploy immediately\n\n# Step 4: Create PostgreSQL database\nfly postgres create --name finance-db\n# Choose region and size when prompted\n\n# Step 5: Attach database to your app\nfly postgres attach finance-db\n# Adds DATABASE_URL to your app secrets\n\n# Step 6: Deploy\nfly deploy\n\n# Step 7: Open in browser\nfly open",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The fly.toml Configuration File",
+              "content": "**fly.toml = Your Fly.io deployment configuration**\n\nGenerated by `fly launch`, customize for your needs:",
+              "code": "# fly.toml - Fly.io Configuration\n# Generated by 'fly launch' and customized for FastAPI\n\napp = \"finance-tracker\"\nprimary_region = \"ord\"  # Chicago - change based on your users\n\n# Build configuration\n[build]\n  dockerfile = \"Dockerfile\"\n\n# HTTP service configuration\n[http_service]\n  internal_port = 8000\n  force_https = true\n  auto_stop_machines = true\n  auto_start_machines = true\n  min_machines_running = 0\n  \n  [http_service.concurrency]\n    type = \"connections\"\n    hard_limit = 100\n    soft_limit = 80\n\n# Health check configuration\n[[http_service.checks]]\n  interval = \"30s\"\n  timeout = \"5s\"\n  grace_period = \"10s\"\n  method = \"GET\"\n  path = \"/health\"\n\n# Process configuration\n[processes]\n  app = \"uvicorn src.main:app --host 0.0.0.0 --port 8000\"\n\n# VM configuration\n[[vm]]\n  size = \"shared-cpu-1x\"\n  memory = \"256mb\"\n\n# Environment variables (non-secrets)\n[env]\n  ENVIRONMENT = \"production\"\n  DEBUG = \"false\"",
+              "language": "toml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Managing Secrets and Environment Variables",
+              "content": "**Secrets are encrypted and available to your app:**",
+              "code": "# Set secrets (encrypted, not shown in fly.toml)\nfly secrets set SECRET_KEY=\"your-super-secret-key-here\"\nfly secrets set API_KEY=\"external-api-key\"\n\n# Set multiple secrets at once\nfly secrets set SECRET_KEY=\"key1\" JWT_SECRET=\"key2\" API_TOKEN=\"token\"\n\n# List all secrets (names only, not values)\nfly secrets list\n\n# Remove a secret\nfly secrets unset API_KEY\n\n# Import from .env file\ncat .env.production | fly secrets import\n\n# Secrets are available in your app as environment variables:\nimport os\n\nsecret_key = os.environ[\"SECRET_KEY\"]\ndatabase_url = os.environ[\"DATABASE_URL\"]  # Set by fly postgres attach\n\n# View deployed app's environment\nfly ssh console -C \"env | grep -E '(SECRET|DATABASE)'\"",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Fly Postgres Setup and Management",
+              "content": "**Fly Postgres = Managed PostgreSQL on Fly.io:**",
+              "code": "# Create a Postgres cluster\nfly postgres create --name finance-db\n# Interactive prompts for:\n# - Region (pick one close to your app)\n# - Configuration (Development, Production)\n# - Size (1GB free tier available)\n\n# Attach to your app (adds DATABASE_URL secret)\nfly postgres attach finance-db --app finance-tracker\n\n# Connect to database directly\nfly postgres connect -a finance-db\n# Opens psql session\n\n# Run migrations\nfly ssh console -C \"alembic upgrade head\"\n\n# Or use proxy for local tools\nfly proxy 5432 -a finance-db\n# In another terminal:\npsql postgres://postgres:password@localhost:5432/finance_db\n\n# Check database status\nfly status -a finance-db\n\n# Scale Postgres (add read replicas)\nfly postgres scale -a finance-db --count 2\n\n# View connection string format\n# postgres://user:password@finance-db.internal:5432/finance_db\n\n# For async SQLAlchemy, convert in your config:\ndef get_database_url() -> str:\n    url = os.environ.get(\"DATABASE_URL\", \"\")\n    if url.startswith(\"postgres://\"):\n        url = url.replace(\"postgres://\", \"postgresql+asyncpg://\", 1)\n    return url",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Scaling and Multi-Region Deployment",
+              "content": "**Deploy globally for low latency worldwide:**",
+              "code": "# Add regions (deploy to multiple locations)\nfly regions add lhr sin syd\n# lhr = London, sin = Singapore, syd = Sydney\n\n# List current regions\nfly regions list\n\n# Scale machines per region\nfly scale count 2 --region ord\nfly scale count 1 --region lhr\nfly scale count 1 --region sin\n\n# Scale memory/CPU\nfly scale memory 512  # 512MB RAM\nfly scale vm shared-cpu-2x  # More CPU\n\n# View machine status\nfly status\nfly machines list\n\n# Auto-scaling configuration in fly.toml\n[http_service]\n  auto_stop_machines = true   # Stop when idle\n  auto_start_machines = true  # Start on request\n  min_machines_running = 1    # Always keep 1 running\n  max_machines_running = 5    # Scale up to 5\n\n# Useful monitoring commands\nfly logs                # Live log streaming\nfly logs --app finance-db  # Database logs\nfly dashboard           # Open web dashboard\nfly ssh console         # SSH into running machine",
+              "language": "bash"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Fly.io Deployment Issues",
+              "content": "### Watch out for these common problems:\n\n**1. Health check failures**\n```toml\n# WRONG - Health check times out during startup\n[[http_service.checks]]\n  grace_period = \"5s\"  # Too short for Python startup\n\n# CORRECT - Give app time to start\n[[http_service.checks]]\n  grace_period = \"30s\"  # Longer grace period\n  interval = \"30s\"\n  timeout = \"10s\"\n```\n\n**2. Port mismatch**\n```toml\n# fly.toml says internal_port = 8000\n[http_service]\n  internal_port = 8000\n\n# But Dockerfile uses 8080 - MISMATCH!\n# Ensure your app listens on the same port\n```\n\n**3. Database connection string format**\n```python\n# Fly uses postgres://, asyncpg needs postgresql+asyncpg://\nurl = os.environ[\"DATABASE_URL\"]\nif url.startswith(\"postgres://\"):\n    url = url.replace(\"postgres://\", \"postgresql+asyncpg://\", 1)\n```\n\n**4. Machines stopping unexpectedly**\n```toml\n# Free tier machines stop when idle\n# Keep at least one running:\n[http_service]\n  min_machines_running = 1\n  auto_stop_machines = false  # Or disable auto-stop\n```\n\n**5. Running out of free tier**\n```\n# Free tier limits:\n# - 3 shared-cpu-1x VMs\n# - 256MB memory each\n# - 1GB persistent storage\n\n# Check usage:\nfly billing\n\n# Reduce costs:\nfly scale memory 256  # Minimum memory\nfly scale count 1     # Single instance\n```\n\n**6. Secrets not available during build**\n```dockerfile\n# WRONG - Trying to use SECRET_KEY during build\nRUN python setup.py --secret=$SECRET_KEY\n\n# CORRECT - Secrets are only available at runtime\n# Use build args for build-time values:\n# fly deploy --build-arg MY_ARG=value\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Fly.io uses VMs** (Firecracker), not containers - more control and persistence\n- **`fly launch`** creates app and generates fly.toml configuration\n- **`fly postgres create/attach`** provisions and connects databases\n- **`fly secrets set`** manages encrypted environment variables\n- **Multi-region deployment** reduces latency for global users\n- **Auto-stop/auto-start** manages costs for low-traffic apps\n- **fly.toml** controls build, deploy, scaling, and health checks\n- **Grace period** in health checks - give Python apps time to start"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-10-challenge-1",
+              "title": "Create a Fly.io Configuration",
+              "description": "Create a fly.toml file for a FastAPI application that:\n1. Uses 'ord' (Chicago) as the primary region\n2. Builds from Dockerfile\n3. Runs on internal port 8000 with HTTPS forced\n4. Has a health check at /health with 30s grace period\n5. Uses shared-cpu-1x with 512mb memory\n6. Keeps at least 1 machine running",
+              "instructions": "Complete the fly.toml configuration with proper HTTP service and VM settings.",
+              "starterCode": "# fly.toml\n\napp = \"my-fastapi-app\"\nprimary_region = \"____\"\n\n[build]\n  dockerfile = \"____\"\n\n[http_service]\n  internal_port = ____\n  force_https = ____\n  auto_stop_machines = true\n  auto_start_machines = true\n  min_machines_running = ____\n\n[[http_service.checks]]\n  method = \"GET\"\n  path = \"____\"\n  grace_period = \"____\"\n  interval = \"30s\"\n  timeout = \"5s\"\n\n[[vm]]\n  size = \"____\"\n  memory = \"____\"",
+              "solution": "# fly.toml\n\napp = \"my-fastapi-app\"\nprimary_region = \"ord\"\n\n[build]\n  dockerfile = \"Dockerfile\"\n\n[http_service]\n  internal_port = 8000\n  force_https = true\n  auto_stop_machines = true\n  auto_start_machines = true\n  min_machines_running = 1\n\n[[http_service.checks]]\n  method = \"GET\"\n  path = \"/health\"\n  grace_period = \"30s\"\n  interval = \"30s\"\n  timeout = \"5s\"\n\n[[vm]]\n  size = \"shared-cpu-1x\"\n  memory = \"512mb\"",
+              "language": "toml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Primary region is ord",
+                  "expectedOutput": "ord",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Internal port is 8000",
+                  "expectedOutput": "8000",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Health check path is /health",
+                  "expectedOutput": "/health",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Min machines running is 1",
+                  "expectedOutput": "1",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Primary region codes are lowercase airport codes: ord = Chicago, lhr = London"
+                },
+                {
+                  "level": 2,
+                  "text": "Memory is specified with unit: 256mb, 512mb, 1gb"
+                },
+                {
+                  "level": 3,
+                  "text": "Grace period needs time unit suffix: 30s for 30 seconds"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting time units in grace_period (30 instead of 30s)",
+                  "consequence": "Invalid configuration that won't deploy",
+                  "correction": "Always include time units: 30s, 1m, etc."
+                },
+                {
+                  "mistake": "Setting min_machines_running = 0 on free tier",
+                  "consequence": "Cold starts on every request when machines stop",
+                  "correction": "Set min_machines_running = 1 for faster response times"
+                },
+                {
+                  "mistake": "Mismatched internal_port with Dockerfile EXPOSE",
+                  "consequence": "Health checks fail, app unreachable",
+                  "correction": "Ensure fly.toml internal_port matches your app's listening port"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
         }
       ]
     },
