@@ -11096,7 +11096,34 @@
               "content": "## The Golden Rule: Dependencies Point Inward\n\nThe most important rule in Clean Architecture is the **Dependency Rule**: source code dependencies can only point INWARD. Nothing in an inner circle can know anything about something in an outer circle.\n\n**THE CONCENTRIC CIRCLES:**\n```\n┌─────────────────────────────────────────────┐\n│  PRESENTATION (API, Blazor, Console)        │\n│  ┌─────────────────────────────────────┐    │\n│  │  INFRASTRUCTURE (EF Core, APIs)     │    │\n│  │  ┌─────────────────────────────┐    │    │\n│  │  │  APPLICATION (Use Cases)    │    │    │\n│  │  │  ┌─────────────────────┐    │    │    │\n│  │  │  │  DOMAIN (Entities)  │    │    │    │\n│  │  │  └─────────────────────┘    │    │    │\n│  │  └─────────────────────────────┘    │    │\n│  └─────────────────────────────────────┘    │\n└─────────────────────────────────────────────┘\n```\n\n**DEPENDENCY INVERSION IN ACTION:**\n\nThe problem: Application layer needs to save data to a database, but it can't reference Entity Framework (that would violate the dependency rule).\n\nThe solution: Application defines an INTERFACE, Infrastructure IMPLEMENTS it.\n\n```csharp\n// In Application layer (inner)\npublic interface IProductRepository\n{\n    Task<Product> GetByIdAsync(int id);\n    Task AddAsync(Product product);\n}\n\n// In Infrastructure layer (outer)\npublic class ProductRepository : IProductRepository\n{\n    private readonly ShopFlowDbContext _context;\n    \n    public async Task<Product> GetByIdAsync(int id)\n        => await _context.Products.FindAsync(id);\n        \n    public async Task AddAsync(Product product)\n        => await _context.Products.AddAsync(product);\n}\n```\n\n**WHY THIS MATTERS:**\n\n1. **Testability**: You can test Application layer with mock repositories - no database needed\n2. **Flexibility**: Switch from SQL Server to PostgreSQL by changing only Infrastructure\n3. **Maintainability**: Changes to external systems don't ripple into business logic\n4. **Parallel Development**: Teams can work on different layers independently\n\n**INTERFACES AT BOUNDARIES:**\n\nEvery boundary between layers should have interfaces:\n- Application defines `IProductRepository`, Infrastructure implements it\n- Application defines `IEmailService`, Infrastructure implements it\n- Application defines `IPaymentGateway`, Infrastructure implements it\n\nThe inner layers define WHAT they need (interfaces), outer layers provide HOW (implementations).\n\n**REGISTRATION IN DI CONTAINER:**\n\n```csharp\n// In Program.cs (Presentation layer)\nbuilder.Services.AddScoped<IProductRepository, ProductRepository>();\nbuilder.Services.AddScoped<IEmailService, SendGridEmailService>();\nbuilder.Services.AddScoped<IPaymentGateway, StripePaymentGateway>();\n```\n\nThe DI container wires everything together at runtime, but compile-time dependencies still point inward.\n\nThink: 'The Domain is the sun - everything orbits around it, but it doesn't know or care about the planets. Each layer only knows about the layer directly inside it.'"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-18-01-challenge-01",
+              "title": "Fix the Layer Violations",
+              "description": "Identify and fix Clean Architecture violations in the given code.",
+              "instructions": "The following code has several Clean Architecture violations. Your task is to:\n\n1. Identify which layer each class belongs to\n2. Fix the dependency violations\n3. Add the correct interfaces where needed\n\nRemember: Dependencies should only point inward (Presentation -> Infrastructure -> Application -> Domain).",
+              "starterCode": "// PROBLEM: This code has Clean Architecture violations!\n// Fix the issues to follow proper layering.\n\n// Current structure (all in one file for the challenge):\nnamespace ShopFlow;\n\n// This class is in the Domain layer\npublic class Product\n{\n    public int Id { get; set; }\n    public string Name { get; set; }\n    public decimal Price { get; set; }\n    \n    // VIOLATION: Domain depends on Infrastructure!\n    private readonly SqlConnection _connection;\n    \n    public void Save()\n    {\n        // Direct database access in domain entity\n        _connection.Execute(\"INSERT INTO Products...\");\n    }\n}\n\n// This class is in the Application layer\npublic class ProductService\n{\n    // VIOLATION: Depends on concrete implementation!\n    private readonly SqlProductRepository _repository;\n    \n    public Product GetProduct(int id)\n    {\n        return _repository.GetById(id);\n    }\n}",
+              "solution": "// FIXED: Proper Clean Architecture structure\n\n// ===== DOMAIN LAYER =====\nnamespace ShopFlow.Domain.Entities;\n\npublic class Product\n{\n    public int Id { get; private set; }\n    public string Name { get; private set; }\n    public decimal Price { get; private set; }\n    \n    // Domain has NO infrastructure dependencies\n    // Only contains business logic and validation\n    \n    public void UpdatePrice(decimal newPrice)\n    {\n        if (newPrice < 0)\n            throw new DomainException(\"Price cannot be negative\");\n        Price = newPrice;\n    }\n}\n\n// ===== APPLICATION LAYER =====\nnamespace ShopFlow.Application.Interfaces;\n\n// Interface defined in Application layer\npublic interface IProductRepository\n{\n    Product? GetById(int id);\n    void Save(Product product);\n}\n\nnamespace ShopFlow.Application.Services;\n\npublic class ProductService\n{\n    // Depends on INTERFACE, not concrete implementation\n    private readonly IProductRepository _repository;\n    \n    public ProductService(IProductRepository repository)\n    {\n        _repository = repository;\n    }\n    \n    public Product? GetProduct(int id)\n    {\n        return _repository.GetById(id);\n    }\n}\n\n// ===== INFRASTRUCTURE LAYER =====\nnamespace ShopFlow.Infrastructure.Repositories;\n\n// Concrete implementation in Infrastructure\npublic class SqlProductRepository : IProductRepository\n{\n    private readonly DbContext _context;\n    \n    public SqlProductRepository(DbContext context)\n    {\n        _context = context;\n    }\n    \n    public Product? GetById(int id)\n    {\n        return _context.Products.Find(id);\n    }\n    \n    public void Save(Product product)\n    {\n        _context.Products.Add(product);\n        _context.SaveChanges();\n    }\n}",
+              "language": "csharp",
+              "testCases": [
+                {"id": "test-1", "description": "Domain entity has no infrastructure dependencies", "expectedOutput": "No SqlConnection in Product class", "isVisible": true},
+                {"id": "test-2", "description": "Application layer uses interface", "expectedOutput": "IProductRepository interface", "isVisible": true},
+                {"id": "test-3", "description": "Infrastructure implements interface", "expectedOutput": "SqlProductRepository : IProductRepository", "isVisible": true}
+              ],
+              "hints": [
+                {"level": 1, "text": "Domain entities should never contain database connections or know how they are stored."},
+                {"level": 2, "text": "Create an IProductRepository interface in the Application layer that defines what operations are needed."},
+                {"level": 3, "text": "The ProductService should depend on IProductRepository (interface), not SqlProductRepository (concrete)."},
+                {"level": 4, "text": "Move the actual database code to an Infrastructure class that implements the interface."}
+              ],
+              "commonMistakes": [
+                {"mistake": "Putting interfaces in Infrastructure layer", "consequence": "Application layer would depend on Infrastructure, violating the dependency rule", "correction": "Define interfaces in Application layer, implementations in Infrastructure"},
+                {"mistake": "Having domain entities call repositories directly", "consequence": "Domain becomes coupled to data access, harder to test and change", "correction": "Use Application Services to orchestrate between Domain and Infrastructure"}
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
@@ -11988,6 +12015,130 @@
                   "mistake": "Using [Authorize] attribute on minimal API without proper syntax",
                   "consequence": "Compilation errors or authorization not applied.",
                   "correction": "For minimal APIs, use .RequireAuthorization(\"PolicyName\") instead of [Authorize] attributes."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "module-24",
+      "title": "CI/CD with GitHub Actions",
+      "description": "Automate your build, test, and deployment pipeline. Learn GitHub Actions to ensure ShopFlow quality with every commit.",
+      "difficulty": "intermediate",
+      "estimatedHours": 3,
+      "lessons": [
+        {
+          "id": "lesson-24-01",
+          "title": "What is CI/CD? (Automated Quality Gates)",
+          "moduleId": "module-24",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding CI/CD",
+              "content": "Imagine a modern automobile factory with a sophisticated assembly line. Every car that rolls through undergoes dozens of automated quality checks at each station. Sensors verify that every bolt is torqued correctly, cameras inspect paint quality, robots test that every electrical connection works, and automated systems confirm that doors close with the right force. No car leaves the factory without passing every single check, and any failure immediately stops the line so engineers can investigate.\n\nThis is exactly what Continuous Integration and Continuous Delivery (CI/CD) does for software. Every time a developer commits code, it enters an automated pipeline - the digital assembly line. First, the code is compiled (can we even build this car?). Then automated tests run (does the engine start? do the brakes work? does the radio tune properly?). Code quality tools analyze the changes (are there safety hazards? does it meet our standards?). Security scanners look for vulnerabilities (will this car be easy to steal?).\n\nJust like the factory assembly line, if ANY check fails, the pipeline stops and the team is notified immediately. The code cannot be deployed to production with a failing test, just as a car with faulty brakes cannot leave the factory. This immediate feedback is invaluable - developers learn about problems within minutes of introducing them, when the context is fresh and fixes are simple.\n\nThe 'Continuous' part means this happens automatically, constantly, for every change. No human needs to remember to run tests or check code quality - the pipeline handles it all. And because the process is identical every time, you eliminate the 'it works on my machine' problem. The pipeline is the source of truth about whether code is ready for production."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "ShopFlow CI Pipeline",
+              "content": "This GitHub Actions workflow defines our automated pipeline for ShopFlow. Let's examine each section to understand how the pieces fit together.",
+              "code": "# ===== .github/workflows/ci.yml =====\n# This file lives in your repository and GitHub automatically detects it\n\nname: ShopFlow CI  # Display name in GitHub Actions UI\n\n# TRIGGERS: When should this pipeline run?\non:\n  push:\n    branches: [main]        # Run when code is pushed to main branch\n  pull_request:\n    branches: [main]        # Run when PRs target main branch\n\n# JOBS: What work should be performed?\njobs:\n  build-and-test:           # Job name (can have multiple jobs)\n    runs-on: ubuntu-latest  # Virtual machine environment\n\n    # SERVICES: External dependencies needed for tests\n    services:\n      postgres:             # Service name (accessed as 'postgres' hostname)\n        image: postgres:16  # Docker image to use\n        env:                # Environment variables for the container\n          POSTGRES_USER: shopflow\n          POSTGRES_PASSWORD: shopflow_test\n          POSTGRES_DB: shopflow_test\n        ports:\n          - 5432:5432       # Map container port to runner port\n        options: >-         # Health check to ensure DB is ready\n          --health-cmd pg_isready\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n\n    # STEPS: Sequential actions within the job\n    steps:\n      # Step 1: Get the code\n      - uses: actions/checkout@v4\n        # This action clones your repository into the runner\n\n      # Step 2: Install .NET SDK\n      - name: Setup .NET\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: '9.0.x'  # Use latest .NET 9 patch version\n\n      # Step 3: Download NuGet packages\n      - name: Restore dependencies\n        run: dotnet restore\n        # Downloads all packages defined in .csproj files\n\n      # Step 4: Compile the application\n      - name: Build\n        run: dotnet build --no-restore --configuration Release\n        # --no-restore: Skip restore (already done)\n        # --configuration Release: Build optimized version\n\n      # Step 5: Run fast unit tests first\n      - name: Run unit tests\n        run: dotnet test tests/ShopFlow.Tests.Unit --no-build --configuration Release\n        # Unit tests are fast, isolated, no external dependencies\n\n      # Step 6: Run integration tests (need database)\n      - name: Run integration tests\n        run: dotnet test tests/ShopFlow.Tests.Integration --no-build --configuration Release\n        env:\n          # Tell our app how to connect to the PostgreSQL service\n          ConnectionStrings__DefaultConnection: \"Host=localhost;Database=shopflow_test;Username=shopflow;Password=shopflow_test\"\n        # Integration tests verify real database operations work",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "GitHub Actions Concepts",
+              "content": "## Workflows\n\nA workflow is an automated process defined in a YAML file within the `.github/workflows` directory of your repository. Each workflow responds to specific events (triggers) and executes one or more jobs. You can have multiple workflows in a single repository - one for CI, another for deployment, a third for nightly builds. Workflows are version-controlled alongside your code, meaning pipeline changes go through the same review process as application changes.\n\n## Triggers (Events)\n\nThe `on` section defines when your workflow runs. Common triggers include:\n- `push`: Code pushed to specified branches\n- `pull_request`: PR opened, updated, or synchronized\n- `schedule`: Cron-based scheduling for periodic runs\n- `workflow_dispatch`: Manual trigger from GitHub UI\n- `release`: When a new release is created\n\nYou can combine multiple triggers and filter by branches, tags, or file paths. For example, only run tests when `.cs` files change, not when documentation is updated.\n\n## Jobs\n\nJobs are collections of steps that execute on the same runner (virtual machine). By default, jobs run in parallel, but you can define dependencies to run them sequentially. Each job starts with a fresh environment - no files or state from other jobs unless explicitly shared. This isolation ensures reproducibility.\n\n## Steps\n\nSteps are the individual tasks within a job. Each step can either run a shell command (`run`) or use a pre-built action (`uses`). Steps execute sequentially, and if any step fails, subsequent steps are skipped by default. Steps can share data through environment variables, output parameters, or the filesystem.\n\n## Actions\n\nActions are reusable units of workflow logic. The `uses` keyword references an action from the GitHub Marketplace or a repository. Common actions include `actions/checkout` (clone your repo), `actions/setup-dotnet` (install .NET SDK), and thousands of community-contributed actions for tasks like sending notifications, deploying to cloud providers, or analyzing code.\n\n## Runners\n\nRunners are the machines that execute your workflows. GitHub provides hosted runners (Ubuntu, Windows, macOS) that are free for public repositories and have usage limits for private repositories. You can also configure self-hosted runners for custom hardware, specific software requirements, or cost optimization.\n\n## Services\n\nServices are Docker containers that run alongside your job, providing external dependencies like databases, caches, or message queues. Services are networked with your runner, so your tests can connect to them using service names as hostnames. This enables realistic integration testing without modifying your test configuration."
+            },
+            {
+              "type": "ARCHITECTURE",
+              "title": "Designing Build Pipelines",
+              "content": "## Pipeline Stages\n\nA well-designed CI/CD pipeline follows a funnel pattern: fast checks run first, slow checks run last, and failures exit early. This minimizes wasted compute time and provides rapid feedback. For ShopFlow, our stages are:\n\n**Stage 1: Build (seconds)**\nCompile the code and verify it produces valid output. This catches syntax errors, missing dependencies, and type mismatches immediately. If the code does not compile, there is no point running tests.\n\n**Stage 2: Unit Tests (seconds to minutes)**\nRun fast, isolated tests that verify individual components work correctly. Unit tests have no external dependencies and should complete in under a minute for most projects. Failed unit tests indicate broken logic that must be fixed before proceeding.\n\n**Stage 3: Integration Tests (minutes)**\nTest components working together with real external dependencies (databases, APIs). These tests are slower but catch issues that unit tests miss: database queries that do not work in production, serialization problems, and configuration errors.\n\n**Stage 4: Code Quality (parallel with tests)**\nRun linters, static analyzers, and security scanners. These tools catch potential bugs, style violations, and security vulnerabilities. Running in parallel with tests optimizes total pipeline time.\n\n**Stage 5: Deployment (minutes)**\nIf all checks pass on the main branch, automatically deploy to staging or production. This stage only runs for specific branches or events, not for every PR.\n\n## Parallel vs Sequential Execution\n\nGitHub Actions runs jobs in parallel by default. Use this for independent tasks:\n\n```yaml\njobs:\n  test-unit:\n    runs-on: ubuntu-latest\n    steps: [unit test steps]\n  \n  test-integration:\n    runs-on: ubuntu-latest\n    steps: [integration test steps]\n  \n  lint:\n    runs-on: ubuntu-latest\n    steps: [linting steps]\n```\n\nAll three jobs run simultaneously, reducing total pipeline time. For dependent jobs, use `needs`:\n\n```yaml\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps: [build steps]\n  \n  deploy:\n    needs: build  # Wait for build to complete\n    runs-on: ubuntu-latest\n    steps: [deploy steps]\n```\n\n## Environment Management\n\nDifferent environments (development, staging, production) require different configurations. GitHub Actions supports this through:\n\n**Environment Secrets**: Sensitive values like API keys and connection strings are stored encrypted in GitHub and injected at runtime. Never commit secrets to your repository.\n\n**Environment Variables**: Non-sensitive configuration passed via the `env` key at workflow, job, or step level. Variables at narrower scopes override broader ones.\n\n**GitHub Environments**: Named environments (staging, production) with protection rules requiring manual approval, specific reviewers, or wait timers before deployment.\n\n## Caching for Performance\n\nDependency restoration can be slow. GitHub Actions provides caching to reuse downloaded packages:\n\n```yaml\n- uses: actions/cache@v4\n  with:\n    path: ~/.nuget/packages\n    key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}\n```\n\nThis caches NuGet packages based on project file hashes. When dependencies do not change, the cache is reused, dramatically reducing pipeline time.\n\n## Branch Protection Rules\n\nCI pipelines are most effective when enforced. Configure branch protection rules requiring:\n- All status checks to pass before merging\n- PR reviews from team members\n- Up-to-date branches (rebased on latest main)\n- No force pushes or deletions\n\nThis ensures every change to main has passed all quality gates, making main always deployable.\n\n## Monitoring and Notifications\n\nPipeline failures need immediate attention. Configure notifications via:\n- GitHub's built-in email notifications\n- Slack/Teams integrations for team channels\n- Custom webhooks for advanced routing\n\nTrack pipeline metrics over time: average duration, failure rate, flaky test frequency. Slow or unreliable pipelines reduce developer productivity and erode trust in the process."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-24-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Create a basic GitHub Actions workflow for a .NET project.",
+              "instructions": "Create a CI workflow for ShopFlow!\n\n1. Name the workflow 'ShopFlow CI'\n\n2. Configure triggers:\n   - Run on push to main branch\n   - Run on pull requests to main branch\n\n3. Create a single job 'build-and-test' that:\n   - Runs on ubuntu-latest\n   - Checks out the code\n   - Sets up .NET 9.0\n   - Restores dependencies\n   - Builds in Release configuration\n   - Runs tests\n\n4. Follow the YAML structure for GitHub Actions workflows.",
+              "starterCode": "# Complete this GitHub Actions workflow\nname: # TODO: Add workflow name\n\non:\n  # TODO: Configure triggers for push and pull_request\n\njobs:\n  # TODO: Create build-and-test job\n  # - runs-on: ubuntu-latest\n  # - steps:\n  #   - Checkout code\n  #   - Setup .NET 9.0\n  #   - Restore dependencies\n  #   - Build (Release config)\n  #   - Run tests",
+              "solution": "name: ShopFlow CI\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  build-and-test:\n    runs-on: ubuntu-latest\n\n    steps:\n      - uses: actions/checkout@v4\n\n      - name: Setup .NET\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: '9.0.x'\n\n      - name: Restore dependencies\n        run: dotnet restore\n\n      - name: Build\n        run: dotnet build --no-restore --configuration Release\n\n      - name: Run tests\n        run: dotnet test --no-build --configuration Release",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should have workflow name",
+                  "expectedOutput": "name:",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should trigger on push to main",
+                  "expectedOutput": "push:",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should use actions/checkout",
+                  "expectedOutput": "actions/checkout",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should build in Release configuration",
+                  "expectedOutput": "Release",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with 'name: ShopFlow CI' at the top of the file."
+                },
+                {
+                  "level": 2,
+                  "text": "The 'on' section uses push: and pull_request: with branches: [main] under each."
+                },
+                {
+                  "level": 3,
+                  "text": "Steps use either 'uses:' for actions or 'run:' for shell commands."
+                },
+                {
+                  "level": 4,
+                  "text": "Use actions/checkout@v4 and actions/setup-dotnet@v4 for the first two steps."
+                },
+                {
+                  "level": 5,
+                  "text": "dotnet commands: restore, build --no-restore --configuration Release, test --no-build --configuration Release"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Incorrect YAML indentation",
+                  "consequence": "YAML parsing fails and the workflow does not run. GitHub shows a syntax error.",
+                  "correction": "Use consistent 2-space indentation. Each nested level adds 2 spaces."
+                },
+                {
+                  "mistake": "Missing 'uses:' or 'run:' prefix in steps",
+                  "consequence": "GitHub Actions does not know whether the step is an action reference or a shell command.",
+                  "correction": "Always prefix action references with 'uses:' and shell commands with 'run:'."
+                },
+                {
+                  "mistake": "Building without restoring first",
+                  "consequence": "Build fails because NuGet packages are not downloaded.",
+                  "correction": "Always run 'dotnet restore' before 'dotnet build', or omit --no-restore from build."
+                },
+                {
+                  "mistake": "Running tests without building first",
+                  "consequence": "Tests fail because there are no compiled assemblies to test.",
+                  "correction": "Run build before test, or omit --no-build from the test command."
                 }
               ],
               "difficulty": "intermediate"
