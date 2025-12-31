@@ -7683,6 +7683,59 @@
           ]
         },
         {
+          "id": "module-14-lesson-why-django",
+          "title": "Why Django?",
+          "moduleId": "module-14",
+          "order": 13,
+          "estimatedMinutes": 25,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Django vs FastAPI - When to Choose Each",
+              "content": "**Django vs FastAPI: Two Excellent Choices**\n\nBoth Django and FastAPI are production-ready Python web frameworks, but they excel in different scenarios.\n\n**Django - The Batteries-Included Framework**\n- Full-stack web framework with everything built-in\n- Admin panel auto-generated from your models\n- Powerful ORM for database operations\n- Template engine for server-rendered HTML\n- Built-in authentication and authorization\n- Best for: Full web applications, rapid prototyping, content sites\n\n**FastAPI - The Modern API Framework**\n- API-focused with automatic OpenAPI documentation\n- Async-first design for high performance\n- Pydantic integration for validation\n- Lightweight and flexible\n- Best for: REST APIs, microservices, real-time applications\n\n**Choose Django When:**\n- You need an admin interface for content management\n- Building a full web app with templates (not just an API)\n- Rapid prototyping where speed of development matters\n- You want everything included out of the box\n- Working with relational databases extensively\n\n**Choose FastAPI When:**\n- Building pure REST APIs or GraphQL services\n- Need async/await for I/O-bound operations\n- Building microservices architecture\n- Performance is critical (FastAPI is faster for APIs)\n- You want more control and flexibility\n\n**Real-World Examples:**\n- Instagram, Pinterest, Spotify - Django\n- Netflix, Uber, Microsoft - FastAPI\n\n**Key Insight:** Many companies use both! Django for admin/CMS, FastAPI for APIs."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Django's Batteries-Included Philosophy",
+              "content": "**What You Get Out of the Box:**\n\nDjango follows the \"batteries-included\" philosophy - everything you need is built-in.\n\n**1. Admin Interface (Auto-generated CRUD)**\n```python\n# Just register your model\nfrom django.contrib import admin\nfrom .models import Product\n\nadmin.site.register(Product)\n# Now you have a full admin UI at /admin/\n```\n\n**2. ORM (Simpler than SQLAlchemy)**\n```python\n# Define model\nclass Product(models.Model):\n    name = models.CharField(max_length=100)\n    price = models.DecimalField(max_digits=10, decimal_places=2)\n\n# Query (no session management needed)\nProduct.objects.filter(price__lt=50).order_by('name')\n```\n\n**3. Built-in Authentication**\n```python\nfrom django.contrib.auth.decorators import login_required\n\n@login_required\ndef dashboard(request):\n    return render(request, 'dashboard.html')\n```\n\n**4. Forms and Validation**\n```python\nfrom django import forms\n\nclass ProductForm(forms.ModelForm):\n    class Meta:\n        model = Product\n        fields = ['name', 'price']\n# Auto-validates, auto-generates HTML\n```\n\n**5. Template Engine**\n```html\n{% for product in products %}\n  <h2>{{ product.name }}</h2>\n  <p>${{ product.price }}</p>\n{% endfor %}\n```\n\n**6. Security Features**\n- CSRF protection (automatic)\n- XSS protection (auto-escaped templates)\n- SQL injection prevention (ORM)\n- Clickjacking protection\n- Password hashing (bcrypt by default)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Django Project Structure",
+              "content": "**Standard Django Project Layout:**\n\n```\nmyproject/\n|-- manage.py           # CLI tool for Django commands\n|-- myproject/\n|   |-- __init__.py\n|   |-- settings.py     # Configuration (database, apps, etc.)\n|   |-- urls.py         # URL routing (main router)\n|   |-- wsgi.py         # WSGI entry point (production)\n|   |-- asgi.py         # ASGI entry point (async)\n|-- myapp/\n|   |-- __init__.py\n|   |-- admin.py        # Admin configuration\n|   |-- models.py       # Database models (ORM)\n|   |-- views.py        # Request handlers\n|   |-- urls.py         # App-specific URLs\n|   |-- tests.py        # Tests\n|   |-- forms.py        # Form definitions\n|   |-- templates/      # HTML templates\n|   |-- static/         # CSS, JS, images\n|   |-- migrations/     # Database migrations\n```\n\n**Key Concepts:**\n\n- **Project vs App:** A project contains multiple apps. Apps are reusable components.\n- **settings.py:** Central configuration - database, installed apps, middleware\n- **urls.py:** Maps URLs to views (like FastAPI's path decorators)\n- **models.py:** Define your database schema with Python classes\n- **views.py:** Handle requests and return responses\n- **admin.py:** Register models for the admin interface\n\n**Django's MVT Pattern:**\n- **Model:** Data layer (models.py)\n- **View:** Logic layer (views.py)\n- **Template:** Presentation layer (templates/)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Quick Django Setup",
+              "content": "**Getting Started with Django:**\n\n```bash\n# Install Django\nuv add django\n\n# Create project\ndjango-admin startproject finance_project\ncd finance_project\n\n# Create app\npython manage.py startapp tracker\n\n# Run development server\npython manage.py runserver\n```\n\n**After Running These Commands:**\n\n1. Visit http://127.0.0.1:8000/ to see the welcome page\n2. Visit http://127.0.0.1:8000/admin/ for the admin interface\n\n**Next Steps:**\n\n```python\n# 1. Add app to settings.py\nINSTALLED_APPS = [\n    ...\n    'tracker',\n]\n\n# 2. Create a model (tracker/models.py)\nfrom django.db import models\n\nclass Expense(models.Model):\n    description = models.CharField(max_length=200)\n    amount = models.DecimalField(max_digits=10, decimal_places=2)\n    date = models.DateField(auto_now_add=True)\n\n# 3. Create migrations\npython manage.py makemigrations\npython manage.py migrate\n\n# 4. Create superuser for admin\npython manage.py createsuperuser\n\n# 5. Register in admin (tracker/admin.py)\nfrom django.contrib import admin\nfrom .models import Expense\nadmin.site.register(Expense)\n```\n\n**You Now Have:**\n- A running web server\n- Admin interface with login\n- Database with your Expense model\n- Full CRUD via admin panel"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Why Django? - Key Takeaways",
+              "content": "**When to Use Django:**\n\n- **Admin interface needed:** Auto-generated CRUD for content management\n- **Full web application:** Templates, forms, authentication built-in\n- **Rapid development:** Get from idea to working app quickly\n- **Team projects:** Strong conventions mean consistent code\n- **Relational databases:** Django ORM is excellent\n\n**When to Use FastAPI Instead:**\n\n- **Pure APIs:** No templates or admin needed\n- **Async required:** WebSockets, real-time features\n- **Microservices:** Lightweight, containerized services\n- **Maximum performance:** FastAPI is faster for API workloads\n\n**Key Django Features:**\n\n1. **Batteries-included** - Everything you need out of the box\n2. **Admin panel** - Production-ready CRUD interface automatically\n3. **ORM** - Database operations without SQL\n4. **Security** - CSRF, XSS, SQL injection protection by default\n5. **Scalable** - Powers Instagram, Pinterest, Spotify\n\n**Bottom Line:**\n\n- Building a website with admin? **Django**\n- Building an API for a mobile app? **FastAPI**\n- Building both? Use both! They work great together."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "module-14-lesson-why-django-quiz",
+              "title": "Django vs FastAPI Decision Making",
+              "description": "Test your understanding of when to choose Django vs FastAPI.",
+              "question": "You're building a content management system (CMS) where editors need to create, edit, and delete articles through a web interface. The site will also have a public-facing blog. Which framework is the better choice and why?",
+              "options": [
+                "FastAPI - because it has better documentation",
+                "Django - because it has a built-in admin panel and template engine",
+                "FastAPI - because it's async and faster",
+                "Django - because it's older and more stable"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Django is the clear winner for CMS projects. Its auto-generated admin panel gives editors a ready-to-use interface for managing content without writing custom code. The built-in template engine handles the public blog pages. While FastAPI is faster for pure APIs, you'd have to build the entire admin interface and templating from scratch.",
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
