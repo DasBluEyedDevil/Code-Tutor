@@ -12528,89 +12528,145 @@
         },
         {
           "id": "9.5",
-          "title": "Lesson 5: Maps and Location",
+          "title": "Module 9, Lesson 5: API Contract Testing",
           "moduleId": "module-09",
           "order": 5,
-          "estimatedMinutes": 60,
+          "estimatedMinutes": 45,
           "difficulty": "intermediate",
           "contentSections": [
             {
               "type": "THEORY",
-              "title": "What You'll Learn",
-              "content": "- Integrating Google Maps in Flutter\n- Getting user's current location\n- Adding markers and custom pins\n- Drawing routes and polylines\n- Geocoding (address ↔ coordinates)\n- Building a location-based app\n\n"
+              "title": "What is Contract Testing and Why It Matters",
+              "content": "\nImagine you are building a mobile app with a backend API. Your Flutter frontend expects the `/users` endpoint to return a JSON object with `id`, `name`, and `email` fields. One day, a backend developer renames `email` to `emailAddress`. Your app crashes in production because it cannot find the `email` field.\n\n**This is exactly the problem contract testing solves.**\n\nA **contract** is an agreement between a service provider (your backend) and a consumer (your frontend or other services) about the shape and behavior of API communications. **Contract testing** verifies that both sides honor this agreement.\n\n**Why Contract Testing is Critical:**\n\n1. **Prevents Integration Failures**: Catch breaking changes before they reach production\n2. **Enables Independent Development**: Frontend and backend teams can work in parallel with confidence\n3. **Documents API Behavior**: Contracts serve as living documentation\n4. **Reduces Manual Testing**: Automated contract checks replace tedious integration testing\n5. **Supports Microservices**: Essential when you have multiple services communicating\n\n**The Cost of Contract Violations:**\n\n- **Runtime Crashes**: App fails when API response does not match expectations\n- **Silent Data Loss**: Missing or renamed fields cause data to be dropped\n- **Type Errors**: String becomes int, null becomes required\n- **Production Incidents**: Users experience broken features\n\n**Contract Testing vs Other Testing Types:**\n\n| Test Type | What It Verifies |\n|-----------|------------------|\n| Unit Tests | Individual functions work correctly |\n| Integration Tests | Components work together |\n| **Contract Tests** | API shape and types match expectations |\n| E2E Tests | Complete user workflows function |\n\nContract tests sit between unit tests and integration tests, focusing specifically on the interface between systems.\n\n"
             },
             {
               "type": "THEORY",
-              "title": "Concept First: Why Maps and Location?",
-              "content": "\n### Real-World Analogy\nThink of adding maps to your app like giving it **eyes and a GPS**:\n- **Geolocation** = Knowing where you are (like a compass)\n- **Google Maps** = Seeing the world (like a detailed paper map)\n- **Markers** = Sticky notes on the map\n- **Polylines** = Drawing routes with a highlighter\n\nJust like how \"You Are Here\" signs help you navigate a mall, location features help users navigate the real world through your app.\n\n### Why This Matters\nLocation features power essential apps:\n\n1. **Ride-Sharing**: Uber, Lyft (find drivers, track rides)\n2. **Food Delivery**: DoorDash, Uber Eats (track deliveries)\n3. **Dating Apps**: Tinder, Bumble (find nearby matches)\n4. **Fitness**: Strava, RunKeeper (track running routes)\n5. **Real Estate**: Zillow (find properties near you)\n\nAccording to Google, 76% of people who search for something nearby visit a business within a day!\n\n"
+              "title": "Ensuring Frontend and Backend Stay in Sync",
+              "content": "\nThe fundamental challenge of distributed systems is keeping separate codebases synchronized. Your Flutter app and Dart backend are developed independently, often by different teams, with different release cycles.\n\n**The Synchronization Problem:**\n\n```\nFlutter App (v2.3.1)          Backend API (v1.8.0)\n     |                              |\n     |--- expects User.email ------>|\n     |                              |--- provides User.emailAddress\n     |                              |\n     X  MISMATCH = CRASH            X\n```\n\n**Traditional Approaches and Their Flaws:**\n\n1. **Manual Documentation**: Markdown files or Confluence pages describing the API\n   - Problem: Documentation drifts from reality\n   - Problem: No automated enforcement\n\n2. **Communication Channels**: Slack messages announcing API changes\n   - Problem: Easy to miss notifications\n   - Problem: No guarantee consumers updated\n\n3. **End-to-End Testing**: Test the full stack together\n   - Problem: Slow and expensive\n   - Problem: Hard to pinpoint which side broke\n\n**Contract Testing Approach:**\n\n```\nFlutter App                    Contract                    Backend API\n     |                            |                            |\n     |--- writes expectations --->|                            |\n     |                            |<--- validates against -----|                            \n     |                            |                            |\n     |                      MISMATCH DETECTED                  |\n     |                      (in CI, before deploy)             |\n```\n\n**Consumer-Driven Contracts:**\n\nThe most effective approach is **consumer-driven contracts** where the frontend (consumer) defines what it needs, and the backend (provider) proves it delivers that.\n\n1. **Consumer writes contract**: Flutter app specifies expected request/response shapes\n2. **Provider verifies contract**: Backend tests prove it satisfies all consumer contracts\n3. **CI enforces**: Both sides run contract tests on every commit\n4. **Deploy with confidence**: If contracts pass, integration will work\n\n"
             },
             {
               "type": "THEORY",
-              "title": "Setting Up",
-              "content": "\n### 1. Get Google Maps API Key\n\n**Android:**\n1. Go to [Google Cloud Console](https://console.cloud.google.com/)\n2. Create a project\n3. Enable \"Maps SDK for Android\"\n4. Create credentials → API Key\n5. Add to `android/app/src/main/AndroidManifest.xml`:\n\n\n**iOS:**\n1. Same Google Cloud Console project\n2. Enable \"Maps SDK for iOS\"\n3. Add to `ios/Runner/AppDelegate.swift`:\n\n\n### 2. Add Dependencies\n\n**pubspec.yaml:**\n\n\n### 3. Configure Permissions\n\n**Android (`android/app/src/main/AndroidManifest.xml`):**\n\n**iOS (`ios/Runner/Info.plist`):**\n\n",
-              "code": "<dict>\n    <key>NSLocationWhenInUseUsageDescription</key>\n    <string>We need your location to show nearby places.</string>\n\n    <key>NSLocationAlwaysUsageDescription</key>\n    <string>We need your location for background tracking.</string>\n</dict>",
-              "language": "xml"
+              "title": "Serverpod's Type-Safe Advantage",
+              "content": "\n**Serverpod** provides a unique solution to contract testing: it eliminates the problem entirely through **code generation** and **shared types**.\n\n**How Serverpod Works:**\n\nWhen you define a model in Serverpod:\n\n```yaml\n# lib/src/protocol/user.yaml\nclass: User\nfields:\n  id: int\n  name: String\n  email: String\n  createdAt: DateTime\n```\n\nServerpod generates:\n\n1. **Server-side Dart class**: Used in your backend\n2. **Client-side Dart class**: Used in your Flutter app\n3. **Serialization code**: JSON encoding/decoding\n4. **Type-safe client methods**: API calls with proper types\n\n**The Generated Client:**\n\n```dart\n// Auto-generated in your Flutter app\nclass UserEndpoint {\n  Future<User> getUser(int id) async {\n    return await caller.callServerEndpoint(\n      'user',\n      'getUser',\n      {'id': id},\n    );\n  }\n}\n```\n\n**Why This Eliminates Contract Issues:**\n\n1. **Single Source of Truth**: Model defined once, used everywhere\n2. **Compile-Time Safety**: Type mismatches caught during build\n3. **Automatic Sync**: Regenerate client when server changes\n4. **No JSON Parsing**: Serialization handled by generated code\n\n**Serverpod Contract Testing Strategy:**\n\nEven with Serverpod, you should still test:\n\n1. **Model Validation**: Ensure generated models serialize correctly\n2. **Endpoint Behavior**: Verify endpoints return expected data\n3. **Version Compatibility**: Test client/server version combinations\n\n"
             },
             {
-              "type": "THEORY",
-              "title": "Basic Google Maps Integration",
-              "content": "\n### Simple Map Display\n\n\n",
-              "code": "import 'package:flutter/material.dart';\nimport 'package:google_maps_flutter/google_maps_flutter.dart';\n\nclass BasicMapScreen extends StatefulWidget {\n  @override\n  State<BasicMapScreen> createState() => _BasicMapScreenState();\n}\n\nclass _BasicMapScreenState extends State<BasicMapScreen> {\n  late GoogleMapController _mapController;\n\n  // Initial camera position (San Francisco)\n  final CameraPosition _initialPosition = CameraPosition(\n    target: LatLng(37.7749, -122.4194),\n    zoom: 12,\n  );\n\n  void _onMapCreated(GoogleMapController controller) {\n    _mapController = controller;\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('Google Maps')),\n      body: GoogleMap(\n        onMapCreated: _onMapCreated,\n        initialCameraPosition: _initialPosition,\n        myLocationEnabled: true,  // Show user's location\n        myLocationButtonEnabled: true,  // Show location button\n        mapType: MapType.normal,  // normal, satellite, hybrid, terrain\n      ),\n    );\n  }\n}",
+              "type": "EXAMPLE",
+              "title": "Serverpod Model and Endpoint Testing",
+              "content": "\nHere is how to test Serverpod models and endpoints for contract compliance:\n\n",
+              "code": "// test/protocol/user_test.dart\nimport 'package:test/test.dart';\nimport 'package:my_server/src/generated/protocol.dart';\n\nvoid main() {\n  group('User model contract', () {\n    test('serializes all required fields to JSON', () {\n      final user = User(\n        id: 1,\n        name: 'John Doe',\n        email: 'john@example.com',\n        createdAt: DateTime(2024, 1, 15),\n      );\n      \n      final json = user.toJson();\n      \n      expect(json['id'], 1);\n      expect(json['name'], 'John Doe');\n      expect(json['email'], 'john@example.com');\n      expect(json['createdAt'], isNotNull);\n    });\n    \n    test('deserializes from JSON correctly', () {\n      final json = {\n        'id': 42,\n        'name': 'Jane Smith',\n        'email': 'jane@example.com',\n        'createdAt': '2024-01-15T10:30:00.000Z',\n      };\n      \n      final user = User.fromJson(json);\n      \n      expect(user.id, 42);\n      expect(user.name, 'Jane Smith');\n      expect(user.email, 'jane@example.com');\n      expect(user.createdAt.year, 2024);\n    });\n    \n    test('roundtrip serialization preserves data', () {\n      final original = User(\n        id: 99,\n        name: 'Roundtrip Test',\n        email: 'round@trip.com',\n        createdAt: DateTime.now(),\n      );\n      \n      final json = original.toJson();\n      final restored = User.fromJson(json);\n      \n      expect(restored.id, original.id);\n      expect(restored.name, original.name);\n      expect(restored.email, original.email);\n    });\n  });\n}",
               "language": "dart"
             },
             {
               "type": "THEORY",
-              "title": "Getting User's Current Location",
-              "content": "\n### Using Geolocator\n\n\n### Move Map to User's Location\n\n\n",
-              "code": "class UserLocationMapScreen extends StatefulWidget {\n  @override\n  State<UserLocationMapScreen> createState() => _UserLocationMapScreenState();\n}\n\nclass _UserLocationMapScreenState extends State<UserLocationMapScreen> {\n  late GoogleMapController _mapController;\n  final LocationService _locationService = LocationService();\n  Position? _currentPosition;\n  bool _isLoading = true;\n\n  @override\n  void initState() {\n    super.initState();\n    _getCurrentLocation();\n  }\n\n  Future<void> _getCurrentLocation() async {\n    final position = await _locationService.getCurrentLocation();\n\n    if (position != null) {\n      setState(() {\n        _currentPosition = position;\n        _isLoading = false;\n      });\n\n      // Move camera to user's location\n      _mapController.animateCamera(\n        CameraUpdate.newCameraPosition(\n          CameraPosition(\n            target: LatLng(position.latitude, position.longitude),\n            zoom: 15,\n          ),\n        ),\n      );\n    } else {\n      setState(() => _isLoading = false);\n    }\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    return Scaffold(\n      appBar: AppBar(title: Text('My Location')),\n      body: _isLoading\n          ? Center(child: CircularProgressIndicator())\n          : GoogleMap(\n              onMapCreated: (controller) => _mapController = controller,\n              initialCameraPosition: CameraPosition(\n                target: _currentPosition != null\n                    ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)\n                    : LatLng(37.7749, -122.4194),\n                zoom: 15,\n              ),\n              myLocationEnabled: true,\n              myLocationButtonEnabled: true,\n            ),\n      floatingActionButton: FloatingActionButton(\n        onPressed: _getCurrentLocation,\n        child: Icon(Icons.my_location),\n      ),\n    );\n  }\n}",
-              "language": "dart"
+              "title": "OpenAPI/Swagger for REST APIs",
+              "content": "\nFor REST APIs (including those built with Dart Frog), **OpenAPI** (formerly Swagger) is the industry standard for defining API contracts.\n\n**What is OpenAPI?**\n\nOpenAPI is a specification format for describing REST APIs. It defines:\n\n- **Endpoints**: Available routes and HTTP methods\n- **Request Bodies**: Expected input shapes\n- **Response Schemas**: Output data structures\n- **Data Types**: Field types, required/optional, constraints\n- **Authentication**: Security requirements\n\n**Benefits of OpenAPI:**\n\n1. **Code Generation**: Generate client SDKs and server stubs\n2. **Interactive Documentation**: Swagger UI for API exploration\n3. **Validation**: Automatic request/response validation\n4. **Tooling Ecosystem**: Wide support across languages and frameworks\n\n"
             },
             {
               "type": "THEORY",
-              "title": "Adding Markers",
-              "content": "\n\n### Custom Marker Icons\n\n\n",
-              "code": "// Load custom marker from assets\nBitmapDescriptor? _customIcon;\n\nFuture<void> _loadCustomMarker() async {\n  _customIcon = await BitmapDescriptor.fromAssetImage(\n    ImageConfiguration(devicePixelRatio: 2.5),\n    'assets/images/custom_marker.png',\n  );\n}\n\n// Use in marker\nMarker(\n  markerId: MarkerId('custom'),\n  position: LatLng(37.7749, -122.4194),\n  icon: _customIcon ?? BitmapDescriptor.defaultMarker,\n)",
-              "language": "dart"
+              "title": "Version Compatibility Testing",
+              "content": "\nAs your API evolves, you must ensure that different versions of clients and servers can communicate correctly. This is **version compatibility testing**.\n\n**Why Version Compatibility Matters:**\n\nIn production, you often have:\n- **Multiple client versions**: Users on old app versions\n- **Rolling deployments**: Old and new servers running simultaneously\n- **Gradual rollouts**: New features enabled for subset of users\n\n**Testing Approach:**\n\n1. **Define compatibility requirements**: Which client/server combinations must work?\n2. **Create version-specific test fixtures**: Request/response samples for each version\n3. **Run matrix tests in CI**: Test all supported combinations\n4. **Document breaking changes**: Maintain changelog of contract changes\n\n"
             },
             {
               "type": "THEORY",
-              "title": "Geocoding (Address ↔ Coordinates)",
-              "content": "\n\n**Usage Example:**\n\n",
-              "code": "// Search for address\nfinal coordinates = await GeocodingService().getCoordinatesFromAddress(\n  '1600 Amphitheatre Parkway, Mountain View, CA',\n);\n\nif (coordinates != null) {\n  _mapController.animateCamera(\n    CameraUpdate.newLatLng(coordinates),\n  );\n}\n\n// Get address from tap\nvoid _onMapTap(LatLng position) async {\n  final address = await GeocodingService().getAddressFromCoordinates(\n    position.latitude,\n    position.longitude,\n  );\n\n  print('Address: $address');\n}",
-              "language": "dart"
-            },
-            {
-              "type": "EXPERIMENT",
-              "title": "Best Practices",
-              "content": "\n1. **Always Check Permissions**\n   ```dart\n   final hasPermission = await Permission.location.request();\n   if (!hasPermission.isGranted) {\n     // Show error or guide user to settings\n     return;\n   }\n   ```\n\n2. **Handle Location Services Disabled**\n   ```dart\n   if (!await Geolocator.isLocationServiceEnabled()) {\n     await Geolocator.openLocationSettings();\n   }\n   ```\n\n3. **Dispose Map Controller**\n   ```dart\n   @override\n   void dispose() {\n     _mapController.dispose();\n     super.dispose();\n   }\n   ```\n\n4. **Use Different Accuracy for Different Needs**\n   ```dart\n   // High accuracy (GPS) - battery intensive\n   LocationAccuracy.high\n\n   // Medium accuracy - balanced\n   LocationAccuracy.medium\n\n   // Low accuracy - battery friendly\n   LocationAccuracy.low\n   ```\n\n5. **Cache Map Data for Offline Use**\n   - Google Maps automatically caches viewed areas\n   - For full offline support, consider OpenStreetMap alternatives\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Common Issues & Solutions",
-              "content": "\n**Issue 1: Map shows blank/gray screen**\n- **Solution**: Check API key is correct and enabled\n- Verify billing is enabled in Google Cloud Console\n\n**Issue 2: \"Location services are disabled\"**\n- **Solution**: Guide user to enable in device settings\n  ```dart\n  await Geolocator.openLocationSettings();\n  ```\n\n**Issue 3: Markers not showing**\n- **Solution**: Ensure markers Set is passed to GoogleMap widget\n- Check zoom level isn't too far out\n\n**Issue 4: App crashes on iOS when accessing location**\n- **Solution**: Add usage descriptions to Info.plist\n- Request permission before accessing location\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Quiz",
-              "content": "\n**Question 1:** What's the difference between `LocationAccuracy.high` and `LocationAccuracy.low`?\nA) High is slower but more accurate\nB) High uses GPS (precise but battery-intensive); low uses network (less precise, battery-friendly)\nC) There is no difference\nD) Low accuracy is deprecated\n\n**Question 2:** How do you convert an address to coordinates?\nA) Use `geolocator` package\nB) Use `locationFromAddress()` from geocoding package\nC) Manually parse with regex\nD) Google Maps does it automatically\n\n**Question 3:** What is a Polyline used for?\nA) Marking single locations\nB) Drawing routes/paths on the map\nC) Setting map boundaries\nD) Clustering markers\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "Exercise: Delivery Tracker",
-              "content": "\nBuild a delivery tracking app that:\n1. Shows delivery driver's live location\n2. Draws route from restaurant → customer\n3. Updates ETA as driver moves\n4. Shows distance remaining\n\n**Bonus Challenges:**\n- Add multiple delivery stops\n- Show traffic conditions\n- Send notifications when driver is nearby\n- Estimate delivery time based on speed\n\n"
+              "title": "Breaking Change Detection",
+              "content": "\n**Breaking changes** are modifications to an API that cause existing clients to fail. Detecting these before deployment is critical.\n\n**Types of Breaking Changes:**\n\n1. **Removal Changes**: Removing an endpoint or field\n2. **Type Changes**: Changing field type (string to int)\n3. **Semantic Changes**: Changing the meaning of a field\n4. **Structural Changes**: Renaming or moving fields\n\n**Non-Breaking Changes (Safe):**\n\n- Adding new optional fields\n- Adding new endpoints\n- Adding new optional query parameters\n- Relaxing validation (making required fields optional)\n\n"
             },
             {
               "type": "KEY_POINT",
-              "title": "Summary",
-              "content": "\nYou've mastered maps and location in Flutter! Here's what we covered:\n\n- **Google Maps Integration**: Setup and basic map display\n- **Geolocation**: Getting user's current location with geolocator\n- **Permissions**: Handling location permissions gracefully\n- **Markers**: Adding custom pins and info windows\n- **Polylines**: Drawing routes and paths\n- **Geocoding**: Converting addresses ↔ coordinates\n- **Complete App**: Nearby places finder with filtering\n\nWith these skills, you can build location-aware apps like ride-sharing, delivery tracking, and social discovery!\n\n"
+              "title": "Contract Testing Best Practices",
+              "content": "\n**1. Contracts Are Shared Artifacts**\n\nStore contracts in a shared location accessible to both frontend and backend.\n\n**2. Consumer-Driven Development**\n\nLet consumers define what they need. Frontend team writes contract expectations, backend team implements to satisfy contracts.\n\n**3. Version Your Contracts**\n\nTreat contracts like any other code with semantic versioning and changelogs.\n\n**4. Test Both Happy and Error Paths**\n\nContracts should cover success responses, client errors, server errors, and edge cases.\n\n**5. Run Contract Tests in CI**\n\nEvery PR must pass contract tests.\n\n"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Contract Testing Mistakes",
+              "content": "\n**1. Testing Only Happy Paths**\n\nAlso test error cases like 404 for missing resources and 400 for invalid input.\n\n**2. Coupling Tests to Implementation**\n\nTest observable behavior, not internal JSON structure.\n\n**3. Ignoring Optional Field Changes**\n\nHandle optional fields safely and verify required fields are present.\n\n**4. Not Testing Array Responses**\n\nValidate each element in array responses matches the contract.\n\n**5. Hardcoding Test Data**\n\nUse fixtures that tests create themselves, not production data.\n\n"
             },
             {
               "type": "KEY_POINT",
-              "title": "Answer Key",
-              "content": "\n**Answer 1:** B) High uses GPS (precise but battery-intensive); low uses network (less precise, battery-friendly)\n\n`LocationAccuracy.high` uses GPS for precise location (±5-10 meters) but drains battery. `LocationAccuracy.low` uses WiFi/cell towers (±100-500 meters) but is battery-friendly. Choose based on your app's needs!\n\n**Answer 2:** B) Use `locationFromAddress()` from geocoding package\n\nThe `geocoding` package provides `locationFromAddress()` for forward geocoding (address → coordinates) and `placemarkFromCoordinates()` for reverse geocoding (coordinates → address).\n\n**Answer 3:** B) Drawing routes/paths on the map\n\nPolylines draw connected lines between multiple LatLng points, perfect for showing routes, paths, or boundaries. Markers are for single points, not routes.\n\n"
+              "title": "Lesson Summary",
+              "content": "\nYou have learned comprehensive API contract testing strategies for Dart backends:\n\n**What is Contract Testing:**\n- Agreements between API providers and consumers\n- Prevents integration failures before production\n- Enables independent team development\n\n**Serverpod's Type-Safe Advantage:**\n- Generated code ensures compile-time contract safety\n- Single source of truth for models\n\n**OpenAPI for REST APIs:**\n- Industry-standard specification format\n- Enables code generation and validation\n\n**Version Compatibility:**\n- Test client/server version matrices\n- Document compatibility requirements\n\n**Breaking Change Detection:**\n- Automate schema comparison\n- Catch issues in CI, not production\n\nWith these skills, you can ensure your frontend and backend stay synchronized as your application evolves.\n\n"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "QUIZ",
+              "id": "9.5-quiz-1",
+              "title": "Contract Testing Concepts Quiz",
+              "description": "Test your understanding of API contract testing principles.",
+              "questions": [
+                {
+                  "id": "q1",
+                  "text": "What is the primary purpose of contract testing?",
+                  "options": [
+                    "To test individual functions in isolation",
+                    "To verify API shape and types match expectations between systems",
+                    "To test complete user workflows end-to-end",
+                    "To measure code coverage percentage"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Contract testing specifically verifies that the interface (contract) between systems matches expectations."
+                },
+                {
+                  "id": "q2",
+                  "text": "Which is an example of a BREAKING change in an API?",
+                  "options": [
+                    "Adding a new optional field to a response",
+                    "Adding a new endpoint",
+                    "Removing a field from a response",
+                    "Adding a new optional query parameter"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Removing a field from a response is a breaking change because existing clients that expect that field will fail."
+                },
+                {
+                  "id": "q3",
+                  "text": "What is the main advantage of Serverpod's approach to contracts?",
+                  "options": [
+                    "It generates OpenAPI documentation automatically",
+                    "It uses compile-time code generation for type-safe client/server communication",
+                    "It runs faster than other frameworks",
+                    "It requires no testing at all"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Serverpod generates Dart classes for both server and client from a single model definition, catching type mismatches at compile time."
+                },
+                {
+                  "id": "q4",
+                  "text": "In consumer-driven contract testing, who defines the contract?",
+                  "options": [
+                    "The backend team exclusively",
+                    "The DevOps team",
+                    "The consumer (frontend) specifies what it needs",
+                    "The contracts are auto-generated from code"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "In consumer-driven contracts, the consumer (frontend) defines what it needs from the API. The provider (backend) then verifies it can satisfy all consumer contracts."
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "9.5-challenge-1",
+              "title": "Implement Contract Verification",
+              "description": "Write a contract verification test for an API endpoint.",
+              "instructions": "You are testing a Product API that should return products with id (int), name (String), price (number >= 0), inStock (bool), and category (String). Write a test that verifies the response contains all required fields with correct types.",
+              "starterCode": "import 'dart:convert';\nimport 'package:test/test.dart';\nimport 'package:http/http.dart' as http;\n\nvoid main() {\n  group('Product API Contract Tests', () {\n    final baseUrl = 'http://localhost:8080';\n    \n    test('GET /api/products/{id} returns valid Product', () async {\n      // TODO: Make the request\n      \n      // TODO: Parse the response\n      \n      // TODO: Verify all required fields exist\n      \n      // TODO: Verify field types are correct\n      \n    });\n  });\n}",
+              "solution": "import 'dart:convert';\nimport 'package:test/test.dart';\nimport 'package:http/http.dart' as http;\n\nvoid main() {\n  group('Product API Contract Tests', () {\n    final baseUrl = 'http://localhost:8080';\n    \n    test('GET /api/products/{id} returns valid Product', () async {\n      final response = await http.get(\n        Uri.parse('$baseUrl/api/products/123'),\n        headers: {'Accept': 'application/json'},\n      );\n      \n      expect(response.statusCode, 200);\n      \n      final json = jsonDecode(response.body) as Map<String, dynamic>;\n      \n      // Verify all required fields exist\n      expect(json.containsKey('id'), isTrue);\n      expect(json.containsKey('name'), isTrue);\n      expect(json.containsKey('price'), isTrue);\n      expect(json.containsKey('inStock'), isTrue);\n      expect(json.containsKey('category'), isTrue);\n      \n      // Verify field types\n      expect(json['id'], isA<int>());\n      expect(json['name'], isA<String>());\n      expect(json['price'], isA<num>());\n      expect((json['price'] as num) >= 0, isTrue);\n      expect(json['inStock'], isA<bool>());\n      expect(json['category'], isA<String>());\n    });\n  });\n}",
+              "language": "dart",
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use http.get() to make the request and jsonDecode() to parse the response body."
+                },
+                {
+                  "level": 2,
+                  "text": "Use json.containsKey() to check if a field exists, and 'is' type checks to verify types."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         },
         {
           "id": "9.6",
@@ -12863,10 +12919,10 @@
     },
     {
       "id": "module-10",
-      "title": "Module 10: Flutter Development",
-      "description": "Learn Flutter development - Module 10",
-      "difficulty": "advanced",
-      "estimatedHours": 9,
+      "title": "Module 10: API Integration & Auth Flows",
+      "description": "Connect your Flutter frontend to Dart backends with type-safe APIs, implement complete authentication flows, and handle sessions securely. Learn to use Serverpod's generated client for seamless frontend-backend communication.",
+      "difficulty": "intermediate",
+      "estimatedHours": 12,
       "lessons": [
         {
           "id": "10.1",
