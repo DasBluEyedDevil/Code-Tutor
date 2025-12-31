@@ -7613,6 +7613,398 @@
           "challenges": []
         }
       ]
+    },
+    {
+      "id": "module-concurrency",
+      "title": "Concurrency & Virtual Threads",
+      "description": "Master Java concurrency from threads and executors to CompletableFuture and Java 21's revolutionary virtual threads.",
+      "difficulty": "advanced",
+      "estimatedHours": 3.17,
+      "lessons": [
+        {
+          "id": "concurrency-lesson-1",
+          "title": "Lesson C.1: Why Concurrency?",
+          "moduleId": "module-concurrency",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: One Thing at a Time",
+              "content": "Imagine a restaurant with ONE chef who must:\n1. Take orders at the counter\n2. Cook each dish\n3. Serve the food\n4. Clean tables\n\nWhile cooking, customers wait. While cleaning, food gets cold. The chef can only do ONE thing at a time.\n\nThis is how single-threaded programs work:\n\nvoid handleRequest() {\n    fetchDataFromDatabase();  // 200ms waiting\n    callExternalAPI();        // 500ms waiting\n    processResults();         // 10ms actual work\n}\n\nThe program WAITS 700ms but only WORKS for 10ms. That's 98.6% waiting!\n\nNow imagine 100 users making requests. With single-threaded processing, user #100 waits for 99 others to finish. Unacceptable."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Concurrency vs Parallelism",
+              "content": "These terms are often confused:\n\nCONCURRENCY:\n- Managing multiple tasks that COULD run at the same time\n- Like a chef juggling multiple dishes: start soup, while it simmers, chop vegetables\n- Tasks interleave, not necessarily simultaneous\n- About STRUCTURE\n\nPARALLELISM:\n- Actually running multiple tasks at the SAME time\n- Like having 4 chefs working simultaneously\n- Requires multiple CPU cores\n- About EXECUTION\n\nConcurrency enables parallelism, but they're different:\n- Concurrency: Write code that CAN run simultaneously\n- Parallelism: Actually RUN code simultaneously on multiple cores\n\nJava gives you both: write concurrent code, and the JVM + OS handle parallel execution on your multi-core CPU."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Concurrency Matters in 2025",
+              "content": "Modern applications REQUIRE concurrency:\n\nWEB SERVERS:\n- Handle thousands of requests simultaneously\n- Each request waits for database, APIs, file I/O\n- Without concurrency: 1 slow request blocks everyone\n\nMICROSERVICES:\n- Service A calls Services B, C, D\n- Sequential: 100ms + 200ms + 150ms = 450ms\n- Concurrent: max(100, 200, 150) = 200ms (2.25x faster!)\n\nDATA PROCESSING:\n- Process millions of records\n- Split work across CPU cores\n- 8-core CPU = potentially 8x faster\n\nREAL-TIME APPLICATIONS:\n- Games: rendering while processing input\n- Chat apps: sending while receiving\n- Streaming: decoding while buffering\n\nModern CPUs have 8-16+ cores. Single-threaded code uses just ONE. Concurrency unlocks your hardware's full potential."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Mental Model: Threads as Workers",
+              "content": "Think of threads as workers in a factory:\n\nSINGLE-THREADED (1 worker):\n[Worker 1]: Task A -> Task B -> Task C -> Task D\nTotal time: 4 hours\n\nMULTI-THREADED (4 workers):\n[Worker 1]: Task A\n[Worker 2]: Task B\n[Worker 3]: Task C\n[Worker 4]: Task D\nTotal time: 1 hour\n\nBUT there are complications:\n\nSHARED RESOURCES:\nWhat if Task A and Task B both need the printer?\n- They might corrupt each other's output\n- Need coordination (synchronization)\n\nDEPENDENCIES:\nWhat if Task C needs Task A's result?\n- Worker 3 must WAIT for Worker 1\n- Not fully parallelizable\n\nCOMMUNICATION OVERHEAD:\nWorkers need to coordinate:\n- 'I'm using the printer now'\n- 'Here's my result for you'\n- Coordination takes time too\n\nThis course teaches you to manage all these challenges."
+            },
+            {
+              "type": "THEORY",
+              "title": "Java's Concurrency Evolution",
+              "content": "Java's concurrency has evolved dramatically:\n\nJAVA 1.0 (1996): Basic Threads\n- Thread class, synchronized keyword\n- Low-level, error-prone\n\nJAVA 5 (2004): java.util.concurrent\n- ExecutorService, thread pools\n- Concurrent collections\n- Locks, semaphores, barriers\n\nJAVA 8 (2014): CompletableFuture\n- Async programming with callbacks\n- Composable futures\n- Parallel streams\n\nJAVA 21 (2023): Virtual Threads\n- Lightweight threads (millions possible!)\n- Simple blocking code, high scalability\n- Game changer for I/O-bound applications\n\nThis module covers it all, culminating in virtual threads - the biggest concurrency innovation since Java 5."
+            },
+            {
+              "type": "WARNING",
+              "title": "Concurrency is Hard (But Learnable)",
+              "content": "Concurrency bugs are notoriously difficult:\n\nRACE CONDITIONS:\nThread 1: read balance (100)\nThread 2: read balance (100)\nThread 1: write balance (100 + 50 = 150)\nThread 2: write balance (100 - 30 = 70)  // WRONG! Should be 120\n\nDEADLOCKS:\nThread 1: holds Lock A, waiting for Lock B\nThread 2: holds Lock B, waiting for Lock A\nBoth wait forever!\n\nMEMORY VISIBILITY:\nThread 1: sets flag = true\nThread 2: reads flag... still sees false (cached!)\n\nThese bugs are:\n- Intermittent (work 99% of the time, fail in production)\n- Hard to reproduce (timing-dependent)\n- Hard to debug (stepping through changes timing)\n\nBUT: Java provides tools to prevent them. This course teaches you the safe patterns."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-1-mc-1",
+              "title": "Concurrency vs Parallelism",
+              "description": "Understanding the difference between concurrency and parallelism",
+              "question": "A single-core CPU running a web server that handles multiple requests by switching between them is an example of:",
+              "options": [
+                "Parallelism only",
+                "Concurrency only",
+                "Both concurrency and parallelism",
+                "Neither concurrency nor parallelism"
+              ],
+              "correctAnswer": 1,
+              "explanation": "This is concurrency without parallelism. The CPU switches between tasks (concurrency), but only one task runs at any instant (no parallelism). Parallelism requires multiple cores executing simultaneously. Concurrency is about structure (handling multiple tasks); parallelism is about execution (running simultaneously).",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-1-mc-2",
+              "title": "Why Concurrency?",
+              "description": "Understanding the benefits of concurrent programming",
+              "question": "A microservice needs to call three external APIs (taking 100ms, 200ms, and 150ms respectively). What's the minimum total time if calls are made concurrently?",
+              "options": [
+                "450ms (sum of all calls)",
+                "200ms (the longest call)",
+                "150ms (average of calls)",
+                "100ms (the shortest call)"
+              ],
+              "correctAnswer": 1,
+              "explanation": "With concurrent execution, all three API calls start at the same time. The total time is determined by the slowest call (200ms), since all three run in parallel. Sequential execution would take 450ms (100+200+150). This 2.25x speedup is why concurrency matters for I/O-bound operations.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "concurrency-lesson-2",
+          "title": "Lesson C.2: Threads & Runnables",
+          "moduleId": "module-concurrency",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is a Thread?",
+              "content": "A thread is an independent path of execution within a program.\n\nEvery Java program starts with ONE thread: the main thread.\n\nvoid main() {\n    System.out.println(\"Hello\");  // Runs on main thread\n    doSomething();                 // Still main thread\n}\n\nBut you can create ADDITIONAL threads:\n\n// Main thread creates a new thread\nThread worker = new Thread(() -> {\n    System.out.println(\"I'm on a different thread!\");\n});\nworker.start();  // Now TWO threads running!\n\nEach thread has its own:\n- Call stack (method calls, local variables)\n- Program counter (current instruction)\n\nThreads SHARE:\n- Heap memory (objects, arrays)\n- Static variables\n- File handles, network connections\n\nThis sharing is powerful but dangerous - it's where bugs come from."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Creating Threads: Two Approaches",
+              "content": "APPROACH 1: Implement Runnable (PREFERRED)\n\nRunnable task = () -> {\n    System.out.println(\"Running in: \" + Thread.currentThread().getName());\n};\n\nThread thread = new Thread(task);\nthread.start();\n\nWhy preferred:\n- Separates WHAT to do (Runnable) from HOW to run it (Thread)\n- Can reuse same Runnable with different executors\n- Java is single-inheritance; Runnable doesn't use up your one extends\n\nAPPROACH 2: Extend Thread (RARE)\n\nclass MyThread extends Thread {\n    @Override\n    public void run() {\n        System.out.println(\"Running!\");\n    }\n}\n\nnew MyThread().start();\n\nRarely used because:\n- Uses up your single inheritance\n- Couples task logic to Thread class\n\n2025 REALITY: You rarely create Thread objects directly. Use ExecutorService or Virtual Threads instead. But understanding Thread is foundational."
+            },
+            {
+              "type": "THEORY",
+              "title": "Thread Lifecycle",
+              "content": "Threads go through several states:\n\nNEW:\n- Thread created but not started\n- Thread t = new Thread(task);  // NEW state\n\nRUNNABLE:\n- t.start() called, ready to run\n- May be running or waiting for CPU\n\nBLOCKED:\n- Waiting to acquire a lock\n- synchronized block occupied by another thread\n\nWAITING:\n- Waiting indefinitely for another thread\n- t.join(), Object.wait() without timeout\n\nTIMED_WAITING:\n- Waiting with timeout\n- Thread.sleep(1000), t.join(1000)\n\nTERMINATED:\n- run() method completed (normally or with exception)\n- Thread cannot be restarted!\n\nVisualize:\nNEW --> RUNNABLE <--> BLOCKED/WAITING --> TERMINATED\n           ^                 |\n           |_________________|\n                (resumed)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Basic Thread Operations",
+              "content": "Essential thread operations you need to know:",
+              "code": "void main() throws InterruptedException {\n    // Create a thread with a task\n    Thread worker = new Thread(() -> {\n        String name = Thread.currentThread().getName();\n        System.out.println(name + \" started\");\n        \n        try {\n            // Simulate work\n            Thread.sleep(1000);  // Pause for 1 second\n        } catch (InterruptedException e) {\n            System.out.println(name + \" was interrupted\");\n            return;\n        }\n        \n        System.out.println(name + \" finished\");\n    });\n    \n    // Give it a meaningful name (helps debugging)\n    worker.setName(\"DataProcessor\");\n    \n    // Check state before starting\n    System.out.println(\"State: \" + worker.getState());  // NEW\n    \n    // Start the thread (don't call run() directly!)\n    worker.start();\n    System.out.println(\"State: \" + worker.getState());  // RUNNABLE\n    \n    // Main thread continues immediately!\n    System.out.println(\"Main thread continues...\");\n    \n    // Wait for worker to complete\n    worker.join();  // Blocks until worker finishes\n    System.out.println(\"State: \" + worker.getState());  // TERMINATED\n    \n    System.out.println(\"Worker completed, main resumes\");\n}",
+              "language": "java"
+            },
+            {
+              "type": "WARNING",
+              "title": "Critical Thread Pitfalls",
+              "content": "MISTAKE 1: Calling run() instead of start()\n\nthread.run();   // WRONG! Runs on CURRENT thread\nthread.start(); // CORRECT! Runs on NEW thread\n\nrun() just calls the method normally. start() creates a new thread.\n\nMISTAKE 2: Starting a thread twice\n\nthread.start();\nthread.start();  // IllegalThreadStateException!\n\nOnce terminated, a thread cannot restart. Create a new Thread.\n\nMISTAKE 3: Ignoring InterruptedException\n\ntry {\n    Thread.sleep(1000);\n} catch (InterruptedException e) {\n    // DON'T just ignore it!\n    Thread.currentThread().interrupt();  // Restore flag\n    return;  // Or handle appropriately\n}\n\nInterruption is a cooperative cancellation mechanism. Don't swallow it.\n\nMISTAKE 4: Not joining threads\n\nIf main() ends before worker threads, the JVM might exit. Use join() to wait, or use ExecutorService with proper shutdown."
+            },
+            {
+              "type": "THEORY",
+              "title": "Thread Communication: join() and interrupt()",
+              "content": "JOINING THREADS:\nWait for another thread to complete.\n\nThread worker = new Thread(task);\nworker.start();\n\n// Wait at most 5 seconds\nworker.join(5000);  // Returns after 5s OR when worker finishes\n\nif (worker.isAlive()) {\n    System.out.println(\"Worker still running after 5s\");\n}\n\nINTERRUPTING THREADS:\nRequest a thread to stop (cooperative, not forced).\n\nThread worker = new Thread(() -> {\n    while (!Thread.currentThread().isInterrupted()) {\n        // Do work\n    }\n    System.out.println(\"Received interrupt, stopping\");\n});\n\nworker.start();\nThread.sleep(1000);\nworker.interrupt();  // Set interrupt flag\n\nIMPORTANT: interrupt() doesn't STOP the thread. It:\n1. Sets a flag (isInterrupted())\n2. Throws InterruptedException if sleeping/waiting\n\nThe thread must CHECK the flag and stop voluntarily."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-2-mc-1",
+              "title": "start() vs run()",
+              "description": "Understanding the difference between start() and run()",
+              "question": "What happens when you call thread.run() instead of thread.start()?",
+              "options": [
+                "The thread runs faster because there's no setup overhead",
+                "The run() method executes on the CURRENT thread, not a new thread",
+                "An IllegalThreadStateException is thrown",
+                "The thread runs in the background"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Calling run() directly just invokes the method on the current thread like any normal method call. No new thread is created. You must call start() to create a new thread that then invokes run(). This is a common beginner mistake.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-2-mc-2",
+              "title": "Thread States",
+              "description": "Understanding thread lifecycle states",
+              "question": "A thread calls Thread.sleep(5000). What state is it in during those 5 seconds?",
+              "options": [
+                "RUNNABLE",
+                "BLOCKED",
+                "WAITING",
+                "TIMED_WAITING"
+              ],
+              "correctAnswer": 3,
+              "explanation": "Thread.sleep() with a timeout puts the thread in TIMED_WAITING state. WAITING is for indefinite waits (like join() without timeout). BLOCKED is for waiting to acquire a lock. RUNNABLE means the thread is ready to execute (or executing).",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "concurrency-lesson-3",
+          "title": "Lesson C.3: Executors & Thread Pools",
+          "moduleId": "module-concurrency",
+          "order": 3,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem with Raw Threads",
+              "content": "Creating threads directly has problems:\n\n// Bad: Create new thread for every task\nfor (int i = 0; i < 10000; i++) {\n    new Thread(() -> handleRequest()).start();\n}\n\nPROBLEMS:\n\n1. EXPENSIVE CREATION:\n   - Each Thread = ~1MB stack memory\n   - OS resources allocated\n   - 10,000 threads = 10GB memory!\n\n2. UNCONTROLLED GROWTH:\n   - No limit on concurrent threads\n   - Server overload under high load\n   - Out of memory crashes\n\n3. NO REUSE:\n   - Thread dies after task completes\n   - Create new one for next task\n   - Wasted setup/teardown\n\n4. POOR ERROR HANDLING:\n   - Exceptions in threads are silent\n   - No way to get results\n   - Hard to monitor\n\nSOLUTION: Thread Pools via ExecutorService"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "ExecutorService: Thread Pool Management",
+              "content": "ExecutorService manages a pool of reusable threads:\n\n// Create a pool of 10 threads\nExecutorService executor = Executors.newFixedThreadPool(10);\n\n// Submit 1000 tasks - only 10 run at once\nfor (int i = 0; i < 1000; i++) {\n    executor.submit(() -> handleRequest());\n}\n\n// When done, shutdown gracefully\nexecutor.shutdown();\n\nBENEFITS:\n\n1. REUSE: 10 threads handle 1000 tasks\n   - Each thread is reused ~100 times\n   - Minimal memory overhead\n\n2. BOUNDED: Max 10 concurrent tasks\n   - Prevents resource exhaustion\n   - Predictable resource usage\n\n3. QUEUING: Excess tasks wait in queue\n   - Smooth handling of load spikes\n   - No rejected requests\n\n4. MANAGED LIFECYCLE:\n   - Clean shutdown\n   - Proper exception handling"
+            },
+            {
+              "type": "THEORY",
+              "title": "Types of Thread Pools",
+              "content": "Executors factory provides several pool types:\n\nFIXED THREAD POOL:\nExecutors.newFixedThreadPool(int n)\n- Exactly n threads, no more, no less\n- Tasks queue when all threads busy\n- Best for: known workload, predictable resources\n\nCACHED THREAD POOL:\nExecutors.newCachedThreadPool()\n- Creates threads as needed\n- Reuses idle threads\n- Removes threads idle > 60 seconds\n- Best for: many short-lived tasks\n- WARNING: Can create unbounded threads under load!\n\nSINGLE THREAD EXECUTOR:\nExecutors.newSingleThreadExecutor()\n- Exactly 1 thread\n- Tasks execute sequentially\n- Best for: ordered task execution, avoiding concurrency\n\nSCHEDULED THREAD POOL:\nExecutors.newScheduledThreadPool(int n)\n- Run tasks after delay or periodically\n- Best for: timers, periodic jobs\n\n2025 BEST PRACTICE:\nFor most web apps, use fixed pool sized to available cores:\nExecutors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Using ExecutorService",
+              "content": "Complete example with proper shutdown and result handling:",
+              "code": "import java.util.concurrent.*;\nimport java.util.*;\n\nvoid main() throws Exception {\n    // Create a thread pool with 4 workers\n    ExecutorService executor = Executors.newFixedThreadPool(4);\n    \n    try {\n        // Submit Runnable (no return value)\n        executor.submit(() -> {\n            System.out.println(\"Task 1 on \" + Thread.currentThread().getName());\n        });\n        \n        // Submit Callable (returns a value)\n        Future<Integer> future = executor.submit(() -> {\n            Thread.sleep(500);\n            return 42;\n        });\n        \n        // Do other work while task runs...\n        System.out.println(\"Doing other work...\");\n        \n        // Get result (blocks until complete)\n        Integer result = future.get();  // Waits up to forever\n        System.out.println(\"Result: \" + result);\n        \n        // Get with timeout\n        Future<String> future2 = executor.submit(() -> {\n            Thread.sleep(2000);\n            return \"Done!\";\n        });\n        \n        try {\n            String result2 = future2.get(1, TimeUnit.SECONDS);  // Only wait 1s\n        } catch (TimeoutException e) {\n            System.out.println(\"Task took too long!\");\n            future2.cancel(true);  // Cancel the task\n        }\n        \n        // Submit multiple tasks\n        List<Callable<Integer>> tasks = List.of(\n            () -> { Thread.sleep(100); return 1; },\n            () -> { Thread.sleep(200); return 2; },\n            () -> { Thread.sleep(150); return 3; }\n        );\n        \n        // invokeAll waits for ALL to complete\n        List<Future<Integer>> futures = executor.invokeAll(tasks);\n        for (Future<Integer> f : futures) {\n            System.out.println(\"Got: \" + f.get());\n        }\n        \n    } finally {\n        // CRITICAL: Always shutdown!\n        executor.shutdown();\n        \n        // Wait for tasks to finish (with timeout)\n        if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {\n            System.out.println(\"Forcing shutdown...\");\n            executor.shutdownNow();  // Force stop\n        }\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "WARNING",
+              "title": "ExecutorService Pitfalls",
+              "content": "MISTAKE 1: Forgetting to shutdown\n\nExecutorService executor = Executors.newFixedThreadPool(4);\nexecutor.submit(task);\n// Program never exits! Non-daemon threads keep JVM alive\n\nALWAYS call shutdown() in a finally block or use try-with-resources (Java 19+).\n\nMISTAKE 2: Using newCachedThreadPool for I/O tasks\n\n// Under load, can create thousands of threads!\nExecutorService bad = Executors.newCachedThreadPool();\nfor (int i = 0; i < 100000; i++) {\n    bad.submit(() -> httpClient.get(url));  // Each waits on I/O\n}\n// OutOfMemoryError: unable to create new native thread\n\nUse fixed pool or virtual threads for I/O-bound work.\n\nMISTAKE 3: Ignoring Future exceptions\n\nFuture<?> f = executor.submit(() -> {\n    throw new RuntimeException(\"Oops!\");\n});\n// Exception is SILENT until you call get()\nf.get();  // Now ExecutionException is thrown\n\nAlways call get() or handle exceptions in the task itself."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Proper Shutdown Pattern",
+              "content": "The standard shutdown pattern ensures clean termination:\n\nvoid shutdownGracefully(ExecutorService executor) {\n    executor.shutdown();  // Stop accepting new tasks\n    \n    try {\n        // Wait for existing tasks to finish\n        if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {\n            // Tasks didn't finish in time\n            executor.shutdownNow();  // Cancel running tasks\n            \n            // Wait a bit more\n            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {\n                System.err.println(\"Executor did not terminate\");\n            }\n        }\n    } catch (InterruptedException e) {\n        // Current thread was interrupted\n        executor.shutdownNow();\n        Thread.currentThread().interrupt();\n    }\n}\n\nJAVA 19+ ALTERNATIVE:\nExecutorService implements AutoCloseable:\n\ntry (var executor = Executors.newFixedThreadPool(4)) {\n    executor.submit(task);\n}  // Automatically calls shutdown() and awaits termination"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-3-mc-1",
+              "title": "Choosing Thread Pools",
+              "description": "Understanding which thread pool to use",
+              "question": "You're building a web server that needs to handle HTTP requests. Each request involves I/O (database, external APIs) and you expect up to 1000 concurrent requests. Which pool type is MOST appropriate?",
+              "options": [
+                "Executors.newCachedThreadPool() - creates threads as needed",
+                "Executors.newSingleThreadExecutor() - sequential processing",
+                "Executors.newFixedThreadPool(n) - bounded pool",
+                "No pool needed - create new Thread for each request"
+              ],
+              "correctAnswer": 2,
+              "explanation": "For I/O-bound workloads with high concurrency, use a fixed thread pool. CachedThreadPool could create 1000+ threads, exhausting memory. SingleThread would be too slow. Raw threads have no reuse. A fixed pool with appropriately sized thread count (or virtual threads in Java 21+) is ideal.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-3-mc-2",
+              "title": "ExecutorService Shutdown",
+              "description": "Understanding proper executor lifecycle",
+              "question": "What happens if you never call shutdown() on an ExecutorService?",
+              "options": [
+                "The executor automatically shuts down when all tasks complete",
+                "The JVM never exits because executor threads are still alive",
+                "A memory leak occurs but the program can still exit",
+                "An exception is thrown after 60 seconds"
+              ],
+              "correctAnswer": 1,
+              "explanation": "ExecutorService threads are non-daemon by default. The JVM won't exit while non-daemon threads are alive. Your program will hang indefinitely until you call shutdown(). Always shutdown executors in a finally block or use try-with-resources (Java 19+).",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "concurrency-lesson-4",
+          "title": "Lesson C.4: CompletableFuture",
+          "moduleId": "module-concurrency",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem with Future",
+              "content": "Basic Future has limitations:\n\nFuture<String> future = executor.submit(() -> fetchData());\n\n// Problem 1: Blocking get()\nString result = future.get();  // BLOCKS the thread!\n\n// Problem 2: No callbacks\n// Can't say: 'when done, do this'\n// Must poll: while (!future.isDone()) { }\n\n// Problem 3: Can't chain operations\n// Want: fetch data -> parse -> transform -> save\n// Future gives no way to compose these\n\n// Problem 4: No exception handling in chain\n// Must try/catch around every get()\n\nCompletableFuture solves all of these:\n- Non-blocking composition\n- Callbacks on completion\n- Exception handling in the chain\n- Combine multiple futures"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "CompletableFuture Basics",
+              "content": "CompletableFuture represents a future result that can be completed:\n\n// Run async task (uses ForkJoinPool by default)\nCompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> {\n    return fetchData();  // Runs in background\n});\n\n// Non-blocking: attach callback\ncf.thenAccept(result -> System.out.println(\"Got: \" + result));\n\n// Main thread continues immediately!\nSystem.out.println(\"Not blocked!\");\n\nKEY METHODS:\n\nsupplyAsync(Supplier<T>): Run async, return result\nrunAsync(Runnable): Run async, no result\n\nthenApply(Function): Transform result\nthenAccept(Consumer): Consume result\nthenRun(Runnable): Run action when complete\n\njoin(): Get result (like get() but unchecked exception)\nget(): Get result (checked exception)\n\nThe 'Async' suffix methods run callbacks on thread pool instead of completing thread."
+            },
+            {
+              "type": "THEORY",
+              "title": "Chaining Operations",
+              "content": "CompletableFuture enables fluent async pipelines:\n\nCompletableFuture.supplyAsync(() -> fetchUserId())\n    .thenApply(id -> fetchUserDetails(id))     // Transform\n    .thenApply(user -> user.getEmail())        // Transform again\n    .thenAccept(email -> sendEmail(email))     // Consume\n    .exceptionally(ex -> {                     // Handle errors\n        log.error(\"Failed\", ex);\n        return null;\n    });\n\nDIFFERENCE: thenApply vs thenCompose\n\nthenApply: When transformation returns a VALUE\n  .thenApply(id -> \"User: \" + id)  // String -> String\n\nthenCompose: When transformation returns a FUTURE (flatMap)\n  .thenCompose(id -> fetchUserAsync(id))  // String -> CF<User>\n\nUsing thenApply with a method returning CompletableFuture gives you CompletableFuture<CompletableFuture<T>> - probably not what you want!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "CompletableFuture in Practice",
+              "content": "Real-world async operations with proper error handling:",
+              "code": "import java.util.concurrent.*;\n\nvoid main() {\n    // Simulate async operations\n    CompletableFuture<String> fetchUser = CompletableFuture.supplyAsync(() -> {\n        sleep(100);  // Simulate network call\n        return \"user-123\";\n    });\n    \n    // Chain transformations\n    CompletableFuture<String> result = fetchUser\n        .thenApply(userId -> {\n            System.out.println(\"Got user: \" + userId);\n            return userId.toUpperCase();\n        })\n        .thenCompose(userId -> {\n            // This returns another CompletableFuture\n            return CompletableFuture.supplyAsync(() -> {\n                sleep(100);\n                return \"Profile for \" + userId;\n            });\n        })\n        .thenApply(profile -> profile + \" [processed]\");\n    \n    // Handle both success and failure\n    result\n        .thenAccept(r -> System.out.println(\"Success: \" + r))\n        .exceptionally(ex -> {\n            System.out.println(\"Error: \" + ex.getMessage());\n            return null;\n        });\n    \n    // Combining multiple futures\n    CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> {\n        sleep(200);\n        return \"Result 1\";\n    });\n    CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> {\n        sleep(100);\n        return \"Result 2\";\n    });\n    \n    // Wait for both, combine results\n    CompletableFuture<String> combined = future1.thenCombine(future2,\n        (r1, r2) -> r1 + \" + \" + r2);\n    \n    System.out.println(combined.join());  // \"Result 1 + Result 2\"\n    \n    // Wait for either (first to complete)\n    CompletableFuture<String> fastest = future1.applyToEither(future2,\n        r -> \"Fastest: \" + r);\n    System.out.println(fastest.join());  // Probably \"Fastest: Result 2\"\n    \n    // Wait for all\n    CompletableFuture<Void> all = CompletableFuture.allOf(future1, future2);\n    all.join();  // Both complete\n    \n    // Wait for first (any)\n    CompletableFuture<Object> any = CompletableFuture.anyOf(future1, future2);\n    System.out.println(\"First: \" + any.join());\n}\n\nvoid sleep(long ms) {\n    try { Thread.sleep(ms); } catch (InterruptedException e) { }\n}",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Exception Handling",
+              "content": "CompletableFuture provides several exception handling methods:\n\nexceptionally(Function<Throwable, T>): Recover from exceptions\n\nCompletableFuture.supplyAsync(() -> riskyOperation())\n    .exceptionally(ex -> \"Default value\");  // Return fallback\n\nhandle(BiFunction<T, Throwable, R>): Handle both success and failure\n\n.handle((result, ex) -> {\n    if (ex != null) {\n        return \"Error: \" + ex.getMessage();\n    }\n    return \"Success: \" + result;\n});\n\nwhenComplete(BiConsumer<T, Throwable>): Side effects, doesn't transform\n\n.whenComplete((result, ex) -> {\n    if (ex != null) {\n        logger.error(\"Failed\", ex);\n    } else {\n        logger.info(\"Success: {}\", result);\n    }\n});\n\nIMPORTANT: Exceptions propagate through the chain. If you don't handle them, join()/get() will throw."
+            },
+            {
+              "type": "WARNING",
+              "title": "CompletableFuture Pitfalls",
+              "content": "MISTAKE 1: Blocking in async callbacks\n\ncf.thenApply(data -> {\n    return database.query(data);  // BLOCKS the pool thread!\n});\n\nUse thenApplyAsync for blocking operations or virtual threads.\n\nMISTAKE 2: Using common pool for blocking I/O\n\n// Default pool has limited threads (CPU cores)\nCompletableFuture.supplyAsync(() -> {\n    return httpClient.get(url);  // Blocks a pool thread\n});\n\n// Better: Use custom executor\nExecutorService ioPool = Executors.newFixedThreadPool(100);\nCompletableFuture.supplyAsync(() -> httpClient.get(url), ioPool);\n\nMISTAKE 3: Ignoring the returned future\n\ncf.thenApply(x -> transform(x));  // Returns NEW future!\n// vs\nCompletableFuture<R> newCf = cf.thenApply(x -> transform(x));\n\nMISTAKE 4: Not handling exceptions\n\ncf.thenApply(x -> riskyOperation(x));\ncf.join();  // Throws if any step failed!\n\nAlways add exceptionally() or handle() in the chain."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-4-mc-1",
+              "title": "thenApply vs thenCompose",
+              "description": "Understanding when to use thenApply vs thenCompose",
+              "question": "You have fetchUser(id) that returns CompletableFuture<User>. To chain it after getting a userId, which method should you use?",
+              "options": [
+                "thenApply - for all transformations",
+                "thenAccept - because we're consuming the user",
+                "thenCompose - because fetchUser returns a CompletableFuture",
+                "thenRun - to run the fetch operation"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Use thenCompose when your transformation function returns a CompletableFuture (like flatMap). thenApply would give you CompletableFuture<CompletableFuture<User>> - a nested future. thenCompose 'flattens' it to CompletableFuture<User>.",
+              "difficulty": "advanced"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-4-mc-2",
+              "title": "Combining Futures",
+              "description": "Understanding how to combine multiple futures",
+              "question": "You need to fetch data from 3 independent APIs concurrently and proceed only when ALL complete. Which method do you use?",
+              "options": [
+                "thenCombine - combines two futures into one",
+                "anyOf - completes when any future completes",
+                "allOf - completes when all futures complete",
+                "thenCompose - chains futures sequentially"
+              ],
+              "correctAnswer": 2,
+              "explanation": "CompletableFuture.allOf(cf1, cf2, cf3) returns a future that completes when ALL input futures complete. anyOf completes when ANY single future completes. thenCombine only works with exactly two futures. thenCompose is for sequential chaining, not parallel.",
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "concurrency-lesson-5",
+          "title": "Lesson C.5: Virtual Threads (Java 21)",
+          "moduleId": "module-concurrency",
+          "order": 5,
+          "estimatedMinutes": 35,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Platform Thread Problem",
+              "content": "Before Java 21, every Java thread mapped to an OS thread (platform thread):\n\nPLATFORM THREAD COSTS:\n- ~1MB stack memory each\n- OS scheduling overhead\n- Context switch: ~1-10 microseconds\n- Limited by OS (typically < 10,000)\n\nThe problem for I/O-bound apps:\n\n// Web server handling 10,000 concurrent connections\nfor (request : requests) {\n    executor.submit(() -> {\n        data = database.query();  // Thread BLOCKED 50ms\n        result = process(data);   // Thread WORKING 1ms\n    });\n}\n\nEach blocked thread:\n- Uses 1MB memory doing NOTHING\n- Wastes OS scheduling resources\n- Could be handling other requests\n\n10,000 connections = 10GB just for thread stacks!\nAnd 98% of the time, threads are waiting on I/O, not computing."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Virtual Threads: The Game Changer",
+              "content": "Java 21 introduced virtual threads - lightweight threads managed by the JVM:\n\nVIRTUAL THREADS:\n- Minimal memory (~1KB vs 1MB)\n- JVM scheduling (not OS)\n- Millions possible on a single machine\n- Automatic unmounting during I/O\n\nThe magic:\nThread blocks on I/O -> JVM unmounts it from carrier thread\nCarrier thread runs OTHER virtual threads\nI/O completes -> Virtual thread remounts and continues\n\n10,000 virtual threads on I/O:\n- Only ~10 carrier threads actively running\n- Memory: ~10MB instead of 10GB\n- Same simple blocking code\n- Massive scalability!\n\nWRITE SIMPLE CODE, GET MASSIVE SCALE."
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating Virtual Threads",
+              "content": "Three ways to create virtual threads:\n\n1. Thread.startVirtualThread()\n\nThread vt = Thread.startVirtualThread(() -> {\n    System.out.println(\"Running on: \" + Thread.currentThread());\n});\nvt.join();\n\n2. Thread.ofVirtual() builder\n\nThread vt = Thread.ofVirtual()\n    .name(\"my-virtual-thread\")\n    .start(() -> doWork());\n\n3. Virtual thread executor (RECOMMENDED)\n\ntry (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n    // Each task gets its OWN virtual thread\n    for (int i = 0; i < 100_000; i++) {\n        executor.submit(() -> {\n            Thread.sleep(1000);  // Blocking is fine!\n            return processRequest();\n        });\n    }\n}  // Waits for all to complete\n\n100,000 concurrent tasks with simple blocking code!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Virtual Threads in Action",
+              "content": "Demonstrating virtual threads' power with concurrent I/O:",
+              "code": "import java.util.concurrent.*;\nimport java.time.*;\nimport java.util.stream.*;\n\nvoid main() throws Exception {\n    int taskCount = 10_000;\n    \n    // Simulate I/O-bound task\n    Runnable ioTask = () -> {\n        try {\n            Thread.sleep(100);  // Simulate 100ms I/O\n        } catch (InterruptedException e) {\n            Thread.currentThread().interrupt();\n        }\n    };\n    \n    // Virtual threads: 10,000 concurrent tasks\n    Instant start = Instant.now();\n    \n    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {\n        IntStream.range(0, taskCount)\n            .forEach(i -> executor.submit(ioTask));\n    }  // Blocks until all complete\n    \n    Duration virtualTime = Duration.between(start, Instant.now());\n    System.out.println(\"Virtual threads: \" + virtualTime.toMillis() + \"ms\");\n    // Output: ~100-200ms (tasks run concurrently)\n    \n    // Compare with platform thread pool (10 threads)\n    start = Instant.now();\n    \n    try (var executor = Executors.newFixedThreadPool(10)) {\n        IntStream.range(0, taskCount)\n            .forEach(i -> executor.submit(ioTask));\n    }\n    \n    Duration poolTime = Duration.between(start, Instant.now());\n    System.out.println(\"Platform threads (10): \" + poolTime.toMillis() + \"ms\");\n    // Output: ~100,000ms (10 threads, 1000 batches of 100ms)\n    \n    // Check if current thread is virtual\n    Thread.startVirtualThread(() -> {\n        System.out.println(\"Is virtual: \" + Thread.currentThread().isVirtual());\n    }).join();\n}",
+              "language": "java"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Spring Boot 3.2+ Integration",
+              "content": "Spring Boot 3.2+ makes virtual threads easy:\n\napplication.properties:\nspring.threads.virtual.enabled=true\n\nThat's it! All request handling uses virtual threads.\n\nBEFORE (platform threads):\n- tomcat.threads.max=200 (default)\n- 200 concurrent requests max before queueing\n- Each blocked request holds a precious thread\n\nAFTER (virtual threads):\n- Thousands of concurrent requests\n- Blocking I/O doesn't waste resources\n- Same simple @RestController code\n\n@RestController\npublic class UserController {\n    @GetMapping(\"/users/{id}\")\n    public User getUser(@PathVariable Long id) {\n        // Blocking database call is now FINE!\n        return userRepository.findById(id).orElseThrow();\n    }\n}\n\nJDBC, JPA, RestTemplate - all blocking calls become efficient with virtual threads."
+            },
+            {
+              "type": "WARNING",
+              "title": "Virtual Thread Pitfalls",
+              "content": "PINNING: Virtual threads can get 'pinned' to carrier threads:\n\n1. synchronized blocks/methods:\n   synchronized (lock) {\n       Thread.sleep(1000);  // PINNED - blocks carrier!\n   }\n   \n   FIX: Use ReentrantLock instead:\n   lock.lock();\n   try {\n       Thread.sleep(1000);  // Not pinned\n   } finally {\n       lock.unlock();\n   }\n\n2. Native methods/JNI:\n   Can't be unmounted during native code execution\n\nDETECTING PINNING:\njava -Djdk.tracePinnedThreads=full MyApp\n\nDON'T POOL VIRTUAL THREADS:\n// WRONG! Virtual threads are cheap, don't pool them\nExecutorService pool = Executors.newFixedThreadPool(100);\npool.submit(virtualThread);  // Defeats the purpose\n\n// RIGHT! One virtual thread per task\nvar executor = Executors.newVirtualThreadPerTaskExecutor();\n\nDON'T USE FOR CPU-BOUND WORK:\nVirtual threads shine for I/O-bound tasks. For CPU-intensive work, platform threads with parallelStream() or ForkJoinPool are still appropriate."
+            },
+            {
+              "type": "THEORY",
+              "title": "CompletableFuture WITH Virtual Threads",
+              "content": "Virtual threads complement CompletableFuture:\n\n// Use virtual threads as the executor for CompletableFuture\nvar executor = Executors.newVirtualThreadPerTaskExecutor();\n\nCompletableFuture<String> future = CompletableFuture\n    .supplyAsync(() -> {\n        // Blocking I/O is now efficient!\n        return httpClient.get(\"https://api.example.com/data\");\n    }, executor)\n    .thenApply(response -> parseJson(response))\n    .exceptionally(ex -> handleError(ex));\n\nBEST OF BOTH WORLDS:\n- CompletableFuture: Composition, callbacks, combining results\n- Virtual threads: Efficient blocking I/O\n\nWHEN TO USE WHICH:\n\nVirtual threads alone:\n- Simple request-per-thread model\n- Straightforward sequential logic\n- Spring/Jakarta EE web apps\n\nCompletableFuture + virtual threads:\n- Complex async composition\n- Parallel API calls with combination\n- Reactive-style pipelines\n\nCompletableFuture alone (platform threads):\n- CPU-bound parallel processing\n- When you need thread pool control"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-5-mc-1",
+              "title": "Virtual Thread Advantages",
+              "description": "Understanding when virtual threads help",
+              "question": "A service handles 10,000 concurrent HTTP requests, each waiting 100ms for a database response. What's the main advantage of virtual threads over a 200-thread platform pool?",
+              "options": [
+                "Virtual threads are faster at executing code",
+                "Virtual threads can handle all 10,000 concurrently without blocking other requests",
+                "Virtual threads use more memory for better caching",
+                "Virtual threads don't need a thread pool"
+              ],
+              "correctAnswer": 1,
+              "explanation": "With 200 platform threads, only 200 requests run concurrently - others queue. Each request takes 100ms on I/O, so throughput is ~2000/sec. Virtual threads allow all 10,000 to proceed concurrently - when one blocks on I/O, its carrier thread runs others. Result: ~100ms total instead of 500ms.",
+              "difficulty": "advanced"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "concurrency-lesson-5-mc-2",
+              "title": "Virtual Thread Pinning",
+              "description": "Understanding pinning and how to avoid it",
+              "question": "What causes a virtual thread to get 'pinned' to its carrier thread, reducing the benefit of virtual threads?",
+              "options": [
+                "Using too many virtual threads",
+                "Calling Thread.sleep()",
+                "Blocking inside a synchronized block",
+                "Using Executors.newVirtualThreadPerTaskExecutor()"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Pinning occurs when a virtual thread blocks inside synchronized blocks/methods or during native method calls. The JVM cannot unmount the virtual thread, so it holds the carrier thread. Use ReentrantLock instead of synchronized for code that may block. Thread.sleep() does NOT cause pinning.",
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
