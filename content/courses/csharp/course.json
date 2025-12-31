@@ -11829,6 +11829,130 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-22",
+      "title": "Authorization Patterns",
+      "description": "Control access to resources with roles, claims, and policies. Implement fine-grained authorization for your ShopFlow application.",
+      "difficulty": "intermediate",
+      "estimatedHours": 3,
+      "lessons": [
+        {
+          "id": "lesson-22-01",
+          "title": "Roles, Claims, and Policies (Who Can Do What)",
+          "moduleId": "module-22",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding Authorization",
+              "content": "Imagine visiting a theme park where different wristbands grant access to different attractions. A basic wristband lets you enjoy the main rides and shows. A premium wristband adds access to VIP lounges and front-of-line privileges. A staff wristband opens doors to employee-only areas, maintenance tunnels, and control rooms. Each wristband color represents a ROLE with specific permissions.\n\nBut theme parks have evolved beyond simple wristband colors. Modern parks issue smart bands that encode CLAIMS - specific facts about you. Your smart band might contain claims like 'height: 140cm' (allowing access to certain roller coasters), 'age: 25' (permitting entry to adult-only venues), 'paid-fastpass: true' (enabling queue skipping), and 'VIP-experience: fireworks-viewing' (granting access to exclusive areas during the show).\n\nNow imagine the security guard at each attraction. They don't just check your wristband color - they evaluate POLICIES. The roller coaster policy might be: 'Allow if (height >= 120cm AND age >= 10) OR (has VIP wristband AND signed waiver)'. This policy combines multiple claims and roles into a single access decision.\n\nResource-based authorization goes even further. The gift shop policy for employee discounts isn't just 'is employee' - it's 'is employee AND this specific purchase is from their assigned department'. The authorization decision depends on both WHO you are and WHAT you're trying to access.\n\nIn software, authentication answers 'Who are you?' but authorization answers 'What are you allowed to do?' Just like the theme park, we layer roles, claims, and policies to create flexible, maintainable access control systems."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Role-Based and Policy-Based Authorization",
+              "content": "This example demonstrates different authorization strategies in ASP.NET Core, from simple role checks to flexible policy-based authorization.",
+              "code": "// ===== PROGRAM.CS - AUTHORIZATION CONFIGURATION =====\n\nusing Microsoft.AspNetCore.Authorization;\nusing System.Security.Claims;\n\nvar builder = WebApplication.CreateBuilder(args);\n\nbuilder.Services.AddAuthentication(\"Cookie\")\n    .AddCookie(\"Cookie\", options => options.LoginPath = \"/login\");\n\n// Configure Authorization Policies\nbuilder.Services.AddAuthorization(options =>\n{\n    // Simple role-based policy\n    options.AddPolicy(\"RequireAdmin\", policy =>\n        policy.RequireRole(\"Admin\"));\n    \n    // Policy requiring specific claim\n    options.AddPolicy(\"RequireVerifiedEmail\", policy =>\n        policy.RequireClaim(\"email_verified\", \"true\"));\n    \n    // Policy with multiple requirements (AND logic)\n    options.AddPolicy(\"CanManageProducts\", policy =>\n        policy.RequireRole(\"Admin\", \"Manager\")  // Admin OR Manager\n              .RequireClaim(\"department\", \"Products\", \"Inventory\"));  // AND in Products/Inventory dept\n    \n    // Policy with custom assertion\n    options.AddPolicy(\"CanEditProducts\", policy =>\n        policy.RequireAssertion(context =>\n        {\n            var user = context.User;\n            \n            // Admins can always edit\n            if (user.IsInRole(\"Admin\"))\n                return true;\n            \n            // Managers can edit during business hours\n            if (user.IsInRole(\"Manager\"))\n            {\n                var hour = DateTime.Now.Hour;\n                return hour >= 9 && hour < 17; // 9 AM to 5 PM\n            }\n            \n            return false;\n        }));\n    \n    // Age verification policy\n    options.AddPolicy(\"Over18\", policy =>\n        policy.RequireAssertion(context =>\n        {\n            var birthDateClaim = context.User.FindFirst(\"birth_date\")?.Value;\n            if (DateTime.TryParse(birthDateClaim, out var birthDate))\n            {\n                var age = DateTime.Today.Year - birthDate.Year;\n                if (birthDate > DateTime.Today.AddYears(-age)) age--;\n                return age >= 18;\n            }\n            return false;\n        }));\n});\n\nvar app = builder.Build();\n\napp.UseAuthentication();\napp.UseAuthorization();\n\n// ===== SIMPLE ROLE-BASED AUTHORIZATION =====\n\n// Only users in Admin role can access\napp.MapGet(\"/admin/dashboard\", () => \"Admin Dashboard\")\n    .RequireAuthorization(\"RequireAdmin\");\n\n// Multiple roles - user must be in at least one\napp.MapGet(\"/management/reports\", [Authorize(Roles = \"Admin,Manager\")] () => \n    \"Management Reports\");\n\n// ===== POLICY-BASED AUTHORIZATION =====\n\napp.MapGet(\"/products/manage\", () => \"Product Management\")\n    .RequireAuthorization(\"CanManageProducts\");\n\napp.MapPut(\"/products/{id}\", (int id) => $\"Updating product {id}\")\n    .RequireAuthorization(\"CanEditProducts\");\n\n// ===== CLAIM-BASED AUTHORIZATION =====\n\napp.MapGet(\"/verified-only\", () => \"Verified Users Area\")\n    .RequireAuthorization(\"RequireVerifiedEmail\");\n\napp.MapGet(\"/adult-content\", () => \"Age-Restricted Content\")\n    .RequireAuthorization(\"Over18\");\n\n// ===== READING CLAIMS IN HANDLERS =====\n\napp.MapGet(\"/my-claims\", (ClaimsPrincipal user) =>\n{\n    var claims = user.Claims.Select(c => new { c.Type, c.Value });\n    return Results.Ok(new\n    {\n        IsAuthenticated = user.Identity?.IsAuthenticated,\n        Name = user.Identity?.Name,\n        Roles = user.Claims\n            .Where(c => c.Type == ClaimTypes.Role)\n            .Select(c => c.Value),\n        AllClaims = claims\n    });\n}).RequireAuthorization();\n\n// Fake login for testing - assigns different roles\napp.MapGet(\"/login/{role}\", async (string role, HttpContext ctx) =>\n{\n    var claims = new List<Claim>\n    {\n        new(ClaimTypes.Name, $\"TestUser_{role}\"),\n        new(ClaimTypes.Email, $\"{role.ToLower()}@shopflow.com\"),\n        new(ClaimTypes.Role, role),\n        new(\"email_verified\", \"true\"),\n        new(\"department\", \"Products\"),\n        new(\"birth_date\", \"1990-01-15\")\n    };\n    \n    var identity = new ClaimsIdentity(claims, \"Cookie\");\n    var principal = new ClaimsPrincipal(identity);\n    \n    await ctx.SignInAsync(\"Cookie\", principal);\n    return Results.Ok($\"Logged in as {role}\");\n});\n\napp.Run();",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Authorization Strategies",
+              "content": "## Role-Based Authorization (RBAC)\n\nRole-Based Access Control is the simplest and most widely understood authorization model. Users are assigned to roles like 'Admin', 'Manager', or 'Customer', and permissions are granted to roles rather than individual users. This works well when your permission structure maps cleanly to organizational hierarchy.\n\n**Strengths:** Easy to understand, simple to implement, maps to business structures.\n**Weaknesses:** Role explosion (too many roles), coarse-grained (all-or-nothing per role), rigid.\n\nUse RBAC when: Your permissions are relatively simple and align with job functions.\n\n## Claim-Based Authorization\n\nClaims are key-value pairs that describe facts about a user. Unlike roles which are binary (you have it or you don't), claims carry values: 'department: Engineering', 'clearance_level: 3', 'subscription: premium'. Claims come from identity providers and can encode rich information.\n\n**Strengths:** Flexible data model, supports external identity providers, extensible.\n**Weaknesses:** Claims alone don't define permissions - you need logic to interpret them.\n\nUse Claims when: You need to make decisions based on user attributes rather than just group membership.\n\n## Policy-Based Authorization\n\nPolicies are named authorization rules that combine requirements. A policy like 'CanDeleteOrders' might require: (Role is Admin) OR (Role is Manager AND order is from their department AND order is not shipped). Policies centralize authorization logic and make it reusable across your application.\n\n**Strengths:** Reusable rules, testable logic, separation of policy from code, supports complex conditions.\n**Weaknesses:** Learning curve, can become complex, policy definitions scattered from usage.\n\nUse Policies when: You have complex authorization rules that you want to define once and enforce consistently.\n\n## Resource-Based Authorization\n\nSometimes authorization depends not just on who the user is, but on what specific resource they're accessing. 'Can this user edit THIS document?' requires examining both the user's claims and the document's properties (owner, department, status). ASP.NET Core's IAuthorizationHandler pattern enables this.\n\n**Strengths:** Fine-grained control, handles ownership scenarios, context-aware decisions.\n**Weaknesses:** More complex implementation, requires loading resources before authorization, performance considerations.\n\nUse Resource-Based when: Authorization depends on the specific resource being accessed, like 'users can only edit their own posts'.\n\n## Choosing Your Strategy\n\nMost real applications combine these approaches. ShopFlow might use:\n- **Roles** for broad access categories (Admin, Manager, Customer)\n- **Claims** for user attributes (department, subscription tier, verified status)\n- **Policies** for reusable rules (CanManageInventory, CanProcessRefunds)\n- **Resource-Based** for ownership checks (CanEditThisOrder, CanViewThisReport)\n\nStart simple with roles, add claims as needed, extract repeated logic into policies, and implement resource-based checks for ownership scenarios."
+            },
+            {
+              "type": "ARCHITECTURE",
+              "title": "Designing Permission Systems",
+              "content": "## The Permission Matrix\n\nBefore writing code, map out your authorization requirements in a permission matrix. For ShopFlow, we identify resources (rows) and actions (columns), then fill in which roles or conditions grant access:\n\n```\n                    | View   | Create | Edit   | Delete | Manage |\n--------------------|--------|--------|--------|--------|--------|\nProducts            | All    | Mgr+   | Mgr+   | Admin  | Admin  |\nOrders              | Auth   | Cust   | Owner* | Admin  | Admin  |\nCustomer Profiles   | Self   | Self   | Self   | Admin  | Admin  |\nInventory           | Mgr+   | Mgr+   | Mgr+   | Admin  | Admin  |\nReports             | Mgr+   | -      | -      | -      | Admin  |\nSettings            | Admin  | Admin  | Admin  | Admin  | Admin  |\n```\n\nLegend: All=Everyone, Auth=Authenticated, Cust=Customer+, Mgr+=Manager+Admin, Owner*=Resource-based, Self=Own profile only\n\nThis matrix immediately reveals patterns: Admin can do everything, Manager has operational access, Customer has limited self-service capabilities. Resource-based checks (Owner*) require special handling.\n\n## Translating to Policies\n\nFrom the matrix, extract named policies that encode these rules:\n\n**Role-Based Policies:**\n- `RequireAdmin` - Admin role only\n- `RequireManager` - Manager or Admin role\n- `RequireAuthenticated` - Any authenticated user\n\n**Composite Policies:**\n- `CanManageProducts` - RequireManager AND department in (Products, Inventory)\n- `CanViewReports` - RequireManager AND (department matches report type OR Admin)\n- `CanProcessOrders` - RequireAuthenticated AND (Customer placing own order OR Manager/Admin)\n\n**Resource-Based Authorization Handlers:**\n- `OrderAuthorizationHandler` - Check if user owns the order or has Manager+ role\n- `ProfileAuthorizationHandler` - Check if user is accessing their own profile or is Admin\n\n## ShopFlow Authorization Architecture\n\nFor ShopFlow, we implement a layered authorization system:\n\n**Layer 1: Global Policies (Program.cs)**\nDefine policies at application startup. These are your authorization vocabulary - named rules that can be referenced anywhere.\n\n**Layer 2: Endpoint Authorization**\nApply policies to API endpoints using [Authorize] attributes or .RequireAuthorization(). This is your first line of defense, rejecting unauthorized requests early.\n\n**Layer 3: Resource Authorization Handlers**\nFor operations on specific resources (edit this order, view this profile), implement IAuthorizationHandler. These handlers receive the resource and make context-aware decisions.\n\n**Layer 4: Business Logic Checks**\nSome authorization is so tightly coupled to business rules that it lives in service classes. 'Can this order be cancelled?' might depend on order status, payment state, and shipping status - logic that belongs in OrderService, not an authorization handler.\n\n## Custom Authorization Requirements\n\nASP.NET Core's authorization is built on Requirements and Handlers. A requirement is a marker class that defines what we're checking. A handler contains the logic to evaluate that requirement:\n\n```csharp\n// Requirement: User must be in the same department as the resource\npublic class SameDepartmentRequirement : IAuthorizationRequirement { }\n\npublic class SameDepartmentHandler : AuthorizationHandler<SameDepartmentRequirement, Product>\n{\n    protected override Task HandleRequirementAsync(\n        AuthorizationHandlerContext context,\n        SameDepartmentRequirement requirement,\n        Product resource)\n    {\n        var userDept = context.User.FindFirst(\"department\")?.Value;\n        if (userDept == resource.Department || context.User.IsInRole(\"Admin\"))\n        {\n            context.Succeed(requirement);\n        }\n        return Task.CompletedTask;\n    }\n}\n```\n\n## Performance Considerations\n\nAuthorization checks happen on every request. Keep them fast:\n\n- **Cache role/claim lookups** when possible\n- **Avoid database calls** in authorization handlers when you can use claims\n- **Load resources efficiently** - don't fetch the entire order to check ownership, just query the owner ID\n- **Use policy results caching** for expensive policy evaluations\n- **Fail fast** - check the cheapest requirements first (roles before database lookups)\n\n## Audit and Compliance\n\nFor regulated industries, authorization decisions must be auditable:\n\n- Log authorization failures with context (who, what, when, why denied)\n- Consider logging successful sensitive-resource access\n- Implement permission change tracking (who granted Admin role, when)\n- Regular access reviews (does user still need Manager role after department change?)\n\nThe permission matrix becomes your compliance documentation - it explicitly defines who can do what, making audits straightforward."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-22-01-challenge-01",
+              "title": "Practice Challenge",
+              "description": "Implement role-based and policy-based authorization for a product management system.",
+              "instructions": "Set up authorization for ShopFlow's product management!\n\n1. Configure authorization with these policies:\n   - 'RequireAdmin': Require Admin role\n   - 'CanViewProducts': Allow any authenticated user\n   - 'CanEditProducts': Allow Admin OR Manager roles\n   - 'CanDeleteProducts': Require Admin role AND a claim 'can_delete' = 'true'\n\n2. Create these endpoints with proper authorization:\n   - GET /products - Requires 'CanViewProducts' policy\n   - PUT /products/{id} - Requires 'CanEditProducts' policy\n   - DELETE /products/{id} - Requires 'CanDeleteProducts' policy\n   - GET /admin/settings - Requires 'RequireAdmin' policy\n\n3. Add authentication and authorization middleware in correct order!",
+              "starterCode": "using Microsoft.AspNetCore.Authorization;\nusing System.Security.Claims;\n\nvar builder = WebApplication.CreateBuilder(args);\n\nbuilder.Services.AddAuthentication(\"Cookie\")\n    .AddCookie(\"Cookie\", opt => opt.LoginPath = \"/login\");\n\n// TODO: Configure authorization policies:\n// - RequireAdmin: Admin role\n// - CanViewProducts: Any authenticated user\n// - CanEditProducts: Admin OR Manager\n// - CanDeleteProducts: Admin AND has claim 'can_delete' = 'true'\n\nvar app = builder.Build();\n\n// TODO: Add middleware\n\n// TODO: GET /products - CanViewProducts\n\n// TODO: PUT /products/{id} - CanEditProducts\n\n// TODO: DELETE /products/{id} - CanDeleteProducts\n\n// TODO: GET /admin/settings - RequireAdmin\n\napp.Run();",
+              "solution": "using Microsoft.AspNetCore.Authorization;\nusing System.Security.Claims;\n\nvar builder = WebApplication.CreateBuilder(args);\n\nbuilder.Services.AddAuthentication(\"Cookie\")\n    .AddCookie(\"Cookie\", opt => opt.LoginPath = \"/login\");\n\nbuilder.Services.AddAuthorization(options =>\n{\n    options.AddPolicy(\"RequireAdmin\", policy =>\n        policy.RequireRole(\"Admin\"));\n    \n    options.AddPolicy(\"CanViewProducts\", policy =>\n        policy.RequireAuthenticatedUser());\n    \n    options.AddPolicy(\"CanEditProducts\", policy =>\n        policy.RequireRole(\"Admin\", \"Manager\"));\n    \n    options.AddPolicy(\"CanDeleteProducts\", policy =>\n        policy.RequireRole(\"Admin\")\n              .RequireClaim(\"can_delete\", \"true\"));\n});\n\nvar app = builder.Build();\n\napp.UseAuthentication();\napp.UseAuthorization();\n\napp.MapGet(\"/products\", () => \"Product list\")\n    .RequireAuthorization(\"CanViewProducts\");\n\napp.MapPut(\"/products/{id}\", (int id) => $\"Updated product {id}\")\n    .RequireAuthorization(\"CanEditProducts\");\n\napp.MapDelete(\"/products/{id}\", (int id) => $\"Deleted product {id}\")\n    .RequireAuthorization(\"CanDeleteProducts\");\n\napp.MapGet(\"/admin/settings\", () => \"Admin Settings\")\n    .RequireAuthorization(\"RequireAdmin\");\n\napp.Run();",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should define RequireAdmin policy",
+                  "expectedOutput": "RequireAdmin",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should define CanEditProducts policy with roles",
+                  "expectedOutput": "CanEditProducts",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should require can_delete claim for delete policy",
+                  "expectedOutput": "can_delete",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should use RequireAuthenticatedUser for view policy",
+                  "expectedOutput": "RequireAuthenticatedUser",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with builder.Services.AddAuthorization() and use options.AddPolicy() for each policy."
+                },
+                {
+                  "level": 2,
+                  "text": "For CanViewProducts, use policy.RequireAuthenticatedUser() instead of requiring a specific role."
+                },
+                {
+                  "level": 3,
+                  "text": "RequireRole(\"Admin\", \"Manager\") means Admin OR Manager - it's an OR condition, not AND."
+                },
+                {
+                  "level": 4,
+                  "text": "Chain RequireRole() and RequireClaim() for AND logic in CanDeleteProducts policy."
+                },
+                {
+                  "level": 5,
+                  "text": "Use .RequireAuthorization(\"PolicyName\") on each endpoint to apply the policy."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using RequireRole with multiple calls instead of multiple arguments",
+                  "consequence": "Multiple RequireRole calls create AND logic, but you want OR logic for 'Admin or Manager'.",
+                  "correction": "Use RequireRole(\"Admin\", \"Manager\") for OR logic, not two separate RequireRole calls."
+                },
+                {
+                  "mistake": "Forgetting RequireAuthenticatedUser for policies that just need login",
+                  "consequence": "Without this, even unauthenticated users might pass if no other requirements are set.",
+                  "correction": "Always start with RequireAuthenticatedUser() if login is required."
+                },
+                {
+                  "mistake": "Putting UseAuthorization before UseAuthentication",
+                  "consequence": "Authorization cannot work without knowing who the user is first.",
+                  "correction": "Always call UseAuthentication() before UseAuthorization()."
+                },
+                {
+                  "mistake": "Using [Authorize] attribute on minimal API without proper syntax",
+                  "consequence": "Compilation errors or authorization not applied.",
+                  "correction": "For minimal APIs, use .RequireAuthorization(\"PolicyName\") instead of [Authorize] attributes."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
