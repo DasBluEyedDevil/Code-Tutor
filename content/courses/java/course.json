@@ -8414,6 +8414,477 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-react",
+      "title": "React Frontend Integration",
+      "description": "Build modern React frontends that connect to Spring Boot backends. Master components, state, API integration, and authentication flows.",
+      "difficulty": "intermediate",
+      "estimatedHours": 3.75,
+      "lessons": [
+        {
+          "id": "react-lesson-1",
+          "title": "Lesson R.1: Frontend Fundamentals",
+          "moduleId": "module-react",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Your API Needs a Face",
+              "content": "You've built a powerful Spring Boot API. It can authenticate users, store data, and process requests. But there's a problem:\n\nCURL COMMAND:\ncurl -X POST http://localhost:8080/api/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"username\":\"john\",\"password\":\"secret\"}'\n\nIs this how your users will interact with your app? Through terminal commands?\n\nOf course not. Users need:\n- Buttons to click\n- Forms to fill out\n- Visual feedback\n- Intuitive navigation\n\nThis is where the FRONTEND comes in. The frontend is the user interface - what people see and interact with. Your Spring Boot backend is the engine; the frontend is the dashboard and steering wheel."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Web Trilogy: HTML, CSS, JavaScript",
+              "content": "Every web page is built from three technologies:\n\nHTML (Structure):\n- The skeleton of your page\n- Defines WHAT content exists\n- Headings, paragraphs, buttons, forms, images\n\n<button id=\"loginBtn\">Login</button>\n\nCSS (Style):\n- The clothing of your page\n- Defines HOW content looks\n- Colors, fonts, spacing, animations\n\n#loginBtn {\n    background-color: blue;\n    color: white;\n    padding: 10px 20px;\n    border-radius: 5px;\n}\n\nJavaScript (Behavior):\n- The brain of your page\n- Defines WHAT HAPPENS when users interact\n- Click handlers, API calls, dynamic updates\n\ndocument.getElementById('loginBtn').addEventListener('click', () => {\n    fetch('/api/login', { method: 'POST', body: formData });\n});\n\nThink of building a house:\n- HTML = walls, rooms, doors\n- CSS = paint, furniture, decorations\n- JavaScript = electrical system, plumbing"
+            },
+            {
+              "type": "THEORY",
+              "title": "The DOM: Your Page as a Tree",
+              "content": "When a browser loads HTML, it creates the DOM (Document Object Model) - a tree structure representing your page:\n\nHTML:\n<html>\n  <body>\n    <div id=\"app\">\n      <h1>Welcome</h1>\n      <button>Click me</button>\n    </div>\n  </body>\n</html>\n\nDOM TREE:\nhtml\n└── body\n    └── div#app\n        ├── h1 (\"Welcome\")\n        └── button (\"Click me\")\n\nJavaScript can:\n- READ the DOM: document.getElementById('app')\n- MODIFY the DOM: element.textContent = 'New text'\n- ADD to the DOM: parent.appendChild(newElement)\n- REMOVE from DOM: element.remove()\n\nTHE PROBLEM WITH VANILLA JS:\n\n// Updating a user list manually\nfunction updateUsers(users) {\n    const list = document.getElementById('userList');\n    list.innerHTML = '';  // Clear existing\n    users.forEach(user => {\n        const li = document.createElement('li');\n        li.textContent = user.name;\n        li.addEventListener('click', () => selectUser(user.id));\n        list.appendChild(li);\n    });\n}\n\nThis is tedious, error-prone, and doesn't scale. React solves this."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Why React?",
+              "content": "React is a JavaScript library for building user interfaces.\n\nINSTEAD OF:\n- Manually creating DOM elements\n- Tracking what needs to update\n- Managing event listeners\n- Syncing data with UI\n\nREACT PROVIDES:\n- Declarative UI (describe what you want, not how)\n- Component-based architecture\n- Automatic DOM updates when data changes\n- Efficient rendering (Virtual DOM)\n\nVANILLA JS (imperative):\nconst button = document.createElement('button');\nbutton.textContent = 'Count: 0';\nlet count = 0;\nbutton.addEventListener('click', () => {\n    count++;\n    button.textContent = 'Count: ' + count;\n});\ndocument.body.appendChild(button);\n\nREACT (declarative):\nfunction Counter() {\n    const [count, setCount] = useState(0);\n    return (\n        <button onClick={() => setCount(count + 1)}>\n            Count: {count}\n        </button>\n    );\n}\n\nReact is used by Facebook, Instagram, Netflix, Airbnb, and millions of other applications."
+            },
+            {
+              "type": "THEORY",
+              "title": "Full-Stack Architecture",
+              "content": "Your complete application will have two parts:\n\nBACKEND (Spring Boot) - Port 8080:\n- REST API endpoints\n- Business logic\n- Database access\n- Authentication\n- Runs on JVM\n\nFRONTEND (React) - Port 5173:\n- User interface\n- Forms and buttons\n- Displays data from API\n- Handles user interactions\n- Runs in browser\n\nDATA FLOW:\n\n[User Browser]\n     |\n     | (1) User clicks 'Login'\n     v\n[React Frontend :5173]\n     |\n     | (2) fetch('http://localhost:8080/api/login')\n     v\n[Spring Boot :8080]\n     |\n     | (3) Validate credentials\n     v\n[Database]\n     |\n     | (4) Return user data\n     v\n[Spring Boot :8080]\n     |\n     | (5) Send JSON response\n     v\n[React Frontend]\n     |\n     | (6) Update UI with user info\n     v\n[User sees: 'Welcome, John!']\n\nThis is the architecture you'll build in this module."
+            },
+            {
+              "type": "WARNING",
+              "title": "CORS: The Security Barrier",
+              "content": "When your React app (port 5173) tries to call your Spring Boot API (port 8080), the browser will BLOCK the request:\n\nAccess to fetch at 'http://localhost:8080/api/users' \nfrom origin 'http://localhost:5173' has been blocked by CORS policy.\n\nCORS (Cross-Origin Resource Sharing) is a security feature. Browsers prevent JavaScript from making requests to different origins (domain + port) by default.\n\nWITHOUT CORS CONFIG:\n- React (localhost:5173) cannot call API (localhost:8080)\n- Browser blocks the request before it reaches your server\n- Your perfectly good API is inaccessible\n\nSOLUTION:\nConfigure Spring Boot to ALLOW requests from your React app:\n\n@Configuration\npublic class CorsConfig implements WebMvcConfigurer {\n    @Override\n    public void addCorsMappings(CorsRegistry registry) {\n        registry.addMapping(\"/api/**\")\n            .allowedOrigins(\"http://localhost:5173\")\n            .allowedMethods(\"GET\", \"POST\", \"PUT\", \"DELETE\")\n            .allowedHeaders(\"*\")\n            .allowCredentials(true);\n    }\n}\n\nWe'll cover this in detail in Lesson R.4."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-1-mc-1",
+              "title": "Frontend Technologies",
+              "description": "Understanding the roles of HTML, CSS, and JavaScript",
+              "question": "You want to make a button turn red when a user hovers over it, and display an alert when clicked. Which technologies are involved?",
+              "options": [
+                "HTML only - it defines the button",
+                "HTML for the button, CSS for the hover effect, JavaScript for the alert",
+                "JavaScript only - it handles all interactivity",
+                "CSS for styling, JavaScript for everything else"
+              ],
+              "correctAnswer": 1,
+              "explanation": "HTML defines the button element (<button>). CSS handles the visual change on hover (:hover pseudo-class changes background-color). JavaScript handles the click event and displays the alert. Each technology has its specific role: HTML for structure, CSS for presentation, JavaScript for behavior.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-1-mc-2",
+              "title": "CORS Purpose",
+              "description": "Understanding why CORS exists",
+              "question": "Why does the browser block requests from localhost:5173 to localhost:8080 by default?",
+              "options": [
+                "The ports are different so the connection fails",
+                "Spring Boot rejects requests from unknown sources",
+                "CORS security policy prevents cross-origin requests to protect users",
+                "React cannot make HTTP requests without special configuration"
+              ],
+              "correctAnswer": 2,
+              "explanation": "CORS (Cross-Origin Resource Sharing) is a browser security feature that prevents JavaScript from making requests to different origins (different domain, port, or protocol). This protects users from malicious sites making unauthorized requests to other services. The server must explicitly allow cross-origin requests by sending appropriate CORS headers.",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "react-lesson-2",
+          "title": "Lesson R.2: React Introduction",
+          "moduleId": "module-react",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Setting Up React with Vite",
+              "content": "Vite (French for 'fast') is the modern way to create React projects:\n\n# Create new project\nnpm create vite@latest my-app -- --template react\n\n# Navigate into project\ncd my-app\n\n# Install dependencies\nnpm install\n\n# Start development server\nnpm run dev\n\nYour app runs at http://localhost:5173\n\nPROJECT STRUCTURE:\nmy-app/\n├── index.html          # Entry HTML file\n├── package.json        # Dependencies and scripts\n├── vite.config.js      # Vite configuration\n├── src/\n│   ├── main.jsx        # React entry point\n│   ├── App.jsx         # Root component\n│   ├── App.css         # Styles for App\n│   └── index.css       # Global styles\n└── public/             # Static assets\n\nWHY VITE?\n- Instant server start (no bundling during dev)\n- Lightning-fast hot module replacement (HMR)\n- Optimized production builds\n- Modern ES modules support\n- Used by Vue, Svelte, and now React community"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Components: The Building Blocks",
+              "content": "React apps are built from COMPONENTS - reusable pieces of UI:\n\nfunction Welcome() {\n    return <h1>Hello, World!</h1>;\n}\n\nA component is:\n- A JavaScript function\n- Returns JSX (HTML-like syntax)\n- Name starts with CAPITAL letter\n- Can be reused anywhere\n\nCOMPONENT HIERARCHY:\n\nApp\n├── Header\n│   ├── Logo\n│   └── Navigation\n├── MainContent\n│   ├── UserList\n│   │   └── UserCard (repeated)\n│   └── Sidebar\n└── Footer\n\nEach component manages its own piece of the UI. Changes in one component don't affect others (unless they share data).\n\nUSING COMPONENTS:\n\nfunction App() {\n    return (\n        <div>\n            <Header />\n            <MainContent />\n            <Footer />\n        </div>\n    );\n}\n\nComponents are like LEGO blocks - snap them together to build complex UIs."
+            },
+            {
+              "type": "THEORY",
+              "title": "JSX: HTML in JavaScript",
+              "content": "JSX lets you write HTML-like syntax in JavaScript:\n\n// This looks like HTML, but it's JSX!\nfunction Greeting() {\n    return (\n        <div className=\"greeting\">\n            <h1>Hello!</h1>\n            <p>Welcome to React.</p>\n        </div>\n    );\n}\n\nKEY DIFFERENCES FROM HTML:\n\n1. className instead of class:\n<div className=\"container\">  // Not class=\"container\"\n\n2. camelCase for attributes:\n<button onClick={handleClick}>  // Not onclick\n<input tabIndex={1}>            // Not tabindex\n\n3. JavaScript expressions in curly braces:\nconst name = \"John\";\n<h1>Hello, {name}!</h1>         // Outputs: Hello, John!\n<p>2 + 2 = {2 + 2}</p>          // Outputs: 2 + 2 = 4\n\n4. Self-closing tags required:\n<img src=\"photo.jpg\" />          // Not <img src=\"photo.jpg\">\n<input type=\"text\" />\n\n5. Must return single parent element:\n// WRONG - multiple roots\nreturn (\n    <h1>Title</h1>\n    <p>Content</p>\n);\n\n// RIGHT - single parent\nreturn (\n    <div>\n        <h1>Title</h1>\n        <p>Content</p>\n    </div>\n);\n\n// Or use Fragment\nreturn (\n    <>\n        <h1>Title</h1>\n        <p>Content</p>\n    </>\n);"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Props: Passing Data to Components",
+              "content": "Props (properties) let you pass data from parent to child components:",
+              "code": "// UserCard component receives props\nfunction UserCard({ name, email, avatar }) {\n    return (\n        <div className=\"user-card\">\n            <img src={avatar} alt={name} />\n            <h3>{name}</h3>\n            <p>{email}</p>\n        </div>\n    );\n}\n\n// Parent component passes props\nfunction UserList() {\n    return (\n        <div className=\"user-list\">\n            <UserCard \n                name=\"Alice Johnson\" \n                email=\"alice@example.com\"\n                avatar=\"/avatars/alice.jpg\"\n            />\n            <UserCard \n                name=\"Bob Smith\" \n                email=\"bob@example.com\"\n                avatar=\"/avatars/bob.jpg\"\n            />\n        </div>\n    );\n}\n\n// Rendering a list from data\nfunction UserListFromData({ users }) {\n    return (\n        <div className=\"user-list\">\n            {users.map(user => (\n                <UserCard \n                    key={user.id}  // Required for lists!\n                    name={user.name}\n                    email={user.email}\n                    avatar={user.avatar}\n                />\n            ))}\n        </div>\n    );\n}\n\n// Usage\nconst users = [\n    { id: 1, name: \"Alice\", email: \"alice@example.com\", avatar: \"/a.jpg\" },\n    { id: 2, name: \"Bob\", email: \"bob@example.com\", avatar: \"/b.jpg\" }\n];\n\n<UserListFromData users={users} />",
+              "language": "jsx"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Props Rules",
+              "content": "PROPS ARE READ-ONLY:\n\n// WRONG - never modify props!\nfunction BadComponent(props) {\n    props.name = \"Changed\";  // ERROR!\n    return <h1>{props.name}</h1>;\n}\n\n// RIGHT - props are immutable\nfunction GoodComponent({ name }) {\n    return <h1>{name}</h1>;\n}\n\nDATA FLOWS DOWN:\n\nApp (has user data)\n  ↓ passes via props\nUserProfile (receives user)\n  ↓ passes via props  \nUserAvatar (receives name, image)\n\nParent → Child only. Never upward directly (we'll learn how in next lesson).\n\nDEFAULT PROPS:\n\nfunction Button({ label = \"Click me\", color = \"blue\" }) {\n    return (\n        <button style={{ backgroundColor: color }}>\n            {label}\n        </button>\n    );\n}\n\n<Button />                    // Uses defaults\n<Button label=\"Submit\" />     // Custom label, default color\n<Button color=\"red\" />        // Default label, custom color\n\nCHILDREN PROP:\n\nfunction Card({ children, title }) {\n    return (\n        <div className=\"card\">\n            <h2>{title}</h2>\n            <div className=\"card-body\">\n                {children}\n            </div>\n        </div>\n    );\n}\n\n<Card title=\"Welcome\">\n    <p>This paragraph is passed as children!</p>\n    <button>Click me</button>\n</Card>"
+            },
+            {
+              "type": "THEORY",
+              "title": "Conditional Rendering",
+              "content": "Show different UI based on conditions:\n\nIF/ELSE WITH TERNARY:\n\nfunction Greeting({ isLoggedIn, username }) {\n    return (\n        <div>\n            {isLoggedIn \n                ? <h1>Welcome back, {username}!</h1>\n                : <h1>Please sign in</h1>\n            }\n        </div>\n    );\n}\n\nSHORT-CIRCUIT WITH &&:\n\nfunction Notifications({ count }) {\n    return (\n        <div>\n            <h1>Dashboard</h1>\n            {count > 0 && (\n                <span className=\"badge\">{count} new messages</span>\n            )}\n        </div>\n    );\n}\n// If count is 0, nothing renders after Dashboard\n\nEARLY RETURN:\n\nfunction UserProfile({ user, isLoading }) {\n    if (isLoading) {\n        return <div>Loading...</div>;\n    }\n    \n    if (!user) {\n        return <div>User not found</div>;\n    }\n    \n    return (\n        <div>\n            <h1>{user.name}</h1>\n            <p>{user.email}</p>\n        </div>\n    );\n}\n\nRENDERING LISTS:\n\nfunction TodoList({ todos }) {\n    return (\n        <ul>\n            {todos.map(todo => (\n                <li key={todo.id} className={todo.done ? 'completed' : ''}>\n                    {todo.text}\n                </li>\n            ))}\n        </ul>\n    );\n}"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-2-mc-1",
+              "title": "JSX Syntax",
+              "description": "Understanding JSX differences from HTML",
+              "question": "Which is the correct JSX for a div with a CSS class and a click handler?",
+              "options": [
+                "<div class=\"container\" onclick=\"handleClick()\">",
+                "<div className=\"container\" onClick={handleClick}>",
+                "<div class=\"container\" onClick={handleClick()}>",
+                "<div className=\"container\" onclick={handleClick}>"
+              ],
+              "correctAnswer": 1,
+              "explanation": "JSX uses className instead of class (reserved word in JavaScript), and camelCase for event handlers (onClick not onclick). Event handlers receive function references, not strings or function calls. handleClick (reference) not handleClick() (call) - calling it would execute immediately on render.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-2-mc-2",
+              "title": "Props and Lists",
+              "description": "Understanding the key prop in lists",
+              "question": "When rendering a list with .map(), why is the key prop required?",
+              "options": [
+                "It's optional - just a best practice suggestion",
+                "React uses it to identify which items changed, added, or removed for efficient updates",
+                "It determines the order of elements in the list",
+                "It's required for CSS styling to work properly"
+              ],
+              "correctAnswer": 1,
+              "explanation": "React uses the key prop to identify list items during reconciliation (comparing old and new virtual DOM). Without keys, React re-renders all items when the list changes. With stable unique keys, React knows exactly which items changed and only updates those. Keys must be unique among siblings and stable across re-renders (don't use array index if list order can change).",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "react-lesson-3",
+          "title": "Lesson R.3: State & Events",
+          "moduleId": "module-react",
+          "order": 3,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Components Need Memory",
+              "content": "Props are great for passing data DOWN. But what about data that CHANGES over time?\n\nfunction Counter() {\n    let count = 0;  // Local variable\n    \n    function handleClick() {\n        count++;  // This changes count...\n        console.log(count);  // Logs 1, 2, 3...\n    }\n    \n    return <button onClick={handleClick}>Count: {count}</button>;\n    // But UI always shows 0!\n}\n\nPROBLEMS:\n1. Local variables don't persist between renders\n2. Changing local variables doesn't trigger re-render\n\nReact re-renders when:\n- Props change (parent provides new values)\n- State changes (component's own data changes)\n\nLocal variables are RESET every render and DON'T trigger re-renders.\n\nSOLUTION: useState hook - gives components MEMORY that persists and triggers updates."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "useState: The State Hook",
+              "content": "useState creates state that persists and triggers re-renders:\n\nimport { useState } from 'react';\n\nfunction Counter() {\n    const [count, setCount] = useState(0);\n    //     ↑        ↑              ↑\n    //  current  setter        initial\n    //  value    function      value\n    \n    function handleClick() {\n        setCount(count + 1);  // Updates state AND re-renders\n    }\n    \n    return <button onClick={handleClick}>Count: {count}</button>;\n    // Now UI updates!\n}\n\nRULES OF useState:\n\n1. Call at TOP of component (not in loops/conditions)\n// WRONG\nif (someCondition) {\n    const [value, setValue] = useState(0);  // Never do this!\n}\n\n// RIGHT\nconst [value, setValue] = useState(0);\nif (someCondition) {\n    // use value here\n}\n\n2. State is COMPONENT-LOCAL\n<Counter />  // Has its own count\n<Counter />  // Has its own count (independent)\n\n3. Setting state REPLACES the value (immutable)\nsetCount(5);  // count becomes 5, not count + 5"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Common State Patterns",
+              "content": "Different types of state and how to update them:",
+              "code": "import { useState } from 'react';\n\nfunction StateExamples() {\n    // Primitive state\n    const [count, setCount] = useState(0);\n    const [name, setName] = useState('');\n    const [isOpen, setIsOpen] = useState(false);\n    \n    // Object state - must spread to update!\n    const [user, setUser] = useState({ name: '', email: '' });\n    \n    const updateEmail = (newEmail) => {\n        // WRONG: mutates state directly\n        // user.email = newEmail;\n        \n        // RIGHT: create new object\n        setUser({ ...user, email: newEmail });\n        // or\n        setUser(prev => ({ ...prev, email: newEmail }));\n    };\n    \n    // Array state - must create new array!\n    const [items, setItems] = useState([]);\n    \n    const addItem = (item) => {\n        // WRONG: mutates state\n        // items.push(item);\n        \n        // RIGHT: create new array\n        setItems([...items, item]);\n    };\n    \n    const removeItem = (id) => {\n        setItems(items.filter(item => item.id !== id));\n    };\n    \n    const updateItem = (id, newText) => {\n        setItems(items.map(item => \n            item.id === id ? { ...item, text: newText } : item\n        ));\n    };\n    \n    // Toggle boolean\n    const toggleOpen = () => setIsOpen(prev => !prev);\n    \n    // Increment with previous value\n    const increment = () => setCount(prev => prev + 1);\n    // Use callback form when new state depends on old state\n    \n    return (\n        <div>\n            <button onClick={increment}>Count: {count}</button>\n            <button onClick={toggleOpen}>\n                {isOpen ? 'Close' : 'Open'}\n            </button>\n        </div>\n    );\n}",
+              "language": "jsx"
+            },
+            {
+              "type": "THEORY",
+              "title": "Event Handling",
+              "content": "React events are camelCase and take function references:\n\nBASIC EVENTS:\n\n// Click\n<button onClick={handleClick}>Click me</button>\n\n// With parameter (use arrow function)\n<button onClick={() => handleDelete(item.id)}>Delete</button>\n\n// Event object\n<button onClick={(e) => {\n    e.preventDefault();  // Prevent default behavior\n    console.log(e.target);  // The clicked element\n}}>Submit</button>\n\nCOMMON EVENTS:\n\n// Mouse\nonClick, onDoubleClick, onMouseEnter, onMouseLeave\n\n// Keyboard\nonKeyDown, onKeyUp, onKeyPress\n\n// Form\nonChange, onSubmit, onFocus, onBlur\n\n// Touch\nonTouchStart, onTouchEnd, onTouchMove\n\nFORM EXAMPLE:\n\nfunction LoginForm() {\n    const [email, setEmail] = useState('');\n    const [password, setPassword] = useState('');\n    \n    const handleSubmit = (e) => {\n        e.preventDefault();  // Prevent page reload!\n        console.log('Login:', email, password);\n        // Call API here\n    };\n    \n    return (\n        <form onSubmit={handleSubmit}>\n            <input \n                type=\"email\" \n                value={email} \n                onChange={(e) => setEmail(e.target.value)} \n            />\n            <input \n                type=\"password\" \n                value={password} \n                onChange={(e) => setPassword(e.target.value)} \n            />\n            <button type=\"submit\">Login</button>\n        </form>\n    );\n}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Controlled Components",
+              "content": "In React, form inputs should be CONTROLLED by state:\n\nUNCONTROLLED (avoid):\n<input type=\"text\" />  // React doesn't know the value\n\nCONTROLLED (preferred):\nconst [value, setValue] = useState('');\n<input \n    type=\"text\" \n    value={value}                          // Display state\n    onChange={(e) => setValue(e.target.value)}  // Update state\n/>\n\nWHY CONTROLLED?\n- Single source of truth (state)\n- Can validate/transform input\n- Can programmatically change value\n- React controls the input\n\nFORM WITH VALIDATION:\n\nfunction SignupForm() {\n    const [email, setEmail] = useState('');\n    const [error, setError] = useState('');\n    \n    const handleEmailChange = (e) => {\n        const value = e.target.value;\n        setEmail(value);\n        \n        // Validate as user types\n        if (value && !value.includes('@')) {\n            setError('Invalid email address');\n        } else {\n            setError('');\n        }\n    };\n    \n    return (\n        <div>\n            <input \n                type=\"email\" \n                value={email} \n                onChange={handleEmailChange}\n                className={error ? 'error' : ''}\n            />\n            {error && <span className=\"error-text\">{error}</span>}\n        </div>\n    );\n}"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Form Example",
+              "content": "A practical login form with state management:",
+              "code": "import { useState } from 'react';\n\nfunction LoginForm({ onLogin }) {\n    const [formData, setFormData] = useState({\n        email: '',\n        password: '',\n        rememberMe: false\n    });\n    const [errors, setErrors] = useState({});\n    const [isSubmitting, setIsSubmitting] = useState(false);\n    \n    const handleChange = (e) => {\n        const { name, value, type, checked } = e.target;\n        setFormData(prev => ({\n            ...prev,\n            [name]: type === 'checkbox' ? checked : value\n        }));\n        // Clear error when user types\n        if (errors[name]) {\n            setErrors(prev => ({ ...prev, [name]: '' }));\n        }\n    };\n    \n    const validate = () => {\n        const newErrors = {};\n        if (!formData.email) {\n            newErrors.email = 'Email is required';\n        } else if (!/\\S+@\\S+\\.\\S+/.test(formData.email)) {\n            newErrors.email = 'Email is invalid';\n        }\n        if (!formData.password) {\n            newErrors.password = 'Password is required';\n        } else if (formData.password.length < 6) {\n            newErrors.password = 'Password must be at least 6 characters';\n        }\n        setErrors(newErrors);\n        return Object.keys(newErrors).length === 0;\n    };\n    \n    const handleSubmit = async (e) => {\n        e.preventDefault();\n        if (!validate()) return;\n        \n        setIsSubmitting(true);\n        try {\n            await onLogin(formData);\n        } catch (error) {\n            setErrors({ submit: error.message });\n        } finally {\n            setIsSubmitting(false);\n        }\n    };\n    \n    return (\n        <form onSubmit={handleSubmit} className=\"login-form\">\n            <div className=\"form-group\">\n                <label htmlFor=\"email\">Email</label>\n                <input\n                    id=\"email\"\n                    name=\"email\"\n                    type=\"email\"\n                    value={formData.email}\n                    onChange={handleChange}\n                    className={errors.email ? 'error' : ''}\n                    disabled={isSubmitting}\n                />\n                {errors.email && <span className=\"error-text\">{errors.email}</span>}\n            </div>\n            \n            <div className=\"form-group\">\n                <label htmlFor=\"password\">Password</label>\n                <input\n                    id=\"password\"\n                    name=\"password\"\n                    type=\"password\"\n                    value={formData.password}\n                    onChange={handleChange}\n                    className={errors.password ? 'error' : ''}\n                    disabled={isSubmitting}\n                />\n                {errors.password && <span className=\"error-text\">{errors.password}</span>}\n            </div>\n            \n            <div className=\"form-group checkbox\">\n                <input\n                    id=\"rememberMe\"\n                    name=\"rememberMe\"\n                    type=\"checkbox\"\n                    checked={formData.rememberMe}\n                    onChange={handleChange}\n                    disabled={isSubmitting}\n                />\n                <label htmlFor=\"rememberMe\">Remember me</label>\n            </div>\n            \n            {errors.submit && <div className=\"error-banner\">{errors.submit}</div>}\n            \n            <button type=\"submit\" disabled={isSubmitting}>\n                {isSubmitting ? 'Logging in...' : 'Login'}\n            </button>\n        </form>\n    );\n}",
+              "language": "jsx"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-3-mc-1",
+              "title": "State Updates",
+              "description": "Understanding how state updates work",
+              "question": "What's wrong with this code?\nconst [user, setUser] = useState({ name: 'Alice', age: 25 });\nuser.age = 26;\nsetUser(user);",
+              "options": [
+                "Nothing - this correctly updates the age",
+                "setUser should be called with user.age instead",
+                "Mutating state directly won't trigger re-render; should spread: setUser({...user, age: 26})",
+                "useState can't hold objects, only primitives"
+              ],
+              "correctAnswer": 2,
+              "explanation": "This mutates the existing object then passes the same reference to setUser. React compares references for objects - since the reference is the same, React thinks nothing changed and won't re-render. Always create new objects/arrays: setUser({...user, age: 26}) creates a new object with the updated value.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-3-mc-2",
+              "title": "Controlled vs Uncontrolled",
+              "description": "Understanding controlled form inputs",
+              "question": "What makes this input 'controlled'?\n<input value={email} onChange={(e) => setEmail(e.target.value)} />",
+              "options": [
+                "The input has both value and onChange props",
+                "React controls the input's value through state - the value prop always reflects state",
+                "The onChange handler is an arrow function",
+                "The input is inside a form element"
+              ],
+              "correctAnswer": 1,
+              "explanation": "A controlled input has its value controlled by React state. The value prop displays the current state, and onChange updates the state. React is the 'single source of truth' - the DOM input's value always matches React's state. This allows React to validate, transform, or reject input changes.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "react-lesson-4",
+          "title": "Lesson R.4: Fetching Data",
+          "moduleId": "module-react",
+          "order": 4,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Connecting to Your API",
+              "content": "Your React frontend needs to fetch data from your Spring Boot backend:\n\n// Fetch users from Spring Boot API\nasync function getUsers() {\n    const response = await fetch('http://localhost:8080/api/users');\n    const users = await response.json();\n    return users;\n}\n\nTHE FETCH API:\n- Native browser API (no library needed)\n- Returns a Promise\n- Response must be parsed (.json(), .text(), etc.)\n- Doesn't throw on HTTP errors (4xx, 5xx)\n\nBASIC FETCH PATTERN:\n\ntry {\n    const response = await fetch(url);\n    \n    if (!response.ok) {\n        throw new Error(`HTTP error! status: ${response.status}`);\n    }\n    \n    const data = await response.json();\n    return data;\n} catch (error) {\n    console.error('Fetch failed:', error);\n    throw error;\n}\n\nFETCH OPTIONS:\n\nfetch(url, {\n    method: 'POST',              // GET, POST, PUT, DELETE\n    headers: {\n        'Content-Type': 'application/json',\n        'Authorization': 'Bearer ' + token\n    },\n    body: JSON.stringify(data),  // For POST/PUT\n    credentials: 'include'       // Include cookies (for sessions)\n});"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "useEffect: Side Effects in React",
+              "content": "Components shouldn't fetch data during render. Use useEffect:\n\nimport { useState, useEffect } from 'react';\n\nfunction UserList() {\n    const [users, setUsers] = useState([]);\n    const [loading, setLoading] = useState(true);\n    const [error, setError] = useState(null);\n    \n    useEffect(() => {\n        // This runs AFTER render\n        async function fetchUsers() {\n            try {\n                const response = await fetch('/api/users');\n                if (!response.ok) throw new Error('Failed to fetch');\n                const data = await response.json();\n                setUsers(data);\n            } catch (err) {\n                setError(err.message);\n            } finally {\n                setLoading(false);\n            }\n        }\n        \n        fetchUsers();\n    }, []);  // Empty array = run once on mount\n    \n    if (loading) return <div>Loading...</div>;\n    if (error) return <div>Error: {error}</div>;\n    \n    return (\n        <ul>\n            {users.map(user => <li key={user.id}>{user.name}</li>)}\n        </ul>\n    );\n}\n\nDEPENDENCY ARRAY:\nuseEffect(() => { }, []);         // Run once on mount\nuseEffect(() => { }, [userId]);   // Run when userId changes\nuseEffect(() => { });             // Run on every render (usually wrong!)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Spring Boot CORS Configuration",
+              "content": "Configure Spring Boot to allow requests from React:",
+              "code": "// src/main/java/com/example/config/CorsConfig.java\n\nimport org.springframework.context.annotation.Configuration;\nimport org.springframework.web.servlet.config.annotation.CorsRegistry;\nimport org.springframework.web.servlet.config.annotation.WebMvcConfigurer;\n\n@Configuration\npublic class CorsConfig implements WebMvcConfigurer {\n    \n    @Override\n    public void addCorsMappings(CorsRegistry registry) {\n        registry.addMapping(\"/api/**\")\n            // Allow React dev server\n            .allowedOrigins(\"http://localhost:5173\")\n            // HTTP methods to allow\n            .allowedMethods(\"GET\", \"POST\", \"PUT\", \"DELETE\", \"OPTIONS\")\n            // Allow all headers\n            .allowedHeaders(\"*\")\n            // Allow cookies/credentials\n            .allowCredentials(true)\n            // Cache preflight for 1 hour\n            .maxAge(3600);\n    }\n}\n\n// For Spring Security, also add:\n@Configuration\n@EnableWebSecurity\npublic class SecurityConfig {\n    \n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        return http\n            .cors(cors -> cors.configurationSource(corsConfigurationSource()))\n            .csrf(csrf -> csrf.disable())  // Disable for API\n            .authorizeHttpRequests(auth -> auth\n                .requestMatchers(\"/api/public/**\").permitAll()\n                .anyRequest().authenticated()\n            )\n            .build();\n    }\n    \n    @Bean\n    public CorsConfigurationSource corsConfigurationSource() {\n        CorsConfiguration configuration = new CorsConfiguration();\n        configuration.setAllowedOrigins(List.of(\"http://localhost:5173\"));\n        configuration.setAllowedMethods(List.of(\"GET\", \"POST\", \"PUT\", \"DELETE\"));\n        configuration.setAllowedHeaders(List.of(\"*\"));\n        configuration.setAllowCredentials(true);\n        \n        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();\n        source.registerCorsConfiguration(\"/api/**\", configuration);\n        return source;\n    }\n}",
+              "language": "java"
+            },
+            {
+              "type": "THEORY",
+              "title": "Loading and Error States",
+              "content": "Good UX requires handling all states:\n\nTHREE STATES OF DATA FETCHING:\n\n1. LOADING: Request in progress\n   - Show spinner or skeleton\n   - Disable form submissions\n   - Indicate progress\n\n2. SUCCESS: Data received\n   - Render the data\n   - Hide loading indicators\n\n3. ERROR: Request failed\n   - Show error message\n   - Offer retry option\n   - Log for debugging\n\nREUSABLE FETCH HOOK:\n\nfunction useFetch(url) {\n    const [data, setData] = useState(null);\n    const [loading, setLoading] = useState(true);\n    const [error, setError] = useState(null);\n    \n    useEffect(() => {\n        let isMounted = true;  // Prevent state update on unmounted component\n        \n        async function fetchData() {\n            try {\n                setLoading(true);\n                const response = await fetch(url);\n                if (!response.ok) throw new Error(`HTTP ${response.status}`);\n                const json = await response.json();\n                if (isMounted) {\n                    setData(json);\n                    setError(null);\n                }\n            } catch (err) {\n                if (isMounted) {\n                    setError(err.message);\n                }\n            } finally {\n                if (isMounted) {\n                    setLoading(false);\n                }\n            }\n        }\n        \n        fetchData();\n        \n        return () => { isMounted = false; };  // Cleanup\n    }, [url]);\n    \n    return { data, loading, error };\n}\n\n// Usage:\nconst { data: users, loading, error } = useFetch('/api/users');"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete CRUD Example",
+              "content": "Full example with Create, Read, Update, Delete operations:",
+              "code": "import { useState, useEffect } from 'react';\n\nconst API_URL = 'http://localhost:8080/api/todos';\n\nfunction TodoApp() {\n    const [todos, setTodos] = useState([]);\n    const [newTodo, setNewTodo] = useState('');\n    const [loading, setLoading] = useState(true);\n    const [error, setError] = useState(null);\n    \n    // READ - Fetch all todos\n    useEffect(() => {\n        fetchTodos();\n    }, []);\n    \n    async function fetchTodos() {\n        try {\n            setLoading(true);\n            const response = await fetch(API_URL);\n            if (!response.ok) throw new Error('Failed to fetch todos');\n            const data = await response.json();\n            setTodos(data);\n        } catch (err) {\n            setError(err.message);\n        } finally {\n            setLoading(false);\n        }\n    }\n    \n    // CREATE - Add new todo\n    async function handleAdd(e) {\n        e.preventDefault();\n        if (!newTodo.trim()) return;\n        \n        try {\n            const response = await fetch(API_URL, {\n                method: 'POST',\n                headers: { 'Content-Type': 'application/json' },\n                body: JSON.stringify({ text: newTodo, completed: false })\n            });\n            if (!response.ok) throw new Error('Failed to create todo');\n            const created = await response.json();\n            setTodos([...todos, created]);\n            setNewTodo('');\n        } catch (err) {\n            setError(err.message);\n        }\n    }\n    \n    // UPDATE - Toggle completion\n    async function handleToggle(todo) {\n        try {\n            const response = await fetch(`${API_URL}/${todo.id}`, {\n                method: 'PUT',\n                headers: { 'Content-Type': 'application/json' },\n                body: JSON.stringify({ ...todo, completed: !todo.completed })\n            });\n            if (!response.ok) throw new Error('Failed to update todo');\n            const updated = await response.json();\n            setTodos(todos.map(t => t.id === updated.id ? updated : t));\n        } catch (err) {\n            setError(err.message);\n        }\n    }\n    \n    // DELETE - Remove todo\n    async function handleDelete(id) {\n        try {\n            const response = await fetch(`${API_URL}/${id}`, {\n                method: 'DELETE'\n            });\n            if (!response.ok) throw new Error('Failed to delete todo');\n            setTodos(todos.filter(t => t.id !== id));\n        } catch (err) {\n            setError(err.message);\n        }\n    }\n    \n    if (loading) return <div>Loading todos...</div>;\n    \n    return (\n        <div className=\"todo-app\">\n            <h1>Todo List</h1>\n            \n            {error && (\n                <div className=\"error\">\n                    {error}\n                    <button onClick={() => setError(null)}>Dismiss</button>\n                </div>\n            )}\n            \n            <form onSubmit={handleAdd}>\n                <input\n                    value={newTodo}\n                    onChange={(e) => setNewTodo(e.target.value)}\n                    placeholder=\"Add new todo...\"\n                />\n                <button type=\"submit\">Add</button>\n            </form>\n            \n            <ul>\n                {todos.map(todo => (\n                    <li key={todo.id} className={todo.completed ? 'completed' : ''}>\n                        <input\n                            type=\"checkbox\"\n                            checked={todo.completed}\n                            onChange={() => handleToggle(todo)}\n                        />\n                        <span>{todo.text}</span>\n                        <button onClick={() => handleDelete(todo.id)}>Delete</button>\n                    </li>\n                ))}\n            </ul>\n        </div>\n    );\n}",
+              "language": "jsx"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Fetch Pitfalls",
+              "content": "PITFALL 1: Forgetting error handling\n\n// BAD - no error handling\nconst data = await fetch(url).then(r => r.json());\n\n// GOOD - handle errors\nconst response = await fetch(url);\nif (!response.ok) {\n    const error = await response.text();\n    throw new Error(error || `HTTP ${response.status}`);\n}\n\nPITFALL 2: Missing Content-Type header\n\n// BAD - server may reject\nfetch(url, { method: 'POST', body: JSON.stringify(data) });\n\n// GOOD - specify content type\nfetch(url, {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify(data)\n});\n\nPITFALL 3: Forgetting to stringify body\n\n// BAD - sends [object Object]\nfetch(url, { method: 'POST', body: data });\n\n// GOOD - stringify objects\nfetch(url, { method: 'POST', body: JSON.stringify(data) });\n\nPITFALL 4: CORS misconfiguration\n\n// React shows: CORS error, blocked by policy\n// Check:\n// 1. Spring Boot has CORS config for http://localhost:5173\n// 2. allowCredentials matches your fetch config\n// 3. allowedMethods includes your HTTP method"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-4-mc-1",
+              "title": "useEffect Dependencies",
+              "description": "Understanding when useEffect runs",
+              "question": "What's the difference between useEffect(() => {...}, []) and useEffect(() => {...}, [userId])?",
+              "options": [
+                "No difference - both run once on mount",
+                "[] runs once on mount; [userId] runs on mount AND whenever userId changes",
+                "[userId] only runs when userId changes, not on mount",
+                "[] is for GET requests, [userId] is for POST requests"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Empty array [] means the effect runs once when the component mounts. [userId] means the effect runs on mount AND re-runs whenever userId changes. This is how you fetch data that depends on a parameter - when the parameter changes, you refetch.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-4-mc-2",
+              "title": "CORS Configuration",
+              "description": "Understanding CORS for React + Spring Boot",
+              "question": "Your React app at localhost:5173 gets a CORS error when calling your Spring Boot API. What's the MOST LIKELY cause?",
+              "options": [
+                "React doesn't support cross-origin requests",
+                "Spring Boot's CorsConfig doesn't include 'http://localhost:5173' in allowedOrigins",
+                "The fetch call is missing the 'cors' mode option",
+                "You need to use axios instead of fetch for CORS to work"
+              ],
+              "correctAnswer": 1,
+              "explanation": "CORS errors occur when the server doesn't explicitly allow the client's origin. Spring Boot must have CorsConfig (or @CrossOrigin) that includes 'http://localhost:5173' in allowedOrigins. The browser blocks requests that don't have proper CORS headers in the response. React/fetch/axios all support CORS - it's a server configuration issue.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "react-lesson-5",
+          "title": "Lesson R.5: React Router",
+          "moduleId": "module-react",
+          "order": 5,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Single Page Apps Need Routes",
+              "content": "React creates Single Page Applications (SPAs). The browser loads ONE HTML page, and React handles all the UI changes.\n\nBut users expect:\n- Different URLs for different views (/home, /about, /users/123)\n- Browser back/forward buttons to work\n- Bookmarkable pages\n- Shareable links\n\nWITHOUT ROUTING:\nfunction App() {\n    const [page, setPage] = useState('home');\n    \n    return (\n        <div>\n            <nav>\n                <button onClick={() => setPage('home')}>Home</button>\n                <button onClick={() => setPage('about')}>About</button>\n            </nav>\n            {page === 'home' && <HomePage />}\n            {page === 'about' && <AboutPage />}\n        </div>\n    );\n}\n// Problems:\n// - URL doesn't change (always http://localhost:5173/)\n// - Can't bookmark pages\n// - Back button doesn't work\n// - Can't share links to specific pages\n\nREACT ROUTER solves this by syncing the URL with your components."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Setting Up React Router",
+              "content": "Install React Router:\n\nnpm install react-router-dom\n\nBASIC SETUP:\n\nimport { BrowserRouter, Routes, Route, Link } from 'react-router-dom';\n\nfunction App() {\n    return (\n        <BrowserRouter>\n            <nav>\n                <Link to=\"/\">Home</Link>\n                <Link to=\"/about\">About</Link>\n                <Link to=\"/users\">Users</Link>\n            </nav>\n            \n            <Routes>\n                <Route path=\"/\" element={<HomePage />} />\n                <Route path=\"/about\" element={<AboutPage />} />\n                <Route path=\"/users\" element={<UsersPage />} />\n                <Route path=\"*\" element={<NotFoundPage />} />\n            </Routes>\n        </BrowserRouter>\n    );\n}\n\nKEY COMPONENTS:\n- BrowserRouter: Wraps your entire app, enables routing\n- Routes: Container for Route components\n- Route: Maps a path to a component\n- Link: Navigation links (like <a> but no page reload)\n\nNow:\n- / renders HomePage\n- /about renders AboutPage\n- /users renders UsersPage\n- Anything else renders NotFoundPage"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Dynamic Routes and URL Parameters",
+              "content": "Routes with parameters for dynamic content:",
+              "code": "import { \n    BrowserRouter, Routes, Route, Link, \n    useParams, useNavigate \n} from 'react-router-dom';\n\n// Route with parameter\nfunction App() {\n    return (\n        <BrowserRouter>\n            <Routes>\n                <Route path=\"/\" element={<Home />} />\n                <Route path=\"/users\" element={<UserList />} />\n                <Route path=\"/users/:userId\" element={<UserProfile />} />\n                <Route path=\"/users/:userId/posts\" element={<UserPosts />} />\n            </Routes>\n        </BrowserRouter>\n    );\n}\n\n// Access URL parameters with useParams\nfunction UserProfile() {\n    const { userId } = useParams();  // Gets :userId from URL\n    const [user, setUser] = useState(null);\n    const [loading, setLoading] = useState(true);\n    \n    useEffect(() => {\n        fetch(`/api/users/${userId}`)\n            .then(res => res.json())\n            .then(data => {\n                setUser(data);\n                setLoading(false);\n            });\n    }, [userId]);  // Refetch when userId changes\n    \n    if (loading) return <div>Loading...</div>;\n    if (!user) return <div>User not found</div>;\n    \n    return (\n        <div>\n            <h1>{user.name}</h1>\n            <p>{user.email}</p>\n            <Link to={`/users/${userId}/posts`}>View Posts</Link>\n        </div>\n    );\n}\n\n// Programmatic navigation with useNavigate\nfunction LoginForm() {\n    const navigate = useNavigate();\n    \n    async function handleSubmit(e) {\n        e.preventDefault();\n        const success = await login(credentials);\n        if (success) {\n            navigate('/dashboard');  // Redirect after login\n            // or navigate(-1) to go back\n        }\n    }\n    \n    return <form onSubmit={handleSubmit}>...</form>;\n}",
+              "language": "jsx"
+            },
+            {
+              "type": "THEORY",
+              "title": "Nested Routes and Layouts",
+              "content": "Create layouts with nested routes:\n\nfunction App() {\n    return (\n        <BrowserRouter>\n            <Routes>\n                {/* Public routes */}\n                <Route path=\"/\" element={<PublicLayout />}>\n                    <Route index element={<Home />} />\n                    <Route path=\"about\" element={<About />} />\n                    <Route path=\"login\" element={<Login />} />\n                </Route>\n                \n                {/* Protected routes with different layout */}\n                <Route path=\"/dashboard\" element={<DashboardLayout />}>\n                    <Route index element={<DashboardHome />} />\n                    <Route path=\"settings\" element={<Settings />} />\n                    <Route path=\"users\" element={<Users />} />\n                </Route>\n            </Routes>\n        </BrowserRouter>\n    );\n}\n\n// Layout component with Outlet for child routes\nimport { Outlet, Link } from 'react-router-dom';\n\nfunction DashboardLayout() {\n    return (\n        <div className=\"dashboard\">\n            <nav className=\"sidebar\">\n                <Link to=\"/dashboard\">Home</Link>\n                <Link to=\"/dashboard/settings\">Settings</Link>\n                <Link to=\"/dashboard/users\">Users</Link>\n            </nav>\n            <main className=\"content\">\n                <Outlet />  {/* Child routes render here */}\n            </main>\n        </div>\n    );\n}\n\nURL STRUCTURE:\n/dashboard          -> DashboardLayout + DashboardHome\n/dashboard/settings -> DashboardLayout + Settings\n/dashboard/users    -> DashboardLayout + Users"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Navigation and Active Links",
+              "content": "LINK VS NAVLINK:\n\nimport { Link, NavLink } from 'react-router-dom';\n\n// Link - basic navigation\n<Link to=\"/about\">About</Link>\n\n// NavLink - adds active class automatically\n<NavLink \n    to=\"/about\" \n    className={({ isActive }) => isActive ? 'active' : ''}\n>\n    About\n</NavLink>\n\nNAVIGATE PROGRAMMATICALLY:\n\nimport { useNavigate } from 'react-router-dom';\n\nfunction SomeComponent() {\n    const navigate = useNavigate();\n    \n    function handleClick() {\n        navigate('/path');         // Navigate to path\n        navigate(-1);               // Go back\n        navigate(1);                // Go forward\n        navigate('/path', { replace: true }); // Replace current history\n    }\n}\n\nPASS STATE VIA NAVIGATION:\n\n// Sender\nnavigate('/checkout', { state: { cart: cartItems } });\n\n// Receiver\nimport { useLocation } from 'react-router-dom';\n\nfunction Checkout() {\n    const location = useLocation();\n    const { cart } = location.state || {};\n}\n\nQUERY PARAMETERS:\n\nimport { useSearchParams } from 'react-router-dom';\n\nfunction SearchResults() {\n    const [searchParams, setSearchParams] = useSearchParams();\n    const query = searchParams.get('q');      // ?q=react\n    const page = searchParams.get('page');    // ?page=2\n    \n    // Update search params\n    setSearchParams({ q: 'new query', page: 1 });\n}"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Protected Routes Pattern",
+              "content": "Implementing authentication-protected routes:",
+              "code": "import { Navigate, Outlet, useLocation } from 'react-router-dom';\nimport { useAuth } from './hooks/useAuth';  // Your auth hook\n\n// Protected route wrapper\nfunction ProtectedRoute() {\n    const { user, loading } = useAuth();\n    const location = useLocation();\n    \n    if (loading) {\n        return <div>Loading...</div>;\n    }\n    \n    if (!user) {\n        // Redirect to login, save where they tried to go\n        return <Navigate to=\"/login\" state={{ from: location }} replace />;\n    }\n    \n    return <Outlet />;  // Render child routes\n}\n\n// App with protected routes\nfunction App() {\n    return (\n        <BrowserRouter>\n            <Routes>\n                {/* Public routes */}\n                <Route path=\"/\" element={<Home />} />\n                <Route path=\"/login\" element={<Login />} />\n                <Route path=\"/register\" element={<Register />} />\n                \n                {/* Protected routes */}\n                <Route element={<ProtectedRoute />}>\n                    <Route path=\"/dashboard\" element={<Dashboard />} />\n                    <Route path=\"/profile\" element={<Profile />} />\n                    <Route path=\"/settings\" element={<Settings />} />\n                </Route>\n                \n                <Route path=\"*\" element={<NotFound />} />\n            </Routes>\n        </BrowserRouter>\n    );\n}\n\n// Login component that redirects back\nfunction Login() {\n    const navigate = useNavigate();\n    const location = useLocation();\n    const { login } = useAuth();\n    \n    async function handleSubmit(credentials) {\n        await login(credentials);\n        // Redirect to where they tried to go, or dashboard\n        const from = location.state?.from?.pathname || '/dashboard';\n        navigate(from, { replace: true });\n    }\n    \n    return <LoginForm onSubmit={handleSubmit} />;\n}",
+              "language": "jsx"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-5-mc-1",
+              "title": "URL Parameters",
+              "description": "Understanding dynamic route parameters",
+              "question": "Given the route <Route path=\"/users/:userId/posts/:postId\" element={<PostDetail />} />, how do you access both parameters in PostDetail?",
+              "options": [
+                "const { userId, postId } = useParams();",
+                "const params = useLocation().params;",
+                "const [userId, postId] = useSearchParams();",
+                "props.match.params.userId and props.match.params.postId"
+              ],
+              "correctAnswer": 0,
+              "explanation": "useParams() returns an object with all URL parameters. For the route /users/:userId/posts/:postId visiting /users/123/posts/456, useParams() returns { userId: '123', postId: '456' }. You can destructure them directly. Note: parameters are always strings.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-5-mc-2",
+              "title": "Protected Routes",
+              "description": "Understanding route protection patterns",
+              "question": "In a protected route pattern, what does <Navigate to=\"/login\" state={{ from: location }} /> do?",
+              "options": [
+                "Renders the login page inline without changing URL",
+                "Redirects to login and saves the attempted URL so user can return after login",
+                "Permanently redirects to login, user cannot go back",
+                "Shows a login modal overlay on the current page"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Navigate performs a redirect to /login. The state prop passes the current location to the login page. After successful login, you can use this to redirect users back to where they originally tried to go (location.state?.from?.pathname). The replace prop would prevent adding to browser history.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "react-lesson-6",
+          "title": "Lesson R.6: Connecting to Spring Boot",
+          "moduleId": "module-react",
+          "order": 6,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Complete Auth Flow",
+              "content": "Connecting React to Spring Boot with JWT authentication:\n\n1. USER ENTERS CREDENTIALS\n   React form collects username/password\n\n2. LOGIN REQUEST\n   POST /api/auth/login\n   Body: { username, password }\n\n3. SPRING BOOT VALIDATES\n   - Finds user in database\n   - Verifies password with BCrypt\n   - Generates JWT token\n\n4. RESPONSE WITH TOKEN\n   { token: \"eyJhbG...\", user: { id, name, roles } }\n\n5. STORE TOKEN IN REACT\n   - Save to localStorage (persists)\n   - Or sessionStorage (clears on close)\n   - Update auth context\n\n6. SUBSEQUENT REQUESTS\n   All API calls include header:\n   Authorization: Bearer eyJhbG...\n\n7. SPRING BOOT VALIDATES TOKEN\n   - Extract token from header\n   - Verify signature\n   - Check expiration\n   - Load user from token\n\n8. LOGOUT\n   - Clear stored token\n   - Reset auth state\n   - Redirect to login"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Auth Context and Hook",
+              "content": "Managing authentication state across the React app:",
+              "code": "// src/contexts/AuthContext.jsx\nimport { createContext, useContext, useState, useEffect } from 'react';\n\nconst AuthContext = createContext(null);\n\nexport function AuthProvider({ children }) {\n    const [user, setUser] = useState(null);\n    const [token, setToken] = useState(localStorage.getItem('token'));\n    const [loading, setLoading] = useState(true);\n    \n    // Check for existing token on mount\n    useEffect(() => {\n        if (token) {\n            validateToken();\n        } else {\n            setLoading(false);\n        }\n    }, []);\n    \n    async function validateToken() {\n        try {\n            const response = await fetch('/api/auth/me', {\n                headers: { 'Authorization': `Bearer ${token}` }\n            });\n            if (response.ok) {\n                const userData = await response.json();\n                setUser(userData);\n            } else {\n                // Token invalid or expired\n                logout();\n            }\n        } catch (error) {\n            logout();\n        } finally {\n            setLoading(false);\n        }\n    }\n    \n    async function login(username, password) {\n        const response = await fetch('/api/auth/login', {\n            method: 'POST',\n            headers: { 'Content-Type': 'application/json' },\n            body: JSON.stringify({ username, password })\n        });\n        \n        if (!response.ok) {\n            const error = await response.json();\n            throw new Error(error.message || 'Login failed');\n        }\n        \n        const data = await response.json();\n        localStorage.setItem('token', data.token);\n        setToken(data.token);\n        setUser(data.user);\n        return data;\n    }\n    \n    function logout() {\n        localStorage.removeItem('token');\n        setToken(null);\n        setUser(null);\n    }\n    \n    const value = {\n        user,\n        token,\n        loading,\n        isAuthenticated: !!user,\n        login,\n        logout\n    };\n    \n    return (\n        <AuthContext.Provider value={value}>\n            {children}\n        </AuthContext.Provider>\n    );\n}\n\nexport function useAuth() {\n    const context = useContext(AuthContext);\n    if (!context) {\n        throw new Error('useAuth must be used within AuthProvider');\n    }\n    return context;\n}",
+              "language": "jsx"
+            },
+            {
+              "type": "THEORY",
+              "title": "Authenticated API Calls",
+              "content": "Every API call to protected endpoints needs the JWT:\n\nMANUAL APPROACH (tedious):\n\nconst token = localStorage.getItem('token');\n\nfetch('/api/users', {\n    headers: {\n        'Authorization': `Bearer ${token}`,\n        'Content-Type': 'application/json'\n    }\n});\n\nBETTER: API SERVICE WRAPPER:\n\n// src/services/api.js\nconst API_BASE = 'http://localhost:8080/api';\n\nasync function fetchWithAuth(endpoint, options = {}) {\n    const token = localStorage.getItem('token');\n    \n    const config = {\n        ...options,\n        headers: {\n            'Content-Type': 'application/json',\n            ...options.headers,\n        }\n    };\n    \n    if (token) {\n        config.headers['Authorization'] = `Bearer ${token}`;\n    }\n    \n    const response = await fetch(`${API_BASE}${endpoint}`, config);\n    \n    // Handle token expiration\n    if (response.status === 401) {\n        localStorage.removeItem('token');\n        window.location.href = '/login';\n        throw new Error('Session expired');\n    }\n    \n    if (!response.ok) {\n        const error = await response.json().catch(() => ({}));\n        throw new Error(error.message || `HTTP ${response.status}`);\n    }\n    \n    return response.json();\n}\n\nexport const api = {\n    get: (endpoint) => fetchWithAuth(endpoint),\n    post: (endpoint, data) => fetchWithAuth(endpoint, {\n        method: 'POST',\n        body: JSON.stringify(data)\n    }),\n    put: (endpoint, data) => fetchWithAuth(endpoint, {\n        method: 'PUT',\n        body: JSON.stringify(data)\n    }),\n    delete: (endpoint) => fetchWithAuth(endpoint, {\n        method: 'DELETE'\n    })\n};\n\nUSAGE:\nimport { api } from './services/api';\n\nconst users = await api.get('/users');\nawait api.post('/users', { name: 'John' });"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Login Component",
+              "content": "Full login form with error handling and redirect:",
+              "code": "import { useState } from 'react';\nimport { useNavigate, useLocation, Link } from 'react-router-dom';\nimport { useAuth } from '../contexts/AuthContext';\n\nfunction LoginPage() {\n    const [email, setEmail] = useState('');\n    const [password, setPassword] = useState('');\n    const [error, setError] = useState('');\n    const [loading, setLoading] = useState(false);\n    \n    const { login } = useAuth();\n    const navigate = useNavigate();\n    const location = useLocation();\n    \n    // Where to redirect after login\n    const from = location.state?.from?.pathname || '/dashboard';\n    \n    async function handleSubmit(e) {\n        e.preventDefault();\n        setError('');\n        setLoading(true);\n        \n        try {\n            await login(email, password);\n            navigate(from, { replace: true });\n        } catch (err) {\n            setError(err.message || 'Invalid email or password');\n        } finally {\n            setLoading(false);\n        }\n    }\n    \n    return (\n        <div className=\"login-page\">\n            <div className=\"login-card\">\n                <h1>Welcome Back</h1>\n                <p className=\"subtitle\">Sign in to your account</p>\n                \n                {error && (\n                    <div className=\"error-banner\" role=\"alert\">\n                        {error}\n                    </div>\n                )}\n                \n                <form onSubmit={handleSubmit}>\n                    <div className=\"form-group\">\n                        <label htmlFor=\"email\">Email</label>\n                        <input\n                            id=\"email\"\n                            type=\"email\"\n                            value={email}\n                            onChange={(e) => setEmail(e.target.value)}\n                            required\n                            disabled={loading}\n                            autoComplete=\"email\"\n                        />\n                    </div>\n                    \n                    <div className=\"form-group\">\n                        <label htmlFor=\"password\">Password</label>\n                        <input\n                            id=\"password\"\n                            type=\"password\"\n                            value={password}\n                            onChange={(e) => setPassword(e.target.value)}\n                            required\n                            disabled={loading}\n                            autoComplete=\"current-password\"\n                        />\n                    </div>\n                    \n                    <button type=\"submit\" disabled={loading} className=\"btn-primary\">\n                        {loading ? 'Signing in...' : 'Sign In'}\n                    </button>\n                </form>\n                \n                <p className=\"signup-link\">\n                    Don't have an account? <Link to=\"/register\">Sign up</Link>\n                </p>\n            </div>\n        </div>\n    );\n}\n\nexport default LoginPage;",
+              "language": "jsx"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Spring Boot JWT Endpoint",
+              "content": "The Spring Boot side for JWT authentication:\n\n@RestController\n@RequestMapping(\"/api/auth\")\npublic class AuthController {\n    \n    private final AuthenticationManager authManager;\n    private final JwtService jwtService;\n    private final UserService userService;\n    \n    @PostMapping(\"/login\")\n    public ResponseEntity<?> login(@RequestBody LoginRequest request) {\n        try {\n            // Authenticate credentials\n            Authentication auth = authManager.authenticate(\n                new UsernamePasswordAuthenticationToken(\n                    request.getEmail(), \n                    request.getPassword()\n                )\n            );\n            \n            // Generate JWT\n            UserDetails user = (UserDetails) auth.getPrincipal();\n            String token = jwtService.generateToken(user);\n            \n            return ResponseEntity.ok(new AuthResponse(token, user));\n            \n        } catch (BadCredentialsException e) {\n            return ResponseEntity.status(401)\n                .body(Map.of(\"message\", \"Invalid email or password\"));\n        }\n    }\n    \n    @GetMapping(\"/me\")\n    public ResponseEntity<?> getCurrentUser(\n            @AuthenticationPrincipal UserDetails user) {\n        if (user == null) {\n            return ResponseEntity.status(401)\n                .body(Map.of(\"message\", \"Not authenticated\"));\n        }\n        return ResponseEntity.ok(userService.findByEmail(user.getUsername()));\n    }\n}\n\nEXPECTED RESPONSES:\n\nPOST /api/auth/login (success):\n{\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"user\": { \"id\": 1, \"email\": \"john@example.com\", \"name\": \"John\" }\n}\n\nPOST /api/auth/login (failure):\n{\n    \"message\": \"Invalid email or password\"\n}"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Best Practices",
+              "content": "TOKEN STORAGE:\n\nlocalStorage:\n+ Persists across sessions\n- Vulnerable to XSS attacks\n\nsessionStorage:\n+ Clears when tab closes\n- Lost on refresh (bad UX)\n\nHttpOnly Cookie (most secure):\n+ Not accessible via JavaScript\n+ Automatic on every request\n- Requires backend to set cookie\n- CSRF protection needed\n\nFOR LEARNING: localStorage is fine\nFOR PRODUCTION: Use HttpOnly cookies with CSRF protection\n\nNEVER DO:\n\n// Never log tokens\nconsole.log('Token:', token);\n\n// Never put tokens in URLs\nfetch(`/api/users?token=${token}`);\n\n// Never store in global variables\nwindow.authToken = token;\n\nALWAYS DO:\n\n// Check token expiration\nfunction isTokenExpired(token) {\n    const payload = JSON.parse(atob(token.split('.')[1]));\n    return payload.exp * 1000 < Date.now();\n}\n\n// Clear token on logout\nfunction logout() {\n    localStorage.removeItem('token');\n    // Navigate to login\n}\n\n// Handle 401 responses globally\nif (response.status === 401) {\n    logout();\n}"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-6-mc-1",
+              "title": "JWT in Headers",
+              "description": "Understanding how to send JWT to the backend",
+              "question": "What is the correct format for sending a JWT token in an HTTP request?",
+              "options": [
+                "Headers: { 'Token': 'eyJhbG...' }",
+                "Headers: { 'Authorization': 'eyJhbG...' }",
+                "Headers: { 'Authorization': 'Bearer eyJhbG...' }",
+                "Query parameter: ?jwt=eyJhbG..."
+              ],
+              "correctAnswer": 2,
+              "explanation": "The standard format is 'Authorization: Bearer <token>'. The 'Bearer' scheme indicates token-based authentication per RFC 6750. Spring Security's JwtAuthenticationFilter expects this format. Never put tokens in URLs (logged, cached, visible in history).",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "react-lesson-6-mc-2",
+              "title": "Token Storage Security",
+              "description": "Understanding security implications of token storage",
+              "question": "Why are HttpOnly cookies more secure than localStorage for storing JWT tokens?",
+              "options": [
+                "HttpOnly cookies are encrypted, localStorage is not",
+                "HttpOnly cookies cannot be accessed by JavaScript, preventing XSS attacks from stealing the token",
+                "HttpOnly cookies automatically expire, localStorage tokens don't",
+                "HttpOnly cookies work with CORS, localStorage doesn't"
+              ],
+              "correctAnswer": 1,
+              "explanation": "HttpOnly cookies cannot be accessed via JavaScript (document.cookie won't show them). This means even if an attacker injects malicious JavaScript (XSS attack), they cannot steal the token. localStorage is accessible via JavaScript, so any XSS vulnerability could expose the token. HttpOnly cookies still require CSRF protection.",
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
