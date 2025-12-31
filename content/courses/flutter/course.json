@@ -7083,6 +7083,246 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "7.3",
+          "title": "Lesson 7.3: File-Based Routing",
+          "moduleId": "module-07",
+          "order": 3,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "How File-Based Routing Works",
+              "content": "\nDart Frog uses **file-based routing** - the file path in your `routes/` folder becomes the URL path for your API.\n\n**The Rule is Simple**:\n- File path = URL path\n- No configuration needed\n- Create a file, get an endpoint\n\n**Examples**:\n\n| File Path | URL Endpoint |\n|-----------|-------------|\n| `routes/index.dart` | GET `/` |\n| `routes/users.dart` | GET `/users` |\n| `routes/hello.dart` | GET `/hello` |\n| `routes/api/status.dart` | GET `/api/status` |\n\n**Why This is Brilliant**:\n1. **No Router Configuration**: Unlike Express or other frameworks, you don't configure routes manually\n2. **Visual Structure**: Looking at your folder = looking at your API\n3. **Instant Endpoints**: New file = new endpoint immediately\n4. **Familiar Pattern**: If you know Next.js, this feels right at home\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating Routes",
+              "content": "\nLet's create our first custom route. In the `routes/` folder, create a new file called `hello.dart`:\n\n",
+              "code": "// routes/hello.dart -> GET /hello\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  return Response(body: 'Hello, World!');\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Dynamic Route Parameters",
+              "content": "\nWhat if you need routes like `/users/123` or `/products/abc`? Use **dynamic segments** by wrapping the filename in square brackets.\n\n**The Pattern**: `[paramName].dart`\n\n",
+              "code": "// routes/users/[id].dart -> GET /users/123, /users/456, /users/any-value\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context, String id) {\n  return Response(body: 'User ID: $id');\n}\n\n// Visiting /users/42 returns: \"User ID: 42\"\n// Visiting /users/john returns: \"User ID: john\"",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Nested Routes",
+              "content": "\nYour folder structure creates nested URL paths. Here's how complex APIs map to folders:\n\n",
+              "code": "routes/\n├── index.dart                    -> GET /\n├── users/\n│   ├── index.dart                -> GET /users\n│   └── [id].dart                 -> GET /users/:id\n├── products/\n│   ├── index.dart                -> GET /products\n│   └── [id]/\n│       ├── index.dart            -> GET /products/:id\n│       └── reviews.dart          -> GET /products/:id/reviews\n└── api/\n    ├── v1/\n    │   └── status.dart           -> GET /api/v1/status\n    └── health.dart               -> GET /api/health",
+              "language": "text"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Routing Rules Summary",
+              "content": "\n**Master These 4 Rules**:\n\n1. **`index.dart` = folder's root route**\n   - `routes/users/index.dart` handles `/users`\n   - Without it, `/users` returns 404\n\n2. **`[param].dart` = dynamic segment**\n   - Square brackets capture URL parts as parameters\n   - The parameter name becomes the function argument\n\n3. **Folders create path nesting**\n   - `routes/api/users/profile.dart` = `/api/users/profile`\n   - Each folder adds a segment to the URL\n\n4. **File name = final URL segment**\n   - `routes/hello.dart` = `/hello`\n   - `routes/api/status.dart` = `/api/status`\n\n**Pro Tip**: Think of your `routes/` folder as a mirror of your API documentation. When someone asks \"what endpoints do you have?\", just show them the folder structure!\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.3-challenge-1",
+              "title": "Build a REST API Route Structure",
+              "description": "Create the route handlers for a simple API with users and products endpoints.",
+              "instructions": "Create three route handler files:\n\n1. `/api/users` - Returns a list of users\n2. `/api/users/[id]` - Returns a specific user by ID\n3. `/api/products` - Returns a list of products\n\nShow the code for all three files. Each should return appropriate JSON-like responses.",
+              "starterCode": "// FILE 1: routes/api/users/index.dart\n// Handles GET /api/users\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  // TODO: Return a response with user list message\n  return Response(body: '');\n}\n\n// FILE 2: routes/api/users/[id].dart\n// Handles GET /api/users/:id\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context, String id) {\n  // TODO: Return a response including the user ID\n  return Response(body: '');\n}\n\n// FILE 3: routes/api/products/index.dart\n// Handles GET /api/products\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  // TODO: Return a response with products list message\n  return Response(body: '');\n}",
+              "solution": "// FILE 1: routes/api/users/index.dart\n// Handles GET /api/users\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  return Response.json(\n    body: {\n      'users': [\n        {'id': '1', 'name': 'Alice'},\n        {'id': '2', 'name': 'Bob'},\n        {'id': '3', 'name': 'Charlie'},\n      ],\n    },\n  );\n}\n\n// FILE 2: routes/api/users/[id].dart\n// Handles GET /api/users/:id\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context, String id) {\n  return Response.json(\n    body: {\n      'id': id,\n      'name': 'User $id',\n      'email': 'user$id@example.com',\n    },\n  );\n}\n\n// FILE 3: routes/api/products/index.dart\n// Handles GET /api/products\n\nimport 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  return Response.json(\n    body: {\n      'products': [\n        {'id': 'p1', 'name': 'Laptop', 'price': 999.99},\n        {'id': 'p2', 'name': 'Phone', 'price': 699.99},\n        {'id': 'p3', 'name': 'Tablet', 'price': 449.99},\n      ],\n    },\n  );\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Users index returns user list",
+                  "expectedOutput": "users",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "User by ID route accepts id parameter",
+                  "expectedOutput": "String id",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Products route returns products data",
+                  "expectedOutput": "products",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "All routes use Response.json for proper JSON",
+                  "expectedOutput": "Response.json",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For the users index, return a Response.json with a 'users' key containing a list."
+                },
+                {
+                  "level": 2,
+                  "text": "The [id].dart file receives the ID as the second parameter after context. Use it in your response."
+                },
+                {
+                  "level": 3,
+                  "text": "Response.json(body: {'key': 'value'}) creates proper JSON responses. Use lists for collections."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to add String id parameter for dynamic routes",
+                  "consequence": "Route handler crashes or ID is unavailable",
+                  "correction": "Dynamic routes like [id].dart must have the parameter: onRequest(RequestContext context, String id)"
+                },
+                {
+                  "mistake": "Using Response() instead of Response.json() for JSON data",
+                  "consequence": "Response is sent as plain text, not properly formatted JSON",
+                  "correction": "Use Response.json(body: {...}) when returning structured data"
+                },
+                {
+                  "mistake": "Wrong folder structure for nested routes",
+                  "consequence": "Routes don't match expected URLs",
+                  "correction": "api/users/index.dart creates /api/users, api/users/[id].dart creates /api/users/:id"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "7.4",
+          "title": "Lesson 7.4: Request & Response",
+          "moduleId": "module-07",
+          "order": 4,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The RequestContext",
+              "content": "\nEvery route handler in Dart Frog receives a `RequestContext` object as its first parameter. This is your gateway to everything about the incoming request.\n\n**What RequestContext Contains**:\n- **request**: The HTTP request object with method, headers, body, URL\n- **read<T>()**: Access to middleware-provided dependencies (covered later)\n\n**The Pattern**:\n```dart\nResponse onRequest(RequestContext context) {\n  // context.request gives you access to:\n  // - HTTP method (GET, POST, etc.)\n  // - Request headers\n  // - Request body\n  // - URL and query parameters\n  \n  return Response(body: 'Hello!');\n}\n```\n\n**Think of RequestContext as an envelope** - it contains everything the client sent to your server, neatly organized and ready to read.\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Reading Request Data",
+              "content": "\nHere's how to extract different types of data from incoming requests:\n\n",
+              "code": "import 'package:dart_frog/dart_frog.dart';\n\nResponse onRequest(RequestContext context) {\n  // 1. HTTP Method - What action is being requested?\n  final method = context.request.method;\n  // Returns: HttpMethod.get, HttpMethod.post, HttpMethod.put, etc.\n  \n  // 2. Query Parameters - Data in the URL after ?\n  // Example URL: /users?name=John&age=25\n  final name = context.request.uri.queryParameters['name']; // 'John'\n  final age = context.request.uri.queryParameters['age'];   // '25'\n  \n  // 3. Headers - Metadata sent with the request\n  final authHeader = context.request.headers['Authorization'];\n  final contentType = context.request.headers['Content-Type'];\n  \n  // 4. Full URL information\n  final fullPath = context.request.uri.path;  // '/users'\n  final fullUrl = context.request.uri.toString(); // Full URL with query\n  \n  return Response(body: 'Method: $method, Name: $name');\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Reading JSON Body",
+              "content": "\nFor POST, PUT, and PATCH requests, clients often send data in the request body as JSON. Reading the body requires an `async` function:\n\n",
+              "code": "import 'package:dart_frog/dart_frog.dart';\n\n// Note: Function returns Future<Response> and is marked async\nFuture<Response> onRequest(RequestContext context) async {\n  // Read and parse the JSON body\n  // This waits for the entire body to be received\n  final body = await context.request.json() as Map<String, dynamic>;\n  \n  // Extract fields from the JSON\n  final name = body['name'] as String;\n  final email = body['email'] as String;\n  final age = body['age'] as int;\n  \n  // Example: Client sends {\"name\": \"Alice\", \"email\": \"alice@mail.com\", \"age\": 28}\n  // name = 'Alice', email = 'alice@mail.com', age = 28\n  \n  return Response.json(\n    body: {\n      'received': true,\n      'user': {\n        'name': name,\n        'email': email,\n        'age': age,\n      },\n    },\n  );\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Response Types",
+              "content": "\nDart Frog provides several ways to send responses back to clients:\n\n",
+              "code": "import 'package:dart_frog/dart_frog.dart';\n\n// 1. Plain Text Response\nResponse plainText() {\n  return Response(body: 'Hello, World!');\n  // Content-Type: text/plain\n}\n\n// 2. JSON Response (most common for APIs)\nResponse jsonData() {\n  return Response.json(\n    body: {\n      'message': 'Success',\n      'count': 42,\n      'items': ['a', 'b', 'c'],\n    },\n  );\n  // Content-Type: application/json\n}\n\n// 3. Custom Status Code\nResponse notFound() {\n  return Response.json(\n    body: {'error': 'User not found'},\n    statusCode: 404,\n  );\n}\n\nResponse created() {\n  return Response.json(\n    body: {'id': '123', 'message': 'User created'},\n    statusCode: 201, // 201 = Created\n  );\n}\n\n// 4. Custom Headers\nResponse withHeaders() {\n  return Response.json(\n    body: {'token': 'abc123'},\n    headers: {\n      'X-Custom-Header': 'custom-value',\n      'Cache-Control': 'no-cache',\n    },\n  );\n}\n\n// 5. Empty Response (for DELETE operations)\nResponse deleted() {\n  return Response(statusCode: 204); // 204 = No Content\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Handling Different HTTP Methods",
+              "content": "\nReal APIs need to handle multiple HTTP methods on the same endpoint. Use a switch statement to route to the right logic:\n\n",
+              "code": "import 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  // Route based on HTTP method\n  switch (context.request.method) {\n    \n    case HttpMethod.get:\n      // GET /users - Return list of users\n      return Response.json(\n        body: {\n          'users': [\n            {'id': '1', 'name': 'Alice'},\n            {'id': '2', 'name': 'Bob'},\n          ],\n        },\n      );\n    \n    case HttpMethod.post:\n      // POST /users - Create a new user\n      final body = await context.request.json() as Map<String, dynamic>;\n      return Response.json(\n        body: {\n          'message': 'User created',\n          'user': body,\n        },\n        statusCode: 201, // 201 = Created\n      );\n    \n    case HttpMethod.put:\n      // PUT - Update entire resource\n      final body = await context.request.json() as Map<String, dynamic>;\n      return Response.json(body: {'updated': body});\n    \n    case HttpMethod.patch:\n      // PATCH - Partial update\n      final body = await context.request.json() as Map<String, dynamic>;\n      return Response.json(body: {'patched': body});\n    \n    case HttpMethod.delete:\n      // DELETE - Remove resource\n      return Response(statusCode: 204); // No content\n    \n    default:\n      // Method not supported\n      return Response.json(\n        body: {'error': 'Method not allowed'},\n        statusCode: 405, // 405 = Method Not Allowed\n      );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Mistakes",
+              "content": "\n**1. Forgetting `async` When Reading Body**\n\n```dart\n// WRONG - Will cause runtime error\nResponse onRequest(RequestContext context) {\n  final body = await context.request.json(); // ERROR: await in non-async\n  return Response.json(body: body);\n}\n\n// CORRECT - Mark function as async, return Future<Response>\nFuture<Response> onRequest(RequestContext context) async {\n  final body = await context.request.json();\n  return Response.json(body: body as Map<String, dynamic>);\n}\n```\n\n**2. Not Handling Different HTTP Methods**\n\n```dart\n// WRONG - Only handles GET, POST/PUT/DELETE return same data\nResponse onRequest(RequestContext context) {\n  return Response.json(body: {'users': []});\n}\n\n// CORRECT - Check method and respond appropriately\nFuture<Response> onRequest(RequestContext context) async {\n  if (context.request.method == HttpMethod.get) {\n    return Response.json(body: {'users': []});\n  }\n  return Response(statusCode: 405); // Method Not Allowed\n}\n```\n\n**3. Wrong Status Codes**\n\n| Situation | Wrong | Correct |\n|-----------|-------|--------|\n| Resource created | 200 | 201 |\n| Resource deleted | 200 | 204 |\n| Not found | 500 | 404 |\n| Bad input | 404 | 400 |\n| Unauthorized | 400 | 401 |\n\n**4. Forgetting Type Casting**\n\n```dart\n// May cause issues\nfinal body = await context.request.json();\nfinal name = body['name']; // type: dynamic\n\n// Better - explicit casting\nfinal body = await context.request.json() as Map<String, dynamic>;\nfinal name = body['name'] as String;\n```\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.4-challenge-1",
+              "title": "Build a Messages API Endpoint",
+              "description": "Create an endpoint that handles both GET and POST requests for messages.",
+              "instructions": "Build a `/api/messages` endpoint that:\n\n1. **GET** - Returns a list of messages with id, author, and content\n2. **POST** - Accepts a JSON body with 'author' and 'content', returns the created message with a generated id and 201 status\n3. Returns 405 for other HTTP methods\n\nThe endpoint should properly use async/await for reading the POST body.",
+              "starterCode": "// routes/api/messages/index.dart\n// Handles GET /api/messages and POST /api/messages\n\nimport 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  // TODO: Check the HTTP method\n  // TODO: For GET - return a list of sample messages\n  // TODO: For POST - read the JSON body and return the created message with 201\n  // TODO: For other methods - return 405 Method Not Allowed\n  \n  return Response(body: 'Not implemented');\n}",
+              "solution": "// routes/api/messages/index.dart\n// Handles GET /api/messages and POST /api/messages\n\nimport 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  switch (context.request.method) {\n    case HttpMethod.get:\n      // Return list of messages\n      return Response.json(\n        body: {\n          'messages': [\n            {\n              'id': '1',\n              'author': 'Alice',\n              'content': 'Hello everyone!',\n            },\n            {\n              'id': '2',\n              'author': 'Bob',\n              'content': 'Welcome to the chat!',\n            },\n            {\n              'id': '3',\n              'author': 'Charlie',\n              'content': 'Great to be here!',\n            },\n          ],\n        },\n      );\n\n    case HttpMethod.post:\n      // Read the incoming message data\n      final body = await context.request.json() as Map<String, dynamic>;\n      final author = body['author'] as String;\n      final content = body['content'] as String;\n\n      // Create new message with generated ID\n      final newMessage = {\n        'id': DateTime.now().millisecondsSinceEpoch.toString(),\n        'author': author,\n        'content': content,\n      };\n\n      // Return created message with 201 status\n      return Response.json(\n        body: {\n          'message': 'Message created',\n          'data': newMessage,\n        },\n        statusCode: 201,\n      );\n\n    default:\n      // Method not allowed\n      return Response.json(\n        body: {'error': 'Method not allowed'},\n        statusCode: 405,\n      );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Function is async and returns Future<Response>",
+                  "expectedOutput": "Future<Response>",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Handles GET method returning messages",
+                  "expectedOutput": "HttpMethod.get",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Handles POST method with await for body",
+                  "expectedOutput": "await context.request.json()",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Returns 201 status for created resources",
+                  "expectedOutput": "statusCode: 201",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Returns 405 for unsupported methods",
+                  "expectedOutput": "405",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use a switch statement on context.request.method to handle different HTTP methods."
+                },
+                {
+                  "level": 2,
+                  "text": "For POST, use 'await context.request.json() as Map<String, dynamic>' to read the body."
+                },
+                {
+                  "level": 3,
+                  "text": "Use Response.json(body: {...}, statusCode: 201) to return JSON with a custom status code."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting async/await when reading request body",
+                  "consequence": "Runtime error: await expression can only be used in async function",
+                  "correction": "Mark function as 'Future<Response> onRequest(...) async' and use 'await' before context.request.json()"
+                },
+                {
+                  "mistake": "Using 200 status code for resource creation",
+                  "consequence": "Non-standard API response, confuses clients",
+                  "correction": "Use statusCode: 201 for successful POST/creation operations"
+                },
+                {
+                  "mistake": "Not handling unsupported methods",
+                  "consequence": "Unexpected behavior or errors for PUT/DELETE requests",
+                  "correction": "Add a default case returning Response(statusCode: 405) for method not allowed"
+                },
+                {
+                  "mistake": "Not casting JSON body to Map<String, dynamic>",
+                  "consequence": "Type errors when accessing body properties",
+                  "correction": "Cast with 'as Map<String, dynamic>' after calling context.request.json()"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
