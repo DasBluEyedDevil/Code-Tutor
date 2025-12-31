@@ -7736,10 +7736,110 @@
           ]
         },
         {
+          "id": "module-14-lesson-django-models",
+          "title": "Django Models & Admin",
+          "moduleId": "module-14",
+          "order": 14,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Django ORM",
+              "content": "**Django ORM - Simpler Database Operations**\n\nDjango's ORM (Object-Relational Mapper) lets you work with databases using Python classes instead of raw SQL.\n\n**Key Concepts:**\n\n**1. Models = Python Classes That Map to Database Tables**\n```python\nclass Category(models.Model):\n    name = models.CharField(max_length=50)\n```\nThis creates a `category` table with an auto-generated `id` and a `name` column.\n\n**2. Simpler Than SQLAlchemy (More Opinionated)**\n\n| SQLAlchemy | Django |\n|------------|--------|\n| Requires explicit session management | Automatic connection handling |\n| Multiple query syntaxes | One consistent API |\n| Flexible but complex | Convention over configuration |\n\nDjango makes decisions for you - less flexibility, but faster development.\n\n**3. Migrations Handled Automatically**\n\n```bash\npython manage.py makemigrations  # Detect model changes\npython manage.py migrate          # Apply to database\n```\n\nDjango generates migration files automatically when you change your models.\n\n**Common Field Types:**\n- `CharField(max_length=N)` - Short text\n- `TextField()` - Long text\n- `IntegerField()` - Whole numbers\n- `DecimalField(max_digits, decimal_places)` - Money/precise decimals\n- `BooleanField()` - True/False\n- `DateTimeField()` - Date and time\n- `ForeignKey(Model, on_delete=...)` - Relationships"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating Models",
+              "content": "**Building a Finance Tracker with Django Models**\n\nLet's create models for tracking personal finances:\n\n**Key Patterns:**\n\n1. **Model Meta Class** - Configure model behavior\n```python\nclass Meta:\n    verbose_name_plural = \"categories\"  # Admin display name\n```\n\n2. **`__str__` Method** - Human-readable representation\n```python\ndef __str__(self):\n    return self.name  # Shows in admin and shell\n```\n\n3. **Choices for Fixed Options**\n```python\nTRANSACTION_TYPES = [\n    ('income', 'Income'),\n    ('expense', 'Expense'),\n]\n```\n\n4. **ForeignKey Relationships**\n```python\nuser = models.ForeignKey(User, on_delete=models.CASCADE)\n# CASCADE: Delete transactions if user is deleted\n# SET_NULL: Set to null if related object deleted\n# PROTECT: Prevent deletion if related objects exist\n```\n\n5. **Auto Timestamps**\n```python\ncreated_at = models.DateTimeField(auto_now_add=True)  # Set on create\nupdated_at = models.DateTimeField(auto_now=True)      # Update on save\n```",
+              "code": "# tracker/models.py\nfrom django.db import models\nfrom django.contrib.auth.models import User\n\nclass Category(models.Model):\n    \"\"\"Expense/Income category for organizing transactions.\"\"\"\n    name = models.CharField(max_length=50)\n    description = models.TextField(blank=True)\n    \n    class Meta:\n        verbose_name_plural = \"categories\"\n    \n    def __str__(self):\n        return self.name\n\nclass Transaction(models.Model):\n    \"\"\"Financial transaction record.\"\"\"\n    TRANSACTION_TYPES = [\n        ('income', 'Income'),\n        ('expense', 'Expense'),\n    ]\n    \n    user = models.ForeignKey(User, on_delete=models.CASCADE)\n    amount = models.DecimalField(max_digits=10, decimal_places=2)\n    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)\n    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)\n    description = models.TextField(blank=True)\n    created_at = models.DateTimeField(auto_now_add=True)\n    \n    def __str__(self):\n        return f\"{self.transaction_type}: ${self.amount}\"\n\n\n# Example usage in Django shell:\nprint(\"=== Django Models Example ===\")\nprint(\"\\nModel definitions created:\")\nprint(\"  - Category: name, description\")\nprint(\"  - Transaction: user, amount, category, type, description, created_at\")\n\nprint(\"\\nField types used:\")\nprint(\"  - CharField: Short text with max length\")\nprint(\"  - TextField: Long text (blank=True for optional)\")\nprint(\"  - DecimalField: Precise decimal numbers (for money)\")\nprint(\"  - ForeignKey: Relationship to another model\")\nprint(\"  - DateTimeField: Timestamps (auto_now_add for creation)\")\n\nprint(\"\\nRelationship behaviors:\")\nprint(\"  - CASCADE: Delete related objects when parent deleted\")\nprint(\"  - SET_NULL: Set to null when related object deleted\")\nprint(\"  - PROTECT: Prevent deletion if related objects exist\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migrations",
+              "content": "**Database Migrations with Django**\n\nMigrations track changes to your models and apply them to the database.\n\n**Migration Workflow:**\n\n1. **Make changes to models.py**\n2. **Generate migration files:**\n   ```bash\n   python manage.py makemigrations\n   ```\n   Creates a file like `0001_initial.py` in `migrations/` folder\n\n3. **Apply migrations to database:**\n   ```bash\n   python manage.py migrate\n   ```\n   Executes the SQL to create/alter tables\n\n**Useful Commands:**\n\n- **See pending migrations:**\n  ```bash\n  python manage.py showmigrations\n  ```\n\n- **See generated SQL:**\n  ```bash\n  python manage.py sqlmigrate tracker 0001\n  ```\n  Shows the actual SQL that will run\n\n- **Rollback migrations:**\n  ```bash\n  python manage.py migrate tracker 0001\n  ```\n  Reverts to a specific migration\n\n**Best Practices:**\n- Commit migration files to version control\n- Never edit existing migrations\n- Run `makemigrations` after every model change\n- Test migrations on a copy of production data",
+              "code": "# Django Migration Commands\n\nprint(\"=== Django Migration Commands ===\")\n\nprint(\"\\n1. Create migration files:\")\nprint(\"   python manage.py makemigrations\")\nprint(\"   # Detects changes in models.py and creates migration files\")\n\nprint(\"\\n2. Apply migrations to database:\")\nprint(\"   python manage.py migrate\")\nprint(\"   # Runs all pending migrations\")\n\nprint(\"\\n3. Show generated SQL:\")\nprint(\"   python manage.py sqlmigrate tracker 0001\")\nprint(\"   # Displays the SQL that will be executed\")\n\nprint(\"\\n=== Example SQL Output ===\")\nexample_sql = '''\nBEGIN;\n--\n-- Create model Category\n--\nCREATE TABLE \"tracker_category\" (\n    \"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"name\" varchar(50) NOT NULL,\n    \"description\" text NOT NULL\n);\n--\n-- Create model Transaction\n--\nCREATE TABLE \"tracker_transaction\" (\n    \"id\" integer NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"amount\" decimal NOT NULL,\n    \"transaction_type\" varchar(10) NOT NULL,\n    \"description\" text NOT NULL,\n    \"created_at\" datetime NOT NULL,\n    \"category_id\" integer NULL REFERENCES \"tracker_category\" (\"id\"),\n    \"user_id\" integer NOT NULL REFERENCES \"auth_user\" (\"id\")\n);\nCOMMIT;\n'''\nprint(example_sql)\n\nprint(\"\\n=== Migration Best Practices ===\")\nprint(\"  - Always commit migration files to git\")\nprint(\"  - Never manually edit existing migrations\")\nprint(\"  - Run makemigrations after each model change\")\nprint(\"  - Test migrations locally before deploying\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Django Admin Setup",
+              "content": "**The Django Admin - Free CRUD Interface**\n\nDjango automatically generates an admin interface for your models.\n\n**Basic Registration:**\n```python\nfrom django.contrib import admin\nfrom .models import Category\nadmin.site.register(Category)\n```\n\n**Advanced Configuration with ModelAdmin:**\n\n- **list_display** - Columns shown in list view\n- **list_filter** - Sidebar filters\n- **search_fields** - Searchable fields\n- **date_hierarchy** - Date-based navigation\n- **ordering** - Default sort order\n- **readonly_fields** - Non-editable fields\n\n**The `@admin.register` Decorator:**\n```python\n@admin.register(Category)\nclass CategoryAdmin(admin.ModelAdmin):\n    list_display = ['name', 'description']\n```\nCleaner than `admin.site.register(Category, CategoryAdmin)`.\n\n**Setup Steps:**\n1. Create superuser: `python manage.py createsuperuser`\n2. Run server: `python manage.py runserver`\n3. Visit: http://127.0.0.1:8000/admin/\n4. Log in with superuser credentials",
+              "code": "# tracker/admin.py\nfrom django.contrib import admin\nfrom .models import Category, Transaction\n\n@admin.register(Category)\nclass CategoryAdmin(admin.ModelAdmin):\n    \"\"\"Admin configuration for Category model.\"\"\"\n    list_display = ['name', 'description']\n    search_fields = ['name']\n\n@admin.register(Transaction)\nclass TransactionAdmin(admin.ModelAdmin):\n    \"\"\"Admin configuration for Transaction model.\"\"\"\n    list_display = ['user', 'amount', 'category', 'transaction_type', 'created_at']\n    list_filter = ['transaction_type', 'category', 'created_at']\n    search_fields = ['description']\n    date_hierarchy = 'created_at'\n\n\nprint(\"=== Django Admin Configuration ===\")\n\nprint(\"\\nCategoryAdmin options:\")\nprint(\"  list_display: Shows name and description in list\")\nprint(\"  search_fields: Enables search by name\")\n\nprint(\"\\nTransactionAdmin options:\")\nprint(\"  list_display: Shows user, amount, category, type, date\")\nprint(\"  list_filter: Adds sidebar filters for type, category, date\")\nprint(\"  search_fields: Enables search by description\")\nprint(\"  date_hierarchy: Adds date-based drill-down navigation\")\n\nprint(\"\\n=== Admin Setup Commands ===\")\nprint(\"  1. python manage.py createsuperuser\")\nprint(\"     # Create admin login credentials\")\nprint(\"\")\nprint(\"  2. python manage.py runserver\")\nprint(\"     # Start development server\")\nprint(\"\")\nprint(\"  3. Visit http://127.0.0.1:8000/admin/\")\nprint(\"     # Access the admin interface\")\n\nprint(\"\\n=== What You Get ===\")\nprint(\"  - Full CRUD interface (Create, Read, Update, Delete)\")\nprint(\"  - Search, filter, and sort capabilities\")\nprint(\"  - Pagination for large datasets\")\nprint(\"  - Inline editing for related objects\")\nprint(\"  - History tracking for changes\")\nprint(\"  - Permission-based access control\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Querying Data",
+              "content": "**Django ORM Queries**\n\nDjango provides an intuitive query API that translates to SQL.\n\n**Basic Queries:**\n```python\nModel.objects.all()           # SELECT * FROM model\nModel.objects.get(id=1)       # Single object (raises if not found)\nModel.objects.first()         # First object or None\nModel.objects.count()         # COUNT(*)\n```\n\n**Filtering:**\n```python\n.filter(field=value)          # WHERE field = value\n.exclude(field=value)         # WHERE field != value\n.filter(field__gte=100)       # >= 100 (greater than or equal)\n.filter(field__lt=50)         # < 50 (less than)\n.filter(field__contains='x')  # LIKE '%x%'\n.filter(field__isnull=True)   # IS NULL\n```\n\n**Ordering:**\n```python\n.order_by('field')            # ASC\n.order_by('-field')           # DESC\n.order_by('field1', '-field2')# Multiple columns\n```\n\n**Related Objects:**\n```python\n.filter(category__name='Food')     # Join and filter\n.select_related('category')        # Eager load (1 query)\n.prefetch_related('transactions')  # Batch load (2 queries)\n```\n\n**Aggregation:**\n```python\nfrom django.db.models import Sum, Avg, Count\n.aggregate(total=Sum('amount'))\n.values('category').annotate(count=Count('id'))\n```",
+              "code": "# Django ORM Query Examples\n\nprint(\"=== Django ORM Queries ===\")\n\nprint(\"\\n1. Basic Queries:\")\nqueries = '''\n# Get all transactions\nTransaction.objects.all()\n\n# Filter by type\nTransaction.objects.filter(transaction_type='expense')\n\n# Filter by amount (greater than or equal)\nTransaction.objects.filter(amount__gte=100)\n\n# Filter by user and order by date (descending)\nTransaction.objects.filter(user=request.user).order_by('-created_at')\n'''\nprint(queries)\n\nprint(\"\\n2. Field Lookups (double underscore syntax):\")\nlookups = '''\n__exact     ->  = value (default)\n__iexact    ->  = value (case-insensitive)\n__contains  ->  LIKE '%value%'\n__icontains ->  LIKE '%value%' (case-insensitive)\n__gt        ->  > value\n__gte       ->  >= value\n__lt        ->  < value\n__lte       ->  <= value\n__in        ->  IN (list of values)\n__isnull    ->  IS NULL / IS NOT NULL\n__startswith->  LIKE 'value%'\n__endswith  ->  LIKE '%value'\n'''\nprint(lookups)\n\nprint(\"\\n3. Chaining Queries:\")\nchaining = '''\n# Multiple conditions (AND)\nTransaction.objects.filter(\n    transaction_type='expense',\n    amount__gte=50\n).order_by('-created_at')[:10]\n\n# OR conditions\nfrom django.db.models import Q\nTransaction.objects.filter(\n    Q(transaction_type='income') | Q(amount__gte=1000)\n)\n'''\nprint(chaining)\n\nprint(\"\\n4. Aggregation:\")\naggregation = '''\nfrom django.db.models import Sum, Avg, Count\n\n# Total expenses\nTransaction.objects.filter(\n    transaction_type='expense'\n).aggregate(total=Sum('amount'))\n# Returns: {'total': Decimal('1234.56')}\n\n# Count by category\nTransaction.objects.values('category__name').annotate(\n    count=Count('id'),\n    total=Sum('amount')\n)\n# Returns: [{'category__name': 'Food', 'count': 5, 'total': 250}, ...]\n'''\nprint(aggregation)",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "**Django Models:**\n- Models are Python classes that map to database tables\n- Use `models.CharField`, `DecimalField`, `ForeignKey`, etc. for columns\n- `__str__` method defines how objects display in admin\n- `class Meta` configures model behavior (ordering, plural name, etc.)\n\n**Migrations:**\n- `makemigrations` detects model changes and creates migration files\n- `migrate` applies changes to the database\n- `sqlmigrate` shows the generated SQL\n- Always commit migration files to version control\n\n**Admin Interface:**\n- Register models with `@admin.register(Model)` decorator\n- `ModelAdmin` class customizes the admin display\n- `list_display`, `list_filter`, `search_fields` for list view\n- Free CRUD interface with minimal code\n\n**ORM Queries:**\n- `Model.objects.all()` gets all records\n- `filter()` and `exclude()` for WHERE clauses\n- Double-underscore syntax for lookups: `__gte`, `__contains`, `__isnull`\n- Chain methods: `.filter().order_by().limit()`\n- Use `aggregate()` and `annotate()` for SQL aggregations"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-django-models-challenge",
+              "title": "Build a Blog with Django Models",
+              "description": "Create Django models for a blog application with Post and Comment models. Set up the admin interface to manage both models.",
+              "instructions": "Create Django models for a blog:\n1. Post model with: title, content, author (ForeignKey to User), published_at, is_published (boolean)\n2. Comment model with: post (ForeignKey), author_name, content, created_at\n3. Register both models in admin with appropriate list_display and list_filter options\n4. Write a query to get all published posts ordered by date (newest first)",
+              "starterCode": "from django.db import models\nfrom django.contrib.auth.models import User\n\n# TODO: Create Post model\nclass Post(models.Model):\n    # Add fields: title, content, author (FK), published_at, is_published\n    pass\n\n# TODO: Create Comment model  \nclass Comment(models.Model):\n    # Add fields: post (FK), author_name, content, created_at\n    pass\n\n# TODO: Admin configuration\n# from django.contrib import admin\n# @admin.register(Post)\n# class PostAdmin(admin.ModelAdmin):\n#     pass\n\n# Query: Get all published posts, newest first\n# published_posts = ???",
+              "solution": "from django.db import models\nfrom django.contrib.auth.models import User\n\nclass Post(models.Model):\n    \"\"\"Blog post model.\"\"\"\n    title = models.CharField(max_length=200)\n    content = models.TextField()\n    author = models.ForeignKey(User, on_delete=models.CASCADE)\n    published_at = models.DateTimeField(null=True, blank=True)\n    is_published = models.BooleanField(default=False)\n    created_at = models.DateTimeField(auto_now_add=True)\n    \n    class Meta:\n        ordering = ['-published_at']\n    \n    def __str__(self):\n        return self.title\n\nclass Comment(models.Model):\n    \"\"\"Comment on a blog post.\"\"\"\n    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')\n    author_name = models.CharField(max_length=100)\n    content = models.TextField()\n    created_at = models.DateTimeField(auto_now_add=True)\n    \n    def __str__(self):\n        return f\"Comment by {self.author_name} on {self.post.title}\"\n\n# Admin configuration (in admin.py)\nfrom django.contrib import admin\n\n@admin.register(Post)\nclass PostAdmin(admin.ModelAdmin):\n    list_display = ['title', 'author', 'is_published', 'published_at']\n    list_filter = ['is_published', 'published_at', 'author']\n    search_fields = ['title', 'content']\n    date_hierarchy = 'published_at'\n\n@admin.register(Comment)\nclass CommentAdmin(admin.ModelAdmin):\n    list_display = ['author_name', 'post', 'created_at']\n    list_filter = ['created_at']\n    search_fields = ['author_name', 'content']\n\n# Query: Get all published posts, newest first\npublished_posts = Post.objects.filter(is_published=True).order_by('-published_at')\n\nprint(\"=== Blog Models Created ===\")\nprint(\"\\nPost model fields:\")\nprint(\"  - title: CharField(max_length=200)\")\nprint(\"  - content: TextField\")\nprint(\"  - author: ForeignKey(User)\")\nprint(\"  - published_at: DateTimeField\")\nprint(\"  - is_published: BooleanField\")\n\nprint(\"\\nComment model fields:\")\nprint(\"  - post: ForeignKey(Post)\")\nprint(\"  - author_name: CharField\")\nprint(\"  - content: TextField\")\nprint(\"  - created_at: DateTimeField\")\n\nprint(\"\\nQuery for published posts:\")\nprint(\"  Post.objects.filter(is_published=True).order_by('-published_at')\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Code runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use models.CharField for short text, models.TextField for long content. ForeignKey needs on_delete parameter."
+                },
+                {
+                  "level": 2,
+                  "text": "For admin list_display, use a list of field names as strings. For list_filter, include fields good for filtering like booleans and dates."
+                },
+                {
+                  "level": 3,
+                  "text": "Query syntax: Model.objects.filter(is_published=True).order_by('-published_at') - the minus sign means descending order."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting on_delete parameter for ForeignKey",
+                  "consequence": "TypeError: ForeignKey requires on_delete argument",
+                  "correction": "Use on_delete=models.CASCADE, SET_NULL, or PROTECT"
+                },
+                {
+                  "mistake": "Using wrong field type for money/decimals",
+                  "consequence": "Precision errors with FloatField",
+                  "correction": "Use DecimalField(max_digits=10, decimal_places=2) for money"
+                },
+                {
+                  "mistake": "Not defining __str__ method",
+                  "consequence": "Objects show as 'Model object (1)' in admin",
+                  "correction": "Add def __str__(self): return self.title"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
-          "order": 13,
+          "order": 15,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
