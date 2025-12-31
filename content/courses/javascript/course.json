@@ -12121,6 +12121,48 @@
               "title": "Challenge: Extend the TaskList",
               "content": "## Challenge: Add Filtering and Search\n\nExtend the TaskList component with:\n1. **Search functionality**: Filter tasks by title or description (case-insensitive)\n2. **Status filter**: Show only 'All', 'Active', or 'Completed' tasks\n3. **Sort options**: Sort by creation date (newest/oldest) or completion status\n\n**Requirements:**\n- Use useState hooks to manage filter state\n- Create separate functions for filtering logic\n- Update the UI to show current filter selections\n- Maintain TypeScript typing throughout\n- Keep API calls unchanged (filter on the client side)\n\n**Bonus Challenge:**\n- Add a \"Clear completed\" button that deletes all completed tasks\n- Implement pagination to show 10 tasks per page\n- Add an animation when tasks are marked complete"
             }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "21.4-challenge",
+              "title": "Add Filtering and Search to TaskList",
+              "description": "Extend the TaskList component with search, status filtering, and sorting capabilities.",
+              "instructions": "Create a FilteredTaskList component that:\n1. Adds a search input that filters tasks by title or description (case-insensitive)\n2. Adds status filter buttons: 'All', 'Active', 'Completed'\n3. Adds sort options: newest first, oldest first, or by completion status\n4. Uses useState hooks to manage all filter state\n5. Implements filtering logic in separate pure functions",
+              "starterCode": "import React, { useState, useEffect } from 'react';\n\ninterface Task {\n  id: string;\n  title: string;\n  description: string;\n  completed: boolean;\n  createdAt: string;\n}\n\ntype StatusFilter = 'all' | 'active' | 'completed';\ntype SortOption = 'newest' | 'oldest' | 'status';\n\ninterface FilteredTaskListProps {\n  userId: string;\n}\n\n// TODO: Implement filter functions\nconst filterBySearch = (tasks: Task[], searchTerm: string): Task[] => {\n  // Your code here\n};\n\nconst filterByStatus = (tasks: Task[], status: StatusFilter): Task[] => {\n  // Your code here\n};\n\nconst sortTasks = (tasks: Task[], sortBy: SortOption): Task[] => {\n  // Your code here\n};\n\nconst FilteredTaskList: React.FC<FilteredTaskListProps> = ({ userId }) => {\n  const [tasks, setTasks] = useState<Task[]>([]);\n  const [loading, setLoading] = useState<boolean>(true);\n  \n  // TODO: Add state for search, status filter, and sort option\n  \n  useEffect(() => {\n    // Fetch tasks (already implemented)\n    const fetchTasks = async () => {\n      setLoading(true);\n      const response = await fetch(`/api/tasks?userId=${userId}`);\n      const data = await response.json();\n      setTasks(data.tasks);\n      setLoading(false);\n    };\n    fetchTasks();\n  }, [userId]);\n\n  // TODO: Apply filters and sorting to tasks\n  const displayedTasks = tasks;\n\n  return (\n    <div className=\"filtered-task-list\">\n      {/* TODO: Add search input */}\n      {/* TODO: Add status filter buttons */}\n      {/* TODO: Add sort dropdown */}\n      \n      <ul>\n        {displayedTasks.map(task => (\n          <li key={task.id}>{task.title}</li>\n        ))}\n      </ul>\n    </div>\n  );\n};\n\nexport default FilteredTaskList;",
+              "solution": "import React, { useState, useEffect, useMemo } from 'react';\n\ninterface Task {\n  id: string;\n  title: string;\n  description: string;\n  completed: boolean;\n  createdAt: string;\n}\n\ntype StatusFilter = 'all' | 'active' | 'completed';\ntype SortOption = 'newest' | 'oldest' | 'status';\n\ninterface FilteredTaskListProps {\n  userId: string;\n}\n\nconst filterBySearch = (tasks: Task[], searchTerm: string): Task[] => {\n  if (!searchTerm.trim()) return tasks;\n  const term = searchTerm.toLowerCase();\n  return tasks.filter(task =>\n    task.title.toLowerCase().includes(term) ||\n    task.description.toLowerCase().includes(term)\n  );\n};\n\nconst filterByStatus = (tasks: Task[], status: StatusFilter): Task[] => {\n  if (status === 'all') return tasks;\n  return tasks.filter(task =>\n    status === 'completed' ? task.completed : !task.completed\n  );\n};\n\nconst sortTasks = (tasks: Task[], sortBy: SortOption): Task[] => {\n  const sorted = [...tasks];\n  switch (sortBy) {\n    case 'newest':\n      return sorted.sort((a, b) =>\n        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()\n      );\n    case 'oldest':\n      return sorted.sort((a, b) =>\n        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()\n      );\n    case 'status':\n      return sorted.sort((a, b) =>\n        Number(a.completed) - Number(b.completed)\n      );\n    default:\n      return sorted;\n  }\n};\n\nconst FilteredTaskList: React.FC<FilteredTaskListProps> = ({ userId }) => {\n  const [tasks, setTasks] = useState<Task[]>([]);\n  const [loading, setLoading] = useState<boolean>(true);\n  const [searchTerm, setSearchTerm] = useState<string>('');\n  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');\n  const [sortOption, setSortOption] = useState<SortOption>('newest');\n\n  useEffect(() => {\n    const fetchTasks = async () => {\n      setLoading(true);\n      const response = await fetch(`/api/tasks?userId=${userId}`);\n      const data = await response.json();\n      setTasks(data.tasks);\n      setLoading(false);\n    };\n    fetchTasks();\n  }, [userId]);\n\n  const displayedTasks = useMemo(() => {\n    let result = filterBySearch(tasks, searchTerm);\n    result = filterByStatus(result, statusFilter);\n    result = sortTasks(result, sortOption);\n    return result;\n  }, [tasks, searchTerm, statusFilter, sortOption]);\n\n  if (loading) return <div>Loading...</div>;\n\n  return (\n    <div className=\"filtered-task-list\">\n      <div className=\"filters\">\n        <input\n          type=\"text\"\n          placeholder=\"Search tasks...\"\n          value={searchTerm}\n          onChange={(e) => setSearchTerm(e.target.value)}\n          className=\"search-input\"\n        />\n        \n        <div className=\"status-filters\">\n          {(['all', 'active', 'completed'] as StatusFilter[]).map(status => (\n            <button\n              key={status}\n              onClick={() => setStatusFilter(status)}\n              className={statusFilter === status ? 'active' : ''}\n            >\n              {status.charAt(0).toUpperCase() + status.slice(1)}\n            </button>\n          ))}\n        </div>\n        \n        <select\n          value={sortOption}\n          onChange={(e) => setSortOption(e.target.value as SortOption)}\n          className=\"sort-select\"\n        >\n          <option value=\"newest\">Newest First</option>\n          <option value=\"oldest\">Oldest First</option>\n          <option value=\"status\">By Status</option>\n        </select>\n      </div>\n      \n      <p className=\"task-count\">\n        Showing {displayedTasks.length} of {tasks.length} tasks\n      </p>\n      \n      <ul className=\"task-list\">\n        {displayedTasks.map(task => (\n          <li key={task.id} className={task.completed ? 'completed' : ''}>\n            <span className=\"task-title\">{task.title}</span>\n            <span className=\"task-status\">\n              {task.completed ? 'Done' : 'Pending'}\n            </span>\n          </li>\n        ))}\n      </ul>\n    </div>\n  );\n};\n\nexport default FilteredTaskList;",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Search filters tasks by title or description case-insensitively",
+                  "expectedOutput": "filterBySearch returns matching tasks",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Status filter correctly shows all, active, or completed tasks",
+                  "expectedOutput": "filterByStatus returns correct subset",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Sort function orders tasks by date or status",
+                  "expectedOutput": "sortTasks returns properly ordered array",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                "Use toLowerCase() on both the search term and task text for case-insensitive matching",
+                "The useMemo hook helps avoid recalculating filters on every render",
+                "When sorting by date, convert createdAt strings to Date objects with new Date()"
+              ],
+              "commonMistakes": [
+                "Forgetting to spread the array before sorting (sort mutates the original array)",
+                "Not handling empty search terms which should return all tasks"
+              ],
+              "difficulty": "intermediate"
+            }
           ]
         },
         {
@@ -12176,6 +12218,48 @@
               "type": "CONCEPT",
               "title": "Challenge: Add Password Strength Indicator",
               "content": "## Challenge: Visual Password Strength Feedback\n\nEnhance the RegisterForm component to:\n1. **Display a strength meter** showing password strength as user types\n2. **Color-code the meter**: Red (weak) → Yellow (fair) → Green (strong)\n3. **Show strength requirements**:\n   - At least 8 characters\n   - Contains both lowercase and uppercase letters\n   - Contains at least one number\n   - Contains at least one special character (!@#$%^&*)\n\n**Requirements:**\n- Create a separate PasswordStrengthMeter component\n- Use React state to track which requirements are met\n- Update the meter in real-time as user types\n- Disable submit button until password meets all requirements\n- Show a helpful message like \"Strong password!\"\n\n**Bonus Challenge:**\n- Add a \"Show password\" toggle button\n- Generate a password suggestion using a library\n- Store password preferences in context (optional requirements)"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "21.5-challenge",
+              "title": "Password Strength Indicator Component",
+              "description": "Create a PasswordStrengthMeter component that provides real-time visual feedback on password strength.",
+              "instructions": "Build a PasswordStrengthMeter component that:\n1. Displays a visual strength bar that changes color (red/yellow/green)\n2. Shows a checklist of password requirements with checkmarks\n3. Calculates strength based on: length, uppercase, lowercase, numbers, special chars\n4. Updates in real-time as the user types\n5. Exports a boolean indicating if password meets minimum requirements",
+              "starterCode": "import React, { useMemo } from 'react';\n\ninterface PasswordRequirement {\n  id: string;\n  label: string;\n  met: boolean;\n}\n\ninterface PasswordStrengthMeterProps {\n  password: string;\n  onStrengthChange?: (isStrong: boolean) => void;\n}\n\n// TODO: Implement strength calculation\nconst calculateStrength = (password: string): number => {\n  // Return a score from 0-4 based on requirements met\n  // Your code here\n  return 0;\n};\n\n// TODO: Check each requirement\nconst checkRequirements = (password: string): PasswordRequirement[] => {\n  // Return array of requirements with met status\n  // Your code here\n  return [];\n};\n\n// TODO: Get color based on strength score\nconst getStrengthColor = (strength: number): string => {\n  // Return 'red', 'orange', 'yellow', or 'green'\n  // Your code here\n  return 'red';\n};\n\nconst PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({\n  password,\n  onStrengthChange\n}) => {\n  // TODO: Calculate strength and requirements using useMemo\n  \n  // TODO: Call onStrengthChange when strength changes\n  \n  return (\n    <div className=\"password-strength-meter\">\n      {/* TODO: Add strength bar */}\n      {/* TODO: Add requirements checklist */}\n      {/* TODO: Add strength message */}\n    </div>\n  );\n};\n\nexport default PasswordStrengthMeter;",
+              "solution": "import React, { useMemo, useEffect } from 'react';\n\ninterface PasswordRequirement {\n  id: string;\n  label: string;\n  met: boolean;\n}\n\ninterface PasswordStrengthMeterProps {\n  password: string;\n  onStrengthChange?: (isStrong: boolean) => void;\n}\n\nconst calculateStrength = (password: string): number => {\n  let score = 0;\n  if (password.length >= 8) score++;\n  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;\n  if (/\\d/.test(password)) score++;\n  if (/[!@#$%^&*(),.?\":{}|<>]/.test(password)) score++;\n  return score;\n};\n\nconst checkRequirements = (password: string): PasswordRequirement[] => {\n  return [\n    {\n      id: 'length',\n      label: 'At least 8 characters',\n      met: password.length >= 8\n    },\n    {\n      id: 'case',\n      label: 'Uppercase and lowercase letters',\n      met: /[a-z]/.test(password) && /[A-Z]/.test(password)\n    },\n    {\n      id: 'number',\n      label: 'At least one number',\n      met: /\\d/.test(password)\n    },\n    {\n      id: 'special',\n      label: 'At least one special character (!@#$%^&*)',\n      met: /[!@#$%^&*(),.?\":{}|<>]/.test(password)\n    }\n  ];\n};\n\nconst getStrengthColor = (strength: number): string => {\n  switch (strength) {\n    case 0:\n    case 1:\n      return '#dc2626'; // red\n    case 2:\n      return '#f97316'; // orange\n    case 3:\n      return '#eab308'; // yellow\n    case 4:\n      return '#22c55e'; // green\n    default:\n      return '#dc2626';\n  }\n};\n\nconst getStrengthLabel = (strength: number): string => {\n  switch (strength) {\n    case 0:\n      return 'Very Weak';\n    case 1:\n      return 'Weak';\n    case 2:\n      return 'Fair';\n    case 3:\n      return 'Good';\n    case 4:\n      return 'Strong';\n    default:\n      return '';\n  }\n};\n\nconst PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({\n  password,\n  onStrengthChange\n}) => {\n  const strength = useMemo(() => calculateStrength(password), [password]);\n  const requirements = useMemo(() => checkRequirements(password), [password]);\n  const color = useMemo(() => getStrengthColor(strength), [strength]);\n  const label = useMemo(() => getStrengthLabel(strength), [strength]);\n  const isStrong = strength >= 4;\n\n  useEffect(() => {\n    onStrengthChange?.(isStrong);\n  }, [isStrong, onStrengthChange]);\n\n  if (!password) return null;\n\n  return (\n    <div className=\"password-strength-meter\">\n      <div className=\"strength-bar-container\">\n        <div\n          className=\"strength-bar\"\n          style={{\n            width: `${(strength / 4) * 100}%`,\n            backgroundColor: color,\n            height: '8px',\n            borderRadius: '4px',\n            transition: 'width 0.3s, background-color 0.3s'\n          }}\n        />\n      </div>\n      \n      <div className=\"strength-label\" style={{ color, fontWeight: 'bold' }}>\n        {label}\n      </div>\n      \n      <ul className=\"requirements-list\" style={{ listStyle: 'none', padding: 0 }}>\n        {requirements.map(req => (\n          <li\n            key={req.id}\n            style={{\n              color: req.met ? '#22c55e' : '#6b7280',\n              display: 'flex',\n              alignItems: 'center',\n              gap: '8px'\n            }}\n          >\n            <span>{req.met ? '\\u2713' : '\\u2717'}</span>\n            <span>{req.label}</span>\n          </li>\n        ))}\n      </ul>\n      \n      {isStrong && (\n        <div className=\"success-message\" style={{ color: '#22c55e' }}>\n          Strong password!\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default PasswordStrengthMeter;",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Returns strength 0 for empty or very weak passwords",
+                  "expectedOutput": "calculateStrength('abc') returns 0",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Returns strength 4 for passwords meeting all requirements",
+                  "expectedOutput": "calculateStrength('SecureP@ss1') returns 4",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Requirements checklist shows correct met/unmet status",
+                  "expectedOutput": "Each requirement correctly reflects password content",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                "Use regular expressions to test for character types: /[a-z]/, /[A-Z]/, /\\d/, /[!@#$%^&*]/",
+                "The useMemo hook prevents recalculating strength on every render",
+                "Use useEffect to notify parent component when strength changes"
+              ],
+              "commonMistakes": [
+                "Not escaping special characters in regex patterns",
+                "Forgetting to handle the empty password case in the UI"
+              ],
+              "difficulty": "intermediate"
             }
           ]
         },
@@ -12234,6 +12318,49 @@
               "type": "CONCEPT",
               "title": "Challenge: Token Refresh Flow",
               "content": "## Challenge: Implement Token Refresh\n\nExpanding on the authentication system, implement a token refresh mechanism:\n\n**Requirements:**\n1. **Track token expiration** using JWT decode library\n2. **Auto-refresh tokens** before they expire using a refresh endpoint\n3. **Handle refresh failures** by logging out the user\n4. **Queue API requests** during token refresh to prevent race conditions\n\n**Implementation Steps:**\n1. Decode JWT token to get expiration time\n2. Create a `useRefreshToken` hook that:\n   - Checks if token is expiring soon (within 5 minutes)\n   - Calls `/api/auth/refresh` to get new token\n   - Updates token in localStorage and context\n3. Update `fetchWithAuth` to automatically refresh tokens\n4. Handle the edge case where refresh also fails (force logout)\n\n**Bonus Challenge:**\n- Implement silent token refresh in the background using useEffect\n- Add a \"Your session is expiring\" warning modal (1 min before expiration)\n- Allow users to extend their session by clicking a button\n- Create an axios interceptor pattern for cleaner token management"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "21.6-challenge",
+              "title": "Implement Token Refresh Hook",
+              "description": "Create a useTokenRefresh hook that automatically refreshes JWT tokens before they expire.",
+              "instructions": "Build a useTokenRefresh hook that:\n1. Decodes the JWT to get expiration time\n2. Checks if token expires within 5 minutes\n3. Automatically calls refresh endpoint before expiration\n4. Updates token in localStorage and auth context\n5. Handles refresh failures by logging out the user",
+              "starterCode": "import { useEffect, useCallback, useRef } from 'react';\nimport { useAuth } from '../contexts/AuthContext';\n\ninterface DecodedToken {\n  exp: number;\n  iat: number;\n  sub: string;\n}\n\n// TODO: Implement JWT decoding (without external library)\nconst decodeToken = (token: string): DecodedToken | null => {\n  // JWT format: header.payload.signature\n  // Payload is base64 encoded JSON\n  // Your code here\n  return null;\n};\n\n// TODO: Check if token expires soon (within threshold)\nconst isTokenExpiringSoon = (\n  token: string,\n  thresholdMinutes: number = 5\n): boolean => {\n  // Your code here\n  return false;\n};\n\ninterface UseTokenRefreshOptions {\n  refreshThresholdMinutes?: number;\n  checkIntervalMs?: number;\n}\n\nexport const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {\n  const { token, logout } = useAuth();\n  const { refreshThresholdMinutes = 5, checkIntervalMs = 60000 } = options;\n  const isRefreshing = useRef<boolean>(false);\n\n  // TODO: Implement refresh token function\n  const refreshToken = useCallback(async () => {\n    // Prevent multiple simultaneous refresh attempts\n    // Call /api/auth/refresh endpoint\n    // Update token in context/localStorage\n    // Handle failures by logging out\n  }, []);\n\n  // TODO: Set up interval to check token expiration\n  useEffect(() => {\n    // Check token expiration periodically\n    // Refresh if expiring soon\n    // Clean up interval on unmount\n  }, [token, refreshToken, refreshThresholdMinutes, checkIntervalMs]);\n\n  return {\n    refreshToken,\n    isRefreshing: isRefreshing.current\n  };\n};",
+              "solution": "import { useEffect, useCallback, useRef, useState } from 'react';\nimport { useAuth } from '../contexts/AuthContext';\n\ninterface DecodedToken {\n  exp: number;\n  iat: number;\n  sub: string;\n}\n\nconst decodeToken = (token: string): DecodedToken | null => {\n  try {\n    const parts = token.split('.');\n    if (parts.length !== 3) return null;\n    \n    const payload = parts[1];\n    const decoded = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));\n    return JSON.parse(decoded) as DecodedToken;\n  } catch {\n    return null;\n  }\n};\n\nconst isTokenExpiringSoon = (\n  token: string,\n  thresholdMinutes: number = 5\n): boolean => {\n  const decoded = decodeToken(token);\n  if (!decoded) return true;\n  \n  const expirationTime = decoded.exp * 1000;\n  const currentTime = Date.now();\n  const thresholdMs = thresholdMinutes * 60 * 1000;\n  \n  return expirationTime - currentTime < thresholdMs;\n};\n\ninterface UseTokenRefreshOptions {\n  refreshThresholdMinutes?: number;\n  checkIntervalMs?: number;\n}\n\nexport const useTokenRefresh = (options: UseTokenRefreshOptions = {}) => {\n  const { token, logout } = useAuth();\n  const { refreshThresholdMinutes = 5, checkIntervalMs = 60000 } = options;\n  const isRefreshing = useRef<boolean>(false);\n  const [lastRefresh, setLastRefresh] = useState<Date | null>(null);\n\n  const refreshToken = useCallback(async () => {\n    if (isRefreshing.current || !token) return;\n    \n    isRefreshing.current = true;\n    \n    try {\n      const response = await fetch('/api/auth/refresh', {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n          'Authorization': `Bearer ${token}`\n        }\n      });\n      \n      if (!response.ok) {\n        throw new Error('Refresh failed');\n      }\n      \n      const data = await response.json();\n      const newToken = data.token;\n      \n      localStorage.setItem('token', newToken);\n      setLastRefresh(new Date());\n      \n      window.dispatchEvent(new CustomEvent('tokenRefreshed', {\n        detail: { token: newToken }\n      }));\n      \n    } catch (error) {\n      console.error('Token refresh failed:', error);\n      logout();\n    } finally {\n      isRefreshing.current = false;\n    }\n  }, [token, logout]);\n\n  useEffect(() => {\n    if (!token) return;\n    \n    const checkAndRefresh = () => {\n      if (isTokenExpiringSoon(token, refreshThresholdMinutes)) {\n        refreshToken();\n      }\n    };\n    \n    checkAndRefresh();\n    \n    const intervalId = setInterval(checkAndRefresh, checkIntervalMs);\n    \n    return () => clearInterval(intervalId);\n  }, [token, refreshToken, refreshThresholdMinutes, checkIntervalMs]);\n\n  return {\n    refreshToken,\n    isRefreshing: isRefreshing.current,\n    lastRefresh\n  };\n};",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "decodeToken correctly parses JWT payload",
+                  "expectedOutput": "Returns object with exp, iat, sub properties",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "isTokenExpiringSoon returns true for tokens expiring within threshold",
+                  "expectedOutput": "Returns true when expiration < threshold",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Hook prevents multiple simultaneous refresh attempts",
+                  "expectedOutput": "isRefreshing ref prevents race conditions",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                "JWT tokens are three base64-encoded parts separated by dots - use split('.') and atob() to decode",
+                "The exp claim is in seconds since epoch, multiply by 1000 for JavaScript milliseconds",
+                "Use useRef for isRefreshing to prevent re-renders and race conditions"
+              ],
+              "commonMistakes": [
+                "Not handling base64url encoding (replace - with + and _ with /)",
+                "Forgetting to multiply exp by 1000 when comparing to Date.now()",
+                "Not cleaning up the interval in useEffect return function"
+              ],
+              "difficulty": "intermediate"
             }
           ]
         },
