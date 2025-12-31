@@ -10360,7 +10360,7 @@
     {
       "id": "module-16",
       "title": "Professional CLI Tools with Typer",
-      "description": "Build beautiful, type-safe command-line applications with Typer, Rich, and modern Python patterns",
+      "description": "Build beautiful, type-safe command-line applications with Typer 0.16+, Rich integration, and modern Python patterns",
       "difficulty": "intermediate",
       "estimatedHours": 3,
       "lessons": [
@@ -10375,19 +10375,19 @@
             {
               "type": "THEORY",
               "title": "Understanding the Concept",
-              "content": "**Typer** is the modern way to build command-line interfaces (CLIs) in Python. Created by the same developer as FastAPI, it uses Python type hints to create beautiful, self-documenting CLIs with minimal code.\n\n**Why Typer over argparse?**\n- **Type hints = auto-validation** - No more manual type checking\n- **Auto-generated help** - Your docstrings become `--help` text\n- **Shell completion** - Tab completion for free\n- **Less boilerplate** - A Typer CLI is often 70% less code than argparse\n\n**Installation:**\n```bash\nuv add typer[all]  # Includes Rich for pretty output\n# or: pip install typer[all]\n```\n\n**Key insight:** If you know type hints, you already know 80% of Typer. Your function signatures *are* your CLI definitions."
+              "content": "**Typer** is the modern way to build command-line interfaces (CLIs) in Python. Created by the same developer as FastAPI, it uses Python type hints to create beautiful, self-documenting CLIs with minimal code.\n\n**Why Typer over argparse?**\n- **Type hints = auto-validation** - No more manual type checking\n- **Auto-generated help** - Your docstrings become `--help` text\n- **Shell completion** - Tab completion for free\n- **Less boilerplate** - A Typer CLI is often 70% less code than argparse\n- **Rich markup in help** - Use `[bold]`, `[green]` in docstrings (0.16+)\n\n**Installation (Typer 0.16+):**\n```bash\nuv add typer[all]  # Includes Rich - typer-cli is now integrated!\n# or: pip install typer[all]\n```\n\n**Key insight:** If you know type hints, you already know 80% of Typer. Your function signatures *are* your CLI definitions.\n\n**Throughout this module**, we'll build a **Personal Finance Tracker CLI** - a practical tool for managing expenses, income, and budgets from the terminal."
             },
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**Expected Output:**\n```\n$ python greet.py --help\nUsage: greet.py [OPTIONS] NAME\n\n  Greet someone by name.\n\nArguments:\n  NAME  The name to greet  [required]\n\nOptions:\n  --formal / --no-formal  Use formal greeting  [default: no-formal]\n  --help                  Show this message and exit.\n\n$ python greet.py World\nHello, World!\n\n$ python greet.py --formal Alice\nGood day, Alice. It's a pleasure to meet you.\n```",
-              "code": "import typer\n\ndef main(name: str, formal: bool = False):\n    \"\"\"Greet someone by name.\"\"\"\n    if formal:\n        print(f\"Good day, {name}. It's a pleasure to meet you.\")\n    else:\n        print(f\"Hello, {name}!\")\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
+              "content": "**Expected Output:**\n```\n$ python expense.py --help\nUsage: expense.py [OPTIONS] AMOUNT CATEGORY\n\n  Log an expense to your finance tracker.\n\nArguments:\n  AMOUNT    The expense amount  [required]\n  CATEGORY  Category (food, transport, etc.)  [required]\n\nOptions:\n  --note TEXT  Optional note for this expense\n  --help       Show this message and exit.\n\n$ python expense.py 12.50 food\nLogged: $12.50 in food\n\n$ python expense.py 45.00 transport --note \"Uber to airport\"\nLogged: $45.00 in transport (Uber to airport)\n```",
+              "code": "import typer\n\ndef main(amount: float, category: str, note: str = \"\"):\n    \"\"\"Log an expense to your finance tracker.\"\"\"\n    msg = f\"Logged: ${amount:.2f} in {category}\"\n    if note:\n        msg += f\" ({note})\"\n    print(msg)\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
               "language": "python"
             },
             {
               "type": "THEORY",
               "title": "Syntax Breakdown",
-              "content": "Let's examine the magic:\n\n- **`name: str`** - A required positional argument. Typer knows it's required because there's no default value.\n- **`formal: bool = False`** - An optional flag (`--formal`). The `= False` default makes it optional.\n- **`typer.run(main)`** - Converts your function into a CLI application.\n- **The docstring** - Becomes the command description in `--help`.\n\n**Type hint to CLI mapping:**\n| Python Type | CLI Type |\n|-------------|----------|\n| `str` | Text argument |\n| `int` | Integer (validated) |\n| `float` | Decimal number |\n| `bool` | Flag (`--name/--no-name`) |\n| `Path` | File/directory path |\n| `Optional[str]` | Optional argument |"
+              "content": "Let's examine the magic:\n\n- **`amount: float`** - A required positional argument. Typer knows it's required because there's no default value.\n- **`category: str`** - Another required argument (position matters!).\n- **`note: str = \"\"`** - An optional argument with default. Becomes `--note` flag.\n- **`typer.run(main)`** - Converts your function into a CLI application.\n- **The docstring** - Becomes the command description in `--help`.\n\n**Type hint to CLI mapping:**\n| Python Type | CLI Type |\n|-------------|----------|\n| `str` | Text argument |\n| `int` | Integer (validated) |\n| `float` | Decimal number |\n| `bool` | Flag (`--name/--no-name`) |\n| `Path` | File/directory path |\n| `Optional[str]` | Optional argument |"
             },
             {
               "type": "WARNING",
@@ -10397,7 +10397,7 @@
             {
               "type": "KEY_POINT",
               "title": "Key Takeaways",
-              "content": "- **Typer uses type hints** to define CLI arguments and options\n- **Required arguments** have no default value\n- **Optional flags** have a default value (e.g., `= False`)\n- **Docstrings** become help text automatically\n- **`typer.run(func)`** is the simplest way to create a CLI\n- Install with `uv add typer[all]` for Rich integration"
+              "content": "- **Typer uses type hints** to define CLI arguments and options\n- **Required arguments** have no default value\n- **Optional flags** have a default value (e.g., `= \"\"`)\n- **Docstrings** become help text automatically\n- **`typer.run(func)`** is the simplest way to create a CLI\n- Install with `uv add typer[all]` - Rich and typer-cli are now included (0.16+)"
             }
           ],
           "challenges": [
@@ -10405,30 +10405,30 @@
               "type": "FREE_CODING",
               "id": "module-16-lesson-01-challenge-1",
               "title": "Practice Exercise",
-              "description": "Create a CLI that calculates the area of a rectangle.\n\n**Requirements:**\n- Accept `width` and `height` as required arguments (floats)\n- Add an optional `--unit` flag (default: 'sq units')\n- Print the result with the unit\n\n**Example usage:**\n```\n$ python area.py 5 3\nArea: 15.0 sq units\n\n$ python area.py 10 20 --unit \"square meters\"\nArea: 200.0 square meters\n```",
-              "instructions": "Create a CLI that calculates the area of a rectangle with width, height, and optional unit.",
-              "starterCode": "import typer\n\ndef main(width: ____, height: ____, unit: str = ____):\n    \"\"\"Calculate the area of a rectangle.\"\"\"\n    area = ____\n    print(f\"Area: {area} {unit}\")\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
-              "solution": "import typer\n\ndef main(width: float, height: float, unit: str = \"sq units\"):\n    \"\"\"Calculate the area of a rectangle.\"\"\"\n    area = width * height\n    print(f\"Area: {area} {unit}\")\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
+              "description": "Create a CLI that calculates a tip for a restaurant bill.\n\n**Requirements:**\n- Accept `bill` as a required argument (float)\n- Add an optional `--percent` flag (default: 15)\n- Add an optional `--split` flag to divide among people (default: 1)\n- Print the tip amount and per-person total\n\n**Example usage:**\n```\n$ python tip.py 50.00\nTip: $7.50 | Total per person: $57.50\n\n$ python tip.py 120.00 --percent 20 --split 4\nTip: $24.00 | Total per person: $36.00\n```",
+              "instructions": "Create a tip calculator CLI with bill amount, optional tip percentage, and optional split.",
+              "starterCode": "import typer\n\ndef main(bill: ____, percent: int = ____, split: int = ____):\n    \"\"\"Calculate tip and split the bill.\"\"\"\n    tip = bill * (percent / 100)\n    total_per_person = (bill + tip) / ____\n    print(f\"Tip: ${tip:.2f} | Total per person: ${total_per_person:.2f}\")\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
+              "solution": "import typer\n\ndef main(bill: float, percent: int = 15, split: int = 1):\n    \"\"\"Calculate tip and split the bill.\"\"\"\n    tip = bill * (percent / 100)\n    total_per_person = (bill + tip) / split\n    print(f\"Tip: ${tip:.2f} | Total per person: ${total_per_person:.2f}\")\n\nif __name__ == \"__main__\":\n    typer.run(main)\n",
               "language": "python",
               "testCases": [
                 {
                   "id": "test-1",
-                  "description": "Calculates area correctly",
-                  "expectedOutput": "15.0",
+                  "description": "Calculates tip correctly",
+                  "expectedOutput": "7.50",
                   "isVisible": true
                 }
               ],
               "hints": [
                 {
                   "level": 1,
-                  "text": "**Hint:** Use `float` for width and height types. The default for unit should be a string in quotes."
+                  "text": "**Hint:** Use `float` for bill, `int` for percent and split. Default percent to 15, split to 1."
                 }
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Using int instead of float for dimensions",
-                  "consequence": "Won't accept decimal values like 2.5",
-                  "correction": "Use float for width and height"
+                  "mistake": "Using int instead of float for bill amount",
+                  "consequence": "Won't accept decimal values like 50.75",
+                  "correction": "Use float for bill to handle cents"
                 }
               ],
               "difficulty": "intermediate"
@@ -10446,19 +10446,19 @@
             {
               "type": "THEORY",
               "title": "Understanding the Concept",
-              "content": "Real-world CLIs have multiple commands. Think of `git`: you run `git commit`, `git push`, `git log` - these are **subcommands** under the main `git` command.\n\nTyper makes this easy with `typer.Typer()` - an application object that groups commands together.\n\n**When to use subcommands:**\n- Your tool does multiple distinct things\n- You want organized, discoverable commands\n- You're building something like: `myapp users add`, `myapp users list`, `myapp config set`"
+              "content": "Real-world CLIs have multiple commands. Think of `git`: you run `git commit`, `git push`, `git log` - these are **subcommands** under the main `git` command.\n\nTyper makes this easy with `typer.Typer()` - an application object that groups commands together.\n\n**When to use subcommands:**\n- Your tool does multiple distinct things\n- You want organized, discoverable commands\n- You're building something like: `finance add`, `finance list`, `finance summary`\n\n**Typer 0.16+ Feature:** Use `rich_markup_mode=\"rich\"` to enable Rich formatting in help text!"
             },
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**Expected Output:**\n```\n$ python tasks.py --help\nUsage: tasks.py [OPTIONS] COMMAND [ARGS]...\n\n  Task Manager CLI - manage your todo items.\n\nCommands:\n  add     Add a new task.\n  done    Mark a task as complete.\n  list    List all tasks.\n\n$ python tasks.py add \"Buy groceries\"\nAdded task: Buy groceries\n\n$ python tasks.py list\n1. [ ] Buy groceries\n\n$ python tasks.py done 1\nCompleted: Buy groceries\n```",
-              "code": "import typer\nfrom typing import Optional\n\napp = typer.Typer(help=\"Task Manager CLI - manage your todo items.\")\n\n# In-memory task storage (use a file or DB in real apps)\ntasks: list[dict] = []\n\n@app.command()\ndef add(task: str):\n    \"\"\"Add a new task.\"\"\"\n    tasks.append({\"text\": task, \"done\": False})\n    print(f\"Added task: {task}\")\n\n@app.command()\ndef list():\n    \"\"\"List all tasks.\"\"\"\n    if not tasks:\n        print(\"No tasks yet!\")\n        return\n    for i, task in enumerate(tasks, 1):\n        status = \"x\" if task[\"done\"] else \" \"\n        print(f\"{i}. [{status}] {task['text']}\")\n\n@app.command()\ndef done(task_id: int):\n    \"\"\"Mark a task as complete.\"\"\"\n    if 1 <= task_id <= len(tasks):\n        tasks[task_id - 1][\"done\"] = True\n        print(f\"Completed: {tasks[task_id - 1]['text']}\")\n    else:\n        print(f\"Task {task_id} not found\")\n        raise typer.Exit(code=1)\n\nif __name__ == \"__main__\":\n    app()\n",
+              "content": "**Expected Output:**\n```\n$ python finance.py --help\nUsage: finance.py [OPTIONS] COMMAND [ARGS]...\n\n  Personal Finance Tracker - manage your money.\n\nCommands:\n  add      Add a new expense or income.\n  balance  Show current balance.\n  list     List all transactions.\n\n$ python finance.py add 50.00 food --note \"Groceries\"\nAdded: -$50.00 (food) - Groceries\n\n$ python finance.py add 2000.00 salary --income\nAdded: +$2000.00 (salary)\n\n$ python finance.py balance\nBalance: $1950.00\n```",
+              "code": "import typer\n\n# Typer 0.16+: rich_markup_mode enables Rich formatting in help\napp = typer.Typer(\n    help=\"Personal Finance Tracker - manage your money.\",\n    rich_markup_mode=\"rich\"  # New in 0.16+\n)\n\n# In-memory storage (use a file or DB in real apps)\ntransactions: list[dict] = []\n\n@app.command()\ndef add(\n    amount: float,\n    category: str,\n    note: str = \"\",\n    income: bool = False\n):\n    \"\"\"Add a new [bold green]expense[/bold green] or [bold blue]income[/bold blue].\"\"\"\n    entry = {\n        \"amount\": amount if income else -amount,\n        \"category\": category,\n        \"note\": note\n    }\n    transactions.append(entry)\n    sign = \"+\" if income else \"-\"\n    msg = f\"Added: {sign}${amount:.2f} ({category})\"\n    if note:\n        msg += f\" - {note}\"\n    print(msg)\n\n@app.command(name=\"list\")\ndef list_transactions():\n    \"\"\"List all transactions.\"\"\"\n    if not transactions:\n        print(\"No transactions yet!\")\n        return\n    for i, t in enumerate(transactions, 1):\n        sign = \"+\" if t[\"amount\"] > 0 else \"\"\n        print(f\"{i}. {sign}${t['amount']:.2f} ({t['category']})\")\n\n@app.command()\ndef balance():\n    \"\"\"Show current [bold]balance[/bold].\"\"\"\n    total = sum(t[\"amount\"] for t in transactions)\n    print(f\"Balance: ${total:.2f}\")\n\nif __name__ == \"__main__\":\n    app()\n",
               "language": "python"
             },
             {
               "type": "THEORY",
               "title": "Syntax Breakdown",
-              "content": "**Key patterns:**\n\n- **`app = typer.Typer()`** - Creates an application object\n- **`@app.command()`** - Registers a function as a subcommand\n- **`app()`** - Runs the application (replaces `typer.run()`)\n- **`typer.Exit(code=1)`** - Exit with error code\n\n**Command naming:**\n- By default, function name = command name\n- Use `@app.command(name=\"custom-name\")` to override\n\n**Help customization:**\n- `typer.Typer(help=\"Main help\")` - Application description\n- Function docstrings - Command descriptions\n- `typer.Argument(help=\"...\")` - Argument descriptions"
+              "content": "**Key patterns:**\n\n- **`app = typer.Typer()`** - Creates an application object\n- **`@app.command()`** - Registers a function as a subcommand\n- **`app()`** - Runs the application (replaces `typer.run()`)\n- **`typer.Exit(code=1)`** - Exit with error code\n\n**Typer 0.16+ features:**\n- **`rich_markup_mode=\"rich\"`** - Enable Rich formatting in help text\n- **`[bold]`, `[green]`** in docstrings renders as formatted text in `--help`\n\n**Command naming:**\n- By default, function name = command name\n- Use `@app.command(name=\"custom-name\")` to override (e.g., `list` to avoid shadowing built-in)\n\n**Help customization:**\n- `typer.Typer(help=\"Main help\")` - Application description\n- Function docstrings - Command descriptions (with Rich markup in 0.16+)\n- `typer.Argument(help=\"...\")` - Argument descriptions"
             },
             {
               "type": "WARNING",
@@ -10468,7 +10468,7 @@
             {
               "type": "KEY_POINT",
               "title": "Key Takeaways",
-              "content": "- **`typer.Typer()`** creates a multi-command application\n- **`@app.command()`** decorates functions to become subcommands\n- Call **`app()`** instead of `typer.run()` for applications\n- **`typer.Exit(code=1)`** exits with an error code\n- Function docstrings become command help text"
+              "content": "- **`typer.Typer()`** creates a multi-command application\n- **`@app.command()`** decorates functions to become subcommands\n- Call **`app()`** instead of `typer.run()` for applications\n- **`typer.Exit(code=1)`** exits with an error code\n- Function docstrings become command help text\n- **Typer 0.16+:** Use `rich_markup_mode=\"rich\"` for formatted help text"
             }
           ],
           "challenges": [
@@ -10476,15 +10476,15 @@
               "type": "FREE_CODING",
               "id": "module-16-lesson-02-challenge-1",
               "title": "Practice Exercise",
-              "description": "Create a note-taking CLI with `add`, `show`, and `clear` commands.\n\n**Requirements:**\n- `add <text>` - Add a note\n- `show` - Display all notes numbered\n- `clear` - Remove all notes\n\n**Example:**\n```\n$ python notes.py add \"Remember to call mom\"\nNote added!\n$ python notes.py show\n1. Remember to call mom\n$ python notes.py clear\nAll notes cleared!\n```",
-              "instructions": "Build a notes CLI with add, show, and clear subcommands.",
-              "starterCode": "import typer\n\napp = typer.Typer(help=\"Simple notes CLI\")\nnotes: list[str] = []\n\n@app.command()\ndef add(text: ____):\n    \"\"\"Add a new note.\"\"\"\n    notes.append(____)\n    print(\"Note added!\")\n\n@app.command()\ndef show():\n    \"\"\"Show all notes.\"\"\"\n    for i, note in enumerate(notes, 1):\n        print(f\"{i}. {____}\")\n\n@app.command()\ndef clear():\n    \"\"\"Clear all notes.\"\"\"\n    notes.____\n    print(\"All notes cleared!\")\n\nif __name__ == \"__main__\":\n    app()\n",
-              "solution": "import typer\n\napp = typer.Typer(help=\"Simple notes CLI\")\nnotes: list[str] = []\n\n@app.command()\ndef add(text: str):\n    \"\"\"Add a new note.\"\"\"\n    notes.append(text)\n    print(\"Note added!\")\n\n@app.command()\ndef show():\n    \"\"\"Show all notes.\"\"\"\n    for i, note in enumerate(notes, 1):\n        print(f\"{i}. {note}\")\n\n@app.command()\ndef clear():\n    \"\"\"Clear all notes.\"\"\"\n    notes.clear()\n    print(\"All notes cleared!\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "description": "Create a budget tracker CLI with `set`, `spend`, and `remaining` commands.\n\n**Requirements:**\n- `set <amount>` - Set the monthly budget\n- `spend <amount> <category>` - Record an expense\n- `remaining` - Show budget remaining\n\n**Example:**\n```\n$ python budget.py set 1000\nBudget set to $1000.00\n$ python budget.py spend 50 food\nSpent $50.00 on food\n$ python budget.py remaining\nRemaining: $950.00\n```",
+              "instructions": "Build a budget CLI with set, spend, and remaining subcommands.",
+              "starterCode": "import typer\n\napp = typer.Typer(help=\"Budget Tracker CLI\", rich_markup_mode=\"rich\")\nbudget: dict = {\"limit\": 0.0, \"spent\": 0.0}\n\n@app.command()\ndef set(amount: ____):\n    \"\"\"Set the monthly [bold]budget[/bold].\"\"\"\n    budget[\"limit\"] = ____\n    budget[\"spent\"] = 0.0\n    print(f\"Budget set to ${amount:.2f}\")\n\n@app.command()\ndef spend(amount: float, category: ____):\n    \"\"\"Record an [bold red]expense[/bold red].\"\"\"\n    budget[\"spent\"] += amount\n    print(f\"Spent ${amount:.2f} on {____}\")\n\n@app.command()\ndef remaining():\n    \"\"\"Show budget remaining.\"\"\"\n    left = budget[\"limit\"] - budget[\"spent\"]\n    print(f\"Remaining: ${____:.2f}\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "solution": "import typer\n\napp = typer.Typer(help=\"Budget Tracker CLI\", rich_markup_mode=\"rich\")\nbudget: dict = {\"limit\": 0.0, \"spent\": 0.0}\n\n@app.command()\ndef set(amount: float):\n    \"\"\"Set the monthly [bold]budget[/bold].\"\"\"\n    budget[\"limit\"] = amount\n    budget[\"spent\"] = 0.0\n    print(f\"Budget set to ${amount:.2f}\")\n\n@app.command()\ndef spend(amount: float, category: str):\n    \"\"\"Record an [bold red]expense[/bold red].\"\"\"\n    budget[\"spent\"] += amount\n    print(f\"Spent ${amount:.2f} on {category}\")\n\n@app.command()\ndef remaining():\n    \"\"\"Show budget remaining.\"\"\"\n    left = budget[\"limit\"] - budget[\"spent\"]\n    print(f\"Remaining: ${left:.2f}\")\n\nif __name__ == \"__main__\":\n    app()\n",
               "language": "python",
               "testCases": [
                 {
                   "id": "test-1",
-                  "description": "App has three commands",
+                  "description": "Budget CLI has set, spend, remaining commands",
                   "expectedOutput": "",
                   "isVisible": true
                 }
@@ -10492,14 +10492,14 @@
               "hints": [
                 {
                   "level": 1,
-                  "text": "**Hint:** The `add` function needs `text: str`. Use `notes.clear()` to empty the list."
+                  "text": "**Hint:** Use `float` for amount, `str` for category. Calculate `left` as `budget['limit'] - budget['spent']`."
                 }
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Using notes = [] to clear instead of notes.clear()",
-                  "consequence": "Creates a new local variable instead of clearing the global list",
-                  "correction": "Use notes.clear() to modify the existing list"
+                  "mistake": "Forgetting to reset spent when setting new budget",
+                  "consequence": "Old spending carries over to new budget period",
+                  "correction": "Set budget['spent'] = 0.0 when setting new limit"
                 }
               ],
               "difficulty": "intermediate"
@@ -10517,29 +10517,29 @@
             {
               "type": "THEORY",
               "title": "Understanding the Concept",
-              "content": "**Rich** is a Python library for beautiful terminal output. When you install `typer[all]`, Rich is included.\n\nRich gives you:\n- **Colored text** - Make important info stand out\n- **Tables** - Display data cleanly\n- **Progress bars** - Show operation progress\n- **Panels and trees** - Organize complex output\n- **Syntax highlighting** - Pretty-print code and JSON\n\nTyper integrates Rich seamlessly with `typer.echo()` and progress utilities."
+              "content": "**Rich** is a Python library for beautiful terminal output. When you install `typer[all]`, Rich is included - no separate install needed!\n\n**Rich gives you:**\n- **Console** - Central object for all Rich output\n- **Tables** - Display data in formatted columns\n- **Progress bars** - Show operation progress\n- **Panels and trees** - Organize complex output\n- **Colored text** - Make important info stand out\n\n**Typer 0.16+ integration:**\n- Use `rich.console.Console` for direct Rich output\n- Use `rich.table.Table` for beautiful data display\n- Rich markup works in docstrings with `rich_markup_mode=\"rich\"`"
             },
             {
               "type": "EXAMPLE",
               "title": "Code Example",
-              "content": "**Expected Output:**\n```\n$ python demo.py\n[green]Success![/green] Operation completed\n[red]Error:[/red] Something went wrong\n\nProcessing: 100%|████████████████████████████| 100/100\nDone processing 100 items!\n```",
-              "code": "import typer\nfrom rich import print as rprint\nfrom rich.progress import track\nimport time\n\napp = typer.Typer()\n\n@app.command()\ndef demo():\n    \"\"\"Demonstrate Rich output features.\"\"\"\n    # Colored output with Rich markup\n    rprint(\"[green]Success![/green] Operation completed\")\n    rprint(\"[red]Error:[/red] Something went wrong\")\n    rprint()\n    \n    # Progress bar for long operations\n    items = range(100)\n    for item in track(items, description=\"Processing\"):\n        time.sleep(0.02)  # Simulate work\n    \n    rprint(f\"Done processing {len(items)} items!\")\n\n@app.command()\ndef status(healthy: bool = True):\n    \"\"\"Show status with colors.\"\"\"\n    if healthy:\n        rprint(\"[bold green]HEALTHY[/bold green] - All systems operational\")\n    else:\n        rprint(\"[bold red]UNHEALTHY[/bold red] - Check logs for errors\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "content": "**Expected Output:**\n```\n$ python finance.py transactions\n                    Transactions\n+----+------------+----------+---------+-------------+\n| ID | Date       | Category | Amount  | Note        |\n+----+------------+----------+---------+-------------+\n| 1  | 2024-01-15 | food     | -$45.00 | Groceries   |\n| 2  | 2024-01-15 | salary   | +$2000  | January pay |\n| 3  | 2024-01-16 | transport| -$25.00 | Uber        |\n+----+------------+----------+---------+-------------+\n\n$ python finance.py summary\nIncome:   $2000.00\nExpenses: $70.00\nBalance:  $1930.00\n```",
+              "code": "import typer\nfrom rich.console import Console\nfrom rich.table import Table\nfrom rich.progress import track\nimport time\n\napp = typer.Typer(rich_markup_mode=\"rich\")\nconsole = Console()\n\n# Sample transaction data\ntransactions = [\n    {\"id\": 1, \"date\": \"2024-01-15\", \"category\": \"food\", \"amount\": -45.00, \"note\": \"Groceries\"},\n    {\"id\": 2, \"date\": \"2024-01-15\", \"category\": \"salary\", \"amount\": 2000.00, \"note\": \"January pay\"},\n    {\"id\": 3, \"date\": \"2024-01-16\", \"category\": \"transport\", \"amount\": -25.00, \"note\": \"Uber\"},\n]\n\n@app.command(name=\"list\")\ndef list_transactions():\n    \"\"\"Show all transactions in a [bold green]beautiful table[/bold green].\"\"\"\n    table = Table(title=\"Transactions\")\n    table.add_column(\"ID\", style=\"cyan\")\n    table.add_column(\"Date\")\n    table.add_column(\"Category\", style=\"magenta\")\n    table.add_column(\"Amount\", style=\"green\")\n    table.add_column(\"Note\")\n    \n    for t in transactions:\n        amount_str = f\"+${t['amount']:.2f}\" if t['amount'] > 0 else f\"-${abs(t['amount']):.2f}\"\n        table.add_row(\n            str(t[\"id\"]),\n            t[\"date\"],\n            t[\"category\"],\n            amount_str,\n            t[\"note\"]\n        )\n    console.print(table)\n\n@app.command()\ndef summary():\n    \"\"\"Show financial [bold]summary[/bold].\"\"\"\n    income = sum(t[\"amount\"] for t in transactions if t[\"amount\"] > 0)\n    expenses = abs(sum(t[\"amount\"] for t in transactions if t[\"amount\"] < 0))\n    balance = income - expenses\n    \n    console.print(f\"[green]Income:[/green]   ${income:.2f}\")\n    console.print(f\"[red]Expenses:[/red] ${expenses:.2f}\")\n    console.print(f\"[bold]Balance:[/bold]  ${balance:.2f}\")\n\nif __name__ == \"__main__\":\n    app()\n",
               "language": "python"
             },
             {
               "type": "THEORY",
               "title": "Syntax Breakdown",
-              "content": "**Rich markup syntax:**\n```python\nrprint(\"[green]Green text[/green]\")\nrprint(\"[bold red]Bold red[/bold red]\")\nrprint(\"[blue on white]Blue on white background[/blue on white]\")\n```\n\n**Common colors:** green, red, yellow, blue, cyan, magenta, white\n\n**Progress bar:**\n```python\nfrom rich.progress import track\n\nfor item in track(items, description=\"Working...\"):\n    process(item)  # Automatically shows progress\n```\n\n**Tables:**\n```python\nfrom rich.table import Table\n\ntable = Table(title=\"Users\")\ntable.add_column(\"Name\")\ntable.add_column(\"Email\")\ntable.add_row(\"Alice\", \"alice@example.com\")\nrprint(table)\n```"
+              "content": "**Console - the central Rich object:**\n```python\nfrom rich.console import Console\nconsole = Console()\n\nconsole.print(\"[green]Success![/green]\")  # Colored output\nconsole.print(\"[bold red]Error![/bold red]\")  # Bold + color\n```\n\n**Tables - display structured data:**\n```python\nfrom rich.table import Table\n\ntable = Table(title=\"Expenses\")\ntable.add_column(\"Category\", style=\"cyan\")\ntable.add_column(\"Amount\", style=\"green\")\ntable.add_row(\"Food\", \"$150.00\")\ntable.add_row(\"Transport\", \"$75.00\")\nconsole.print(table)\n```\n\n**Progress bar - show long operations:**\n```python\nfrom rich.progress import track\n\nfor item in track(transactions, description=\"Processing...\"):\n    process(item)  # Automatically shows progress\n```\n\n**Common colors:** green, red, yellow, blue, cyan, magenta, white"
             },
             {
               "type": "WARNING",
               "title": "Common Pitfalls",
-              "content": "### Watch Out For These Common Mistakes:\n\n**1. Using print() Instead of rprint() for Rich Markup**\n```python\n# WRONG - Regular print doesn't interpret Rich markup\nprint(\"[green]Success[/green]\")  # Outputs literal text!\n\n# CORRECT - Use Rich's print function\nfrom rich import print as rprint\nrprint(\"[green]Success[/green]\")  # Shows green text\n```\n\n**2. Forgetting to Close Rich Markup Tags**\n```python\n# WRONG - Unclosed tag causes formatting issues\nrprint(\"[bold]Important message\")  # Missing [/bold]!\n\n# CORRECT - Always close your tags\nrprint(\"[bold]Important message[/bold]\")\n```\n\n**3. Using track() on Non-Iterable or Empty Collections**\n```python\n# WRONG - track() on None causes error\nitems = None\nfor item in track(items):  # TypeError!\n    pass\n\n# CORRECT - Ensure iterable exists\nitems = get_items() or []\nfor item in track(items, description=\"Processing\"):\n    pass\n```\n\n**4. Mixing Rich and Regular Print in Progress Loops**\n```python\n# WRONG - print() interferes with progress bar display\nfor item in track(items):\n    print(f\"Processing {item}\")  # Breaks progress bar!\n\n# CORRECT - Use Rich console or print after loop\nfrom rich.console import Console\nconsole = Console()\nfor item in track(items):\n    console.log(f\"Processing {item}\")  # Works with progress\n```\n\n**5. Nesting Rich Markup Incorrectly**\n```python\n# WRONG - Incorrect nesting order\nrprint(\"[bold][green]Text[/bold][/green]\")  # Wrong order!\n\n# CORRECT - Close in reverse order (LIFO)\nrprint(\"[bold][green]Text[/green][/bold]\")\n# Or use combined style\nrprint(\"[bold green]Text[/bold green]\")\n```"
+              "content": "### Watch Out For These Common Mistakes:\n\n**1. Using print() Instead of console.print() for Rich Markup**\n```python\n# WRONG - Regular print doesn't interpret Rich markup\nprint(\"[green]Success[/green]\")  # Outputs literal text!\n\n# CORRECT - Use Console for Rich output\nfrom rich.console import Console\nconsole = Console()\nconsole.print(\"[green]Success[/green]\")  # Shows green text\n```\n\n**2. Forgetting to Close Rich Markup Tags**\n```python\n# WRONG - Unclosed tag causes formatting issues\nconsole.print(\"[bold]Important message\")  # Missing [/bold]!\n\n# CORRECT - Always close your tags\nconsole.print(\"[bold]Important message[/bold]\")\n```\n\n**3. Forgetting to Print the Table**\n```python\n# WRONG - Creating table but never displaying it\ntable = Table(title=\"Expenses\")\ntable.add_column(\"Amount\")\ntable.add_row(\"$50\")  # Table exists but not shown!\n\n# CORRECT - Use console.print() to display\nconsole.print(table)\n```\n\n**4. Using track() with Empty Collections**\n```python\n# WRONG - track() on None causes error\nitems = None\nfor item in track(items):  # TypeError!\n    pass\n\n# CORRECT - Ensure iterable exists\nitems = get_items() or []\nfor item in track(items, description=\"Processing\"):\n    pass\n```\n\n**5. Mixing Console Instances Incorrectly**\n```python\n# WRONG - Multiple consoles can conflict\nconsole1 = Console()\nconsole2 = Console()\nconsole1.print(table)  # Might have display issues\n\n# CORRECT - Use single console instance\nconsole = Console()  # Create once, use everywhere\nconsole.print(table)\n```"
             },
             {
               "type": "KEY_POINT",
               "title": "Key Takeaways",
-              "content": "- **`rich.print`** supports markup like `[green]text[/green]`\n- **`track(iterable)`** adds a progress bar to any loop\n- **`rich.table.Table`** creates formatted tables\n- Install with `typer[all]` to include Rich\n- Use Rich to make CLI output professional and readable"
+              "content": "- **`Console`** is the central object for all Rich output\n- **`console.print()`** supports markup like `[green]text[/green]`\n- **`Table`** creates beautiful formatted tables for data\n- **`track(iterable)`** adds a progress bar to any loop\n- Install with `uv add typer[all]` - Rich is included\n- Use Rich to make CLI output professional and readable"
             }
           ],
           "challenges": [
@@ -10547,15 +10547,15 @@
               "type": "FREE_CODING",
               "id": "module-16-lesson-03-challenge-1",
               "title": "Practice Exercise",
-              "description": "Create a CLI that displays a colored status report.\n\n**Requirements:**\n- Show system name in bold\n- Show 'OK' in green or 'FAIL' in red based on status\n- Use a progress bar to simulate checking 5 systems",
-              "instructions": "Create a status checker with Rich colors and progress.",
-              "starterCode": "import typer\nfrom rich import print as rprint\nfrom rich.progress import track\nimport time\n\napp = typer.Typer()\n\n@app.command()\ndef check():\n    \"\"\"Check system status.\"\"\"\n    systems = [\"Database\", \"Cache\", \"API\", \"Auth\", \"Storage\"]\n    \n    for system in track(systems, description=\"Checking systems\"):\n        time.sleep(0.5)  # Simulate check\n        # Print each system with OK in green\n        rprint(f\"[bold]{system}[/bold]: [____]OK[/____]\")\n\nif __name__ == \"__main__\":\n    app()\n",
-              "solution": "import typer\nfrom rich import print as rprint\nfrom rich.progress import track\nimport time\n\napp = typer.Typer()\n\n@app.command()\ndef check():\n    \"\"\"Check system status.\"\"\"\n    systems = [\"Database\", \"Cache\", \"API\", \"Auth\", \"Storage\"]\n    \n    for system in track(systems, description=\"Checking systems\"):\n        time.sleep(0.5)  # Simulate check\n        rprint(f\"[bold]{system}[/bold]: [green]OK[/green]\")\n\nif __name__ == \"__main__\":\n    app()\n",
+              "description": "Create a CLI that displays expense categories in a Rich table.\n\n**Requirements:**\n- Create a table with columns: Category, Spent, Budget, Status\n- Color amounts green if under budget, red if over\n- Use Console for output",
+              "instructions": "Create a category summary with Rich Table and Console.",
+              "starterCode": "import typer\nfrom rich.console import Console\nfrom rich.table import Table\n\napp = typer.Typer(rich_markup_mode=\"rich\")\nconsole = Console()\n\ncategories = [\n    {\"name\": \"Food\", \"spent\": 450, \"budget\": 500},\n    {\"name\": \"Transport\", \"spent\": 200, \"budget\": 150},\n    {\"name\": \"Entertainment\", \"spent\": 80, \"budget\": 100},\n]\n\n@app.command()\ndef report():\n    \"\"\"Show category spending report.\"\"\"\n    table = Table(title=\"Budget Report\")\n    table.add_column(\"Category\", style=\"cyan\")\n    table.add_column(\"Spent\")\n    table.add_column(\"Budget\")\n    table.add_column(\"Status\")\n    \n    for cat in categories:\n        color = \"green\" if cat[\"spent\"] <= cat[\"budget\"] else \"red\"\n        status = \"OK\" if cat[\"spent\"] <= cat[\"budget\"] else \"OVER\"\n        table.add_row(\n            cat[\"name\"],\n            f\"${cat['spent']}\",\n            f\"${cat['budget']}\",\n            f\"[{____}]{status}[/{____}]\"\n        )\n    console.____(table)\n\nif __name__ == \"__main__\":\n    app()\n",
+              "solution": "import typer\nfrom rich.console import Console\nfrom rich.table import Table\n\napp = typer.Typer(rich_markup_mode=\"rich\")\nconsole = Console()\n\ncategories = [\n    {\"name\": \"Food\", \"spent\": 450, \"budget\": 500},\n    {\"name\": \"Transport\", \"spent\": 200, \"budget\": 150},\n    {\"name\": \"Entertainment\", \"spent\": 80, \"budget\": 100},\n]\n\n@app.command()\ndef report():\n    \"\"\"Show category spending report.\"\"\"\n    table = Table(title=\"Budget Report\")\n    table.add_column(\"Category\", style=\"cyan\")\n    table.add_column(\"Spent\")\n    table.add_column(\"Budget\")\n    table.add_column(\"Status\")\n    \n    for cat in categories:\n        color = \"green\" if cat[\"spent\"] <= cat[\"budget\"] else \"red\"\n        status = \"OK\" if cat[\"spent\"] <= cat[\"budget\"] else \"OVER\"\n        table.add_row(\n            cat[\"name\"],\n            f\"${cat['spent']}\",\n            f\"${cat['budget']}\",\n            f\"[{color}]{status}[/{color}]\"\n        )\n    console.print(table)\n\nif __name__ == \"__main__\":\n    app()\n",
               "language": "python",
               "testCases": [
                 {
                   "id": "test-1",
-                  "description": "Uses Rich progress and colors",
+                  "description": "Uses Rich Table and Console for budget report",
                   "expectedOutput": "",
                   "isVisible": true
                 }
@@ -10563,7 +10563,7 @@
               "hints": [
                 {
                   "level": 1,
-                  "text": "**Hint:** Color tags use the format `[color]text[/color]`. For green, use `[green]OK[/green]`."
+                  "text": "**Hint:** Use the `color` variable in the f-string: `[{color}]` and `[/{color}]`. Use `console.print(table)` to display."
                 }
               ],
               "commonMistakes": [],
@@ -10573,7 +10573,7 @@
         },
         {
           "id": "module-16-lesson-04",
-          "title": "Mini-Project: Task Manager CLI",
+          "title": "Mini-Project: Personal Finance Tracker CLI",
           "moduleId": "module-16",
           "order": 4,
           "estimatedMinutes": 45,
@@ -10582,40 +10582,40 @@
             {
               "type": "THEORY",
               "title": "Project Overview",
-              "content": "Let's build a complete task manager CLI that combines everything we've learned:\n\n**Features:**\n- Add, list, complete, and delete tasks\n- Persistent storage with JSON file\n- Priority levels (low, medium, high)\n- Beautiful Rich table output\n- Shell completion support\n\n**Project structure:**\n```\ntasks/\n  __init__.py\n  cli.py       # Typer commands\n  storage.py   # JSON file handling\n  models.py    # Task dataclass\n```"
+              "content": "Let's build a complete **Personal Finance Tracker CLI** that combines everything we've learned:\n\n**Features:**\n- Add expenses and income with categories\n- List transactions in a Rich table\n- Show summary with totals\n- Persistent storage with JSON file\n- Category-based filtering\n- Beautiful Rich output with Console and Table\n\n**Project structure:**\n```\nfinance/\n  __init__.py\n  cli.py       # Typer commands\n  storage.py   # JSON file handling\n  models.py    # Transaction dataclass\n```\n\n**Typer 0.16+ features used:**\n- `rich_markup_mode=\"rich\"` for formatted help\n- Rich Console and Table integration\n- typer[all] includes everything needed"
             },
             {
               "type": "EXAMPLE",
               "title": "Complete Implementation",
-              "content": "**Usage:**\n```\n$ tasks add \"Write docs\" --priority high\nAdded: Write docs [HIGH]\n\n$ tasks list\n┌────┬─────────────┬──────────┬────────────┐\n│ ID │ Task        │ Priority │ Status     │\n├────┼─────────────┼──────────┼────────────┤\n│ 1  │ Write docs  │ HIGH     │ pending    │\n└────┴─────────────┴──────────┴────────────┘\n\n$ tasks done 1\nCompleted: Write docs\n```",
-              "code": "# cli.py - Main Typer application\nimport typer\nfrom enum import Enum\nfrom pathlib import Path\nfrom rich import print as rprint\nfrom rich.table import Table\nimport json\nfrom datetime import datetime\n\napp = typer.Typer(help=\"Task Manager - organize your work.\")\nTASKS_FILE = Path.home() / \".tasks.json\"\n\nclass Priority(str, Enum):\n    low = \"low\"\n    medium = \"medium\"\n    high = \"high\"\n\ndef load_tasks() -> list[dict]:\n    if TASKS_FILE.exists():\n        return json.loads(TASKS_FILE.read_text())\n    return []\n\ndef save_tasks(tasks: list[dict]):\n    TASKS_FILE.write_text(json.dumps(tasks, indent=2))\n\n@app.command()\ndef add(task: str, priority: Priority = Priority.medium):\n    \"\"\"Add a new task.\"\"\"\n    tasks = load_tasks()\n    new_task = {\n        \"id\": len(tasks) + 1,\n        \"text\": task,\n        \"priority\": priority.value,\n        \"done\": False,\n        \"created\": datetime.now().isoformat()\n    }\n    tasks.append(new_task)\n    save_tasks(tasks)\n    color = {\"high\": \"red\", \"medium\": \"yellow\", \"low\": \"green\"}[priority.value]\n    rprint(f\"Added: {task} [{color}]{priority.value.upper()}[/{color}]\")\n\n@app.command(name=\"list\")\ndef list_tasks():\n    \"\"\"List all tasks.\"\"\"\n    tasks = load_tasks()\n    if not tasks:\n        rprint(\"[dim]No tasks yet. Add one with: tasks add 'Your task'[/dim]\")\n        return\n    \n    table = Table(title=\"Tasks\")\n    table.add_column(\"ID\", style=\"cyan\")\n    table.add_column(\"Task\")\n    table.add_column(\"Priority\")\n    table.add_column(\"Status\")\n    \n    for t in tasks:\n        priority_color = {\"high\": \"red\", \"medium\": \"yellow\", \"low\": \"green\"}\n        status = \"[green]done[/green]\" if t[\"done\"] else \"pending\"\n        table.add_row(\n            str(t[\"id\"]),\n            t[\"text\"],\n            f\"[{priority_color[t['priority']]}]{t['priority'].upper()}[/{priority_color[t['priority']]}]\",\n            status\n        )\n    rprint(table)\n\n@app.command()\ndef done(task_id: int):\n    \"\"\"Mark a task as complete.\"\"\"\n    tasks = load_tasks()\n    for t in tasks:\n        if t[\"id\"] == task_id:\n            t[\"done\"] = True\n            save_tasks(tasks)\n            rprint(f\"[green]Completed:[/green] {t['text']}\")\n            return\n    rprint(f\"[red]Task {task_id} not found[/red]\")\n    raise typer.Exit(code=1)\n\nif __name__ == \"__main__\":\n    app()\n",
+              "content": "**Usage:**\n```\n$ finance add 45.00 food --note \"Groceries\"\nAdded: -$45.00 (food) - Groceries\n\n$ finance add 2000.00 salary --income\nAdded: +$2000.00 (salary)\n\n$ finance list\n                    Transactions\n┌────┬────────────┬──────────┬───────────┬───────────┐\n│ ID │ Date       │ Category │ Amount    │ Note      │\n├────┼────────────┼──────────┼───────────┼───────────┤\n│ 1  │ 2024-01-15 │ food     │ -$45.00   │ Groceries │\n│ 2  │ 2024-01-15 │ salary   │ +$2000.00 │           │\n└────┴────────────┴──────────┴───────────┴───────────┘\n\n$ finance summary\nIncome:   $2000.00\nExpenses: $45.00\nBalance:  $1955.00\n```",
+              "code": "# cli.py - Personal Finance Tracker (Typer 0.16+)\nimport typer\nfrom enum import Enum\nfrom pathlib import Path\nfrom rich.console import Console\nfrom rich.table import Table\nimport json\nfrom datetime import datetime\n\n# Typer 0.16+: rich_markup_mode enables Rich in help text\napp = typer.Typer(\n    help=\"Personal Finance Tracker - manage your money.\",\n    rich_markup_mode=\"rich\"\n)\nconsole = Console()\nDATA_FILE = Path.home() / \".finance.json\"\n\nclass Category(str, Enum):\n    food = \"food\"\n    transport = \"transport\"\n    utilities = \"utilities\"\n    entertainment = \"entertainment\"\n    salary = \"salary\"\n    other = \"other\"\n\ndef load_data() -> list[dict]:\n    if DATA_FILE.exists():\n        return json.loads(DATA_FILE.read_text())\n    return []\n\ndef save_data(transactions: list[dict]):\n    DATA_FILE.write_text(json.dumps(transactions, indent=2))\n\ndef next_id(transactions: list[dict]) -> int:\n    if not transactions:\n        return 1\n    return max(t[\"id\"] for t in transactions) + 1\n\n@app.command()\ndef add(\n    amount: float,\n    category: Category,\n    note: str = \"\",\n    income: bool = False\n):\n    \"\"\"Add a new [bold green]expense[/bold green] or [bold blue]income[/bold blue].\"\"\"\n    transactions = load_data()\n    entry = {\n        \"id\": next_id(transactions),\n        \"amount\": amount if income else -amount,\n        \"category\": category.value,\n        \"note\": note,\n        \"date\": datetime.now().strftime(\"%Y-%m-%d\")\n    }\n    transactions.append(entry)\n    save_data(transactions)\n    \n    sign = \"+\" if income else \"-\"\n    color = \"green\" if income else \"red\"\n    msg = f\"Added: [{color}]{sign}${amount:.2f}[/{color}] ({category.value})\"\n    if note:\n        msg += f\" - {note}\"\n    console.print(msg)\n\n@app.command(name=\"list\")\ndef list_transactions(category: Category = None):\n    \"\"\"List all transactions in a [bold]beautiful table[/bold].\"\"\"\n    transactions = load_data()\n    if category:\n        transactions = [t for t in transactions if t[\"category\"] == category.value]\n    \n    if not transactions:\n        console.print(\"[dim]No transactions yet. Add one with: finance add 50 food[/dim]\")\n        return\n    \n    table = Table(title=\"Transactions\")\n    table.add_column(\"ID\", style=\"cyan\")\n    table.add_column(\"Date\")\n    table.add_column(\"Category\", style=\"magenta\")\n    table.add_column(\"Amount\")\n    table.add_column(\"Note\")\n    \n    for t in transactions:\n        color = \"green\" if t[\"amount\"] > 0 else \"red\"\n        sign = \"+\" if t[\"amount\"] > 0 else \"\"\n        table.add_row(\n            str(t[\"id\"]),\n            t[\"date\"],\n            t[\"category\"],\n            f\"[{color}]{sign}${abs(t['amount']):.2f}[/{color}]\",\n            t.get(\"note\", \"\")\n        )\n    console.print(table)\n\n@app.command()\ndef summary():\n    \"\"\"Show financial [bold]summary[/bold].\"\"\"\n    transactions = load_data()\n    income = sum(t[\"amount\"] for t in transactions if t[\"amount\"] > 0)\n    expenses = abs(sum(t[\"amount\"] for t in transactions if t[\"amount\"] < 0))\n    balance = income - expenses\n    \n    console.print(f\"[green]Income:[/green]   ${income:.2f}\")\n    console.print(f\"[red]Expenses:[/red] ${expenses:.2f}\")\n    balance_color = \"green\" if balance >= 0 else \"red\"\n    console.print(f\"[bold]Balance:[/bold]  [{balance_color}]${balance:.2f}[/{balance_color}]\")\n\n@app.command()\ndef delete(transaction_id: int):\n    \"\"\"Delete a transaction by ID.\"\"\"\n    transactions = load_data()\n    for i, t in enumerate(transactions):\n        if t[\"id\"] == transaction_id:\n            removed = transactions.pop(i)\n            save_data(transactions)\n            console.print(f\"[red]Deleted:[/red] ${abs(removed['amount']):.2f} ({removed['category']})\")\n            return\n    console.print(f\"[red]Transaction {transaction_id} not found[/red]\")\n    raise typer.Exit(code=1)\n\nif __name__ == \"__main__\":\n    app()\n",
               "language": "python"
             },
             {
               "type": "WARNING",
               "title": "Common Pitfalls",
-              "content": "### Watch Out For These Common Mistakes:\n\n**1. Not Handling Missing JSON File**\n```python\n# WRONG - Crashes if file doesn't exist\ndef load_tasks():\n    return json.loads(TASKS_FILE.read_text())  # FileNotFoundError!\n\n# CORRECT - Check if file exists first\ndef load_tasks():\n    if TASKS_FILE.exists():\n        return json.loads(TASKS_FILE.read_text())\n    return []\n```\n\n**2. ID Conflicts After Deletion**\n```python\n# WRONG - Using list index as ID causes gaps\nnew_task = {\"id\": len(tasks) + 1, ...}  # After deletion, IDs repeat!\n\n# CORRECT - Find max ID or use UUID\ndef next_id(tasks):\n    if not tasks:\n        return 1\n    return max(t[\"id\"] for t in tasks) + 1\n```\n\n**3. Forgetting to Save After Modifications**\n```python\n# WRONG - Changes lost when program exits\n@app.command()\ndef done(task_id: int):\n    tasks = load_tasks()\n    tasks[task_id - 1][\"done\"] = True\n    # Forgot save_tasks(tasks)!\n\n# CORRECT - Always save after modifying\n@app.command()\ndef done(task_id: int):\n    tasks = load_tasks()\n    tasks[task_id - 1][\"done\"] = True\n    save_tasks(tasks)  # Persist changes\n```\n\n**4. Not Inheriting from str in Enum**\n```python\n# WRONG - Typer can't serialize this properly\nclass Priority(Enum):\n    low = \"low\"\n    high = \"high\"\n\n# CORRECT - Inherit from str for CLI compatibility\nclass Priority(str, Enum):\n    low = \"low\"\n    high = \"high\"\n```\n\n**5. Hardcoding File Paths**\n```python\n# WRONG - Doesn't work across users/systems\nTASKS_FILE = \"/Users/alice/.tasks.json\"\n\n# CORRECT - Use Path.home() for user directory\nfrom pathlib import Path\nTASKS_FILE = Path.home() / \".tasks.json\"\n```"
+              "content": "### Watch Out For These Common Mistakes:\n\n**1. Not Handling Missing JSON File**\n```python\n# WRONG - Crashes if file doesn't exist\ndef load_data():\n    return json.loads(DATA_FILE.read_text())  # FileNotFoundError!\n\n# CORRECT - Check if file exists first\ndef load_data():\n    if DATA_FILE.exists():\n        return json.loads(DATA_FILE.read_text())\n    return []\n```\n\n**2. ID Conflicts After Deletion**\n```python\n# WRONG - Using list length as ID causes duplicates after delete\nnew_entry = {\"id\": len(transactions) + 1, ...}  # IDs repeat!\n\n# CORRECT - Find max ID from existing entries\ndef next_id(transactions):\n    if not transactions:\n        return 1\n    return max(t[\"id\"] for t in transactions) + 1\n```\n\n**3. Forgetting to Save After Modifications**\n```python\n# WRONG - Changes lost when program exits\n@app.command()\ndef delete(transaction_id: int):\n    transactions = load_data()\n    transactions.pop(idx)\n    # Forgot save_data(transactions)!\n\n# CORRECT - Always save after modifying\n    save_data(transactions)  # Persist changes\n```\n\n**4. Not Inheriting from str in Enum**\n```python\n# WRONG - Typer can't serialize this properly\nclass Category(Enum):\n    food = \"food\"\n\n# CORRECT - Inherit from str for CLI compatibility\nclass Category(str, Enum):\n    food = \"food\"\n```\n\n**5. Hardcoding File Paths**\n```python\n# WRONG - Doesn't work across users/systems\nDATA_FILE = \"/Users/alice/.finance.json\"\n\n# CORRECT - Use Path.home() for user directory\nfrom pathlib import Path\nDATA_FILE = Path.home() / \".finance.json\"\n```"
             },
             {
               "type": "KEY_POINT",
               "title": "Key Patterns Used",
-              "content": "- **`Enum` for choices** - `Priority(str, Enum)` gives autocomplete for `--priority`\n- **`Path.home()`** - Store data in user's home directory\n- **JSON persistence** - Simple file-based storage\n- **Rich Table** - Professional output formatting\n- **Exit codes** - `typer.Exit(code=1)` for errors"
+              "content": "- **`Enum` for choices** - `Category(str, Enum)` gives autocomplete for categories\n- **`Path.home()`** - Store data in user's home directory\n- **JSON persistence** - Simple file-based storage\n- **Rich Console + Table** - Professional output formatting\n- **`rich_markup_mode=\"rich\"`** - Enable Rich formatting in help (Typer 0.16+)\n- **Exit codes** - `typer.Exit(code=1)` for errors\n- **`uv add typer[all]`** - Includes Rich, no separate install needed"
             }
           ],
           "challenges": [
             {
               "type": "FREE_CODING",
               "id": "module-16-lesson-04-challenge-1",
-              "title": "Extend the Task Manager",
-              "description": "Add a `delete` command that removes a task by ID.\n\n**Requirements:**\n- Accept task_id as argument\n- Remove the task from the list\n- Print confirmation or error\n- Save the updated list",
-              "instructions": "Implement the delete command for the task manager.",
-              "starterCode": "@app.command()\ndef delete(task_id: ____):\n    \"\"\"Delete a task by ID.\"\"\"\n    tasks = load_tasks()\n    for i, t in enumerate(tasks):\n        if t[\"id\"] == task_id:\n            removed = tasks.____(i)\n            save_tasks(tasks)\n            rprint(f\"[red]Deleted:[/red] {removed['text']}\")\n            return\n    rprint(f\"[red]Task {task_id} not found[/red]\")\n    raise typer.Exit(code=1)\n",
-              "solution": "@app.command()\ndef delete(task_id: int):\n    \"\"\"Delete a task by ID.\"\"\"\n    tasks = load_tasks()\n    for i, t in enumerate(tasks):\n        if t[\"id\"] == task_id:\n            removed = tasks.pop(i)\n            save_tasks(tasks)\n            rprint(f\"[red]Deleted:[/red] {removed['text']}\")\n            return\n    rprint(f\"[red]Task {task_id} not found[/red]\")\n    raise typer.Exit(code=1)\n",
+              "title": "Add Category Summary Command",
+              "description": "Add a `categories` command that shows spending per category in a table.\n\n**Requirements:**\n- Group transactions by category\n- Show category name and total amount\n- Use Rich Table with colored amounts\n- Skip categories with $0 spent",
+              "instructions": "Implement the categories command for the finance tracker.",
+              "starterCode": "@app.command()\ndef categories():\n    \"\"\"Show spending by [bold]category[/bold].\"\"\"\n    transactions = load_data()\n    \n    # Group by category\n    by_category: dict[str, float] = {}\n    for t in transactions:\n        cat = t[\"category\"]\n        by_category[cat] = by_category.get(cat, 0) + t[\"amount\"]\n    \n    table = Table(title=\"Spending by Category\")\n    table.add_column(\"Category\", style=\"magenta\")\n    table.add_column(\"Total\")\n    \n    for cat, total in sorted(by_category.items()):\n        if total == 0:\n            continue\n        color = \"green\" if total > 0 else \"red\"\n        sign = \"+\" if total > 0 else \"\"\n        table.add_row(cat, f\"[{____}]{sign}${abs(total):.2f}[/{____}]\")\n    \n    console.____(table)\n",
+              "solution": "@app.command()\ndef categories():\n    \"\"\"Show spending by [bold]category[/bold].\"\"\"\n    transactions = load_data()\n    \n    # Group by category\n    by_category: dict[str, float] = {}\n    for t in transactions:\n        cat = t[\"category\"]\n        by_category[cat] = by_category.get(cat, 0) + t[\"amount\"]\n    \n    table = Table(title=\"Spending by Category\")\n    table.add_column(\"Category\", style=\"magenta\")\n    table.add_column(\"Total\")\n    \n    for cat, total in sorted(by_category.items()):\n        if total == 0:\n            continue\n        color = \"green\" if total > 0 else \"red\"\n        sign = \"+\" if total > 0 else \"\"\n        table.add_row(cat, f\"[{color}]{sign}${abs(total):.2f}[/{color}]\")\n    \n    console.print(table)\n",
               "language": "python",
               "testCases": [
                 {
                   "id": "test-1",
-                  "description": "Delete command removes task",
+                  "description": "Categories command shows spending grouped by category",
                   "expectedOutput": "",
                   "isVisible": true
                 }
@@ -10623,7 +10623,7 @@
               "hints": [
                 {
                   "level": 1,
-                  "text": "**Hint:** Use `tasks.pop(i)` to remove and return the item at index i."
+                  "text": "**Hint:** Use the `color` variable in the f-string markup. Use `console.print(table)` to display the table."
                 }
               ],
               "commonMistakes": [],
