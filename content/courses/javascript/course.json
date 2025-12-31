@@ -3281,10 +3281,221 @@
           ]
         },
         {
-          "id": "8.4",
-          "title": "The Modern, Clean Way (async and await)",
+          "id": "cjs-esm-interop",
+          "title": "CommonJS vs ES Modules: Understanding Both Worlds",
           "moduleId": "module-08",
           "order": 4,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "The Two Module Systems",
+              "content": "JavaScript has a unique challenge in the programming world: it evolved with TWO competing module systems, each with its own syntax, behavior, and ecosystem. Understanding both is essential for any modern JavaScript developer.\n\n**CommonJS (CJS)** - Born in 2009 for Node.js\nWhen Node.js was created, JavaScript had no native module system. Ryan Dahl needed a way to organize server-side code, so CommonJS was invented. It uses `require()` to import and `module.exports` to export. CommonJS modules load SYNCHRONOUSLY - the entire file is read and executed before the next line runs. This works great on servers where files are local, but would freeze browsers waiting for network requests.\n\n**ES Modules (ESM)** - The Official Standard (ES2015/ES6)\nIn 2015, JavaScript finally got an official module system as part of the ES6 specification. It uses `import` and `export` keywords. ESM modules are STATIC - imports are analyzed at parse time before code runs. This enables tree-shaking (removing unused code) and better optimization. ESM also supports asynchronous loading, making it perfect for browsers.\n\n**The Current State (2024-2025)**\nToday, ESM is the clear winner and the future of JavaScript. Node.js has full ESM support since v12. All modern browsers support ESM natively. New projects should use ESM by default. However, millions of npm packages still use CommonJS, so understanding interoperability is crucial. Bun, Deno, and modern bundlers all prefer ESM but maintain CJS compatibility."
+            },
+            {
+              "type": "CODE",
+              "title": "CommonJS Syntax (require/exports)",
+              "content": "CommonJS is the traditional Node.js module system. It uses the `require()` function to import modules and `module.exports` or `exports` to expose functionality. Understanding this syntax is essential because many npm packages still use it.",
+              "language": "javascript",
+              "code": "// ============================================\n// EXPORTING IN COMMONJS\n// ============================================\n\n// math.js - Exporting multiple values\nfunction add(a, b) {\n  return a + b;\n}\n\nfunction subtract(a, b) {\n  return a - b;\n}\n\n// Method 1: Assign to module.exports object\nmodule.exports = {\n  add: add,\n  subtract: subtract\n};\n\n// Method 2: Shorthand with ES6 property shorthand\nmodule.exports = { add, subtract };\n\n// Method 3: Add properties individually\nmodule.exports.add = add;\nmodule.exports.subtract = subtract;\n\n// Method 4: Using exports shorthand (same as module.exports)\nexports.add = add;\nexports.subtract = subtract;\n\n// WARNING: This BREAKS exports (reassigning the reference)\nexports = { add, subtract }; // WRONG! This doesn't work!\n\n// ============================================\n// EXPORTING A SINGLE VALUE (Default-like)\n// ============================================\n\n// logger.js - Single export\nclass Logger {\n  log(message) {\n    console.log(`[LOG]: ${message}`);\n  }\n}\n\nmodule.exports = Logger; // Export the class itself\n\n// ============================================\n// IMPORTING IN COMMONJS\n// ============================================\n\n// app.js - Importing modules\n\n// Import the entire module object\nconst math = require('./math.js');\nconsole.log(math.add(2, 3)); // 5\nconsole.log(math.subtract(5, 2)); // 3\n\n// Destructure during import\nconst { add, subtract } = require('./math.js');\nconsole.log(add(2, 3)); // 5\n\n// Import single export\nconst Logger = require('./logger.js');\nconst logger = new Logger();\nlogger.log('Hello!'); // [LOG]: Hello!\n\n// ============================================\n// MODULE RESOLUTION\n// ============================================\n\n// Relative paths (your own files)\nconst utils = require('./utils');      // ./utils.js\nconst config = require('../config');   // ../config.js\nconst data = require('./data/users');  // ./data/users.js\n\n// Node modules (from node_modules folder)\nconst express = require('express');    // node_modules/express\nconst lodash = require('lodash');      // node_modules/lodash\n\n// Built-in Node.js modules\nconst fs = require('fs');              // File system\nconst path = require('path');          // Path utilities\nconst http = require('http');          // HTTP server\n\n// Node.js 16+ recommends 'node:' prefix for built-ins\nconst fs = require('node:fs');\nconst path = require('node:path');"
+            },
+            {
+              "type": "CODE",
+              "title": "ES Modules Syntax (import/export)",
+              "content": "ES Modules (ESM) is the official JavaScript module standard. It offers cleaner syntax, static analysis for optimization, and native browser support. This is the modern way to write JavaScript modules and should be your default choice for new projects.",
+              "language": "javascript",
+              "code": "// ============================================\n// NAMED EXPORTS\n// ============================================\n\n// math.js - Multiple named exports\nexport function add(a, b) {\n  return a + b;\n}\n\nexport function subtract(a, b) {\n  return a - b;\n}\n\nexport const PI = 3.14159;\n\n// Or export at the end (equivalent)\nfunction multiply(a, b) {\n  return a * b;\n}\nconst E = 2.71828;\nexport { multiply, E };\n\n// Export with renaming\nexport { multiply as mult, E as EULER };\n\n// ============================================\n// DEFAULT EXPORTS\n// ============================================\n\n// logger.js - Default export (one per file)\nexport default class Logger {\n  log(message) {\n    console.log(`[LOG]: ${message}`);\n  }\n}\n\n// Alternative: export default at the end\nclass Calculator {\n  add(a, b) { return a + b; }\n}\nexport default Calculator;\n\n// Can combine default with named exports\nexport default class User {}\nexport function createUser() {}\nexport const DEFAULT_ROLE = 'guest';\n\n// ============================================\n// IMPORTING NAMED EXPORTS\n// ============================================\n\n// Import specific exports\nimport { add, subtract } from './math.js';\nconsole.log(add(2, 3)); // 5\n\n// Import with renaming\nimport { add as sum, PI } from './math.js';\nconsole.log(sum(2, 3)); // 5\n\n// Import all as namespace object\nimport * as math from './math.js';\nconsole.log(math.add(2, 3)); // 5\nconsole.log(math.PI); // 3.14159\n\n// ============================================\n// IMPORTING DEFAULT EXPORTS\n// ============================================\n\n// Default import (no curly braces, any name works)\nimport Logger from './logger.js';\nimport MyLogger from './logger.js'; // Same thing, different name\n\nconst logger = new Logger();\n\n// Combine default and named imports\nimport User, { createUser, DEFAULT_ROLE } from './user.js';\n\n// ============================================\n// RE-EXPORTS (Barrel Exports)\n// ============================================\n\n// index.js - Re-export from other modules\nexport { add, subtract } from './math.js';\nexport { default as Logger } from './logger.js';\nexport * from './utils.js'; // Re-export everything\n\n// Now consumers can import from one place:\nimport { add, Logger } from './index.js';\n\n// ============================================\n// DYNAMIC IMPORTS\n// ============================================\n\n// Load module at runtime (returns Promise)\nconst module = await import('./heavy-module.js');\nmodule.doSomething();\n\n// Conditional loading\nif (needsFeature) {\n  const { feature } = await import('./feature.js');\n  feature();\n}\n\n// With destructuring\nconst { add, subtract } = await import('./math.js');"
+            },
+            {
+              "type": "CODE",
+              "title": "package.json Configuration",
+              "content": "The package.json file controls how Node.js interprets your modules. The `type` field determines whether .js files are treated as CommonJS or ES Modules. Understanding this configuration is essential for avoiding confusing module errors.",
+              "language": "json",
+              "code": "// ============================================\n// BASIC MODULE TYPE CONFIGURATION\n// ============================================\n\n// package.json - ES Modules project (RECOMMENDED for new projects)\n{\n  \"name\": \"my-esm-project\",\n  \"type\": \"module\",\n  \"version\": \"1.0.0\"\n}\n// With \"type\": \"module\":\n//   - .js files are treated as ES Modules\n//   - Use import/export syntax\n//   - Use .cjs extension for CommonJS files\n\n// package.json - CommonJS project (legacy default)\n{\n  \"name\": \"my-cjs-project\",\n  \"type\": \"commonjs\",\n  \"version\": \"1.0.0\"\n}\n// With \"type\": \"commonjs\" (or no type field):\n//   - .js files are treated as CommonJS\n//   - Use require/module.exports syntax\n//   - Use .mjs extension for ES Module files\n\n// ============================================\n// FILE EXTENSIONS OVERRIDE package.json\n// ============================================\n\n// .mjs - ALWAYS ES Module (regardless of package.json)\nimport { something } from './other.mjs';\nexport const value = 42;\n\n// .cjs - ALWAYS CommonJS (regardless of package.json)\nconst something = require('./other.cjs');\nmodule.exports = { value: 42 };\n\n// .js - Determined by nearest package.json \"type\" field\n\n// ============================================\n// THE \"exports\" FIELD (Modern Package Authoring)\n// ============================================\n\n// package.json - Modern package with exports field\n{\n  \"name\": \"my-library\",\n  \"version\": \"2.0.0\",\n  \"type\": \"module\",\n  \n  // Main entry (legacy, still useful for older tools)\n  \"main\": \"./dist/index.cjs\",\n  \n  // Module entry (for bundlers)\n  \"module\": \"./dist/index.mjs\",\n  \n  // Exports field (Node.js 12+, recommended)\n  \"exports\": {\n    // Main entry point\n    \".\": {\n      \"import\": \"./dist/index.mjs\",\n      \"require\": \"./dist/index.cjs\",\n      \"types\": \"./dist/index.d.ts\"\n    },\n    // Subpath exports\n    \"./utils\": {\n      \"import\": \"./dist/utils.mjs\",\n      \"require\": \"./dist/utils.cjs\"\n    },\n    // Pattern exports\n    \"./components/*\": \"./dist/components/*.js\"\n  },\n  \n  // TypeScript types\n  \"types\": \"./dist/index.d.ts\"\n}\n\n// Usage by consumers:\nimport lib from 'my-library';           // Uses exports[\".\"]\nimport { helper } from 'my-library/utils'; // Uses exports[\"./utils\"]"
+            },
+            {
+              "type": "CODE",
+              "title": "Importing CJS from ESM",
+              "content": "When working in ES Modules, you will often need to import CommonJS packages. Node.js provides good interoperability, but there are some gotchas to understand. Most npm packages are still CommonJS, so this knowledge is essential.",
+              "language": "javascript",
+              "code": "// ============================================\n// BASIC CJS IMPORT IN ESM\n// ============================================\n\n// Most CJS packages work with default import\nimport express from 'express';        // CJS package\nimport lodash from 'lodash';          // CJS package\nimport chalk from 'chalk';            // CJS package\n\nconst app = express();\nconst result = lodash.chunk([1, 2, 3, 4], 2);\n\n// ============================================\n// THE DEFAULT EXPORT GOTCHA\n// ============================================\n\n// CJS module (old-package.js)\nmodule.exports = {\n  foo: 'bar',\n  doSomething: function() {}\n};\n\n// In ESM, this becomes the DEFAULT export\nimport pkg from 'old-package';\nconsole.log(pkg.foo);      // 'bar'\npkg.doSomething();\n\n// Named imports MAY work (Node.js tries to detect them)\nimport { foo, doSomething } from 'old-package'; // Sometimes works!\n\n// But this is NOT guaranteed - depends on how CJS exports\n// When in doubt, use default import and destructure:\nimport pkg from 'old-package';\nconst { foo, doSomething } = pkg;\n\n// ============================================\n// USING createRequire() FOR ADVANCED CASES\n// ============================================\n\nimport { createRequire } from 'node:module';\nconst require = createRequire(import.meta.url);\n\n// Now you can use require() in ESM!\nconst cjsModule = require('./legacy-module.cjs');\nconst jsonData = require('./data.json'); // Before import attributes\n\n// Useful for:\n// - Loading JSON (before ES2025 Import Attributes)\n// - CJS modules with complex exports\n// - __dirname/__filename equivalents\n\n// ============================================\n// DYNAMIC IMPORT FOR CJS MODULES\n// ============================================\n\n// Dynamic import always works with CJS\nconst cjsModule = await import('cjs-package');\nconsole.log(cjsModule.default); // The module.exports value\n\n// Destructure if needed\nconst { default: pkg } = await import('cjs-package');\nconst { foo, bar } = pkg;\n\n// ============================================\n// COMMON INTEROP PATTERNS\n// ============================================\n\n// Pattern 1: Default import + destructure (safest)\nimport pkg from 'cjs-package';\nconst { methodA, methodB } = pkg;\n\n// Pattern 2: Try named imports first, fall back to default\ntry {\n  // This might work if Node.js detects named exports\n  const { specificMethod } = await import('cjs-package');\n} catch {\n  const pkg = await import('cjs-package');\n  const { specificMethod } = pkg.default;\n}\n\n// Pattern 3: Namespace import for exploration\nimport * as pkg from 'cjs-package';\nconsole.log(Object.keys(pkg)); // See what's available\nconsole.log(pkg.default);      // The actual CJS exports"
+            },
+            {
+              "type": "CODE",
+              "title": "Node.js 22+ require(esm) Support",
+              "content": "Node.js 22 introduced a groundbreaking feature: the ability to require() ES Modules from CommonJS code! This makes migration easier and improves interoperability. However, there are important limitations to understand.",
+              "language": "javascript",
+              "code": "// ============================================\n// THE NEW require(esm) FEATURE (Node.js 22+)\n// ============================================\n\n// esm-module.mjs (or .js with \"type\": \"module\")\nexport function greet(name) {\n  return `Hello, ${name}!`;\n}\n\nexport default class User {\n  constructor(name) {\n    this.name = name;\n  }\n}\n\n// cjs-consumer.cjs - NOW YOU CAN require() ESM!\nconst esmModule = require('./esm-module.mjs');\n\nconsole.log(esmModule.greet('World')); // Hello, World!\n\nconst User = esmModule.default;\nconst user = new User('Alice');\n\n// ============================================\n// HOW IT WORKS\n// ============================================\n\n// Node.js 22 loads ESM synchronously when required\n// This is possible because the module is evaluated eagerly\n\n// Named exports become properties on the required object\nconst { greet, default: User } = require('./esm-module.mjs');\n\n// ============================================\n// LIMITATIONS: NO TOP-LEVEL AWAIT\n// ============================================\n\n// This ESM module CANNOT be required:\n// async-module.mjs\nconst data = await fetch('https://api.example.com/data');\nexport const config = await loadConfig();\nexport default data;\n\n// Trying to require it throws an error!\n// const mod = require('./async-module.mjs'); \n// Error: Cannot require() ES Module with top-level await\n\n// ============================================\n// DETECTION AND COMPATIBILITY\n// ============================================\n\n// Check if require(esm) is supported\nfunction canRequireESM() {\n  try {\n    // Node.js 22+ supports this\n    const [major] = process.versions.node.split('.');\n    return parseInt(major) >= 22;\n  } catch {\n    return false;\n  }\n}\n\n// Conditional loading pattern\nlet esmModule;\nif (canRequireESM()) {\n  esmModule = require('./module.mjs');\n} else {\n  // Fallback for older Node.js\n  esmModule = await import('./module.mjs');\n}\n\n// ============================================\n// PRACTICAL MIGRATION SCENARIO\n// ============================================\n\n// Before Node.js 22: Dynamic import required in CJS\n// old-way.cjs\nasync function loadESM() {\n  const { greet } = await import('./esm-module.mjs');\n  return greet('World');\n}\n\n// Node.js 22+: Direct require works!\n// new-way.cjs\nconst { greet } = require('./esm-module.mjs');\nconsole.log(greet('World')); // Synchronous, no async needed!"
+            },
+            {
+              "type": "CODE",
+              "title": "Dual Package Authoring",
+              "content": "If you are publishing a library to npm, you may want to support both CommonJS and ES Module consumers. This is called dual package authoring. The package.json exports field with conditional exports makes this possible.",
+              "language": "javascript",
+              "code": "// ============================================\n// DUAL PACKAGE STRUCTURE\n// ============================================\n\n// my-library/\n// ├── package.json\n// ├── src/\n// │   └── index.js         (Source code)\n// ├── dist/\n// │   ├── index.mjs        (ES Module build)\n// │   ├── index.cjs        (CommonJS build)\n// │   └── index.d.ts       (TypeScript types)\n// └── README.md\n\n// ============================================\n// package.json WITH CONDITIONAL EXPORTS\n// ============================================\n\n{\n  \"name\": \"my-awesome-library\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \n  \"main\": \"./dist/index.cjs\",\n  \"module\": \"./dist/index.mjs\",\n  \"types\": \"./dist/index.d.ts\",\n  \n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.mjs\",\n      \"require\": \"./dist/index.cjs\",\n      \"default\": \"./dist/index.mjs\"\n    },\n    \"./utils\": {\n      \"types\": \"./dist/utils.d.ts\",\n      \"import\": \"./dist/utils.mjs\",\n      \"require\": \"./dist/utils.cjs\"\n    },\n    \"./package.json\": \"./package.json\"\n  },\n  \n  \"files\": [\"dist\"],\n  \n  \"scripts\": {\n    \"build\": \"tsup src/index.ts --format cjs,esm --dts\",\n    \"build:watch\": \"tsup src/index.ts --format cjs,esm --dts --watch\"\n  }\n}\n\n// ============================================\n// CONDITION ORDER MATTERS!\n// ============================================\n\n// Node.js checks conditions in order, uses first match\n\"exports\": {\n  \".\": {\n    // TypeScript should come first (for tooling)\n    \"types\": \"./dist/index.d.ts\",\n    \n    // Bun-specific (if needed)\n    \"bun\": \"./dist/index.bun.js\",\n    \n    // Deno-specific (if needed)  \n    \"deno\": \"./dist/index.deno.js\",\n    \n    // ES Module consumers (import)\n    \"import\": \"./dist/index.mjs\",\n    \n    // CommonJS consumers (require)\n    \"require\": \"./dist/index.cjs\",\n    \n    // Fallback (should be last)\n    \"default\": \"./dist/index.mjs\"\n  }\n}\n\n// ============================================\n// BUILD TOOLS FOR DUAL PACKAGES\n// ============================================\n\n// Using tsup (recommended, simple)\n// tsup.config.ts\nimport { defineConfig } from 'tsup';\n\nexport default defineConfig({\n  entry: ['src/index.ts'],\n  format: ['cjs', 'esm'],\n  dts: true,\n  clean: true,\n  splitting: false,\n  sourcemap: true\n});\n\n// Using esbuild\nimport * as esbuild from 'esbuild';\n\n// ESM build\nawait esbuild.build({\n  entryPoints: ['src/index.ts'],\n  bundle: true,\n  format: 'esm',\n  outfile: 'dist/index.mjs'\n});\n\n// CJS build\nawait esbuild.build({\n  entryPoints: ['src/index.ts'],\n  bundle: true,\n  format: 'cjs',\n  outfile: 'dist/index.cjs'\n});\n\n// ============================================\n// CONSUMERS USE IT SEAMLESSLY\n// ============================================\n\n// ESM consumer\nimport { myFunction } from 'my-awesome-library';\nimport { helper } from 'my-awesome-library/utils';\n\n// CJS consumer  \nconst { myFunction } = require('my-awesome-library');\nconst { helper } = require('my-awesome-library/utils');\n\n// TypeScript consumer (types just work!)\nimport { myFunction } from 'my-awesome-library';\n// Hover shows: function myFunction(arg: string): number"
+            },
+            {
+              "type": "PITFALLS",
+              "title": "Common Interop Issues",
+              "content": "Module interoperability is one of the trickiest areas in JavaScript. Here are the most common issues developers encounter and how to solve them.\n\n**1. Default Export Confusion (CJS to ESM)**\nWhen importing a CommonJS module into ESM, the entire `module.exports` becomes the default export. If the CJS module exports an object with methods, you must access them through the default:\n```javascript\n// WRONG: Named import from CJS often fails\nimport { method } from 'cjs-package'; // May not work!\n\n// RIGHT: Default import, then destructure\nimport pkg from 'cjs-package';\nconst { method } = pkg;\n```\n\n**2. Top-Level Await Only Works in ESM**\nYou cannot use `await` at the top level of a CommonJS module. This is ESM-only:\n```javascript\n// ESM (works)\nconst data = await fetchData();\nexport { data };\n\n// CJS (ERROR!)\nconst data = await fetchData(); // SyntaxError!\nmodule.exports = { data };\n```\n\n**3. __dirname and __filename Not Available in ESM**\nESM does not have the CommonJS globals. Use `import.meta.url` instead:\n```javascript\n// CJS\nconsole.log(__dirname);  // /path/to/directory\nconsole.log(__filename); // /path/to/file.js\n\n// ESM - use import.meta\nimport { fileURLToPath } from 'node:url';\nimport { dirname } from 'node:path';\n\nconst __filename = fileURLToPath(import.meta.url);\nconst __dirname = dirname(__filename);\n\n// Or use import.meta.dirname (Node.js 20.11+)\nconsole.log(import.meta.dirname);  // /path/to/directory\nconsole.log(import.meta.filename); // /path/to/file.js\n```\n\n**4. Named Imports from CJS May Not Work**\nNode.js attempts to detect named exports from CJS, but it is not always possible:\n```javascript\n// If CJS does: module.exports = function() {}\nimport fn from 'pkg';     // Works (default)\nimport { fn } from 'pkg'; // FAILS!\n\n// If CJS does: exports.fn = function() {}\nimport { fn } from 'pkg'; // Usually works\n```\n\n**5. Circular Dependencies Behave Differently**\nCJS gives you a partially-initialized object during circular imports. ESM gives you a live binding that updates when the export is set. This can cause subtle bugs when migrating.\n\n**6. JSON Imports Differ Between Systems**\n```javascript\n// CJS - works directly\nconst pkg = require('./package.json');\n\n// ESM (pre-ES2025) - needs createRequire or flag\nimport { createRequire } from 'node:module';\nconst require = createRequire(import.meta.url);\nconst pkg = require('./package.json');\n\n// ESM (ES2025+) - use Import Attributes\nimport pkg from './package.json' with { type: 'json' };\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "cjs-esm-challenge-1",
+              "title": "Module Migration",
+              "description": "Convert this CommonJS module to ES Module syntax. The module exports a Calculator class with add and subtract methods.",
+              "instructions": "Convert the following CommonJS module to ES Module syntax:\n\n```javascript\n// calculator.cjs (CommonJS)\nclass Calculator {\n  add(a, b) {\n    return a + b;\n  }\n  \n  subtract(a, b) {\n    return a - b;\n  }\n}\n\nfunction multiply(a, b) {\n  return a * b;\n}\n\nmodule.exports = Calculator;\nmodule.exports.multiply = multiply;\n```\n\nRewrite this as an ES Module with Calculator as the default export and multiply as a named export.",
+              "starterCode": "// calculator.mjs (ES Module)\n// Convert the CommonJS module to ESM syntax\n// - Calculator should be the default export\n// - multiply should be a named export\n\nclass Calculator {\n  add(a, b) {\n    return a + b;\n  }\n  \n  subtract(a, b) {\n    return a - b;\n  }\n}\n\nfunction multiply(a, b) {\n  return a * b;\n}\n\n// YOUR EXPORTS HERE",
+              "solution": "// calculator.mjs (ES Module)\nclass Calculator {\n  add(a, b) {\n    return a + b;\n  }\n  \n  subtract(a, b) {\n    return a - b;\n  }\n}\n\nexport function multiply(a, b) {\n  return a * b;\n}\n\nexport default Calculator;\n\n// Usage:\n// import Calculator, { multiply } from './calculator.mjs';\n// const calc = new Calculator();\n// console.log(calc.add(2, 3));    // 5\n// console.log(multiply(4, 5));    // 20",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Has default export for Calculator class",
+                  "expectedOutput": "export default Calculator",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Has named export for multiply function",
+                  "expectedOutput": "export function multiply",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'export default ClassName' for the main export and 'export function name()' for named exports"
+                },
+                {
+                  "level": 2,
+                  "text": "You can either add 'export' before the function definition or use 'export { multiply }' at the end"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using module.exports in ES Modules",
+                  "consequence": "ES Modules use export/export default syntax, not module.exports",
+                  "correction": "Replace 'module.exports = X' with 'export default X' and 'module.exports.y = y' with 'export { y }'"
+                },
+                {
+                  "mistake": "Forgetting to add 'export' keyword",
+                  "consequence": "Functions and classes are not accessible outside the module",
+                  "correction": "Add 'export' before function/class or use 'export { name }' at the end"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "cjs-esm-challenge-2",
+              "title": "Dual Package Setup",
+              "description": "Create a package.json with conditional exports that supports both ESM and CommonJS consumers.",
+              "instructions": "Create a package.json for a library called 'my-utils' that:\n1. Has type: 'module' (ESM by default)\n2. Uses the exports field with conditional exports\n3. Points ESM consumers (import) to './dist/index.mjs'\n4. Points CJS consumers (require) to './dist/index.cjs'\n5. Points TypeScript (types) to './dist/index.d.ts'\n6. Also exports a './helpers' subpath with the same pattern",
+              "starterCode": "// Create the package.json content\nconst packageJson = {\n  \"name\": \"my-utils\",\n  \"version\": \"1.0.0\",\n  // Add your configuration here\n  \n};\n\nconsole.log(JSON.stringify(packageJson, null, 2));",
+              "solution": "const packageJson = {\n  \"name\": \"my-utils\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"exports\": {\n    \".\": {\n      \"types\": \"./dist/index.d.ts\",\n      \"import\": \"./dist/index.mjs\",\n      \"require\": \"./dist/index.cjs\"\n    },\n    \"./helpers\": {\n      \"types\": \"./dist/helpers.d.ts\",\n      \"import\": \"./dist/helpers.mjs\",\n      \"require\": \"./dist/helpers.cjs\"\n    }\n  }\n};\n\nconsole.log(JSON.stringify(packageJson, null, 2));",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Has type: module",
+                  "expectedOutput": "\"type\": \"module\"",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Has exports field with import condition",
+                  "expectedOutput": "\"import\":",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Has exports field with require condition",
+                  "expectedOutput": "\"require\":",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The exports field uses \".\" for the main entry and \"./subpath\" for subpaths"
+                },
+                {
+                  "level": 2,
+                  "text": "Each export should have 'types', 'import', and 'require' conditions in that order"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Wrong condition order in exports",
+                  "consequence": "TypeScript types may not be found or wrong module format used",
+                  "correction": "Order should be: types, import, require (or types first, then more specific to less specific)"
+                },
+                {
+                  "mistake": "Missing the dot in main export path",
+                  "consequence": "Main entry point not properly defined",
+                  "correction": "Use \".\" for the main entry, not \"\" or \"index\""
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "cjs-esm-challenge-3",
+              "title": "CJS Interop",
+              "description": "Import a CommonJS package correctly in ES Module code and handle the default export pattern.",
+              "instructions": "You are in an ES Module file and need to import from a CommonJS package called 'legacy-utils'. The CJS package exports:\n```javascript\nmodule.exports = {\n  formatDate: function(date) { ... },\n  parseDate: function(str) { ... },\n  VERSION: '1.0.0'\n};\n```\n\nWrite code that:\n1. Imports the package correctly\n2. Extracts formatDate and VERSION\n3. Uses formatDate to format today's date\n4. Logs the VERSION",
+              "starterCode": "// Import the CJS package 'legacy-utils' in ESM\n// Hint: CJS module.exports becomes the default export\n\n// YOUR IMPORT HERE\n\n// Extract formatDate and VERSION\n// YOUR DESTRUCTURING HERE\n\n// Use the imported functions\nconst today = new Date();\nconst formatted = formatDate(today);\nconsole.log('Formatted date:', formatted);\nconsole.log('Version:', VERSION);",
+              "solution": "// Import the CJS package 'legacy-utils' in ESM\n// CJS module.exports becomes the default export\nimport legacyUtils from 'legacy-utils';\n\n// Extract formatDate and VERSION from the default export\nconst { formatDate, VERSION } = legacyUtils;\n\n// Use the imported functions\nconst today = new Date();\nconst formatted = formatDate(today);\nconsole.log('Formatted date:', formatted);\nconsole.log('Version:', VERSION);\n\n// Alternative: single line with default import + destructure\n// import pkg from 'legacy-utils';\n// const { formatDate, VERSION } = pkg;",
+              "language": "javascript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses default import for CJS package",
+                  "expectedOutput": "import",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Destructures the needed exports",
+                  "expectedOutput": "formatDate",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "When a CJS module uses module.exports = {...}, the whole object becomes the default export in ESM"
+                },
+                {
+                  "level": 2,
+                  "text": "Import with: import pkg from 'package'; then destructure: const { fn } = pkg;"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Trying to use named imports directly from CJS",
+                  "consequence": "import { formatDate } from 'legacy-utils' may fail or return undefined",
+                  "correction": "Use default import first, then destructure: import pkg from 'pkg'; const { fn } = pkg;"
+                },
+                {
+                  "mistake": "Using require() in ES Module",
+                  "consequence": "require is not defined in ES Modules",
+                  "correction": "Use import syntax, or createRequire() from 'node:module' if require() is absolutely needed"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "8.5",
+          "title": "The Modern, Clean Way (async and await)",
+          "moduleId": "module-08",
+          "order": 5,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
           "contentSections": [
@@ -3314,7 +3525,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "8.4-challenge",
+              "id": "8.5-challenge",
               "title": "Practice Challenge",
               "description": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
               "instructions": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
@@ -3369,10 +3580,10 @@
           ]
         },
         {
-          "id": "8.5",
+          "id": "8.6",
           "title": "Ordering from the Menu (Using fetch() to Get API Data)",
           "moduleId": "module-08",
-          "order": 5,
+          "order": 6,
           "estimatedMinutes": 25,
           "difficulty": "intermediate",
           "contentSections": [
@@ -3402,7 +3613,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "8.5-challenge",
+              "id": "8.6-challenge",
               "title": "Practice Challenge",
               "description": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
               "instructions": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
