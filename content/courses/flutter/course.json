@@ -4702,223 +4702,186 @@
         },
         {
           "id": "5.3",
-          "title": "Module 5, Lesson 3: Introduction to Riverpod",
+          "title": "Project Structure (Feature-First Folders)",
           "moduleId": "module-05",
           "order": 3,
-          "estimatedMinutes": 60,
+          "estimatedMinutes": 35,
           "difficulty": "beginner",
           "contentSections": [
             {
               "type": "THEORY",
-              "title": "Why Riverpod?",
-              "content": "\nProvider is great, but has limitations:\n- Runtime errors (easy to forget providers)\n- Hard to test\n- Context required everywhere\n- No compile-time safety\n\n**Riverpod solves all of these!**\n\nThink of it as \"Provider 2.0\" - same author, better design.\n\n"
-            },
-            {
-              "type": "KEY_POINT",
-              "title": "Key Advantages",
-              "content": "\n1. **No BuildContext needed** - access state from anywhere\n2. **Compile-time safe** - errors caught before runtime\n3. **Easy testing** - no widget tree needed\n4. **Better performance** - automatic disposal\n5. **DevTools integration** - amazing debugging\n\n"
+              "title": "Why Folder Structure Matters",
+              "content": "When you start a Flutter project, you can technically put all your code in one file. For a tiny app, that works. But as your app grows, finding and organizing code becomes a nightmare.\n\n**Small apps (1-3 screens):** Any structure works. You can find files quickly because there are so few.\n\n**Medium apps (4-10 screens):** You start losing track. Where did I put that helper function? Which file has the user model?\n\n**Large apps (10+ screens):** Without good structure, you spend more time searching for code than writing it. New team members take weeks to understand the project.\n\n**Team apps:** Everyone needs to know where things go. If Alice puts models in `/models` and Bob puts them in `/data/entities`, chaos follows.\n\n### The Library Analogy\n\nImagine organizing a library:\n\n**Bad organization:** Books shelved randomly. Finding a cookbook means searching every shelf in the building.\n\n**Better organization (by type):** All hardcovers together, all paperbacks together. Still hard to find that cookbook though!\n\n**Best organization (by topic/genre):** All cookbooks in one section, all mysteries in another. Need a cookbook? Go to the cookbook section. Simple.\n\nProject folder structure works the same way. We want to organize code so that finding and modifying features is as easy as finding cookbooks in a well-organized library."
             },
             {
               "type": "THEORY",
-              "title": "Installation",
-              "content": "\n\nRun: `flutter pub get`\n\n",
-              "code": "# pubspec.yaml\ndependencies:\n  flutter:\n    sdk: flutter\n  flutter_riverpod: ^2.5.1",
-              "language": "yaml"
-            },
-            {
-              "type": "THEORY",
-              "title": "Setup Difference",
-              "content": "\n**Provider:**\n\n**Riverpod:**\n\n**Much cleaner!** One `ProviderScope` at the root, done.\n\n",
-              "code": "void main() {\n  runApp(\n    ProviderScope(  // One wrapper for ALL providers!\n      child: MyApp(),\n    ),\n  );\n}",
-              "language": "dart"
+              "title": "Feature-First vs Layer-First",
+              "content": "There are two main ways to organize a Flutter project. Understanding both helps you choose wisely.\n\n### Layer-First Organization\n\nOrganize by the TYPE of file:\n\n```\nlib/\n  models/\n    user_model.dart\n    product_model.dart\n    cart_model.dart\n    order_model.dart\n  views/\n    login_screen.dart\n    product_screen.dart\n    cart_screen.dart\n    checkout_screen.dart\n  viewmodels/\n    login_viewmodel.dart\n    product_viewmodel.dart\n    cart_viewmodel.dart\n    checkout_viewmodel.dart\n```\n\n**Problem:** Related files are scattered. To work on the cart feature, you need to jump between three different folders. If you have 50 models, finding `cart_model.dart` means scrolling through an alphabetical list of unrelated models.\n\n### Feature-First Organization\n\nOrganize by the FEATURE:\n\n```\nlib/\n  features/\n    auth/\n      models/user.dart\n      viewmodels/login_viewmodel.dart\n      views/login_screen.dart\n    cart/\n      models/cart_item.dart\n      viewmodels/cart_viewmodel.dart\n      views/cart_screen.dart\n    checkout/\n      models/order.dart\n      viewmodels/checkout_viewmodel.dart\n      views/checkout_screen.dart\n```\n\n**Benefit:** Everything for the cart is in one place. Need to work on cart? Open the `cart/` folder and everything you need is right there.\n\n### Why Feature-First Wins\n\n1. **Related code together:** Model, ViewModel, and View for a feature are neighbors\n2. **Easier to find:** Looking for cart code? Go to `features/cart/`\n3. **Easy to delete:** Removing a feature? Delete one folder\n4. **Better for teams:** Each developer can own a feature folder\n5. **Scales well:** 50 features means 50 folders, not 150 files in one folder"
             },
             {
               "type": "EXAMPLE",
-              "title": "Your First Riverpod Provider",
-              "content": "\n\n**Key difference**: Providers are global constants, not widget tree dependencies.\n\n",
-              "code": "import 'package:flutter_riverpod/flutter_riverpod.dart';\n\n// Define provider OUTSIDE the widget tree\nfinal counterProvider = StateProvider<int>((ref) => 0);\n\n// Now ANY widget can access it!",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "Reading State",
-              "content": "\n**Provider way:**\n\n**Riverpod way:**\n\n",
-              "code": "class CounterDisplay extends ConsumerWidget {  // Note: ConsumerWidget\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {  // Note: WidgetRef\n    final count = ref.watch(counterProvider);\n    return Text('$count');\n  }\n}",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "Provider Types in Riverpod",
-              "content": "\n### 1. StateProvider (Simple Values)\n\n\n### 2. StateNotifierProvider (Complex State)\n\n\n### 3. FutureProvider (Async Data)\n\n\n### 4. StreamProvider (Real-Time Data)\n\n\n",
-              "code": "// Real-time updates\nfinal messagesProvider = StreamProvider<List<Message>>((ref) {\n  return FirebaseFirestore.instance\n      .collection('messages')\n      .snapshots()\n      .map((snapshot) => snapshot.docs.map((doc) => Message.fromDoc(doc)).toList());\n});\n\n// Usage\nfinal messagesAsync = ref.watch(messagesProvider);\n\nmessagesAsync.when(\n  data: (messages) => ListView.builder(\n    itemCount: messages.length,\n    itemBuilder: (context, index) => MessageTile(messages[index]),\n  ),\n  loading: () => CircularProgressIndicator(),\n  error: (error, stack) => Text('Error: $error'),\n);",
-              "language": "dart"
+              "title": "Complete Project Structure",
+              "content": "Here is a complete, production-ready Flutter project structure using feature-first organization. Study it carefully and understand what goes where.",
+              "code": "lib/\n├── main.dart                    # App entry point\n│\n├── core/                        # SHARED across ALL features\n│   ├── theme/\n│   │   ├── app_theme.dart       # Colors, text styles, themes\n│   │   └── app_colors.dart      # Color constants\n│   │\n│   ├── widgets/                 # Reusable widgets\n│   │   ├── app_button.dart      # Custom button used everywhere\n│   │   ├── loading_indicator.dart\n│   │   └── error_widget.dart\n│   │\n│   ├── utils/                   # Helper functions\n│   │   ├── validators.dart      # Email, password validation\n│   │   ├── formatters.dart      # Date, currency formatting\n│   │   └── extensions.dart      # String, DateTime extensions\n│   │\n│   └── constants/               # App-wide constants\n│       ├── api_constants.dart   # Base URLs, endpoints\n│       └── app_constants.dart   # Timeouts, limits\n│\n├── features/                    # FEATURE MODULES\n│   ├── auth/                    # Authentication feature\n│   │   ├── models/\n│   │   │   └── user.dart        # User data class\n│   │   ├── viewmodels/\n│   │   │   ├── login_viewmodel.dart\n│   │   │   └── register_viewmodel.dart\n│   │   ├── views/\n│   │   │   ├── login_screen.dart\n│   │   │   └── register_screen.dart\n│   │   └── widgets/             # Auth-specific widgets\n│   │       └── social_login_buttons.dart\n│   │\n│   ├── home/                    # Home/Dashboard feature\n│   │   ├── models/\n│   │   │   └── dashboard_data.dart\n│   │   ├── viewmodels/\n│   │   │   └── home_viewmodel.dart\n│   │   ├── views/\n│   │   │   └── home_screen.dart\n│   │   └── widgets/\n│   │       ├── stats_card.dart\n│   │       └── recent_activity.dart\n│   │\n│   ├── products/                # Products feature\n│   │   ├── models/\n│   │   │   ├── product.dart\n│   │   │   └── category.dart\n│   │   ├── viewmodels/\n│   │   │   ├── products_viewmodel.dart\n│   │   │   └── product_detail_viewmodel.dart\n│   │   ├── views/\n│   │   │   ├── products_screen.dart\n│   │   │   └── product_detail_screen.dart\n│   │   └── widgets/\n│   │       ├── product_card.dart\n│   │       └── product_grid.dart\n│   │\n│   ├── cart/                    # Shopping cart feature\n│   │   ├── models/\n│   │   │   └── cart_item.dart\n│   │   ├── viewmodels/\n│   │   │   └── cart_viewmodel.dart\n│   │   ├── views/\n│   │   │   └── cart_screen.dart\n│   │   └── widgets/\n│   │       └── cart_item_tile.dart\n│   │\n│   └── settings/                # Settings feature\n│       ├── models/\n│       │   └── app_settings.dart\n│       ├── viewmodels/\n│       │   └── settings_viewmodel.dart\n│       └── views/\n│           └── settings_screen.dart\n│\n└── services/                    # BACKEND COMMUNICATION\n    ├── api/\n    │   ├── api_client.dart      # HTTP client setup\n    │   └── api_endpoints.dart   # API endpoint definitions\n    ├── auth_service.dart        # Login, logout, token refresh\n    ├── product_service.dart     # Product API calls\n    └── storage_service.dart     # Local storage (SharedPrefs)",
+              "language": "text"
             },
             {
               "type": "KEY_POINT",
-              "title": "Key Differences: Provider vs Riverpod",
-              "content": "\n| Feature | Provider | Riverpod |\n|---------|----------|----------|\n| **Setup** | Wrap with providers | One ProviderScope |\n| **Context** | Required | Not required |\n| **Widget Type** | StatelessWidget | ConsumerWidget |\n| **Read State** | `context.watch()` | `ref.watch()` |\n| **Update State** | `context.read()` | `ref.read()` |\n| **Safety** | Runtime errors | Compile-time safe |\n| **Testing** | Need widget tree | Direct access |\n| **Provider Location** | Widget tree | Global constants |\n\n"
+              "title": "Structure Rules",
+              "content": "Follow these rules to keep your project organized and maintainable:\n\n### Rule 1: One Feature = One Folder\nEach feature gets its own folder under `features/`. A feature is a distinct piece of functionality: authentication, shopping cart, user profile, settings, etc.\n\n### Rule 2: Shared Code Goes in core/\nIf something is used by multiple features, it belongs in `core/`. This includes:\n- Custom widgets used on multiple screens\n- Theme and styling constants\n- Utility functions and extensions\n- Validation logic\n\n### Rule 3: Services Handle External Communication\nAll API calls, database access, and external service communication goes in `services/`. Features should not import `http` or `dio` directly. They ask services to do the work.\n\n### Rule 4: Keep Features Independent\nFeatures should NOT import from other features directly. If `cart` needs user data from `auth`, both should use a shared service or a provider in `core/`.\n\n**Bad:**\n```dart\n// In cart/viewmodels/cart_viewmodel.dart\nimport '../auth/models/user.dart';  // Direct import from another feature!\n```\n\n**Good:**\n```dart\n// In cart/viewmodels/cart_viewmodel.dart\nimport '../../services/auth_service.dart';  // Uses shared service\n```\n\n### Rule 5: Feature Widgets Stay in Feature\nWidgets that are ONLY used within a feature stay in that feature's `widgets/` folder. Only truly reusable widgets go in `core/widgets/`."
             },
             {
               "type": "WARNING",
-              "title": "Common Mistakes",
-              "content": "\n❌ **Mistake 1**: Forgetting ProviderScope\n\n✅ **Fix**: Always wrap with ProviderScope\n\n❌ **Mistake 2**: Using StatelessWidget instead of ConsumerWidget\n\n✅ **Fix**: Use ConsumerWidget\n\n",
-              "code": "class MyWidget extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final count = ref.watch(counterProvider);\n    return Text('$count');\n  }\n}",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "What Did We Learn?",
-              "content": "\n- ✅ Riverpod setup with ProviderScope\n- ✅ ConsumerWidget for accessing state\n- ✅ StateProvider for simple values\n- ✅ StateNotifierProvider for complex state\n- ✅ FutureProvider and StreamProvider\n- ✅ Computed providers\n- ✅ ref.watch vs ref.read vs ref.listen\n- ✅ Complete todo app with filtering\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "What's Next?",
-              "content": "\nYou've learned Riverpod basics! Next: **Advanced Riverpod patterns** - family modifiers, autoDispose, combining providers, and more!\n\n"
+              "title": "Common Structure Mistakes",
+              "content": "Avoid these common organizational mistakes:\n\n### Mistake 1: Too Many Nested Folders\n\n**Bad:**\n```\nfeatures/auth/presentation/screens/login/widgets/forms/inputs/\n```\nThis is 8 levels deep! Finding files becomes a nightmare.\n\n**Good:** Keep it to 3-4 levels maximum:\n```\nfeatures/auth/views/login_screen.dart\nfeatures/auth/widgets/login_form.dart\n```\n\n### Mistake 2: Putting Everything in core/\n\nIf your `core/widgets/` folder has 50 widgets, something is wrong. Most widgets are feature-specific and should live in their feature folder.\n\n**Ask yourself:** Is this widget used by 2+ features? If not, it belongs in the feature.\n\n### Mistake 3: Cross-Feature Imports\n\n**Bad:**\n```dart\n// In features/checkout/viewmodels/checkout_viewmodel.dart\nimport '../../cart/models/cart_item.dart';\nimport '../../auth/viewmodels/auth_viewmodel.dart';\n```\n\nThis creates tight coupling. If you change the cart feature, checkout breaks.\n\n**Good:** Use services as intermediaries:\n```dart\n// In features/checkout/viewmodels/checkout_viewmodel.dart\nimport '../../services/cart_service.dart';\nimport '../../services/auth_service.dart';\n```\n\n### Mistake 4: No Structure At All\n\nDumping everything in `lib/` works for tiny apps but fails spectacularly as your app grows. Start with good structure from day one. Reorganizing 100 files later is painful.\n\n### Mistake 5: Inconsistent Naming\n\nPick a naming convention and stick to it:\n- Files: `snake_case.dart` (login_screen.dart, not LoginScreen.dart)\n- Classes: `PascalCase` (LoginScreen, not loginScreen)\n- Folders: `snake_case` (auth_feature/, not AuthFeature/)"
             }
           ],
           "challenges": [
             {
-              "type": "FREE_CODING",
-              "id": "5.3-challenge-0",
-              "title": "Riverpod Shopping Cart Challenge",
-              "description": "Convert a Provider shopping cart to Riverpod with StateNotifierProvider, FutureProvider, and computed providers.",
-              "instructions": "Migrate from Provider to Riverpod. Use StateNotifierProvider for cart state, FutureProvider to simulate async product loading, computed Provider for totals, and StateProvider for category filtering. Implement proper AsyncValue handling with .when().",
-              "starterCode": "// Riverpod Shopping Cart Challenge\n// Convert from Provider to Riverpod\n// Note: Add 'flutter_riverpod: ^2.5.1' to pubspec.yaml\n\nimport 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\nvoid main() {\n  runApp(const ProviderScope(child: ShoppingApp()));\n}\n\n// Product Model\nclass Product {\n  final String id;\n  final String name;\n  final double price;\n  final String category;\n\n  Product({required this.id, required this.name, required this.price, required this.category});\n}\n\n// Cart Item Model\nclass CartItem {\n  final Product product;\n  final int quantity;\n\n  CartItem({required this.product, this.quantity = 1});\n  CartItem copyWith({int? quantity}) => CartItem(product: product, quantity: quantity ?? this.quantity);\n}\n\n// TODO 1: FutureProvider for products (simulate async loading)\nfinal productsProvider = FutureProvider<List<Product>>((ref) async {\n  await Future.delayed(const Duration(seconds: 1)); // Simulate API call\n  return [\n    Product(id: '1', name: 'Laptop', price: 999.99, category: 'Electronics'),\n    Product(id: '2', name: 'Phone', price: 599.99, category: 'Electronics'),\n    Product(id: '3', name: 'Shirt', price: 29.99, category: 'Clothing'),\n  ];\n});\n\n// TODO 2: StateNotifierProvider for cart\nclass CartNotifier extends StateNotifier<List<CartItem>> {\n  CartNotifier() : super([]);\n\n  void add(Product product) {\n    // TODO: Add product or increment quantity\n    // Use state = [...state, newItem] for immutable update\n  }\n\n  void remove(String productId) {\n    // TODO: Remove item from cart\n  }\n}\n\nfinal cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) => CartNotifier());\n\n// TODO 3: Computed provider for total\nfinal cartTotalProvider = Provider<double>((ref) {\n  final cart = ref.watch(cartProvider);\n  // TODO: Calculate total using fold()\n  return 0.0;\n});\n\n// TODO 4: Filter provider for categories\nfinal selectedCategoryProvider = StateProvider<String?>((ref) => null);\n\nfinal filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {\n  final productsAsync = ref.watch(productsProvider);\n  final selectedCategory = ref.watch(selectedCategoryProvider);\n  \n  return productsAsync.whenData((products) {\n    if (selectedCategory == null) return products;\n    return products.where((p) => p.category == selectedCategory).toList();\n  });\n});\n\nclass ShoppingApp extends StatelessWidget {\n  const ShoppingApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(home: const ShoppingScreen());\n  }\n}\n\nclass ShoppingScreen extends ConsumerWidget {\n  const ShoppingScreen({super.key});\n\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final productsAsync = ref.watch(filteredProductsProvider);\n    final total = ref.watch(cartTotalProvider);\n\n    return Scaffold(\n      appBar: AppBar(\n        title: Text('Shop - Total: \\$${total.toStringAsFixed(2)}'),\n      ),\n      // TODO 5: Use productsAsync.when() for loading/error/data states\n      body: productsAsync.when(\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (err, _) => Center(child: Text('Error: \\$err')),\n        data: (products) => ListView.builder(\n          itemCount: products.length,\n          itemBuilder: (_, index) {\n            final product = products[index];\n            return ListTile(\n              title: Text(product.name),\n              subtitle: Text('\\$${product.price}'),\n              trailing: IconButton(\n                icon: const Icon(Icons.add_shopping_cart),\n                // TODO 6: Add to cart using ref.read(cartProvider.notifier).add(product)\n                onPressed: () {},\n              ),\n            );\n          },\n        ),\n      ),\n    );\n  }\n}",
-              "solution": "// Solution: Shopping Cart with Riverpod\n// Note: Add flutter_riverpod package to pubspec.yaml\n\nimport 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\nvoid main() {\n  runApp(const ProviderScope(child: ShoppingApp()));\n}\n\n// Product Model\nclass Product {\n  final String id;\n  final String name;\n  final double price;\n  final String category;\n\n  Product({required this.id, required this.name, required this.price, required this.category});\n}\n\n// Cart Item Model\nclass CartItem {\n  final Product product;\n  final int quantity;\n\n  CartItem({required this.product, this.quantity = 1});\n\n  CartItem copyWith({int? quantity}) => CartItem(product: product, quantity: quantity ?? this.quantity);\n}\n\n// 1. FutureProvider for products (simulates API call)\nfinal productsProvider = FutureProvider<List<Product>>((ref) async {\n  await Future.delayed(const Duration(seconds: 1));\n  return [\n    Product(id: '1', name: 'Laptop', price: 999.99, category: 'Electronics'),\n    Product(id: '2', name: 'Phone', price: 599.99, category: 'Electronics'),\n    Product(id: '3', name: 'Shirt', price: 29.99, category: 'Clothing'),\n    Product(id: '4', name: 'Pants', price: 49.99, category: 'Clothing'),\n  ];\n});\n\n// 2. StateNotifierProvider for cart\nclass CartNotifier extends StateNotifier<List<CartItem>> {\n  CartNotifier() : super([]);\n\n  void add(Product product) {\n    final index = state.indexWhere((item) => item.product.id == product.id);\n    if (index >= 0) {\n      state = [\n        ...state.sublist(0, index),\n        state[index].copyWith(quantity: state[index].quantity + 1),\n        ...state.sublist(index + 1),\n      ];\n    } else {\n      state = [...state, CartItem(product: product)];\n    }\n  }\n\n  void remove(String productId) {\n    state = state.where((item) => item.product.id != productId).toList();\n  }\n\n  void clear() => state = [];\n}\n\nfinal cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) => CartNotifier());\n\n// 3. Computed provider for totals\nfinal cartTotalProvider = Provider<double>((ref) {\n  final cart = ref.watch(cartProvider);\n  return cart.fold(0, (sum, item) => sum + (item.product.price * item.quantity));\n});\n\nfinal cartCountProvider = Provider<int>((ref) {\n  final cart = ref.watch(cartProvider);\n  return cart.fold(0, (sum, item) => sum + item.quantity);\n});\n\n// 4. Filter provider for categories\nfinal selectedCategoryProvider = StateProvider<String?>((ref) => null);\n\nfinal filteredProductsProvider = Provider<AsyncValue<List<Product>>>((ref) {\n  final productsAsync = ref.watch(productsProvider);\n  final selectedCategory = ref.watch(selectedCategoryProvider);\n  \n  return productsAsync.whenData((products) {\n    if (selectedCategory == null) return products;\n    return products.where((p) => p.category == selectedCategory).toList();\n  });\n});\n\nclass ShoppingApp extends StatelessWidget {\n  const ShoppingApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(home: const ShoppingScreen());\n  }\n}\n\nclass ShoppingScreen extends ConsumerWidget {\n  const ShoppingScreen({super.key});\n\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final productsAsync = ref.watch(filteredProductsProvider);\n    final cartCount = ref.watch(cartCountProvider);\n    final total = ref.watch(cartTotalProvider);\n\n    return Scaffold(\n      appBar: AppBar(\n        title: Text('Shop - Total: \\$${total.toStringAsFixed(2)}'),\n        actions: [\n          Badge(\n            label: Text('$cartCount'),\n            child: IconButton(icon: const Icon(Icons.shopping_cart), onPressed: () {}),\n          ),\n        ],\n      ),\n      body: productsAsync.when(\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (err, _) => Center(child: Text('Error: $err')),\n        data: (products) => ListView.builder(\n          itemCount: products.length,\n          itemBuilder: (_, index) {\n            final product = products[index];\n            return ListTile(\n              title: Text(product.name),\n              subtitle: Text('\\$${product.price} - ${product.category}'),\n              trailing: IconButton(\n                icon: const Icon(Icons.add_shopping_cart),\n                onPressed: () => ref.read(cartProvider.notifier).add(product),\n              ),\n            );\n          },\n        ),\n      ),\n    );\n  }\n}\n\n// Key concepts:\n// - ProviderScope: Root for all providers\n// - FutureProvider: Async data loading\n// - StateNotifierProvider: Complex state with methods\n// - Provider: Computed/derived values\n// - StateProvider: Simple reactive state\n// - ref.watch: Listen to changes\n// - ref.read: One-time access for actions",
-              "language": "dart",
-              "testCases": [
+              "type": "QUIZ",
+              "id": "5.3-challenge-1",
+              "title": "Project Structure Quiz",
+              "description": "Test your understanding of feature-first folder organization.",
+              "questions": [
                 {
-                  "id": "test-1",
-                  "description": "Widget builds without errors",
-                  "expectedOutput": "",
-                  "isVisible": true
-                }
-              ],
-              "hints": [
-                {
-                  "level": 2,
-                  "text": "Use an if statement to check the condition."
+                  "id": "q1",
+                  "text": "Where would you put a reusable 'AppButton' widget that is used across 5 different features?",
+                  "options": [
+                    "features/buttons/widgets/app_button.dart",
+                    "core/widgets/app_button.dart",
+                    "lib/app_button.dart",
+                    "features/home/widgets/app_button.dart"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "Widgets used by multiple features belong in core/widgets/. This keeps reusable code in one place and prevents features from depending on each other. The core/ folder is for shared code."
                 },
                 {
-                  "level": 3,
-                  "text": "If stuck, try writing out the solution in plain English first, then convert to dart code."
-                }
-              ],
-              "commonMistakes": [
-                {
-                  "mistake": "Forgetting semicolons",
-                  "consequence": "Syntax error",
-                  "correction": "Add ; at end of statements"
+                  "id": "q2",
+                  "text": "Where would you put the login screen for your authentication feature?",
+                  "options": [
+                    "lib/views/login_screen.dart",
+                    "core/views/login_screen.dart",
+                    "features/auth/views/login_screen.dart",
+                    "screens/login_screen.dart"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "In feature-first organization, each feature has its own folder. Login is part of the auth feature, so it goes in features/auth/views/. This keeps all authentication-related code together."
                 },
                 {
-                  "mistake": "Case sensitivity in Dart",
-                  "consequence": "Names don't match",
-                  "correction": "Use exact case: main not Main, print not Print"
+                  "id": "q3",
+                  "text": "Your cart feature needs to access the current user's ID. What is the CORRECT way to do this?",
+                  "options": [
+                    "Import directly from features/auth/models/user.dart",
+                    "Copy the user model into features/cart/models/",
+                    "Use a shared service like services/auth_service.dart",
+                    "Store user ID in a global variable"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Features should not import from each other directly. Instead, use shared services as intermediaries. This keeps features independent and prevents tight coupling. If auth changes, cart does not break."
                 },
                 {
-                  "mistake": "Missing curly braces",
-                  "consequence": "Syntax error or incorrect scope",
-                  "correction": "Ensure every { has a matching }"
+                  "id": "q4",
+                  "text": "You created a 'ProductRatingStars' widget used ONLY in the product detail screen. Where should it go?",
+                  "options": [
+                    "core/widgets/product_rating_stars.dart",
+                    "features/products/widgets/product_rating_stars.dart",
+                    "lib/widgets/product_rating_stars.dart",
+                    "features/common/widgets/product_rating_stars.dart"
+                  ],
+                  "correctAnswer": 1,
+                  "explanation": "If a widget is only used within one feature, it stays in that feature's widgets/ folder. Only put things in core/ if they are used by 2+ features. This prevents core/ from becoming a dumping ground."
+                },
+                {
+                  "id": "q5",
+                  "text": "What is the MAIN advantage of feature-first folder organization?",
+                  "options": [
+                    "Smaller file sizes",
+                    "Faster app compilation",
+                    "Related code is grouped together, making features easy to find and modify",
+                    "Required by Flutter framework"
+                  ],
+                  "correctAnswer": 2,
+                  "explanation": "Feature-first organization groups all code for a feature (models, views, viewmodels, widgets) in one folder. This makes it easy to find everything related to a feature, work on it without jumping between folders, and even delete an entire feature by removing one folder."
                 }
-              ],
-              "difficulty": "beginner"
+              ]
             }
           ]
         },
         {
           "id": "5.4",
-          "title": "Module 5, Lesson 4: Advanced Riverpod Patterns",
+          "title": "Riverpod Fundamentals",
           "moduleId": "module-05",
           "order": 4,
-          "estimatedMinutes": 60,
+          "estimatedMinutes": 45,
           "difficulty": "beginner",
           "contentSections": [
             {
               "type": "THEORY",
-              "title": "Beyond the Basics",
-              "content": "\nYou know Riverpod fundamentals. Now let's master advanced patterns for production apps!\n\n**This lesson covers:**\n- Family modifiers (parameterized providers)\n- AutoDispose for memory management\n- Combining providers\n- AsyncValue handling\n- Code generation (Riverpod 2.0+)\n\n"
+              "title": "Why Riverpod?",
+              "content": "You may have heard of the Provider package for state management in Flutter. Riverpod is the next evolution, created by the same author (Remi Rousselet). Let us understand why Riverpod exists and what problems it solves.\n\n### Provider Package Limitations\n\nThe original Provider package has served Flutter developers well, but it has some frustrating limitations:\n\n**1. No Compile-Time Safety**\nWith Provider, errors only appear at runtime:\n```dart\n// Provider - This compiles fine but crashes at runtime!\nfinal user = context.read<UserProvider>();  // Oops, UserProvider not registered!\n```\n\n**2. BuildContext Required Everywhere**\nYou need a BuildContext to access providers, which means:\n- Cannot access state in pure Dart classes\n- Cannot easily access state outside the widget tree\n- Testing requires building widget trees\n\n**3. Cannot Have Multiple Providers of Same Type**\nTrying to provide two `String` values? You need workarounds.\n\n### Riverpod Benefits\n\nRiverpod solves all of these problems:\n\n**1. Compile-Time Safe**\nErrors are caught before you run the app:\n```dart\n// Riverpod - Compiler catches typos and missing providers!\nfinal user = ref.watch(userProvider);  // If userProvider doesn't exist, code won't compile\n```\n\n**2. No BuildContext Needed**\nAccess state from anywhere. Testing is simple. No widget tree required.\n\n**3. Multiple Providers of Same Type**\nCreate as many String, int, or custom providers as you need. Each has a unique identity.\n\n**4. Better Testing**\nProviders can be overridden for testing. No widget setup required.\n\n**5. Automatic Disposal**\nProviders can automatically clean up when no longer needed, preventing memory leaks."
             },
             {
               "type": "THEORY",
-              "title": "Family Modifier - Parameterized Providers",
-              "content": "\n**Problem**: You need a provider for EACH user/post/item\n\n**Solution**: `.family` modifier!\n\n\n",
-              "code": "// Without family - need separate provider for each user\nfinal user1Provider = FutureProvider<User>((ref) => fetchUser('1'));\nfinal user2Provider = FutureProvider<User>((ref) => fetchUser('2'));\n// This doesn't scale!\n\n// With family - ONE provider, multiple instances\nfinal userProvider = FutureProvider.family<User, String>((ref, userId) async {\n  final response = await http.get('https://api.example.com/users/$userId');\n  return User.fromJson(jsonDecode(response.body));\n});\n\n// Usage\nclass UserProfile extends ConsumerWidget {\n  final String userId;\n\n  UserProfile({required this.userId});\n\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final userAsync = ref.watch(userProvider(userId));  // Pass parameter!\n\n    return userAsync.when(\n      data: (user) => Text(user.name),\n      loading: () => CircularProgressIndicator(),\n      error: (err, stack) => Text('Error: $err'),\n    );\n  }\n}\n\n// Different parameters = different instances\nUserProfile(userId: '1'),  // Fetches user 1\nUserProfile(userId: '2'),  // Fetches user 2",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "AutoDispose - Automatic Cleanup",
-              "content": "\n**Problem**: Providers stay in memory even when not used\n\n**Solution**: `.autoDispose` modifier!\n\n\n**When to use:**\n- ✅ Data that's screen-specific\n- ✅ Temporary states\n- ✅ API calls for detail views\n\n**When NOT to use:**\n- ❌ Global app state (theme, auth)\n- ❌ Data shared across app\n- ❌ Expensive computations you want to cache\n\n",
-              "code": "// Without autoDispose - stays in memory forever\nfinal userProvider = FutureProvider<User>((ref) => fetchUser());\n\n// With autoDispose - disposed when no longer watched\nfinal userProvider = FutureProvider.autoDispose<User>((ref) => fetchUser());",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "Keeping Alive When Needed",
-              "content": "\nSometimes you want autoDispose but with exceptions:\n\n\n",
-              "code": "final cacheProvider = FutureProvider.autoDispose.family<Data, String>((ref, id) async {\n  // Keep alive for 5 minutes even if no one is watching\n  final keepAlive = ref.keepAlive();\n\n  Timer(Duration(minutes: 5), () {\n    keepAlive.close();  // Now it can be disposed\n  });\n\n  return await fetchData(id);\n});",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "Combining Providers",
-              "content": "\nProviders can watch OTHER providers!\n\n\n",
-              "code": "// User authentication\nfinal authProvider = StateProvider<String?>((ref) => null);\n\n// User profile (depends on auth)\nfinal userProfileProvider = FutureProvider<UserProfile?>((ref) async {\n  final userId = ref.watch(authProvider);\n\n  if (userId == null) return null;\n\n  final response = await http.get('https://api.example.com/profile/$userId');\n  return UserProfile.fromJson(jsonDecode(response.body));\n});\n\n// User posts (depends on auth)\nfinal userPostsProvider = FutureProvider<List<Post>>((ref) async {\n  final userId = ref.watch(authProvider);\n\n  if (userId == null) return [];\n\n  final response = await http.get('https://api.example.com/users/$userId/posts');\n  return (jsonDecode(response.body) as List)\n      .map((json) => Post.fromJson(json))\n      .toList();\n});\n\n// When authProvider changes, both userProfileProvider and userPostsProvider\n// automatically refetch!",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "AsyncValue - Handling Loading/Error/Data",
-              "content": "\nWhen working with async providers, use `.when()`:\n\n\n",
-              "code": "final dataAsync = ref.watch(dataProvider);\n\n// Option 1: when (rebuild for all states)\ndataAsync.when(\n  data: (data) => Text('Data: $data'),\n  loading: () => CircularProgressIndicator(),\n  error: (error, stack) => Text('Error: $error'),\n);\n\n// Option 2: maybeWhen (default for unhandled states)\ndataAsync.maybeWhen(\n  data: (data) => Text('Data: $data'),\n  orElse: () => Text('Loading or error'),\n);\n\n// Option 3: map (more control)\ndataAsync.map(\n  data: (data) => Text('Success: ${data.value}'),\n  loading: (_) => CircularProgressIndicator(),\n  error: (error) => Text('Error: ${error.error}'),\n);\n\n// Option 4: Direct access (careful!)\nif (dataAsync.hasValue) {\n  final data = dataAsync.value!;\n  return Text('$data');\n}",
-              "language": "dart"
+              "title": "Core Concepts",
+              "content": "Before writing code, let us understand the four core building blocks of Riverpod:\n\n### 1. Provider\nA **provider** is a container for a piece of state. Think of it as a box that holds a value and lets others read that value.\n\n```dart\n// This provider holds a String value\nfinal greetingProvider = Provider<String>((ref) {\n  return 'Hello, World!';\n});\n```\n\nProviders are:\n- **Global constants** - defined at the top level of your files\n- **Lazy** - they do not create their value until someone reads them\n- **Cached** - once created, the value is reused\n\n### 2. ref\nThe **ref** object is how you interact with providers. It is your access pass to read, watch, or listen to any provider.\n\n```dart\n// Inside another provider\nfinal combinedProvider = Provider<String>((ref) {\n  final greeting = ref.watch(greetingProvider);  // ref lets you access other providers\n  return '$greeting from Riverpod';\n});\n```\n\n### 3. ProviderScope\n**ProviderScope** is the container that holds all your providers. It must wrap your entire app. Think of it as the root of a tree where all providers live.\n\n```dart\nvoid main() {\n  runApp(\n    ProviderScope(  // This enables Riverpod for your entire app\n      child: MyApp(),\n    ),\n  );\n}\n```\n\n### 4. ConsumerWidget / Consumer\nTo read providers in your widgets, you use **ConsumerWidget** (instead of StatelessWidget) or the **Consumer** builder.\n\n```dart\n// ConsumerWidget gives you access to ref in the build method\nclass MyScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final value = ref.watch(myProvider);  // Now you can access providers!\n    return Text(value);\n  }\n}\n```"
             },
             {
               "type": "EXAMPLE",
-              "title": "Code Generation (Riverpod 2.0+)",
-              "content": "\nModern Riverpod uses annotations and code generation:\n\n\n**Benefits:**\n- Type-safe\n- Less boilerplate\n- Better autocomplete\n- Compile-time errors\n\n**Setup:**\n\nRun: `flutter pub run build_runner watch`\n\n",
-              "code": "dev_dependencies:\n  build_runner: ^2.4.0\n  riverpod_generator: ^2.4.0",
-              "language": "yaml"
+              "title": "Your First Riverpod App",
+              "content": "Let us build a complete, working Riverpod app step by step. This example shows every piece you need to get started.\n\n**What this app does:** Displays a greeting message using Riverpod. Simple, but it demonstrates all the core concepts.",
+              "code": "// STEP 1: Import Riverpod\nimport 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\n// STEP 2: Define a Provider\n// This is a global constant - defined outside any class\n// It holds a String value: 'Hello, Riverpod!'\nfinal greetingProvider = Provider<String>((ref) {\n  return 'Hello, Riverpod!';\n});\n\n// STEP 3: Wrap Your App in ProviderScope\nvoid main() {\n  runApp(\n    ProviderScope(  // This MUST wrap your entire app\n      child: MyApp(),\n    ),\n  );\n}\n\nclass MyApp extends StatelessWidget {\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Riverpod Demo',\n      home: GreetingScreen(),\n    );\n  }\n}\n\n// STEP 4: Use ConsumerWidget to Access Providers\n// Notice: extends ConsumerWidget, NOT StatelessWidget\nclass GreetingScreen extends ConsumerWidget {\n  @override\n  // Notice: build method has TWO parameters: context AND ref\n  Widget build(BuildContext context, WidgetRef ref) {\n    // STEP 5: Read the Provider Using ref.watch()\n    // ref.watch() reads the value AND rebuilds this widget when it changes\n    final greeting = ref.watch(greetingProvider);\n\n    return Scaffold(\n      appBar: AppBar(title: Text('My First Riverpod App')),\n      body: Center(\n        child: Text(\n          greeting,  // Display the value from the provider\n          style: TextStyle(fontSize: 24),\n        ),\n      ),\n    );\n  }\n}\n\n// THAT'S IT! A complete Riverpod app in under 50 lines.\n//\n// Key pieces:\n// 1. Provider defined globally (greetingProvider)\n// 2. ProviderScope wrapping the app (in main)\n// 3. ConsumerWidget to access providers (GreetingScreen)\n// 4. ref.watch() to read provider value",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "watch vs read: The Critical Difference",
+              "content": "This is where most beginners make mistakes. Understanding when to use `ref.watch()` versus `ref.read()` is essential.\n\n### ref.watch() - Rebuilds Widget on Change\n\nUse `ref.watch()` when you want your widget to **update automatically** when the value changes.\n\n**Where to use it:** Inside the `build()` method.\n\n```dart\nWidget build(BuildContext context, WidgetRef ref) {\n  // GOOD: watch in build method\n  // Widget rebuilds automatically when count changes\n  final count = ref.watch(counterProvider);\n  return Text('$count');\n}\n```\n\n### ref.read() - Gets Value Once, No Rebuilding\n\nUse `ref.read()` when you want to **get the value once** without subscribing to changes. Perfect for event handlers.\n\n**Where to use it:** Inside callbacks, onPressed handlers, or anywhere outside build.\n\n```dart\nElevatedButton(\n  onPressed: () {\n    // GOOD: read in callback\n    // Gets the notifier to call a method - does not subscribe to changes\n    ref.read(counterProvider.notifier).increment();\n  },\n  child: Text('Add'),\n)\n```\n\n### The Golden Rules\n\n**Rule 1:** Use `ref.watch()` in the build method to display reactive data.\n\n**Rule 2:** Use `ref.read()` in callbacks/handlers to trigger actions.\n\n**Rule 3:** NEVER use `ref.read()` in the build method to display data - your UI will not update!\n\n### Examples: Right vs Wrong",
+              "code": "class CounterScreen extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    \n    // ===== DISPLAYING DATA =====\n    \n    // GOOD: watch in build - UI updates when count changes\n    final count = ref.watch(counterProvider);\n    \n    // BAD: read in build - UI will NEVER update!\n    // final count = ref.read(counterProvider);  // DON'T DO THIS!\n    \n    return Column(\n      children: [\n        Text('Count: $count'),  // This displays the watched value\n        \n        // ===== HANDLING ACTIONS =====\n        \n        ElevatedButton(\n          onPressed: () {\n            // GOOD: read in callback - fires once per tap\n            ref.read(counterProvider.notifier).increment();\n          },\n          child: Text('Increment'),\n        ),\n        \n        ElevatedButton(\n          onPressed: () {\n            // BAD: watch in callback - unnecessary subscription\n            // ref.watch(counterProvider.notifier).decrement();  // DON'T DO THIS!\n            \n            // GOOD: read is correct here\n            ref.read(counterProvider.notifier).decrement();\n          },\n          child: Text('Decrement'),\n        ),\n      ],\n    );\n  }\n}\n\n// Summary:\n// ref.watch() = \"Keep me updated when this changes\" (use in build)\n// ref.read()  = \"Give me the value right now, just once\" (use in callbacks)",
+              "language": "dart"
             },
             {
               "type": "KEY_POINT",
-              "title": "Best Practices Summary",
-              "content": "\n### 1. Use autoDispose for Screen-Specific Data\n\n### 2. Combine Providers for Derived State\n\n### 3. Use ref.listen for Side Effects\n\n### 4. Family for Parameterized Providers\n\n",
-              "code": "final itemProvider = Provider.family<Item, String>((ref, itemId) {\n  final items = ref.watch(itemsProvider);\n  return items.firstWhere((item) => item.id == itemId);\n});",
-              "language": "dart"
+              "title": "Provider Types",
+              "content": "Riverpod offers different provider types for different needs. Here is when to use each:\n\n### Provider - Read-Only Value\nUse for values that never change or are computed from other providers.\n```dart\nfinal appNameProvider = Provider<String>((ref) => 'My App');\nfinal doubleCountProvider = Provider<int>((ref) {\n  final count = ref.watch(counterProvider);\n  return count * 2;  // Computed value\n});\n```\n\n### StateProvider - Simple Mutable Value\nUse for simple values you need to change: booleans, numbers, strings.\n```dart\nfinal counterProvider = StateProvider<int>((ref) => 0);\nfinal isDarkModeProvider = StateProvider<bool>((ref) => false);\n\n// To update:\nref.read(counterProvider.notifier).state++;\nref.read(isDarkModeProvider.notifier).state = true;\n```\n\n### NotifierProvider - Complex State with Methods\nUse when you need methods to modify state (the MVVM ViewModel pattern).\n```dart\nclass CartNotifier extends Notifier<List<Item>> {\n  @override\n  List<Item> build() => [];  // Initial state\n  \n  void addItem(Item item) {\n    state = [...state, item];\n  }\n  \n  void removeItem(String id) {\n    state = state.where((item) => item.id != id).toList();\n  }\n}\n\nfinal cartProvider = NotifierProvider<CartNotifier, List<Item>>(() {\n  return CartNotifier();\n});\n```\n\n### FutureProvider - Async Data (API Calls)\nUse for data fetched from an API or database.\n```dart\nfinal userProvider = FutureProvider<User>((ref) async {\n  final response = await http.get('https://api.example.com/user');\n  return User.fromJson(jsonDecode(response.body));\n});\n\n// In widget:\nfinal userAsync = ref.watch(userProvider);\nuserAsync.when(\n  data: (user) => Text(user.name),\n  loading: () => CircularProgressIndicator(),\n  error: (err, stack) => Text('Error: $err'),\n);\n```\n\n### StreamProvider - Real-Time Data\nUse for data that updates over time (chat messages, live prices).\n```dart\nfinal messagesProvider = StreamProvider<List<Message>>((ref) {\n  return database.watchMessages();  // Returns a Stream\n});\n```\n\n### Quick Reference Table\n\n| Provider Type | Use When | Example |\n|---------------|----------|----------|\n| `Provider` | Read-only or computed values | App config, derived data |\n| `StateProvider` | Simple values that change | Counter, toggle, filter |\n| `NotifierProvider` | Complex state with methods | Cart, form, user profile |\n| `FutureProvider` | One-time async fetch | API calls, database reads |\n| `StreamProvider` | Real-time updates | Chat, live data, sockets |"
             },
             {
-              "type": "THEORY",
-              "title": "Common Patterns",
-              "content": "\n### Pattern 1: Search with Debounce\n\n### Pattern 2: Pagination\n\n",
-              "code": "final pageProvider = StateProvider<int>((ref) => 1);\n\nfinal itemsProvider = FutureProvider<List<Item>>((ref) async {\n  final page = ref.watch(pageProvider);\n  return fetchItems(page);\n});\n\n// Load more\nref.read(pageProvider.notifier).state++;",
-              "language": "dart"
-            },
-            {
-              "type": "THEORY",
-              "title": "What Did We Learn?",
-              "content": "\n- ✅ Family modifier for parameterized providers\n- ✅ AutoDispose for automatic cleanup\n- ✅ Combining providers for derived state\n- ✅ AsyncValue handling with when/map\n- ✅ Refreshing and invalidating providers\n- ✅ Code generation (modern approach)\n- ✅ Real-world patterns (search, pagination, auth)\n\n"
-            },
-            {
-              "type": "THEORY",
-              "title": "What's Next?",
-              "content": "\nYou've mastered Riverpod! Next: **State Management Best Practices** - architecture patterns, testing, and choosing the right solution for your app!\n\n"
+              "type": "WARNING",
+              "title": "Common Riverpod Mistakes",
+              "content": "These are the mistakes that trip up almost every Riverpod beginner. Learn to recognize and avoid them:\n\n### Mistake 1: Forgetting ProviderScope\n\n**The Error:**\n```\nBad state: No ProviderScope found\n```\n\n**The Problem:**\n```dart\nvoid main() {\n  runApp(MyApp());  // Missing ProviderScope!\n}\n```\n\n**The Fix:**\n```dart\nvoid main() {\n  runApp(\n    ProviderScope(  // Always wrap your app!\n      child: MyApp(),\n    ),\n  );\n}\n```\n\n### Mistake 2: Using ref.read() in build Method\n\n**The Problem:**\n```dart\nWidget build(BuildContext context, WidgetRef ref) {\n  final count = ref.read(counterProvider);  // WRONG!\n  return Text('$count');  // This will NEVER update!\n}\n```\n\n**The Fix:**\n```dart\nWidget build(BuildContext context, WidgetRef ref) {\n  final count = ref.watch(counterProvider);  // Correct!\n  return Text('$count');  // Now updates when count changes\n}\n```\n\n### Mistake 3: Creating Providers Inside Widgets\n\n**The Problem:**\n```dart\nclass MyWidget extends ConsumerWidget {\n  // WRONG: Provider created inside widget class\n  final myProvider = StateProvider<int>((ref) => 0);\n  \n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    return Text('${ref.watch(myProvider)}');\n  }\n}\n```\nThis creates a NEW provider every time the widget rebuilds!\n\n**The Fix:**\n```dart\n// CORRECT: Provider defined at top level (outside any class)\nfinal myProvider = StateProvider<int>((ref) => 0);\n\nclass MyWidget extends ConsumerWidget {\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    return Text('${ref.watch(myProvider)}');\n  }\n}\n```\n\n### Mistake 4: Using StatelessWidget Instead of ConsumerWidget\n\n**The Problem:**\n```dart\nclass MyScreen extends StatelessWidget {  // Wrong widget type!\n  @override\n  Widget build(BuildContext context) {  // No WidgetRef!\n    // How do I access providers?\n  }\n}\n```\n\n**The Fix:**\n```dart\nclass MyScreen extends ConsumerWidget {  // Correct!\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {  // Now has ref\n    final value = ref.watch(myProvider);  // Can access providers!\n    return Text(value);\n  }\n}\n```\n\n### Mistake 5: Not Disposing Resources\n\nIf your provider creates streams, timers, or controllers, clean them up:\n```dart\nfinal timerProvider = Provider<Timer>((ref) {\n  final timer = Timer.periodic(Duration(seconds: 1), (_) {});\n  \n  // Clean up when provider is disposed\n  ref.onDispose(() {\n    timer.cancel();\n  });\n  \n  return timer;\n});\n```"
             }
           ],
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "5.4-challenge-0",
-              "title": "Social Media Feed Challenge",
-              "description": "Build a social media feed using advanced Riverpod patterns: .family, .autoDispose, and combined providers.",
-              "instructions": "Create a social feed with: 1) Auth provider for login state, 2) Posts provider using .family for user-specific posts, 3) Comments provider with .family + .autoDispose for per-post comments, 4) Likes provider with .family for per-post like status, 5) Combined provider that shows feed with liked posts highlighted.",
-              "starterCode": "// Social Media Feed Challenge\n// Advanced Riverpod: .family, .autoDispose, combined providers\n// Note: Add 'flutter_riverpod: ^2.5.1' to pubspec.yaml\n\nimport 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\nvoid main() {\n  runApp(const ProviderScope(child: SocialApp()));\n}\n\n// Models\nclass User {\n  final String id;\n  final String name;\n  User({required this.id, required this.name});\n}\n\nclass Post {\n  final String id;\n  final String userId;\n  final String content;\n  final DateTime createdAt;\n  Post({required this.id, required this.userId, required this.content, required this.createdAt});\n}\n\nclass Comment {\n  final String id;\n  final String postId;\n  final String text;\n  Comment({required this.id, required this.postId, required this.text});\n}\n\n// TODO 1: Auth Provider with StateNotifier\nclass AuthNotifier extends StateNotifier<User?> {\n  AuthNotifier() : super(null);\n  \n  void login(String name) {\n    // TODO: Set state to new User\n  }\n  \n  void logout() {\n    // TODO: Set state to null\n  }\n}\n\nfinal authProvider = StateNotifierProvider<AuthNotifier, User?>((ref) => AuthNotifier());\n\n// TODO 2: Posts Provider with .family (parameterized by userId)\nfinal postsProvider = FutureProvider.family<List<Post>, String>((ref, userId) async {\n  await Future.delayed(const Duration(milliseconds: 500));\n  // TODO: Return list of posts for this user\n  return [];\n});\n\n// TODO 3: Comments Provider with .family + .autoDispose\n// .autoDispose cleans up when widget is disposed\nfinal commentsProvider = FutureProvider.autoDispose.family<List<Comment>, String>((ref, postId) async {\n  await Future.delayed(const Duration(milliseconds: 300));\n  // TODO: Return comments for this post\n  return [];\n});\n\n// TODO 4: Likes Provider using StateNotifier with Set<String>\nclass LikeNotifier extends StateNotifier<Set<String>> {\n  LikeNotifier() : super({});\n  \n  void toggle(String postId) {\n    // TODO: Add or remove postId from set\n    // Use: state = {...state}..add/remove(postId)\n  }\n  \n  bool isLiked(String postId) => state.contains(postId);\n}\n\nfinal likesProvider = StateNotifierProvider<LikeNotifier, Set<String>>((ref) => LikeNotifier());\n\n// TODO 5: Combined Provider - Feed items with like status\nclass FeedItem {\n  final Post post;\n  final bool isLiked;\n  FeedItem({required this.post, required this.isLiked});\n}\n\nfinal feedProvider = Provider.family<AsyncValue<List<FeedItem>>, String>((ref, userId) {\n  final postsAsync = ref.watch(postsProvider(userId));\n  final likes = ref.watch(likesProvider);\n  \n  return postsAsync.whenData((posts) {\n    // TODO: Map posts to FeedItems with isLiked status\n    return [];\n  });\n});\n\nclass SocialApp extends StatelessWidget {\n  const SocialApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(home: const FeedScreen());\n  }\n}\n\nclass FeedScreen extends ConsumerWidget {\n  const FeedScreen({super.key});\n\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final user = ref.watch(authProvider);\n    \n    // TODO 6: Show login button if user is null\n    if (user == null) {\n      return Scaffold(\n        body: Center(\n          child: ElevatedButton(\n            onPressed: () => ref.read(authProvider.notifier).login('Demo User'),\n            child: const Text('Login'),\n          ),\n        ),\n      );\n    }\n    \n    final feedAsync = ref.watch(feedProvider(user.id));\n    \n    return Scaffold(\n      appBar: AppBar(\n        title: Text('Feed - ${user.name}'),\n        actions: [\n          IconButton(\n            icon: const Icon(Icons.logout),\n            onPressed: () => ref.read(authProvider.notifier).logout(),\n          ),\n        ],\n      ),\n      // TODO 7: Use feedAsync.when() for loading/error/data\n      body: feedAsync.when(\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (e, _) => Center(child: Text('Error: \\$e')),\n        data: (items) => ListView.builder(\n          itemCount: items.length,\n          itemBuilder: (_, index) {\n            final item = items[index];\n            return Card(\n              child: ListTile(\n                title: Text(item.post.content),\n                trailing: IconButton(\n                  icon: Icon(\n                    item.isLiked ? Icons.favorite : Icons.favorite_border,\n                    color: item.isLiked ? Colors.red : null,\n                  ),\n                  onPressed: () => ref.read(likesProvider.notifier).toggle(item.post.id),\n                ),\n              ),\n            );\n          },\n        ),\n      ),\n    );\n  }\n}",
-              "solution": "// Solution: Social Media Feed with Riverpod\n// Advanced provider patterns with .family and .autoDispose\n\nimport 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\nvoid main() {\n  runApp(const ProviderScope(child: SocialApp()));\n}\n\n// Models\nclass User {\n  final String id;\n  final String name;\n  User({required this.id, required this.name});\n}\n\nclass Post {\n  final String id;\n  final String userId;\n  final String content;\n  final DateTime createdAt;\n  Post({required this.id, required this.userId, required this.content, required this.createdAt});\n}\n\nclass Comment {\n  final String id;\n  final String postId;\n  final String text;\n  Comment({required this.id, required this.postId, required this.text});\n}\n\n// 1. Auth Provider\nclass AuthNotifier extends StateNotifier<User?> {\n  AuthNotifier() : super(null);\n  \n  void login(String name) => state = User(id: '1', name: name);\n  void logout() => state = null;\n}\n\nfinal authProvider = StateNotifierProvider<AuthNotifier, User?>((ref) => AuthNotifier());\n\n// 2. Posts Provider with .family (parameterized)\nfinal postsProvider = FutureProvider.family<List<Post>, String>((ref, userId) async {\n  await Future.delayed(const Duration(milliseconds: 500));\n  return [\n    Post(id: '1', userId: userId, content: 'Hello Flutter!', createdAt: DateTime.now()),\n    Post(id: '2', userId: userId, content: 'Riverpod is amazing!', createdAt: DateTime.now()),\n  ];\n});\n\n// 3. Comments Provider with .family + .autoDispose\nfinal commentsProvider = FutureProvider.autoDispose.family<List<Comment>, String>((ref, postId) async {\n  await Future.delayed(const Duration(milliseconds: 300));\n  return [\n    Comment(id: '1', postId: postId, text: 'Great post!'),\n    Comment(id: '2', postId: postId, text: 'Thanks for sharing!'),\n  ];\n});\n\n// 4. Like Provider with .family\nclass LikeNotifier extends StateNotifier<Set<String>> {\n  LikeNotifier() : super({});\n  \n  void toggle(String postId) {\n    if (state.contains(postId)) {\n      state = {...state}..remove(postId);\n    } else {\n      state = {...state, postId};\n    }\n  }\n  \n  bool isLiked(String postId) => state.contains(postId);\n}\n\nfinal likesProvider = StateNotifierProvider<LikeNotifier, Set<String>>((ref) => LikeNotifier());\n\n// 5. Combined Provider - Feed with like status\nclass FeedItem {\n  final Post post;\n  final bool isLiked;\n  FeedItem({required this.post, required this.isLiked});\n}\n\nfinal feedProvider = Provider.family<AsyncValue<List<FeedItem>>, String>((ref, userId) {\n  final postsAsync = ref.watch(postsProvider(userId));\n  final likes = ref.watch(likesProvider);\n  \n  return postsAsync.whenData((posts) {\n    return posts.map((post) => FeedItem(\n      post: post,\n      isLiked: likes.contains(post.id),\n    )).toList();\n  });\n});\n\nclass SocialApp extends StatelessWidget {\n  const SocialApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(home: const FeedScreen());\n  }\n}\n\nclass FeedScreen extends ConsumerWidget {\n  const FeedScreen({super.key});\n\n  @override\n  Widget build(BuildContext context, WidgetRef ref) {\n    final user = ref.watch(authProvider);\n    \n    if (user == null) {\n      return Scaffold(\n        body: Center(\n          child: ElevatedButton(\n            onPressed: () => ref.read(authProvider.notifier).login('Demo User'),\n            child: const Text('Login'),\n          ),\n        ),\n      );\n    }\n    \n    final feedAsync = ref.watch(feedProvider(user.id));\n    \n    return Scaffold(\n      appBar: AppBar(\n        title: Text('Feed - ${user.name}'),\n        actions: [\n          IconButton(\n            icon: const Icon(Icons.logout),\n            onPressed: () => ref.read(authProvider.notifier).logout(),\n          ),\n        ],\n      ),\n      body: feedAsync.when(\n        loading: () => const Center(child: CircularProgressIndicator()),\n        error: (e, _) => Center(child: Text('Error: $e')),\n        data: (items) => ListView.builder(\n          itemCount: items.length,\n          itemBuilder: (_, index) {\n            final item = items[index];\n            return Card(\n              margin: const EdgeInsets.all(8),\n              child: ListTile(\n                title: Text(item.post.content),\n                trailing: IconButton(\n                  icon: Icon(\n                    item.isLiked ? Icons.favorite : Icons.favorite_border,\n                    color: item.isLiked ? Colors.red : null,\n                  ),\n                  onPressed: () => ref.read(likesProvider.notifier).toggle(item.post.id),\n                ),\n              ),\n            );\n          },\n        ),\n      ),\n    );\n  }\n}\n\n// Key concepts:\n// - .family: Parameterized providers\n// - .autoDispose: Auto-cleanup when not watched\n// - Combined providers: Derive state from multiple sources\n// - StateNotifier with Set: Efficient membership tracking",
+              "id": "5.4-challenge-1",
+              "title": "Build a Name Greeter with Riverpod",
+              "description": "Create a simple app where users type their name in a TextField and see 'Hello, {name}!' update in real-time using Riverpod state management.",
+              "instructions": "Complete the following tasks:\n\n1. Create a StateProvider<String> called nameProvider with an empty string as the initial value\n2. Wrap the app in ProviderScope\n3. Create a ConsumerWidget called GreeterScreen\n4. Add a TextField that updates nameProvider when the user types\n5. Display 'Hello, {name}!' that updates in real-time as the user types\n6. If the name is empty, display 'Hello, stranger!'\n\nRemember:\n- Use ref.watch() in the build method to get the name for display\n- Use ref.read() in the onChanged callback to update the provider\n- The TextField needs a TextEditingController for proper behavior",
+              "starterCode": "import 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\n// TODO 1: Create a StateProvider<String> called nameProvider\n// Initial value should be an empty string ''\n\n\nvoid main() {\n  runApp(\n    // TODO 2: Wrap MyApp with ProviderScope\n    MyApp(),\n  );\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Riverpod Greeter',\n      theme: ThemeData(primarySwatch: Colors.blue),\n      home: const GreeterScreen(),\n    );\n  }\n}\n\n// TODO 3: Change this to a ConsumerWidget\nclass GreeterScreen extends StatelessWidget {\n  const GreeterScreen({super.key});\n\n  @override\n  // TODO 4: Add WidgetRef ref parameter\n  Widget build(BuildContext context) {\n    // TODO 5: Watch the nameProvider to get the current name\n    final name = '';  // Replace this with ref.watch()\n    \n    // TODO 6: Create the greeting message\n    // If name is empty, show 'Hello, stranger!'\n    // Otherwise show 'Hello, {name}!'\n    final greeting = 'Hello!';\n\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Riverpod Greeter'),\n      ),\n      body: Padding(\n        padding: const EdgeInsets.all(24.0),\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            // Display the greeting\n            Text(\n              greeting,\n              style: const TextStyle(\n                fontSize: 32,\n                fontWeight: FontWeight.bold,\n              ),\n              textAlign: TextAlign.center,\n            ),\n            const SizedBox(height: 40),\n            // TODO 7: Create TextField that updates nameProvider\n            TextField(\n              decoration: const InputDecoration(\n                labelText: 'Enter your name',\n                border: OutlineInputBorder(),\n              ),\n              onChanged: (value) {\n                // TODO: Update nameProvider using ref.read()\n                // ref.read(nameProvider.notifier).state = value;\n              },\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}",
+              "solution": "import 'package:flutter/material.dart';\nimport 'package:flutter_riverpod/flutter_riverpod.dart';\n\n// STEP 1: Create a StateProvider for the name\n// StateProvider is perfect for simple values like strings\nfinal nameProvider = StateProvider<String>((ref) => '');\n\nvoid main() {\n  runApp(\n    // STEP 2: Wrap the app in ProviderScope\n    // This is REQUIRED for Riverpod to work\n    const ProviderScope(\n      child: MyApp(),\n    ),\n  );\n}\n\nclass MyApp extends StatelessWidget {\n  const MyApp({super.key});\n\n  @override\n  Widget build(BuildContext context) {\n    return MaterialApp(\n      title: 'Riverpod Greeter',\n      theme: ThemeData(primarySwatch: Colors.blue),\n      home: const GreeterScreen(),\n    );\n  }\n}\n\n// STEP 3: Use ConsumerWidget to access providers\nclass GreeterScreen extends ConsumerWidget {\n  const GreeterScreen({super.key});\n\n  @override\n  // STEP 4: Add WidgetRef ref parameter to build method\n  Widget build(BuildContext context, WidgetRef ref) {\n    // STEP 5: Watch the provider to get the current name\n    // Using watch() means this widget rebuilds when name changes\n    final name = ref.watch(nameProvider);\n    \n    // STEP 6: Create greeting based on whether name is empty\n    final greeting = name.isEmpty \n        ? 'Hello, stranger!' \n        : 'Hello, $name!';\n\n    return Scaffold(\n      appBar: AppBar(\n        title: const Text('Riverpod Greeter'),\n      ),\n      body: Padding(\n        padding: const EdgeInsets.all(24.0),\n        child: Column(\n          mainAxisAlignment: MainAxisAlignment.center,\n          children: [\n            // Display the greeting - updates automatically!\n            Text(\n              greeting,\n              style: const TextStyle(\n                fontSize: 32,\n                fontWeight: FontWeight.bold,\n              ),\n              textAlign: TextAlign.center,\n            ),\n            const SizedBox(height: 40),\n            // STEP 7: TextField that updates the provider\n            TextField(\n              decoration: const InputDecoration(\n                labelText: 'Enter your name',\n                border: OutlineInputBorder(),\n                hintText: 'Type your name here...',\n              ),\n              // Use ref.read() in callbacks, NOT ref.watch()\n              // ref.read() gets the notifier so we can update state\n              onChanged: (value) {\n                ref.read(nameProvider.notifier).state = value;\n              },\n            ),\n            const SizedBox(height: 20),\n            // Bonus: Clear button to reset the name\n            TextButton(\n              onPressed: () {\n                ref.read(nameProvider.notifier).state = '';\n              },\n              child: const Text('Clear'),\n            ),\n          ],\n        ),\n      ),\n    );\n  }\n}\n\n// KEY CONCEPTS DEMONSTRATED:\n//\n// 1. StateProvider - holds a simple String value\n//\n// 2. ProviderScope - wraps the app to enable Riverpod\n//\n// 3. ConsumerWidget - allows access to providers via ref\n//\n// 4. ref.watch() - used in build() to read AND subscribe to changes\n//    The widget automatically rebuilds when the value changes\n//\n// 5. ref.read() - used in callbacks (onChanged, onPressed) to update\n//    Does not subscribe to changes, just gets the value/notifier once\n//\n// 6. .notifier.state - how to update a StateProvider's value\n//    ref.read(nameProvider.notifier).state = newValue;",
               "language": "dart",
               "testCases": [
                 {
-                  "id": "test-1",
-                  "description": "Widget builds without errors",
+                  "id": "test-provider",
+                  "description": "nameProvider is defined as StateProvider<String>",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-scope",
+                  "description": "App is wrapped in ProviderScope",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-consumer",
+                  "description": "GreeterScreen extends ConsumerWidget",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-greeting",
+                  "description": "Greeting shows 'stranger' when empty, name when filled",
                   "expectedOutput": "",
                   "isVisible": true
                 }
@@ -4926,28 +4889,37 @@
               "hints": [
                 {
                   "level": 1,
-                  "text": "Read the instructions carefully and break down the problem into smaller steps."
+                  "text": "StateProvider is created like this: final nameProvider = StateProvider<String>((ref) => ''); The (ref) => '' part returns the initial value (empty string)."
+                },
+                {
+                  "level": 2,
+                  "text": "To update a StateProvider, use ref.read(nameProvider.notifier).state = newValue. The .notifier gives you access to the state setter."
                 },
                 {
                   "level": 3,
-                  "text": "If stuck, try writing out the solution in plain English first, then convert to dart code."
+                  "text": "ConsumerWidget's build method has TWO parameters: (BuildContext context, WidgetRef ref). The ref is what you use to watch and read providers."
                 }
               ],
               "commonMistakes": [
                 {
-                  "mistake": "Forgetting semicolons",
-                  "consequence": "Syntax error",
-                  "correction": "Add ; at end of statements"
+                  "mistake": "Using ref.read() instead of ref.watch() in build method",
+                  "consequence": "UI does not update when the name changes",
+                  "correction": "Use ref.watch(nameProvider) in the build method. watch() subscribes to changes, read() does not."
                 },
                 {
-                  "mistake": "Case sensitivity in Dart",
-                  "consequence": "Names don't match",
-                  "correction": "Use exact case: main not Main, print not Print"
+                  "mistake": "Using ref.watch() in onChanged callback",
+                  "consequence": "Creates unnecessary subscriptions and potential performance issues",
+                  "correction": "Use ref.read(nameProvider.notifier).state = value in callbacks. read() is for one-time access."
                 },
                 {
-                  "mistake": "Missing curly braces",
-                  "consequence": "Syntax error or incorrect scope",
-                  "correction": "Ensure every { has a matching }"
+                  "mistake": "Forgetting to wrap app in ProviderScope",
+                  "consequence": "Runtime error: Bad state: No ProviderScope found",
+                  "correction": "In main(), wrap your app: runApp(ProviderScope(child: MyApp()))"
+                },
+                {
+                  "mistake": "Extending StatelessWidget instead of ConsumerWidget",
+                  "consequence": "No ref parameter available, cannot access providers",
+                  "correction": "Change 'extends StatelessWidget' to 'extends ConsumerWidget' and add WidgetRef ref parameter"
                 }
               ],
               "difficulty": "beginner"
@@ -4956,7 +4928,7 @@
         },
         {
           "id": "5.5",
-          "title": "Module 5, Lesson 5: State Management Best Practices",
+          "title": "State Management Best Practices",
           "moduleId": "module-05",
           "order": 5,
           "estimatedMinutes": 60,
