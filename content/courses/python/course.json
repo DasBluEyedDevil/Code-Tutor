@@ -6999,10 +6999,116 @@
           ]
         },
         {
+          "id": "module-14-lesson-alembic",
+          "title": "Database Migrations with Alembic",
+          "moduleId": "module-14",
+          "order": 7,
+          "estimatedMinutes": 35,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What are Database Migrations?",
+              "content": "**Database Migrations = Version Control for Your Database Schema**\n\nAs your application evolves, your database schema changes too. Migrations let you:\n\n**Why Migrations Matter:**\n\n1. **Track Changes** - Every schema change is versioned and documented\n2. **Team Collaboration** - Multiple developers can evolve the schema safely\n3. **Reproducibility** - Recreate any database state from scratch\n4. **Rollback** - Undo changes if something goes wrong\n5. **Production Safety** - Apply changes reliably across environments\n\n**Without Migrations (Bad):**\n```python\n# Editing production database directly\nBase.metadata.create_all(engine)  # Only creates, never updates!\n```\n\n**With Migrations (Good):**\n```bash\n# Tracked, reversible, safe\nalembic revision --autogenerate -m \"add user email column\"\nalembic upgrade head\n```\n\n**Alembic is SQLAlchemy's Migration Tool:**\n- Created by the same author (Mike Bayer)\n- Generates migrations from model changes automatically\n- Supports async SQLAlchemy\n- Up/down migrations for safe rollbacks\n\n**Up vs Down Migrations:**\n\n```python\ndef upgrade():    # Apply changes\n    op.add_column('users', sa.Column('email', sa.String()))\n\ndef downgrade():  # Reverse changes\n    op.drop_column('users', 'email')\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Setting Up Alembic",
+              "content": "**Installing and initializing Alembic for your FastAPI project:**\n\nAlembic provides templates for different setups. For async SQLAlchemy, use the async template.\n\n**Folder Structure After Init:**\n```\nproject/\n├── alembic.ini           # Alembic config (database URL, etc.)\n├── migrations/\n│   ├── env.py            # Migration environment setup\n│   ├── script.py.mako    # Template for new migrations\n│   └── versions/         # Migration files go here\n│       └── abc123_initial.py\n```\n\n**Key Files:**\n- `alembic.ini` - Main configuration (edit database URL here)\n- `env.py` - Python code that runs migrations (customize for async)\n- `versions/` - Each migration is a Python file with up/down functions",
+              "code": "# Installation\n# Using uv (recommended)\n# uv add alembic\n\n# Or using pip\n# pip install alembic\n\n# Initialize Alembic with async template\n# alembic init -t async migrations\n\nimport os\n\nprint(\"=== Alembic Project Structure ===\")\nprint(\"\"\"\nAfter running: alembic init -t async migrations\n\nproject/\n├── alembic.ini           # Main config file\n├── migrations/\n│   ├── env.py            # Migration environment\n│   ├── script.py.mako    # Migration template\n│   └── versions/         # Migration files\n│       └── (empty initially)\n│\n├── app/\n│   ├── models.py         # Your SQLAlchemy models\n│   └── config.py         # Database URL, settings\n│\n└── main.py               # FastAPI app\n\"\"\")\n\nprint(\"\\n=== alembic.ini Key Settings ===\")\nprint(\"\"\"\n[alembic]\nscript_location = migrations\nprepend_sys_path = .\n\n# Database URL (or set in env.py)\nsqlalchemy.url = sqlite+aiosqlite:///./app.db\n\n[logging]\n# Logging configuration\n\"\"\")\n\nprint(\"\\n=== Common Commands ===\")\nprint(\"\"\"\n# Create new migration from model changes\nalembic revision --autogenerate -m \"add users table\"\n\n# Apply all pending migrations\nalembic upgrade head\n\n# Rollback one step\nalembic downgrade -1\n\n# Show current revision\nalembic current\n\n# Show migration history\nalembic history\n\"\"\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Configuring env.py for Async",
+              "content": "**Configuring Alembic for async SQLAlchemy 2.0:**\n\nThe `env.py` file needs to be configured to:\n1. Import your models (so Alembic sees them)\n2. Use async engine creation\n3. Connect to your database URL from config\n\n**Key Imports:**\n- `async_engine_from_config` - Creates async engine from alembic.ini\n- `target_metadata` - Set to `Base.metadata` so autogenerate works\n\n**Important:** All your models must be imported before `target_metadata` is set!",
+              "code": "# migrations/env.py\n\nfrom logging.config import fileConfig\nfrom sqlalchemy import pool\nfrom sqlalchemy.ext.asyncio import async_engine_from_config\nfrom alembic import context\nimport asyncio\n\n# Import your models - REQUIRED for autogenerate to work!\n# This imports Base.metadata with all model information\nfrom app.models import Base\nfrom app.config import settings\n\n# Alembic Config object\nconfig = context.config\n\n# Set database URL from your app settings\nconfig.set_main_option(\"sqlalchemy.url\", settings.database_url)\n\n# Set up logging\nif config.config_file_name is not None:\n    fileConfig(config.config_file_name)\n\n# This is the metadata Alembic uses to detect changes\n# It MUST reference your models' Base.metadata\ntarget_metadata = Base.metadata\n\ndef run_migrations_offline() -> None:\n    \"\"\"Run migrations without a database connection.\n    \n    Used for generating SQL scripts.\n    \"\"\"\n    url = config.get_main_option(\"sqlalchemy.url\")\n    context.configure(\n        url=url,\n        target_metadata=target_metadata,\n        literal_binds=True,\n        dialect_opts={\"paramstyle\": \"named\"},\n    )\n\n    with context.begin_transaction():\n        context.run_migrations()\n\ndef do_run_migrations(connection) -> None:\n    \"\"\"Run migrations with a database connection.\"\"\"\n    context.configure(\n        connection=connection,\n        target_metadata=target_metadata\n    )\n\n    with context.begin_transaction():\n        context.run_migrations()\n\nasync def run_async_migrations() -> None:\n    \"\"\"Create async engine and run migrations.\"\"\"\n    connectable = async_engine_from_config(\n        config.get_section(config.config_ini_section, {}),\n        prefix=\"sqlalchemy.\",\n        poolclass=pool.NullPool,\n    )\n\n    async with connectable.connect() as connection:\n        await connection.run_sync(do_run_migrations)\n\n    await connectable.dispose()\n\ndef run_migrations_online() -> None:\n    \"\"\"Run migrations in 'online' mode.\"\"\"\n    asyncio.run(run_async_migrations())\n\nif context.is_offline_mode():\n    run_migrations_offline()\nelse:\n    run_migrations_online()\n\n# Demonstration output\nprint(\"=== env.py Configuration ===\")\nprint(\"\\nKey points:\")\nprint(\"1. Import ALL your models before setting target_metadata\")\nprint(\"2. Use async_engine_from_config for async support\")\nprint(\"3. run_sync() bridges async engine with sync Alembic\")\nprint(\"4. Set database URL from your app config\")\nprint(\"\\nCommon issues:\")\nprint(\"- 'No changes detected' = Models not imported\")\nprint(\"- Connection errors = Wrong database URL\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating and Running Migrations",
+              "content": "**Alembic CLI commands for managing migrations:**\n\n**Workflow:**\n1. Make changes to your SQLAlchemy models\n2. Run `alembic revision --autogenerate -m \"description\"`\n3. Review the generated migration file\n4. Run `alembic upgrade head` to apply\n\n**Always Review Autogenerated Migrations!**\nAlembic can detect:\n- New tables/columns\n- Dropped tables/columns\n- Changed column types\n- New indexes/constraints\n\nAlembic CANNOT detect:\n- Column renames (sees as drop + add)\n- Table renames\n- Some constraint changes",
+              "code": "# === Creating and Running Migrations ===\n\n# STEP 1: Generate migration from model changes\n# alembic revision --autogenerate -m \"add transactions table\"\n\n# This creates a file like:\n# migrations/versions/abc123def456_add_transactions_table.py\n\n# STEP 2: Review the migration (ALWAYS DO THIS!)\n# Open the file and check upgrade() and downgrade()\n\n# STEP 3: Apply all pending migrations\n# alembic upgrade head\n\n# === Other Useful Commands ===\n\n# Show current database revision\n# alembic current\n\n# Show migration history\n# alembic history\n\n# Show verbose history with dates\n# alembic history --verbose\n\n# Upgrade to specific revision\n# alembic upgrade abc123\n\n# Downgrade one step\n# alembic downgrade -1\n\n# Downgrade to specific revision\n# alembic downgrade abc123\n\n# Downgrade all the way (careful!)\n# alembic downgrade base\n\n# Show SQL without running (dry run)\n# alembic upgrade head --sql\n\n# Create empty migration (for manual edits)\n# alembic revision -m \"custom data migration\"\n\nprint(\"=== Alembic Migration Commands ===\")\n\nprint(\"\\n--- Creating Migrations ---\")\nprint(\"alembic revision --autogenerate -m 'message'  # From model changes\")\nprint(\"alembic revision -m 'message'                 # Empty migration\")\n\nprint(\"\\n--- Applying Migrations ---\")\nprint(\"alembic upgrade head      # Apply all pending\")\nprint(\"alembic upgrade +1        # Apply next one\")\nprint(\"alembic upgrade abc123    # Upgrade to specific revision\")\n\nprint(\"\\n--- Rolling Back ---\")\nprint(\"alembic downgrade -1      # Rollback one step\")\nprint(\"alembic downgrade abc123  # Rollback to specific revision\")\nprint(\"alembic downgrade base    # Rollback everything (careful!)\")\n\nprint(\"\\n--- Inspection ---\")\nprint(\"alembic current           # Show current revision\")\nprint(\"alembic history           # Show migration history\")\nprint(\"alembic heads             # Show latest revisions\")\nprint(\"alembic show abc123       # Show specific migration\")\n\nprint(\"\\n--- Dry Run ---\")\nprint(\"alembic upgrade head --sql   # Show SQL without running\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Migration File Anatomy",
+              "content": "**Understanding a migration file:**\n\nEvery migration file contains:\n1. **Docstring** - Description and metadata\n2. **Revision IDs** - Unique ID and link to previous migration\n3. **upgrade()** - Function to apply the migration\n4. **downgrade()** - Function to reverse the migration\n\n**Common Operations:**\n```python\n# Create table\nop.create_table('name', columns...)\n\n# Drop table\nop.drop_table('name')\n\n# Add column\nop.add_column('table', sa.Column('name', sa.Type()))\n\n# Drop column\nop.drop_column('table', 'column_name')\n\n# Create index\nop.create_index('ix_name', 'table', ['column'])\n\n# Add foreign key\nop.create_foreign_key('fk_name', 'source', 'target', ['col'], ['id'])\n```",
+              "code": "# migrations/versions/abc123def456_add_transactions.py\n\n\"\"\"add transactions table\n\nRevision ID: abc123def456\nRevises: 9876fedcba  (previous migration, None if first)\nCreate Date: 2025-01-15 10:30:00.000000\n\n\"\"\"\nfrom alembic import op\nimport sqlalchemy as sa\n\n# Revision identifiers\nrevision = 'abc123def456'\ndown_revision = '9876fedcba'  # None if this is the first migration\nbranch_labels = None\ndepends_on = None\n\n\ndef upgrade() -> None:\n    \"\"\"Apply the migration - add transactions table.\"\"\"\n    \n    # Create the transactions table\n    op.create_table(\n        'transactions',\n        sa.Column('id', sa.Integer(), primary_key=True),\n        sa.Column('amount', sa.Float(), nullable=False),\n        sa.Column('category', sa.String(50), nullable=False),\n        sa.Column('description', sa.String(200), nullable=True),\n        sa.Column('user_id', sa.Integer(), nullable=False),\n        sa.Column(\n            'created_at',\n            sa.DateTime(),\n            server_default=sa.func.now()\n        ),\n        # Foreign key constraint\n        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),\n    )\n    \n    # Create index for faster queries\n    op.create_index(\n        'ix_transactions_user_id',\n        'transactions',\n        ['user_id']\n    )\n    \n    # Create index for category filtering\n    op.create_index(\n        'ix_transactions_category',\n        'transactions',\n        ['category']\n    )\n\n\ndef downgrade() -> None:\n    \"\"\"Reverse the migration - remove transactions table.\"\"\"\n    \n    # Drop indexes first (reverse order of creation)\n    op.drop_index('ix_transactions_category', 'transactions')\n    op.drop_index('ix_transactions_user_id', 'transactions')\n    \n    # Drop the table\n    op.drop_table('transactions')\n\n\n# Demonstration\nprint(\"=== Migration File Structure ===\")\nprint(\"\"\"\nKey components:\n\n1. DOCSTRING - Description and metadata\n   '''add transactions table\n   Revision ID: abc123\n   Revises: prev123\n   '''\n\n2. REVISION IDS\n   revision = 'abc123'        # This migration's ID\n   down_revision = 'prev123'  # Previous migration (chain)\n\n3. UPGRADE FUNCTION\n   def upgrade():\n       op.create_table(...)\n       op.add_column(...)\n       op.create_index(...)\n\n4. DOWNGRADE FUNCTION (reverse of upgrade!)\n   def downgrade():\n       op.drop_index(...)   # Reverse order!\n       op.drop_column(...)\n       op.drop_table(...)\n\"\"\")\n\nprint(\"\\nCommon operations:\")\nprint(\"  op.create_table()     / op.drop_table()\")\nprint(\"  op.add_column()       / op.drop_column()\")\nprint(\"  op.alter_column()     - Change column properties\")\nprint(\"  op.create_index()     / op.drop_index()\")\nprint(\"  op.create_foreign_key() / op.drop_constraint()\")\n\nprint(\"\\nBest practices:\")\nprint(\"  - Always test downgrade before deploying\")\nprint(\"  - Review autogenerated migrations\")\nprint(\"  - Use descriptive migration messages\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Database Migration Takeaways",
+              "content": "**Core Concepts:**\n\n1. **Never Edit Production Databases Directly**\n   - Always use migrations for schema changes\n   - `Base.metadata.create_all()` is only for development\n\n2. **Migration Workflow:**\n```bash\n# 1. Change your models\n# 2. Generate migration\nalembic revision --autogenerate -m \"description\"\n# 3. Review the migration file!\n# 4. Apply migration\nalembic upgrade head\n```\n\n3. **Key Commands:**\n   - `alembic upgrade head` - Apply all migrations\n   - `alembic downgrade -1` - Rollback one step\n   - `alembic current` - Show current revision\n   - `alembic history` - Show all migrations\n\n4. **Always Test Downgrades:**\n```bash\nalembic upgrade head    # Apply\nalembic downgrade -1    # Test rollback\nalembic upgrade head    # Re-apply\n```\n\n5. **env.py Configuration:**\n   - Import ALL models before `target_metadata`\n   - Use `async_engine_from_config` for async\n   - Set database URL from your app config\n\n**Common Pitfalls:**\n- Forgetting to import models (no changes detected)\n- Not reviewing autogenerated migrations\n- Column renames are detected as drop+add\n- Data migrations need manual handling"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-alembic-challenge",
+              "title": "Write a Migration for User Profiles",
+              "description": "Create an Alembic migration that adds a user_profiles table with proper relationships and indexes.",
+              "instructions": "Write the upgrade() and downgrade() functions for a migration that:\n\n1. Creates a `user_profiles` table with:\n   - `id` (Integer, primary key)\n   - `user_id` (Integer, foreign key to users.id, unique)\n   - `bio` (String(500), nullable)\n   - `avatar_url` (String(255), nullable)\n   - `location` (String(100), nullable)\n   - `website` (String(255), nullable)\n   - `created_at` (DateTime, server default now)\n   - `updated_at` (DateTime, nullable)\n\n2. Adds a foreign key constraint with CASCADE delete\n\n3. Creates an index on `user_id` for faster lookups\n\n4. The downgrade() should reverse everything in the correct order",
+              "starterCode": "\"\"\"add user_profiles table\n\nRevision ID: profile001\nRevises: users001\nCreate Date: 2025-01-15\n\n\"\"\"\nfrom alembic import op\nimport sqlalchemy as sa\n\nrevision = 'profile001'\ndown_revision = 'users001'\nbranch_labels = None\ndepends_on = None\n\n\ndef upgrade() -> None:\n    \"\"\"Create user_profiles table with FK to users.\"\"\"\n    # TODO: Create the user_profiles table\n    # - id: Integer primary key\n    # - user_id: Integer FK to users.id (unique, not null)\n    # - bio: String(500), nullable\n    # - avatar_url: String(255), nullable  \n    # - location: String(100), nullable\n    # - website: String(255), nullable\n    # - created_at: DateTime with server_default\n    # - updated_at: DateTime, nullable\n    \n    # TODO: Add foreign key with CASCADE delete\n    \n    # TODO: Create index on user_id\n    pass\n\n\ndef downgrade() -> None:\n    \"\"\"Remove user_profiles table.\"\"\"\n    # TODO: Drop in reverse order of creation\n    # 1. Drop index\n    # 2. Drop table (FK is dropped with table)\n    pass",
+              "solution": "\"\"\"add user_profiles table\n\nRevision ID: profile001\nRevises: users001\nCreate Date: 2025-01-15\n\n\"\"\"\nfrom alembic import op\nimport sqlalchemy as sa\n\nrevision = 'profile001'\ndown_revision = 'users001'\nbranch_labels = None\ndepends_on = None\n\n\ndef upgrade() -> None:\n    \"\"\"Create user_profiles table with FK to users.\"\"\"\n    op.create_table(\n        'user_profiles',\n        sa.Column('id', sa.Integer(), primary_key=True),\n        sa.Column('user_id', sa.Integer(), nullable=False, unique=True),\n        sa.Column('bio', sa.String(500), nullable=True),\n        sa.Column('avatar_url', sa.String(255), nullable=True),\n        sa.Column('location', sa.String(100), nullable=True),\n        sa.Column('website', sa.String(255), nullable=True),\n        sa.Column(\n            'created_at',\n            sa.DateTime(),\n            server_default=sa.func.now()\n        ),\n        sa.Column('updated_at', sa.DateTime(), nullable=True),\n        # Foreign key with cascade delete\n        sa.ForeignKeyConstraint(\n            ['user_id'],\n            ['users.id'],\n            ondelete='CASCADE'\n        ),\n    )\n    \n    # Index for faster user lookups\n    op.create_index(\n        'ix_user_profiles_user_id',\n        'user_profiles',\n        ['user_id'],\n        unique=True  # Enforce one profile per user at DB level\n    )\n\n\ndef downgrade() -> None:\n    \"\"\"Remove user_profiles table.\"\"\"\n    # Drop index first\n    op.drop_index('ix_user_profiles_user_id', 'user_profiles')\n    \n    # Drop table (FK constraint is dropped with table)\n    op.drop_table('user_profiles')\n\n\n# Demonstration\nif __name__ == \"__main__\":\n    print(\"=== Migration: Add User Profiles ===\")\n    print(\"\\nupgrade() creates:\")\n    print(\"  - user_profiles table with all columns\")\n    print(\"  - Foreign key to users with CASCADE delete\")\n    print(\"  - Unique index on user_id\")\n    print(\"\\ndowngrade() removes (reverse order):\")\n    print(\"  1. Drop index\")\n    print(\"  2. Drop table (FK removed automatically)\")\n    print(\"\\nRun with:\")\n    print(\"  alembic upgrade profile001\")\n    print(\"  alembic downgrade users001\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "upgrade() creates user_profiles table with all required columns",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "downgrade() drops index before dropping table",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use op.create_table() with sa.Column() for each column. Include ForeignKeyConstraint in the table definition."
+                },
+                {
+                  "level": 2,
+                  "text": "For CASCADE delete, add ondelete='CASCADE' to ForeignKeyConstraint."
+                },
+                {
+                  "level": 3,
+                  "text": "In downgrade(), always drop indexes before dropping the table they belong to."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Dropping table before dropping its indexes in downgrade()",
+                  "consequence": "Migration fails because index references a non-existent table",
+                  "correction": "Always drop indexes first, then drop the table"
+                },
+                {
+                  "mistake": "Forgetting server_default for created_at timestamp",
+                  "consequence": "Existing rows would have NULL created_at values",
+                  "correction": "Use server_default=sa.func.now() for automatic timestamps"
+                },
+                {
+                  "mistake": "Not making user_id unique in a one-to-one relationship",
+                  "consequence": "Multiple profiles could be created for the same user",
+                  "correction": "Add unique=True to the column or create a unique index"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-04",
           "title": "Database Integration with SQLite",
           "moduleId": "module-14",
-          "order": 7,
+          "order": 8,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
