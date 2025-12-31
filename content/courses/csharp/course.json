@@ -11060,15 +11060,57 @@
     },
     {
       "id": "module-18",
+      "title": "Clean Architecture",
+      "description": "Structure your applications with Clean Architecture principles. Learn about layers, dependency inversion, and how to organize ShopFlow for maintainability.",
+      "difficulty": "intermediate",
+      "estimatedHours": 4,
+      "lessons": [
+        {
+          "id": "lesson-18-01",
+          "title": "Why Architecture Matters (The Clean Way)",
+          "moduleId": "module-18",
+          "order": 1,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding Clean Architecture",
+              "content": "Imagine you're constructing a building. You wouldn't start by painting the walls or installing light fixtures - you need a solid foundation first, then the structural framework, and finally the finishing touches. Clean Architecture works the same way for software.\n\nTHE BUILDING CONSTRUCTION ANALOGY:\n\nFOUNDATION (Domain Layer):\n- This is the bedrock of your building - the concrete foundation that everything else rests upon\n- In software, this is your core business logic: entities, value objects, business rules\n- Just like a foundation doesn't care what color you paint the walls, the Domain layer doesn't care about databases or UI frameworks\n- It's the most stable part - you don't change foundations often\n\nSTRUCTURAL FRAMEWORK (Application Layer):\n- The steel beams and load-bearing walls that give your building shape and function\n- In software, these are your use cases, application services, and interfaces\n- The framework connects the foundation to the outer walls but doesn't know about paint colors\n- It orchestrates how things work together\n\nOUTER WALLS AND SYSTEMS (Infrastructure Layer):\n- Electrical wiring, plumbing, HVAC - the systems that connect your building to the outside world\n- In software, this is Entity Framework Core, external APIs, file systems, message queues\n- These can be replaced or upgraded without touching the foundation\n- If you want to switch from gas to electric heating, you don't rebuild the foundation\n\nINTERIOR FINISHES (Presentation Layer):\n- Paint, flooring, light fixtures - what users actually see and interact with\n- In software, this is your API controllers, Blazor components, console output\n- You can completely renovate the interior without touching the structural framework\n- Trends change, but good bones last forever\n\nThink: 'Clean Architecture is like building a house - start with a solid foundation (domain), add the framework (application), connect the systems (infrastructure), then add the finishes (presentation). Each layer protects the ones beneath it from change!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "ShopFlow Project Structure",
+              "content": "This example shows how ShopFlow is organized following Clean Architecture principles.",
+              "code": "// ===== SHOPFLOW CLEAN ARCHITECTURE STRUCTURE =====\n// Solution folder organization\n\n/*\nShopFlow/\n├── src/\n│   ├── ShopFlow.Domain/              # Core business logic (innermost)\n│   │   ├── Entities/\n│   │   │   ├── Product.cs\n│   │   │   ├── Order.cs\n│   │   │   ├── Customer.cs\n│   │   │   └── OrderItem.cs\n│   │   ├── ValueObjects/\n│   │   │   ├── Money.cs\n│   │   │   ├── Address.cs\n│   │   │   └── Email.cs\n│   │   ├── Enums/\n│   │   │   ├── OrderStatus.cs\n│   │   │   └── PaymentMethod.cs\n│   │   ├── Exceptions/\n│   │   │   ├── DomainException.cs\n│   │   │   └── InsufficientStockException.cs\n│   │   └── ShopFlow.Domain.csproj     # NO dependencies on other projects!\n│   │\n│   ├── ShopFlow.Application/          # Use cases and interfaces\n│   │   ├── Interfaces/\n│   │   │   ├── IProductRepository.cs\n│   │   │   ├── IOrderRepository.cs\n│   │   │   ├── IEmailService.cs\n│   │   │   └── IPaymentGateway.cs\n│   │   ├── Services/\n│   │   │   ├── OrderService.cs\n│   │   │   ├── ProductService.cs\n│   │   │   └── InventoryService.cs\n│   │   ├── DTOs/\n│   │   │   ├── CreateOrderRequest.cs\n│   │   │   ├── OrderResponse.cs\n│   │   │   └── ProductDto.cs\n│   │   ├── Validators/\n│   │   │   └── CreateOrderValidator.cs\n│   │   └── ShopFlow.Application.csproj # References: ShopFlow.Domain\n│   │\n│   ├── ShopFlow.Infrastructure/        # External implementations\n│   │   ├── Data/\n│   │   │   ├── ShopFlowDbContext.cs\n│   │   │   ├── Configurations/\n│   │   │   │   ├── ProductConfiguration.cs\n│   │   │   │   └── OrderConfiguration.cs\n│   │   │   └── Migrations/\n│   │   ├── Repositories/\n│   │   │   ├── ProductRepository.cs    # Implements IProductRepository\n│   │   │   └── OrderRepository.cs      # Implements IOrderRepository\n│   │   ├── Services/\n│   │   │   ├── EmailService.cs         # Implements IEmailService\n│   │   │   └── StripePaymentGateway.cs # Implements IPaymentGateway\n│   │   └── ShopFlow.Infrastructure.csproj # References: ShopFlow.Application\n│   │\n│   └── ShopFlow.API/                   # Presentation layer\n│       ├── Controllers/\n│       │   ├── ProductsController.cs\n│       │   └── OrdersController.cs\n│       ├── Endpoints/                  # Minimal API endpoints\n│       │   ├── ProductEndpoints.cs\n│       │   └── OrderEndpoints.cs\n│       ├── Middleware/\n│       │   └── ExceptionHandlingMiddleware.cs\n│       ├── Program.cs                  # DI configuration\n│       └── ShopFlow.API.csproj         # References: ShopFlow.Infrastructure\n│\n└── tests/\n    ├── ShopFlow.Domain.Tests/\n    ├── ShopFlow.Application.Tests/\n    └── ShopFlow.API.Tests/\n*/\n\n// ===== DEPENDENCY DIRECTION =====\n// API → Infrastructure → Application → Domain\n// Dependencies ALWAYS point inward!\n\n// Domain: NO project references (standalone)\n// Application: References Domain only\n// Infrastructure: References Application (and transitively Domain)\n// API: References Infrastructure (and transitively all others)",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "The Layers Explained",
+              "content": "## Understanding Each Layer\n\n**DOMAIN LAYER (The Core)**\nThe Domain layer is the heart of your application. It contains:\n- **Entities**: Core business objects with identity (Product, Order, Customer)\n- **Value Objects**: Immutable objects without identity (Money, Address, Email)\n- **Domain Events**: Things that happened in the domain (OrderPlaced, PaymentReceived)\n- **Business Rules**: Core logic that never changes regardless of UI or database\n\nThe Domain layer has ZERO dependencies on other projects. It doesn't know about Entity Framework, ASP.NET Core, or any external framework. This makes it extremely testable and portable.\n\n**APPLICATION LAYER (The Orchestrator)**\nThe Application layer coordinates the work. It contains:\n- **Interfaces**: Contracts that Infrastructure must implement (IProductRepository, IEmailService)\n- **Application Services**: Use cases that orchestrate domain objects (CreateOrderService, ProcessPaymentService)\n- **DTOs**: Data transfer objects for moving data between layers\n- **Validators**: Input validation using FluentValidation or similar\n\nThe Application layer depends ONLY on Domain. It defines interfaces but doesn't implement them - that's Infrastructure's job.\n\n**INFRASTRUCTURE LAYER (The Adapter)**\nThe Infrastructure layer implements all external concerns:\n- **Database Access**: Entity Framework Core DbContext, repositories\n- **External Services**: Email providers, payment gateways, cloud storage\n- **File System**: Reading/writing files\n- **Third-party APIs**: Integration with external systems\n\nInfrastructure implements the interfaces defined in Application. This is the Dependency Inversion Principle in action!\n\n**PRESENTATION LAYER (The UI)**\nThe Presentation layer is what users interact with:\n- **API Controllers/Endpoints**: HTTP request handling\n- **Blazor Components**: Interactive web UI\n- **Console Apps**: Command-line interfaces\n- **Background Services**: Hosted services for background work\n\nPresentation depends on Infrastructure for DI registration but communicates with Application layer services."
+            },
+            {
+              "type": "ARCHITECTURE",
+              "title": "Dependency Rule",
+              "content": "## The Golden Rule: Dependencies Point Inward\n\nThe most important rule in Clean Architecture is the **Dependency Rule**: source code dependencies can only point INWARD. Nothing in an inner circle can know anything about something in an outer circle.\n\n**THE CONCENTRIC CIRCLES:**\n```\n┌─────────────────────────────────────────────┐\n│  PRESENTATION (API, Blazor, Console)        │\n│  ┌─────────────────────────────────────┐    │\n│  │  INFRASTRUCTURE (EF Core, APIs)     │    │\n│  │  ┌─────────────────────────────┐    │    │\n│  │  │  APPLICATION (Use Cases)    │    │    │\n│  │  │  ┌─────────────────────┐    │    │    │\n│  │  │  │  DOMAIN (Entities)  │    │    │    │\n│  │  │  └─────────────────────┘    │    │    │\n│  │  └─────────────────────────────┘    │    │\n│  └─────────────────────────────────────┘    │\n└─────────────────────────────────────────────┘\n```\n\n**DEPENDENCY INVERSION IN ACTION:**\n\nThe problem: Application layer needs to save data to a database, but it can't reference Entity Framework (that would violate the dependency rule).\n\nThe solution: Application defines an INTERFACE, Infrastructure IMPLEMENTS it.\n\n```csharp\n// In Application layer (inner)\npublic interface IProductRepository\n{\n    Task<Product> GetByIdAsync(int id);\n    Task AddAsync(Product product);\n}\n\n// In Infrastructure layer (outer)\npublic class ProductRepository : IProductRepository\n{\n    private readonly ShopFlowDbContext _context;\n    \n    public async Task<Product> GetByIdAsync(int id)\n        => await _context.Products.FindAsync(id);\n        \n    public async Task AddAsync(Product product)\n        => await _context.Products.AddAsync(product);\n}\n```\n\n**WHY THIS MATTERS:**\n\n1. **Testability**: You can test Application layer with mock repositories - no database needed\n2. **Flexibility**: Switch from SQL Server to PostgreSQL by changing only Infrastructure\n3. **Maintainability**: Changes to external systems don't ripple into business logic\n4. **Parallel Development**: Teams can work on different layers independently\n\n**INTERFACES AT BOUNDARIES:**\n\nEvery boundary between layers should have interfaces:\n- Application defines `IProductRepository`, Infrastructure implements it\n- Application defines `IEmailService`, Infrastructure implements it\n- Application defines `IPaymentGateway`, Infrastructure implements it\n\nThe inner layers define WHAT they need (interfaces), outer layers provide HOW (implementations).\n\n**REGISTRATION IN DI CONTAINER:**\n\n```csharp\n// In Program.cs (Presentation layer)\nbuilder.Services.AddScoped<IProductRepository, ProductRepository>();\nbuilder.Services.AddScoped<IEmailService, SendGridEmailService>();\nbuilder.Services.AddScoped<IPaymentGateway, StripePaymentGateway>();\n```\n\nThe DI container wires everything together at runtime, but compile-time dependencies still point inward.\n\nThink: 'The Domain is the sun - everything orbits around it, but it doesn't know or care about the planets. Each layer only knows about the layer directly inside it.'"
+            }
+          ],
+          "challenges": []
+        }
+      ]
+    },
+    {
+      "id": "module-19",
       "title": "Modern API Development with OpenAPI & Scalar",
       "description": "Document and test your APIs professionally. Learn OpenAPI specification, Scalar UI, API versioning, and generating type-safe clients.",
       "difficulty": "advanced",
       "estimatedHours": 2,
       "lessons": [
         {
-          "id": "lesson-18-01",
+          "id": "lesson-19-01",
           "title": "OpenAPI in .NET 9 (Built-in Support)",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 1,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -11099,7 +11141,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "lesson-18-01-challenge-01",
+              "id": "lesson-19-01-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Create a well-documented Minimal API for a bookstore!\n\n1. Add OpenAPI services and map the OpenAPI endpoint\n\n2. Create these endpoints with full documentation:\n   - GET /books - Returns all books\n   - GET /books/{isbn} - Returns a book by ISBN\n   - POST /books - Creates a new book\n   - DELETE /books/{isbn} - Deletes a book\n\n3. Each endpoint needs:\n   - WithName (operation ID)\n   - WithDescription (what it does)\n   - WithTags (\"Books\")\n   - Appropriate Produces declarations\n\n4. Create Book record with: Isbn, Title, Author, Price\n\n5. Create CreateBookRequest with: Title, Author, Price",
@@ -11169,9 +11211,9 @@
           ]
         },
         {
-          "id": "lesson-18-02",
+          "id": "lesson-19-02",
           "title": "Scalar: Modern API Documentation UI",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 2,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -11202,7 +11244,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "lesson-18-02-challenge-01",
+              "id": "lesson-19-02-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Set up Scalar documentation for a Movie API!\n\n1. Add OpenAPI and Scalar services\n2. Configure Scalar with:\n   - Title: 'Movie Database API'\n   - Theme: DeepSpace (dark theme)\n   - Dark mode enabled\n   - Default client: Python\n\n3. Create these documented endpoints:\n   - GET /movies - List all movies\n   - GET /movies/{id} - Get movie by ID\n   - GET /movies/search?genre=&year= - Search movies\n   - POST /movies - Add new movie\n\n4. Each endpoint needs WithName, WithSummary, WithDescription, WithTags\n\n5. Create Movie record: Id, Title, Genre, Year, Rating\n\n6. Print the Scalar UI URL when app starts",
@@ -11272,9 +11314,9 @@
           ]
         },
         {
-          "id": "lesson-18-03",
+          "id": "lesson-19-03",
           "title": "API Versioning Strategies",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 3,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -11305,7 +11347,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "lesson-18-03-challenge-01",
+              "id": "lesson-19-03-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Create a versioned User API with two versions!\n\n1. Configure API versioning with:\n   - Default version: 1.0\n   - Support URL segment, query string, and header\n   - Report versions in response headers\n\n2. Version 1 endpoints (UserV1: Id, Name, Email):\n   - GET /api/v1/users - List users\n   - GET /api/v1/users/{id} - Get user by ID\n\n3. Version 2 endpoints (UserV2: Id, Name, Email, Role, CreatedAt):\n   - GET /api/v2/users - List users (enhanced)\n   - GET /api/v2/users/{id} - Get user by ID\n   - GET /api/v2/users/admins - NEW: Get only admin users\n\n4. Print available API versions and how to access them",
@@ -11375,9 +11417,9 @@
           ]
         },
         {
-          "id": "lesson-18-04",
+          "id": "lesson-19-04",
           "title": "Generating Typed Clients with Kiota",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 4,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -11408,7 +11450,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "lesson-18-04-challenge-01",
+              "id": "lesson-19-04-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Demonstrate Kiota client usage patterns!\n\n1. Show the Kiota CLI command to generate a client:\n   - Language: CSharp\n   - Output: ./BookstoreClient\n   - Document: https://api.bookstore.com/openapi.json\n   - Client name: BookstoreApiClient\n   - Namespace: Bookstore.Client\n\n2. Write code that demonstrates using a generated client:\n   - Set up authentication provider and adapter\n   - Create the API client\n   - GET all books\n   - GET single book by ISBN\n   - POST create new book\n   - Search books with query parameters\n   - Handle 404 error gracefully\n\n3. Print the benefits of using Kiota over manual HttpClient",
@@ -11478,9 +11520,9 @@
           ]
         },
         {
-          "id": "lesson-18-05",
+          "id": "lesson-19-05",
           "title": "API Security Documentation",
-          "moduleId": "module-18",
+          "moduleId": "module-19",
           "order": 5,
           "estimatedMinutes": 25,
           "difficulty": "advanced",
@@ -11511,7 +11553,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "lesson-18-05-challenge-01",
+              "id": "lesson-19-05-challenge-01",
               "title": "Practice Challenge",
               "description": "Apply what you've learned in this interactive coding challenge.",
               "instructions": "Create a fully documented API with security!\n\n1. Configure OpenAPI with these security schemes:\n   - Bearer (JWT token)\n   - ApiKey (header: X-API-Key)\n\n2. Create these endpoints with proper security documentation:\n   \n   PUBLIC (AllowAnonymous):\n   - GET /health - Health check\n   - POST /auth/login - Get JWT token\n   \n   PROTECTED (RequireAuthorization):\n   - GET /orders - List user's orders\n   - POST /orders - Create new order\n   \n   ADMIN (RequireAuthorization with policy):\n   - GET /admin/orders - List ALL orders\n   - DELETE /admin/orders/{id} - Delete any order\n\n3. Each endpoint needs proper tags, descriptions, and response types\n\n4. Print a summary of the security configuration",
