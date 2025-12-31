@@ -8765,7 +8765,7 @@
       "title": "Sharing Your Work",
       "description": "Project planning and deployment",
       "difficulty": "advanced",
-      "estimatedHours": 4,
+      "estimatedHours": 5,
       "lessons": [
         {
           "id": "module-15-lesson-01",
@@ -9094,9 +9094,251 @@
         },
         {
           "id": "module-15-lesson-05",
-          "title": "Deployment and Final Capstone Project",
+          "title": "Dockerfile for Python",
           "moduleId": "module-15",
           "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Docker for Python Development",
+              "content": "**Docker = Consistent environments everywhere**\n\nDocker solves the \"works on my machine\" problem by packaging your application with all its dependencies into a container.\n\n**Benefits for Python projects:**\n\n1. **Consistent environments**\n   - Same Python version everywhere\n   - Same dependencies, same versions\n   - No more \"it works on my laptop\"\n\n2. **Easy deployment**\n   - Build once, run anywhere\n   - Cloud platforms support Docker natively\n   - No installation steps on servers\n\n3. **Isolation**\n   - Each project in its own container\n   - No conflicting dependencies\n   - Clean separation of concerns\n\n4. **Reproducibility**\n   - Dockerfile is version-controlled\n   - Anyone can rebuild the exact same image\n   - Great for CI/CD pipelines\n\n**Key Docker concepts:**\n\n| Concept | Description |\n|---------|-------------|\n| **Image** | Blueprint/recipe for a container |\n| **Container** | Running instance of an image |\n| **Dockerfile** | Instructions to build an image |\n| **Registry** | Storage for images (Docker Hub, ghcr.io) |\n| **Layer** | Cached build step in an image |\n\n**For our Personal Finance Tracker:**\n- FastAPI app + dependencies in one container\n- Same behavior in dev, staging, and production\n- Easy to share with teammates"
+            },
+            {
+              "type": "THEORY",
+              "title": "Choosing the Right Base Image",
+              "content": "**Base images determine your container's foundation**\n\nPython offers several official base images:\n\n**1. `python:3.13` (full)**\n- Based on Debian\n- ~900MB image size\n- Includes build tools, compilers\n- Good for development, debugging\n\n**2. `python:3.13-slim` (recommended)**\n- Based on Debian minimal\n- ~150MB image size\n- Just Python and essentials\n- Best balance of size and compatibility\n\n**3. `python:3.13-alpine`**\n- Based on Alpine Linux\n- ~50MB image size\n- Uses musl instead of glibc\n- Some packages may not work or compile slower\n\n**Our recommendation: `python:3.13-slim`**\n\n```dockerfile\n# Good default choice\nFROM python:3.13-slim\n\n# Avoid unless you know what you're doing\n# FROM python:3.13-alpine\n```\n\n**Why not Alpine for Python?**\n- Many wheels are built for glibc, not musl\n- Packages with C extensions compile from source (slow)\n- Debugging is harder (different tooling)\n- Size savings often lost to compiled dependencies\n\n**Slim is the sweet spot:**\n- Small enough for production\n- Compatible with all pip packages\n- Familiar Debian-based tools"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Multi-Stage Dockerfile with uv",
+              "content": "**Multi-stage builds = smaller production images**\n\nWe use two stages:\n1. **Builder stage**: Install dependencies with uv\n2. **Runtime stage**: Copy only what's needed to run\n\nThis separates build tools from the final image, reducing size and attack surface.",
+              "code": "# Dockerfile for Personal Finance Tracker\n# Multi-stage build for smaller, more secure images\n\n# ====================\n# Stage 1: Builder\n# ====================\nFROM python:3.13-slim AS builder\n\n# Install uv - fast Python package manager\nCOPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv\n\n# Set working directory\nWORKDIR /app\n\n# Copy dependency files first (better layer caching)\nCOPY pyproject.toml uv.lock ./\n\n# Install dependencies to a virtual environment\n# --frozen: use exact versions from uv.lock\n# --no-dev: skip development dependencies\nRUN uv sync --frozen --no-dev\n\n# ====================\n# Stage 2: Runtime\n# ====================\nFROM python:3.13-slim\n\n# Set working directory\nWORKDIR /app\n\n# Copy the virtual environment from builder stage\nCOPY --from=builder /app/.venv /app/.venv\n\n# Copy application source code\nCOPY src/ ./src/\n\n# Add .venv/bin to PATH so we can run Python packages directly\nENV PATH=\"/app/.venv/bin:$PATH\"\n\n# Create non-root user for security\nRUN useradd --create-home --shell /bin/bash appuser \\\n    && chown -R appuser:appuser /app\n\n# Switch to non-root user\nUSER appuser\n\n# Document the port the app uses\nEXPOSE 8000\n\n# Health check for container orchestration\nHEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \\\n    CMD python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\"\n\n# Run the FastAPI application\nCMD [\"uvicorn\", \"src.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+              "language": "dockerfile"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding Each Dockerfile Instruction",
+              "content": "**Let's break down the key instructions:**\n\n**`FROM python:3.13-slim AS builder`**\n- Sets the base image\n- `AS builder` names this stage for reference\n\n**`COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv`**\n- Copies uv binary directly from its official image\n- No need to install pip or download scripts\n- Fastest way to get uv in Docker\n\n**`COPY pyproject.toml uv.lock ./`**\n- Copies dependency files first\n- Docker caches this layer\n- Dependencies only reinstall when these files change\n\n**`RUN uv sync --frozen --no-dev`**\n- `--frozen`: Uses exact versions from uv.lock\n- `--no-dev`: Skips pytest, black, etc.\n- Creates `.venv` directory with all packages\n\n**`COPY --from=builder /app/.venv /app/.venv`**\n- Copies virtual environment from builder stage\n- Only the installed packages, not build tools\n- Dramatically reduces final image size\n\n**`ENV PATH=\"/app/.venv/bin:$PATH\"`**\n- Adds venv to PATH\n- Python and all installed packages are now available\n- Equivalent to \"activating\" the venv\n\n**`USER appuser`**\n- Runs container as non-root user\n- Security best practice\n- Limits damage if container is compromised\n\n**`HEALTHCHECK`**\n- Tells Docker how to check if app is healthy\n- Used by orchestration tools (Kubernetes, Docker Compose)\n- Enables automatic restarts on failure"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building and Running the Docker Image",
+              "content": "**Common Docker commands for your project:**",
+              "code": "# Build the Docker image\n# -t tags the image with a name:version\n# . is the build context (current directory)\ndocker build -t finance-tracker:latest .\n\n# List all images\ndocker images\n\n# Run the container\n# -p maps host port 8000 to container port 8000\n# -d runs in detached mode (background)\ndocker run -p 8000:8000 -d finance-tracker:latest\n\n# List running containers\ndocker ps\n\n# View container logs\ndocker logs <container_id>\n\n# Stop the container\ndocker stop <container_id>\n\n# Remove the container\ndocker rm <container_id>\n\n# Remove the image\ndocker rmi finance-tracker:latest\n\n# Build with no cache (full rebuild)\ndocker build --no-cache -t finance-tracker:latest .\n\n# Check image size\ndocker images finance-tracker\n# Expected output:\n# REPOSITORY        TAG       IMAGE ID       CREATED        SIZE\n# finance-tracker   latest    abc123def     1 minute ago   180MB",
+              "language": "bash"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Dockerfile Mistakes",
+              "content": "### Watch out for these common issues:\n\n**1. Installing pip packages without caching**\n```dockerfile\n# WRONG - Downloads packages every build\nRUN pip install -r requirements.txt\n\n# CORRECT - Cache dependencies layer\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\n```\n\n**2. Running as root**\n```dockerfile\n# WRONG - Security risk!\nCMD [\"uvicorn\", \"main:app\"]\n\n# CORRECT - Use non-root user\nUSER appuser\nCMD [\"uvicorn\", \"main:app\"]\n```\n\n**3. Copying unnecessary files**\n```dockerfile\n# WRONG - Includes .git, __pycache__, .env\nCOPY . .\n\n# CORRECT - Use .dockerignore\n# .dockerignore:\n# .git\n# __pycache__\n# .env\n# *.pyc\n# .venv\n```\n\n**4. Using `latest` tag in production**\n```dockerfile\n# WRONG - Not reproducible\nFROM python:latest\n\n# CORRECT - Pin specific version\nFROM python:3.13-slim\n```\n\n**5. Not using multi-stage builds**\n```dockerfile\n# WRONG - Image contains build tools\nFROM python:3.13\nRUN pip install uv\nRUN uv sync\n\n# CORRECT - Separate build and runtime\nFROM python:3.13-slim AS builder\n# ... build steps ...\n\nFROM python:3.13-slim\nCOPY --from=builder /app/.venv /app/.venv\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The .dockerignore File",
+              "content": "**Just like .gitignore, but for Docker builds**\n\nPrevents copying unnecessary files into your image, making builds faster and images smaller.",
+              "code": "# .dockerignore\n\n# Git\n.git\n.gitignore\n\n# Python bytecode\n__pycache__\n*.pyc\n*.pyo\n*.pyd\n.Python\n\n# Virtual environments (we build fresh in Docker)\n.venv\nvenv\nenv\n\n# Environment files with secrets\n.env\n.env.*\n!.env.example\n\n# IDE settings\n.vscode\n.idea\n*.swp\n*.swo\n\n# Test and coverage\n.pytest_cache\n.coverage\nhtmlcov\n.tox\n\n# Documentation\ndocs\n*.md\n!README.md\n\n# Docker files (prevent recursive issues)\nDockerfile*\ndocker-compose*.yml\n\n# CI/CD\n.github\n.gitlab-ci.yml\n\n# OS files\n.DS_Store\nThumbs.db",
+              "language": "text"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Use `python:3.13-slim`** - Best balance of size and compatibility\n- **Multi-stage builds** reduce image size by separating build tools from runtime\n- **uv in Docker** - Copy binary from `ghcr.io/astral-sh/uv:latest`\n- **Layer caching** - Copy dependency files before source code\n- **Run as non-root** - Create and switch to a non-privileged user\n- **Use .dockerignore** - Exclude .git, .venv, .env from builds\n- **Pin versions** - Use specific Python versions, not `latest`\n- **Add HEALTHCHECK** - Enables container orchestration features"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-05-challenge-1",
+              "title": "Create a Dockerfile for Your Project",
+              "description": "Create a multi-stage Dockerfile for a FastAPI application that:\n1. Uses python:3.13-slim as the base\n2. Installs uv from the official image\n3. Uses a builder stage and a runtime stage\n4. Runs as a non-root user\n5. Exposes port 8000\n\nFill in the missing parts of the Dockerfile.",
+              "instructions": "Complete the Dockerfile with proper multi-stage build, uv installation, and security best practices.",
+              "starterCode": "# Stage 1: Builder\nFROM ____:____-slim AS builder\n\n# Install uv\nCOPY --from=ghcr.io/astral-sh/uv:latest ____ /usr/local/bin/uv\n\nWORKDIR /app\n\n# Copy dependency files\nCOPY pyproject.toml uv.lock ./\n\n# Install production dependencies\nRUN uv sync ____ ____\n\n# Stage 2: Runtime\nFROM python:3.13-slim\n\nWORKDIR /app\n\n# Copy virtual environment from builder\nCOPY ____=builder /app/.venv /app/.venv\n\n# Copy source code\nCOPY src/ ./src/\n\n# Set PATH to use venv\nENV PATH=\"____:$PATH\"\n\n# Create and switch to non-root user\nRUN useradd -m appuser && chown -R appuser:appuser /app\nUSER ____\n\n# Expose port and run\nEXPOSE ____\nCMD [\"uvicorn\", \"src.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+              "solution": "# Stage 1: Builder\nFROM python:3.13-slim AS builder\n\n# Install uv\nCOPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv\n\nWORKDIR /app\n\n# Copy dependency files\nCOPY pyproject.toml uv.lock ./\n\n# Install production dependencies\nRUN uv sync --frozen --no-dev\n\n# Stage 2: Runtime\nFROM python:3.13-slim\n\nWORKDIR /app\n\n# Copy virtual environment from builder\nCOPY --from=builder /app/.venv /app/.venv\n\n# Copy source code\nCOPY src/ ./src/\n\n# Set PATH to use venv\nENV PATH=\"/app/.venv/bin:$PATH\"\n\n# Create and switch to non-root user\nRUN useradd -m appuser && chown -R appuser:appuser /app\nUSER appuser\n\n# Expose port and run\nEXPOSE 8000\nCMD [\"uvicorn\", \"src.main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]",
+              "language": "dockerfile",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses python:3.13-slim base image",
+                  "expectedOutput": "python:3.13-slim",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses multi-stage build with --from=builder",
+                  "expectedOutput": "--from=builder",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Runs as non-root user",
+                  "expectedOutput": "USER appuser",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The uv binary is at `/uv` in the source image and should go to `/usr/local/bin/uv`"
+                },
+                {
+                  "level": 2,
+                  "text": "Use `--frozen --no-dev` flags with uv sync for production builds"
+                },
+                {
+                  "level": 3,
+                  "text": "The venv bin path is `/app/.venv/bin`"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting --from=builder when copying from the first stage",
+                  "consequence": "Docker will look for files in the current stage instead of the builder stage",
+                  "correction": "Use COPY --from=builder /app/.venv /app/.venv"
+                },
+                {
+                  "mistake": "Not adding .venv/bin to PATH",
+                  "consequence": "Python packages won't be accessible",
+                  "correction": "Add ENV PATH=\"/app/.venv/bin:$PATH\""
+                },
+                {
+                  "mistake": "Running as root user",
+                  "consequence": "Security vulnerability if container is compromised",
+                  "correction": "Create a non-root user and switch with USER appuser"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-15-lesson-06",
+          "title": "Docker Compose for Development",
+          "moduleId": "module-15",
+          "order": 6,
+          "estimatedMinutes": 35,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Why Docker Compose for Development",
+              "content": "**Docker Compose = Multi-container orchestration made simple**\n\nWhile a single Dockerfile runs one container, real applications often need multiple services:\n\n**Our Personal Finance Tracker needs:**\n- FastAPI application (port 8000)\n- PostgreSQL database (port 5432)\n- Maybe Redis for caching\n- Maybe a background worker\n\n**Docker Compose solves:**\n\n1. **Multi-container management**\n   - Define all services in one file\n   - Start/stop everything together\n   - Containers can talk to each other\n\n2. **Development workflows**\n   - Mount source code for hot reload\n   - Override production settings\n   - Easy database access\n\n3. **Environment parity**\n   - Same PostgreSQL version as production\n   - Same environment variables\n   - No \"but it works with SQLite locally\"\n\n4. **One command to rule them all**\n   ```bash\n   docker compose up\n   ```\n   - Starts all services\n   - Creates networks\n   - Sets up volumes\n   - Shows combined logs\n\n**Compose vs Kubernetes:**\n| Docker Compose | Kubernetes |\n|----------------|------------|\n| Local development | Production at scale |\n| Single machine | Multiple machines |\n| Simple YAML | Complex manifests |\n| `docker compose up` | `kubectl apply` |\n\nUse Compose for development, Kubernetes for production (if needed)."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Docker Compose for Personal Finance Tracker",
+              "content": "**Complete docker-compose.yml with PostgreSQL**\n\nThis configuration sets up:\n- Your FastAPI app with hot reload\n- PostgreSQL 16 with persistent data\n- Automatic service dependencies",
+              "code": "# docker-compose.yml\n# Development environment for Personal Finance Tracker\n\nservices:\n  # ==================\n  # FastAPI Application\n  # ==================\n  app:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    ports:\n      - \"8000:8000\"\n    environment:\n      # Database connection string\n      - DATABASE_URL=postgresql+asyncpg://financeuser:financepass@db:5432/financedb\n      # Development settings\n      - DEBUG=true\n      - LOG_LEVEL=DEBUG\n    depends_on:\n      db:\n        condition: service_healthy\n    volumes:\n      # Mount source code for hot reload\n      - ./src:/app/src\n    # Override CMD for development with reload\n    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload\n    networks:\n      - finance-network\n\n  # ==================\n  # PostgreSQL Database\n  # ==================\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_USER: financeuser\n      POSTGRES_PASSWORD: financepass\n      POSTGRES_DB: financedb\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U financeuser -d financedb\"]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n    volumes:\n      # Persist database data\n      - postgres_data:/var/lib/postgresql/data\n      # Optional: Run init scripts\n      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql\n    ports:\n      # Expose for local tools (DBeaver, pgAdmin)\n      - \"5432:5432\"\n    networks:\n      - finance-network\n\n# Named volumes persist data between container restarts\nvolumes:\n  postgres_data:\n\n# Custom network for service communication\nnetworks:\n  finance-network:\n    driver: bridge",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding docker-compose.yml Structure",
+              "content": "**Key sections explained:**\n\n**`services:`**\nDefines each container in your application.\n\n**`build:`**\n```yaml\nbuild:\n  context: .         # Directory containing Dockerfile\n  dockerfile: Dockerfile  # Which Dockerfile to use\n```\n\n**`ports:`**\n```yaml\nports:\n  - \"8000:8000\"     # host:container\n```\nMaps container port to your machine.\n\n**`environment:`**\n```yaml\nenvironment:\n  - DATABASE_URL=postgresql://...\n  - DEBUG=true\n```\nSets environment variables inside the container.\n\n**`depends_on:`**\n```yaml\ndepends_on:\n  db:\n    condition: service_healthy\n```\n- Waits for `db` service to be healthy before starting\n- `service_healthy` requires a healthcheck\n- Prevents \"connection refused\" errors\n\n**`volumes:`**\n```yaml\nvolumes:\n  - ./src:/app/src   # Bind mount: host path : container path\n  - postgres_data:/var/lib/postgresql/data  # Named volume\n```\n- **Bind mounts**: Sync local files into container (hot reload)\n- **Named volumes**: Persist data between restarts\n\n**`healthcheck:`**\n```yaml\nhealthcheck:\n  test: [\"CMD-SHELL\", \"pg_isready -U user -d db\"]\n  interval: 5s    # Check every 5 seconds\n  timeout: 5s     # Fail if no response in 5s\n  retries: 5      # Mark unhealthy after 5 failures\n```\nDocker checks if the service is ready."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Essential Docker Compose Commands",
+              "content": "**Commands you'll use daily:**",
+              "code": "# Start all services in foreground (see logs)\ndocker compose up\n\n# Start in background (detached)\ndocker compose up -d\n\n# Start and rebuild images\ndocker compose up --build\n\n# Stop all services\ndocker compose down\n\n# Stop and remove volumes (WARNING: deletes database data!)\ndocker compose down -v\n\n# View logs for all services\ndocker compose logs\n\n# Follow logs in real-time\ndocker compose logs -f\n\n# View logs for specific service\ndocker compose logs app\ndocker compose logs db\n\n# List running services\ndocker compose ps\n\n# Execute command in running container\ndocker compose exec app bash\ndocker compose exec db psql -U financeuser -d financedb\n\n# Run a one-off command (starts new container)\ndocker compose run app pytest\ndocker compose run app uv add requests\n\n# Restart a specific service\ndocker compose restart app\n\n# Scale a service (run multiple instances)\ndocker compose up -d --scale app=3\n\n# Pull latest images\ndocker compose pull\n\n# View service configuration\ndocker compose config",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Connecting to the Database from Your App",
+              "content": "**Updating your FastAPI app to use the Compose database:**",
+              "code": "# src/config.py\nimport os\nfrom pydantic_settings import BaseSettings\n\n\nclass Settings(BaseSettings):\n    \"\"\"Application settings loaded from environment variables.\"\"\"\n    \n    # Database URL from docker-compose environment\n    database_url: str = \"sqlite+aiosqlite:///./dev.db\"\n    \n    # App settings\n    debug: bool = False\n    log_level: str = \"INFO\"\n    \n    class Config:\n        env_file = \".env\"  # Load from .env file if present\n\n\nsettings = Settings()\n\n\n# src/database.py\nfrom sqlalchemy.ext.asyncio import create_async_engine, AsyncSession\nfrom sqlalchemy.orm import sessionmaker\nfrom src.config import settings\n\n# Create async engine from DATABASE_URL\nengine = create_async_engine(\n    settings.database_url,\n    echo=settings.debug,  # Log SQL queries in debug mode\n)\n\n# Session factory\nAsyncSessionLocal = sessionmaker(\n    engine,\n    class_=AsyncSession,\n    expire_on_commit=False\n)\n\n\nasync def get_db():\n    \"\"\"Dependency for FastAPI routes.\"\"\"\n    async with AsyncSessionLocal() as session:\n        try:\n            yield session\n        finally:\n            await session.close()\n\n\n# src/main.py\nfrom fastapi import FastAPI, Depends\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom sqlalchemy import text\n\nfrom src.database import get_db\nfrom src.config import settings\n\napp = FastAPI(\n    title=\"Personal Finance Tracker\",\n    debug=settings.debug\n)\n\n\n@app.get(\"/health\")\nasync def health_check(db: AsyncSession = Depends(get_db)):\n    \"\"\"Health check endpoint - verifies database connection.\"\"\"\n    try:\n        await db.execute(text(\"SELECT 1\"))\n        return {\"status\": \"healthy\", \"database\": \"connected\"}\n    except Exception as e:\n        return {\"status\": \"unhealthy\", \"database\": str(e)}",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Development vs Production Compose Files",
+              "content": "**Override files for different environments:**\n\nDocker Compose automatically merges `docker-compose.yml` with `docker-compose.override.yml` for development.",
+              "code": "# docker-compose.yml (base configuration)\nservices:\n  app:\n    build: .\n    ports:\n      - \"8000:8000\"\n    environment:\n      - DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/finance\n    depends_on:\n      db:\n        condition: service_healthy\n\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: pass\n      POSTGRES_DB: finance\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U user -d finance\"]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:\n\n---\n# docker-compose.override.yml (development overrides - auto-loaded)\nservices:\n  app:\n    volumes:\n      - ./src:/app/src  # Hot reload\n    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload\n    environment:\n      - DEBUG=true\n      - LOG_LEVEL=DEBUG\n\n  db:\n    ports:\n      - \"5432:5432\"  # Expose for local DB tools\n\n---\n# docker-compose.prod.yml (production configuration)\n# Use with: docker compose -f docker-compose.yml -f docker-compose.prod.yml up\nservices:\n  app:\n    # No volume mounts in production\n    # No --reload in production\n    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --workers 4\n    environment:\n      - DEBUG=false\n      - LOG_LEVEL=WARNING\n    deploy:\n      resources:\n        limits:\n          memory: 512M\n        reservations:\n          memory: 256M\n\n  db:\n    # Don't expose database port in production\n    ports: []",
+              "language": "yaml"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Docker Compose Mistakes",
+              "content": "### Avoid these common pitfalls:\n\n**1. Hardcoding secrets in docker-compose.yml**\n```yaml\n# WRONG - Secrets in version control!\nenvironment:\n  - POSTGRES_PASSWORD=mysecretpassword\n\n# CORRECT - Use .env file (add to .gitignore)\nenvironment:\n  - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}\n```\n\n**2. Not waiting for database to be ready**\n```yaml\n# WRONG - App starts before DB is ready\ndepends_on:\n  - db  # Only waits for container to start, not be ready\n\n# CORRECT - Wait for healthcheck\ndepends_on:\n  db:\n    condition: service_healthy\n```\n\n**3. Using bind mounts for database data**\n```yaml\n# WRONG - Permission issues on some systems\nvolumes:\n  - ./data:/var/lib/postgresql/data\n\n# CORRECT - Use named volumes\nvolumes:\n  - postgres_data:/var/lib/postgresql/data\n```\n\n**4. Forgetting to persist volumes**\n```bash\n# WRONG - Deletes all data!\ndocker compose down -v\n\n# CORRECT - Keep volumes\ndocker compose down\n```\n\n**5. Not using networks for isolation**\n```yaml\n# WRONG - All services on default network\nservices:\n  app:\n    ...\n  db:\n    ports:\n      - \"5432:5432\"  # DB exposed to world!\n\n# CORRECT - Internal network, no exposed ports\nservices:\n  db:\n    networks:\n      - internal\n    # No ports exposed\n```"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Key Takeaways",
+              "content": "- **Docker Compose** orchestrates multiple containers with one command\n- **`docker compose up`** starts everything, **`docker compose down`** stops it\n- **Service dependencies** use `depends_on` with `condition: service_healthy`\n- **Volume mounts** (`./src:/app/src`) enable hot reload in development\n- **Named volumes** (`postgres_data:`) persist database data between restarts\n- **Override files** separate development and production configurations\n- **Environment variables** should come from `.env` files, not hardcoded\n- **Services communicate** using service names as hostnames (`db:5432`)"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-15-lesson-06-challenge-1",
+              "title": "Create a Docker Compose Configuration",
+              "description": "Create a docker-compose.yml file that sets up:\n1. A FastAPI app service that builds from Dockerfile\n2. A PostgreSQL 16 database with healthcheck\n3. Proper service dependencies\n4. Volume mount for hot reload\n5. Named volume for database persistence\n\nFill in the missing parts.",
+              "instructions": "Complete the docker-compose.yml with proper service configuration, healthcheck, dependencies, and volumes.",
+              "starterCode": "# docker-compose.yml\nservices:\n  app:\n    build: .\n    ports:\n      - \"____:8000\"\n    environment:\n      - DATABASE_URL=postgresql+asyncpg://user:pass@____:5432/mydb\n    depends_on:\n      db:\n        condition: ____\n    volumes:\n      - ____:/app/src\n    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload\n\n  db:\n    image: postgres:____\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: pass\n      POSTGRES_DB: mydb\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U ____ -d ____\"]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n    volumes:\n      - ____:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:",
+              "solution": "# docker-compose.yml\nservices:\n  app:\n    build: .\n    ports:\n      - \"8000:8000\"\n    environment:\n      - DATABASE_URL=postgresql+asyncpg://user:pass@db:5432/mydb\n    depends_on:\n      db:\n        condition: service_healthy\n    volumes:\n      - ./src:/app/src\n    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload\n\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_USER: user\n      POSTGRES_PASSWORD: pass\n      POSTGRES_DB: mydb\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U user -d mydb\"]\n      interval: 5s\n      timeout: 5s\n      retries: 5\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "App connects to db service",
+                  "expectedOutput": "@db:5432",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses service_healthy condition",
+                  "expectedOutput": "service_healthy",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Uses named volume for postgres data",
+                  "expectedOutput": "postgres_data:/var/lib/postgresql/data",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The database hostname in Docker Compose is the service name: `db`"
+                },
+                {
+                  "level": 2,
+                  "text": "Use `service_healthy` as the condition to wait for the healthcheck"
+                },
+                {
+                  "level": 3,
+                  "text": "Mount `./src` to `/app/src` for hot reload"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using localhost instead of service name for database host",
+                  "consequence": "App cannot connect to database",
+                  "correction": "Use the service name 'db' as the hostname"
+                },
+                {
+                  "mistake": "Forgetting the condition in depends_on",
+                  "consequence": "App starts before database is ready",
+                  "correction": "Use depends_on with condition: service_healthy"
+                },
+                {
+                  "mistake": "Using bind mount for database data",
+                  "consequence": "Permission issues and data corruption",
+                  "correction": "Use named volumes for database persistence"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
+          "id": "module-15-lesson-07",
+          "title": "Deployment and Final Capstone Project",
+          "moduleId": "module-15",
+          "order": 7,
           "estimatedMinutes": 45,
           "difficulty": "advanced",
           "contentSections": [
