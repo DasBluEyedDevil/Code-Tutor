@@ -10980,6 +10980,556 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "20.5",
+          "title": "Validation & Error Handling",
+          "moduleId": "module-20",
+          "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "Consistent Error Handling - Why It Matters",
+              "content": "Professional APIs don't just return errors - they return meaningful, consistent error responses that help developers debug issues and handle them gracefully.\n\n**Why Consistent Error Handling?**\n\n1. **Client Predictability** - Clients know what structure to expect\n2. **Better Debugging** - Detailed error codes and messages\n3. **Professional Image** - Shows you care about developers using your API\n4. **Security** - Consistent errors prevent information leakage\n5. **Monitoring** - Error codes make it easy to track issues\n\n**Error Response Pattern:**\n```json\n{\n  \"success\": false,\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"One or more fields are invalid\",\n    \"details\": {\n      \"email\": \"Invalid email format\",\n      \"password\": \"Password too short\"\n    }\n  }\n}\n```\n\n**Common Error Types:**\n- **ValidationError** - Input validation failed (400)\n- **NotFoundError** - Resource doesn't exist (404)\n- **UnauthorizedError** - Authentication failed (401)\n- **ForbiddenError** - User lacks permissions (403)\n- **ConflictError** - Resource already exists (409)\n- **ServerError** - Unexpected server error (500)"
+            },
+            {
+              "type": "CODE",
+              "title": "Custom Error Classes",
+              "content": "Create a hierarchy of custom error classes for different error types:",
+              "language": "typescript",
+              "code": "// src/lib/errors.ts\nexport class AppError extends Error {\n  constructor(\n    public code: string,\n    public message: string,\n    public statusCode: number = 500,\n    public details?: Record<string, unknown>\n  ) {\n    super(message);\n    this.name = 'AppError';\n  }\n}\n\nexport class ValidationError extends AppError {\n  constructor(message: string, details?: Record<string, unknown>) {\n    super('VALIDATION_ERROR', message, 400, details);\n    this.name = 'ValidationError';\n  }\n}\n\nexport class NotFoundError extends AppError {\n  constructor(resource: string) {\n    super('NOT_FOUND', `${resource} not found`, 404);\n    this.name = 'NotFoundError';\n  }\n}\n\nexport class UnauthorizedError extends AppError {\n  constructor(message: string = 'Authentication required') {\n    super('UNAUTHORIZED', message, 401);\n    this.name = 'UnauthorizedError';\n  }\n}\n\nexport class ForbiddenError extends AppError {\n  constructor(message: string = 'Access denied') {\n    super('FORBIDDEN', message, 403);\n    this.name = 'ForbiddenError';\n  }\n}\n\nexport class ConflictError extends AppError {\n  constructor(message: string) {\n    super('CONFLICT', message, 409);\n    this.name = 'ConflictError';\n  }\n}\n\nexport class ServerError extends AppError {\n  constructor(message: string = 'Internal server error') {\n    super('SERVER_ERROR', message, 500);\n    this.name = 'ServerError';\n  }\n}"
+            },
+            {
+              "type": "CODE",
+              "title": "Global Error Handler",
+              "content": "Create a centralized error handler middleware that catches all errors and formats them consistently:",
+              "language": "typescript",
+              "code": "// src/middleware/error-handler.ts\nimport { Context, Next } from 'hono';\nimport { AppError } from '../lib/errors';\n\nexport interface ErrorResponse {\n  success: false;\n  error: {\n    code: string;\n    message: string;\n    details?: Record<string, unknown>;\n  };\n}\n\nexport async function errorHandler(c: Context, next: Next) {\n  try {\n    await next();\n  } catch (err) {\n    // Log the error for monitoring\n    console.error('Error:', {\n      timestamp: new Date().toISOString(),\n      error: err instanceof Error ? err.message : 'Unknown error',\n      stack: err instanceof Error ? err.stack : undefined,\n    });\n\n    // Check if it's our custom AppError\n    if (err instanceof AppError) {\n      const response: ErrorResponse = {\n        success: false,\n        error: {\n          code: err.code,\n          message: err.message,\n          ...(err.details && { details: err.details }),\n        },\n      };\n      return c.json(response, err.statusCode);\n    }\n\n    // Handle Zod validation errors\n    if (err instanceof Error && err.message.includes('zod')) {\n      const response: ErrorResponse = {\n        success: false,\n        error: {\n          code: 'VALIDATION_ERROR',\n          message: 'Request validation failed',\n          details: { raw: err.message },\n        },\n      };\n      return c.json(response, 400);\n    }\n\n    // Catch-all for unexpected errors\n    const response: ErrorResponse = {\n      success: false,\n      error: {\n        code: 'SERVER_ERROR',\n        message: 'An unexpected error occurred',\n      },\n    };\n    return c.json(response, 500);\n  }\n}"
+            },
+            {
+              "type": "CODE",
+              "title": "Error Response Format Utility",
+              "content": "Create utility functions for building consistent success and error responses:",
+              "language": "typescript",
+              "code": "// src/lib/response.ts\nimport { Context } from 'hono';\nimport { AppError } from './errors';\n\nexport interface SuccessResponse<T> {\n  success: true;\n  data: T;\n}\n\nexport interface ErrorResponseBody {\n  success: false;\n  error: {\n    code: string;\n    message: string;\n    details?: Record<string, unknown>;\n  };\n}\n\nexport function successResponse<T>(data: T): SuccessResponse<T> {\n  return {\n    success: true,\n    data,\n  };\n}\n\nexport function errorResponse(\n  code: string,\n  message: string,\n  details?: Record<string, unknown>\n): ErrorResponseBody {\n  return {\n    success: false,\n    error: {\n      code,\n      message,\n      ...(details && { details }),\n    },\n  };\n}\n\n// Throw errors with this function for consistency\nexport function throwError(\n  c: Context,\n  code: string,\n  message: string,\n  statusCode: number = 400,\n  details?: Record<string, unknown>\n) {\n  const error = new AppError(code, message, statusCode, details);\n  throw error;\n}"
+            },
+            {
+              "type": "CODE",
+              "title": "Integrating @hono/zod-validator",
+              "content": "Use @hono/zod-validator for automatic schema validation with error handling:",
+              "language": "typescript",
+              "code": "// Example in src/routes/tasks.ts\nimport { Hono } from 'hono';\nimport { zValidator } from '@hono/zod-validator';\nimport { z } from 'zod';\nimport { ValidationError } from '../lib/errors';\n\nconst tasks = new Hono();\n\nconst createTaskSchema = z.object({\n  title: z\n    .string()\n    .min(1, 'Title is required')\n    .max(200, 'Title too long'),\n  description: z.string().optional(),\n  status: z.enum(['pending', 'in_progress', 'completed']).default('pending'),\n});\n\n// zValidator automatically returns 400 with error details if validation fails\ntasks.post(\n  '/',\n  zValidator('json', createTaskSchema, (result, c) => {\n    if (!result.success) {\n      // Custom error handling for validation failures\n      const errors = result.error.flatten().fieldErrors;\n      throw new ValidationError('Validation failed', errors);\n    }\n  }),\n  async (c) => {\n    const data = c.req.valid('json');\n    // Data is now guaranteed to match the schema\n    return c.json({ success: true, data });\n  }\n);\n\nexport default tasks;"
+            },
+            {
+              "type": "CODE",
+              "title": "Updated Main App with Error Handling",
+              "content": "Update your main application file to use the error handler and consistent responses:",
+              "language": "typescript",
+              "code": "// src/index.ts (updated)\nimport { Hono } from 'hono';\nimport { cors } from 'hono/cors';\nimport { logger } from 'hono/logger';\nimport { errorHandler } from './middleware/error-handler';\nimport { successResponse } from './lib/response';\nimport auth from './routes/auth';\nimport tasks from './routes/tasks';\nimport categories from './routes/categories';\n\nconst app = new Hono();\n\n// Middleware (order matters!)\napp.use('*', logger());\napp.use('*', cors());\napp.use('*', errorHandler); // Global error handler\n\n// Health check\napp.get('/', (c) => {\n  return c.json(\n    successResponse({\n      message: 'Task Manager API',\n      version: '1.0.0',\n      endpoints: {\n        auth: '/api/auth/*',\n        tasks: '/api/tasks/*',\n        categories: '/api/categories/*',\n      },\n    })\n  );\n});\n\n// Routes\napp.route('/api/auth', auth);\napp.route('/api/tasks', tasks);\napp.route('/api/categories', categories);\n\n// 404 handler\napp.notFound((c) => {\n  return c.json(\n    {\n      success: false,\n      error: {\n        code: 'NOT_FOUND',\n        message: 'Endpoint not found',\n      },\n    },\n    404\n  );\n});\n\nconst port = process.env.PORT || 3000;\nconsole.log(`Task Manager API running on http://localhost:${port}`);\n\nexport default {\n  port,\n  fetch: app.fetch,\n};"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Pitfalls with Error Handling",
+              "content": "**1. Async Errors Not Being Caught**\n```typescript\n// WRONG - Errors in async handlers won't be caught\ntasks.post('/', async (c) => {\n  const data = c.req.valid('json'); // If validation fails, error isn't caught!\n  // ...\n});\n\n// RIGHT - Let the error handler middleware catch it\ntasks.post(\n  '/',\n  zValidator('json', schema),\n  async (c) => {\n    // zValidator handles validation, error handler catches anything else\n    const data = c.req.valid('json');\n  }\n);\n```\n\n**2. Sending Response After Error**\n```typescript\n// WRONG - Calling c.json() twice\ntasks.post('/', async (c) => {\n  try {\n    // ...\n  } catch (err) {\n    c.json({ error: 'Something failed' }, 500);\n  }\n  // This will try to send response again!\n  return c.json({ success: true });\n});\n\n// RIGHT - Return or throw\ntasks.post('/', async (c) => {\n  try {\n    return c.json({ success: true });\n  } catch (err) {\n    throw err; // Let error handler deal with it\n  }\n});\n```\n\n**3. Not Logging Enough Context**\n```typescript\n// WRONG - Just logging the message\nconsole.error('Task update failed');\n\n// RIGHT - Log context for debugging\nconsole.error('Task update failed', {\n  userId,\n  taskId,\n  timestamp: new Date().toISOString(),\n  error: err.message,\n});\n```\n\n**4. Exposing Internal Details**\n```typescript\n// WRONG - Leaking implementation details\nthrow new Error(`Failed to update task in Prisma: ${err.message}`);\n\n// RIGHT - User-friendly messages\nthrow new ServerError('Could not save your changes. Please try again.');\n```"
+            },
+            {
+              "type": "CODE",
+              "title": "Practical Example: Rate Limiting with Errors",
+              "content": "Implement rate limiting that returns proper error responses:",
+              "language": "typescript",
+              "code": "// src/middleware/rate-limit.ts\nimport { Context, Next } from 'hono';\nimport { TooManyRequestsError } from '../lib/errors';\n\ninterface RateLimitStore {\n  [key: string]: { count: number; resetTime: number };\n}\n\nconst store: RateLimitStore = {};\n\nexport class TooManyRequestsError extends AppError {\n  constructor(retryAfter: number = 60) {\n    super(\n      'RATE_LIMIT_EXCEEDED',\n      `Too many requests. Please try again in ${retryAfter} seconds.`,\n      429\n    );\n    this.name = 'TooManyRequestsError';\n  }\n}\n\nexport function rateLimitMiddleware(\n  windowMs: number = 15 * 60 * 1000, // 15 minutes\n  maxRequests: number = 100\n) {\n  return async (c: Context, next: Next) => {\n    const ip = c.req.header('x-forwarded-for') || 'unknown';\n    const key = `${ip}:${c.req.path}`;\n    const now = Date.now();\n\n    const record = store[key];\n\n    if (record && now < record.resetTime) {\n      record.count++;\n\n      if (record.count > maxRequests) {\n        const retryAfter = Math.ceil((record.resetTime - now) / 1000);\n        c.header('Retry-After', String(retryAfter));\n        throw new TooManyRequestsError(retryAfter);\n      }\n    } else {\n      // Create new window\n      store[key] = {\n        count: 1,\n        resetTime: now + windowMs,\n      };\n    }\n\n    // Clean up old entries\n    for (const k in store) {\n      if (store[k].resetTime < now) {\n        delete store[k];\n      }\n    }\n\n    await next();\n  };\n}\n\n// Usage in main app:\n// app.use('*', rateLimitMiddleware(15 * 60 * 1000, 100));\n// Returns proper error with Retry-After header when limit exceeded"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.5-challenge",
+              "title": "Add Rate Limiting with Proper Errors",
+              "description": "Implement rate limiting middleware that returns consistent error responses.",
+              "instructions": "Create a rate limiting middleware that tracks requests per user ID (from JWT), limits to 100 requests per 15 minutes, and throws a TooManyRequestsError with a Retry-After header when the limit is exceeded.",
+              "starterCode": "// src/middleware/rate-limit.ts\nimport { Context, Next } from 'hono';\nimport { AppError } from '../lib/errors';\n\nexport class TooManyRequestsError extends AppError {\n  constructor(retryAfter: number = 60) {\n    super(\n      'RATE_LIMIT_EXCEEDED',\n      `Too many requests. Please try again in ${retryAfter} seconds.`,\n      429\n    );\n  }\n}\n\ninterface RateLimitRecord {\n  count: number;\n  resetTime: number;\n}\n\nconst rateLimitStore: Map<string, RateLimitRecord> = new Map();\n\nexport function createRateLimitMiddleware(\n  windowMs: number = 15 * 60 * 1000,\n  maxRequests: number = 100\n) {\n  return async (c: Context, next: Next) => {\n    // Your implementation here\n  };\n}",
+              "solution": "// src/middleware/rate-limit.ts\nimport { Context, Next } from 'hono';\nimport { AppError } from '../lib/errors';\n\nexport class TooManyRequestsError extends AppError {\n  constructor(retryAfter: number = 60) {\n    super(\n      'RATE_LIMIT_EXCEEDED',\n      `Too many requests. Please try again in ${retryAfter} seconds.`,\n      429\n    );\n  }\n}\n\ninterface RateLimitRecord {\n  count: number;\n  resetTime: number;\n}\n\nconst rateLimitStore: Map<string, RateLimitRecord> = new Map();\n\nexport function createRateLimitMiddleware(\n  windowMs: number = 15 * 60 * 1000,\n  maxRequests: number = 100\n) {\n  return async (c: Context, next: Next) => {\n    const userId = c.get('userId');\n\n    if (!userId) {\n      // Not authenticated, skip rate limiting for now\n      await next();\n      return;\n    }\n\n    const now = Date.now();\n    const record = rateLimitStore.get(userId);\n\n    if (record && now < record.resetTime) {\n      record.count++;\n\n      if (record.count > maxRequests) {\n        const retryAfter = Math.ceil((record.resetTime - now) / 1000);\n        c.header('Retry-After', String(retryAfter));\n        throw new TooManyRequestsError(retryAfter);\n      }\n    } else {\n      // Create new window\n      rateLimitStore.set(userId, {\n        count: 1,\n        resetTime: now + windowMs,\n      });\n    }\n\n    // Clean up expired windows\n    for (const [key, record] of rateLimitStore.entries()) {\n      if (record.resetTime < now) {\n        rateLimitStore.delete(key);\n      }\n    }\n\n    await next();\n  };\n}",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Throws TooManyRequestsError when limit exceeded",
+                  "expectedOutput": "TooManyRequestsError",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Sets Retry-After header in response",
+                  "expectedOutput": "Retry-After",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Uses userId as rate limit key",
+                  "expectedOutput": "c.get('userId')",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Cleans up expired rate limit records",
+                  "expectedOutput": "resetTime < now",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Get userId from context using c.get('userId')"
+                },
+                {
+                  "level": 2,
+                  "text": "Track the request count and reset time in the rate limit store"
+                },
+                {
+                  "level": 3,
+                  "text": "When throwing the error, also set the Retry-After header with the number of seconds until the window resets"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not cleaning up old records from the store",
+                  "consequence": "Memory leak as store grows indefinitely",
+                  "correction": "Periodically delete records where resetTime has passed"
+                },
+                {
+                  "mistake": "Not setting Retry-After header",
+                  "consequence": "Clients don't know how long to wait before retrying",
+                  "correction": "Add c.header('Retry-After', String(retryAfter)) before throwing error"
+                },
+                {
+                  "mistake": "Using IP address instead of userId for authenticated routes",
+                  "consequence": "All users behind same IP share a rate limit",
+                  "correction": "Use userId (from JWT context) for authenticated endpoints"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.6",
+          "title": "Writing Tests",
+          "moduleId": "module-20",
+          "order": 6,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "Testing Strategy - Unit vs Integration",
+              "content": "Professional APIs require comprehensive testing. Let's understand the testing pyramid and when to use each type.\n\n**Testing Pyramid:**\n```\n        /\\        \n       /E2E\\       End-to-End (few)\n      /------\\     \n     /  Int   \\    Integration (moderate)\n    /---------\\   \n   /  Unit     \\  Unit Tests (many)\n  /__________*/\n```\n\n**Unit Tests** - Test individual functions in isolation\n- Test utility functions (hashPassword, verifyPassword)\n- Mock external dependencies\n- Fast and focused\n- Usually 80% of your tests\n\n**Integration Tests** - Test how components work together\n- Test API endpoints with real database\n- Test authentication flows\n- Test request/response cycles\n- Usually 15-20% of your tests\n\n**E2E Tests** - Test complete user flows (skip for this capstone)\n- Browser-based testing\n- Full application flow\n- Usually 5% of your tests\n\n**For This Capstone:**\nWe'll focus on unit and integration tests using Bun's built-in test runner, which is simple and fast:\n```typescript\n// Bun test pattern\ndescribe('Auth Utils', () => {\n  it('should hash passwords correctly', () => {\n    // Test implementation\n  });\n});\n```"
+            },
+            {
+              "type": "CODE",
+              "title": "Bun Test Setup - describe, it, expect patterns",
+              "content": "Bun comes with a built-in test runner. Create your first test file:",
+              "language": "typescript",
+              "code": "// tests/auth.utils.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport * as authUtils from '../src/lib/auth';\n\ndescribe('Password Hashing', () => {\n  it('should hash a password', async () => {\n    const password = 'myPassword123';\n    const hash = await authUtils.hashPassword(password);\n    \n    // Hash should not be the same as original password\n    expect(hash).not.toBe(password);\n    \n    // Hash should be a string\n    expect(typeof hash).toBe('string');\n  });\n\n  it('should verify a correct password', async () => {\n    const password = 'myPassword123';\n    const hash = await authUtils.hashPassword(password);\n    const isValid = await authUtils.verifyPassword(password, hash);\n    \n    expect(isValid).toBe(true);\n  });\n\n  it('should reject an incorrect password', async () => {\n    const password = 'myPassword123';\n    const hash = await authUtils.hashPassword(password);\n    const isValid = await authUtils.verifyPassword('wrongPassword', hash);\n    \n    expect(isValid).toBe(false);\n  });\n});\n\ndescribe('JWT Token Generation', () => {\n  it('should create a valid JWT token', () => {\n    const userId = 'user-123';\n    const token = authUtils.createToken(userId);\n    \n    expect(typeof token).toBe('string');\n    expect(token.split('.').length).toBe(3); // JWT format: header.payload.signature\n  });\n\n  it('should decode a valid token', () => {\n    const userId = 'user-456';\n    const token = authUtils.createToken(userId);\n    const decoded = authUtils.verifyToken(token);\n    \n    expect(decoded).not.toBe(null);\n    expect(decoded?.userId).toBe(userId);\n  });\n\n  it('should reject an invalid token', () => {\n    const invalidToken = 'not.a.valid.token';\n    const decoded = authUtils.verifyToken(invalidToken);\n    \n    expect(decoded).toBe(null);\n  });\n});"
+            },
+            {
+              "type": "CODE",
+              "title": "Unit Tests for Auth Utilities",
+              "content": "Create comprehensive unit tests for authentication functions:",
+              "language": "typescript",
+              "code": "// tests/auth.unit.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport { hashPassword, verifyPassword, createToken, verifyToken } from '../src/lib/auth';\n\ndescribe('Auth Utilities', () => {\n  describe('Password Hashing', () => {\n    it('should produce different hashes for the same password', async () => {\n      const password = 'test123';\n      const hash1 = await hashPassword(password);\n      const hash2 = await hashPassword(password);\n      \n      // Same password should produce different hashes (due to salt)\n      expect(hash1).not.toBe(hash2);\n    });\n\n    it('should handle long passwords', async () => {\n      const longPassword = 'a'.repeat(1000);\n      const hash = await hashPassword(longPassword);\n      const isValid = await verifyPassword(longPassword, hash);\n      \n      expect(isValid).toBe(true);\n    });\n\n    it('should be case sensitive', async () => {\n      const password = 'MyPassword';\n      const hash = await hashPassword(password);\n      \n      expect(await verifyPassword('mypassword', hash)).toBe(false);\n      expect(await verifyPassword('MYPASSWORD', hash)).toBe(false);\n      expect(await verifyPassword('MyPassword', hash)).toBe(true);\n    });\n  });\n\n  describe('JWT Tokens', () => {\n    it('should include userId in token payload', () => {\n      const userId = 'user-789';\n      const token = createToken(userId);\n      const payload = verifyToken(token);\n      \n      expect(payload?.userId).toBe(userId);\n    });\n\n    it('should include expiration time', () => {\n      const token = createToken('user-123');\n      const payload = verifyToken(token);\n      \n      expect(payload?.exp).toBeDefined();\n      expect(typeof payload?.exp).toBe('number');\n    });\n\n    it('should reject expired tokens', () => {\n      // This is harder to test without time manipulation\n      // For now, just test that old timestamps are rejected\n      const oldTimestamp = Math.floor(Date.now() / 1000) - 86400; // 1 day ago\n      const expiredToken = 'header.payload.signature'; // Simplified\n      \n      // Would need a mock or test-specific token creation\n      // This is where you might use jest.useFakeTimers() in Jest\n    });\n\n    it('should reject tampered tokens', () => {\n      const token = createToken('user-123');\n      const tamperedToken = token.replace(/.$/, 'X'); // Change last character\n      const payload = verifyToken(tamperedToken);\n      \n      expect(payload).toBe(null);\n    });\n  });\n});"
+            },
+            {
+              "type": "CODE",
+              "title": "Integration Tests for API Endpoints",
+              "content": "Test API endpoints using app.request() to simulate HTTP calls:",
+              "language": "typescript",
+              "code": "// tests/api.integration.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport app from '../src/index';\n\ndescribe('Auth API Integration', () => {\n  let authToken: string;\n\n  describe('POST /api/auth/register', () => {\n    it('should register a new user', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'test@example.com',\n          password: 'Password123!',\n          name: 'Test User'\n        })\n      }));\n\n      expect(response.status).toBe(201);\n      const data = await response.json();\n      expect(data.success).toBe(true);\n      expect(data.data.user.email).toBe('test@example.com');\n      expect(data.data.token).toBeDefined();\n    });\n\n    it('should reject duplicate email', async () => {\n      const email = 'duplicate@example.com';\n      \n      // First registration\n      await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email,\n          password: 'Password123!'\n        })\n      }));\n\n      // Second registration with same email\n      const response = await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email,\n          password: 'DifferentPassword123!'\n        })\n      }));\n\n      expect(response.status).toBe(409);\n      const data = await response.json();\n      expect(data.error.code).toBe('CONFLICT');\n    });\n\n    it('should validate email format', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'invalid-email',\n          password: 'Password123!'\n        })\n      }));\n\n      expect(response.status).toBe(400);\n      const data = await response.json();\n      expect(data.error.code).toBe('VALIDATION_ERROR');\n    });\n  });\n\n  describe('POST /api/auth/login', () => {\n    beforeEach(async () => {\n      // Register a user first\n      await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'login@example.com',\n          password: 'Password123!'\n        })\n      }));\n    });\n\n    it('should login with correct credentials', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/login', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'login@example.com',\n          password: 'Password123!'\n        })\n      }));\n\n      expect(response.status).toBe(200);\n      const data = await response.json();\n      expect(data.success).toBe(true);\n      expect(data.data.token).toBeDefined();\n      authToken = data.data.token;\n    });\n\n    it('should reject wrong password', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/login', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'login@example.com',\n          password: 'WrongPassword'\n        })\n      }));\n\n      expect(response.status).toBe(401);\n      const data = await response.json();\n      expect(data.error.code).toBe('UNAUTHORIZED');\n    });\n  });\n});"
+            },
+            {
+              "type": "CODE",
+              "title": "Test Database Setup - In-Memory SQLite",
+              "content": "Use an in-memory database for fast, isolated tests:",
+              "language": "typescript",
+              "code": "// tests/setup.ts - Database setup for tests\nimport { PrismaClient } from '@prisma/client';\n\n// Create a test database instance\nconst testDatabaseUrl = 'file::memory:';\n\nexport async function setupTestDatabase() {\n  const prisma = new PrismaClient({\n    datasources: {\n      db: {\n        url: testDatabaseUrl,\n      },\n    },\n  });\n\n  // Run migrations on the in-memory database\n  await prisma.$executeRawUnsafe(\n    `PRAGMA foreign_keys = ON`\n  );\n\n  return prisma;\n}\n\nexport async function cleanupDatabase(prisma: PrismaClient) {\n  // Delete all data in reverse order of dependencies\n  await prisma.task.deleteMany();\n  await prisma.category.deleteMany();\n  await prisma.user.deleteMany();\n}\n\n// tests/database.integration.test.ts\nimport { describe, it, expect, beforeEach, afterEach } from 'bun:test';\nimport { setupTestDatabase, cleanupDatabase } from './setup';\nimport { PrismaClient } from '@prisma/client';\n\nlet prisma: PrismaClient;\n\ndescribe('Database Operations', () => {\n  beforeEach(async () => {\n    prisma = await setupTestDatabase();\n  });\n\n  afterEach(async () => {\n    await cleanupDatabase(prisma);\n    await prisma.$disconnect();\n  });\n\n  describe('User Creation', () => {\n    it('should create a user', async () => {\n      const user = await prisma.user.create({\n        data: {\n          email: 'test@example.com',\n          passwordHash: 'hashed_password',\n          name: 'Test User',\n        },\n      });\n\n      expect(user.email).toBe('test@example.com');\n      expect(user.id).toBeDefined();\n    });\n\n    it('should enforce unique email constraint', async () => {\n      await prisma.user.create({\n        data: {\n          email: 'unique@example.com',\n          passwordHash: 'hash1',\n        },\n      });\n\n      // This should fail\n      expect(async () => {\n        await prisma.user.create({\n          data: {\n            email: 'unique@example.com',\n            passwordHash: 'hash2',\n          },\n        });\n      }).toThrow();\n    });\n  });\n\n  describe('Task Operations with Cascade Delete', () => {\n    it('should delete tasks when user is deleted', async () => {\n      const user = await prisma.user.create({\n        data: {\n          email: 'cascade@example.com',\n          passwordHash: 'hash',\n        },\n      });\n\n      const task = await prisma.task.create({\n        data: {\n          title: 'Test Task',\n          userId: user.id,\n        },\n      });\n\n      // Delete user\n      await prisma.user.delete({\n        where: { id: user.id },\n      });\n\n      // Task should be deleted too\n      const taskExists = await prisma.task.findUnique({\n        where: { id: task.id },\n      });\n\n      expect(taskExists).toBe(null);\n    });\n  });\n});"
+            },
+            {
+              "type": "CODE",
+              "title": "Testing Auth Flows - Register, Login, Protected Routes",
+              "content": "Test complete authentication flows end-to-end:",
+              "language": "typescript",
+              "code": "// tests/auth-flow.integration.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport { setupTestDatabase, cleanupDatabase } from './setup';\nimport app from '../src/index';\nimport { PrismaClient } from '@prisma/client';\n\nlet prisma: PrismaClient;\nlet validToken: string;\n\ndescribe('Authentication Flow', () => {\n  beforeEach(async () => {\n    prisma = await setupTestDatabase();\n  });\n\n  describe('Complete Auth Flow', () => {\n    it('should register, login, and access protected route', async () => {\n      // Step 1: Register\n      const registerResponse = await app.request(new Request('http://localhost/api/auth/register', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'flow@example.com',\n          password: 'Secure123!',\n          name: 'Flow User'\n        })\n      }));\n\n      expect(registerResponse.status).toBe(201);\n      const registerData = await registerResponse.json();\n      expect(registerData.data.token).toBeDefined();\n\n      // Step 2: Login\n      const loginResponse = await app.request(new Request('http://localhost/api/auth/login', {\n        method: 'POST',\n        headers: { 'Content-Type': 'application/json' },\n        body: JSON.stringify({\n          email: 'flow@example.com',\n          password: 'Secure123!'\n        })\n      }));\n\n      expect(loginResponse.status).toBe(200);\n      const loginData = await loginResponse.json();\n      const token = loginData.data.token;\n\n      // Step 3: Access protected route\n      const meResponse = await app.request(new Request('http://localhost/api/auth/me', {\n        method: 'GET',\n        headers: { 'Authorization': `Bearer ${token}` }\n      }));\n\n      expect(meResponse.status).toBe(200);\n      const meData = await meResponse.json();\n      expect(meData.data.email).toBe('flow@example.com');\n    });\n\n    it('should reject access to protected route without token', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/me', {\n        method: 'GET'\n      }));\n\n      expect(response.status).toBe(401);\n      const data = await response.json();\n      expect(data.error.code).toBe('UNAUTHORIZED');\n    });\n\n    it('should reject access with invalid token', async () => {\n      const response = await app.request(new Request('http://localhost/api/auth/me', {\n        method: 'GET',\n        headers: { 'Authorization': 'Bearer invalid.token.here' }\n      }));\n\n      expect(response.status).toBe(401);\n      const data = await response.json();\n      expect(data.error.code).toBe('UNAUTHORIZED');\n    });\n  });\n});"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Testing Mistakes",
+              "content": "Avoid these pitfalls when writing tests:\n\n**1. Not Cleaning Up Between Tests**\n```typescript\n// WRONG - Test pollution: data from one test affects another\ndescribe('Tasks', () => {\n  it('should create a task', async () => {\n    await createTask('Test 1');\n  });\n  \n  it('should list tasks', async () => {\n    const tasks = await getTasks();\n    // This test passes because previous test created Task\n  });\n});\n\n// RIGHT - Use beforeEach to reset state\ndescribe('Tasks', () => {\n  beforeEach(async () => {\n    await cleanupDatabase(prisma);\n  });\n  \n  it('should create a task', async () => {\n    await createTask('Test 1');\n  });\n  \n  it('should list tasks (empty)', async () => {\n    const tasks = await getTasks();\n    expect(tasks).toEqual([]);\n  });\n});\n```\n\n**2. Testing Implementation Instead of Behavior**\n```typescript\n// WRONG - Testing how, not what\nit('should hash password using bcrypt', () => {\n  const hash = hashPassword('password');\n  expect(hash).toContain('$2b$'); // Implementation detail!\n});\n\n// RIGHT - Testing behavior\nit('should hash password securely', async () => {\n  const hash = await hashPassword('password');\n  const isValid = await verifyPassword('password', hash);\n  expect(isValid).toBe(true);\n});\n```\n\n**3. Async/Await Issues**\n```typescript\n// WRONG - Missing await\nit('should create user', () => {\n  createUser('test@example.com'); // Not awaited!\n  expect(userExists('test@example.com')).toBe(true); // May fail randomly\n});\n\n// RIGHT - Await async operations\nit('should create user', async () => {\n  await createUser('test@example.com');\n  expect(await userExists('test@example.com')).toBe(true);\n});\n```\n\n**4. Testing Too Much in One Test**\n```typescript\n// WRONG - Too many assertions, hard to debug\nit('should handle complete auth flow', async () => {\n  const register = await register(...);\n  expect(register.status).toBe(201);\n  const login = await login(...);\n  expect(login.status).toBe(200);\n  const me = await getMe(...);\n  expect(me.status).toBe(200);\n  // 5 more assertions...\n});\n\n// RIGHT - One assertion per test (roughly)\nit('should register successfully', async () => {\n  const response = await register(...);\n  expect(response.status).toBe(201);\n});\n\nit('should login successfully', async () => {\n  await register(...);\n  const response = await login(...);\n  expect(response.status).toBe(200);\n});\n```\n\n**5. Not Testing Error Cases**\n```typescript\n// WRONG - Only happy path\nit('should create task', () => {\n  const task = createTask('My Task');\n  expect(task).toBeDefined();\n});\n\n// RIGHT - Test success and failures\nit('should create valid task', () => {\n  const task = createTask('My Task');\n  expect(task).toBeDefined();\n});\n\nit('should reject task with empty title', () => {\n  expect(() => createTask('')).toThrow();\n});\n```"
+            },
+            {
+              "type": "CODE",
+              "title": "Update package.json with Test Scripts",
+              "content": "Add test scripts to make running tests easy:",
+              "language": "json",
+              "code": "{\n  \"scripts\": {\n    \"dev\": \"bun run --watch src/index.ts\",\n    \"start\": \"bun run src/index.ts\",\n    \"test\": \"bun test\",\n    \"test:watch\": \"bun test --watch\",\n    \"test:coverage\": \"bun test --coverage\",\n    \"db:generate\": \"bunx prisma generate\",\n    \"db:push\": \"bunx prisma db push\",\n    \"db:migrate\": \"bunx prisma migrate dev\",\n    \"db:seed\": \"bun run prisma/seed.ts\",\n    \"db:studio\": \"bunx prisma studio\",\n    \"typecheck\": \"tsc --noEmit\"\n  }\n}\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.6-challenge",
+              "title": "Add Tests for Task Filtering and Pagination",
+              "description": "Write unit and integration tests for task listing with filtering and pagination.",
+              "instructions": "Create tests for the task listing endpoint that verify: 1) Filtering by status works correctly, 2) Filtering by categoryId works, 3) Pagination with page and limit parameters works, 4) Invalid filters are rejected with proper errors. Write both unit tests for the filtering logic and integration tests for the API endpoint.",
+              "starterCode": "// tests/tasks-filtering.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport { setupTestDatabase, cleanupDatabase } from './setup';\nimport app from '../src/index';\nimport { PrismaClient } from '@prisma/client';\n\nlet prisma: PrismaClient;\nlet userId: string;\nlet authToken: string;\n\ndescribe('Task Filtering and Pagination', () => {\n  beforeEach(async () => {\n    prisma = await setupTestDatabase();\n    \n    // Create test user\n    const user = await prisma.user.create({\n      data: {\n        email: 'test@example.com',\n        passwordHash: 'hashed',\n      },\n    });\n    userId = user.id;\n    \n    // Create test categories\n    const workCategory = await prisma.category.create({\n      data: {\n        name: 'Work',\n        userId,\n      },\n    });\n    \n    const personalCategory = await prisma.category.create({\n      data: {\n        name: 'Personal',\n        userId,\n      },\n    });\n    \n    // Create test tasks\n    await prisma.task.create({\n      data: {\n        title: 'Complete report',\n        status: 'pending',\n        userId,\n        categoryId: workCategory.id,\n      },\n    });\n    \n    await prisma.task.create({\n      data: {\n        title: 'Review code',\n        status: 'in_progress',\n        userId,\n        categoryId: workCategory.id,\n      },\n    });\n    \n    // Your test implementation here\n  });\n  \n  // Add your tests here\n});\n",
+              "solution": "// tests/tasks-filtering.test.ts\nimport { describe, it, expect, beforeEach } from 'bun:test';\nimport { setupTestDatabase, cleanupDatabase } from './setup';\nimport app from '../src/index';\nimport { PrismaClient } from '@prisma/client';\n\nlet prisma: PrismaClient;\nlet userId: string;\nlet authToken: string;\nlet workCategoryId: string;\nlet personalCategoryId: string;\n\ndescribe('Task Filtering and Pagination', () => {\n  beforeEach(async () => {\n    prisma = await setupTestDatabase();\n    \n    // Create test user\n    const user = await prisma.user.create({\n      data: {\n        email: 'filter@example.com',\n        passwordHash: 'hashed',\n      },\n    });\n    userId = user.id;\n    \n    // Create test categories\n    const workCategory = await prisma.category.create({\n      data: {\n        name: 'Work',\n        userId,\n      },\n    });\n    workCategoryId = workCategory.id;\n    \n    const personalCategory = await prisma.category.create({\n      data: {\n        name: 'Personal',\n        userId,\n      },\n    });\n    personalCategoryId = personalCategory.id;\n    \n    // Create test tasks with various statuses and categories\n    await prisma.task.create({\n      data: {\n        title: 'Complete report',\n        status: 'pending',\n        userId,\n        categoryId: workCategoryId,\n      },\n    });\n    \n    await prisma.task.create({\n      data: {\n        title: 'Review code',\n        status: 'in_progress',\n        userId,\n        categoryId: workCategoryId,\n      },\n    });\n    \n    await prisma.task.create({\n      data: {\n        title: 'Buy groceries',\n        status: 'pending',\n        userId,\n        categoryId: personalCategoryId,\n      },\n    });\n    \n    await prisma.task.create({\n      data: {\n        title: 'Call mom',\n        status: 'completed',\n        userId,\n        categoryId: personalCategoryId,\n      },\n    });\n  });\n  \n  describe('Status Filtering', () => {\n    it('should filter tasks by pending status', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?status=pending`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      expect(response.status).toBe(200);\n      const data = await response.json();\n      expect(data.data.length).toBe(2);\n      expect(data.data.every(t => t.status === 'pending')).toBe(true);\n    });\n    \n    it('should filter tasks by completed status', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?status=completed`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      const data = await response.json();\n      expect(data.data.length).toBe(1);\n      expect(data.data[0].status).toBe('completed');\n    });\n    \n    it('should reject invalid status', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?status=invalid`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      expect(response.status).toBe(400);\n    });\n  });\n  \n  describe('Category Filtering', () => {\n    it('should filter tasks by category', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?categoryId=${workCategoryId}`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      const data = await response.json();\n      expect(data.data.length).toBe(2);\n      expect(data.data.every(t => t.categoryId === workCategoryId)).toBe(true);\n    });\n  });\n  \n  describe('Pagination', () => {\n    it('should paginate with limit', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?limit=2`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      const data = await response.json();\n      expect(data.data.length).toBe(2);\n      expect(data.pagination.total).toBe(4);\n    });\n    \n    it('should paginate with page number', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?page=2&limit=2`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      const data = await response.json();\n      expect(data.data.length).toBe(2);\n      expect(data.pagination.page).toBe(2);\n    });\n    \n    it('should reject invalid pagination parameters', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?limit=abc`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      expect(response.status).toBe(400);\n    });\n  });\n  \n  describe('Combined Filters', () => {\n    it('should filter by status and category together', async () => {\n      const response = await app.request(new Request(\n        `http://localhost/api/tasks?status=pending&categoryId=${workCategoryId}`,\n        {\n          method: 'GET',\n          headers: { 'Authorization': `Bearer ${authToken}` },\n        }\n      ));\n      \n      const data = await response.json();\n      expect(data.data.length).toBe(1);\n      expect(data.data[0].title).toBe('Complete report');\n    });\n  });\n});\n",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Filter by status returns correct tasks",
+                  "expectedOutput": "status filter works",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Filter by category returns correct tasks",
+                  "expectedOutput": "category filter works",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Pagination limits results",
+                  "expectedOutput": "pagination works",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Invalid filters are rejected",
+                  "expectedOutput": "validation works",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use query parameters for filtering: ?status=pending&categoryId=123"
+                },
+                {
+                  "level": 2,
+                  "text": "Validate filter values against allowed enum values"
+                },
+                {
+                  "level": 3,
+                  "text": "Calculate pagination metadata: total count, current page, total pages"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not validating filter parameters",
+                  "consequence": "Invalid filters are accepted, returning confusing results",
+                  "correction": "Use Zod to validate query parameters: z.enum(['pending', 'in_progress', 'completed'])"
+                },
+                {
+                  "mistake": "Including other users' tasks in results",
+                  "consequence": "Data leakage and access control violation",
+                  "correction": "Always filter by userId from the JWT token"
+                },
+                {
+                  "mistake": "Not handling pagination edge cases",
+                  "consequence": "Page 0, negative limits, or pages beyond data",
+                  "correction": "Validate: page >= 1, limit >= 1 && limit <= 100, handle empty results"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.7",
+          "title": "Docker Configuration",
+          "moduleId": "module-20",
+          "order": 7,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "Why Docker for Your API",
+              "content": "Docker solves the \"it works on my machine\" problem. When you containerize your API, you guarantee the same environment everywhere: development, testing, production.\n\n**Benefits of Docker:**\n\n1. **Consistency** - Same Linux kernel, libraries, and runtime everywhere\n2. **Isolation** - Each service has its own filesystem, network, processes\n3. **Reproducibility** - Exact versions of all dependencies locked in\n4. **Easy Deployment** - Just run a container, no complex installation scripts\n5. **Scaling** - Orchestration tools like Kubernetes manage multiple containers\n6. **Development/Production Parity** - Local Docker matches production exactly\n\n**Container vs Virtual Machine:**\n- VMs emulate entire OS (heavy, slow, large)\n- Containers share host OS kernel (lightweight, fast, small)\n\n**What We'll Build:**\n- Dockerfile for multi-stage builds (smaller images)\n- docker-compose for local development (API + PostgreSQL + volumes)\n- Environment configuration per environment\n- Health checks for container orchestration\n- Best practices for secrets and production deployment"
+            },
+            {
+              "type": "CODE",
+              "title": "Dockerfile for Bun API - Multi-Stage Build",
+              "content": "Create a Dockerfile that optimizes for size and security:",
+              "language": "dockerfile",
+              "code": "# Dockerfile\n# Multi-stage build: first stage builds, second stage runs\n\n# Build stage\nFROM oven/bun:1.1 as builder\n\nWORKDIR /app\n\n# Copy package files\nCOPY package.json bun.lockb* ./\n\n# Install dependencies\nRUN bun install --frozen-lockfile\n\n# Copy source code\nCOPY tsconfig.json ./\nCOPY src ./src\nCOPY prisma ./prisma\n\n# Generate Prisma client\nRUN bunx prisma generate\n\n# Production stage\nFROM oven/bun:1.1\n\nWORKDIR /app\n\n# Copy only production dependencies and built assets from builder\nCOPY --from=builder /app/node_modules ./node_modules\nCOPY --from=builder /app/src ./src\nCOPY --from=builder /app/prisma ./prisma\nCOPY --from=builder /app/package.json ./\nCOPY --from=builder /app/.bun ./.bun\n\n# Don't run as root\nRUN useradd -m -u 1000 appuser\nUSER appuser\n\n# Expose port\nEXPOSE 3000\n\n# Health check\nHEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\\n  CMD bun run --eval \"console.log(await fetch('http://localhost:3000/').then(r => r.ok ? 'OK' : 'FAIL'))\"\n\n# Run the application\nCMD [\"bun\", \"run\", \"src/index.ts\"]"
+            },
+            {
+              "type": "CODE",
+              "title": "docker-compose with PostgreSQL",
+              "content": "Create a docker-compose.yml for local development with PostgreSQL and volumes:",
+              "language": "yaml",
+              "code": "# docker-compose.yml\nversion: '3.9'\n\nservices:\n  # PostgreSQL database\n  postgres:\n    image: postgres:16-alpine\n    container_name: task-manager-postgres\n    environment:\n      POSTGRES_USER: taskmanager\n      POSTGRES_PASSWORD: ${DB_PASSWORD:-dev-password}\n      POSTGRES_DB: taskmanager_dev\n    ports:\n      - \"5432:5432\"\n    volumes:\n      # Named volume for persistent data\n      - postgres_data:/var/lib/postgresql/data\n      # Initialize database with seed (optional)\n      - ./prisma/init.sql:/docker-entrypoint-initdb.d/init.sql\n    networks:\n      - task-manager-network\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U taskmanager\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n\n  # Bun API application\n  api:\n    build: .\n    container_name: task-manager-api\n    depends_on:\n      postgres:\n        condition: service_healthy\n    environment:\n      DATABASE_URL: postgresql://taskmanager:${DB_PASSWORD:-dev-password}@postgres:5432/taskmanager_dev\n      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}\n      PORT: 3000\n      NODE_ENV: development\n    ports:\n      - \"3000:3000\"\n    volumes:\n      # Hot reload during development\n      - ./src:/app/src\n      - ./prisma:/app/prisma\n      # Don't sync node_modules\n      - /app/node_modules\n    networks:\n      - task-manager-network\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:3000/\"]\n      interval: 30s\n      timeout: 3s\n      retries: 3\n      start_period: 5s\n    command: bun run --watch src/index.ts\n\n  # Optional: pgAdmin for database management\n  pgadmin:\n    image: dpage/pgadmin4:latest\n    container_name: task-manager-pgadmin\n    environment:\n      PGADMIN_DEFAULT_EMAIL: admin@local\n      PGADMIN_DEFAULT_PASSWORD: admin\n    ports:\n      - \"5050:80\"\n    depends_on:\n      - postgres\n    networks:\n      - task-manager-network\n    volumes:\n      - pgadmin_data:/var/lib/pgadmin\n\nvolumes:\n  postgres_data:\n  pgadmin_data:\n\nnetworks:\n  task-manager-network:\n    driver: bridge"
+            },
+            {
+              "type": "CODE",
+              "title": "Environment Configuration - .env.docker and .env.production",
+              "content": "Create environment configuration files for different environments:",
+              "language": "bash",
+              "code": "# .env.docker (for docker-compose)\n# Used when running with docker-compose up\nDATABASE_URL=postgresql://taskmanager:dev-password@postgres:5432/taskmanager_dev\nJWT_SECRET=dev-secret-change-in-production-please\nPORT=3000\nNODE_ENV=development\nLOG_LEVEL=debug\n\n# .env.production (for production deployment)\n# Never commit this - use secrets management (AWS Secrets Manager, Vault, etc.)\nDATABASE_URL=postgresql://taskmanager:${SECURE_DB_PASSWORD}@prod-postgres:5432/taskmanager\nJWT_SECRET=${SECURE_JWT_SECRET}\nPORT=3000\nNODE_ENV=production\nLOG_LEVEL=warn\nSENTRY_DSN=${SENTRY_DSN}\n\n# .env.example (COMMIT THIS - never include real values)\n# Copy to .env and fill in your values\nDATABASE_URL=postgresql://user:password@localhost:5432/dbname\nJWT_SECRET=your-secret-key-here\nPORT=3000\nNODE_ENV=development\nLOG_LEVEL=debug"
+            },
+            {
+              "type": "CODE",
+              "title": "Health Checks - HEALTHCHECK Directive",
+              "content": "Configure health checks for container orchestration and load balancers:",
+              "language": "typescript",
+              "code": "// Add health check endpoint to src/index.ts\nimport { Hono } from 'hono';\nimport { prisma } from './lib/db';\n\nconst app = new Hono();\n\n// Liveness probe - is the app running?\napp.get('/health/live', (c) => {\n  return c.json({\n    status: 'alive',\n    timestamp: new Date().toISOString(),\n  });\n});\n\n// Readiness probe - is the app ready to accept traffic?\napp.get('/health/ready', async (c) => {\n  try {\n    // Check database connection\n    await prisma.$queryRaw`SELECT 1`;\n\n    return c.json(\n      {\n        status: 'ready',\n        checks: {\n          database: 'ok',\n        },\n        timestamp: new Date().toISOString(),\n      },\n      200\n    );\n  } catch (err) {\n    return c.json(\n      {\n        status: 'not_ready',\n        checks: {\n          database: 'failed',\n        },\n        error: err instanceof Error ? err.message : 'Unknown error',\n      },\n      503 // Service Unavailable\n    );\n  }\n});\n\n// Startup probe - give app time to warm up\napp.get('/health/startup', async (c) => {\n  // Perform expensive initialization checks\n  try {\n    // Check all critical services\n    const health = {\n      database: 'checking...',\n      cache: 'checking...',\n    };\n\n    return c.json(\n      {\n        status: 'started',\n        checks: health,\n      },\n      200\n    );\n  } catch (err) {\n    return c.json(\n      {\n        status: 'startup_failed',\n        error: err instanceof Error ? err.message : 'Unknown error',\n      },\n      503\n    );\n  }\n});"
+            },
+            {
+              "type": "CODE",
+              "title": "Running Locally with Docker - Build and Run Commands",
+              "content": "Essential Docker commands for development and deployment:",
+              "language": "bash",
+              "code": "# Build the Docker image\ndocker build -t task-manager-api:latest .\n\n# Run with docker-compose (recommended for development)\ndocker-compose up -d          # Start in background\ndocker-compose up             # Start in foreground (see logs)\ndocker-compose logs -f        # Follow logs\ndocker-compose down           # Stop and remove containers\ndocker-compose down -v        # Stop and remove containers + volumes\n\n# Run database migrations\ndocker-compose exec api bunx prisma migrate dev\ndocker-compose exec api bunx prisma db push\n\n# Access database with psql\ndocker-compose exec postgres psql -U taskmanager -d taskmanager_dev\n\n# View database with pgAdmin\n# Open http://localhost:5050 and connect to postgres:5432\n\n# Check health\ncurl http://localhost:3000/health/live\ncurl http://localhost:3000/health/ready\n\n# View container logs\ndocker logs task-manager-api\ndocker logs -f task-manager-api  # Follow logs\n\n# Interactive shell in running container\ndocker exec -it task-manager-api /bin/sh\n\n# Run production image locally\ndocker run -e DATABASE_URL=\"...\" -e JWT_SECRET=\"...\" -p 3000:3000 task-manager-api:latest\n\n# Push image to registry (for production)\ndocker tag task-manager-api:latest myregistry.azurecr.io/task-manager-api:latest\ndocker push myregistry.azurecr.io/task-manager-api:latest"
+            },
+            {
+              "type": "WARNING",
+              "title": "Docker Pitfalls - Common Mistakes",
+              "content": "**1. Large Image Sizes**\n```dockerfile\n# WRONG - Final image includes build tools\nFROM oven/bun:1.1\nCOPY . .\nRUN bun install\nCMD [\"bun\", \"run\", \"src/index.ts\"]\n# Image size: ~500MB\n\n# RIGHT - Multi-stage build drops build tools\nFROM oven/bun:1.1 as builder\nCOPY . .\nRUN bun install\n\nFROM oven/bun:1.1\nCOPY --from=builder /app ./\nCMD [\"bun\", \"run\", \"src/index.ts\"]\n# Image size: ~100MB\n```\n\n**2. Secrets in Docker Images**\n```dockerfile\n# WRONG - Secret hardcoded in image\nFROM oven/bun:1.1\nENV JWT_SECRET=my-actual-secret\nCOPY . .\n\n# RIGHT - Use environment variables at runtime\nFROM oven/bun:1.1\nCOPY . .\n# Don't set secrets in image\n# Instead: docker run -e JWT_SECRET=$JWT_SECRET ...\n```\n\n**3. Volume Mounting Issues**\n```yaml\n# WRONG - node_modules synced from host (breaks platform differences)\nvolumes:\n  - ./src:/app/src\n  - ./node_modules:/app/node_modules\n\n# RIGHT - Use named volume for node_modules\nvolumes:\n  - ./src:/app/src\n  - /app/node_modules  # Anonymous volume, not synced\n```\n\n**4. Running as Root**\n```dockerfile\n# WRONG - Container runs as root (security risk)\nFROM oven/bun:1.1\nCOPY . .\nCMD [\"bun\", \"run\", \"src/index.ts\"]\n\n# RIGHT - Create non-root user\nFROM oven/bun:1.1\nRUN useradd -m -u 1000 appuser\nUSER appuser\nCOPY . .\nCMD [\"bun\", \"run\", \"src/index.ts\"]\n```\n\n**5. Missing Health Checks**\n```yaml\n# WRONG - Container might be \"running\" but not ready\nservices:\n  api:\n    build: .\n\n# RIGHT - Kubernetes and load balancers use health checks\nservices:\n  api:\n    build: .\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:3000/health/ready\"]\n      interval: 30s\n      retries: 3\n```\n\n**6. Not Using .dockerignore**\n```\n# Create .dockerignore to reduce build context\nnode_modules/\n.git/\n.env\n*.db\n.DS_Store\ndist/\n.turbo/\n```"
+            },
+            {
+              "type": "CODE",
+              "title": ".dockerignore - Optimize Build Context",
+              "content": "Create a .dockerignore file to exclude unnecessary files from Docker builds:",
+              "language": "text",
+              "code": "# .dockerignore\nnode_modules/\n.git/\n.gitignore\n.env\n.env.*\n!.env.production\n*.db\n*.db-journal\n.DS_Store\ndist/\nbuild/\n.turbo/\n.next/\ncoverage/\n.vscode/\n.idea/\n*.log\nnpm-debug.log*\nyarn-debug.log*\ntmp/\ntemp/\nREADME.md\n.github/"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.7-challenge",
+              "title": "Add Redis for Rate Limiting",
+              "description": "Extend docker-compose to include Redis and implement distributed rate limiting.",
+              "instructions": "Add a Redis service to docker-compose.yml that the API can connect to. Then implement a Redis-backed rate limiting middleware that works across multiple API instances. The middleware should track requests per user ID and enforce a 100-request-per-15-minute limit.",
+              "starterCode": "# Add to docker-compose.yml\nservices:\n  redis:\n    image: redis:7-alpine\n    container_name: task-manager-redis\n    # Your configuration here\n\n# Add to src/middleware/rate-limit-redis.ts\nimport { Context, Next } from 'hono';\nimport { createClient } from 'redis';\n\nconst client = createClient({\n  // Your configuration here\n});\n\nexport function createRedisRateLimitMiddleware(\n  windowMs: number = 15 * 60 * 1000,\n  maxRequests: number = 100\n) {\n  return async (c: Context, next: Next) => {\n    // Your implementation here\n  };\n}",
+              "solution": "# Add to docker-compose.yml\nservices:\n  redis:\n    image: redis:7-alpine\n    container_name: task-manager-redis\n    ports:\n      - \"6379:6379\"\n    volumes:\n      - redis_data:/data\n    networks:\n      - task-manager-network\n    healthcheck:\n      test: [\"CMD\", \"redis-cli\", \"ping\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n\nvolumes:\n  redis_data:\n\n# Add to src/middleware/rate-limit-redis.ts\nimport { Context, Next } from 'hono';\nimport { createClient } from 'redis';\nimport { TooManyRequestsError } from '../lib/errors';\n\nconst redisClient = createClient({\n  socket: {\n    host: process.env.REDIS_HOST || 'redis',\n    port: parseInt(process.env.REDIS_PORT || '6379'),\n  },\n});\n\nredisClient.on('error', (err) => console.error('Redis error:', err));\nredisClient.connect();\n\nexport function createRedisRateLimitMiddleware(\n  windowMs: number = 15 * 60 * 1000,\n  maxRequests: number = 100\n) {\n  return async (c: Context, next: Next) => {\n    const userId = c.get('userId');\n\n    if (!userId) {\n      await next();\n      return;\n    }\n\n    const key = `ratelimit:${userId}`;\n    const current = await redisClient.incr(key);\n\n    if (current === 1) {\n      // First request in window, set expiry\n      await redisClient.expire(key, Math.ceil(windowMs / 1000));\n    }\n\n    if (current > maxRequests) {\n      const ttl = await redisClient.ttl(key);\n      c.header('Retry-After', String(Math.max(ttl, 1)));\n      throw new TooManyRequestsError(ttl);\n    }\n\n    c.header('X-RateLimit-Limit', String(maxRequests));\n    c.header('X-RateLimit-Remaining', String(maxRequests - current));\n\n    await next();\n  };\n}",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Redis service is configured in docker-compose.yml",
+                  "expectedOutput": "redis:7-alpine",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Rate limit key is formatted as ratelimit:{userId}",
+                  "expectedOutput": "ratelimit:",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Sets Retry-After header when limit exceeded",
+                  "expectedOutput": "Retry-After",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Includes X-RateLimit-* headers in response",
+                  "expectedOutput": "X-RateLimit-",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add a Redis service with port 6379 and a data volume in docker-compose.yml"
+                },
+                {
+                  "level": 2,
+                  "text": "Use INCR command to atomically increment the request counter"
+                },
+                {
+                  "level": 3,
+                  "text": "Set the key expiration on first request of the window using EXPIRE"
+                },
+                {
+                  "level": 4,
+                  "text": "Return X-RateLimit-Limit and X-RateLimit-Remaining headers for client feedback"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not setting expiration on Redis keys",
+                  "consequence": "Rate limit counters grow indefinitely, memory leak",
+                  "correction": "Use EXPIRE to clear keys after the window duration"
+                },
+                {
+                  "mistake": "Using GET + SET instead of INCR",
+                  "consequence": "Race condition with concurrent requests, inaccurate limits",
+                  "correction": "Use atomic INCR command which is inherently thread-safe"
+                },
+                {
+                  "mistake": "Hardcoding Redis connection details",
+                  "consequence": "Can't work in different environments (dev, prod)",
+                  "correction": "Use environment variables for host, port, password"
+                },
+                {
+                  "mistake": "Not including rate limit info in response headers",
+                  "consequence": "Clients can't know how close they are to limits",
+                  "correction": "Add X-RateLimit-Limit and X-RateLimit-Remaining headers"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.8",
+          "title": "Deployment",
+          "moduleId": "module-20",
+          "order": 8,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "Production Deployment Checklist",
+              "content": "Before deploying to production, ensure your application meets these requirements:\n\n**Security:**\n- Environment variables for all secrets (never commit .env)\n- JWT_SECRET should be cryptographically strong (32+ characters)\n- HTTPS enabled (redirects HTTP to HTTPS)\n- CORS properly configured for your frontend domain\n- Rate limiting to prevent abuse\n- Input validation with Zod\n\n**Environment Variables:**\n- DATABASE_URL - Production database connection string\n- JWT_SECRET - Secure signing key\n- NODE_ENV - Set to 'production'\n- PORT - Set by hosting platform\n- LOG_LEVEL - Usually 'error' or 'warn' in production\n\n**Monitoring:**\n- Health endpoint for uptime monitoring\n- Error logging and alerting\n- Database connection monitoring\n- Request/response logging\n- Performance metrics\n\n**Database:**\n- Backups enabled\n- Migrations tested before deployment\n- Connection pooling configured\n- Indexes in place for critical queries\n\n**Best Practices:**\n- Use a staging environment first\n- Run tests before deploying\n- Have a rollback plan\n- Monitor logs after deployment\n- Set up automated backups"
+            },
+            {
+              "type": "CODE",
+              "title": "GitHub Actions CI/CD Pipeline",
+              "content": "Create an automated workflow that tests, builds, and deploys your API:",
+              "language": "yaml",
+              "code": "# .github/workflows/deploy.yml\nname: Deploy Task Manager API\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup Bun\n        uses: oven-sh/setup-bun@v1\n        with:\n          bun-version: latest\n      \n      - name: Install dependencies\n        run: bun install\n      \n      - name: Run type checking\n        run: bun run typecheck\n      \n      - name: Run tests\n        run: bun test\n\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main' && github.event_name == 'push'\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Deploy to Railway\n        env:\n          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}\n        run: |\n          npm i -g @railway/cli\n          railway up --detach"
+            },
+            {
+              "type": "CODE",
+              "title": "Deploy to Railway",
+              "content": "Railway is a modern hosting platform perfect for Node/Bun apps. Set up deployment:\n\n1. Install Railway CLI and connect your GitHub repo\n2. Set up your production database\n3. Configure environment variables",
+              "language": "bash",
+              "code": "# Install Railway CLI\nnpm install -g @railway/cli\n\n# Login to Railway\nrailway login\n\n# Link to your project\nrailway init\n\n# Set environment variables\nrailway variables set JWT_SECRET=\"your-production-secret-key-32+chars\"\nrailway variables set NODE_ENV=production\nrailway variables set LOG_LEVEL=warn\n\n# Deploy\nrailway up\n\n# View logs\nrailway logs\n\n# View your deployed app\nrailway open"
+            },
+            {
+              "type": "CODE",
+              "title": "Deploy to Fly.io (Alternative)",
+              "content": "Alternatively, deploy to Fly.io with their serverless platform:\n\nCreate a fly.toml configuration file and deploy:",
+              "language": "toml",
+              "code": "# fly.toml\napp = \"task-manager-api\"\nkill_signal = \"SIGINT\"\nkill_timeout = 5\nprocesses = []\n\n[env]\n  NODE_ENV = \"production\"\n\n[build]\n  builder = \"patak/buildpacks\"\n  buildpacks = [\"paketo-buildpacks/nodejs-engine\"]\n\n[build.args]\n  BP_NODE_RUN_SCRIPT = \"src/index.ts\"\n  BP_BUILT_MODULE = \"src\"\n\n[[services]]\n  internal_port = 3000\n  processes = [\"app\"]\n\n  [services.http_checks]\n    enabled = true\n    uri = \"/health\"\n\n[[services.ports]]\n  port = 80\n  handlers = [\"http\"]\n  force_https = true\n\n[[services.ports]]\n  port = 443\n  handlers = [\"tls\", \"http\"]\n\n[checks]\n  [checks.status]\n    type = \"http\"\n    uri = \"/health\"\n    interval = \"30s\"\n    timeout = \"10s\"\n    grace_period = \"5s\"\n    success_threshold = 1\n    failure_threshold = 3"
+            },
+            {
+              "type": "CODE",
+              "title": "Production Environment Variables",
+              "content": "Configure all necessary environment variables for production:\n\nNever hardcode secrets in your code. Use environment variables for all sensitive data:",
+              "language": "bash",
+              "code": "# Production Environment Variables\n# Store these in your hosting platform's secrets manager, NOT in code\n\n# Database\nDATABASE_URL=\"postgresql://user:password@db.railway.app:5432/taskmanager\"\n\n# Security\nJWT_SECRET=\"super-secure-random-32-character-key-change-me\"\nJWT_EXPIRY=\"7d\"\n\n# Environment\nNODE_ENV=\"production\"\nPORT=3000\n\n# Logging\nLOG_LEVEL=\"warn\"\n\n# CORS (for your frontend domain)\nFRONTEND_URL=\"https://yourdomain.com\"\n\n# API Configuration\nAPI_URL=\"https://api.yourdomain.com\"\n\n# For monitoring and alerting\nSENTRY_DSN=\"https://your-sentry-project-id\"\nDATA_DOG_KEY=\"your-datadog-api-key\"\n\n# How to set them:\n# Railway: railway variables set KEY=value\n# Fly.io: flyctl secrets set KEY=value\n# Heroku: heroku config:set KEY=value"
+            },
+            {
+              "type": "THEORY",
+              "title": "Monitoring & Logging in Production",
+              "content": "What to monitor and log in production:\n\n**Error Tracking:**\n- Uncaught exceptions\n- Database connection errors\n- API errors (500, 503, etc)\n- Authentication failures\n\n**Performance Metrics:**\n- Response time per endpoint\n- Database query time\n- Request count and throughput\n- Memory usage\n- CPU usage\n\n**Application Health:**\n- Database connectivity\n- Dependent service health (Redis, external APIs)\n- Cache hit/miss rates\n- Queue depth and processing time\n\n**User Activity (Privacy-Conscious):**\n- Active users count\n- API endpoint usage patterns\n- Error rates by endpoint\n- Task creation/completion rates\n\n**Recommended Tools:**\n- **Sentry** - Error tracking with context and sourcemaps\n- **DataDog** - Full observability (metrics, logs, APM)\n- **LogRocket** - Session replay and console logs\n- **New Relic** - APM and infrastructure monitoring\n- **Grafana** - Custom dashboards and alerting\n\n**Health Check Endpoint:**\nImplement a `/health` endpoint that the hosting platform monitors. If it fails, the platform can restart your app.\n\n**Structured Logging:**\nLog as JSON for easy parsing:\n```json\n{\n  \"timestamp\": \"2024-01-15T10:30:45.123Z\",\n  \"level\": \"error\",\n  \"message\": \"Database connection failed\",\n  \"userId\": \"user_123\",\n  \"endpoint\": \"POST /api/tasks\",\n  \"duration_ms\": 5000,\n  \"error\": \"ECONNREFUSED\"\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Deployment Pitfalls & Security",
+              "content": "Common mistakes that cause production outages and security breaches:\n\n**Secrets Exposure:**\n- Never commit .env to git\n- Never log environment variables\n- Never include secrets in error messages sent to clients\n- Never use weak JWT_SECRET (min 32 characters)\n- Rotate secrets regularly\n- Use different secrets for each environment\n- Store secrets in platform-managed secret managers\n\n**Database Migrations:**\n- Don't run migrations with the same connection pool as your app\n- Don't skip testing migrations first\n- Don't migrate without a backup\n- Run migrations before deploying new code\n- Always have a rollback plan\n- Test migrations on staging environment first\n- Make migrations backwards compatible when possible\n\n**Connection Management:**\n- Don't create new database connections in request handlers\n- Don't use infinite timeouts\n- Don't ignore connection pool warnings\n- Use connection pooling (PgBouncer for PostgreSQL)\n- Set reasonable query timeouts (5-30 seconds)\n- Monitor connection pool stats\n\n**Deployment Process:**\n- Don't deploy without running tests\n- Don't deploy during peak hours without a team\n- Don't skip the staging environment\n- Don't delete old database backups immediately\n- Always test in staging first\n- Deploy during off-peak hours\n- Have a communication plan\n- Keep backups for at least 30 days\n\n**Error Handling:**\n- Don't expose internal errors to clients\n- Don't log passwords or tokens\n- Don't send stack traces to frontend\n- Return generic error messages\n- Log full details server-side\n- Use error codes for debugging"
+            },
+            {
+              "type": "CODE",
+              "title": "Health Endpoint with Database Check",
+              "content": "Create a comprehensive health check endpoint that monitors your application and database:\n\nThis endpoint is used by hosting platforms for uptime monitoring and load balancer health checks.",
+              "language": "typescript",
+              "code": "// src/routes/health.ts\nimport { Hono } from 'hono';\nimport { prisma } from '../lib/db';\n\nconst health = new Hono();\n\ninterface HealthResponse {\n  status: 'ok' | 'degraded' | 'error';\n  timestamp: string;\n  uptime: number;\n  database: {\n    status: 'connected' | 'disconnected';\n    latency_ms: number;\n  };\n  version: string;\n}\n\n// GET /health - Quick health check\nhealth.get('/', (c) => {\n  return c.json({\n    status: 'ok',\n    timestamp: new Date().toISOString(),\n  }, 200);\n});\n\n// GET /health/detailed - Comprehensive health check\nhealth.get('/detailed', async (c) => {\n  const startTime = Date.now();\n  const response: HealthResponse = {\n    status: 'ok',\n    timestamp: new Date().toISOString(),\n    uptime: process.uptime(),\n    database: {\n      status: 'disconnected',\n      latency_ms: 0,\n    },\n    version: '1.0.0',\n  };\n\n  try {\n    // Check database connectivity\n    const dbStartTime = Date.now();\n    await prisma.$queryRaw`SELECT 1`;\n    response.database.status = 'connected';\n    response.database.latency_ms = Date.now() - dbStartTime;\n  } catch (error) {\n    response.status = 'degraded';\n    response.database.status = 'disconnected';\n  }\n\n  const statusCode = response.status === 'ok' ? 200 : 503;\n  return c.json(response, statusCode);\n});\n\nexport default health;"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.8-challenge",
+              "title": "Add Health Endpoint with Database Check",
+              "description": "Implement a comprehensive health check endpoint that monitors application and database status.",
+              "instructions": "Create a GET /health endpoint that returns:\n1. A quick response with status='ok'\n2. A detailed endpoint at GET /health/detailed that:\n   - Checks database connectivity with a simple query\n   - Returns database latency in milliseconds\n   - Returns 200 if healthy, 503 if database is down\n   - Includes uptime and timestamp\n\nThe detailed health check should be used by your load balancer.",
+              "starterCode": "// src/routes/health.ts\nimport { Hono } from 'hono';\nimport { prisma } from '../lib/db';\n\nconst health = new Hono();\n\n// GET /health - Quick health check\nhealth.get('/', (c) => {\n  // Your code here\n});\n\n// GET /health/detailed - Comprehensive health check\nhealth.get('/detailed', async (c) => {\n  // Your code here\n  // Check database with prisma.$queryRaw`SELECT 1`\n  // Measure latency\n  // Return appropriate status code (200 or 503)\n});\n\nexport default health;",
+              "solution": "// src/routes/health.ts\nimport { Hono } from 'hono';\nimport { prisma } from '../lib/db';\n\nconst health = new Hono();\n\ninterface HealthResponse {\n  status: 'ok' | 'degraded';\n  timestamp: string;\n  uptime: number;\n  database: {\n    status: 'connected' | 'disconnected';\n    latency_ms: number;\n  };\n  version: string;\n}\n\nhealth.get('/', (c) => {\n  return c.json({\n    status: 'ok',\n    timestamp: new Date().toISOString(),\n  }, 200);\n});\n\nhealth.get('/detailed', async (c) => {\n  const response: HealthResponse = {\n    status: 'ok',\n    timestamp: new Date().toISOString(),\n    uptime: process.uptime(),\n    database: {\n      status: 'disconnected',\n      latency_ms: 0,\n    },\n    version: '1.0.0',\n  };\n\n  try {\n    const dbStartTime = Date.now();\n    await prisma.$queryRaw`SELECT 1`;\n    response.database.status = 'connected';\n    response.database.latency_ms = Date.now() - dbStartTime;\n  } catch (error) {\n    response.status = 'degraded';\n    response.database.status = 'disconnected';\n  }\n\n  const statusCode = response.status === 'ok' ? 200 : 503;\n  return c.json(response, statusCode);\n});\n\nexport default health;",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "GET /health returns 200 with status ok",
+                  "expectedOutput": "status: 'ok'",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "GET /health/detailed checks database with query",
+                  "expectedOutput": "SELECT 1",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Returns 503 if database disconnected",
+                  "expectedOutput": "503",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Measures and reports database latency",
+                  "expectedOutput": "latency_ms",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Includes uptime and version",
+                  "expectedOutput": "uptime|version",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use prisma.$queryRaw to send a raw SQL query"
+                },
+                {
+                  "level": 2,
+                  "text": "Measure time before and after the database query to calculate latency"
+                },
+                {
+                  "level": 3,
+                  "text": "Return status code 503 (Service Unavailable) if database check fails, so load balancers know to remove this instance"
+                },
+                {
+                  "level": 4,
+                  "text": "Use process.uptime() to get application uptime in seconds"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not catching database errors",
+                  "consequence": "Health endpoint crashes instead of returning degraded status",
+                  "correction": "Wrap database check in try/catch and set status to degraded on error"
+                },
+                {
+                  "mistake": "Returning 200 even when database is down",
+                  "consequence": "Load balancer doesn't know there's a problem",
+                  "correction": "Return 503 (Service Unavailable) when database is disconnected"
+                },
+                {
+                  "mistake": "Not measuring database latency",
+                  "consequence": "Can't detect slow database issues",
+                  "correction": "Record time before/after query and include in response"
+                },
+                {
+                  "mistake": "Expensive health checks (full queries instead of SELECT 1)",
+                  "consequence": "Health checks slow down the application",
+                  "correction": "Use simple queries like SELECT 1 that just verify connectivity"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     }
