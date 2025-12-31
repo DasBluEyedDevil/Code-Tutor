@@ -2197,6 +2197,345 @@
       ]
     },
     {
+      "id": "module-streams",
+      "title": "Streams & Functional Programming",
+      "description": "Master lambdas, streams, and functional programming patterns in Java.",
+      "difficulty": "intermediate",
+      "estimatedHours": 3.25,
+      "lessons": [
+        {
+          "id": "streams-lesson-1",
+          "title": "Lesson S.1: Lambdas & Functional Interfaces",
+          "moduleId": "module-streams",
+          "order": 1,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Verbose Anonymous Classes",
+              "content": "Before Java 8, passing behavior as a parameter required anonymous inner classes:\n\n// Old way: 5 lines just to compare two strings!\nCollections.sort(names, new Comparator<String>() {\n    @Override\n    public int compare(String a, String b) {\n        return a.compareTo(b);\n    }\n});\n\nThis is verbose, hard to read, and obscures the actual logic (just one line: a.compareTo(b)).\n\nLambdas solve this by allowing you to express behavior concisely:\n\n// New way: 1 line!\nCollections.sort(names, (a, b) -> a.compareTo(b));\n\nLambdas are anonymous functions - code blocks you can pass around like data."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Lambda Syntax",
+              "content": "Lambda expressions have this basic syntax:\n\n(parameters) -> expression\n// or\n(parameters) -> { statements; }\n\nExamples:\n\n// No parameters\n() -> System.out.println(\"Hello\")\n\n// One parameter (parentheses optional)\nx -> x * 2\n(x) -> x * 2\n\n// Two parameters\n(x, y) -> x + y\n\n// Multiple statements (need braces and return)\n(x, y) -> {\n    int sum = x + y;\n    return sum * 2;\n}\n\n// With explicit types\n(String s) -> s.length()\n\nThe arrow (->) separates parameters from the body. Think of it as 'goes to' or 'becomes'."
+            },
+            {
+              "type": "THEORY",
+              "title": "Functional Interfaces",
+              "content": "A lambda can only be used where Java expects a FUNCTIONAL INTERFACE - an interface with exactly one abstract method.\n\nJava provides many built-in functional interfaces in java.util.function:\n\nPredicate<T>: Takes T, returns boolean\n  Predicate<String> isEmpty = s -> s.isEmpty();\n  isEmpty.test(\"\");  // true\n\nFunction<T, R>: Takes T, returns R\n  Function<String, Integer> length = s -> s.length();\n  length.apply(\"hello\");  // 5\n\nConsumer<T>: Takes T, returns nothing\n  Consumer<String> printer = s -> System.out.println(s);\n  printer.accept(\"hello\");  // prints: hello\n\nSupplier<T>: Takes nothing, returns T\n  Supplier<Double> random = () -> Math.random();\n  random.get();  // 0.7234...\n\nThese are the building blocks of functional programming in Java."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Practical Lambda Examples",
+              "content": "Here are real-world uses of lambdas with functional interfaces:",
+              "code": "import java.util.function.*;\nimport java.util.*;\n\nvoid main() {\n    // Predicate: filtering\n    Predicate<Integer> isEven = n -> n % 2 == 0;\n    System.out.println(isEven.test(4));  // true\n    System.out.println(isEven.test(7));  // false\n    \n    // Function: transforming\n    Function<String, String> toUpper = s -> s.toUpperCase();\n    System.out.println(toUpper.apply(\"hello\"));  // HELLO\n    \n    // Consumer: performing actions\n    List<String> names = List.of(\"Alice\", \"Bob\", \"Charlie\");\n    names.forEach(name -> System.out.println(\"Hi, \" + name));\n    \n    // Supplier: generating values\n    Supplier<UUID> idGenerator = () -> UUID.randomUUID();\n    System.out.println(idGenerator.get());\n    \n    // Combining predicates\n    Predicate<Integer> isPositive = n -> n > 0;\n    Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);\n    System.out.println(isEvenAndPositive.test(4));   // true\n    System.out.println(isEvenAndPositive.test(-4));  // false\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-1-mc-1",
+              "title": "Lambda Syntax",
+              "description": "Understanding lambda expression syntax",
+              "question": "Which of the following is a valid lambda expression that takes two integers and returns their sum?",
+              "options": [
+                "(int x, int y) => x + y",
+                "(x, y) -> x + y",
+                "x, y -> x + y",
+                "(x, y) => { return x + y; }"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Java lambdas use -> (arrow), not =>. Parameters must be in parentheses when there are multiple. The expression form (x, y) -> x + y is the correct, concise syntax for returning the sum of two parameters.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-1-mc-2",
+              "title": "Functional Interfaces",
+              "description": "Understanding which functional interface to use",
+              "question": "You need a function that takes a String and returns a boolean indicating if it's valid. Which functional interface should you use?",
+              "options": [
+                "Function<String, Boolean>",
+                "Predicate<String>",
+                "Consumer<String>",
+                "Supplier<Boolean>"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Predicate<T> is designed specifically for testing conditions - it takes an argument of type T and returns a boolean. While Function<String, Boolean> would work, Predicate<String> is more idiomatic and provides additional methods like and(), or(), and negate().",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "streams-lesson-2",
+          "title": "Lesson S.2: Stream Basics",
+          "moduleId": "module-streams",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What Are Streams?",
+              "content": "A Stream is a sequence of elements that supports functional-style operations. Unlike collections, streams:\n\n1. DON'T STORE DATA - they process elements from a source\n2. ARE LAZY - operations execute only when needed\n3. CAN BE INFINITE - generate elements on demand\n4. ARE CONSUMED ONCE - you cannot reuse a stream after a terminal operation\n\nThink of streams as a pipeline: data flows through, gets transformed, and produces a result.\n\n// Collection: data at rest\nList<String> names = List.of(\"Alice\", \"Bob\", \"Charlie\");\n\n// Stream: data in motion\nnames.stream()\n     .filter(name -> name.startsWith(\"A\"))\n     .map(String::toUpperCase)\n     .forEach(System.out::println);  // ALICE\n\nStreams enable declarative programming - you say WHAT you want, not HOW to do it."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Creating Streams",
+              "content": "There are multiple ways to create streams:\n\nFrom Collections:\n  List<String> list = List.of(\"a\", \"b\", \"c\");\n  Stream<String> stream = list.stream();\n\nFrom Arrays:\n  String[] arr = {\"a\", \"b\", \"c\"};\n  Stream<String> stream = Arrays.stream(arr);\n\nUsing Stream.of():\n  Stream<String> stream = Stream.of(\"a\", \"b\", \"c\");\n\nUsing Stream.generate() (infinite):\n  Stream<Double> randoms = Stream.generate(Math::random);\n\nUsing Stream.iterate() (infinite):\n  Stream<Integer> evens = Stream.iterate(0, n -> n + 2);\n\nFrom files:\n  Stream<String> lines = Files.lines(Path.of(\"file.txt\"));\n\nPrimitive streams (avoid boxing overhead):\n  IntStream ints = IntStream.range(1, 100);  // 1 to 99\n  IntStream inclusive = IntStream.rangeClosed(1, 100);  // 1 to 100"
+            },
+            {
+              "type": "THEORY",
+              "title": "Core Stream Operations",
+              "content": "Stream operations are either INTERMEDIATE (return a stream) or TERMINAL (produce a result).\n\nINTERMEDIATE OPERATIONS (lazy, chainable):\n\nfilter(Predicate): Keep elements matching condition\n  .filter(n -> n > 0)\n\nmap(Function): Transform each element\n  .map(String::toUpperCase)\n\nsorted(): Sort elements\n  .sorted()  // natural order\n  .sorted(Comparator.reverseOrder())\n\ndistinct(): Remove duplicates\n  .distinct()\n\nlimit(n): Take first n elements\n  .limit(5)\n\nskip(n): Skip first n elements\n  .skip(10)\n\nTERMINAL OPERATIONS (trigger execution):\n\nforEach(Consumer): Process each element\n  .forEach(System.out::println)\n\ncount(): Count elements\n  long count = stream.count();\n\ncollect(): Gather results into collection\n  List<String> list = stream.collect(Collectors.toList());\n\nfindFirst(), findAny(): Get an element\n  Optional<String> first = stream.findFirst();"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building Stream Pipelines",
+              "content": "Let's see how to chain operations effectively:",
+              "code": "import java.util.*;\nimport java.util.stream.*;\n\nvoid main() {\n    List<String> names = List.of(\n        \"Alice\", \"Bob\", \"Charlie\", \"David\", \"Eve\", \"Alice\"\n    );\n    \n    // Filter, transform, collect\n    List<String> result = names.stream()\n        .filter(name -> name.length() > 3)      // Alice, Charlie, David, Alice\n        .map(String::toUpperCase)                // ALICE, CHARLIE, DAVID, ALICE\n        .distinct()                              // ALICE, CHARLIE, DAVID\n        .sorted()                                // ALICE, CHARLIE, DAVID\n        .collect(Collectors.toList());\n    \n    System.out.println(result);  // [ALICE, CHARLIE, DAVID]\n    \n    // Count elements matching a condition\n    long count = names.stream()\n        .filter(name -> name.startsWith(\"A\"))\n        .count();\n    System.out.println(\"Names starting with A: \" + count);  // 2\n    \n    // Find first match\n    Optional<String> first = names.stream()\n        .filter(name -> name.contains(\"v\"))\n        .findFirst();\n    first.ifPresent(name -> System.out.println(\"Found: \" + name));  // David\n    \n    // Numeric operations with IntStream\n    int sum = IntStream.rangeClosed(1, 10).sum();\n    System.out.println(\"Sum 1-10: \" + sum);  // 55\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-2-mc-1",
+              "title": "Stream Characteristics",
+              "description": "Understanding how streams work",
+              "question": "What happens when you call filter() on a stream?",
+              "options": [
+                "It immediately filters the elements and returns a new list",
+                "It stores the filter condition and returns a new stream, executing only when a terminal operation is called",
+                "It modifies the original collection in place",
+                "It throws an exception if no elements match"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Stream operations are lazy - intermediate operations like filter() don't execute immediately. They build up a pipeline that only executes when a terminal operation (like collect(), count(), or forEach()) is called. This allows for optimizations like short-circuiting.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-2-mc-2",
+              "title": "Creating Streams",
+              "description": "Knowing how to create streams from different sources",
+              "question": "Which of the following is NOT a valid way to create a stream?",
+              "options": [
+                "List.of(1, 2, 3).stream()",
+                "Stream.of(\"a\", \"b\", \"c\")",
+                "Arrays.stream(new int[]{1, 2, 3})",
+                "new Stream<>(1, 2, 3)"
+              ],
+              "correctAnswer": 3,
+              "explanation": "Stream is an interface, not a class, so you cannot instantiate it with 'new'. Use factory methods like stream() on collections, Stream.of() for values, or Arrays.stream() for arrays.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "streams-lesson-3",
+          "title": "Lesson S.3: Collecting Results",
+          "moduleId": "module-streams",
+          "order": 3,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The collect() Terminal Operation",
+              "content": "After processing elements through a stream pipeline, you often need to gather results into a collection. The collect() method is the primary way to do this.\n\nBasic usage with Collectors:\n\n// Collect to List\nList<String> list = stream.collect(Collectors.toList());\n\n// Java 16+: Simpler syntax\nList<String> list = stream.toList();  // Returns unmodifiable list\n\n// Collect to Set (removes duplicates)\nSet<String> set = stream.collect(Collectors.toSet());\n\n// Collect to specific collection type\nTreeSet<String> treeSet = stream.collect(\n    Collectors.toCollection(TreeSet::new)\n);\n\nThe Collectors utility class provides many powerful collectors for different use cases."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Common Collectors",
+              "content": "The Collectors class provides pre-built collectors for common operations:\n\ntoList(), toSet(), toCollection()\n  Gather elements into a collection\n\ntoMap(keyMapper, valueMapper)\n  Create a map from stream elements\n  Map<Integer, String> map = people.stream()\n      .collect(Collectors.toMap(Person::getId, Person::getName));\n\njoining(), joining(delimiter)\n  Concatenate strings\n  String csv = names.stream().collect(Collectors.joining(\", \"));\n  // \"Alice, Bob, Charlie\"\n\ncounting()\n  Count elements (like count() but as a collector)\n\nsummarizingInt/Long/Double(mapper)\n  Get statistics (count, sum, min, max, average)\n\naverageInt/Long/Double(mapper)\n  Calculate average\n\nmaxBy(comparator), minBy(comparator)\n  Find max/min element"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating Maps with toMap()",
+              "content": "Converting a stream to a Map is common but has pitfalls:\n\nBasic toMap:\n  Map<Integer, String> idToName = people.stream()\n      .collect(Collectors.toMap(\n          Person::getId,      // key mapper\n          Person::getName     // value mapper\n      ));\n\nHandling duplicate keys (throws exception by default!):\n  Map<String, Integer> wordCounts = words.stream()\n      .collect(Collectors.toMap(\n          word -> word,           // key: the word itself\n          word -> 1,              // value: count of 1\n          (existing, newVal) -> existing + newVal  // merge: add counts\n      ));\n\nSpecifying map type:\n  LinkedHashMap<Integer, String> ordered = people.stream()\n      .collect(Collectors.toMap(\n          Person::getId,\n          Person::getName,\n          (a, b) -> a,            // keep first on collision\n          LinkedHashMap::new      // use LinkedHashMap\n      ));\n\nWARNING: toMap() with duplicate keys throws IllegalStateException unless you provide a merge function!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Collecting in Practice",
+              "content": "Real-world examples of collecting stream results:",
+              "code": "import java.util.*;\nimport java.util.stream.*;\n\nrecord Person(int id, String name, int age, String department) {}\n\nvoid main() {\n    List<Person> people = List.of(\n        new Person(1, \"Alice\", 30, \"Engineering\"),\n        new Person(2, \"Bob\", 25, \"Marketing\"),\n        new Person(3, \"Charlie\", 35, \"Engineering\"),\n        new Person(4, \"Diana\", 28, \"Marketing\")\n    );\n    \n    // Collect names to a list\n    List<String> names = people.stream()\n        .map(Person::name)\n        .toList();\n    System.out.println(names);  // [Alice, Bob, Charlie, Diana]\n    \n    // Create ID -> Person map\n    Map<Integer, Person> byId = people.stream()\n        .collect(Collectors.toMap(Person::id, p -> p));\n    System.out.println(byId.get(2).name());  // Bob\n    \n    // Join names with comma\n    String joined = people.stream()\n        .map(Person::name)\n        .collect(Collectors.joining(\", \"));\n    System.out.println(joined);  // Alice, Bob, Charlie, Diana\n    \n    // Get age statistics\n    IntSummaryStatistics stats = people.stream()\n        .collect(Collectors.summarizingInt(Person::age));\n    System.out.println(\"Avg age: \" + stats.getAverage());  // 29.5\n    System.out.println(\"Max age: \" + stats.getMax());      // 35\n    \n    // Collect to TreeSet (sorted)\n    TreeSet<String> sortedNames = people.stream()\n        .map(Person::name)\n        .collect(Collectors.toCollection(TreeSet::new));\n    System.out.println(sortedNames);  // [Alice, Bob, Charlie, Diana]\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-3-mc-1",
+              "title": "toList() Behavior",
+              "description": "Understanding the difference between collect(toList()) and toList()",
+              "question": "What is the key difference between stream.collect(Collectors.toList()) and stream.toList() in Java 16+?",
+              "options": [
+                "There is no difference, they are identical",
+                "toList() returns an unmodifiable list, collect(toList()) returns a modifiable ArrayList",
+                "collect(toList()) is faster",
+                "toList() only works with String streams"
+              ],
+              "correctAnswer": 1,
+              "explanation": "The stream.toList() method introduced in Java 16 returns an unmodifiable list (you cannot add/remove elements). In contrast, Collectors.toList() returns a modifiable ArrayList. Choose based on whether you need to modify the result.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-3-mc-2",
+              "title": "toMap() Duplicate Keys",
+              "description": "Understanding toMap() behavior with duplicates",
+              "question": "What happens when you use Collectors.toMap() and the stream contains elements that map to the same key?",
+              "options": [
+                "The last value wins and overwrites previous values",
+                "The first value wins and later values are ignored",
+                "An IllegalStateException is thrown",
+                "Both values are stored in a list"
+              ],
+              "correctAnswer": 2,
+              "explanation": "By default, Collectors.toMap() throws an IllegalStateException when it encounters duplicate keys. To handle duplicates, you must provide a merge function as the third argument, like (existing, newVal) -> existing to keep the first value.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "streams-lesson-4",
+          "title": "Lesson S.4: Advanced Streams",
+          "moduleId": "module-streams",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "flatMap: Flattening Nested Structures",
+              "content": "When you have nested collections or need to expand elements, flatMap() is your tool. It maps each element to a stream, then flattens all streams into one.\n\nmap() vs flatMap():\n\n// map: one-to-one transformation\nList<String> words = List.of(\"hello\", \"world\");\nwords.stream().map(String::toUpperCase);  // Stream of \"HELLO\", \"WORLD\"\n\n// flatMap: one-to-many, then flatten\nList<List<Integer>> nested = List.of(\n    List.of(1, 2),\n    List.of(3, 4, 5)\n);\nnested.stream()\n    .flatMap(List::stream)  // Flatten to: 1, 2, 3, 4, 5\n    .forEach(System.out::println);\n\n// Common use: split words into characters\n\"hello world\".chars()  // IntStream of character codes\n\nList.of(\"hello\", \"world\").stream()\n    .flatMap(word -> word.chars().mapToObj(c -> (char) c))\n    .forEach(System.out::print);  // helloworld"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "reduce: Aggregating Values",
+              "content": "The reduce() operation combines all elements into a single result using an accumulator function.\n\nThree forms of reduce:\n\n1. With identity and accumulator:\n   int sum = numbers.stream().reduce(0, (a, b) -> a + b);\n   // Equivalent to: Integer.sum as method reference\n   int sum = numbers.stream().reduce(0, Integer::sum);\n\n2. Without identity (returns Optional):\n   Optional<Integer> max = numbers.stream()\n       .reduce((a, b) -> a > b ? a : b);\n\n3. With identity, accumulator, and combiner (for parallel):\n   int result = numbers.parallelStream()\n       .reduce(0, Integer::sum, Integer::sum);\n\nExamples:\n  // Product of all numbers\n  int product = List.of(1, 2, 3, 4).stream()\n      .reduce(1, (a, b) -> a * b);  // 24\n  \n  // Concatenate strings\n  String concat = List.of(\"a\", \"b\", \"c\").stream()\n      .reduce(\"\", (a, b) -> a + b);  // \"abc\"\n  // But prefer Collectors.joining() for strings!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Grouping and Partitioning",
+              "content": "Collectors provides powerful grouping operations:\n\ngroupingBy(classifier): Group elements by a key\n  Map<String, List<Person>> byDept = people.stream()\n      .collect(Collectors.groupingBy(Person::department));\n  // {Engineering=[Alice, Charlie], Marketing=[Bob, Diana]}\n\ngroupingBy with downstream collector:\n  Map<String, Long> countByDept = people.stream()\n      .collect(Collectors.groupingBy(\n          Person::department,\n          Collectors.counting()\n      ));\n  // {Engineering=2, Marketing=2}\n\n  Map<String, Double> avgAgeByDept = people.stream()\n      .collect(Collectors.groupingBy(\n          Person::department,\n          Collectors.averagingInt(Person::age)\n      ));\n\npartitioningBy(predicate): Split into true/false groups\n  Map<Boolean, List<Person>> seniorVsJunior = people.stream()\n      .collect(Collectors.partitioningBy(p -> p.age() >= 30));\n  // {true=[Alice, Charlie], false=[Bob, Diana]}\n\nPartitioning always returns exactly two groups (true and false), even if empty."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Advanced Stream Operations",
+              "content": "Combining advanced operations for complex data processing:",
+              "code": "import java.util.*;\nimport java.util.stream.*;\n\nrecord Order(int id, String customer, List<String> items, double total) {}\n\nvoid main() {\n    List<Order> orders = List.of(\n        new Order(1, \"Alice\", List.of(\"Book\", \"Pen\"), 25.0),\n        new Order(2, \"Bob\", List.of(\"Laptop\"), 999.0),\n        new Order(3, \"Alice\", List.of(\"Coffee\", \"Tea\", \"Sugar\"), 15.0),\n        new Order(4, \"Charlie\", List.of(\"Phone\", \"Case\"), 850.0)\n    );\n    \n    // flatMap: Get all unique items across all orders\n    Set<String> allItems = orders.stream()\n        .flatMap(order -> order.items().stream())\n        .collect(Collectors.toSet());\n    System.out.println(\"All items: \" + allItems);\n    \n    // reduce: Calculate total revenue\n    double totalRevenue = orders.stream()\n        .map(Order::total)\n        .reduce(0.0, Double::sum);\n    System.out.println(\"Total revenue: $\" + totalRevenue);  // $1889.0\n    \n    // groupingBy: Orders by customer\n    Map<String, List<Order>> byCustomer = orders.stream()\n        .collect(Collectors.groupingBy(Order::customer));\n    System.out.println(\"Alice's orders: \" + byCustomer.get(\"Alice\").size());  // 2\n    \n    // groupingBy with sum: Total spent per customer\n    Map<String, Double> spentByCustomer = orders.stream()\n        .collect(Collectors.groupingBy(\n            Order::customer,\n            Collectors.summingDouble(Order::total)\n        ));\n    System.out.println(\"Alice spent: $\" + spentByCustomer.get(\"Alice\"));  // $40.0\n    \n    // partitioningBy: High-value vs regular orders\n    Map<Boolean, List<Order>> partitioned = orders.stream()\n        .collect(Collectors.partitioningBy(o -> o.total() > 100));\n    System.out.println(\"High-value orders: \" + partitioned.get(true).size());  // 2\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-4-mc-1",
+              "title": "flatMap Usage",
+              "description": "Understanding when to use flatMap",
+              "question": "You have a List<String> of sentences and want to get a stream of individual words. Which approach is correct?",
+              "options": [
+                "sentences.stream().map(s -> s.split(\" \"))",
+                "sentences.stream().flatMap(s -> Arrays.stream(s.split(\" \")))",
+                "sentences.stream().filter(s -> s.split(\" \"))",
+                "sentences.stream().reduce(s -> s.split(\" \"))"
+              ],
+              "correctAnswer": 1,
+              "explanation": "flatMap is used when you want to transform each element into multiple elements and flatten the result. map(s -> s.split(\" \")) would give you Stream<String[]>, but flatMap with Arrays.stream gives you Stream<String> - all words in a single flat stream.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-4-mc-2",
+              "title": "groupingBy vs partitioningBy",
+              "description": "Choosing the right grouping operation",
+              "question": "What is the key difference between groupingBy and partitioningBy?",
+              "options": [
+                "partitioningBy is faster than groupingBy",
+                "groupingBy can only group by String keys",
+                "partitioningBy always returns exactly two groups (true/false), groupingBy can return any number of groups",
+                "partitioningBy modifies the original collection"
+              ],
+              "correctAnswer": 2,
+              "explanation": "partitioningBy uses a Predicate and always returns a Map with exactly two keys: true and false. groupingBy uses a classifier function and can return any number of groups based on the key values. Use partitioningBy for binary splits, groupingBy for multi-category grouping.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "streams-lesson-5",
+          "title": "Lesson S.5: Optional & Null Safety",
+          "moduleId": "module-streams",
+          "order": 5,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Null Problem",
+              "content": "Null references are called 'the billion dollar mistake' by their inventor, Tony Hoare. They cause NullPointerExceptions - the most common Java bug.\n\nThe problem:\n  String name = findUserById(42);  // might return null!\n  int length = name.length();       // BOOM! NullPointerException\n\nTraditional defensive coding is ugly:\n  String name = findUserById(42);\n  if (name != null) {\n      int length = name.length();  // Safe, but verbose\n  }\n\nOptional<T> is Java's solution - a container that may or may not contain a value. It forces you to handle the 'no value' case explicitly.\n\nOptional<String> name = findUserById(42);\nname.ifPresent(n -> System.out.println(n.length()));\n\nOptional doesn't eliminate nulls, but it makes 'might be absent' explicit in the API."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Creating Optionals",
+              "content": "Create Optionals using factory methods, NEVER with the constructor:\n\nOptional.of(value): When value is definitely non-null\n  Optional<String> opt = Optional.of(\"hello\");\n  // Throws NullPointerException if value is null!\n\nOptional.ofNullable(value): When value might be null\n  Optional<String> opt = Optional.ofNullable(maybeNull);\n  // Safe: wraps null as empty Optional\n\nOptional.empty(): Explicit empty Optional\n  Optional<String> empty = Optional.empty();\n\nRULES:\n- NEVER pass null to Optional.of() - use ofNullable()\n- NEVER call get() without checking isPresent() first\n- NEVER use Optional for class fields - use it for return types\n- NEVER use Optional as method parameter - just use the value\n\nOptional is designed for return types to indicate 'might not have a result'."
+            },
+            {
+              "type": "THEORY",
+              "title": "Using Optionals Safely",
+              "content": "Extracting values from Optional:\n\norElse(default): Return value or default if empty\n  String name = opt.orElse(\"Unknown\");\n\norElseGet(supplier): Return value or compute default lazily\n  String name = opt.orElseGet(() -> expensiveComputation());\n  // Supplier only called if Optional is empty\n\norElseThrow(): Return value or throw exception\n  String name = opt.orElseThrow();  // NoSuchElementException\n  String name = opt.orElseThrow(() -> new UserNotFoundException(id));\n\nConditional actions:\n\nifPresent(consumer): Execute if value present\n  opt.ifPresent(name -> System.out.println(name));\n\nifPresentOrElse(consumer, emptyAction): Java 9+\n  opt.ifPresentOrElse(\n      name -> System.out.println(\"Found: \" + name),\n      () -> System.out.println(\"Not found\")\n  );\n\nAVOID these anti-patterns:\n  if (opt.isPresent()) { opt.get(); }  // Just use orElse/ifPresent!\n  opt.get()  // NEVER without checking - defeats the purpose!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Optional in Practice",
+              "content": "Using Optional effectively in real code:",
+              "code": "import java.util.*;\n\nrecord User(int id, String name, String email) {}\n\nvoid main() {\n    Map<Integer, User> users = Map.of(\n        1, new User(1, \"Alice\", \"alice@example.com\"),\n        2, new User(2, \"Bob\", \"bob@example.com\")\n    );\n    \n    // Method returning Optional\n    Optional<User> findUser(int id) {\n        return Optional.ofNullable(users.get(id));\n    }\n    \n    // orElse: provide default\n    User user1 = findUser(1).orElse(new User(0, \"Guest\", \"guest@example.com\"));\n    System.out.println(user1.name());  // Alice\n    \n    User user99 = findUser(99).orElse(new User(0, \"Guest\", \"guest@example.com\"));\n    System.out.println(user99.name());  // Guest\n    \n    // orElseThrow: fail fast for required values\n    try {\n        User required = findUser(99).orElseThrow(\n            () -> new RuntimeException(\"User not found\")\n        );\n    } catch (RuntimeException e) {\n        System.out.println(\"Error: \" + e.getMessage());\n    }\n    \n    // map: transform if present\n    Optional<String> email = findUser(1).map(User::email);\n    email.ifPresent(e -> System.out.println(\"Email: \" + e));\n    \n    // filter: conditional extraction\n    Optional<User> alice = findUser(1)\n        .filter(u -> u.name().equals(\"Alice\"));\n    System.out.println(\"Is Alice? \" + alice.isPresent());  // true\n    \n    // flatMap: when the mapper returns Optional\n    Optional<String> getEmailDomain(int userId) {\n        return findUser(userId)\n            .map(User::email)\n            .flatMap(email -> {\n                int at = email.indexOf('@');\n                return at > 0 \n                    ? Optional.of(email.substring(at + 1)) \n                    : Optional.empty();\n            });\n    }\n    System.out.println(getEmailDomain(1).orElse(\"N/A\"));  // example.com\n}",
+              "language": "java"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-5-mc-1",
+              "title": "Creating Optionals",
+              "description": "Choosing the right Optional factory method",
+              "question": "You're wrapping a value that might be null. Which method should you use?",
+              "options": [
+                "Optional.of(value)",
+                "Optional.ofNullable(value)",
+                "new Optional<>(value)",
+                "Optional.empty()"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Optional.ofNullable() safely wraps a value that might be null - returning Optional.empty() if null. Optional.of() throws NullPointerException if the value is null. You cannot use 'new' with Optional. Optional.empty() always returns an empty Optional.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "streams-lesson-5-mc-2",
+              "title": "orElse vs orElseGet",
+              "description": "Understanding lazy vs eager default evaluation",
+              "question": "What is the advantage of orElseGet(supplier) over orElse(value)?",
+              "options": [
+                "orElseGet is faster because it uses parallel processing",
+                "orElseGet only evaluates the default value when the Optional is empty (lazy evaluation)",
+                "orElseGet can return different types than the Optional",
+                "orElseGet throws an exception instead of returning null"
+              ],
+              "correctAnswer": 1,
+              "explanation": "orElseGet uses lazy evaluation - the supplier is only called if the Optional is empty. With orElse(value), the default value is always computed even if not needed. This matters when the default involves expensive computation or side effects.",
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "module-03",
       "title": "Object-Oriented Programming",
       "description": "Master OOP concepts: classes, objects, encapsulation, inheritance, polymorphism, records, and sealed classes.",
