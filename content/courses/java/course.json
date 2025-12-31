@@ -816,6 +816,16 @@
               "type": "KEY_POINT",
               "title": "Choosing the Right Type",
               "content": "How to decide which type to use:\n\nAsk yourself:\n1. Is it a number? → int or double\n   - Whole number? → int\n   - Needs decimals? → double\n\n2. Is it text? → String\n   - Even if it looks like a number (\"123\") but you're not doing math\n\n3. Is it yes/no, on/off, true/false? → boolean\n\nExamples:\n✓ int numberOfStudents = 30;  // Counting people\n✓ double temperature = 98.6;  // Needs precision\n✓ String username = \"alice2024\";  // Text identifier\n✓ boolean isValid = true;  // Yes/no flag\n\n✗ double numberOfStudents = 30.0;  // Wasteful (don't need decimals)\n✗ int price = 20;  // Risky (what about $20.50?)\n✗ String isValid = \"true\";  // Wrong type (should be boolean)"
+            },
+            {
+              "type": "THEORY",
+              "title": "Modern Java: Text Blocks for Multi-line Strings",
+              "content": "Since Java 15, you can write multi-line strings using TEXT BLOCKS:\n\nOLD WAY (messy, hard to read):\nString json = \"{\\n\" +\n    \"  \\\"name\\\": \\\"Alice\\\",\\n\" +\n    \"  \\\"age\\\": 20\\n\" +\n    \"}\";\n\nMODERN WAY (clean, readable):\nString json = \"\"\"\n    {\n        \"name\": \"Alice\",\n        \"age\": 20\n    }\n    \"\"\";\n\nText blocks use triple quotes \"\"\" to start and end. Everything between them is treated as-is, including line breaks and indentation.\n\nPerfect for:\n• JSON data\n• SQL queries\n• HTML/XML\n• Any multi-line text\n\nKey rules:\n1. Opening \"\"\" must be followed by a newline\n2. Closing \"\"\" determines the indentation baseline\n3. Java automatically removes common leading whitespace"
+            },
+            {
+              "type": "THEORY",
+              "title": "String Formatting with .formatted()",
+              "content": "When combining variables with strings, you have several options:\n\n1. STRING CONCATENATION (basic, but messy):\nString msg = \"Hello, \" + name + \"! You are \" + age + \" years old.\";\n\n2. String.format() (traditional):\nString msg = String.format(\"Hello, %s! You are %d years old.\", name, age);\n\n3. .formatted() (modern, Java 15+):\nString msg = \"Hello, %s! You are %d years old.\".formatted(name, age);\n\nThe .formatted() method is cleaner because the template comes first!\n\nCombining text blocks with .formatted():\n\nString template = \"\"\"\n    Dear %s,\n    Your order #%d is ready.\n    Total: $%.2f\n    \"\"\";\nString email = template.formatted(\"Alice\", 12345, 99.99);\n\nFormat specifiers:\n• %s = String (or any object)\n• %d = Integer (whole number)\n• %f = Floating point (decimal)\n• %.2f = Decimal with 2 decimal places\n• %n = Newline (platform-independent)"
             }
           ],
           "challenges": [
@@ -1269,6 +1279,16 @@
               "type": "WARNING",
               "title": "Common For Loop Pitfalls",
               "content": "Watch out for these common mistakes:\n\n1. OFF-BY-ONE ERRORS:\n// WRONG: Starts at 1, misses index 0\nfor (int i = 1; i < array.length; i++)\n\n// WRONG: Uses <=, goes past last index\nfor (int i = 0; i <= array.length; i++)\n\n// CORRECT: Start at 0, use < length\nfor (int i = 0; i < array.length; i++)\n\n2. INFINITE LOOPS:\n// WRONG: Forgot to increment!\nfor (int i = 0; i < 10; ) { }\n\n// WRONG: Incrementing wrong direction\nfor (int i = 10; i > 0; i++) { }\n\n3. MODIFYING LOOP VARIABLE:\n// DANGEROUS: Changing i inside loop\nfor (int i = 0; i < 10; i++) {\n    i = i + 2;  // Skips iterations unexpectedly\n}\n\n4. STRING CONCATENATION IN LOOPS:\n// SLOW: Creates new String objects each time\nString result = \"\";\nfor (int i = 0; i < 1000; i++) {\n    result += i;  // Use StringBuilder instead!\n}\n\n5. SCOPE OF LOOP VARIABLE:\n// i only exists inside the loop\nfor (int i = 0; i < 5; i++) { }\nSystem.out.println(i);  // ERROR: i not defined here"
+            },
+            {
+              "type": "THEORY",
+              "title": "Modern Java: The Enhanced For Loop (for-each)",
+              "content": "When you just want to process each item in a collection, the ENHANCED FOR LOOP (also called for-each) is cleaner:\n\nTRADITIONAL FOR LOOP:\nString[] names = {\"Alice\", \"Bob\", \"Charlie\"};\nfor (int i = 0; i < names.length; i++) {\n    System.out.println(names[i]);\n}\n\nENHANCED FOR LOOP (simpler!):\nfor (String name : names) {\n    System.out.println(name);\n}\n\nRead this as: \"for each name in names, do...\"\n\nWith 'var' (Java 10+), it's even cleaner:\nfor (var name : names) {\n    System.out.println(name);\n}\n\nBenefits of enhanced for:\n• No index variable needed\n• No risk of off-by-one errors\n• Clearer intent: \"process each item\"\n• Works with arrays AND collections (like ArrayList)"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When to Use Each Loop Style",
+              "content": "TRADITIONAL FOR: Use when you need the index\n• Modifying elements: array[i] = newValue\n• Comparing adjacent items: array[i] vs array[i+1]\n• Iterating in reverse or by steps\n• Needing to know \"which\" iteration you're on\n\nfor (int i = 0; i < scores.length; i++) {\n    scores[i] = scores[i] * 2;  // Need index to modify\n}\n\nENHANCED FOR: Use when you just process items\n• Reading values without changing them\n• Processing each item the same way\n• When you don't need the position\n\nfor (var score : scores) {\n    total += score;  // Just reading, no index needed\n}\n\nQUICK REFERENCE:\n• Need index? → Traditional for\n• Just processing each item? → Enhanced for (for-each)\n• Unknown iterations? → while\n• Modern collections? → Consider streams (covered later)"
             }
           ],
           "challenges": [
@@ -1465,6 +1485,11 @@
               "type": "WARNING",
               "title": "Common Method Mistakes",
               "content": "Avoid these frequent errors:\n\n1. RETURNING FROM VOID METHOD:\n// WRONG: void methods cannot return a value\npublic static void sayHi() {\n    return \"Hi\";  // COMPILE ERROR!\n}\n\n2. FORGETTING TO RETURN:\n// WRONG: Missing return statement\npublic static int add(int a, int b) {\n    int sum = a + b;\n    // Forgot to return sum!  COMPILE ERROR\n}\n\n3. WRONG RETURN TYPE:\n// WRONG: Method says int, but returns double\npublic static int divide(int a, int b) {\n    return a / (double) b;  // COMPILE ERROR!\n}\n\n4. USING VOID RETURN VALUE:\n// WRONG: void has no value to store\npublic static void printHi() { System.out.println(\"Hi\"); }\nString result = printHi();  // COMPILE ERROR!\n\n5. CONFUSING METHOD WITH CONSTRUCTOR:\n// This is a METHOD named Student (returns void)\npublic static void Student() { }\n\n// This is a CONSTRUCTOR (no return type at all)\npublic Student() { }\n\n6. ALWAYS USE @Override WHEN OVERRIDING:\n// Without @Override, typos create new methods!\n@Override\npublic String toString() { ... }  // Safe - compiler checks!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Preview: Methods as Values (Method References)",
+              "content": "Here's something powerful you'll explore more in the Streams module:\n\nIn Java, methods can be passed around as VALUES, not just called!\n\nTRADITIONAL: Call methods directly\nvoid printNumber(int n) {\n    println(n);\n}\nfor (int i = 1; i <= 5; i++) {\n    printNumber(i);  // Call the method\n}\n\nMODERN: Pass the method itself using ::\nList<Integer> numbers = List.of(1, 2, 3, 4, 5);\nnumbers.forEach(System.out::println);  // Pass the method!\n\nThe :: syntax creates a \"method reference\" - a way to refer to a method without calling it. The forEach then calls it for each item.\n\nThis enables a powerful style called FUNCTIONAL PROGRAMMING:\n• Pass methods to other methods\n• Transform data with map, filter, reduce\n• Write concise, expressive code\n\nDon't worry if this seems advanced - we'll cover it fully in the Streams module. For now, just know that methods in Java are more flexible than they first appear!"
             }
           ],
           "challenges": [
@@ -1667,6 +1692,16 @@
               "type": "WARNING",
               "title": "Common Access Modifier Mistakes",
               "content": "Avoid these frequent errors:\n\n1. MAKING EVERYTHING PUBLIC:\n// BAD: Exposes internal implementation\npublic class User {\n    public String password;  // Anyone can read/modify!\n}\n\n// GOOD: Use private with getters\nprivate String password;\npublic boolean checkPassword(String input) { ... }\n\n2. CALLING NON-STATIC FROM STATIC:\n// WRONG: Cannot access instance field from static method\npublic class Example {\n    String name;\n    public static void main(String[] args) {\n        System.out.println(name);  // COMPILE ERROR!\n    }\n}\n\n3. FORGETTING main() MUST BE public static:\n// WRONG: JVM cannot find entry point\nprivate static void main(String[] args) { }  // ERROR\nstatic void main(String[] args) { }  // Package-private, fails\n\n4. ACCESSING PRIVATE FROM ANOTHER CLASS:\n// In class A:\nprivate void helper() { }\n\n// In class B:\nA obj = new A();\nobj.helper();  // COMPILE ERROR: helper has private access\n\n5. USING DEFAULT (PACKAGE-PRIVATE) ACCIDENTALLY:\n// No modifier = package-private, NOT public!\nvoid myMethod() { }  // Only accessible within same package\npublic void myMethod() { }  // Accessible everywhere"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Modern Java Hides public static void main",
+              "content": "You've been writing simple programs with just:\n\nvoid main() {\n    println(\"Hello!\");\n}\n\nBut the traditional Java entry point is:\n\npublic static void main(String[] args) {\n    System.out.println(\"Hello!\");\n}\n\nWhy does modern Java (21+) hide these keywords?\n\nFor beginners, the traditional syntax creates UNNECESSARY complexity:\n• public - Who else would call main? The JVM needs it, period.\n• static - Required because there's no object yet. Confusing for beginners!\n• void - main doesn't return anything useful to the JVM.\n• String[] args - Command-line args you rarely use while learning.\n• System.out - Why not just println()?\n\nModern Java's \"implicit main\" lets you focus on WHAT the code does, not ceremony.\n\nTRADITIONAL (all the ceremony):\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello!\");\n    }\n}\n\nMODERN (just the logic):\nvoid main() {\n    println(\"Hello!\");\n}\n\nBehind the scenes, Java still creates the class and static main - it just does it FOR you. When you're ready for larger programs with multiple classes, you'll use the full syntax."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "When You'll Need the Full Syntax",
+              "content": "The simplified void main() works for:\n✓ Learning and experimenting\n✓ Small single-file programs\n✓ Quick scripts and prototypes\n\nYou'll need public static void main when:\n• Building larger applications with multiple classes\n• Creating reusable libraries\n• Working with frameworks (Spring, etc.)\n• Deploying to production environments\n\nThe transition is easy:\n\n// Simple (learning)\nvoid main() {\n    greet(\"World\");\n}\n\nvoid greet(String name) {\n    println(\"Hello, \" + name + \"!\");\n}\n\n// Full (production)\npublic class Greeter {\n    public static void main(String[] args) {\n        greet(\"World\");\n    }\n    \n    public static void greet(String name) {\n        System.out.println(\"Hello, \" + name + \"!\");\n    }\n}\n\nNow that you understand WHAT public, static, and void mean, you'll recognize them when you see them - and know when to use them!"
             }
           ],
           "challenges": []
