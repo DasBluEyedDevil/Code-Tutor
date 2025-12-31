@@ -12146,6 +12146,142 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-26",
+      "title": "Capstone Completion: ShopFlow Launch",
+      "description": "Bring everything together. Complete and deploy your ShopFlow e-commerce application with all the skills you've learned throughout the course.",
+      "difficulty": "advanced",
+      "estimatedHours": 6,
+      "lessons": [
+        {
+          "id": "lesson-26-01",
+          "title": "From Development to Production (The Grand Opening)",
+          "moduleId": "module-26",
+          "order": 1,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Launching Your Application",
+              "content": "Imagine you have spent months building your dream restaurant. The kitchen is equipped with professional-grade appliances, the dining room is elegantly decorated, and you have perfected your signature dishes through countless trials. But having a beautiful restaurant is not the same as opening for business. Before your grand opening, you need to ensure everything works together seamlessly.\n\nFirst, there is the preparation phase. You conduct a soft opening with friends and family to identify issues before real customers arrive. You verify that the point-of-sale system processes payments correctly, that orders flow smoothly from servers to kitchen, and that the ventilation handles a full dinner rush. You train your staff until they can handle any situation confidently.\n\nThen comes the grand opening itself. You do not simply unlock the doors and hope for the best. You have marketing campaigns ready, reservation systems tested, and backup plans for unexpected crowds. You monitor everything closely those first few nights, ready to adjust on the fly.\n\nFinally, there are ongoing operations. A successful restaurant does not coast after opening night. You continuously gather customer feedback, refine recipes, optimize staffing, and adapt to seasonal changes. You track metrics like table turnover, customer satisfaction, and food costs to ensure sustainable success.\n\nLaunching ShopFlow follows this same pattern. Development is like building and equipping your restaurant. Deployment preparation is your soft opening and staff training. The actual launch is your grand opening. And production operations are your ongoing restaurant management. Each phase requires different skills and attention, but all are essential for a successful venture."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "ShopFlow Feature Checklist",
+              "content": "Before launching ShopFlow, we need to verify that all core features are complete and working together. This checklist references the components we built throughout the course.",
+              "code": "// ===== SHOPFLOW FEATURE VERIFICATION CHECKLIST =====\n\n// PRODUCT CATALOG API (Modules 8-10)\n// - GET /api/products - List all products with pagination\n// - GET /api/products/{id} - Get single product details\n// - POST /api/products - Create new product (Admin only)\n// - PUT /api/products/{id} - Update product (Admin only)\n// - DELETE /api/products/{id} - Soft delete product (Admin only)\n// - GET /api/products/search?q={term} - Full-text search\n// - GET /api/categories - List product categories\n\npublic class ProductsController : ControllerBase\n{\n    [HttpGet]\n    public async Task<ActionResult<PagedResult<ProductDto>>> GetProducts(\n        [FromQuery] int page = 1,\n        [FromQuery] int pageSize = 20,\n        [FromQuery] string? category = null)\n    {\n        var products = await _productService.GetPagedAsync(page, pageSize, category);\n        return Ok(products);\n    }\n}\n\n// SHOPPING CART (Modules 11-12)\n// - GET /api/cart - Get current user's cart\n// - POST /api/cart/items - Add item to cart\n// - PUT /api/cart/items/{id} - Update item quantity\n// - DELETE /api/cart/items/{id} - Remove item from cart\n// - DELETE /api/cart - Clear entire cart\n\npublic class CartService : ICartService\n{\n    public async Task<Cart> AddItemAsync(int userId, int productId, int quantity)\n    {\n        var cart = await GetOrCreateCartAsync(userId);\n        var product = await _productRepository.GetByIdAsync(productId);\n        \n        if (product.StockQuantity < quantity)\n            throw new InsufficientStockException(productId, quantity);\n        \n        cart.AddItem(product, quantity);\n        await _cartRepository.UpdateAsync(cart);\n        return cart;\n    }\n}\n\n// USER AUTHENTICATION (Modules 20-22)\n// - POST /api/auth/register - New user registration\n// - POST /api/auth/login - Email/password login\n// - POST /api/auth/refresh - Refresh JWT token\n// - GET /api/auth/external/{provider} - OAuth login (Google, GitHub)\n// - POST /api/auth/logout - Invalidate refresh token\n\nservices.AddIdentity<ApplicationUser, IdentityRole>(options =>\n{\n    options.Password.RequireDigit = true;\n    options.Password.RequiredLength = 8;\n    options.Password.RequireNonAlphanumeric = true;\n    options.Lockout.MaxFailedAccessAttempts = 5;\n})\n.AddEntityFrameworkStores<ShopFlowDbContext>()\n.AddDefaultTokenProviders();\n\n// ORDER PROCESSING (Modules 13-15)\n// - POST /api/orders - Create order from cart\n// - GET /api/orders - List user's orders\n// - GET /api/orders/{id} - Get order details\n// - PUT /api/orders/{id}/status - Update order status (Admin)\n// - POST /api/orders/{id}/cancel - Cancel order\n\npublic class OrderService : IOrderService\n{\n    public async Task<Order> CreateOrderAsync(int userId, CreateOrderDto dto)\n    {\n        using var transaction = await _dbContext.Database.BeginTransactionAsync();\n        try\n        {\n            var cart = await _cartService.GetCartAsync(userId);\n            var order = Order.CreateFromCart(cart, dto.ShippingAddress);\n            \n            await _orderRepository.AddAsync(order);\n            await _inventoryService.ReserveStockAsync(order.Items);\n            await _cartService.ClearCartAsync(userId);\n            \n            await transaction.CommitAsync();\n            await _eventBus.PublishAsync(new OrderCreatedEvent(order));\n            \n            return order;\n        }\n        catch\n        {\n            await transaction.RollbackAsync();\n            throw;\n        }\n    }\n}\n\n// ADMIN DASHBOARD (Modules 16-17)\n// - GET /api/admin/dashboard - Sales metrics and stats\n// - GET /api/admin/orders - All orders with filtering\n// - GET /api/admin/users - User management\n// - GET /api/admin/inventory - Stock levels and alerts\n\n[Authorize(Policy = \"AdminOnly\")]\npublic class AdminController : ControllerBase\n{\n    [HttpGet(\"dashboard\")]\n    public async Task<ActionResult<DashboardDto>> GetDashboard()\n    {\n        var stats = await _analyticsService.GetDashboardStatsAsync();\n        return Ok(stats);\n    }\n}\n\n// BLAZOR STOREFRONT (Modules 18-19)\n// - Home page with featured products\n// - Product listing with category filtering\n// - Product detail page\n// - Shopping cart component\n// - Checkout flow\n// - User account pages\n// - Order history\n\n@page \"/products/{Id:int}\"\n@inject IProductService ProductService\n@inject ICartService CartService\n\n<div class=\"product-detail\">\n    <ProductImages Images=\"@product.Images\" />\n    <ProductInfo Product=\"@product\" />\n    <AddToCartButton ProductId=\"@product.Id\" \n                     OnAddToCart=\"HandleAddToCart\" />\n</div>\n\n@code {\n    [Parameter] public int Id { get; set; }\n    private ProductDto? product;\n    \n    protected override async Task OnParametersSetAsync()\n    {\n        product = await ProductService.GetByIdAsync(Id);\n    }\n}",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Deployment Preparation",
+              "content": "## Pre-Launch Security Review\n\nBefore any production deployment, conduct a thorough security audit. Verify that all API endpoints require appropriate authentication. Check that authorization policies correctly restrict access to admin functions. Ensure sensitive data like passwords are properly hashed and API keys are stored in secure vaults, not configuration files. Review CORS policies to prevent unauthorized cross-origin requests. Scan dependencies for known vulnerabilities using tools like dotnet list package --vulnerable.\n\n## Performance Testing\n\nProduction traffic patterns differ dramatically from development testing. Use load testing tools like k6 or Apache JMeter to simulate realistic traffic. Test critical paths: product search, cart operations, and checkout flow. Identify bottlenecks before users find them. Establish baseline performance metrics so you can detect degradation after deployment. Consider peak load scenarios like holiday sales or flash promotions.\n\n## Error Handling and Logging\n\nProduction errors require different handling than development exceptions. Configure structured logging that captures enough context for debugging without exposing sensitive data. Set up log aggregation so errors from multiple instances appear in a single dashboard. Implement global exception handling that returns appropriate HTTP status codes without leaking stack traces. Create custom error pages that maintain user experience during failures.\n\n## Configuration Management\n\nProduction configuration must be separate from development settings. Never commit production secrets to source control. Use environment variables or secret management services for sensitive values. Create environment-specific appsettings.Production.json files for non-sensitive settings. Validate configuration at startup to fail fast if required values are missing. Document all configuration options so operations teams can manage deployments.\n\n## Database Preparation\n\nApply all pending migrations to the production database before deployment. Create database backups and verify restoration procedures work. Set up automated backup schedules with appropriate retention policies. Configure connection pooling for production load. Ensure database user accounts have minimal necessary permissions. Test rollback procedures for migrations in case deployment fails.\n\n## Health Checks and Monitoring\n\nImplement health check endpoints that verify all critical dependencies. A liveness probe confirms the application is running. A readiness probe confirms it can handle traffic (database connected, cache available, external APIs reachable). Configure monitoring dashboards before launch so you can observe the deployment in real-time. Set up alerts for critical metrics like error rate, response time, and resource utilization."
+            },
+            {
+              "type": "ARCHITECTURE",
+              "title": "Production Architecture",
+              "content": "## Azure Container Apps Deployment\n\nAzure Container Apps provides a managed platform for running containerized applications without managing Kubernetes directly. ShopFlow deploys as multiple containers: the main API, the Blazor frontend, and background workers for order processing. Container Apps handles load balancing, automatic scaling, and SSL termination. Configure minimum and maximum replicas based on expected traffic, allowing the platform to scale horizontally during peak demand.\n\n```yaml\n# Container Apps configuration\nresources:\n  cpu: 0.5\n  memory: 1Gi\nscale:\n  minReplicas: 2\n  maxReplicas: 10\n  rules:\n    - name: http-scaling\n      http:\n        metadata:\n          concurrentRequests: 50\n```\n\n## Health Checks Integration\n\nASP.NET Core health checks integrate directly with container orchestration platforms. The liveness endpoint at /healthz/live returns 200 if the application is running, allowing the platform to restart crashed instances. The readiness endpoint at /healthz/ready verifies database connectivity, cache availability, and external service accessibility before routing traffic to an instance.\n\n```csharp\nservices.AddHealthChecks()\n    .AddNpgSql(connectionString, name: \"database\")\n    .AddRedis(redisConnection, name: \"cache\")\n    .AddUrlGroup(new Uri(\"https://api.stripe.com/v1\"), name: \"payment-gateway\");\n\napp.MapHealthChecks(\"/healthz/live\", new HealthCheckOptions\n{\n    Predicate = _ => false // Just check if app responds\n});\n\napp.MapHealthChecks(\"/healthz/ready\", new HealthCheckOptions\n{\n    Predicate = check => check.Tags.Contains(\"ready\")\n});\n```\n\n## Application Insights Monitoring\n\nApplication Insights provides comprehensive observability for production applications. It automatically captures request telemetry, dependency calls, exceptions, and performance metrics. Configure custom telemetry for business events like orders placed, payments processed, and user registrations. Create dashboards showing key performance indicators and set up alerts for anomalies.\n\n```csharp\nservices.AddApplicationInsightsTelemetry(options =>\n{\n    options.ConnectionString = configuration[\"ApplicationInsights:ConnectionString\"];\n    options.EnableAdaptiveSampling = true; // Reduce cost on high-volume apps\n});\n\n// Custom telemetry for business events\npublic class OrderService\n{\n    private readonly TelemetryClient _telemetry;\n    \n    public async Task<Order> CreateOrderAsync(...)\n    {\n        // ... order creation logic ...\n        \n        _telemetry.TrackEvent(\"OrderCreated\", new Dictionary<string, string>\n        {\n            [\"OrderId\"] = order.Id.ToString(),\n            [\"Total\"] = order.Total.ToString(\"C\"),\n            [\"ItemCount\"] = order.Items.Count.ToString()\n        });\n    }\n}\n```\n\n## Azure Key Vault for Secrets\n\nProduction secrets must never exist in configuration files or environment variables visible to developers. Azure Key Vault provides secure, audited secret storage. The application authenticates to Key Vault using managed identity, eliminating the need for any credentials in configuration. Key Vault integration loads secrets at startup and can reload changed values without restart.\n\n```csharp\nbuilder.Configuration.AddAzureKeyVault(\n    new Uri($\"https://{keyVaultName}.vault.azure.net/\"),\n    new DefaultAzureCredential());\n\n// Secrets are now available as configuration values\nvar stripeKey = configuration[\"Stripe:SecretKey\"];\nvar dbConnection = configuration[\"Database:ConnectionString\"];\n```\n\n## Scaling Strategies\n\nShopFlow uses different scaling strategies for different components. The stateless API scales horizontally based on concurrent requests, with Container Apps adding replicas during traffic spikes. The database uses connection pooling to handle increased load without scaling, with read replicas available for query-heavy scenarios. Background workers scale based on queue depth, processing more order confirmations during sales events. Redis cache scales vertically by increasing memory, or horizontally with clustering for extreme scale.\n\n## Blue-Green Deployment\n\nZero-downtime deployments use blue-green strategy: the new version deploys alongside the current version. Health checks verify the new deployment is healthy before switching traffic. If issues arise, traffic reverts to the previous version instantly. Container Apps supports revision management for this pattern, maintaining multiple versions simultaneously and controlling traffic distribution between them.\n\n```bash\n# Deploy new revision\naz containerapp update --name shopflow-api \\\n  --resource-group shopflow-prod \\\n  --image shopflowacr.azurecr.io/api:v2.1.0\n\n# Verify health, then switch traffic\naz containerapp ingress traffic set --name shopflow-api \\\n  --resource-group shopflow-prod \\\n  --revision-weight latest=100\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-26-01-challenge-01",
+              "title": "Capstone Completion Challenge",
+              "description": "Configure the production health check and monitoring setup for ShopFlow.",
+              "instructions": "Complete the production readiness configuration for ShopFlow!\n\n1. Configure health checks for:\n   - PostgreSQL database\n   - Redis cache\n   - External payment API\n\n2. Set up two health check endpoints:\n   - /healthz/live - Basic liveness (just confirms app is running)\n   - /healthz/ready - Readiness check (verifies all dependencies)\n\n3. Add Application Insights telemetry\n\n4. Configure the health check UI for monitoring dashboard",
+              "starterCode": "// Program.cs - Configure production health checks and monitoring\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// TODO: Add health checks for:\n// - PostgreSQL database (connection string: builder.Configuration.GetConnectionString(\"DefaultConnection\"))\n// - Redis cache (connection string: builder.Configuration.GetConnectionString(\"Redis\"))\n// - Payment API (URL: \"https://api.stripe.com/v1\")\n\n// TODO: Add Application Insights telemetry\n\nvar app = builder.Build();\n\n// TODO: Map health check endpoints\n// - /healthz/live - Liveness probe (no dependency checks)\n// - /healthz/ready - Readiness probe (check all dependencies tagged with \"ready\")\n\napp.Run();",
+              "solution": "// Program.cs - Configure production health checks and monitoring\n\nvar builder = WebApplication.CreateBuilder(args);\n\n// Configure health checks for all critical dependencies\nbuilder.Services.AddHealthChecks()\n    .AddNpgSql(\n        builder.Configuration.GetConnectionString(\"DefaultConnection\")!,\n        name: \"database\",\n        tags: new[] { \"ready\" })\n    .AddRedis(\n        builder.Configuration.GetConnectionString(\"Redis\")!,\n        name: \"cache\",\n        tags: new[] { \"ready\" })\n    .AddUrlGroup(\n        new Uri(\"https://api.stripe.com/v1\"),\n        name: \"payment-gateway\",\n        tags: new[] { \"ready\" });\n\n// Add Application Insights for production monitoring\nbuilder.Services.AddApplicationInsightsTelemetry(options =>\n{\n    options.ConnectionString = builder.Configuration[\"ApplicationInsights:ConnectionString\"];\n    options.EnableAdaptiveSampling = true;\n});\n\nvar app = builder.Build();\n\n// Liveness probe - just confirms the app is running\napp.MapHealthChecks(\"/healthz/live\", new HealthCheckOptions\n{\n    Predicate = _ => false // Skip all checks, just return 200 if app responds\n});\n\n// Readiness probe - verifies all dependencies are available\napp.MapHealthChecks(\"/healthz/ready\", new HealthCheckOptions\n{\n    Predicate = check => check.Tags.Contains(\"ready\"),\n    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse\n});\n\napp.Run();",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should configure health checks",
+                  "expectedOutput": "AddHealthChecks",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should add PostgreSQL health check",
+                  "expectedOutput": "AddNpgSql",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should add Redis health check",
+                  "expectedOutput": "AddRedis",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should configure Application Insights",
+                  "expectedOutput": "AddApplicationInsightsTelemetry",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Should map liveness endpoint",
+                  "expectedOutput": "/healthz/live",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Should map readiness endpoint",
+                  "expectedOutput": "/healthz/ready",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with builder.Services.AddHealthChecks() and chain the database, cache, and URL checks."
+                },
+                {
+                  "level": 2,
+                  "text": "Use .AddNpgSql() for PostgreSQL, .AddRedis() for Redis cache, and .AddUrlGroup() for external APIs."
+                },
+                {
+                  "level": 3,
+                  "text": "Add tags: new[] { \"ready\" } to each health check to filter them for the readiness probe."
+                },
+                {
+                  "level": 4,
+                  "text": "For liveness, use Predicate = _ => false to skip all checks. For readiness, use Predicate = check => check.Tags.Contains(\"ready\")."
+                },
+                {
+                  "level": 5,
+                  "text": "Application Insights uses builder.Services.AddApplicationInsightsTelemetry() with a ConnectionString option."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not tagging health checks for filtering",
+                  "consequence": "Cannot differentiate between liveness and readiness probes, causing all checks to run for both endpoints.",
+                  "correction": "Add tags: new[] { \"ready\" } to dependency health checks and filter with Predicate in HealthCheckOptions."
+                },
+                {
+                  "mistake": "Running all health checks for liveness probe",
+                  "consequence": "A database outage causes the container to restart even though the app itself is healthy, potentially worsening the situation.",
+                  "correction": "Use Predicate = _ => false for liveness to skip all checks. Liveness should only verify the app process is running."
+                },
+                {
+                  "mistake": "Hardcoding connection strings in health check configuration",
+                  "consequence": "Secrets exposed in code, different values needed for different environments.",
+                  "correction": "Always read connection strings from configuration using builder.Configuration.GetConnectionString()."
+                },
+                {
+                  "mistake": "Missing null-forgiving operator on connection strings",
+                  "consequence": "Compiler warnings about possible null reference if connection string is not configured.",
+                  "correction": "Use ! operator after GetConnectionString() or add null checks with appropriate error messages."
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
