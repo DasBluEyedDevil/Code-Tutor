@@ -7571,6 +7571,297 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "7.7",
+          "title": "Lesson 7.7: Authentication with JWT",
+          "moduleId": "module-07",
+          "order": 7,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is JWT?",
+              "content": "\n**JSON Web Token (JWT)** is a secure way to pass user information between your Flutter app and Dart Frog backend.\n\n### JWT Structure: Three Parts\n\nA JWT looks like this:\n```\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMiLCJlbWFpbCI6InVzZXJAZXhhbXBsZS5jb20ifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\n```\n\nThose three parts separated by dots are:\n\n**1. Header** - Token metadata\n```json\n{\"alg\": \"HS256\", \"typ\": \"JWT\"}\n```\nTells us the encryption algorithm (HS256) and token type (JWT).\n\n**2. Payload** - User data\n```json\n{\"userId\": \"123\", \"email\": \"user@example.com\", \"exp\": 1735689600}\n```\nContains user info and expiration time. This is what your backend reads to know WHO is making the request.\n\n**3. Signature** - Verification\nA cryptographic signature that proves the token hasn't been tampered with. Only the server with the secret key can create valid signatures.\n\n### Why JWT?\n\n**Stateless Authentication**: The server doesn't need to store session data. Everything needed to verify the user is in the token itself.\n\n**Use Case Flow**:\n1. User logs in with email/password\n2. Server verifies credentials\n3. Server creates JWT with user info\n4. Client stores token (in secure storage)\n5. Client sends token with each request\n6. Server validates token on protected routes\n\n**Benefits**:\n- Scales easily (no session storage needed)\n- Works across multiple servers\n- Mobile-friendly\n- Industry standard\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "JWT Authentication Workflow",
+              "content": "\n### The Complete Flow\n\n```\n┌──────────────┐                      ┌──────────────┐\n│  Flutter App │                      │ Dart Frog API│\n└──────────────┘                      └──────────────┘\n       │                                     │\n       │  1. POST /login                     │\n       │  {email, password}                  │\n       │ ─────────────────────────────────►  │\n       │                                     │\n       │  2. Verify credentials              │\n       │     (check email/password)          │\n       │                                     │\n       │  3. Return JWT token                │\n       │  {\"token\": \"eyJhbGciOiI...\"}        │\n       │  ◄─────────────────────────────────│\n       │                                     │\n       │  4. Store token securely            │\n       │     (flutter_secure_storage)        │\n       │                                     │\n       │  5. GET /api/profile                │\n       │  Authorization: Bearer eyJhbGciOiI..│\n       │ ─────────────────────────────────►  │\n       │                                     │\n       │  6. Validate token                  │\n       │     (check signature + expiration)  │\n       │                                     │\n       │  7. Return protected data           │\n       │  {\"name\": \"John\", ...}              │\n       │  ◄─────────────────────────────────│\n       │                                     │\n```\n\n### Step-by-Step Breakdown\n\n**Step 1: Login Request**\nThe Flutter app sends user credentials to `/login`.\n\n**Step 2: Credential Verification**\nThe server checks if email exists and password matches (hashed).\n\n**Step 3: Token Generation**\nIf valid, server creates a JWT containing user ID and email, signed with a secret key.\n\n**Step 4: Token Storage**\nThe Flutter app stores the token securely (NEVER in SharedPreferences - use flutter_secure_storage).\n\n**Step 5: Authenticated Request**\nFor protected routes, the app sends the token in the `Authorization` header:\n```\nAuthorization: Bearer eyJhbGciOiI...\n```\n\n**Step 6: Token Validation**\nThe server extracts the token, verifies the signature, and checks expiration.\n\n**Step 7: Response**\nIf valid, the server processes the request using the user info from the token.\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating JWT Tokens",
+              "content": "\nFirst, add the JWT package to your Dart Frog project:\n\n```yaml\n# pubspec.yaml\ndependencies:\n  dart_frog: ^1.0.0\n  dart_jsonwebtoken: ^2.12.0\n```\n\nNow let's create tokens:\n\n",
+              "code": "// lib/utils/jwt_helper.dart\nimport 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';\n\n// Secret key - in production, use environment variable!\n// This should be a long, random string\nconst String jwtSecretKey = 'your-super-secret-key-keep-this-safe';\n\n/// Creates a JWT token for an authenticated user\nString createToken(String userId, String email) {\n  // Create the JWT payload\n  final jwt = JWT(\n    {\n      'userId': userId,\n      'email': email,\n      // Token expires in 24 hours\n      'exp': DateTime.now()\n          .add(Duration(hours: 24))\n          .millisecondsSinceEpoch ~/ 1000,\n      // Issued at time\n      'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,\n    },\n  );\n  \n  // Sign the token with our secret key\n  // This creates the signature that proves the token is authentic\n  return jwt.sign(SecretKey(jwtSecretKey));\n}\n\n// Example usage:\n// final token = createToken('user_123', 'john@example.com');\n// Returns: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyS...",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Verifying JWT Tokens",
+              "content": "\nWhen a request comes in with a token, we need to verify it's valid:\n\n",
+              "code": "// lib/utils/jwt_helper.dart (continued)\nimport 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';\n\n/// Verifies a JWT token and returns the payload if valid\n/// Returns null if token is invalid or expired\nMap<String, dynamic>? verifyToken(String token) {\n  try {\n    // Verify the token signature and decode it\n    final jwt = JWT.verify(token, SecretKey(jwtSecretKey));\n    \n    // Return the payload (userId, email, etc.)\n    return jwt.payload as Map<String, dynamic>;\n    \n  } on JWTExpiredException {\n    // Token has expired (past the 'exp' time)\n    print('Token expired');\n    return null;\n    \n  } on JWTInvalidException {\n    // Token signature is invalid (tampered or wrong secret)\n    print('Invalid token');\n    return null;\n    \n  } catch (e) {\n    // Any other error (malformed token, etc.)\n    print('Token verification failed: $e');\n    return null;\n  }\n}\n\n// Example usage:\n// final payload = verifyToken(token);\n// if (payload != null) {\n//   final userId = payload['userId'];\n//   final email = payload['email'];\n//   // User is authenticated!\n// } else {\n//   // Invalid token - reject request\n// }",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Auth Middleware for Protected Routes",
+              "content": "\nCreate middleware that protects routes by requiring valid JWT:\n\n",
+              "code": "// routes/api/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/utils/jwt_helper.dart';\n\n// This middleware runs BEFORE any route under /api/\nHandler middleware(Handler handler) {\n  return (context) async {\n    // Get the Authorization header\n    final authHeader = context.request.headers['Authorization'];\n    \n    // Check if header exists and starts with 'Bearer '\n    if (authHeader == null || !authHeader.startsWith('Bearer ')) {\n      return Response.json(\n        body: {\n          'error': 'Missing or invalid Authorization header',\n          'hint': 'Include header: Authorization: Bearer <your-token>',\n        },\n        statusCode: 401, // Unauthorized\n      );\n    }\n    \n    // Extract the token (remove 'Bearer ' prefix)\n    final token = authHeader.substring(7); // 'Bearer '.length = 7\n    \n    // Verify the token\n    final payload = verifyToken(token);\n    \n    if (payload == null) {\n      return Response.json(\n        body: {\n          'error': 'Invalid or expired token',\n          'hint': 'Please login again to get a new token',\n        },\n        statusCode: 401, // Unauthorized\n      );\n    }\n    \n    // Token is valid! Inject user info into context\n    // Routes can access this with context.read<Map<String, dynamic>>()\n    return handler(\n      context.provide<Map<String, dynamic>>(() => payload),\n    );\n  };\n}\n\n// Now in any protected route:\n// Future<Response> onRequest(RequestContext context) async {\n//   final user = context.read<Map<String, dynamic>>();\n//   final userId = user['userId'];\n//   // This user is guaranteed to be authenticated!\n// }",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "JWT Security Best Practices",
+              "content": "\n### 1. Keep Your Secret Key SECRET\n\n**Never hardcode in production!**\n```dart\n// BAD - hardcoded secret\nconst secret = 'my-secret-key';\n\n// GOOD - use environment variables\nimport 'dart:io';\nfinal secret = Platform.environment['JWT_SECRET'] ?? 'dev-only-key';\n```\n\n### 2. Use HTTPS in Production\n\nJWTs are encoded, NOT encrypted. Anyone who intercepts the token can read the payload. HTTPS encrypts all traffic.\n\n### 3. Set Short Expiration Times\n\n- Access tokens: 15 minutes to 24 hours\n- Refresh tokens: 7-30 days\n- Shorter = more secure, but requires more logins\n\n### 4. Hash Passwords with bcrypt\n\n```dart\n// Add: bcrypt: ^1.1.3 to pubspec.yaml\nimport 'package:bcrypt/bcrypt.dart';\n\n// When user registers:\nfinal hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());\n// Store hashedPassword in database\n\n// When user logs in:\nfinal isValid = BCrypt.checkpw(inputPassword, storedHash);\n```\n\n### 5. Never Store Sensitive Data in JWT Payload\n\n```dart\n// BAD - sensitive data in token\n{'userId': '123', 'creditCard': '4242...'}\n\n// GOOD - only identifiers\n{'userId': '123', 'email': 'user@example.com'}\n```\n\n### 6. Handle Token Refresh\n\nFor better UX, implement refresh tokens:\n- Access token: short-lived (15 min)\n- Refresh token: long-lived (30 days)\n- When access expires, use refresh token to get new access token\n- Only force re-login when refresh token expires\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.7-challenge-1",
+              "title": "Build Login and Protected Profile Endpoints",
+              "description": "Create a /login endpoint that returns a JWT, and a protected /profile endpoint that requires authentication.",
+              "instructions": "Build two endpoints:\n\n**1. POST /auth/login**\n- Accept JSON body with `email` and `password`\n- If email is 'user@test.com' and password is 'password123', return a JWT token\n- Otherwise return 401 with error message\n\n**2. GET /api/profile**\n- Protected by auth middleware (require Bearer token)\n- Return the user info from the JWT payload\n\nYou'll need to:\n1. Create the JWT helper functions\n2. Create the login route\n3. Create the auth middleware\n4. Create the profile route\n\nTest with:\n```bash\n# Login\ncurl -X POST http://localhost:8080/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"user@test.com\",\"password\":\"password123\"}'\n\n# Access profile (use token from login)\ncurl http://localhost:8080/api/profile \\\n  -H \"Authorization: Bearer <your-token>\"\n```",
+              "starterCode": "// lib/utils/jwt_helper.dart\nimport 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';\n\nconst String jwtSecretKey = 'my-secret-key';\n\nString createToken(String userId, String email) {\n  // TODO: Create and sign JWT token\n  // Include: userId, email, exp (24 hours from now)\n  return '';\n}\n\nMap<String, dynamic>? verifyToken(String token) {\n  // TODO: Verify token and return payload\n  // Return null if invalid/expired\n  return null;\n}\n\n// -----------------------------------------\n// routes/auth/login.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  if (context.request.method != HttpMethod.post) {\n    return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n  \n  // TODO: Read email and password from body\n  // TODO: Check if email == 'user@test.com' && password == 'password123'\n  // TODO: If valid, create token and return it\n  // TODO: If invalid, return 401 error\n  \n  return Response(body: 'Not implemented');\n}\n\n// -----------------------------------------\n// routes/api/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    // TODO: Get Authorization header\n    // TODO: Extract Bearer token\n    // TODO: Verify token\n    // TODO: If invalid, return 401\n    // TODO: If valid, provide user payload to context\n    \n    return handler(context);\n  };\n}\n\n// -----------------------------------------\n// routes/api/profile.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  // TODO: Read user from context (provided by middleware)\n  // TODO: Return user profile as JSON\n  \n  return Response(body: 'Not implemented');\n}",
+              "solution": "// lib/utils/jwt_helper.dart\nimport 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';\n\nconst String jwtSecretKey = 'my-secret-key';\n\nString createToken(String userId, String email) {\n  final jwt = JWT({\n    'userId': userId,\n    'email': email,\n    'exp': DateTime.now().add(Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,\n  });\n  \n  return jwt.sign(SecretKey(jwtSecretKey));\n}\n\nMap<String, dynamic>? verifyToken(String token) {\n  try {\n    final jwt = JWT.verify(token, SecretKey(jwtSecretKey));\n    return jwt.payload as Map<String, dynamic>;\n  } catch (e) {\n    return null;\n  }\n}\n\n// -----------------------------------------\n// routes/auth/login.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/utils/jwt_helper.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  if (context.request.method != HttpMethod.post) {\n    return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n  \n  final body = await context.request.json() as Map<String, dynamic>;\n  final email = body['email'] as String?;\n  final password = body['password'] as String?;\n  \n  // Check credentials (in real app, check against database)\n  if (email == 'user@test.com' && password == 'password123') {\n    final token = createToken('user_001', email);\n    return Response.json(\n      body: {\n        'message': 'Login successful',\n        'token': token,\n      },\n    );\n  }\n  \n  return Response.json(\n    body: {'error': 'Invalid email or password'},\n    statusCode: 401,\n  );\n}\n\n// -----------------------------------------\n// routes/api/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/utils/jwt_helper.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    final authHeader = context.request.headers['Authorization'];\n    \n    if (authHeader == null || !authHeader.startsWith('Bearer ')) {\n      return Response.json(\n        body: {'error': 'No token provided'},\n        statusCode: 401,\n      );\n    }\n    \n    final token = authHeader.substring(7);\n    final payload = verifyToken(token);\n    \n    if (payload == null) {\n      return Response.json(\n        body: {'error': 'Invalid or expired token'},\n        statusCode: 401,\n      );\n    }\n    \n    return handler(context.provide<Map<String, dynamic>>(() => payload));\n  };\n}\n\n// -----------------------------------------\n// routes/api/profile.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  final user = context.read<Map<String, dynamic>>();\n  \n  return Response.json(\n    body: {\n      'userId': user['userId'],\n      'email': user['email'],\n      'message': 'Welcome to your profile!',\n    },\n  );\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "createToken function creates JWT with userId and email",
+                  "expectedOutput": "jwt.sign",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "verifyToken returns payload for valid token",
+                  "expectedOutput": "JWT.verify",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Login returns token for valid credentials",
+                  "expectedOutput": "'token':",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Login returns 401 for invalid credentials",
+                  "expectedOutput": "statusCode: 401",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Middleware checks Authorization header",
+                  "expectedOutput": "Authorization",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Middleware provides user payload to context",
+                  "expectedOutput": "context.provide",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-7",
+                  "description": "Profile route reads user from context",
+                  "expectedOutput": "context.read<Map<String, dynamic>>()",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "In createToken, use JWT({'userId': userId, 'email': email, 'exp': ...}) and then jwt.sign(SecretKey(jwtSecretKey))."
+                },
+                {
+                  "level": 2,
+                  "text": "In middleware, use authHeader.substring(7) to remove 'Bearer ' prefix (7 characters)."
+                },
+                {
+                  "level": 3,
+                  "text": "Use context.provide<Map<String, dynamic>>(() => payload) to inject user data, and context.read<Map<String, dynamic>>() to retrieve it."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to add 'Bearer ' prefix check",
+                  "consequence": "Token parsing fails when header format is incorrect",
+                  "correction": "Always check authHeader.startsWith('Bearer ') before extracting token"
+                },
+                {
+                  "mistake": "Not handling null/missing Authorization header",
+                  "consequence": "App crashes with null pointer exception",
+                  "correction": "Check if authHeader is null before processing"
+                },
+                {
+                  "mistake": "Using string interpolation instead of substring for token extraction",
+                  "consequence": "Token includes 'Bearer ' prefix, verification fails",
+                  "correction": "Use authHeader.substring(7) to get only the token part"
+                },
+                {
+                  "mistake": "Forgetting try-catch in verifyToken",
+                  "consequence": "Invalid tokens crash the server instead of returning null",
+                  "correction": "Wrap JWT.verify in try-catch and return null on any exception"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "7.8",
+          "title": "Lesson 7.8: Mini-Project - Complete REST API",
+          "moduleId": "module-07",
+          "order": 8,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Project Overview: Notes API",
+              "content": "\n### What You'll Build\n\nA complete REST API for a Notes application with authentication:\n\n**Public Endpoints** (no auth required):\n- `POST /auth/register` - Create a new user account\n- `POST /auth/login` - Login and receive JWT token\n\n**Protected Endpoints** (require valid JWT):\n- `GET /notes` - List all notes for the authenticated user\n- `POST /notes` - Create a new note\n- `GET /notes/:id` - Get a specific note by ID\n- `PUT /notes/:id` - Update an existing note\n- `DELETE /notes/:id` - Delete a note\n\n### API Specification\n\n**Register**\n```bash\nPOST /auth/register\n{\"email\": \"user@example.com\", \"password\": \"secret123\"}\n\n# Response 201:\n{\"message\": \"User created\", \"userId\": \"usr_abc123\"}\n\n# Response 400 (if email exists):\n{\"error\": \"Email already registered\"}\n```\n\n**Login**\n```bash\nPOST /auth/login\n{\"email\": \"user@example.com\", \"password\": \"secret123\"}\n\n# Response 200:\n{\"token\": \"eyJhbGciOiI...\", \"userId\": \"usr_abc123\"}\n\n# Response 401:\n{\"error\": \"Invalid credentials\"}\n```\n\n**Notes CRUD**\n```bash\n# List notes (protected)\nGET /notes\nAuthorization: Bearer <token>\n# Response 200:\n{\"notes\": [{\"id\": \"...\", \"title\": \"...\", \"content\": \"...\"}]}\n\n# Create note (protected)\nPOST /notes\nAuthorization: Bearer <token>\n{\"title\": \"My Note\", \"content\": \"Note content here\"}\n# Response 201:\n{\"id\": \"note_xyz\", \"title\": \"My Note\", ...}\n\n# Update note (protected)\nPUT /notes/note_xyz\nAuthorization: Bearer <token>\n{\"title\": \"Updated Title\"}\n# Response 200:\n{\"id\": \"note_xyz\", \"title\": \"Updated Title\", ...}\n\n# Delete note (protected)\nDELETE /notes/note_xyz\nAuthorization: Bearer <token>\n# Response 200:\n{\"message\": \"Note deleted\"}\n```\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Project Structure",
+              "content": "\n### Directory Layout\n\n```\nmy_notes_api/\n├── routes/\n│   ├── _middleware.dart        # Global middleware (CORS, error handling)\n│   ├── auth/\n│   │   ├── register.dart       # POST /auth/register\n│   │   └── login.dart          # POST /auth/login\n│   └── notes/\n│       ├── _middleware.dart    # Auth middleware (JWT validation)\n│       ├── index.dart          # GET, POST /notes\n│       └── [id].dart           # GET, PUT, DELETE /notes/:id\n├── lib/\n│   ├── models/\n│   │   ├── user.dart           # User model class\n│   │   └── note.dart           # Note model class\n│   ├── services/\n│   │   ├── auth_service.dart   # User registration, login logic\n│   │   └── note_service.dart   # Note CRUD operations\n│   └── utils/\n│       └── jwt_helper.dart     # Token creation and verification\n└── pubspec.yaml                # Dependencies\n```\n\n### Key Architecture Decisions\n\n**1. Separation of Concerns**\n- **Routes**: Handle HTTP requests/responses only\n- **Services**: Contain business logic (validation, data manipulation)\n- **Models**: Define data structures\n- **Utils**: Helper functions (JWT, password hashing)\n\n**2. Middleware Hierarchy**\n```\nroutes/\n├── _middleware.dart          # Runs for ALL routes (CORS, logging)\n├── auth/                     # Public routes - no auth needed\n└── notes/\n    └── _middleware.dart      # Runs for /notes/* - requires JWT\n```\n\n**3. Route Naming Convention**\n- `index.dart` = handles the parent path (`/notes`)\n- `[id].dart` = dynamic segment (`/notes/abc123`)\n\n"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Models and Services",
+              "content": "\n### User and Note Models\n\n",
+              "code": "// lib/models/user.dart\nclass User {\n  final String id;\n  final String email;\n  final String passwordHash;\n  final DateTime createdAt;\n\n  User({\n    required this.id,\n    required this.email,\n    required this.passwordHash,\n    required this.createdAt,\n  });\n\n  Map<String, dynamic> toJson() => {\n    'id': id,\n    'email': email,\n    'createdAt': createdAt.toIso8601String(),\n  };\n}\n\n// lib/models/note.dart\nclass Note {\n  final String id;\n  final String userId;\n  final String title;\n  final String content;\n  final DateTime createdAt;\n  final DateTime updatedAt;\n\n  Note({\n    required this.id,\n    required this.userId,\n    required this.title,\n    required this.content,\n    required this.createdAt,\n    required this.updatedAt,\n  });\n\n  Note copyWith({\n    String? title,\n    String? content,\n    DateTime? updatedAt,\n  }) {\n    return Note(\n      id: id,\n      userId: userId,\n      title: title ?? this.title,\n      content: content ?? this.content,\n      createdAt: createdAt,\n      updatedAt: updatedAt ?? this.updatedAt,\n    );\n  }\n\n  Map<String, dynamic> toJson() => {\n    'id': id,\n    'userId': userId,\n    'title': title,\n    'content': content,\n    'createdAt': createdAt.toIso8601String(),\n    'updatedAt': updatedAt.toIso8601String(),\n  };\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Auth Service Implementation",
+              "content": "\nThe auth service handles user registration and login:\n\n",
+              "code": "// lib/services/auth_service.dart\nimport '../models/user.dart';\nimport '../utils/jwt_helper.dart';\nimport 'package:bcrypt/bcrypt.dart';\nimport 'package:uuid/uuid.dart';\n\nclass AuthService {\n  // In-memory storage (use database in production)\n  final Map<String, User> _users = {};\n  final _uuid = Uuid();\n\n  /// Register a new user\n  /// Returns the User if successful, null if email already exists\n  User? register(String email, String password) {\n    // Check if email already registered\n    if (_users.values.any((u) => u.email == email)) {\n      return null;\n    }\n\n    // Hash the password (NEVER store plain text!)\n    final passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());\n\n    // Create user with generated ID\n    final user = User(\n      id: 'usr_${_uuid.v4().substring(0, 8)}',\n      email: email,\n      passwordHash: passwordHash,\n      createdAt: DateTime.now(),\n    );\n\n    _users[user.id] = user;\n    return user;\n  }\n\n  /// Login user and return JWT token\n  /// Returns token if credentials valid, null otherwise\n  String? login(String email, String password) {\n    // Find user by email\n    final user = _users.values.where((u) => u.email == email).firstOrNull;\n    \n    if (user == null) {\n      return null; // User not found\n    }\n\n    // Verify password against hash\n    if (!BCrypt.checkpw(password, user.passwordHash)) {\n      return null; // Wrong password\n    }\n\n    // Create and return JWT\n    return createToken(user.id, user.email);\n  }\n\n  /// Get user by ID (for profile endpoint)\n  User? getUserById(String userId) {\n    return _users[userId];\n  }\n}\n\n// Global instance (in production, use dependency injection)\nfinal authService = AuthService();",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Note Service Implementation",
+              "content": "\nThe note service handles all CRUD operations:\n\n",
+              "code": "// lib/services/note_service.dart\nimport '../models/note.dart';\nimport 'package:uuid/uuid.dart';\n\nclass NoteService {\n  // In-memory storage (use database in production)\n  final Map<String, Note> _notes = {};\n  final _uuid = Uuid();\n\n  /// Get all notes for a specific user\n  List<Note> getUserNotes(String userId) {\n    return _notes.values\n        .where((note) => note.userId == userId)\n        .toList()\n      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt)); // Newest first\n  }\n\n  /// Get a specific note by ID (only if owned by user)\n  Note? getNoteById(String noteId, String userId) {\n    final note = _notes[noteId];\n    if (note == null || note.userId != userId) {\n      return null;\n    }\n    return note;\n  }\n\n  /// Create a new note\n  Note create(String userId, String title, String content) {\n    final now = DateTime.now();\n    final note = Note(\n      id: 'note_${_uuid.v4().substring(0, 8)}',\n      userId: userId,\n      title: title,\n      content: content,\n      createdAt: now,\n      updatedAt: now,\n    );\n\n    _notes[note.id] = note;\n    return note;\n  }\n\n  /// Update an existing note (only if owned by user)\n  /// Returns updated note, or null if not found/not owned\n  Note? update(String noteId, String userId, {String? title, String? content}) {\n    final note = getNoteById(noteId, userId);\n    if (note == null) {\n      return null;\n    }\n\n    final updatedNote = note.copyWith(\n      title: title,\n      content: content,\n      updatedAt: DateTime.now(),\n    );\n\n    _notes[noteId] = updatedNote;\n    return updatedNote;\n  }\n\n  /// Delete a note (only if owned by user)\n  /// Returns true if deleted, false if not found/not owned\n  bool delete(String noteId, String userId) {\n    final note = getNoteById(noteId, userId);\n    if (note == null) {\n      return false;\n    }\n\n    _notes.remove(noteId);\n    return true;\n  }\n}\n\n// Global instance (in production, use dependency injection)\nfinal noteService = NoteService();",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Notes Routes Implementation",
+              "content": "\nNow let's implement the routes that use our services:\n\n",
+              "code": "// routes/notes/index.dart\n// Handles: GET /notes (list) and POST /notes (create)\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/note_service.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  // Get authenticated user from middleware\n  final user = context.read<Map<String, dynamic>>();\n  final userId = user['userId'] as String;\n\n  switch (context.request.method) {\n    // GET /notes - List all user's notes\n    case HttpMethod.get:\n      final notes = noteService.getUserNotes(userId);\n      return Response.json(\n        body: {\n          'notes': notes.map((n) => n.toJson()).toList(),\n          'count': notes.length,\n        },\n      );\n\n    // POST /notes - Create new note\n    case HttpMethod.post:\n      final body = await context.request.json() as Map<String, dynamic>;\n      final title = body['title'] as String?;\n      final content = body['content'] as String?;\n\n      // Validate required fields\n      if (title == null || title.isEmpty) {\n        return Response.json(\n          body: {'error': 'Title is required'},\n          statusCode: 400,\n        );\n      }\n\n      final note = noteService.create(\n        userId,\n        title,\n        content ?? '',\n      );\n\n      return Response.json(\n        body: note.toJson(),\n        statusCode: 201, // Created\n      );\n\n    default:\n      return Response.json(\n        body: {'error': 'Method not allowed'},\n        statusCode: 405,\n      );\n  }\n}\n\n// ─────────────────────────────────────────────────────────\n// routes/notes/[id].dart\n// Handles: GET, PUT, DELETE /notes/:id\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/note_service.dart';\n\nFuture<Response> onRequest(RequestContext context, String id) async {\n  final user = context.read<Map<String, dynamic>>();\n  final userId = user['userId'] as String;\n\n  switch (context.request.method) {\n    // GET /notes/:id - Get single note\n    case HttpMethod.get:\n      final note = noteService.getNoteById(id, userId);\n      if (note == null) {\n        return Response.json(\n          body: {'error': 'Note not found'},\n          statusCode: 404,\n        );\n      }\n      return Response.json(body: note.toJson());\n\n    // PUT /notes/:id - Update note\n    case HttpMethod.put:\n      final body = await context.request.json() as Map<String, dynamic>;\n      final updatedNote = noteService.update(\n        id,\n        userId,\n        title: body['title'] as String?,\n        content: body['content'] as String?,\n      );\n\n      if (updatedNote == null) {\n        return Response.json(\n          body: {'error': 'Note not found'},\n          statusCode: 404,\n        );\n      }\n      return Response.json(body: updatedNote.toJson());\n\n    // DELETE /notes/:id - Delete note\n    case HttpMethod.delete:\n      final deleted = noteService.delete(id, userId);\n      if (!deleted) {\n        return Response.json(\n          body: {'error': 'Note not found'},\n          statusCode: 404,\n        );\n      }\n      return Response.json(\n        body: {'message': 'Note deleted successfully'},\n      );\n\n    default:\n      return Response.json(\n        body: {'error': 'Method not allowed'},\n        statusCode: 405,\n      );\n  }\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "What You Built - Complete Backend Skills",
+              "content": "\n### Module 7 Complete!\n\nYou now have production-ready backend development skills:\n\n**1. RESTful API Design**\n- Proper HTTP methods (GET, POST, PUT, DELETE)\n- Meaningful status codes (200, 201, 400, 401, 404, 405)\n- JSON request/response handling\n- Resource-based URLs (/notes, /notes/:id)\n\n**2. JWT Authentication**\n- Token creation and signing\n- Token verification and expiration\n- Protected routes with middleware\n- Stateless authentication\n\n**3. Middleware Architecture**\n- Global middleware for cross-cutting concerns\n- Route-specific middleware for auth\n- Request context and dependency injection\n\n**4. Separation of Concerns**\n- Models for data structure\n- Services for business logic\n- Routes for HTTP handling\n- Utils for reusable helpers\n\n**5. Security Best Practices**\n- Password hashing with bcrypt\n- Parameterized queries (SQL injection prevention)\n- Authorization checks (users can only access their own notes)\n- Input validation\n\n### Next Steps\n\n**Ready to Deploy?**\n- Use `dart_frog build` for production build\n- Deploy to Railway, Fly.io, or Google Cloud Run\n- Add PostgreSQL for persistent storage\n- Add environment variables for secrets\n\n**Module 8 Coming Up**: Firebase integration for alternative backend approach!\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.8-challenge-1",
+              "title": "Complete the Notes API Project",
+              "description": "Build the complete Notes API with authentication and all CRUD operations. Test all endpoints with curl or Postman.",
+              "instructions": "Build a complete Notes REST API with these requirements:\n\n**1. Auth Endpoints (public)**\n- `POST /auth/register` - Register new user (email, password)\n- `POST /auth/login` - Login and return JWT token\n\n**2. Notes Endpoints (protected)**\n- `GET /notes` - List user's notes\n- `POST /notes` - Create note (title required, content optional)\n- `GET /notes/:id` - Get specific note\n- `PUT /notes/:id` - Update note\n- `DELETE /notes/:id` - Delete note\n\n**3. Requirements**\n- Hash passwords with bcrypt\n- Generate unique IDs for users and notes\n- Users can only access their own notes\n- Return appropriate status codes\n\n**Test your API:**\n```bash\n# 1. Register\ncurl -X POST http://localhost:8080/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"test@example.com\",\"password\":\"secret123\"}'\n\n# 2. Login (save the token)\ncurl -X POST http://localhost:8080/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"test@example.com\",\"password\":\"secret123\"}'\n\n# 3. Create note\ncurl -X POST http://localhost:8080/notes \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"title\":\"My Note\",\"content\":\"Hello world!\"}'\n\n# 4. List notes\ncurl http://localhost:8080/notes \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\"\n\n# 5. Update note\ncurl -X PUT http://localhost:8080/notes/<NOTE_ID> \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"title\":\"Updated Title\"}'\n\n# 6. Delete note\ncurl -X DELETE http://localhost:8080/notes/<NOTE_ID> \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\"\n```",
+              "starterCode": "// Project structure to create:\n// routes/\n//   _middleware.dart\n//   auth/\n//     register.dart\n//     login.dart\n//   notes/\n//     _middleware.dart\n//     index.dart\n//     [id].dart\n// lib/\n//   models/\n//     user.dart\n//     note.dart\n//   services/\n//     auth_service.dart\n//     note_service.dart\n//   utils/\n//     jwt_helper.dart\n\n// Start with the User model:\nclass User {\n  final String id;\n  final String email;\n  final String passwordHash;\n  \n  User({required this.id, required this.email, required this.passwordHash});\n  \n  // TODO: Add toJson method\n}\n\n// Then create Note model:\nclass Note {\n  final String id;\n  final String userId;\n  final String title;\n  final String content;\n  \n  Note({\n    required this.id,\n    required this.userId,\n    required this.title,\n    required this.content,\n  });\n  \n  // TODO: Add toJson and copyWith methods\n}\n\n// Create AuthService:\nclass AuthService {\n  final Map<String, User> _users = {};\n  \n  User? register(String email, String password) {\n    // TODO: Check if email exists\n    // TODO: Hash password\n    // TODO: Create and store user\n    return null;\n  }\n  \n  String? login(String email, String password) {\n    // TODO: Find user\n    // TODO: Verify password\n    // TODO: Return JWT\n    return null;\n  }\n}\n\n// Create NoteService:\nclass NoteService {\n  final Map<String, Note> _notes = {};\n  \n  List<Note> getUserNotes(String userId) {\n    // TODO: Return notes for this user\n    return [];\n  }\n  \n  Note create(String userId, String title, String content) {\n    // TODO: Create and store note\n    throw UnimplementedError();\n  }\n  \n  Note? update(String noteId, String userId, {String? title, String? content}) {\n    // TODO: Update note if exists and owned by user\n    return null;\n  }\n  \n  bool delete(String noteId, String userId) {\n    // TODO: Delete note if exists and owned by user\n    return false;\n  }\n}",
+              "solution": "// lib/models/user.dart\nclass User {\n  final String id;\n  final String email;\n  final String passwordHash;\n  final DateTime createdAt;\n\n  User({\n    required this.id,\n    required this.email,\n    required this.passwordHash,\n    required this.createdAt,\n  });\n\n  Map<String, dynamic> toJson() => {\n    'id': id,\n    'email': email,\n    'createdAt': createdAt.toIso8601String(),\n  };\n}\n\n// lib/models/note.dart\nclass Note {\n  final String id;\n  final String userId;\n  final String title;\n  final String content;\n  final DateTime createdAt;\n  final DateTime updatedAt;\n\n  Note({\n    required this.id,\n    required this.userId,\n    required this.title,\n    required this.content,\n    required this.createdAt,\n    required this.updatedAt,\n  });\n\n  Note copyWith({String? title, String? content, DateTime? updatedAt}) {\n    return Note(\n      id: id,\n      userId: userId,\n      title: title ?? this.title,\n      content: content ?? this.content,\n      createdAt: createdAt,\n      updatedAt: updatedAt ?? this.updatedAt,\n    );\n  }\n\n  Map<String, dynamic> toJson() => {\n    'id': id,\n    'title': title,\n    'content': content,\n    'createdAt': createdAt.toIso8601String(),\n    'updatedAt': updatedAt.toIso8601String(),\n  };\n}\n\n// lib/utils/jwt_helper.dart\nimport 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';\n\nconst String jwtSecretKey = 'my-super-secret-key';\n\nString createToken(String userId, String email) {\n  final jwt = JWT({\n    'userId': userId,\n    'email': email,\n    'exp': DateTime.now().add(Duration(hours: 24)).millisecondsSinceEpoch ~/ 1000,\n  });\n  return jwt.sign(SecretKey(jwtSecretKey));\n}\n\nMap<String, dynamic>? verifyToken(String token) {\n  try {\n    final jwt = JWT.verify(token, SecretKey(jwtSecretKey));\n    return jwt.payload as Map<String, dynamic>;\n  } catch (e) {\n    return null;\n  }\n}\n\n// lib/services/auth_service.dart\nimport 'package:bcrypt/bcrypt.dart';\nimport 'package:uuid/uuid.dart';\nimport '../models/user.dart';\nimport '../utils/jwt_helper.dart';\n\nclass AuthService {\n  final Map<String, User> _users = {};\n  final _uuid = Uuid();\n\n  User? register(String email, String password) {\n    if (_users.values.any((u) => u.email == email)) return null;\n    final passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());\n    final user = User(\n      id: 'usr_${_uuid.v4().substring(0, 8)}',\n      email: email,\n      passwordHash: passwordHash,\n      createdAt: DateTime.now(),\n    );\n    _users[user.id] = user;\n    return user;\n  }\n\n  String? login(String email, String password) {\n    final user = _users.values.where((u) => u.email == email).firstOrNull;\n    if (user == null) return null;\n    if (!BCrypt.checkpw(password, user.passwordHash)) return null;\n    return createToken(user.id, user.email);\n  }\n}\n\nfinal authService = AuthService();\n\n// lib/services/note_service.dart\nimport 'package:uuid/uuid.dart';\nimport '../models/note.dart';\n\nclass NoteService {\n  final Map<String, Note> _notes = {};\n  final _uuid = Uuid();\n\n  List<Note> getUserNotes(String userId) {\n    return _notes.values.where((n) => n.userId == userId).toList()\n      ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));\n  }\n\n  Note? getNoteById(String noteId, String userId) {\n    final note = _notes[noteId];\n    if (note == null || note.userId != userId) return null;\n    return note;\n  }\n\n  Note create(String userId, String title, String content) {\n    final now = DateTime.now();\n    final note = Note(\n      id: 'note_${_uuid.v4().substring(0, 8)}',\n      userId: userId,\n      title: title,\n      content: content,\n      createdAt: now,\n      updatedAt: now,\n    );\n    _notes[note.id] = note;\n    return note;\n  }\n\n  Note? update(String noteId, String userId, {String? title, String? content}) {\n    final note = getNoteById(noteId, userId);\n    if (note == null) return null;\n    final updated = note.copyWith(title: title, content: content, updatedAt: DateTime.now());\n    _notes[noteId] = updated;\n    return updated;\n  }\n\n  bool delete(String noteId, String userId) {\n    if (getNoteById(noteId, userId) == null) return false;\n    _notes.remove(noteId);\n    return true;\n  }\n}\n\nfinal noteService = NoteService();\n\n// routes/auth/register.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/auth_service.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  if (context.request.method != HttpMethod.post) {\n    return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n  final body = await context.request.json() as Map<String, dynamic>;\n  final user = authService.register(body['email'] as String, body['password'] as String);\n  if (user == null) {\n    return Response.json(body: {'error': 'Email already registered'}, statusCode: 400);\n  }\n  return Response.json(body: {'message': 'User created', 'userId': user.id}, statusCode: 201);\n}\n\n// routes/auth/login.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/auth_service.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  if (context.request.method != HttpMethod.post) {\n    return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n  final body = await context.request.json() as Map<String, dynamic>;\n  final token = authService.login(body['email'] as String, body['password'] as String);\n  if (token == null) {\n    return Response.json(body: {'error': 'Invalid credentials'}, statusCode: 401);\n  }\n  return Response.json(body: {'token': token});\n}\n\n// routes/notes/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/utils/jwt_helper.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    final authHeader = context.request.headers['Authorization'];\n    if (authHeader == null || !authHeader.startsWith('Bearer ')) {\n      return Response.json(body: {'error': 'No token'}, statusCode: 401);\n    }\n    final payload = verifyToken(authHeader.substring(7));\n    if (payload == null) {\n      return Response.json(body: {'error': 'Invalid token'}, statusCode: 401);\n    }\n    return handler(context.provide<Map<String, dynamic>>(() => payload));\n  };\n}\n\n// routes/notes/index.dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/note_service.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  final user = context.read<Map<String, dynamic>>();\n  final userId = user['userId'] as String;\n  \n  switch (context.request.method) {\n    case HttpMethod.get:\n      final notes = noteService.getUserNotes(userId);\n      return Response.json(body: {'notes': notes.map((n) => n.toJson()).toList()});\n    case HttpMethod.post:\n      final body = await context.request.json() as Map<String, dynamic>;\n      final title = body['title'] as String?;\n      if (title == null || title.isEmpty) {\n        return Response.json(body: {'error': 'Title required'}, statusCode: 400);\n      }\n      final note = noteService.create(userId, title, body['content'] as String? ?? '');\n      return Response.json(body: note.toJson(), statusCode: 201);\n    default:\n      return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n}\n\n// routes/notes/[id].dart\nimport 'package:dart_frog/dart_frog.dart';\nimport '../../lib/services/note_service.dart';\n\nFuture<Response> onRequest(RequestContext context, String id) async {\n  final user = context.read<Map<String, dynamic>>();\n  final userId = user['userId'] as String;\n  \n  switch (context.request.method) {\n    case HttpMethod.get:\n      final note = noteService.getNoteById(id, userId);\n      if (note == null) return Response.json(body: {'error': 'Not found'}, statusCode: 404);\n      return Response.json(body: note.toJson());\n    case HttpMethod.put:\n      final body = await context.request.json() as Map<String, dynamic>;\n      final note = noteService.update(id, userId, title: body['title'] as String?, content: body['content'] as String?);\n      if (note == null) return Response.json(body: {'error': 'Not found'}, statusCode: 404);\n      return Response.json(body: note.toJson());\n    case HttpMethod.delete:\n      if (!noteService.delete(id, userId)) {\n        return Response.json(body: {'error': 'Not found'}, statusCode: 404);\n      }\n      return Response.json(body: {'message': 'Deleted'});\n    default:\n      return Response.json(body: {'error': 'Method not allowed'}, statusCode: 405);\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "User model has toJson method",
+                  "expectedOutput": "toJson()",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Note model has copyWith method",
+                  "expectedOutput": "copyWith",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "AuthService hashes passwords with bcrypt",
+                  "expectedOutput": "BCrypt.hashpw",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "AuthService verifies passwords with bcrypt",
+                  "expectedOutput": "BCrypt.checkpw",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "NoteService filters notes by userId",
+                  "expectedOutput": "userId",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Notes middleware validates JWT",
+                  "expectedOutput": "verifyToken",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-7",
+                  "description": "Notes routes read user from context",
+                  "expectedOutput": "context.read<Map<String, dynamic>>()",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-8",
+                  "description": "Register returns 201 for new user",
+                  "expectedOutput": "statusCode: 201",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with models, then services, then routes. Each layer depends on the previous one."
+                },
+                {
+                  "level": 2,
+                  "text": "Use UUID package to generate unique IDs: final id = 'usr_' + Uuid().v4().substring(0, 8)"
+                },
+                {
+                  "level": 3,
+                  "text": "In getNoteById, always check both note existence AND userId ownership before returning."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not checking ownership before update/delete",
+                  "consequence": "Users can modify/delete other users' notes",
+                  "correction": "Always verify note.userId == userId before any modification"
+                },
+                {
+                  "mistake": "Storing plain text passwords",
+                  "consequence": "Major security vulnerability if database is breached",
+                  "correction": "Always hash passwords with BCrypt.hashpw() before storing"
+                },
+                {
+                  "mistake": "Creating new service instances in routes",
+                  "consequence": "Each route gets empty storage, data doesn't persist",
+                  "correction": "Use global service instances or dependency injection"
+                },
+                {
+                  "mistake": "Forgetting to update the updatedAt timestamp",
+                  "consequence": "Can't properly sort notes by modification time",
+                  "correction": "Set updatedAt: DateTime.now() in the update method"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
