@@ -8885,6 +8885,416 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-devops",
+      "title": "DevOps & Deployment",
+      "description": "Learn to containerize, automate, and deploy your Spring Boot applications. Master Docker, CI/CD pipelines, and cloud deployment.",
+      "difficulty": "intermediate",
+      "estimatedHours": 3.1,
+      "lessons": [
+        {
+          "id": "devops-lesson-1",
+          "title": "Lesson D.1: Why DevOps?",
+          "moduleId": "module-devops",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Works on My Machine",
+              "content": "You've built an amazing Spring Boot application. It runs perfectly on your laptop. You're ready to show the world.\n\nThen reality hits:\n\nDEVELOPER: 'The app works on my machine!'\nOPS TEAM: 'We deployed it and it crashes.'\nDEVELOPER: 'That's impossible, I tested it!'\nOPS TEAM: 'You're running Java 21, production has Java 17.'\nDEVELOPER: 'Well... update Java then.'\nOPS TEAM: 'That breaks 15 other applications.'\n\nThis is the classic 'works on my machine' problem. And it's been plaguing software teams for decades.\n\nTHE ROOT CAUSES:\n- Different Java versions between dev and production\n- Missing environment variables\n- Different database versions\n- Different OS configurations\n- Missing system dependencies\n- Configuration drift over time\n\nWhat if your application could carry its ENTIRE environment with it? Same Java version, same configs, same everything - everywhere it runs?"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Dev vs Ops: The Traditional Wall",
+              "content": "Historically, software companies had two separate teams:\n\nDEVELOPMENT TEAM:\n- Writes code\n- Tests on local machines\n- Throws code 'over the wall'\n- Success = features work in development\n\nOPERATIONS TEAM:\n- Receives code to deploy\n- Manages servers and infrastructure\n- Fights fires when things break\n- Success = systems stay running\n\nTHE PROBLEM:\n- Devs optimize for speed of development\n- Ops optimizes for stability\n- Different goals = conflict\n- No one 'owns' the whole process\n\nWhen things break:\n- Devs: 'It worked in development!'\n- Ops: 'You didn't test it properly!'\n- Both are right. Both are wrong.\n\nThe 'wall' between teams creates:\n- Slow deployments (weeks, not hours)\n- Blame games when issues arise\n- Lack of shared responsibility\n- Technical debt accumulation"
+            },
+            {
+              "type": "THEORY",
+              "title": "DevOps: Breaking Down the Wall",
+              "content": "DevOps is a culture and set of practices that UNIFIES development and operations:\n\nDEVOPS PRINCIPLES:\n\n1. COLLABORATION\n   - Developers and Ops work together\n   - Shared responsibility for the entire lifecycle\n   - No more 'throw it over the wall'\n\n2. AUTOMATION\n   - Automate testing, building, deploying\n   - Reduce human error\n   - Make deployments boring (in a good way)\n\n3. CONTINUOUS INTEGRATION (CI)\n   - Merge code frequently (multiple times/day)\n   - Automatically test every change\n   - Catch bugs early, when they're cheap to fix\n\n4. CONTINUOUS DEPLOYMENT (CD)\n   - Automatically deploy tested code\n   - Small, frequent releases\n   - Easy to rollback if issues arise\n\n5. INFRASTRUCTURE AS CODE\n   - Define servers/config in version-controlled files\n   - Reproducible environments\n   - No more 'snowflake' servers\n\nRESULTS:\n- Deploy multiple times per day (not quarterly)\n- Recover from failures in minutes (not hours)\n- 99.9%+ uptime\n- Happy developers AND happy ops"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The CI/CD Pipeline",
+              "content": "A CI/CD pipeline automates the journey from code to production:\n\n[Developer pushes code]\n        |\n        v\n[1. SOURCE CONTROL]\n   Git repository receives commit\n        |\n        v\n[2. BUILD]\n   Compile code, resolve dependencies\n   ./mvnw clean package\n        |\n        v\n[3. TEST]\n   Run unit tests, integration tests\n   ./mvnw test\n        |\n        v\n[4. ANALYZE] (optional)\n   Code quality, security scanning\n        |\n        v\n[5. PACKAGE]\n   Create deployable artifact (JAR, Docker image)\n        |\n        v\n[6. DEPLOY TO STAGING]\n   Test in production-like environment\n        |\n        v\n[7. DEPLOY TO PRODUCTION]\n   Release to users\n        |\n        v\n[8. MONITOR]\n   Track performance, errors, usage\n\nIF ANY STEP FAILS:\n- Pipeline stops\n- Team is notified immediately\n- Bad code never reaches production"
+            },
+            {
+              "type": "THEORY",
+              "title": "Tools of the Trade",
+              "content": "CONTAINERIZATION:\n- Docker: Package app + environment together\n- Docker Compose: Define multi-container apps\n\nCI/CD PLATFORMS:\n- GitHub Actions: Built into GitHub, free for public repos\n- GitLab CI: Built into GitLab\n- Jenkins: Self-hosted, highly customizable\n- CircleCI, Travis CI: Cloud-based options\n\nCLOUD PLATFORMS:\n- Railway: Simple deployment, great for learning\n- Heroku: Easy PaaS (Platform as a Service)\n- AWS, GCP, Azure: Full cloud providers\n- DigitalOcean, Render: Developer-friendly options\n\nMONITORING:\n- Prometheus + Grafana: Metrics and dashboards\n- ELK Stack: Log aggregation\n- Datadog, New Relic: All-in-one monitoring\n\nIN THIS MODULE:\nWe'll focus on the most practical tools:\n1. Docker - containerize your Spring Boot app\n2. Docker Compose - add PostgreSQL database\n3. GitHub Actions - automate testing and deployment\n4. Railway - deploy to the cloud for free\n\nBy the end, every push to main = automatic deployment."
+            },
+            {
+              "type": "WARNING",
+              "title": "DevOps is Culture, Not Just Tools",
+              "content": "Common mistake: 'We use Docker, so we're doing DevOps!'\n\nDEVOPS IS NOT:\n- Just using Docker\n- Just having a CI/CD pipeline\n- A job title (though 'DevOps Engineer' exists)\n- A tool you can buy\n\nDEVOPS IS:\n- Shared responsibility between dev and ops\n- Continuous improvement mindset\n- Automating repetitive tasks\n- Learning from failures (blameless postmortems)\n- Measuring and improving metrics\n\nKEY METRICS (DORA):\n1. Deployment Frequency - How often do you deploy?\n2. Lead Time - Code commit to production?\n3. Mean Time to Recovery - How fast do you fix issues?\n4. Change Failure Rate - What % of deployments cause problems?\n\nELITE PERFORMERS:\n- Deploy multiple times per day\n- Lead time under 1 hour\n- Recover in under 1 hour\n- Less than 15% change failure rate\n\nYou don't need to be elite on day one. Start small, automate incrementally, improve continuously."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-1-mc-1",
+              "title": "Understanding CI/CD",
+              "description": "Grasping the purpose of continuous integration",
+              "question": "What is the PRIMARY benefit of Continuous Integration (CI)?",
+              "options": [
+                "It eliminates the need for testing",
+                "It catches bugs early by testing every code change automatically",
+                "It makes deployments faster by skipping the build step",
+                "It replaces the need for version control"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Continuous Integration automatically tests every code change as soon as it's pushed. This catches bugs early, when they're easier and cheaper to fix. The earlier you catch a bug, the less context-switching required to fix it. CI doesn't skip steps - it automates them.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-1-mc-2",
+              "title": "Works on My Machine Problem",
+              "description": "Understanding environment consistency",
+              "question": "Your Spring Boot app works locally but crashes in production with 'NoSuchMethodError'. What's the MOST LIKELY cause?",
+              "options": [
+                "The production server is too slow",
+                "Different Java version or dependency versions between environments",
+                "The database password is wrong",
+                "The network connection is unstable"
+              ],
+              "correctAnswer": 1,
+              "explanation": "NoSuchMethodError typically means a method existed at compile time but not at runtime - usually caused by version mismatches. Different Java versions or dependency versions between development and production are a classic 'works on my machine' problem. Docker solves this by packaging the exact environment with your application.",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "devops-lesson-2",
+          "title": "Lesson D.2: Docker Fundamentals",
+          "moduleId": "module-devops",
+          "order": 2,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Docker?",
+              "content": "Docker is a platform that packages your application and ALL its dependencies into a portable unit called a CONTAINER.\n\nTHINK OF IT LIKE SHIPPING:\n\nBEFORE SHIPPING CONTAINERS:\n- Load individual items onto ships\n- Different sizes, shapes, fragile items\n- Complex loading/unloading\n- Items get damaged, lost, mixed up\n\nAFTER SHIPPING CONTAINERS:\n- Everything goes in a standard container\n- Container fits on any ship, truck, train\n- Predictable, stackable, secure\n- Contents don't matter - container is container\n\nDOCKER DOES THE SAME FOR SOFTWARE:\n- Your app + Java + configs = one container\n- Runs identically on any machine with Docker\n- No more 'works on my machine'\n- Dev, test, production - same container\n\nKEY TERMINOLOGY:\n- Image: The blueprint (like a class)\n- Container: Running instance (like an object)\n- Dockerfile: Recipe to build an image\n- Registry: Storage for images (Docker Hub)"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Containers vs Virtual Machines",
+              "content": "VIRTUAL MACHINE (VM):\n\n[Your App]\n[Guest OS - Full Linux/Windows]\n[Hypervisor]\n[Host OS]\n[Hardware]\n\n- Each VM runs its OWN operating system\n- Heavy - GB of storage, minutes to start\n- Strong isolation\n- Good for running different OS\n\nCONTAINER:\n\n[Your App]\n[Container Runtime]\n[Host OS]\n[Hardware]\n\n- Containers SHARE the host OS kernel\n- Lightweight - MB of storage, seconds to start\n- Process-level isolation\n- Great for microservices\n\nWHY CONTAINERS WIN FOR APPS:\n- Start in seconds, not minutes\n- Use fewer resources (run 10x more on same hardware)\n- Perfect for microservices architecture\n- Easy to scale up/down\n\nWHEN VMs STILL MAKE SENSE:\n- Running different operating systems\n- Stronger security isolation required\n- Legacy applications that need full OS"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Your First Dockerfile",
+              "content": "A Dockerfile defines how to build your container image. Here's a production-ready Dockerfile for Spring Boot:",
+              "code": "# Build stage - compiles the application\nFROM eclipse-temurin:21-jdk-alpine AS build\n\n# Set working directory inside container\nWORKDIR /app\n\n# Copy Maven wrapper and pom.xml first (better caching)\nCOPY .mvn/ .mvn/\nCOPY mvnw pom.xml ./\n\n# Download dependencies (cached if pom.xml unchanged)\nRUN ./mvnw dependency:go-offline\n\n# Copy source code\nCOPY src/ src/\n\n# Build the application\nRUN ./mvnw clean package -DskipTests\n\n# Runtime stage - smaller image for production\nFROM eclipse-temurin:21-jre-alpine\n\n# Create non-root user for security\nRUN addgroup -S spring && adduser -S spring -G spring\nUSER spring:spring\n\n# Set working directory\nWORKDIR /app\n\n# Copy JAR from build stage\nCOPY --from=build /app/target/*.jar app.jar\n\n# Document the port (doesn't actually expose it)\nEXPOSE 8080\n\n# Health check for container orchestration\nHEALTHCHECK --interval=30s --timeout=3s \\\n  CMD wget -q --spider http://localhost:8080/actuator/health || exit 1\n\n# Run the application\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]",
+              "language": "dockerfile"
+            },
+            {
+              "type": "THEORY",
+              "title": "Dockerfile Instructions Explained",
+              "content": "ESSENTIAL INSTRUCTIONS:\n\nFROM <image>:<tag>\n  Base image to build on\n  eclipse-temurin:21-jdk-alpine = Java 21 on Alpine Linux\n  Alpine = lightweight Linux (5MB vs 200MB)\n\nWORKDIR /path\n  Set working directory for subsequent commands\n  Like 'cd' but creates if doesn't exist\n\nCOPY <source> <destination>\n  Copy files from host to container\n  COPY . . = copy everything (avoid - include .git, etc.)\n  COPY src/ src/ = copy specific directories\n\nRUN <command>\n  Execute command during image BUILD\n  Each RUN creates a new layer\n  Combine commands with && to reduce layers\n\nEXPOSE <port>\n  Document which port the app uses\n  Doesn't actually publish the port\n  Publishing done with -p when running\n\nENTRYPOINT [\"command\", \"arg1\"]\n  Command to run when container STARTS\n  Use exec form [\"...\"] not shell form\n\nMULTI-STAGE BUILDS:\n\nFROM eclipse-temurin:21-jdk-alpine AS build\n  # Full JDK for compilation\n  # ~300MB image\n\nFROM eclipse-temurin:21-jre-alpine\n  # Only JRE for runtime\n  # ~100MB image\n  COPY --from=build /app/target/*.jar app.jar\n\nResult: Production image is 1/3 the size!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building and Running",
+              "content": "Commands to build and run your Docker container:",
+              "code": "# Build the image\ndocker build -t myapp:latest .\n\n# Explanation:\n# docker build     - build an image\n# -t myapp:latest  - tag it as 'myapp' with 'latest' version\n# .                - use Dockerfile in current directory\n\n# List images\ndocker images\n# REPOSITORY    TAG       IMAGE ID       SIZE\n# myapp         latest    abc123def      180MB\n\n# Run the container\ndocker run -d -p 8080:8080 --name myapp-container myapp:latest\n\n# Explanation:\n# docker run                 - run a container\n# -d                        - detached mode (background)\n# -p 8080:8080              - map host port 8080 to container port 8080\n# --name myapp-container    - name the container\n# myapp:latest              - image to run\n\n# View running containers\ndocker ps\n# CONTAINER ID   IMAGE           STATUS         PORTS\n# def456abc      myapp:latest    Up 5 seconds   0.0.0.0:8080->8080/tcp\n\n# View logs\ndocker logs myapp-container\ndocker logs -f myapp-container  # Follow mode (like tail -f)\n\n# Stop the container\ndocker stop myapp-container\n\n# Remove the container\ndocker rm myapp-container\n\n# Remove the image\ndocker rmi myapp:latest",
+              "language": "bash"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Docker Layer Caching",
+              "content": "Docker builds images in LAYERS. Each instruction creates a layer:\n\nFROM eclipse-temurin:21-jdk-alpine  # Layer 1: Base image\nCOPY pom.xml .                      # Layer 2: pom.xml\nRUN mvn dependency:go-offline       # Layer 3: Dependencies\nCOPY src/ src/                      # Layer 4: Source code\nRUN mvn package                     # Layer 5: Build\n\nCALLING STRATEGY:\n- Docker caches each layer\n- If a layer changes, all subsequent layers rebuild\n- Order matters!\n\nBAD ORDER:\nCOPY . .                    # Copy everything first\nRUN mvn package             # Download deps + build\n\nProblem: Any file change (even README) busts the cache\nand re-downloads all dependencies.\n\nGOOD ORDER:\nCOPY pom.xml .              # pom.xml rarely changes\nRUN mvn dependency:go-offline  # Cache dependencies\nCOPY src/ src/              # Source changes often\nRUN mvn package -o          # Build (use offline mode)\n\nResult: Change source code? Only layers 4-5 rebuild.\nDependencies stay cached. Builds go from 5 min to 30 sec.\n\n.dockerignore FILE:\ntarget/\n.git/\n.idea/\n*.md\n\nExclude files that shouldn't go in the image."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Docker Mistakes",
+              "content": "MISTAKE 1: Running as root\n\n# BAD - container runs as root\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\n# GOOD - create and use non-root user\nRUN addgroup -S spring && adduser -S spring -G spring\nUSER spring:spring\n\nMISTAKE 2: No .dockerignore\n\n# Without .dockerignore, COPY . . includes:\n# - target/ (huge, unnecessary)\n# - .git/ (huge, security risk)\n# - node_modules/ (if frontend exists)\n# - IDE files\n\nMISTAKE 3: Using 'latest' tag in production\n\n# BAD - 'latest' can change unexpectedly\ndocker pull myapp:latest\n\n# GOOD - use specific version\ndocker pull myapp:1.2.3\ndocker pull myapp:$(git rev-parse --short HEAD)\n\nMISTAKE 4: Not handling signals\n\nSpring Boot needs graceful shutdown:\n\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nAdd to application.properties:\nserver.shutdown=graceful\nspring.lifecycle.timeout-per-shutdown-phase=30s\n\nMISTAKE 5: Hardcoding configuration\n\n# BAD\nENV DB_URL=jdbc:postgresql://localhost:5432/mydb\n\n# GOOD - configure at runtime\ndocker run -e DB_URL=jdbc:postgresql://prod-db:5432/mydb myapp"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-2-mc-1",
+              "title": "Multi-Stage Builds",
+              "description": "Understanding why multi-stage builds are used",
+              "question": "Why does the Dockerfile use two FROM statements (multi-stage build)?",
+              "options": [
+                "To run two applications in one container",
+                "To use JDK for building but only JRE for running, reducing image size",
+                "To support multiple Java versions",
+                "It's required for Spring Boot applications"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Multi-stage builds separate build-time dependencies from runtime. The first stage uses the full JDK (includes compiler) to build the JAR. The second stage uses only the JRE (no compiler needed at runtime), reducing the final image from ~300MB to ~180MB. Build tools, source code, and intermediate files are discarded.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-2-mc-2",
+              "title": "Docker Layer Caching",
+              "description": "Understanding layer caching for faster builds",
+              "question": "You changed one line in your Java source code. With proper Dockerfile ordering, which layers need to rebuild?",
+              "options": [
+                "All layers - Docker rebuilds everything on any change",
+                "Only the layers after COPY src/ and the final build step",
+                "Only the base image layer",
+                "No layers - Docker uses cached results for source changes"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Docker caches layers and only rebuilds from the point where changes occur. With proper ordering (dependencies before source), changing source code only invalidates layers after COPY src/. The base image and dependency download layers remain cached, making rebuilds much faster.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "devops-lesson-3",
+          "title": "Lesson D.3: Docker Compose",
+          "moduleId": "module-devops",
+          "order": 3,
+          "estimatedMinutes": 35,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Multiple Containers",
+              "content": "Real applications rarely run alone. Your Spring Boot app needs:\n\n- PostgreSQL database\n- Redis for caching\n- Maybe Elasticsearch for search\n- Maybe a message queue\n\nRUNNING MULTIPLE CONTAINERS MANUALLY:\n\n# Start PostgreSQL\ndocker run -d --name postgres \\\n  -e POSTGRES_PASSWORD=secret \\\n  -p 5432:5432 \\\n  postgres:16\n\n# Start Redis\ndocker run -d --name redis \\\n  -p 6379:6379 \\\n  redis:7\n\n# Start your app (needs to connect to both)\ndocker run -d --name myapp \\\n  -e DB_URL=jdbc:postgresql://postgres:5432/mydb \\\n  -e REDIS_HOST=redis \\\n  -p 8080:8080 \\\n  --link postgres \\\n  --link redis \\\n  myapp:latest\n\nPROBLEMS:\n- Many commands to remember\n- Order matters (database before app)\n- Links are deprecated\n- No easy way to share this with team\n- 'Restart everything' is painful\n\nDocker Compose solves all of this."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Docker Compose: One File to Rule Them All",
+              "content": "Docker Compose lets you define multi-container applications in a single YAML file:\n\n# docker-compose.yml\nservices:\n  app:\n    build: .\n    ports:\n      - \"8080:8080\"\n    depends_on:\n      - db\n    environment:\n      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb\n\n  db:\n    image: postgres:16\n    environment:\n      - POSTGRES_DB=mydb\n      - POSTGRES_PASSWORD=secret\n\nNOW, ONE COMMAND:\n\ndocker compose up     # Start everything\ndocker compose down   # Stop everything\ndocker compose logs   # View all logs\n\nBENEFITS:\n- All services defined in one file\n- Automatic networking between services\n- Dependency ordering (depends_on)\n- Easy to version control\n- Same file works for entire team\n- 'docker compose up' and you're running"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete docker-compose.yml",
+              "content": "Full example with Spring Boot + PostgreSQL + proper configuration:",
+              "code": "# docker-compose.yml\nversion: '3.8'\n\nservices:\n  # Spring Boot Application\n  app:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    ports:\n      - \"8080:8080\"\n    depends_on:\n      db:\n        condition: service_healthy\n    environment:\n      - SPRING_PROFILES_ACTIVE=docker\n      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/myapp\n      - SPRING_DATASOURCE_USERNAME=postgres\n      - SPRING_DATASOURCE_PASSWORD=postgres\n    healthcheck:\n      test: [\"CMD\", \"wget\", \"-q\", \"--spider\", \"http://localhost:8080/actuator/health\"]\n      interval: 30s\n      timeout: 10s\n      retries: 3\n    restart: unless-stopped\n\n  # PostgreSQL Database\n  db:\n    image: postgres:16-alpine\n    environment:\n      - POSTGRES_DB=myapp\n      - POSTGRES_USER=postgres\n      - POSTGRES_PASSWORD=postgres\n    ports:\n      - \"5432:5432\"\n    volumes:\n      - postgres_data:/var/lib/postgresql/data\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n    restart: unless-stopped\n\n# Persistent storage for database\nvolumes:\n  postgres_data:",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding the Configuration",
+              "content": "KEY SECTIONS EXPLAINED:\n\nservices:\n  Each service is a container. 'app' and 'db' are service names.\n  These names become DNS hostnames on the network.\n  Your app connects to 'db:5432' not 'localhost:5432'.\n\nbuild:\n  context: .            # Directory with Dockerfile\n  dockerfile: Dockerfile # Which Dockerfile to use\n\nimage:\n  image: postgres:16-alpine   # Use pre-built image\n  Don't use 'latest' - pin versions!\n\nports:\n  - \"8080:8080\"    # host:container\n  - \"5432:5432\"    # Expose DB for local development\n\ndepends_on:\n  db:\n    condition: service_healthy   # Wait for health check\n  Without condition, only waits for container to START\n  (not for service to be READY)\n\nenvironment:\n  Pass environment variables to container\n  Spring Boot reads these automatically\n  SPRING_DATASOURCE_URL overrides application.properties\n\nvolumes:\n  postgres_data:/var/lib/postgresql/data\n  Named volume - data persists when container stops\n  Without this, database is wiped on restart!\n\nhealthcheck:\n  Container orchestrators use this to know when\n  service is actually ready, not just running\n\nrestart: unless-stopped\n  Auto-restart on crash (but not if manually stopped)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Spring Profile for Docker",
+              "content": "Create a Docker-specific profile to handle the different database URL:",
+              "code": "# src/main/resources/application.properties\n# Default configuration (local development)\nspring.datasource.url=jdbc:postgresql://localhost:5432/myapp\nspring.datasource.username=postgres\nspring.datasource.password=postgres\n\n# src/main/resources/application-docker.properties\n# Docker configuration (overrides default)\n# Database URL points to Docker service name 'db'\nspring.datasource.url=jdbc:postgresql://db:5432/myapp\n\n# Note: Username and password inherited from application.properties\n# unless overridden by environment variables",
+              "language": "properties"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Essential Commands",
+              "content": "STARTING SERVICES:\n\ndocker compose up              # Start all, attached (see logs)\ndocker compose up -d           # Start all, detached (background)\ndocker compose up --build      # Rebuild images before starting\ndocker compose up app          # Start only 'app' and dependencies\n\nSTOPPING SERVICES:\n\ndocker compose stop            # Stop containers (keep data)\ndocker compose down            # Stop and remove containers\ndocker compose down -v         # Also remove volumes (wipes data!)\n\nVIEWING STATUS:\n\ndocker compose ps              # List running services\ndocker compose logs            # View all logs\ndocker compose logs -f app     # Follow logs for 'app' service\ndocker compose top             # Show running processes\n\nDEBUGGING:\n\ndocker compose exec app sh     # Shell into running container\ndocker compose exec db psql -U postgres  # Connect to database\n\nREBUILDING:\n\ndocker compose build           # Rebuild all images\ndocker compose build app       # Rebuild only 'app'\ndocker compose up --build -d   # Rebuild and restart\n\nCLEANUP:\n\ndocker compose down --rmi all  # Remove images too\ndocker system prune            # Clean unused Docker resources"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Docker Compose Mistakes",
+              "content": "MISTAKE 1: Forgetting volumes (data loss!)\n\n# BAD - data lost when container stops\ndb:\n  image: postgres:16\n\n# GOOD - data persists\ndb:\n  image: postgres:16\n  volumes:\n    - postgres_data:/var/lib/postgresql/data\n\nvolumes:\n  postgres_data:\n\nMISTAKE 2: depends_on without health check\n\n# BAD - app starts before DB is ready\ndepends_on:\n  - db\n\n# GOOD - waits for DB health check\ndepends_on:\n  db:\n    condition: service_healthy\n\nMISTAKE 3: Hardcoding secrets\n\n# BAD - secrets in version control\nenvironment:\n  - POSTGRES_PASSWORD=supersecretpassword\n\n# BETTER - use .env file (add to .gitignore)\nenvironment:\n  - POSTGRES_PASSWORD=${DB_PASSWORD}\n\n# Create .env file:\n# DB_PASSWORD=supersecretpassword\n\nMISTAKE 4: Using 'localhost' in container\n\n# BAD - 'localhost' inside container is the container itself\nSPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/myapp\n\n# GOOD - use service name\nSPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/myapp"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-3-mc-1",
+              "title": "Container Networking",
+              "description": "Understanding how containers communicate",
+              "question": "In docker-compose.yml, your app connects to 'db:5432'. What does 'db' refer to?",
+              "options": [
+                "A DNS entry in /etc/hosts on your computer",
+                "The Docker service name, which Docker's internal DNS resolves to the container IP",
+                "A hardcoded IP address that Docker assigns",
+                "An environment variable that must be set"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Docker Compose creates a network and runs an internal DNS server. Service names (like 'db') become DNS hostnames that resolve to the container's IP address. This allows containers to communicate using predictable names instead of dynamic IP addresses.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-3-mc-2",
+              "title": "Data Persistence",
+              "description": "Understanding Docker volumes",
+              "question": "You run 'docker compose down' and then 'docker compose up'. What happens to your PostgreSQL data?",
+              "options": [
+                "Data is always lost - containers are ephemeral",
+                "Data is preserved if you used a named volume, lost if you didn't",
+                "Data is automatically backed up to Docker Hub",
+                "Data is preserved in the container's filesystem"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Named volumes (postgres_data:/var/lib/postgresql/data) persist data outside the container lifecycle. 'docker compose down' removes containers but not named volumes. 'docker compose down -v' removes volumes too. Without volumes, container data is lost when the container is removed.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "devops-lesson-4",
+          "title": "Lesson D.4: GitHub Actions CI/CD",
+          "moduleId": "module-devops",
+          "order": 4,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is GitHub Actions?",
+              "content": "GitHub Actions is a CI/CD platform built into GitHub. It runs automated workflows in response to events:\n\nEVENTS THAT TRIGGER WORKFLOWS:\n- push: Code pushed to repository\n- pull_request: PR opened, updated, or merged\n- schedule: Cron-based scheduling\n- workflow_dispatch: Manual trigger\n- release: New release published\n\nWHAT CAN WORKFLOWS DO?\n- Build and test your code\n- Run linters and security scanners\n- Build Docker images\n- Deploy to cloud platforms\n- Send notifications\n- Almost anything you can script!\n\nKEY CONCEPTS:\n\nWorkflow: A configurable automated process\n  - Defined in .github/workflows/*.yml\n  - Triggered by events\n  - Contains one or more jobs\n\nJob: A set of steps that execute on the same runner\n  - Runs on a virtual machine\n  - Jobs run in parallel by default\n  - Can depend on other jobs\n\nStep: An individual task\n  - Runs a command or action\n  - Steps run sequentially\n  - Share data within a job\n\nAction: A reusable unit of code\n  - Community-maintained (actions/checkout, actions/setup-java)\n  - Or your own custom actions"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete CI/CD Workflow",
+              "content": "Full GitHub Actions workflow for a Spring Boot application:",
+              "code": "# .github/workflows/ci-cd.yml\nname: CI/CD Pipeline\n\n# When to run\non:\n  push:\n    branches: [main, develop]\n  pull_request:\n    branches: [main]\n\n# Environment variables available to all jobs\nenv:\n  JAVA_VERSION: '21'\n  REGISTRY: ghcr.io\n  IMAGE_NAME: ${{ github.repository }}\n\njobs:\n  # Job 1: Build and Test\n  test:\n    name: Build and Test\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v4\n      \n      - name: Set up Java\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n          cache: 'maven'\n      \n      - name: Run tests\n        run: ./mvnw verify\n      \n      - name: Upload test results\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: test-results\n          path: target/surefire-reports/\n\n  # Job 2: Build and Push Docker Image\n  build:\n    name: Build Docker Image\n    needs: test\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n    \n    permissions:\n      contents: read\n      packages: write\n    \n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v4\n      \n      - name: Log in to Container Registry\n        uses: docker/login-action@v3\n        with:\n          registry: ${{ env.REGISTRY }}\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n      \n      - name: Extract metadata\n        id: meta\n        uses: docker/metadata-action@v5\n        with:\n          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\n          tags: |\n            type=sha,prefix=\n            type=raw,value=latest\n      \n      - name: Build and push\n        uses: docker/build-push-action@v5\n        with:\n          context: .\n          push: true\n          tags: ${{ steps.meta.outputs.tags }}\n\n  # Job 3: Deploy to Railway\n  deploy:\n    name: Deploy to Railway\n    needs: build\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n    \n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v4\n      \n      - name: Install Railway CLI\n        run: npm install -g @railway/cli\n      \n      - name: Deploy to Railway\n        run: railway up --service ${{ secrets.RAILWAY_SERVICE_ID }}\n        env:\n          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Understanding the Workflow",
+              "content": "WORKFLOW STRUCTURE:\n\nname: CI/CD Pipeline           # Display name in GitHub UI\n\non:                             # Trigger events\n  push:\n    branches: [main, develop]   # Only these branches\n  pull_request:\n    branches: [main]            # PRs targeting main\n\njobs:                           # What to do\n\nJOB STRUCTURE:\n\ntest:\n  name: Build and Test          # Display name\n  runs-on: ubuntu-latest        # Virtual machine type\n  steps:                        # Sequential tasks\n\nCOMMON RUNNERS:\n- ubuntu-latest: Linux (most common)\n- windows-latest: Windows\n- macos-latest: macOS (expensive minutes)\n\nJOB DEPENDENCIES:\n\nbuild:\n  needs: test                   # Wait for 'test' to pass\n  if: github.ref == 'refs/heads/main'  # Only on main branch\n\nCONDITIONAL EXECUTION:\n\n- if: always()                  # Run even if previous step failed\n- if: success()                 # Only if previous steps succeeded (default)\n- if: failure()                 # Only if previous steps failed\n- if: github.event_name == 'push'\n- if: github.ref == 'refs/heads/main'"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Secrets Management",
+              "content": "NEVER PUT SECRETS IN WORKFLOW FILES!\n\n# BAD - exposed in version control\nenv:\n  DATABASE_PASSWORD: supersecret123\n\n# GOOD - use GitHub Secrets\nenv:\n  DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}\n\nSETTING UP SECRETS:\n\n1. Go to repository Settings\n2. Click 'Secrets and variables' > 'Actions'\n3. Click 'New repository secret'\n4. Add name (e.g., RAILWAY_TOKEN) and value\n\nCOMMON SECRETS:\n- RAILWAY_TOKEN: For Railway deployment\n- DOCKER_USERNAME, DOCKER_PASSWORD: For Docker Hub\n- AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY: For AWS\n- GITHUB_TOKEN: Automatically provided by GitHub!\n\nBUILT-IN VARIABLES:\n\n${{ github.repository }}     # owner/repo\n${{ github.actor }}          # Username who triggered\n${{ github.sha }}            # Full commit SHA\n${{ github.ref }}            # refs/heads/main\n${{ github.event_name }}     # push, pull_request, etc.\n${{ secrets.GITHUB_TOKEN }}  # Auto-generated token\n\nUSING OUTPUTS BETWEEN STEPS:\n\n- name: Get version\n  id: version\n  run: echo \"version=$(cat VERSION)\" >> $GITHUB_OUTPUT\n\n- name: Use version\n  run: echo \"Version is ${{ steps.version.outputs.version }}\""
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Simple Test-Only Workflow",
+              "content": "A minimal workflow just for running tests on every push:",
+              "code": "# .github/workflows/test.yml\nname: Tests\n\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n          cache: 'maven'\n      \n      - name: Run tests\n        run: ./mvnw test\n      \n      - name: Test Report\n        uses: dorny/test-reporter@v1\n        if: success() || failure()\n        with:\n          name: Maven Tests\n          path: target/surefire-reports/*.xml\n          reporter: java-junit",
+              "language": "yaml"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common GitHub Actions Pitfalls",
+              "content": "PITFALL 1: Not caching dependencies\n\n# BAD - downloads dependencies every run (slow!)\n- uses: actions/setup-java@v4\n  with:\n    java-version: '21'\n    distribution: 'temurin'\n\n# GOOD - caches Maven dependencies\n- uses: actions/setup-java@v4\n  with:\n    java-version: '21'\n    distribution: 'temurin'\n    cache: 'maven'\n\nPITFALL 2: Secrets in logs\n\n# BAD - prints secret to logs\n- run: echo ${{ secrets.API_KEY }}\n\n# GOOD - GitHub masks secrets, but be careful\n- run: ./deploy.sh\n  env:\n    API_KEY: ${{ secrets.API_KEY }}\n\nPITFALL 3: Not failing fast\n\n# If one test fails, stop immediately\njobs:\n  test:\n    strategy:\n      fail-fast: true\n      matrix:\n        java: [17, 21]\n\nPITFALL 4: Ignoring exit codes\n\n# BAD - continues even if command fails\n- run: |\n    ./risky-command || true\n    ./next-command\n\n# GOOD - let failures stop the workflow\n- run: ./risky-command\n- run: ./next-command"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-4-mc-1",
+              "title": "Workflow Triggers",
+              "description": "Understanding when workflows run",
+              "question": "Given this trigger configuration, when does the workflow run?\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]",
+              "options": [
+                "Only when pushing directly to main",
+                "Only when a pull request targets main",
+                "When pushing to main OR when a PR targets main",
+                "On every push and every pull request to any branch"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The 'on' section defines trigger events. Multiple events are OR-ed together. This workflow runs when: (1) Code is pushed directly to main, OR (2) A pull request is opened/updated that targets main. It does NOT run for pushes to other branches or PRs targeting other branches.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-4-mc-2",
+              "title": "Job Dependencies",
+              "description": "Understanding job ordering and conditions",
+              "question": "Given 'needs: test' and 'if: github.ref == 'refs/heads/main'', when does the deploy job run?",
+              "options": [
+                "Immediately when any push occurs",
+                "After test passes, but only if the push was to main",
+                "Only on pull requests to main",
+                "After test passes, regardless of branch"
+              ],
+              "correctAnswer": 1,
+              "explanation": "'needs: test' means the deploy job waits for the test job to complete successfully. 'if: github.ref == 'refs/heads/main'' adds an additional condition: the branch must be main. So deploy runs only when: (1) test job passes, AND (2) the push was to the main branch. PRs don't set github.ref to refs/heads/main.",
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "devops-lesson-5",
+          "title": "Lesson D.5: Cloud Deployment",
+          "moduleId": "module-devops",
+          "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Deployment Options",
+              "content": "Where can you run your Spring Boot application?\n\nTRADITIONAL HOSTING (VPS):\n- DigitalOcean Droplets, AWS EC2, Linode\n- You manage the server, OS, Java, etc.\n- Full control, full responsibility\n- Good for: Learning Linux, complex setups\n\nPLATFORM AS A SERVICE (PaaS):\n- Railway, Heroku, Render, Fly.io\n- Upload code, platform handles the rest\n- Less control, less work\n- Good for: Getting started, MVPs, side projects\n\nCONTAINER PLATFORMS:\n- AWS ECS/EKS, Google Cloud Run, Azure Container Apps\n- Run Docker containers at scale\n- More control than PaaS, less than VPS\n- Good for: Production workloads\n\nSERVERLESS:\n- AWS Lambda, Google Cloud Functions\n- Pay only when code runs\n- Limited to short-lived functions\n- Good for: Event-driven, low-traffic apps\n\nFOR LEARNING:\nWe'll use Railway because:\n- Free tier for hobby projects\n- Git-based deployments\n- Automatic HTTPS\n- Easy PostgreSQL addon\n- No credit card required to start"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Railway Basics",
+              "content": "Railway is a modern PaaS that makes deployment simple:\n\nKEY FEATURES:\n- Deploy from GitHub with auto-deploy on push\n- Built-in PostgreSQL, Redis, MySQL\n- Environment variables management\n- Automatic HTTPS certificates\n- Logs and metrics\n- Private networking between services\n\nPRICING (as of 2025):\n- Free tier: $5/month credit (enough for small apps)\n- Hobby: $5/month per service\n- Pro: Usage-based pricing\n\nDEPLOYMENT METHODS:\n\n1. GitHub Integration (recommended):\n   - Connect GitHub repo\n   - Auto-deploy on push to main\n   - Automatic rollback on failure\n\n2. Railway CLI:\n   - railway login\n   - railway up\n   - Good for CI/CD pipelines\n\n3. Docker Image:\n   - Push to container registry\n   - Railway pulls and runs\n\nRAILWAY DETECTS:\n- Dockerfile (uses it)\n- pom.xml (runs Maven build)\n- package.json (runs npm)\n- Go, Python, Ruby, etc."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Deploying to Railway",
+              "content": "Step-by-step deployment of your Spring Boot application:",
+              "code": "# Step 1: Prepare your application\n\n# Ensure you have a Dockerfile (Railway will use it)\n# Or Railway auto-detects pom.xml and builds with Maven\n\n# Add health endpoint for Railway\n# In pom.xml, add Spring Boot Actuator:\n<dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-actuator</artifactId>\n</dependency>\n\n# In application.properties:\nmanagement.endpoints.web.exposure.include=health\nmanagement.endpoint.health.show-details=always\n\n# Step 2: Configure for production\n\n# application-production.properties\nspring.datasource.url=${DATABASE_URL}\nserver.port=${PORT:8080}\nspring.jpa.hibernate.ddl-auto=update\n\n# Note: Railway sets DATABASE_URL and PORT automatically!\n\n# Step 3: Deploy via GitHub\n\n# 1. Push to GitHub\ngit push origin main\n\n# 2. Go to railway.app\n# 3. Click 'New Project'\n# 4. Select 'Deploy from GitHub repo'\n# 5. Choose your repository\n# 6. Railway auto-detects and deploys!\n\n# Step 4: Add PostgreSQL\n\n# In Railway dashboard:\n# 1. Click '+ New' in your project\n# 2. Select 'Database' > 'PostgreSQL'\n# 3. Railway auto-connects and sets DATABASE_URL\n\n# Step 5: Set environment variables\n\n# In Railway dashboard > your service > Variables:\nSPRING_PROFILES_ACTIVE=production\nJWT_SECRET=your-production-secret\n# Railway auto-provides: DATABASE_URL, PORT",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "Environment Configuration",
+              "content": "Production applications need different configuration:\n\n12-FACTOR APP PRINCIPLE:\nConfiguration should come from ENVIRONMENT VARIABLES,\nnot hardcoded in files.\n\nSPRING BOOT READS ENV VARS AUTOMATICALLY:\n\nEnvironment variable:          Property:\nSPRING_DATASOURCE_URL    ->   spring.datasource.url\nSPRING_PROFILES_ACTIVE   ->   spring.profiles.active\nJWT_SECRET               ->   jwt.secret (custom)\n\nEXAMPLE CONFIGURATION:\n\n# application.properties (defaults for local dev)\nspring.datasource.url=jdbc:postgresql://localhost:5432/myapp\nspring.datasource.username=postgres\nspring.datasource.password=postgres\n\n# In Railway, set environment variables:\nDATABASE_URL=postgresql://user:pass@host:5432/db\n# Spring Boot reads this automatically!\n\n# For custom properties:\n@Value(\"${jwt.secret}\")\nprivate String jwtSecret;\n\n# Set in Railway:\nJWT_SECRET=super-secret-production-key\n\nENVIRONMENT-SPECIFIC PROFILES:\n\n# application-production.properties\nspring.jpa.show-sql=false\nlogging.level.root=WARN\n\n# In Railway:\nSPRING_PROFILES_ACTIVE=production"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "GitHub Actions + Railway",
+              "content": "Automated deployment from GitHub Actions:",
+              "code": "# .github/workflows/deploy.yml\nname: Deploy to Railway\n\non:\n  push:\n    branches: [main]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      \n      - uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n          cache: 'maven'\n      \n      - name: Run tests\n        run: ./mvnw verify\n\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Install Railway CLI\n        run: npm install -g @railway/cli\n      \n      - name: Deploy to Railway\n        run: railway up --service ${{ vars.RAILWAY_SERVICE_ID }}\n        env:\n          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}\n\n# How to get RAILWAY_TOKEN:\n# 1. Go to railway.app/account/tokens\n# 2. Generate a new token\n# 3. Add to GitHub repo secrets as RAILWAY_TOKEN\n\n# How to get RAILWAY_SERVICE_ID:\n# 1. In Railway dashboard, click your service\n# 2. Go to Settings\n# 3. Copy the Service ID\n# 4. Add to GitHub repo variables as RAILWAY_SERVICE_ID",
+              "language": "yaml"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Health Checks and Monitoring",
+              "content": "Production applications need health monitoring:\n\nSPRING BOOT ACTUATOR:\n\n<dependency>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-actuator</artifactId>\n</dependency>\n\nENDPOINTS:\n\nGET /actuator/health\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"db\": { \"status\": \"UP\" },\n    \"diskSpace\": { \"status\": \"UP\" }\n  }\n}\n\nCONFIGURATION:\n\n# application.properties\nmanagement.endpoints.web.exposure.include=health,info,metrics\nmanagement.endpoint.health.show-details=when-authorized\n\nHEALTH CHECK TYPES:\n- Liveness: Is the app running? (/actuator/health/liveness)\n- Readiness: Is the app ready for traffic? (/actuator/health/readiness)\n\nRAILWAY HEALTH CHECKS:\n\nRailway checks /actuator/health automatically.\nIf it returns non-200, Railway:\n1. Marks the deploy as failed\n2. Rolls back to previous version\n3. Sends notification\n\nCUSTOM HEALTH INDICATOR:\n\n@Component\npublic class ExternalApiHealthIndicator implements HealthIndicator {\n    @Override\n    public Health health() {\n        boolean apiReachable = checkExternalApi();\n        if (apiReachable) {\n            return Health.up().withDetail(\"api\", \"reachable\").build();\n        }\n        return Health.down().withDetail(\"api\", \"unreachable\").build();\n    }\n}"
+            },
+            {
+              "type": "WARNING",
+              "title": "Production Checklist",
+              "content": "Before deploying to production, verify:\n\nSECURITY:\n[ ] No secrets in code or git history\n[ ] HTTPS only (Railway handles this)\n[ ] Secure password/JWT generation\n[ ] CORS configured correctly\n[ ] Rate limiting if needed\n\nDATABASE:\n[ ] Connection pooling configured\n[ ] Migrations work (Flyway/Liquibase)\n[ ] Backups configured (Railway does this)\n[ ] DDL-auto set to 'validate' or 'none' in production\n\nPERFORMANCE:\n[ ] Logging level set to WARN/ERROR\n[ ] Debug endpoints disabled\n[ ] Caching configured if needed\n\nMONITORING:\n[ ] Health endpoints enabled\n[ ] Error tracking (Sentry, etc.)\n[ ] Logging aggregation\n\nDEPLOYMENT:\n[ ] Zero-downtime deployments\n[ ] Rollback plan\n[ ] Environment variables set\n\nCOMMON PRODUCTION SETTINGS:\n\n# application-production.properties\nspring.jpa.hibernate.ddl-auto=validate\nspring.jpa.show-sql=false\nlogging.level.root=WARN\nlogging.level.com.yourcompany=INFO\nserver.error.include-stacktrace=never\nserver.error.include-message=never"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-5-mc-1",
+              "title": "Environment Variables",
+              "description": "Understanding Spring Boot configuration",
+              "question": "How does Spring Boot read the environment variable DATABASE_URL?",
+              "options": [
+                "You must explicitly call System.getenv(\"DATABASE_URL\") in your code",
+                "Spring Boot automatically maps it to spring.datasource.url",
+                "You must define it in application.properties first",
+                "Railway automatically injects it into application.properties file"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Spring Boot has built-in support for environment variables. DATABASE_URL is a special case that Spring Boot's DataSource auto-configuration recognizes and uses for the database connection. For custom variables, Spring Boot converts them: MY_CUSTOM_VAR becomes my.custom.var in properties.",
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "devops-lesson-5-mc-2",
+              "title": "Health Checks",
+              "description": "Understanding production health monitoring",
+              "question": "Your app starts successfully but the /actuator/health endpoint returns 503. What does Railway do?",
+              "options": [
+                "Nothing - the app started successfully",
+                "Waits indefinitely for health check to pass",
+                "Marks deployment as failed and rolls back to the previous version",
+                "Sends a warning but keeps the new version running"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Railway uses health checks to verify deployments succeed. A 503 (Service Unavailable) means the app isn't healthy. Railway will mark the deployment as failed and automatically roll back to the previous working version. This prevents broken code from reaching users.",
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
