@@ -3281,7 +3281,7 @@
           ]
         },
         {
-          "id": "cjs-esm-interop",
+          "id": "8.4",
           "title": "CommonJS vs ES Modules: Understanding Both Worlds",
           "moduleId": "module-08",
           "order": 4,
@@ -3344,7 +3344,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "cjs-esm-challenge-1",
+              "id": "8.4-challenge-1",
               "title": "Module Migration",
               "description": "Convert this CommonJS module to ES Module syntax. The module exports a Calculator class with add and subtract methods.",
               "instructions": "Convert the following CommonJS module to ES Module syntax:\n\n```javascript\n// calculator.cjs (CommonJS)\nclass Calculator {\n  add(a, b) {\n    return a + b;\n  }\n  \n  subtract(a, b) {\n    return a - b;\n  }\n}\n\nfunction multiply(a, b) {\n  return a * b;\n}\n\nmodule.exports = Calculator;\nmodule.exports.multiply = multiply;\n```\n\nRewrite this as an ES Module with Calculator as the default export and multiply as a named export.",
@@ -3391,7 +3391,7 @@
             },
             {
               "type": "FREE_CODING",
-              "id": "cjs-esm-challenge-2",
+              "id": "8.4-challenge-2",
               "title": "Dual Package Setup",
               "description": "Create a package.json with conditional exports that supports both ESM and CommonJS consumers.",
               "instructions": "Create a package.json for a library called 'my-utils' that:\n1. Has type: 'module' (ESM by default)\n2. Uses the exports field with conditional exports\n3. Points ESM consumers (import) to './dist/index.mjs'\n4. Points CJS consumers (require) to './dist/index.cjs'\n5. Points TypeScript (types) to './dist/index.d.ts'\n6. Also exports a './helpers' subpath with the same pattern",
@@ -5292,7 +5292,7 @@
           ]
         },
         {
-          "id": "utility-types",
+          "id": "10.10",
           "title": "TypeScript Utility Types (The Workshop Tools Analogy)",
           "moduleId": "module-10",
           "order": 10,
@@ -5357,7 +5357,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "10.11-challenge-1",
+              "id": "10.10-challenge-1",
               "title": "API Response Transformer",
               "description": "Use Pick, Omit, and Partial to create different views of a User type for various API endpoints. Create types for public profiles, update operations, and admin views while keeping sensitive data protected.",
               "instructions": "1. Start with the full User interface (id, name, email, passwordHash, role, createdAt, lastLogin, preferences)\n2. Create PublicUser using Pick (only id, name, role)\n3. Create UpdateUserInput using Partial and Omit (no id, passwordHash, createdAt)\n4. Create AdminUserView using Omit (hide only passwordHash)\n5. Create a function that transforms a full User to PublicUser\n6. Test with sample user data",
@@ -5414,7 +5414,7 @@
             },
             {
               "type": "FREE_CODING",
-              "id": "10.11-challenge-2",
+              "id": "10.10-challenge-2",
               "title": "Configuration Builder",
               "description": "Use Record, Readonly, and Required to build a type-safe configuration system. Create environment-specific configs, status mappings, and frozen settings that prevent accidental mutations.",
               "instructions": "1. Create Environment type ('development' | 'staging' | 'production')\n2. Create EnvironmentConfig interface with optional properties (apiUrl, debug, logLevel)\n3. Use Record to map each Environment to its EnvironmentConfig\n4. Create a Required version for validated configs\n5. Create a Readonly frozen config type\n6. Implement getConfig function that returns frozen, fully-populated config\n7. Test with all three environments",
