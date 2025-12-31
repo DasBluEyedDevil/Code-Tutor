@@ -4553,95 +4553,9 @@
         },
         {
           "id": "10.7",
-          "title": "Utility Types (The Transformer Toolkit Analogy)",
-          "moduleId": "module-10",
-          "order": 7,
-          "estimatedMinutes": 30,
-          "difficulty": "intermediate",
-          "contentSections": [
-            {
-              "type": "ANALOGY",
-              "title": "Understanding the Concept",
-              "content": "Imagine you have a photo editing app:\n\nWithout filters/presets:\n- You manually adjust every setting for each photo\n- Want black and white? Manually remove all colors\n- Want to resize? Calculate and enter dimensions\n- Repetitive and error-prone\n\nWith filters/presets (Utility Types):\n- One-click transformations\n- 'Black and White' filter instantly transforms any photo\n- 'Resize 50%' works on any image\n- Same transformation, different inputs\n\nTypeScript's utility types are like photo filters for your types. They take an existing type and transform it into something new. `Partial<User>` makes all fields optional, `Pick<User, 'name'>` extracts just one field - same transformation, different types!"
-            },
-            {
-              "type": "EXAMPLE",
-              "title": "Code Example",
-              "content": "See the code example above demonstrating Code Example.",
-              "language": "javascript",
-              "code": "// TypeScript Utility Types - Transform Types Easily\n\n// Our base interface to transform\ninterface User {\n  id: number;\n  name: string;\n  email: string;\n  age: number;\n  isAdmin: boolean;\n}\n\n// 1. PARTIAL<T> - Makes all properties optional\ntype PartialUser = Partial<User>;\n// Same as: { id?: number; name?: string; email?: string; ... }\n\nfunction updateUser(id: number, updates: Partial<User>): void {\n  console.log(`Updating user ${id} with:`, updates);\n}\n\nupdateUser(1, { name: 'Alice' });           // Only update name\nupdateUser(2, { email: 'new@email.com' });  // Only update email\nupdateUser(3, { age: 30, isAdmin: true });  // Update multiple fields\n\n// 2. REQUIRED<T> - Makes all properties required (opposite of Partial)\ninterface OptionalConfig {\n  theme?: string;\n  language?: string;\n  fontSize?: number;\n}\n\ntype RequiredConfig = Required<OptionalConfig>;\n// Now all properties are required!\n\nlet config: RequiredConfig = {\n  theme: 'dark',\n  language: 'en',\n  fontSize: 14\n};\nconsole.log('Config:', config);\n\n// 3. PICK<T, Keys> - Select only specific properties\ntype UserPreview = Pick<User, 'id' | 'name'>;\n// Same as: { id: number; name: string }\n\nlet preview: UserPreview = {\n  id: 1,\n  name: 'Alice'\n};\nconsole.log('User preview:', preview);\n\n// 4. OMIT<T, Keys> - Remove specific properties\ntype UserWithoutEmail = Omit<User, 'email'>;\n// Same as: { id: number; name: string; age: number; isAdmin: boolean }\n\nlet publicUser: UserWithoutEmail = {\n  id: 1,\n  name: 'Alice',\n  age: 25,\n  isAdmin: false\n};\nconsole.log('Public user (no email):', publicUser);\n\n// 5. READONLY<T> - Makes all properties read-only\ntype ReadonlyUser = Readonly<User>;\n\nlet frozenUser: ReadonlyUser = {\n  id: 1,\n  name: 'Alice',\n  email: 'alice@example.com',\n  age: 25,\n  isAdmin: false\n};\n// frozenUser.name = 'Bob';  // ERROR: Cannot assign to 'name' because it is read-only\nconsole.log('Frozen user:', frozenUser.name);\n\n// 6. RECORD<Keys, Type> - Create object type with specific keys\ntype UserRoles = 'admin' | 'editor' | 'viewer';\ntype RolePermissions = Record<UserRoles, string[]>;\n\nlet permissions: RolePermissions = {\n  admin: ['read', 'write', 'delete', 'manage'],\n  editor: ['read', 'write'],\n  viewer: ['read']\n};\nconsole.log('Editor can:', permissions.editor);  // ['read', 'write']\n\n// 7. EXCLUDE<T, U> - Remove types from a union\ntype AllStatus = 'pending' | 'approved' | 'rejected' | 'cancelled';\ntype ActiveStatus = Exclude<AllStatus, 'cancelled'>;\n// Same as: 'pending' | 'approved' | 'rejected'\n\nlet status: ActiveStatus = 'pending';  // OK\n// let status2: ActiveStatus = 'cancelled';  // ERROR!\nconsole.log('Active status:', status);\n\n// 8. EXTRACT<T, U> - Keep only matching types from a union\ntype StringOrNumber = string | number | boolean | null;\ntype OnlyStringOrNumber = Extract<StringOrNumber, string | number>;\n// Same as: string | number\n\nlet value: OnlyStringOrNumber = 'hello';  // OK\nvalue = 42;  // OK\n// value = true;  // ERROR: boolean not allowed\nconsole.log('Value:', value);\n\n// 9. NONNULLABLE<T> - Remove null and undefined\ntype MaybeString = string | null | undefined;\ntype DefinitelyString = NonNullable<MaybeString>;\n// Same as: string\n\nlet definite: DefinitelyString = 'I exist!';\n// let bad: DefinitelyString = null;  // ERROR!\nconsole.log('Definite value:', definite);\n\n// 10. RETURNTYPE<T> - Get the return type of a function\nfunction createUser(name: string, age: number) {\n  return { id: Date.now(), name, age, createdAt: new Date() };\n}\n\ntype CreatedUser = ReturnType<typeof createUser>;\n// Same as: { id: number; name: string; age: number; createdAt: Date }\n\nlet newUser: CreatedUser = createUser('Bob', 30);\nconsole.log('Created user type:', newUser);\n\n// COMBINING UTILITY TYPES - Chain them together!\ntype EditableUserFields = Partial<Pick<User, 'name' | 'email' | 'age'>>;\n// Only name, email, age - and all optional!\n\nfunction editProfile(updates: EditableUserFields): void {\n  console.log('Editing profile:', updates);\n}\n\neditProfile({ name: 'New Name' });  // Just name\neditProfile({ email: 'new@email.com', age: 26 });  // email and age\neditProfile({});  // Nothing - all optional!\n\nconsole.log('Utility types are powerful!');"
-            },
-            {
-              "type": "THEORY",
-              "title": "Breaking Down the Syntax",
-              "content": "Let's break down TypeScript utility types:\n\n1. **Partial<T>** - Make all properties optional\n   - Use for update functions where you only change some fields\n   - `Partial<User>` = `{ id?: number; name?: string; ... }`\n\n2. **Required<T>** - Make all properties required\n   - Opposite of Partial\n   - Useful when you have optional defaults but need complete objects\n\n3. **Pick<T, Keys>** - Select specific properties\n   - `Pick<User, 'id' | 'name'>` = only id and name\n   - Great for creating smaller types from larger ones\n\n4. **Omit<T, Keys>** - Remove specific properties\n   - `Omit<User, 'password'>` = User without password\n   - Good for public-facing types\n\n5. **Readonly<T>** - Make all properties read-only\n   - Prevents accidental mutations\n   - Good for config objects, constants\n\n6. **Record<Keys, Type>** - Create object with specific keys\n   - `Record<'a' | 'b', number>` = `{ a: number; b: number }`\n   - Great for lookup tables, maps\n\n7. **Exclude<T, U>** - Remove types from union\n   - `Exclude<'a' | 'b' | 'c', 'a'>` = `'b' | 'c'`\n\n8. **Extract<T, U>** - Keep only matching types\n   - `Extract<string | number | boolean, string | number>` = `string | number`\n\n9. **NonNullable<T>** - Remove null and undefined\n   - `NonNullable<string | null>` = `string`\n\n10. **ReturnType<T>** - Get function's return type\n    - `ReturnType<typeof myFunction>` = whatever the function returns\n\n11. **Combining Utility Types**:\n    - Chain them: `Partial<Pick<User, 'name' | 'email'>>`\n    - Read right-to-left: Pick first, then Partial"
-            },
-            {
-              "type": "WARNING",
-              "title": "Common Pitfalls",
-              "content": "Common mistakes with utility types:\n\n1. **Wrong key names in Pick/Omit**:\n   ```typescript\n   // ERROR: 'username' doesn't exist in User\n   type Bad = Pick<User, 'username'>;\n   \n   // Correct: Use actual property names\n   type Good = Pick<User, 'name'>;\n   ```\n\n2. **Forgetting union syntax for multiple keys**:\n   ```typescript\n   // Wrong\n   type Bad = Pick<User, 'id', 'name'>;\n   \n   // Correct - use union type\n   type Good = Pick<User, 'id' | 'name'>;\n   ```\n\n3. **Confusing Exclude and Omit**:\n   - `Omit` removes properties from object types\n   - `Exclude` removes types from union types\n   ```typescript\n   // Omit for objects\n   type NoEmail = Omit<User, 'email'>;\n   \n   // Exclude for unions\n   type NoA = Exclude<'a' | 'b' | 'c', 'a'>;\n   ```\n\n4. **Not using typeof with ReturnType**:\n   ```typescript\n   // Wrong - myFunc is a value, not a type\n   type Bad = ReturnType<myFunc>;\n   \n   // Correct - use typeof to get the type\n   type Good = ReturnType<typeof myFunc>;\n   ```\n\n5. **Over-nesting utility types**:\n   ```typescript\n   // Hard to read\n   type Complex = Partial<Required<Readonly<Pick<Omit<User, 'id'>, 'name'>>>>;\n   \n   // Better - use intermediate types\n   type UserName = Pick<User, 'name'>;\n   type EditableName = Partial<UserName>;\n   ```\n\n6. **Thinking Readonly prevents all mutations**:\n   - Only prevents reassignment of properties\n   - Nested objects can still be mutated\n   - Use deep readonly libraries for nested protection"
-            }
-          ],
-          "challenges": [
-            {
-              "type": "FREE_CODING",
-              "id": "10.7-challenge",
-              "title": "Practice Challenge",
-              "description": "Practice using utility types with a Product interface:\n\n1. Create an interface `Product` with:\n   - id: number\n   - name: string\n   - price: number\n   - description: string\n   - inStock: boolean\n\n2. Create these type aliases using utility types:\n   - `ProductPreview`: Only id, name, and price (use Pick)\n   - `ProductUpdate`: All fields optional (use Partial)\n   - `ProductWithoutId`: Everything except id (use Omit)\n\n3. Create a function `displayPreview` that takes a ProductPreview and logs it\n\n4. Create a function `updateProduct` that takes an id and ProductUpdate\n\n5. Test both functions",
-              "instructions": "Practice using utility types with a Product interface:\n\n1. Create an interface `Product` with:\n   - id: number\n   - name: string\n   - price: number\n   - description: string\n   - inStock: boolean\n\n2. Create these type aliases using utility types:\n   - `ProductPreview`: Only id, name, and price (use Pick)\n   - `ProductUpdate`: All fields optional (use Partial)\n   - `ProductWithoutId`: Everything except id (use Omit)\n\n3. Create a function `displayPreview` that takes a ProductPreview and logs it\n\n4. Create a function `updateProduct` that takes an id and ProductUpdate\n\n5. Test both functions",
-              "starterCode": "// 1. Create the Product interface\ninterface Product {\n  // Add properties here\n}\n\n// 2. Create type aliases using utility types\ntype ProductPreview = Product;  // Fix this\ntype ProductUpdate = Product;   // Fix this\ntype ProductWithoutId = Product; // Fix this\n\n// 3. Create displayPreview function\nfunction displayPreview(product) {\n  console.log(`${product.name}: $${product.price}`);\n}\n\n// 4. Create updateProduct function\nfunction updateProduct(id, updates) {\n  console.log(`Updating product ${id}:`, updates);\n}\n\n// 5. Test the functions\nlet preview = { id: 1, name: 'Laptop', price: 999 };\ndisplayPreview(preview);\n\nupdateProduct(1, { price: 899 });",
-              "solution": "// 1. Product interface\ninterface Product {\n  id: number;\n  name: string;\n  price: number;\n  description: string;\n  inStock: boolean;\n}\n\n// 2. Type aliases using utility types\ntype ProductPreview = Pick<Product, 'id' | 'name' | 'price'>;\ntype ProductUpdate = Partial<Product>;\ntype ProductWithoutId = Omit<Product, 'id'>;\n\n// 3. displayPreview function with proper types\nfunction displayPreview(product: ProductPreview): void {\n  console.log(`${product.name}: $${product.price}`);\n}\n\n// 4. updateProduct function with proper types\nfunction updateProduct(id: number, updates: ProductUpdate): void {\n  console.log(`Updating product ${id}:`, updates);\n}\n\n// 5. Test the functions\nlet preview: ProductPreview = { id: 1, name: 'Laptop', price: 999 };\ndisplayPreview(preview);  // 'Laptop: $999'\n\nupdateProduct(1, { price: 899 });  // Just price\nupdateProduct(2, { name: 'New Name', inStock: true });  // Multiple fields\nupdateProduct(3, {});  // Empty update is valid with Partial\n\n// ProductWithoutId example - for creating new products\nlet newProduct: ProductWithoutId = {\n  name: 'Keyboard',\n  price: 79,\n  description: 'Mechanical keyboard',\n  inStock: true\n};\nconsole.log('New product (no id yet):', newProduct);",
-              "language": "javascript",
-              "testCases": [
-                {
-                  "id": "test-1",
-                  "description": "displayPreview should show product info",
-                  "expectedOutput": "Laptop: $999",
-                  "isVisible": true
-                },
-                {
-                  "id": "test-2",
-                  "description": "updateProduct should accept partial updates",
-                  "expectedOutput": "Updating product 1:",
-                  "isVisible": true
-                }
-              ],
-              "hints": [
-                {
-                  "level": 1,
-                  "text": "For ProductPreview, use Pick<Product, 'id' | 'name' | 'price'> to select only those three properties."
-                },
-                {
-                  "level": 2,
-                  "text": "For ProductUpdate, use Partial<Product> to make all properties optional. For ProductWithoutId, use Omit<Product, 'id'>."
-                }
-              ],
-              "commonMistakes": [
-                {
-                  "mistake": "Using comma instead of union for Pick keys",
-                  "consequence": "Syntax error - Pick expects a single union type for keys.",
-                  "correction": "Use: Pick<Product, 'id' | 'name' | 'price'> with pipe (|) between property names."
-                },
-                {
-                  "mistake": "Forgetting quotes around property names",
-                  "consequence": "TypeScript looks for variables named id, name, etc.",
-                  "correction": "Property names must be string literals: 'id' | 'name', not id | name."
-                },
-                {
-                  "mistake": "Confusing Omit and Exclude",
-                  "consequence": "Exclude is for union types, Omit is for object properties.",
-                  "correction": "Use Omit<Product, 'id'> to remove the id property from the Product object type."
-                }
-              ],
-              "difficulty": "intermediate"
-            }
-          ]
-        },
-        {
-          "id": "10.8",
           "title": "Type Guards and Discriminated Unions (The Security Checkpoint Analogy)",
           "moduleId": "module-10",
-          "order": 8,
+          "order": 7,
           "estimatedMinutes": 35,
           "difficulty": "intermediate",
           "contentSections": [
@@ -4676,7 +4590,7 @@
           "challenges": [
             {
               "type": "FREE_CODING",
-              "id": "10.8-challenge",
+              "id": "10.7-challenge",
               "title": "Practice Challenge",
               "description": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
               "instructions": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
@@ -4739,10 +4653,10 @@
           ]
         },
         {
-          "id": "10.9",
+          "id": "10.8",
           "title": "Union, Intersection, and Literal Types",
           "moduleId": "module-10",
-          "order": 9,
+          "order": 8,
           "estimatedMinutes": 45,
           "difficulty": "intermediate",
           "contentSections": [
@@ -4922,10 +4836,10 @@
           ]
         },
         {
-          "id": "10.10",
+          "id": "10.9",
           "title": "Advanced Type Narrowing and Type Guards (The Detective Analogy)",
           "moduleId": "module-10",
-          "order": 10,
+          "order": 9,
           "estimatedMinutes": 40,
           "difficulty": "intermediate",
           "contentSections": [
@@ -5167,10 +5081,10 @@
           ]
         },
         {
-          "id": "10.11",
+          "id": "utility-types",
           "title": "TypeScript Utility Types (The Workshop Tools Analogy)",
           "moduleId": "module-10",
-          "order": 11,
+          "order": 10,
           "estimatedMinutes": 45,
           "difficulty": "intermediate",
           "contentSections": [
