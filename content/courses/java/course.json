@@ -1711,9 +1711,9 @@
     {
       "id": "module-03",
       "title": "Object-Oriented Programming",
-      "description": "Master OOP concepts: classes, objects, encapsulation, inheritance, polymorphism, and modern records.",
+      "description": "Master OOP concepts: classes, objects, encapsulation, inheritance, polymorphism, records, and sealed classes.",
       "difficulty": "beginner",
-      "estimatedHours": 3.9,
+      "estimatedHours": 4.4,
       "lessons": [
         {
           "id": "epoch-2-lesson-1",
@@ -2840,9 +2840,14 @@
               "content": "USE RECORDS FOR:\n- Data Transfer Objects (DTOs)\n- API response/request objects\n- Value objects (Money, Coordinate, Range)\n- Configuration objects\n- Tuple-like groupings of data\n- Immutable data holders\n\nRECORD EXAMPLES:\n\n// API Response\nrecord ApiResponse<T>(T data, String message, int status) {}\n\n// Geographic coordinates\nrecord Coordinate(double latitude, double longitude) {\n    public double distanceTo(Coordinate other) {\n        // Calculate distance...\n    }\n}\n\n// Money with currency\nrecord Money(BigDecimal amount, String currency) {\n    public Money add(Money other) {\n        if (!currency.equals(other.currency)) {\n            throw new IllegalArgumentException(\"Currency mismatch\");\n        }\n        return new Money(amount.add(other.amount), currency);\n    }\n}\n\nDON'T USE RECORDS FOR:\n- Entities that need to change (use regular classes)\n- Classes that need inheritance hierarchies\n- Classes with complex initialization logic\n- JPA/Hibernate entities (they need no-arg constructors)"
             },
             {
+              "type": "KEY_POINT",
+              "title": "Record Patterns (Java 21+)",
+              "content": "Java 21 introduced RECORD PATTERNS - automatically extract record components in pattern matching!\n\nBASIC RECORD PATTERN:\nrecord Point(int x, int y) {}\n\nObject obj = new Point(3, 4);\nif (obj instanceof Point(int x, int y)) {\n    // x and y are extracted automatically!\n    System.out.println(\"x=\" + x + \", y=\" + y);\n}\n\nIN SWITCH EXPRESSIONS:\nrecord Circle(double radius) {}\nrecord Rectangle(double width, double height) {}\n\ndouble getArea(Object shape) {\n    return switch (shape) {\n        case Circle(double r) -> Math.PI * r * r;\n        case Rectangle(double w, double h) -> w * h;\n        default -> 0;\n    };\n}\n\nNESTED RECORD PATTERNS:\nrecord Line(Point start, Point end) {}\n\n// Extract nested components in one pattern!\nif (line instanceof Line(Point(int x1, int y1), Point(int x2, int y2))) {\n    double length = Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));\n}\n\nWHY USE RECORD PATTERNS?\n- Eliminates manual field extraction\n- Type-safe deconstruction\n- Works with sealed classes for exhaustive matching\n- Makes code more declarative and readable"
+            },
+            {
               "type": "WARNING",
               "title": "Common Records Pitfalls (Java 16+)",
-              "content": "1. USING getTitle() INSTEAD OF title():\nRecord accessors do NOT use get prefix!\nbook.getTitle()  // ERROR - method not found\nbook.title()     // CORRECT\n\n2. TRYING TO MODIFY RECORD FIELDS:\nRecords are IMMUTABLE - fields cannot be changed after creation.\nbook.title = \"New Title\";  // ERROR - cannot assign\n// Create new record instead:\nvar updated = new Book(\"New Title\", book.author(), book.pages());\n\n3. RECORDS WITH MUTABLE FIELDS:\nIf a record contains a mutable object (List, array), the record is still logically mutable!\nrecord Team(List<String> members) {}\n// The list can be modified externally!\n// Use defensive copies in compact constructor.\n\n4. FORGETTING COMPACT CONSTRUCTOR SYNTAX:\nrecord Age(int years) {\n    public Age(int years) { ... }  // Verbose\n    public Age { ... }              // Compact - preferred\n}\n\n5. RECORDS CANNOT EXTEND CLASSES:\nrecord Point(int x, int y) extends Shape {}  // ERROR!\n// But records CAN implement interfaces:\nrecord Point(int x, int y) implements Serializable {}\n\n6. RECORD PATTERNS (Java 21+):\nUse pattern matching with records for cleaner code:\nif (obj instanceof Point(int x, int y)) {\n    // x and y extracted automatically!\n}"
+              "content": "1. USING getTitle() INSTEAD OF title():\nRecord accessors do NOT use get prefix!\nbook.getTitle()  // ERROR - method not found\nbook.title()     // CORRECT\n\n2. TRYING TO MODIFY RECORD FIELDS:\nRecords are IMMUTABLE - fields cannot be changed after creation.\nbook.title = \"New Title\";  // ERROR - cannot assign\n// Create new record instead:\nvar updated = new Book(\"New Title\", book.author(), book.pages());\n\n3. RECORDS WITH MUTABLE FIELDS:\nIf a record contains a mutable object (List, array), the record is still logically mutable!\nrecord Team(List<String> members) {}\n// The list can be modified externally!\n// Use defensive copies in compact constructor.\n\n4. FORGETTING COMPACT CONSTRUCTOR SYNTAX:\nrecord Age(int years) {\n    public Age(int years) { ... }  // Verbose\n    public Age { ... }              // Compact - preferred\n}\n\n5. RECORDS CANNOT EXTEND CLASSES:\nrecord Point(int x, int y) extends Shape {}  // ERROR!\n// But records CAN implement interfaces:\nrecord Point(int x, int y) implements Serializable {}"
             }
           ],
           "challenges": [
@@ -2955,6 +2960,172 @@
                   "mistake": "Writing full constructor with parameters",
                   "consequence": "More verbose than needed",
                   "correction": "Use compact constructor: public Age { } without parameters"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "epoch-2-lesson-8",
+          "title": "Lesson 2.8: Sealed Classes - Controlled Inheritance",
+          "moduleId": "module-03",
+          "order": 8,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Uncontrolled Inheritance",
+              "content": "Sealed classes are a standard feature since Java 17 and are now widely adopted in modern Java development.\n\nIn traditional Java, any class can be extended unless marked final:\n\npublic class Shape { }\n\n// Anyone can extend Shape!\nclass Circle extends Shape { }  // OK\nclass Triangle extends Shape { }  // OK\nclass WeirdShape extends Shape { }  // Also OK... but should it be?\n\nTHE PROBLEM:\n- You can't control WHO extends your class\n- Pattern matching can't be exhaustive (new subtypes could appear)\n- API design is unclear - which subclasses are \"official\"?\n\nBefore sealed classes, you had only two options:\n1. Leave class open (anyone extends)\n2. Make it final (no one extends)\n\nSealed classes give you a THIRD option: allow SPECIFIC classes to extend."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Sealed Classes: You Control Who Extends",
+              "content": "A SEALED class explicitly lists which classes can extend it:\n\npublic sealed class Shape permits Circle, Rectangle, Triangle {\n    public abstract double area();\n}\n\npublic final class Circle extends Shape {\n    private final double radius;\n    public Circle(double radius) { this.radius = radius; }\n    public double area() { return Math.PI * radius * radius; }\n}\n\npublic final class Rectangle extends Shape {\n    private final double width, height;\n    public Rectangle(double w, double h) { width = w; height = h; }\n    public double area() { return width * height; }\n}\n\npublic final class Triangle extends Shape {\n    private final double base, height;\n    public Triangle(double b, double h) { base = b; height = h; }\n    public double area() { return 0.5 * base * height; }\n}\n\n// This would NOT compile!\nclass Pentagon extends Shape { }  // ERROR: Pentagon is not in permits clause\n\nBENEFITS:\n- Complete control over class hierarchy\n- Compiler knows ALL possible subtypes\n- Enables exhaustive pattern matching"
+            },
+            {
+              "type": "THEORY",
+              "title": "Sealed Class Rules",
+              "content": "PERMITTED SUBCLASSES MUST:\n1. Be in the same package (or module) as the sealed class\n2. Directly extend the sealed class\n3. Be one of: final, sealed, or non-sealed\n\nTHREE MODIFIERS FOR SUBCLASSES:\n\n// FINAL - Cannot be extended further\npublic final class Circle extends Shape { }\n\n// SEALED - Continues the sealing chain\npublic sealed class Polygon extends Shape permits Triangle, Rectangle { }\n\n// NON-SEALED - Opens hierarchy back up\npublic non-sealed class CustomShape extends Shape { }\n// Now anyone can extend CustomShape\n\nSYNTAX VARIATIONS:\n\n// Implicit permits (when all subclasses in same file)\nsealed class Result {\n    final class Success extends Result { }\n    final class Failure extends Result { }\n}\n// No 'permits' clause needed - compiler infers from same file\n\n// Sealed interfaces work the same way\nsealed interface Expression permits Constant, Add, Multiply { }"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Sealed Classes + Pattern Matching = Power",
+              "content": "The REAL power of sealed classes is EXHAUSTIVE PATTERN MATCHING!\n\nsealed interface Shape permits Circle, Rectangle, Triangle {}\nrecord Circle(double radius) implements Shape {}\nrecord Rectangle(double w, double h) implements Shape {}\nrecord Triangle(double b, double h) implements Shape {}\n\n// Compiler KNOWS all cases - no default needed!\ndouble calculateArea(Shape shape) {\n    return switch (shape) {\n        case Circle(double r) -> Math.PI * r * r;\n        case Rectangle(double w, double h) -> w * h;\n        case Triangle(double b, double h) -> 0.5 * b * h;\n        // No default needed! Compiler knows these are ALL possibilities\n    };\n}\n\nIF YOU FORGET A CASE:\ndouble calculateArea(Shape shape) {\n    return switch (shape) {\n        case Circle(double r) -> Math.PI * r * r;\n        case Rectangle(double w, double h) -> w * h;\n        // COMPILE ERROR: 'switch' expression does not cover all possible input values\n    };\n}\n\nThis makes your code SAFER:\n- Add new shape? Compiler tells you everywhere to update\n- No runtime surprises from unexpected subtypes\n- Self-documenting code structure"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Sealed Classes in Action: Expression Evaluator",
+              "content": "Sealed classes with records create clean, type-safe domain models. The compiler enforces exhaustive handling of all cases.",
+              "code": "// Define a sealed expression hierarchy using records\nsealed interface Expr permits Constant, Add, Multiply, Negate {}\n\nrecord Constant(int value) implements Expr {}\nrecord Add(Expr left, Expr right) implements Expr {}\nrecord Multiply(Expr left, Expr right) implements Expr {}\nrecord Negate(Expr expr) implements Expr {}\n\n// Evaluate expressions - compiler ensures all cases handled!\nint evaluate(Expr expr) {\n    return switch (expr) {\n        case Constant(int v) -> v;\n        case Add(Expr l, Expr r) -> evaluate(l) + evaluate(r);\n        case Multiply(Expr l, Expr r) -> evaluate(l) * evaluate(r);\n        case Negate(Expr e) -> -evaluate(e);\n    };\n}\n\n// Pretty print expressions\nString format(Expr expr) {\n    return switch (expr) {\n        case Constant(int v) -> String.valueOf(v);\n        case Add(Expr l, Expr r) -> \"(\" + format(l) + \" + \" + format(r) + \")\";\n        case Multiply(Expr l, Expr r) -> format(l) + \" * \" + format(r);\n        case Negate(Expr e) -> \"-\" + format(e);\n    };\n}\n\nvoid main() {\n    // Build expression: (3 + 4) * 2\n    Expr expr = new Multiply(\n        new Add(new Constant(3), new Constant(4)),\n        new Constant(2)\n    );\n    \n    println(format(expr));    // (3 + 4) * 2\n    println(evaluate(expr));  // 14\n    \n    // Expression: -(5 + 3)\n    Expr neg = new Negate(new Add(new Constant(5), new Constant(3)));\n    println(format(neg));     // -(5 + 3)\n    println(evaluate(neg));   // -8\n}",
+              "language": "java"
+            },
+            {
+              "type": "THEORY",
+              "title": "When to Use Sealed Classes",
+              "content": "USE SEALED CLASSES WHEN:\n- You have a FIXED set of subtypes (known at design time)\n- You want EXHAUSTIVE pattern matching\n- You're modeling domain concepts with clear variants\n- You want to prevent unexpected extensions\n\nGREAT USE CASES:\n- Result types (Success/Failure/Pending)\n- AST nodes (expressions, statements)\n- State machines (states are fixed)\n- Payment methods (Card/Bank/Crypto)\n- HTTP responses (Ok/Error/Redirect)\n\nsealed interface PaymentResult permits Approved, Declined, Pending {}\nrecord Approved(String transactionId) implements PaymentResult {}\nrecord Declined(String reason) implements PaymentResult {}\nrecord Pending(String checkUrl) implements PaymentResult {}\n\nDON'T USE SEALED CLASSES WHEN:\n- Subtypes should be extensible by users\n- The set of subtypes is unknown or growing\n- You're building a library meant for extension\n\nSEALED vs FINAL vs ABSTRACT:\n- abstract: Must be extended, anyone can\n- final: Cannot be extended at all\n- sealed: Can only be extended by specific classes"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Sealed Classes Pitfalls (Java 17+)",
+              "content": "1. FORGETTING THE MODIFIER ON SUBCLASSES:\nsealed class Shape permits Circle {}\nclass Circle extends Shape {}  // ERROR!\n// Must be: final class Circle, sealed class Circle, or non-sealed class Circle\n\n2. SUBCLASS NOT IN SAME PACKAGE/MODULE:\nsealed class Shape permits Circle {}  // in package shapes\nfinal class Circle extends Shape {}   // in package other - ERROR!\n\n3. INDIRECT EXTENSION:\nsealed class Shape permits Circle {}\nfinal class Circle extends Shape {}\nclass SmallCircle extends Circle {}  // ERROR! Circle is final\n\n4. FORGETTING permits CLAUSE:\nsealed class Shape {}  // ERROR if subclasses in different files\n// Use permits, or define all subclasses in same file\n\n5. NON-SEALED BREAKS EXHAUSTIVENESS:\nsealed interface Animal permits Dog, Cat, Wild {}\nfinal class Dog implements Animal {}\nfinal class Cat implements Animal {}\nnon-sealed class Wild implements Animal {}  // Opens it up!\n// Now switch needs a default because Wild can have any subclass\n\n6. SEALED CLASSES WORK WITH INTERFACES TOO:\nsealed interface, not just sealed class\nInterfaces are often preferred for sealed hierarchies"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-8-sealed-basic",
+              "title": "Create a Sealed Shape Hierarchy",
+              "description": "Create a sealed interface Shape with two permitted implementations:\n- record Circle(double radius) with area = PI * r^2\n- record Square(double side) with area = side * side\n\nAdd a method that calculates area using pattern matching.\n\nExpected output: 78.54 (for Circle with radius 5)",
+              "instructions": "Create a sealed interface Shape with two permitted implementations:\n- record Circle(double radius) with area = PI * r^2\n- record Square(double side) with area = side * side\n\nAdd a method that calculates area using pattern matching.\n\nExpected output: 78.54 (for Circle with radius 5)",
+              "starterCode": "// Create a Sealed Shape Hierarchy\n// Write your code below\n\nvoid main() {\n    \n}",
+              "solution": "// Solution: Create a Sealed Shape Hierarchy\n\nsealed interface Shape permits Circle, Square {}\n\nrecord Circle(double radius) implements Shape {}\nrecord Square(double side) implements Shape {}\n\ndouble calculateArea(Shape shape) {\n    return switch (shape) {\n        case Circle(double r) -> Math.PI * r * r;\n        case Square(double s) -> s * s;\n    };\n}\n\nvoid main() {\n    Shape circle = new Circle(5);\n    // Format to 2 decimal places\n    System.out.printf(\"%.2f%n\", calculateArea(circle));\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-8-sealed-basic-test-1",
+                  "description": "Should print '78.54' for circle area",
+                  "expectedOutput": "78.54",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use 'sealed interface Shape permits Circle, Square {}' to define the sealed interface"
+                },
+                {
+                  "level": 2,
+                  "text": "Records automatically implement interfaces: record Circle(double radius) implements Shape {}"
+                },
+                {
+                  "level": 3,
+                  "text": "Use switch with record patterns: case Circle(double r) -> Math.PI * r * r;"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting the permits clause",
+                  "consequence": "Compiler error or unexpected behavior",
+                  "correction": "Use 'sealed interface Shape permits Circle, Square {}'"
+                },
+                {
+                  "mistake": "Using default case when not needed",
+                  "consequence": "Loses exhaustiveness checking benefit",
+                  "correction": "With sealed types, list all cases explicitly - no default needed"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-8-sealed-result",
+              "title": "Result Type Pattern",
+              "description": "Create a sealed Result type for operation outcomes:\n- record Success(String message)\n- record Failure(String error)\n\nWrite a method that returns Success or Failure based on a condition.\nPrint appropriate message using pattern matching.\n\nTest: If input > 0, return Success(\"Positive\"), else Failure(\"Not positive\")\nInput: 5\nExpected output: Success: Positive",
+              "instructions": "Create a sealed Result type for operation outcomes:\n- record Success(String message)\n- record Failure(String error)\n\nWrite a method that returns Success or Failure based on a condition.\nPrint appropriate message using pattern matching.",
+              "starterCode": "// Result Type Pattern\n// Write your code below\n\nvoid main() {\n    \n}",
+              "solution": "// Solution: Result Type Pattern\n\nsealed interface Result permits Success, Failure {}\n\nrecord Success(String message) implements Result {}\nrecord Failure(String error) implements Result {}\n\nResult checkNumber(int num) {\n    if (num > 0) {\n        return new Success(\"Positive\");\n    } else {\n        return new Failure(\"Not positive\");\n    }\n}\n\nString formatResult(Result result) {\n    return switch (result) {\n        case Success(String msg) -> \"Success: \" + msg;\n        case Failure(String err) -> \"Failure: \" + err;\n    };\n}\n\nvoid main() {\n    Result result = checkNumber(5);\n    println(formatResult(result));\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-8-sealed-result-test-1",
+                  "description": "Should print 'Success: Positive'",
+                  "expectedOutput": "Success: Positive",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Define: sealed interface Result permits Success, Failure {}"
+                },
+                {
+                  "level": 2,
+                  "text": "Use records for both variants: record Success(String message) implements Result {}"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using class instead of record",
+                  "consequence": "More boilerplate code",
+                  "correction": "Records are perfect for sealed type variants - use them!"
+                }
+              ],
+              "difficulty": "intermediate"
+            },
+            {
+              "type": "FREE_CODING",
+              "id": "epoch-2-lesson-8-sealed-expression",
+              "title": "Simple Expression Evaluator",
+              "description": "Create a sealed expression hierarchy:\n- record Num(int value)\n- record Add(Expr left, Expr right)\n\nWrite an evaluate method using pattern matching.\nTest: evaluate(Add(Num(3), Num(4))) should return 7\n\nExpected output: 7",
+              "instructions": "Create a sealed expression hierarchy:\n- record Num(int value)\n- record Add(Expr left, Expr right)\n\nWrite an evaluate method using pattern matching.",
+              "starterCode": "// Simple Expression Evaluator\n// Write your code below\n\nvoid main() {\n    \n}",
+              "solution": "// Solution: Simple Expression Evaluator\n\nsealed interface Expr permits Num, Add {}\n\nrecord Num(int value) implements Expr {}\nrecord Add(Expr left, Expr right) implements Expr {}\n\nint evaluate(Expr expr) {\n    return switch (expr) {\n        case Num(int v) -> v;\n        case Add(Expr l, Expr r) -> evaluate(l) + evaluate(r);\n    };\n}\n\nvoid main() {\n    Expr expr = new Add(new Num(3), new Num(4));\n    println(evaluate(expr));\n}",
+              "language": "java",
+              "testCases": [
+                {
+                  "id": "epoch-2-lesson-8-sealed-expression-test-1",
+                  "description": "Should print '7'",
+                  "expectedOutput": "7",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "sealed interface Expr permits Num, Add {}"
+                },
+                {
+                  "level": 2,
+                  "text": "Add has two Expr children - use recursion to evaluate them"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to recursively evaluate nested expressions",
+                  "consequence": "Cannot handle nested Add expressions",
+                  "correction": "Call evaluate recursively: evaluate(l) + evaluate(r)"
                 }
               ],
               "difficulty": "intermediate"
