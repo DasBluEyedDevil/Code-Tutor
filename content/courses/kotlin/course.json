@@ -10254,6 +10254,526 @@
       ]
     },
     {
+      "id": "module-06a",
+      "title": "Module 06A: Persistence with SQLDelight",
+      "description": "Master cross-platform database persistence using SQLDelight. Learn to create type-safe SQL queries, handle migrations, implement reactive data flows, and manage secure storage across Android and iOS.",
+      "difficulty": "intermediate",
+      "estimatedHours": 6,
+      "lessons": [
+        {
+          "id": "6a.1",
+          "title": "Lesson 6A.1: Introduction to SQLDelight",
+          "moduleId": "module-06a",
+          "order": 1,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nThis lesson introduces SQLDelight - the type-safe SQL library that generates Kotlin code from your SQL statements. You'll learn why it's the preferred database solution for Kotlin Multiplatform and how it differs from platform-specific alternatives."
+            },
+            {
+              "type": "THEORY",
+              "title": "What is SQLDelight?",
+              "content": "**SQLDelight** is a Kotlin Multiplatform library that generates typesafe Kotlin APIs from SQL statements.\n\n```sql\n-- Write SQL\nCREATE TABLE Note (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL\n);\n\ngetAllNotes:\nSELECT * FROM Note;\n```\n\n```kotlin\n// SQLDelight generates type-safe Kotlin code\nval notes: List<Note> = database.noteQueries.getAllNotes().executeAsList()\n// Note is a generated data class with id: Long, title: String, content: String\n```\n\n### Key Features\n\n| Feature | Description |\n|---------|-------------|\n| **Type-safe SQL** | Compile-time verification of your queries |\n| **Multiplatform** | Works on Android, iOS, Desktop, and JS |\n| **Code Generation** | Generates Kotlin data classes and query functions |\n| **IDE Support** | SQL syntax highlighting and auto-completion |\n| **Reactive Queries** | Flow integration for automatic UI updates |"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why SQLDelight for KMP?",
+              "content": "### The Problem with Platform-Specific Solutions\n\n**Android: Room**\n```kotlin\n// Room is excellent but Android-only\n@Dao\ninterface NoteDao {\n    @Query(\"SELECT * FROM notes\")\n    fun getAll(): List<NoteEntity>\n}\n```\n- ❌ Only works on Android\n- ❌ No iOS support\n- ❌ Requires separate iOS implementation\n\n**iOS: Core Data**\n```swift\n// Core Data is powerful but iOS/macOS only\nlet request = NSFetchRequest<Note>(entityName: \"Note\")\nlet notes = try context.fetch(request)\n```\n- ❌ Only works on Apple platforms\n- ❌ Different paradigm (object graph vs SQL)\n- ❌ Requires separate Android implementation\n\n### SQLDelight: One Codebase, All Platforms\n\n```kotlin\n// In commonMain - works everywhere\nclass NoteRepository(private val database: AppDatabase) {\n    fun getAllNotes(): List<Note> {\n        return database.noteQueries.getAllNotes().executeAsList()\n    }\n}\n```\n- ✅ Same code for Android, iOS, Desktop, Web\n- ✅ Type-safe at compile time\n- ✅ SQL you already know\n- ✅ Native SQLite performance on each platform"
+            },
+            {
+              "type": "THEORY",
+              "title": "SQLDelight vs Other Options",
+              "content": "### Comparison Table\n\n| Feature | SQLDelight | Room | Realm | Core Data |\n|---------|------------|------|-------|------------|\n| **KMP Support** | ✅ Full | ❌ Android only | ✅ Partial | ❌ Apple only |\n| **Type Safety** | ✅ Compile-time | ✅ Compile-time | ⚠️ Runtime | ⚠️ Runtime |\n| **SQL Knowledge** | Required | Required | Not needed | Not needed |\n| **Reactive** | ✅ Flow | ✅ Flow/LiveData | ✅ | ✅ |\n| **Migration** | ✅ Built-in | ✅ Built-in | ✅ | ✅ |\n| **Sync** | ❌ Manual | ❌ Manual | ✅ Built-in | ✅ CloudKit |\n\n### When to Choose SQLDelight\n\n**Choose SQLDelight when:**\n- Building a KMP application\n- You're comfortable with SQL\n- You want compile-time query verification\n- You need fine-grained control over database operations\n\n**Consider alternatives when:**\n- Building single-platform app (Room for Android is excellent)\n- Need cloud sync out of the box (Realm might be simpler)\n- Team has no SQL experience"
+            },
+            {
+              "type": "THEORY",
+              "title": "How SQLDelight Works",
+              "content": "### The Build Process\n\n```\n1. You write .sq files with SQL statements\n     ↓\n2. SQLDelight Gradle plugin processes them\n     ↓\n3. Kotlin data classes are generated\n     ↓\n4. Type-safe query functions are generated\n     ↓\n5. You use the generated code in your app\n```\n\n### Example Workflow\n\n**Step 1: Define your schema (Note.sq)**\n```sql\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    created_at INTEGER NOT NULL\n);\n```\n\n**Step 2: Add named queries**\n```sql\ngetAllNotes:\nSELECT * FROM Note ORDER BY created_at DESC;\n\ngetNoteById:\nSELECT * FROM Note WHERE id = ?;\n\ninsertNote:\nINSERT INTO Note(title, content, created_at)\nVALUES (?, ?, ?);\n```\n\n**Step 3: Use generated code**\n```kotlin\n// Generated: data class Note(val id: Long, val title: String, ...)\n// Generated: class NoteQueries { fun getAllNotes(), fun getNoteById(id: Long), ... }\n\nval allNotes: List<Note> = noteQueries.getAllNotes().executeAsList()\nval note: Note? = noteQueries.getNoteById(1).executeAsOneOrNull()\nnoteQueries.insertNote(\"Title\", \"Content\", Clock.System.now().toEpochMilliseconds())\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "SQLDelight in Action",
+              "content": "Here's a complete example showing SQLDelight's type-safety:",
+              "code": "// Note.sq (your SQL file)\n// ================================\n// CREATE TABLE Note (\n//     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n//     title TEXT NOT NULL,\n//     content TEXT NOT NULL\n// );\n//\n// getAllNotes:\n// SELECT * FROM Note;\n//\n// getNoteById:\n// SELECT * FROM Note WHERE id = ?;\n\n// Repository.kt (using generated code)\n// ================================\nclass NoteRepository(private val database: AppDatabase) {\n    \n    // Type-safe! noteQueries is generated, getAllNotes() returns Query<Note>\n    fun getAllNotes(): List<Note> {\n        return database.noteQueries.getAllNotes().executeAsList()\n    }\n    \n    // The parameter type is inferred from the schema (id is Long)\n    fun getNoteById(id: Long): Note? {\n        return database.noteQueries.getNoteById(id).executeAsOneOrNull()\n    }\n    \n    // Compile error if you pass wrong types!\n    fun addNote(title: String, content: String) {\n        database.noteQueries.insertNote(title, content)\n        // database.noteQueries.insertNote(123, content) // ❌ Compile error!\n    }\n}\n\n// The generated Note class\n// ================================\n// data class Note(\n//     val id: Long,\n//     val title: String,\n//     val content: String\n// )",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Current Version and Ecosystem",
+              "content": "### SQLDelight 2.x (Current as of 2025)\n\nSQLDelight 2.0 was released in 2023 with major improvements:\n\n**New in 2.x:**\n- Improved KMP support\n- Better IDE integration\n- Simplified driver setup\n- Async/suspend function support\n- Web target (SQLite WASM)\n\n### Related Libraries\n\n| Library | Purpose |\n|---------|---------|\n| `app.cash.sqldelight` | Core Gradle plugin |\n| `native-driver` | iOS/macOS SQLite driver |\n| `android-driver` | Android SQLite driver |\n| `sqlite-driver` | JVM/Desktop SQLite driver |\n| `web-worker-driver` | Web (WASM) SQLite driver |\n| `coroutines-extensions` | Flow integration |\n\n### What You'll Learn in This Module\n\n1. **Setup**: Configure SQLDelight in a KMP project\n2. **Schema**: Design tables and relationships\n3. **Queries**: Write type-safe CRUD operations\n4. **Migrations**: Handle schema changes safely\n5. **Reactive**: Use Flow for automatic UI updates\n6. **Platform**: Configure drivers for each platform\n7. **Security**: Store sensitive data properly"
+            },
+            {
+              "type": "WARNING",
+              "title": "Important Considerations",
+              "content": "### SQL Knowledge Required\n\nSQLDelight uses real SQL, not an ORM abstraction:\n```sql\n-- You write actual SQL\nSELECT n.*, COUNT(c.id) as comment_count\nFROM Note n\nLEFT JOIN Comment c ON c.note_id = n.id\nGROUP BY n.id;\n```\n\nIf you're not comfortable with SQL:\n- Consider learning SQL basics first\n- SQLDelight's IntelliJ plugin helps with autocomplete\n- Most queries are simple CRUD operations\n\n### No Built-in Sync\n\nSQLDelight is local-only:\n- No automatic cloud sync\n- You must implement sync logic yourself\n- Consider: Supabase, Firebase, custom backend\n\n### Threading Considerations\n\nDatabase operations can block:\n```kotlin\n// ❌ Don't do this on Main thread\nval notes = database.noteQueries.getAllNotes().executeAsList()\n\n// ✅ Use coroutines with appropriate dispatcher\nsuspend fun getAllNotes() = withContext(Dispatchers.Default) {\n    database.noteQueries.getAllNotes().executeAsList()\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-1-1",
+              "title": "SQL Schema Design",
+              "description": "Design a SQL schema for a simple task management app with tasks and categories.",
+              "difficulty": "intermediate",
+              "starterCode": "-- Design the schema for a task manager app\n-- Requirements:\n-- 1. Tasks table with: id, title, description, is_completed, due_date, category_id\n-- 2. Categories table with: id, name, color\n-- 3. Tasks should reference categories (foreign key)\n\n-- TODO: Write your CREATE TABLE statements here\n\n-- Categories table\n\n-- Tasks table",
+              "solution": "-- Categories table\nCREATE TABLE Category (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL,\n    color TEXT NOT NULL DEFAULT '#808080'\n);\n\n-- Tasks table with foreign key to Category\nCREATE TABLE Task (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    description TEXT,\n    is_completed INTEGER NOT NULL DEFAULT 0,\n    due_date INTEGER,\n    category_id INTEGER,\n    created_at INTEGER NOT NULL,\n    FOREIGN KEY (category_id) REFERENCES Category(id) ON DELETE SET NULL\n);\n\n-- Named queries\ngetAllTasks:\nSELECT * FROM Task ORDER BY due_date ASC;\n\ngetTasksByCategory:\nSELECT * FROM Task WHERE category_id = ?;\n\ngetAllCategories:\nSELECT * FROM Category;\n\ninsertTask:\nINSERT INTO Task(title, description, is_completed, due_date, category_id, created_at)\nVALUES (?, ?, 0, ?, ?, ?);\n\ninsertCategory:\nINSERT INTO Category(name, color) VALUES (?, ?);\n\ntoggleTaskCompletion:\nUPDATE Task SET is_completed = NOT is_completed WHERE id = ?;",
+              "hints": [
+                "Use INTEGER for boolean (0 = false, 1 = true)",
+                "Use INTEGER for dates (store as epoch milliseconds)",
+                "Add AUTOINCREMENT to primary keys",
+                "Use FOREIGN KEY for relationships"
+              ],
+              "testCases": [
+                {
+                  "description": "Schema should have Categories and Tasks tables",
+                  "expectedBehavior": "Both CREATE TABLE statements are present"
+                },
+                {
+                  "description": "Tasks should reference Categories",
+                  "expectedBehavior": "category_id foreign key exists"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.2",
+          "title": "Lesson 6A.2: Setting Up SQLDelight in KMP",
+          "moduleId": "module-06a",
+          "order": 2,
+          "estimatedMinutes": 55,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 55 minutes\n\nThis lesson covers the complete setup of SQLDelight in a Kotlin Multiplatform project, including Gradle configuration, platform-specific drivers, and project structure."
+            },
+            {
+              "type": "THEORY",
+              "title": "Gradle Plugin Setup",
+              "content": "### Step 1: Add the Plugin\n\n**In gradle/libs.versions.toml:**\n```toml\n[versions]\nsqldelight = \"2.0.2\"\n\n[libraries]\nsqldelight-coroutines = { module = \"app.cash.sqldelight:coroutines-extensions\", version.ref = \"sqldelight\" }\nsqldelight-android = { module = \"app.cash.sqldelight:android-driver\", version.ref = \"sqldelight\" }\nsqldelight-native = { module = \"app.cash.sqldelight:native-driver\", version.ref = \"sqldelight\" }\nsqldelight-jvm = { module = \"app.cash.sqldelight:sqlite-driver\", version.ref = \"sqldelight\" }\n\n[plugins]\nsqldelight = { id = \"app.cash.sqldelight\", version.ref = \"sqldelight\" }\n```\n\n**In build.gradle.kts (project level):**\n```kotlin\nplugins {\n    alias(libs.plugins.sqldelight) apply false\n}\n```\n\n**In shared/build.gradle.kts:**\n```kotlin\nplugins {\n    alias(libs.plugins.sqldelight)\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Database Configuration",
+              "content": "### Step 2: Configure the Database\n\n**In shared/build.gradle.kts:**\n```kotlin\nsqldelight {\n    databases {\n        create(\"AppDatabase\") {\n            packageName.set(\"com.example.app.data\")\n            \n            // Generate suspend functions (recommended)\n            generateAsync.set(true)\n        }\n    }\n}\n```\n\n### Configuration Options\n\n| Option | Description |\n|--------|-------------|\n| `packageName` | Package for generated code |\n| `generateAsync` | Generate suspend functions |\n| `schemaOutputDirectory` | Where to save schema files |\n| `verifyMigrations` | Validate migration files |\n| `deriveSchemaFromMigrations` | Build schema from migrations |\n\n### Advanced Configuration\n```kotlin\nsqldelight {\n    databases {\n        create(\"AppDatabase\") {\n            packageName.set(\"com.example.app.data\")\n            generateAsync.set(true)\n            \n            // For schema export (useful for inspection)\n            schemaOutputDirectory.set(file(\"src/commonMain/sqldelight/schema\"))\n            \n            // Verify migrations match schema\n            verifyMigrations.set(true)\n        }\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Platform-Specific Drivers",
+              "content": "### Step 3: Add Driver Dependencies\n\nEach platform needs its own SQLite driver:\n\n**In shared/build.gradle.kts:**\n```kotlin\nkotlin {\n    sourceSets {\n        commonMain.dependencies {\n            implementation(libs.sqldelight.coroutines)\n        }\n        \n        androidMain.dependencies {\n            implementation(libs.sqldelight.android)\n        }\n        \n        iosMain.dependencies {\n            implementation(libs.sqldelight.native)\n        }\n        \n        // For desktop (optional)\n        jvmMain.dependencies {\n            implementation(libs.sqldelight.jvm)\n        }\n    }\n}\n```\n\n### Driver Breakdown\n\n| Platform | Driver | Underlying Implementation |\n|----------|--------|---------------------------|\n| Android | `android-driver` | Android SQLite Framework |\n| iOS/macOS | `native-driver` | SQLite C library |\n| JVM/Desktop | `sqlite-driver` | SQLite JDBC |\n| Web | `web-worker-driver` | SQLite WASM |"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating the Database Factory",
+              "content": "### Step 4: Platform-Specific Database Creation\n\nUse expect/actual to create the database on each platform:\n\n**In commonMain:**\n```kotlin\n// Database.kt\nexpect class DatabaseDriverFactory {\n    fun createDriver(): SqlDriver\n}\n\nfun createDatabase(driverFactory: DatabaseDriverFactory): AppDatabase {\n    return AppDatabase(driverFactory.createDriver())\n}\n```\n\n**In androidMain:**\n```kotlin\n// Database.android.kt\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\n\nactual class DatabaseDriverFactory(private val context: Context) {\n    actual fun createDriver(): SqlDriver {\n        return AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"app.db\"\n        )\n    }\n}\n```\n\n**In iosMain:**\n```kotlin\n// Database.ios.kt\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\n\nactual class DatabaseDriverFactory {\n    actual fun createDriver(): SqlDriver {\n        return NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"app.db\"\n        )\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Project Structure",
+              "content": "### SQL File Location\n\nSQLDelight expects `.sq` files in a specific location:\n\n```\nshared/\n├── src/\n│   ├── commonMain/\n│   │   ├── kotlin/\n│   │   │   └── com/example/app/\n│   │   │       └── data/\n│   │   │           └── Repository.kt\n│   │   └── sqldelight/\n│   │       └── com/example/app/data/\n│   │           ├── Note.sq\n│   │           └── Category.sq\n│   ├── androidMain/\n│   │   └── kotlin/\n│   │       └── Database.android.kt\n│   └── iosMain/\n│       └── kotlin/\n│           └── Database.ios.kt\n└── build.gradle.kts\n```\n\n### Important Notes\n\n1. **sqldelight directory**: Must be at same level as `kotlin` directory\n2. **Package path**: Should match the `packageName` in your gradle config\n3. **File extension**: Use `.sq` for schema and queries, `.sqm` for migrations"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Setup Example",
+              "content": "Here's a complete working setup:",
+              "code": "// ===== shared/build.gradle.kts =====\nplugins {\n    kotlin(\"multiplatform\")\n    id(\"com.android.library\")\n    id(\"app.cash.sqldelight\")\n}\n\nkotlin {\n    androidTarget()\n    iosX64()\n    iosArm64()\n    iosSimulatorArm64()\n    \n    sourceSets {\n        commonMain.dependencies {\n            implementation(\"app.cash.sqldelight:coroutines-extensions:2.0.2\")\n        }\n        androidMain.dependencies {\n            implementation(\"app.cash.sqldelight:android-driver:2.0.2\")\n        }\n        iosMain.dependencies {\n            implementation(\"app.cash.sqldelight:native-driver:2.0.2\")\n        }\n    }\n}\n\nsqldelight {\n    databases {\n        create(\"AppDatabase\") {\n            packageName.set(\"com.example.app.db\")\n            generateAsync.set(true)\n        }\n    }\n}\n\n// ===== commonMain/sqldelight/com/example/app/db/Note.sq =====\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    created_at INTEGER NOT NULL\n);\n\ngetAllNotes:\nSELECT * FROM Note ORDER BY created_at DESC;\n\ninsertNote:\nINSERT INTO Note(title, content, created_at)\nVALUES (?, ?, ?);\n\n// ===== After building, you can use: =====\nval database = createDatabase(driverFactory)\nval notes = database.noteQueries.getAllNotes().executeAsList()",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Setup Issues",
+              "content": "### Issue 1: \"Cannot find database\"\n```\n> Task :shared:generateCommonMainAppDatabaseInterface FAILED\n```\n**Solution**: Ensure `.sq` files are in the correct path:\n`src/commonMain/sqldelight/<package-path>/`\n\n### Issue 2: Wrong package import\n```kotlin\nimport com.example.app.db.AppDatabase // Can't find\n```\n**Solution**: Run Gradle sync and build to generate code. Check `packageName` in sqldelight config.\n\n### Issue 3: iOS driver crashes\n```\nFATAL: Unable to open database\n```\n**Solution**: On iOS, ensure you're not accessing the database from a background thread without proper configuration:\n```kotlin\nNativeSqliteDriver(\n    schema = AppDatabase.Schema,\n    name = \"app.db\",\n    maxReaderConnections = 4  // For thread-safe access\n)\n```\n\n### Issue 4: Missing driver for platform\n```\nUnresolved reference: AndroidSqliteDriver\n```\n**Solution**: Add the correct driver dependency in your sourceSet dependencies."
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-2-1",
+              "title": "Configure SQLDelight",
+              "description": "Write the build.gradle.kts configuration for a KMP project with SQLDelight support for Android, iOS, and Desktop.",
+              "difficulty": "intermediate",
+              "starterCode": "// shared/build.gradle.kts\nplugins {\n    kotlin(\"multiplatform\")\n    id(\"com.android.library\")\n    // TODO: Add SQLDelight plugin\n}\n\nkotlin {\n    androidTarget()\n    iosX64()\n    iosArm64()\n    iosSimulatorArm64()\n    jvm(\"desktop\")\n    \n    sourceSets {\n        commonMain.dependencies {\n            // TODO: Add coroutines extensions\n        }\n        androidMain.dependencies {\n            // TODO: Add Android driver\n        }\n        iosMain.dependencies {\n            // TODO: Add Native driver\n        }\n        val desktopMain by getting {\n            dependencies {\n                // TODO: Add JVM driver\n            }\n        }\n    }\n}\n\n// TODO: Configure sqldelight block\n// Database name: NotesDatabase\n// Package: com.example.notes.data\n// Enable async generation",
+              "solution": "// shared/build.gradle.kts\nplugins {\n    kotlin(\"multiplatform\")\n    id(\"com.android.library\")\n    id(\"app.cash.sqldelight\")\n}\n\nkotlin {\n    androidTarget()\n    iosX64()\n    iosArm64()\n    iosSimulatorArm64()\n    jvm(\"desktop\")\n    \n    sourceSets {\n        commonMain.dependencies {\n            implementation(\"app.cash.sqldelight:coroutines-extensions:2.0.2\")\n        }\n        androidMain.dependencies {\n            implementation(\"app.cash.sqldelight:android-driver:2.0.2\")\n        }\n        iosMain.dependencies {\n            implementation(\"app.cash.sqldelight:native-driver:2.0.2\")\n        }\n        val desktopMain by getting {\n            dependencies {\n                implementation(\"app.cash.sqldelight:sqlite-driver:2.0.2\")\n            }\n        }\n    }\n}\n\nsqldelight {\n    databases {\n        create(\"NotesDatabase\") {\n            packageName.set(\"com.example.notes.data\")\n            generateAsync.set(true)\n        }\n    }\n}",
+              "hints": [
+                "The plugin ID is 'app.cash.sqldelight'",
+                "Use 'coroutines-extensions' for Flow support",
+                "Each platform needs its own driver dependency",
+                "Database name becomes the generated class name"
+              ],
+              "testCases": [
+                {
+                  "description": "SQLDelight plugin should be applied",
+                  "expectedBehavior": "Plugin declaration is present"
+                },
+                {
+                  "description": "All platform drivers should be configured",
+                  "expectedBehavior": "Android, iOS, and Desktop drivers are added"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.3",
+          "title": "Lesson 6A.3: Writing SQL Queries",
+          "moduleId": "module-06a",
+          "order": 3,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\nThis lesson covers writing SQL queries in SQLDelight, including CRUD operations, parameterized queries, complex queries with joins, and using the generated Kotlin code."
+            },
+            {
+              "type": "THEORY",
+              "title": "Basic CRUD Operations",
+              "content": "### CREATE - Inserting Data\n\n```sql\n-- Note.sq\n\n-- Schema\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    created_at INTEGER NOT NULL,\n    updated_at INTEGER NOT NULL\n);\n\n-- Insert query (named 'insertNote')\ninsertNote:\nINSERT INTO Note(title, content, created_at, updated_at)\nVALUES (?, ?, ?, ?);\n\n-- Insert with named parameters\ninsertNoteNamed:\nINSERT INTO Note(title, content, created_at, updated_at)\nVALUES (:title, :content, :createdAt, :updatedAt);\n```\n\n### READ - Selecting Data\n\n```sql\n-- Get all notes\ngetAllNotes:\nSELECT * FROM Note ORDER BY updated_at DESC;\n\n-- Get single note by ID\ngetNoteById:\nSELECT * FROM Note WHERE id = ?;\n\n-- Get notes by title search\nsearchNotes:\nSELECT * FROM Note \nWHERE title LIKE '%' || :query || '%'\nORDER BY updated_at DESC;\n```\n\n### UPDATE - Modifying Data\n\n```sql\n-- Update entire note\nupdateNote:\nUPDATE Note \nSET title = ?, content = ?, updated_at = ?\nWHERE id = ?;\n\n-- Update just the content\nupdateContent:\nUPDATE Note SET content = ?, updated_at = ? WHERE id = ?;\n```\n\n### DELETE - Removing Data\n\n```sql\n-- Delete by ID\ndeleteNote:\nDELETE FROM Note WHERE id = ?;\n\n-- Delete all notes\ndeleteAllNotes:\nDELETE FROM Note;\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Using Generated Code",
+              "content": "SQLDelight generates Kotlin code from your SQL. Here's how to use it:\n\n### Generated Classes\n\n```kotlin\n// SQLDelight generates from your schema:\ndata class Note(\n    val id: Long,\n    val title: String,\n    val content: String,\n    val created_at: Long,\n    val updated_at: Long\n)\n\n// And a Queries class:\nclass NoteQueries {\n    fun getAllNotes(): Query<Note>\n    fun getNoteById(id: Long): Query<Note>\n    fun insertNote(title: String, content: String, created_at: Long, updated_at: Long)\n    fun updateNote(title: String, content: String, updated_at: Long, id: Long)\n    fun deleteNote(id: Long)\n}\n```\n\n### Executing Queries\n\n```kotlin\nval database: AppDatabase = createDatabase(driverFactory)\nval noteQueries = database.noteQueries\n\n// SELECT - returns Query<T>\nval allNotes: List<Note> = noteQueries.getAllNotes().executeAsList()\nval singleNote: Note? = noteQueries.getNoteById(1).executeAsOneOrNull()\nval firstNote: Note = noteQueries.getNoteById(1).executeAsOne() // throws if empty\n\n// INSERT/UPDATE/DELETE - returns nothing\nnoteQueries.insertNote(\n    title = \"My Note\",\n    content = \"Hello World\",\n    created_at = System.currentTimeMillis(),\n    updated_at = System.currentTimeMillis()\n)\n\nnoteQueries.deleteNote(id = 1)\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Complex Queries: Joins and Aggregates",
+              "content": "### JOIN Queries\n\n```sql\n-- Category.sq\nCREATE TABLE Category (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL\n);\n\n-- Note.sq (with category reference)\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    category_id INTEGER,\n    FOREIGN KEY (category_id) REFERENCES Category(id)\n);\n\n-- Join query to get notes with category names\ngetNotesWithCategory:\nSELECT \n    Note.id,\n    Note.title,\n    Category.name AS category_name\nFROM Note\nLEFT JOIN Category ON Note.category_id = Category.id;\n```\n\n**Generated code:**\n```kotlin\n// SQLDelight generates a custom data class for the query result:\ndata class GetNotesWithCategory(\n    val id: Long,\n    val title: String,\n    val category_name: String?\n)\n\nval notesWithCategories = noteQueries.getNotesWithCategory().executeAsList()\n```\n\n### Aggregate Queries\n\n```sql\n-- Count notes per category\ncountNotesByCategory:\nSELECT \n    Category.name,\n    COUNT(Note.id) AS note_count\nFROM Category\nLEFT JOIN Note ON Note.category_id = Category.id\nGROUP BY Category.id;\n\n-- Get total note count\ntotalNoteCount:\nSELECT COUNT(*) FROM Note;\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Type Adapters for Custom Types",
+              "content": "SQLite only supports basic types. For custom Kotlin types, use adapters:\n\n### Common Scenarios\n\n```kotlin\n// Enum to string\nenum class Priority { LOW, MEDIUM, HIGH }\n\n// In your schema:\n// priority TEXT NOT NULL -- stored as \"LOW\", \"MEDIUM\", or \"HIGH\"\n\n// Adapter\nval priorityAdapter = object : ColumnAdapter<Priority, String> {\n    override fun decode(databaseValue: String): Priority = \n        Priority.valueOf(databaseValue)\n    override fun encode(value: Priority): String = \n        value.name\n}\n```\n\n### Registering Adapters\n\n```kotlin\nfun createDatabase(driver: SqlDriver): AppDatabase {\n    return AppDatabase(\n        driver = driver,\n        NoteAdapter = Note.Adapter(\n            priorityAdapter = priorityAdapter\n        )\n    )\n}\n```\n\n### Date/Time with kotlinx-datetime\n\n```kotlin\nimport kotlinx.datetime.Instant\n\nval instantAdapter = object : ColumnAdapter<Instant, Long> {\n    override fun decode(databaseValue: Long): Instant = \n        Instant.fromEpochMilliseconds(databaseValue)\n    override fun encode(value: Instant): Long = \n        value.toEpochMilliseconds()\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Notes Repository",
+              "content": "A complete repository using SQLDelight:",
+              "code": "// Note.sq\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    is_pinned INTEGER NOT NULL DEFAULT 0,\n    created_at INTEGER NOT NULL,\n    updated_at INTEGER NOT NULL\n);\n\ngetAllNotes:\nSELECT * FROM Note ORDER BY is_pinned DESC, updated_at DESC;\n\ngetPinnedNotes:\nSELECT * FROM Note WHERE is_pinned = 1 ORDER BY updated_at DESC;\n\ngetNoteById:\nSELECT * FROM Note WHERE id = ?;\n\nsearchNotes:\nSELECT * FROM Note \nWHERE title LIKE '%' || :query || '%' \n   OR content LIKE '%' || :query || '%'\nORDER BY updated_at DESC;\n\ninsertNote:\nINSERT INTO Note(title, content, is_pinned, created_at, updated_at)\nVALUES (?, ?, ?, ?, ?);\n\nupdateNote:\nUPDATE Note SET title = ?, content = ?, updated_at = ? WHERE id = ?;\n\ntogglePin:\nUPDATE Note SET is_pinned = NOT is_pinned WHERE id = ?;\n\ndeleteNote:\nDELETE FROM Note WHERE id = ?;\n\n-- NoteRepository.kt\nclass NoteRepository(private val database: AppDatabase) {\n    private val queries = database.noteQueries\n    \n    fun getAllNotes(): List<Note> = \n        queries.getAllNotes().executeAsList()\n    \n    fun getPinnedNotes(): List<Note> = \n        queries.getPinnedNotes().executeAsList()\n    \n    fun getNoteById(id: Long): Note? = \n        queries.getNoteById(id).executeAsOneOrNull()\n    \n    fun searchNotes(query: String): List<Note> = \n        queries.searchNotes(query).executeAsList()\n    \n    fun addNote(title: String, content: String, isPinned: Boolean = false) {\n        val now = Clock.System.now().toEpochMilliseconds()\n        queries.insertNote(\n            title = title,\n            content = content,\n            is_pinned = if (isPinned) 1L else 0L,\n            created_at = now,\n            updated_at = now\n        )\n    }\n    \n    fun updateNote(id: Long, title: String, content: String) {\n        queries.updateNote(\n            title = title,\n            content = content,\n            updated_at = Clock.System.now().toEpochMilliseconds(),\n            id = id\n        )\n    }\n    \n    fun togglePin(id: Long) = queries.togglePin(id)\n    \n    fun deleteNote(id: Long) = queries.deleteNote(id)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "SQL Gotchas",
+              "content": "### Boolean as INTEGER\nSQLite doesn't have a boolean type:\n```sql\nis_completed INTEGER NOT NULL DEFAULT 0  -- 0 = false, 1 = true\n\n-- Query booleans\nWHERE is_completed = 1  -- true\nWHERE is_completed = 0  -- false\n```\n\n### Date/Time as INTEGER\nStore dates as epoch milliseconds:\n```sql\ncreated_at INTEGER NOT NULL  -- epoch millis\n\n-- Sort by date\nORDER BY created_at DESC\n```\n\n### NULL Handling\n```sql\n-- Nullable column\ndescription TEXT  -- can be NULL\n\n-- Kotlin code:\nval description: String? = note.description\n\n-- Query with NULL\nWHERE category_id IS NULL  -- not = NULL!\n```\n\n### LIKE is Case-Sensitive\n```sql\n-- Case-insensitive search\nWHERE LOWER(title) LIKE '%' || LOWER(:query) || '%'\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-3-1",
+              "title": "Build a Task Queries File",
+              "description": "Create a complete .sq file for a task management app with full CRUD operations plus additional utility queries.",
+              "difficulty": "intermediate",
+              "starterCode": "-- Task.sq\n-- Create a complete SQLDelight file for tasks\n\n-- Schema:\n-- - id: auto-incrementing primary key\n-- - title: required text\n-- - description: optional text  \n-- - is_completed: boolean (stored as integer)\n-- - priority: text (\"LOW\", \"MEDIUM\", \"HIGH\")\n-- - due_date: optional integer (epoch millis)\n-- - created_at: integer\n\n-- TODO: Write CREATE TABLE\n\n-- TODO: Write these named queries:\n-- 1. getAllTasks (ordered by due_date, then priority)\n-- 2. getTaskById\n-- 3. getIncompleteTasks\n-- 4. getTasksByPriority (takes priority param)\n-- 5. getOverdueTasks (due_date < current time, not completed)\n-- 6. insertTask\n-- 7. updateTask\n-- 8. toggleComplete\n-- 9. deleteTask\n-- 10. deleteCompletedTasks",
+              "solution": "-- Task.sq\nCREATE TABLE Task (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    description TEXT,\n    is_completed INTEGER NOT NULL DEFAULT 0,\n    priority TEXT NOT NULL DEFAULT 'MEDIUM',\n    due_date INTEGER,\n    created_at INTEGER NOT NULL\n);\n\ngetAllTasks:\nSELECT * FROM Task \nORDER BY due_date ASC NULLS LAST, \n    CASE priority \n        WHEN 'HIGH' THEN 1 \n        WHEN 'MEDIUM' THEN 2 \n        ELSE 3 \n    END;\n\ngetTaskById:\nSELECT * FROM Task WHERE id = ?;\n\ngetIncompleteTasks:\nSELECT * FROM Task WHERE is_completed = 0 ORDER BY due_date ASC;\n\ngetTasksByPriority:\nSELECT * FROM Task WHERE priority = ? ORDER BY due_date ASC;\n\ngetOverdueTasks:\nSELECT * FROM Task \nWHERE due_date < :currentTime \n  AND is_completed = 0\nORDER BY due_date ASC;\n\ninsertTask:\nINSERT INTO Task(title, description, is_completed, priority, due_date, created_at)\nVALUES (?, ?, 0, ?, ?, ?);\n\nupdateTask:\nUPDATE Task \nSET title = ?, description = ?, priority = ?, due_date = ?\nWHERE id = ?;\n\ntoggleComplete:\nUPDATE Task SET is_completed = NOT is_completed WHERE id = ?;\n\ndeleteTask:\nDELETE FROM Task WHERE id = ?;\n\ndeleteCompletedTasks:\nDELETE FROM Task WHERE is_completed = 1;",
+              "hints": [
+                "Use INTEGER for boolean and date fields",
+                "CASE statements help with custom ordering",
+                "Use NULLS LAST for optional dates",
+                "NOT toggles between 0 and 1"
+              ],
+              "testCases": [
+                {
+                  "description": "All 10 queries should be defined",
+                  "expectedBehavior": "Each query has a name and SQL"
+                },
+                {
+                  "description": "Ordering should be correct",
+                  "expectedBehavior": "getAllTasks orders by due_date then priority"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.4",
+          "title": "Lesson 6A.4: Migrations and Schema Changes",
+          "moduleId": "module-06a",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nThis lesson covers database migrations in SQLDelight - how to safely evolve your database schema as your app changes over time without losing user data."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Migrations Matter",
+              "content": "### The Problem\n\nYour app is live with users. You need to add a new column:\n\n```sql\n-- Version 1 (current)\nCREATE TABLE Note (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL\n);\n\n-- Version 2 (new)\nCREATE TABLE Note (\n    id INTEGER PRIMARY KEY,\n    title TEXT NOT NULL,\n    color TEXT  -- NEW!\n);\n```\n\n**Without migrations:**\n- ❌ App crashes on startup\n- ❌ All user data is lost\n- ❌ Users leave 1-star reviews\n\n**With migrations:**\n- ✅ Database updates smoothly\n- ✅ All existing data preserved\n- ✅ Users don't notice anything"
+            },
+            {
+              "type": "THEORY",
+              "title": "SQLDelight Migration Files",
+              "content": "Migrations are `.sqm` files named with version numbers:\n\n```\nsrc/commonMain/sqldelight/\n├── com/example/app/\n│   ├── Note.sq          # Current schema (v2)\n│   ├── 1.sqm             # Migration: v1 → v2\n│   └── 2.sqm             # Migration: v2 → v3 (future)\n```\n\n### Migration File Format\n\n**1.sqm** (first migration, from v1 to v2):\n```sql\n-- Add color column to Note table\nALTER TABLE Note ADD COLUMN color TEXT;\n```\n\n**2.sqm** (second migration, from v2 to v3):\n```sql\n-- Add tags table\nCREATE TABLE Tag (\n    id INTEGER PRIMARY KEY,\n    name TEXT NOT NULL\n);\n\n-- Add junction table for note-tag relationship\nCREATE TABLE NoteTag (\n    note_id INTEGER NOT NULL,\n    tag_id INTEGER NOT NULL,\n    PRIMARY KEY (note_id, tag_id)\n);\n```\n\n### Version Tracking\n\nSQLDelight tracks versions automatically:\n1. Fresh install: Creates tables from `.sq` schema\n2. Upgrade: Runs migration files in order (1.sqm, 2.sqm, ...)\n3. Downgrade: Not supported (plan carefully!)"
+            },
+            {
+              "type": "THEORY",
+              "title": "Common Migration Patterns",
+              "content": "### Adding a Column\n```sql\n-- 1.sqm\nALTER TABLE Note ADD COLUMN category_id INTEGER;\n```\n\n### Adding a Column with Default\n```sql\n-- 2.sqm\nALTER TABLE Note ADD COLUMN is_archived INTEGER NOT NULL DEFAULT 0;\n```\n\n### Creating a New Table\n```sql\n-- 3.sqm\nCREATE TABLE Category (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL,\n    color TEXT NOT NULL DEFAULT '#808080'\n);\n```\n\n### Adding an Index\n```sql\n-- 4.sqm\nCREATE INDEX idx_note_category ON Note(category_id);\n```\n\n### Renaming a Table (SQLite limitation - requires copy)\n```sql\n-- 5.sqm\n-- SQLite doesn't support RENAME TABLE well, so we:\n-- 1. Create new table\n-- 2. Copy data\n-- 3. Drop old table\n-- 4. Rename new table\n\nCREATE TABLE NoteNew (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    body TEXT NOT NULL  -- renamed from 'content'\n);\n\nINSERT INTO NoteNew (id, title, body)\nSELECT id, title, content FROM Note;\n\nDROP TABLE Note;\n\nALTER TABLE NoteNew RENAME TO Note;\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Enabling Migration Verification",
+              "content": "### Gradle Configuration\n\n```kotlin\nsqldelight {\n    databases {\n        create(\"AppDatabase\") {\n            packageName.set(\"com.example.app.db\")\n            \n            // Verify migrations produce the same schema\n            verifyMigrations.set(true)\n            \n            // Generate schema files for inspection\n            schemaOutputDirectory.set(file(\"src/commonMain/sqldelight/schema\"))\n        }\n    }\n}\n```\n\n### What Verification Does\n\n1. Creates database using only `.sq` files (fresh install)\n2. Creates database using migrations (upgrade path)\n3. Compares resulting schemas\n4. Fails build if they don't match\n\n### Running Verification\n\n```bash\n./gradlew verifySqlDelightMigration\n```\n\nIf verification fails:\n```\n> Migration verification failed:\n> Table 'Note' has different columns:\n>   Expected: [id, title, content, color]\n>   Actual:   [id, title, content]\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Migration Example",
+              "content": "A real-world migration workflow:",
+              "code": "// ===== Starting Schema (Note.sq v1) =====\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL\n);\n\n// ===== After adding features, schema is now (v3): =====\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    is_favorite INTEGER NOT NULL DEFAULT 0,  -- Added in v2\n    category_id INTEGER,                      -- Added in v3\n    FOREIGN KEY (category_id) REFERENCES Category(id)\n);\n\nCREATE TABLE Category (  -- Added in v3\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL\n);\n\n// ===== 1.sqm (v1 → v2) =====\n-- Add favorite support\nALTER TABLE Note ADD COLUMN is_favorite INTEGER NOT NULL DEFAULT 0;\n\n// ===== 2.sqm (v2 → v3) =====\n-- Add categories\nCREATE TABLE Category (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL\n);\n\nALTER TABLE Note ADD COLUMN category_id INTEGER REFERENCES Category(id);\n\n// ===== Driver setup with migrations =====\nfun createDatabase(driver: SqlDriver): AppDatabase {\n    // Migrations run automatically based on version\n    AppDatabase.Schema.migrate(\n        driver = driver,\n        oldVersion = driver.currentVersion(),  // e.g., 1\n        newVersion = AppDatabase.Schema.version  // e.g., 3\n    )\n    return AppDatabase(driver)\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Migration Gotchas",
+              "content": "### SQLite Limitations\n\nSQLite has limited ALTER TABLE support:\n\n**Supported:**\n- `ADD COLUMN`\n- `RENAME TABLE` (limited)\n- `RENAME COLUMN` (SQLite 3.25+)\n\n**NOT Supported:**\n- `DROP COLUMN` (before SQLite 3.35)\n- `ALTER COLUMN` type\n- Change constraints\n\n**Workaround for unsupported operations:**\n```sql\n-- Create new table with correct schema\n-- Copy data\n-- Drop old table\n-- Rename new table\n```\n\n### Testing Migrations\n\nAlways test migrations:\n1. Create a database with old schema\n2. Insert test data\n3. Run migrations\n4. Verify data is preserved\n5. Verify new schema works\n\n### Never Delete Migration Files\n\nUsers might be upgrading from v1 → v5.\nThey need ALL intermediate migrations:\n- 1.sqm (v1 → v2)\n- 2.sqm (v2 → v3)\n- 3.sqm (v3 → v4)\n- 4.sqm (v4 → v5)"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-4-1",
+              "title": "Write Migration Files",
+              "description": "Write migration files to evolve a Notes app schema from v1 to v3.",
+              "difficulty": "intermediate",
+              "starterCode": "-- Given this initial schema (v1):\nCREATE TABLE Note (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    title TEXT NOT NULL,\n    content TEXT NOT NULL,\n    created_at INTEGER NOT NULL\n);\n\n-- Final schema (v3) should have:\n-- Note table with: id, title, content, created_at, updated_at, is_pinned, folder_id\n-- Folder table with: id, name, color\n\n-- TODO: Write 1.sqm (v1 → v2)\n-- Add: updated_at (INTEGER, copy created_at value), is_pinned (INTEGER DEFAULT 0)\n\n\n-- TODO: Write 2.sqm (v2 → v3)\n-- Add: Folder table, folder_id column in Note",
+              "solution": "-- 1.sqm (v1 → v2)\nALTER TABLE Note ADD COLUMN updated_at INTEGER;\nALTER TABLE Note ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0;\n\n-- Set updated_at to created_at for existing rows\nUPDATE Note SET updated_at = created_at WHERE updated_at IS NULL;\n\n-- 2.sqm (v2 → v3)\nCREATE TABLE Folder (\n    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    name TEXT NOT NULL,\n    color TEXT NOT NULL DEFAULT '#808080'\n);\n\nALTER TABLE Note ADD COLUMN folder_id INTEGER REFERENCES Folder(id);\n\nCREATE INDEX idx_note_folder ON Note(folder_id);",
+              "hints": [
+                "Use ALTER TABLE ADD COLUMN for new columns",
+                "Set NOT NULL with DEFAULT if column must be required",
+                "UPDATE existing data when needed",
+                "Create indexes for foreign keys"
+              ],
+              "testCases": [
+                {
+                  "description": "1.sqm should add updated_at and is_pinned",
+                  "expectedBehavior": "Both columns added with correct types"
+                },
+                {
+                  "description": "2.sqm should create Folder table and link to Note",
+                  "expectedBehavior": "Folder table created, folder_id added to Note"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.5",
+          "title": "Lesson 6A.5: Flows and Reactive Queries",
+          "moduleId": "module-06a",
+          "order": 5,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers reactive database queries using Kotlin Flow. You'll learn how to observe database changes and automatically update your UI when data changes."
+            },
+            {
+              "type": "THEORY",
+              "title": "The Reactive Pattern",
+              "content": "### Traditional Approach (Pull)\n\n```kotlin\n// Manually refresh when you think data might have changed\nfun loadNotes() {\n    val notes = repository.getAllNotes()\n    _uiState.value = notes\n}\n\n// Call this everywhere data might change:\nfun addNote(note: Note) {\n    repository.addNote(note)\n    loadNotes() // Don't forget to refresh!\n}\n\nfun deleteNote(id: Long) {\n    repository.deleteNote(id)\n    loadNotes() // Don't forget again!\n}\n```\n\n**Problems:**\n- Easy to forget to refresh\n- Multiple sources can modify data\n- UI can get out of sync\n\n### Reactive Approach (Push)\n\n```kotlin\n// Observe once, updates come automatically\ninit {\n    viewModelScope.launch {\n        repository.observeAllNotes().collect { notes ->\n            _uiState.value = notes\n        }\n    }\n}\n\n// Just modify data - UI updates automatically!\nfun addNote(note: Note) = repository.addNote(note)\nfun deleteNote(id: Long) = repository.deleteNote(id)\n```\n\n**Benefits:**\n- UI always shows current data\n- No manual refresh needed\n- Works with any data source"
+            },
+            {
+              "type": "THEORY",
+              "title": "SQLDelight Flow Extension",
+              "content": "### Setup\n\nAdd the coroutines extension:\n```kotlin\nimplementation(\"app.cash.sqldelight:coroutines-extensions:2.0.2\")\n```\n\n### Converting Query to Flow\n\n```kotlin\nimport app.cash.sqldelight.coroutines.asFlow\nimport app.cash.sqldelight.coroutines.mapToList\nimport app.cash.sqldelight.coroutines.mapToOne\nimport app.cash.sqldelight.coroutines.mapToOneOrNull\n\nclass NoteRepository(private val database: AppDatabase) {\n    private val queries = database.noteQueries\n    \n    // List of items\n    fun observeAllNotes(): Flow<List<Note>> {\n        return queries.getAllNotes()\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    }\n    \n    // Single item (throws if not found)\n    fun observeNoteById(id: Long): Flow<Note> {\n        return queries.getNoteById(id)\n            .asFlow()\n            .mapToOne(Dispatchers.IO)\n    }\n    \n    // Single item (null if not found)\n    fun observeNoteByIdOrNull(id: Long): Flow<Note?> {\n        return queries.getNoteById(id)\n            .asFlow()\n            .mapToOneOrNull(Dispatchers.IO)\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "How It Works",
+              "content": "### Under the Hood\n\n1. **Initial emission**: Flow emits current query results immediately\n2. **Table listeners**: SQLDelight watches the tables in your query\n3. **Automatic re-query**: When any watched table changes, query re-runs\n4. **New emission**: Updated results are emitted to collectors\n\n```kotlin\n// This query watches the Note table\ngetAllNotes:\nSELECT * FROM Note;\n\n// Any change to Note table triggers re-emission:\nnoteQueries.insertNote(...)  // → Flow emits new list\nnoteQueries.updateNote(...)  // → Flow emits new list\nnoteQueries.deleteNote(...)  // → Flow emits new list\n```\n\n### Multi-Table Queries\n\nFlows watch ALL tables in the query:\n\n```sql\ngetNotesWithCategories:\nSELECT Note.*, Category.name AS category_name\nFROM Note\nLEFT JOIN Category ON Note.category_id = Category.id;\n```\n\n```kotlin\n// This Flow re-emits when either Note OR Category changes!\nfun observeNotesWithCategories(): Flow<List<GetNotesWithCategories>> {\n    return queries.getNotesWithCategories()\n        .asFlow()\n        .mapToList(Dispatchers.IO)\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Reactive Repository",
+              "content": "A full repository with reactive queries:",
+              "code": "class NoteRepository(private val database: AppDatabase) {\n    private val queries = database.noteQueries\n    \n    // ===== Reactive Queries (Flow) =====\n    \n    fun observeAllNotes(): Flow<List<Note>> = \n        queries.getAllNotes()\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    \n    fun observePinnedNotes(): Flow<List<Note>> = \n        queries.getPinnedNotes()\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    \n    fun observeNoteById(id: Long): Flow<Note?> = \n        queries.getNoteById(id)\n            .asFlow()\n            .mapToOneOrNull(Dispatchers.IO)\n    \n    fun searchNotes(query: String): Flow<List<Note>> = \n        queries.searchNotes(query)\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    \n    // ===== Mutations (suspend) =====\n    \n    suspend fun addNote(title: String, content: String) = withContext(Dispatchers.IO) {\n        val now = Clock.System.now().toEpochMilliseconds()\n        queries.insertNote(title, content, 0, now, now)\n    }\n    \n    suspend fun updateNote(id: Long, title: String, content: String) = withContext(Dispatchers.IO) {\n        val now = Clock.System.now().toEpochMilliseconds()\n        queries.updateNote(title, content, now, id)\n    }\n    \n    suspend fun togglePin(id: Long) = withContext(Dispatchers.IO) {\n        queries.togglePin(id)\n    }\n    \n    suspend fun deleteNote(id: Long) = withContext(Dispatchers.IO) {\n        queries.deleteNote(id)\n    }\n}\n\n// ===== ViewModel Usage =====\n\nclass NotesViewModel(private val repository: NoteRepository) {\n    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())\n    \n    private val _uiState = MutableStateFlow<NotesUiState>(NotesUiState.Loading)\n    val uiState: StateFlow<NotesUiState> = _uiState.asStateFlow()\n    \n    init {\n        // Single subscription - UI stays in sync automatically\n        scope.launch {\n            repository.observeAllNotes()\n                .catch { e -> _uiState.value = NotesUiState.Error(e.message) }\n                .collect { notes ->\n                    _uiState.value = NotesUiState.Success(notes)\n                }\n        }\n    }\n    \n    // No need to refresh after these - Flow handles it!\n    fun addNote(title: String, content: String) {\n        scope.launch { repository.addNote(title, content) }\n    }\n    \n    fun deleteNote(id: Long) {\n        scope.launch { repository.deleteNote(id) }\n    }\n}\n\nsealed class NotesUiState {\n    object Loading : NotesUiState()\n    data class Success(val notes: List<Note>) : NotesUiState()\n    data class Error(val message: String?) : NotesUiState()\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Flow Considerations",
+              "content": "### Dispatcher Matters\n\n```kotlin\n// ✅ Correct - use IO or Default\n.mapToList(Dispatchers.IO)\n\n// ❌ Wrong - blocks Main thread\n.mapToList(Dispatchers.Main)\n```\n\n### Hot vs Cold\n\nSQLDelight flows are **cold**:\n- No work happens until collected\n- Each collector gets its own subscription\n- Consider using `stateIn` or `shareIn` for multiple collectors\n\n```kotlin\n// Cold - each collector causes new subscription\nval notesFlow: Flow<List<Note>> = repository.observeAllNotes()\n\n// Hot - single subscription shared\nval notesState: StateFlow<List<Note>> = repository.observeAllNotes()\n    .stateIn(\n        scope = viewModelScope,\n        started = SharingStarted.WhileSubscribed(5000),\n        initialValue = emptyList()\n    )\n```\n\n### Memory Leaks\n\nAlways collect in appropriate scope:\n```kotlin\n// ✅ Automatic cancellation\nviewModelScope.launch {\n    repository.observeAllNotes().collect { ... }\n}\n\n// ❌ Memory leak - never cancelled\nGlobalScope.launch {\n    repository.observeAllNotes().collect { ... }\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-5-1",
+              "title": "Build a Reactive Task Repository",
+              "description": "Create a task repository with reactive flows for filtering and statistics.",
+              "difficulty": "intermediate",
+              "starterCode": "import kotlinx.coroutines.flow.Flow\nimport kotlinx.coroutines.Dispatchers\n\nclass TaskRepository(private val database: AppDatabase) {\n    private val queries = database.taskQueries\n    \n    // TODO: Implement these reactive methods\n    \n    // 1. Observe all tasks\n    fun observeAllTasks(): Flow<List<Task>> {\n        TODO()\n    }\n    \n    // 2. Observe only incomplete tasks\n    fun observeIncompleteTasks(): Flow<List<Task>> {\n        TODO()\n    }\n    \n    // 3. Observe task count (total)\n    fun observeTaskCount(): Flow<Long> {\n        TODO()\n    }\n    \n    // 4. Observe completion rate (completed / total)\n    fun observeCompletionRate(): Flow<Float> {\n        TODO()\n    }\n}",
+              "solution": "import kotlinx.coroutines.flow.Flow\nimport kotlinx.coroutines.flow.combine\nimport kotlinx.coroutines.flow.map\nimport kotlinx.coroutines.Dispatchers\nimport app.cash.sqldelight.coroutines.asFlow\nimport app.cash.sqldelight.coroutines.mapToList\nimport app.cash.sqldelight.coroutines.mapToOne\n\nclass TaskRepository(private val database: AppDatabase) {\n    private val queries = database.taskQueries\n    \n    fun observeAllTasks(): Flow<List<Task>> {\n        return queries.getAllTasks()\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    }\n    \n    fun observeIncompleteTasks(): Flow<List<Task>> {\n        return queries.getIncompleteTasks()\n            .asFlow()\n            .mapToList(Dispatchers.IO)\n    }\n    \n    fun observeTaskCount(): Flow<Long> {\n        return queries.countAllTasks()\n            .asFlow()\n            .mapToOne(Dispatchers.IO)\n    }\n    \n    fun observeCompletionRate(): Flow<Float> {\n        val totalFlow = queries.countAllTasks().asFlow().mapToOne(Dispatchers.IO)\n        val completedFlow = queries.countCompletedTasks().asFlow().mapToOne(Dispatchers.IO)\n        \n        return totalFlow.combine(completedFlow) { total, completed ->\n            if (total == 0L) 0f else completed.toFloat() / total.toFloat()\n        }\n    }\n}",
+              "hints": [
+                "Use asFlow() to convert Query to Flow",
+                "Use mapToList for multiple results",
+                "Use mapToOne for single values",
+                "Use combine to combine multiple flows"
+              ],
+              "testCases": [
+                {
+                  "description": "Flows should emit when tasks change",
+                  "expectedBehavior": "Adding/removing tasks triggers new emissions"
+                },
+                {
+                  "description": "Completion rate should calculate correctly",
+                  "expectedBehavior": "Returns 0-1 float based on completed/total"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.6",
+          "title": "Lesson 6A.6: Platform-Specific Drivers",
+          "moduleId": "module-06a",
+          "order": 6,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nThis lesson covers the platform-specific SQLite drivers in SQLDelight, their configuration options, and best practices for each platform."
+            },
+            {
+              "type": "THEORY",
+              "title": "Android Driver",
+              "content": "### AndroidSqliteDriver\n\n```kotlin\n// androidMain/kotlin/Database.android.kt\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\n\nclass AndroidDatabaseDriverFactory(private val context: Context) {\n    fun createDriver(): SqlDriver {\n        return AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"app.db\"\n        )\n    }\n}\n```\n\n### Configuration Options\n\n```kotlin\nAndroidSqliteDriver(\n    schema = AppDatabase.Schema,\n    context = context,\n    name = \"app.db\",           // null for in-memory\n    factory = SupportSQLiteOpenHelper.Factory(), // Custom factory\n    callback = object : AndroidSqliteDriver.Callback(AppDatabase.Schema) {\n        override fun onOpen(db: SupportSQLiteDatabase) {\n            // Enable foreign keys\n            db.execSQL(\"PRAGMA foreign_keys=ON;\")\n        }\n    }\n)\n```\n\n### WAL Mode (Performance)\n\n```kotlin\ncallback = object : AndroidSqliteDriver.Callback(AppDatabase.Schema) {\n    override fun onConfigure(db: SupportSQLiteDatabase) {\n        // Write-Ahead Logging for better performance\n        db.enableWriteAheadLogging()\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "iOS Native Driver",
+              "content": "### NativeSqliteDriver\n\n```kotlin\n// iosMain/kotlin/Database.ios.kt\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\n\nclass IosDatabaseDriverFactory {\n    fun createDriver(): SqlDriver {\n        return NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"app.db\"\n        )\n    }\n}\n```\n\n### Multi-Threaded Access\n\niOS requires special configuration for thread-safe access:\n\n```kotlin\nNativeSqliteDriver(\n    schema = AppDatabase.Schema,\n    name = \"app.db\",\n    maxReaderConnections = 4  // Enable connection pool\n)\n```\n\n### Database Location\n\nBy default, the database is stored in the app's Documents directory. For different locations:\n\n```kotlin\n// In-memory database\nNativeSqliteDriver(\n    schema = AppDatabase.Schema,\n    name = null  // null = in-memory\n)\n\n// Custom path (requires platform-specific code)\nimport platform.Foundation.*\n\nfun getDatabasePath(): String {\n    val paths = NSSearchPathForDirectoriesInDomains(\n        NSApplicationSupportDirectory,\n        NSUserDomainMask,\n        true\n    )\n    return (paths.first() as String) + \"/app.db\"\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Desktop (JVM) Driver",
+              "content": "### SqliteDriver for JVM\n\n```kotlin\n// jvmMain/kotlin/Database.jvm.kt (or desktopMain)\nimport app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver\n\nclass JvmDatabaseDriverFactory {\n    fun createDriver(): SqlDriver {\n        // File-based database\n        val driver = JdbcSqliteDriver(\"jdbc:sqlite:app.db\")\n        AppDatabase.Schema.create(driver)\n        return driver\n    }\n}\n\n// In-memory database (for testing)\nclass TestDatabaseDriverFactory {\n    fun createDriver(): SqlDriver {\n        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)\n        AppDatabase.Schema.create(driver)\n        return driver\n    }\n}\n```\n\n### User Data Directory\n\n```kotlin\nimport java.io.File\n\nfun getDatabasePath(): String {\n    val userHome = System.getProperty(\"user.home\")\n    val appDir = File(userHome, \".myapp\")\n    appDir.mkdirs()\n    return \"jdbc:sqlite:${appDir.absolutePath}/app.db\"\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Multi-Platform Setup",
+              "content": "A complete expect/actual implementation:",
+              "code": "// ===== commonMain/kotlin/DatabaseFactory.kt =====\nimport app.cash.sqldelight.db.SqlDriver\n\nexpect class DatabaseDriverFactory {\n    fun createDriver(): SqlDriver\n}\n\nfun createDatabase(driverFactory: DatabaseDriverFactory): AppDatabase {\n    val driver = driverFactory.createDriver()\n    return AppDatabase(driver)\n}\n\n// ===== androidMain/kotlin/DatabaseFactory.android.kt =====\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\n\nactual class DatabaseDriverFactory(private val context: Context) {\n    actual fun createDriver(): SqlDriver {\n        return AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"notes.db\"\n        ).also { driver ->\n            driver.execute(null, \"PRAGMA foreign_keys=ON;\", 0)\n        }\n    }\n}\n\n// ===== iosMain/kotlin/DatabaseFactory.ios.kt =====\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\n\nactual class DatabaseDriverFactory {\n    actual fun createDriver(): SqlDriver {\n        return NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"notes.db\",\n            maxReaderConnections = 4\n        )\n    }\n}\n\n// ===== desktopMain/kotlin/DatabaseFactory.desktop.kt =====\nimport app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver\nimport java.io.File\n\nactual class DatabaseDriverFactory {\n    actual fun createDriver(): SqlDriver {\n        val dbPath = getAppDataPath() + \"/notes.db\"\n        val driver = JdbcSqliteDriver(\"jdbc:sqlite:$dbPath\")\n        \n        // Create schema if database is new\n        if (!File(dbPath).exists()) {\n            AppDatabase.Schema.create(driver)\n        } else {\n            // Run migrations if needed\n            val currentVersion = driver.getCurrentVersion()\n            if (currentVersion < AppDatabase.Schema.version) {\n                AppDatabase.Schema.migrate(\n                    driver, currentVersion, AppDatabase.Schema.version\n                )\n            }\n        }\n        \n        return driver\n    }\n    \n    private fun getAppDataPath(): String {\n        val os = System.getProperty(\"os.name\").lowercase()\n        val home = System.getProperty(\"user.home\")\n        return when {\n            os.contains(\"win\") -> \"$home\\\\AppData\\\\Local\\\\NotesApp\"\n            os.contains(\"mac\") -> \"$home/Library/Application Support/NotesApp\"\n            else -> \"$home/.notesapp\"\n        }.also { File(it).mkdirs() }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Platform-Specific Gotchas",
+              "content": "### Android\n\n**Context requirement:**\n```kotlin\n// ❌ Can't create without Context\nval factory = DatabaseDriverFactory() // Compile error\n\n// ✅ Pass Context (usually from Application)\nclass MyApp : Application() {\n    val database by lazy {\n        createDatabase(DatabaseDriverFactory(this))\n    }\n}\n```\n\n### iOS\n\n**Thread safety:**\n```kotlin\n// ❌ Single connection - crashes on concurrent access\nNativeSqliteDriver(schema, \"db\")\n\n// ✅ Enable connection pool\nNativeSqliteDriver(schema, \"db\", maxReaderConnections = 4)\n```\n\n**Background access:**\niOS can suspend apps. Long transactions may be interrupted.\n\n### Desktop\n\n**Driver lifecycle:**\n```kotlin\n// ❌ Creating driver doesn't create schema!\nval driver = JdbcSqliteDriver(\"jdbc:sqlite:app.db\")\n\n// ✅ Always create/migrate schema\nval driver = JdbcSqliteDriver(\"jdbc:sqlite:app.db\")\nAppDatabase.Schema.create(driver) // For new database\n```\n\n**File path:**\n```kotlin\n// ❌ Relative path - unpredictable location\n\"jdbc:sqlite:app.db\"\n\n// ✅ Absolute path in user directory\n\"jdbc:sqlite:${System.getProperty(\"user.home\")}/.myapp/app.db\"\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-6-1",
+              "title": "Multi-Platform Database Factory",
+              "description": "Create a complete DatabaseDriverFactory implementation for all platforms with proper configuration.",
+              "difficulty": "intermediate",
+              "starterCode": "// Complete the implementation for all platforms\n\n// commonMain\nexpect class DatabaseDriverFactory {\n    fun createDriver(): SqlDriver\n}\n\n// TODO: Implement for androidMain\n// - Use AndroidSqliteDriver\n// - Enable foreign keys\n// - Database name: \"tasks.db\"\n\n// TODO: Implement for iosMain\n// - Use NativeSqliteDriver\n// - Enable connection pooling (4 readers)\n// - Database name: \"tasks.db\"\n\n// TODO: Implement for desktopMain\n// - Use JdbcSqliteDriver\n// - Store in user's app data directory\n// - Handle schema creation for new databases",
+              "solution": "// ===== commonMain =====\nimport app.cash.sqldelight.db.SqlDriver\n\nexpect class DatabaseDriverFactory {\n    fun createDriver(): SqlDriver\n}\n\n// ===== androidMain =====\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\nimport androidx.sqlite.db.SupportSQLiteDatabase\n\nactual class DatabaseDriverFactory(private val context: Context) {\n    actual fun createDriver(): SqlDriver {\n        return AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"tasks.db\",\n            callback = object : AndroidSqliteDriver.Callback(AppDatabase.Schema) {\n                override fun onOpen(db: SupportSQLiteDatabase) {\n                    db.execSQL(\"PRAGMA foreign_keys=ON;\")\n                }\n            }\n        )\n    }\n}\n\n// ===== iosMain =====\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\n\nactual class DatabaseDriverFactory {\n    actual fun createDriver(): SqlDriver {\n        return NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"tasks.db\",\n            maxReaderConnections = 4\n        )\n    }\n}\n\n// ===== desktopMain =====\nimport app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver\nimport java.io.File\n\nactual class DatabaseDriverFactory {\n    actual fun createDriver(): SqlDriver {\n        val dbFile = File(getAppDataPath(), \"tasks.db\")\n        val isNew = !dbFile.exists()\n        \n        val driver = JdbcSqliteDriver(\"jdbc:sqlite:${dbFile.absolutePath}\")\n        \n        if (isNew) {\n            AppDatabase.Schema.create(driver)\n        }\n        \n        return driver\n    }\n    \n    private fun getAppDataPath(): File {\n        val home = System.getProperty(\"user.home\")\n        val os = System.getProperty(\"os.name\").lowercase()\n        \n        val path = when {\n            \"win\" in os -> File(home, \"AppData/Local/TasksApp\")\n            \"mac\" in os -> File(home, \"Library/Application Support/TasksApp\")\n            else -> File(home, \".tasksapp\")\n        }\n        \n        path.mkdirs()\n        return path\n    }\n}",
+              "hints": [
+                "Android needs Context in constructor",
+                "Use AndroidSqliteDriver.Callback for pragmas",
+                "iOS needs maxReaderConnections for thread safety",
+                "Desktop must check if database file exists before creating schema"
+              ],
+              "testCases": [
+                {
+                  "description": "Each platform should create proper driver",
+                  "expectedBehavior": "Driver creates and connects successfully"
+                },
+                {
+                  "description": "Foreign keys should be enabled on Android",
+                  "expectedBehavior": "PRAGMA foreign_keys returns 1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6a.7",
+          "title": "Lesson 6A.7: Secure Storage Patterns",
+          "moduleId": "module-06a",
+          "order": 7,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers secure data storage patterns in KMP applications, including encryption, secure key storage, and handling sensitive user data appropriately across platforms."
+            },
+            {
+              "type": "THEORY",
+              "title": "What Needs Protection",
+              "content": "### Data Classification\n\n| Category | Examples | Storage Approach |\n|----------|----------|------------------|\n| **Public** | App settings, cached content | Regular SQLite |\n| **Internal** | User preferences, local data | Regular SQLite |\n| **Sensitive** | User tokens, session data | Encrypted storage |\n| **Highly Sensitive** | Passwords, API keys | Keychain/Keystore |\n\n### What NOT to Store\n\n**Never store in your database:**\n- Plain text passwords\n- Full credit card numbers\n- API secret keys (use build config)\n- Biometric data\n\n**Store these server-side:**\n- Payment information\n- Sensitive personal data\n- Private encryption keys"
+            },
+            {
+              "type": "THEORY",
+              "title": "Platform Secure Storage",
+              "content": "### Android: EncryptedSharedPreferences\n\n```kotlin\n// For small sensitive data (tokens, keys)\nimport androidx.security.crypto.EncryptedSharedPreferences\nimport androidx.security.crypto.MasterKey\n\nclass AndroidSecureStorage(context: Context) {\n    private val masterKey = MasterKey.Builder(context)\n        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)\n        .build()\n    \n    private val prefs = EncryptedSharedPreferences.create(\n        context,\n        \"secure_prefs\",\n        masterKey,\n        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,\n        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM\n    )\n    \n    fun saveToken(token: String) {\n        prefs.edit().putString(\"auth_token\", token).apply()\n    }\n    \n    fun getToken(): String? = prefs.getString(\"auth_token\", null)\n    \n    fun clearToken() {\n        prefs.edit().remove(\"auth_token\").apply()\n    }\n}\n```\n\n### iOS: Keychain\n\n```kotlin\n// iosMain/kotlin/SecureStorage.ios.kt\nimport platform.Security.*\nimport kotlinx.cinterop.*\n\nclass IosSecureStorage {\n    fun saveToken(token: String) {\n        val query = mapOf(\n            kSecClass to kSecClassGenericPassword,\n            kSecAttrAccount to \"auth_token\",\n            kSecValueData to token.encodeToByteArray().toNSData()\n        )\n        SecItemDelete(query.toCFDictionary())\n        SecItemAdd(query.toCFDictionary(), null)\n    }\n    \n    fun getToken(): String? {\n        // Keychain query implementation\n        // Returns decrypted token or null\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "KMP Abstraction for Secure Storage",
+              "content": "### Common Interface\n\n```kotlin\n// commonMain\ninterface SecureStorage {\n    suspend fun saveString(key: String, value: String)\n    suspend fun getString(key: String): String?\n    suspend fun remove(key: String)\n    suspend fun clear()\n}\n\n// Token-specific wrapper\nclass TokenStorage(private val secureStorage: SecureStorage) {\n    suspend fun saveAuthToken(token: String) {\n        secureStorage.saveString(KEY_AUTH_TOKEN, token)\n    }\n    \n    suspend fun getAuthToken(): String? {\n        return secureStorage.getString(KEY_AUTH_TOKEN)\n    }\n    \n    suspend fun clearAuthToken() {\n        secureStorage.remove(KEY_AUTH_TOKEN)\n    }\n    \n    companion object {\n        private const val KEY_AUTH_TOKEN = \"auth_token\"\n    }\n}\n```\n\n### Using Multiplatform Settings Library\n\nA simpler approach using `multiplatform-settings`:\n\n```kotlin\n// build.gradle.kts\nimplementation(\"com.russhwolf:multiplatform-settings:1.1.1\")\nimplementation(\"com.russhwolf:multiplatform-settings-no-arg:1.1.1\")\n\n// For encrypted storage on Android:\nimplementation(\"com.russhwolf:multiplatform-settings-datastore:1.1.1\")\n```\n\n```kotlin\nimport com.russhwolf.settings.Settings\n\nclass SettingsStorage(private val settings: Settings) : SecureStorage {\n    override suspend fun saveString(key: String, value: String) {\n        settings.putString(key, value)\n    }\n    \n    override suspend fun getString(key: String): String? {\n        return settings.getStringOrNull(key)\n    }\n    \n    override suspend fun remove(key: String) {\n        settings.remove(key)\n    }\n    \n    override suspend fun clear() {\n        settings.clear()\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Encrypting SQLite Data",
+              "content": "### SQLCipher for Full Database Encryption\n\nFor highly sensitive apps, encrypt the entire database:\n\n```kotlin\n// build.gradle.kts\nimplementation(\"net.zetetic:sqlcipher-android:4.5.4\")\n\n// Android encrypted driver\nfun createEncryptedDriver(\n    context: Context,\n    password: String\n): SqlDriver {\n    // Load SQLCipher library\n    System.loadLibrary(\"sqlcipher\")\n    \n    val database = SQLiteDatabase.openOrCreateDatabase(\n        context.getDatabasePath(\"encrypted.db\"),\n        password,\n        null\n    )\n    \n    return AndroidSqliteDriver(database)\n}\n```\n\n### Column-Level Encryption\n\nFor specific sensitive columns:\n\n```kotlin\n// Encrypt before storing\nfun encryptSensitiveData(data: String, key: SecretKey): String {\n    val cipher = Cipher.getInstance(\"AES/GCM/NoPadding\")\n    cipher.init(Cipher.ENCRYPT_MODE, key)\n    val encrypted = cipher.doFinal(data.toByteArray())\n    return Base64.encodeToString(encrypted, Base64.DEFAULT)\n}\n\n// Type adapter for encrypted column\nval encryptedAdapter = object : ColumnAdapter<String, String> {\n    override fun decode(databaseValue: String): String {\n        return decrypt(databaseValue)\n    }\n    override fun encode(value: String): String {\n        return encrypt(value)\n    }\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Secure Session Storage",
+              "content": "A production-ready session storage implementation:",
+              "code": "// ===== commonMain =====\ndata class UserSession(\n    val userId: String,\n    val accessToken: String,\n    val refreshToken: String,\n    val expiresAt: Long\n)\n\ninterface SessionManager {\n    suspend fun saveSession(session: UserSession)\n    suspend fun getSession(): UserSession?\n    suspend fun clearSession()\n    suspend fun isSessionValid(): Boolean\n}\n\nclass SessionManagerImpl(\n    private val secureStorage: SecureStorage\n) : SessionManager {\n    \n    override suspend fun saveSession(session: UserSession) {\n        secureStorage.saveString(KEY_USER_ID, session.userId)\n        secureStorage.saveString(KEY_ACCESS_TOKEN, session.accessToken)\n        secureStorage.saveString(KEY_REFRESH_TOKEN, session.refreshToken)\n        secureStorage.saveString(KEY_EXPIRES_AT, session.expiresAt.toString())\n    }\n    \n    override suspend fun getSession(): UserSession? {\n        val userId = secureStorage.getString(KEY_USER_ID) ?: return null\n        val accessToken = secureStorage.getString(KEY_ACCESS_TOKEN) ?: return null\n        val refreshToken = secureStorage.getString(KEY_REFRESH_TOKEN) ?: return null\n        val expiresAt = secureStorage.getString(KEY_EXPIRES_AT)?.toLongOrNull() ?: return null\n        \n        return UserSession(userId, accessToken, refreshToken, expiresAt)\n    }\n    \n    override suspend fun clearSession() {\n        secureStorage.remove(KEY_USER_ID)\n        secureStorage.remove(KEY_ACCESS_TOKEN)\n        secureStorage.remove(KEY_REFRESH_TOKEN)\n        secureStorage.remove(KEY_EXPIRES_AT)\n    }\n    \n    override suspend fun isSessionValid(): Boolean {\n        val session = getSession() ?: return false\n        return session.expiresAt > Clock.System.now().toEpochMilliseconds()\n    }\n    \n    companion object {\n        private const val KEY_USER_ID = \"session_user_id\"\n        private const val KEY_ACCESS_TOKEN = \"session_access_token\"\n        private const val KEY_REFRESH_TOKEN = \"session_refresh_token\"\n        private const val KEY_EXPIRES_AT = \"session_expires_at\"\n    }\n}\n\n// ===== Usage in Auth Repository =====\nclass AuthRepository(\n    private val api: AuthApi,\n    private val sessionManager: SessionManager\n) {\n    suspend fun login(email: String, password: String): Result<User> {\n        return runCatching {\n            val response = api.login(email, password)\n            \n            // Store session securely\n            sessionManager.saveSession(\n                UserSession(\n                    userId = response.user.id,\n                    accessToken = response.accessToken,\n                    refreshToken = response.refreshToken,\n                    expiresAt = response.expiresAt\n                )\n            )\n            \n            response.user\n        }\n    }\n    \n    suspend fun logout() {\n        sessionManager.clearSession()\n    }\n    \n    suspend fun isLoggedIn(): Boolean {\n        return sessionManager.isSessionValid()\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Best Practices",
+              "content": "### DO:\n\n✅ Use platform-native secure storage (Keychain, EncryptedSharedPrefs)\n✅ Clear sensitive data on logout\n✅ Use short-lived access tokens\n✅ Implement token refresh logic\n✅ Validate data before storage\n✅ Handle storage errors gracefully\n\n### DON'T:\n\n❌ Store passwords locally (even encrypted)\n❌ Log sensitive data\n❌ Use hardcoded encryption keys\n❌ Store API secrets in code\n❌ Trust data from local storage without validation\n❌ Keep sessions alive indefinitely\n\n### Testing Security\n\n```kotlin\n// Use in-memory storage for tests\nclass FakeSecureStorage : SecureStorage {\n    private val store = mutableMapOf<String, String>()\n    \n    override suspend fun saveString(key: String, value: String) {\n        store[key] = value\n    }\n    \n    override suspend fun getString(key: String): String? = store[key]\n    override suspend fun remove(key: String) { store.remove(key) }\n    override suspend fun clear() { store.clear() }\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6a-7-1",
+              "title": "Build a Secure PIN Manager",
+              "description": "Create a secure PIN storage system with hashing and attempt limiting.",
+              "difficulty": "intermediate",
+              "starterCode": "interface PinManager {\n    // Save a new PIN (store hash, not plain text)\n    suspend fun setPin(pin: String): Result<Unit>\n    \n    // Verify PIN attempt (return false if too many attempts)\n    suspend fun verifyPin(pin: String): Result<Boolean>\n    \n    // Check if PIN is set\n    suspend fun hasPin(): Boolean\n    \n    // Clear PIN and reset attempts\n    suspend fun clearPin()\n    \n    // Get remaining attempts before lockout\n    fun getRemainingAttempts(): Int\n}\n\nclass PinManagerImpl(\n    private val secureStorage: SecureStorage\n) : PinManager {\n    \n    companion object {\n        const val MAX_ATTEMPTS = 5\n        const val LOCKOUT_DURATION_MS = 30_000L // 30 seconds\n    }\n    \n    // TODO: Implement all methods\n    // - Hash PIN before storing\n    // - Track failed attempts\n    // - Implement temporary lockout after MAX_ATTEMPTS\n    // - Store attempt count and lockout timestamp\n}",
+              "solution": "import kotlin.io.encoding.Base64\nimport kotlin.io.encoding.ExperimentalEncodingApi\n\nclass PinManagerImpl(\n    private val secureStorage: SecureStorage\n) : PinManager {\n    \n    private var failedAttempts = 0\n    private var lockoutUntil: Long = 0\n    \n    companion object {\n        const val MAX_ATTEMPTS = 5\n        const val LOCKOUT_DURATION_MS = 30_000L\n        private const val KEY_PIN_HASH = \"pin_hash\"\n        private const val KEY_FAILED_ATTEMPTS = \"failed_attempts\"\n        private const val KEY_LOCKOUT_UNTIL = \"lockout_until\"\n    }\n    \n    override suspend fun setPin(pin: String): Result<Unit> = runCatching {\n        require(pin.length >= 4) { \"PIN must be at least 4 digits\" }\n        require(pin.all { it.isDigit() }) { \"PIN must contain only digits\" }\n        \n        val hash = hashPin(pin)\n        secureStorage.saveString(KEY_PIN_HASH, hash)\n        resetAttempts()\n    }\n    \n    override suspend fun verifyPin(pin: String): Result<Boolean> = runCatching {\n        // Check lockout\n        loadState()\n        val now = Clock.System.now().toEpochMilliseconds()\n        if (lockoutUntil > now) {\n            throw IllegalStateException(\"Locked out. Try again in ${(lockoutUntil - now) / 1000} seconds\")\n        }\n        \n        val storedHash = secureStorage.getString(KEY_PIN_HASH)\n            ?: throw IllegalStateException(\"No PIN set\")\n        \n        val inputHash = hashPin(pin)\n        val isValid = storedHash == inputHash\n        \n        if (isValid) {\n            resetAttempts()\n        } else {\n            failedAttempts++\n            if (failedAttempts >= MAX_ATTEMPTS) {\n                lockoutUntil = now + LOCKOUT_DURATION_MS\n            }\n            saveState()\n        }\n        \n        isValid\n    }\n    \n    override suspend fun hasPin(): Boolean {\n        return secureStorage.getString(KEY_PIN_HASH) != null\n    }\n    \n    override suspend fun clearPin() {\n        secureStorage.remove(KEY_PIN_HASH)\n        resetAttempts()\n    }\n    \n    override fun getRemainingAttempts(): Int {\n        return (MAX_ATTEMPTS - failedAttempts).coerceAtLeast(0)\n    }\n    \n    @OptIn(ExperimentalEncodingApi::class)\n    private fun hashPin(pin: String): String {\n        // In production, use a proper crypto library\n        // This is a simplified example\n        val bytes = (pin + \"salt_value\").encodeToByteArray()\n        return Base64.encode(bytes.sha256())\n    }\n    \n    private suspend fun loadState() {\n        failedAttempts = secureStorage.getString(KEY_FAILED_ATTEMPTS)?.toIntOrNull() ?: 0\n        lockoutUntil = secureStorage.getString(KEY_LOCKOUT_UNTIL)?.toLongOrNull() ?: 0\n    }\n    \n    private suspend fun saveState() {\n        secureStorage.saveString(KEY_FAILED_ATTEMPTS, failedAttempts.toString())\n        secureStorage.saveString(KEY_LOCKOUT_UNTIL, lockoutUntil.toString())\n    }\n    \n    private suspend fun resetAttempts() {\n        failedAttempts = 0\n        lockoutUntil = 0\n        saveState()\n    }\n}",
+              "hints": [
+                "Hash the PIN before storing - never store plain text",
+                "Track attempts in secure storage (persists across app restarts)",
+                "Check lockout timestamp before allowing verification",
+                "Reset attempts after successful verification"
+              ],
+              "testCases": [
+                {
+                  "description": "Should hash PIN before storage",
+                  "expectedBehavior": "Stored value is not the plain PIN"
+                },
+                {
+                  "description": "Should lock out after max attempts",
+                  "expectedBehavior": "Throws error after 5 failed attempts"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "module-07",
       "title": "Professional Development & Deployment",
       "description": "Testing, optimization, security, and deploying your multiplatform apps",
