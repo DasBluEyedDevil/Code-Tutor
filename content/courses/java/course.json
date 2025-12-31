@@ -6581,7 +6581,22 @@
               "content": "IMPORTANT CONCEPTS FOR REAL-WORLD WEB DEVELOPMENT:\n\n1. HTTPS IS MANDATORY\n   - Never use plain HTTP in production\n   - All modern browsers flag HTTP as insecure\n   - SSL/TLS encrypts data in transit\n\n2. CORS (Cross-Origin Resource Sharing)\n   - Browsers block requests to different domains by default\n   - Backend must explicitly allow frontend origins\n   - Spring Boot: Use @CrossOrigin or configure WebMvcConfigurer\n\n3. THIS COURSE IS SIMPLIFIED\n   - Real web apps need authentication, rate limiting\n   - Production requires proper error handling and logging\n   - Security headers (CSP, HSTS) are essential\n\n4. API DESIGN MATTERS\n   - RESTful conventions make APIs predictable\n   - Versioning prevents breaking changes\n   - Documentation (OpenAPI/Swagger) is essential"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-10-1-http-methods",
+              "title": "HTTP Request Methods",
+              "description": "Which HTTP method should you use to UPDATE an existing resource?",
+              "options": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE"
+              ],
+              "correctAnswer": 2,
+              "explanation": "PUT updates an existing resource. POST creates new resources. GET reads data. DELETE removes resources."
+            }
+          ]
         },
         {
           "id": "epoch-6-lesson-2",
@@ -6627,7 +6642,22 @@
               "content": "CRITICAL CONSIDERATIONS FOR PRODUCTION APIs:\n\n1. AUTHENTICATION IS REQUIRED\n   - Never expose APIs without authentication\n   - Use JWT tokens or OAuth2 for stateless auth\n   - API keys for service-to-service calls\n\n2. INPUT VALIDATION\n   - Never trust client data\n   - Validate all inputs on the server\n   - Sanitize data to prevent injection attacks\n\n3. RATE LIMITING\n   - Protect against abuse and DDoS\n   - Implement per-user and per-IP limits\n   - Return 429 Too Many Requests\n\n4. VERSIONING STRATEGY\n   - Plan for API evolution from day one\n   - URL versioning (/api/v1/) is most common\n   - Document deprecation timelines\n\n5. ERROR RESPONSES (RFC 7807 Problem Details)\n   - Never expose stack traces to clients\n   - Use RFC 7807 Problem Details for consistent error format\n   - Spring Boot 3.4+: Enable with spring.mvc.problemdetails.enabled=true\n   - Returns standardized fields: type, title, status, detail, instance\n   - Log details server-side for debugging"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-10-2-status-codes",
+              "title": "HTTP Status Codes",
+              "description": "What does HTTP status code 404 mean?",
+              "options": [
+                "Request succeeded",
+                "Server error",
+                "Resource not found",
+                "Unauthorized"
+              ],
+              "correctAnswer": 2,
+              "explanation": "404 = Not Found. 200 = OK. 500 = Server Error. 401 = Unauthorized. 403 = Forbidden."
+            }
+          ]
         },
         {
           "id": "epoch-6-lesson-3",
@@ -6668,7 +6698,22 @@
               "content": "WHEN USING HTTPCLIENT IN PRODUCTION:\n\n1. CONNECTION POOLING\n   - Reuse HttpClient instances (they are thread-safe)\n   - Creating new clients per request wastes resources\n   - Configure connection timeouts appropriately\n\n2. TIMEOUT CONFIGURATION\n   HttpClient client = HttpClient.newBuilder()\n       .connectTimeout(Duration.ofSeconds(10))\n       .build();\n\n3. ERROR HANDLING\n   - Handle IOException for network errors\n   - Handle InterruptedException for cancellation\n   - Check status codes (4xx, 5xx)\n\n4. HTTPS ONLY\n   - Never use HTTP for sensitive data\n   - Verify SSL certificates in production\n\n5. ASYNC FOR PERFORMANCE\n   - Use sendAsync() for non-blocking calls\n   - CompletableFuture for concurrent requests\n   - Consider reactive alternatives (WebClient)\n\n6. JSON LIBRARIES\n   - Gson is simple but Jackson is more powerful\n   - Consider using records for DTOs (Java 17+)\n\n7. VIRTUAL THREADS (Java 21+ / Spring Boot 3.4+)\n   - HttpClient uses virtual threads when enabled\n   - Set spring.threads.virtual.enabled=true\n   - Dramatically improves scalability for I/O-heavy apps\n   - No code changes needed - same blocking code, better performance"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-10-3-httpclient",
+              "title": "Java HttpClient",
+              "description": "Which Java HttpClient method sends the request and waits for the response?",
+              "options": [
+                "client.execute(request)",
+                "client.send(request, handler)",
+                "client.call(request)",
+                "client.fetch(request)"
+              ],
+              "correctAnswer": 1,
+              "explanation": "HttpClient.send(request, bodyHandler) sends the request synchronously. sendAsync() is for async requests."
+            }
+          ]
         }
       ],
       "order": 10
