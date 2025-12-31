@@ -7444,10 +7444,132 @@
           ]
         },
         {
+          "id": "module-14-lesson-jwt",
+          "title": "JWT Authentication",
+          "moduleId": "module-14",
+          "order": 11,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is JWT?",
+              "content": "**JSON Web Token (JWT) - Stateless Authentication**\n\nJWT is a compact, URL-safe token format for securely transmitting information between parties. It's the industry standard for API authentication.\n\n**JWT Structure: header.payload.signature**\n\nA JWT consists of three parts separated by dots:\n\n```\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c\n```\n\n1. **Header** (red): Algorithm and token type\n   ```json\n   { \"alg\": \"HS256\", \"typ\": \"JWT\" }\n   ```\n\n2. **Payload** (purple): Claims (user data)\n   ```json\n   { \"sub\": \"user@example.com\", \"exp\": 1234567890 }\n   ```\n\n3. **Signature** (blue): Verification hash\n   ```\n   HMACSHA256(base64(header) + \".\" + base64(payload), secret)\n   ```\n\n**Stateless Authentication**\n\nUnlike sessions (stored on server), JWTs are **stateless**:\n- Server doesn't store session data\n- Token contains all needed info\n- Easily scales horizontally\n- No database lookup for each request\n\n**Access Tokens vs Refresh Tokens**\n\n| Token Type | Lifetime | Purpose |\n|------------|----------|----------|\n| Access Token | Short (15-60 min) | API authorization |\n| Refresh Token | Long (days/weeks) | Get new access tokens |\n\n**Why short-lived access tokens?**\n- If stolen, limited damage window\n- Refresh tokens stored securely (httpOnly cookies)\n- Revocation possible via refresh token invalidation\n\n**Library Choice: PyJWT**\n\nWe use `pyjwt` (NOT `python-jose` which is deprecated):\n```bash\nuv add pyjwt\n```\n\n**Security Considerations:**\n- Never store secrets in JWT payload (it's only base64 encoded, not encrypted)\n- Always use HTTPS\n- Set appropriate expiration times\n- Use strong secret keys (256+ bits)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating JWT Tokens",
+              "content": "**Token Creation with PyJWT**\n\nThis example shows how to create and decode JWT tokens using the `pyjwt` library.\n\n**Key Concepts:**\n- `jwt.encode()`: Creates a token from payload and secret\n- `jwt.decode()`: Verifies and extracts payload from token\n- `exp` claim: Automatic expiration checking\n- Algorithm choice: HS256 is secure for most use cases\n\n**Installation:**\n```bash\nuv add pyjwt\n```",
+              "code": "# uv add pyjwt\n\nimport jwt\nfrom datetime import datetime, timedelta\n\nSECRET_KEY = \"your-secret-key\"  # In production: from environment\nALGORITHM = \"HS256\"\nACCESS_TOKEN_EXPIRE_MINUTES = 30\n\ndef create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:\n    \"\"\"Create a JWT access token.\n    \n    Args:\n        data: Payload to encode (e.g., {\"sub\": \"user@example.com\"})\n        expires_delta: Optional custom expiration time\n        \n    Returns:\n        Encoded JWT token string\n    \"\"\"\n    to_encode = data.copy()\n    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))\n    to_encode.update({\"exp\": expire})\n    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)\n\ndef decode_token(token: str) -> dict:\n    \"\"\"Decode and verify a JWT token.\n    \n    Args:\n        token: The JWT token string\n        \n    Returns:\n        Decoded payload dictionary\n        \n    Raises:\n        jwt.ExpiredSignatureError: If token has expired\n        jwt.InvalidTokenError: If token is invalid\n    \"\"\"\n    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])\n\n# Demonstration\nprint(\"=== JWT Token Creation Demo ===\")\nprint()\n\n# Create a token for a user\nuser_data = {\"sub\": \"alice@example.com\", \"role\": \"admin\"}\ntoken = create_access_token(user_data, timedelta(minutes=30))\n\nprint(f\"User data: {user_data}\")\nprint(f\"\\nGenerated token:\")\nprint(f\"  {token[:50]}...\")\nprint(f\"  Length: {len(token)} characters\")\nprint()\n\n# Decode the token\ndecoded = decode_token(token)\nprint(f\"Decoded payload:\")\nprint(f\"  sub: {decoded['sub']}\")\nprint(f\"  role: {decoded['role']}\")\nprint(f\"  exp: {datetime.fromtimestamp(decoded['exp'])}\")\nprint()\n\n# Show token structure\nparts = token.split('.')\nprint(\"Token structure:\")\nprint(f\"  Header:    {parts[0][:30]}...\")\nprint(f\"  Payload:   {parts[1][:30]}...\")\nprint(f\"  Signature: {parts[2][:30]}...\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Token-Based Login",
+              "content": "**Login Endpoint with JWT**\n\nThis example shows how to implement a login endpoint that returns JWT tokens.\n\n**Flow:**\n1. User submits email/password via `OAuth2PasswordRequestForm`\n2. Server verifies credentials against database\n3. If valid, create and return access token\n4. Client stores token for subsequent requests\n\n**OAuth2PasswordRequestForm:**\n- FastAPI's built-in form for username/password\n- Follows OAuth2 spec (uses \"username\" field)\n- Automatically validates form data",
+              "code": "from fastapi import FastAPI, HTTPException, Depends\nfrom fastapi.security import OAuth2PasswordRequestForm\nfrom sqlalchemy.ext.asyncio import AsyncSession\nimport jwt\nfrom datetime import datetime, timedelta\nfrom passlib.context import CryptContext\n\napp = FastAPI()\n\n# Password hashing\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\n\n# JWT settings\nSECRET_KEY = \"your-secret-key\"\nALGORITHM = \"HS256\"\n\ndef create_access_token(data: dict) -> str:\n    \"\"\"Create JWT token with 30 minute expiration.\"\"\"\n    to_encode = data.copy()\n    expire = datetime.utcnow() + timedelta(minutes=30)\n    to_encode.update({\"exp\": expire})\n    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)\n\nasync def authenticate_user(db: AsyncSession, email: str, password: str):\n    \"\"\"Verify user credentials.\n    \n    Returns user if valid, None otherwise.\n    \"\"\"\n    user = await get_user_by_email(db, email)\n    if not user:\n        return None\n    if not pwd_context.verify(password, user.hashed_password):\n        return None\n    return user\n\n@app.post(\"/token\")\nasync def login(\n    form_data: OAuth2PasswordRequestForm = Depends(),\n    db: AsyncSession = Depends(get_db)\n):\n    \"\"\"Login endpoint - returns JWT access token.\n    \n    Expects form data with 'username' (email) and 'password' fields.\n    Returns access_token and token_type for OAuth2 compatibility.\n    \"\"\"\n    # Authenticate user\n    user = await authenticate_user(db, form_data.username, form_data.password)\n    if not user:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Invalid credentials\",\n            headers={\"WWW-Authenticate\": \"Bearer\"}\n        )\n    \n    # Create access token with user email as subject\n    access_token = create_access_token(data={\"sub\": user.email})\n    \n    return {\n        \"access_token\": access_token,\n        \"token_type\": \"bearer\"\n    }\n\n# Demonstration of the flow\nprint(\"=== Token-Based Login Flow ===\")\nprint()\nprint(\"1. Client sends POST /token with form data:\")\nprint(\"   { username: 'alice@example.com', password: 'secret123' }\")\nprint()\nprint(\"2. Server authenticates:\")\nprint(\"   - Looks up user by email\")\nprint(\"   - Verifies password hash\")\nprint()\nprint(\"3. If valid, server responds:\")\nexample_token = jwt.encode(\n    {\"sub\": \"alice@example.com\", \"exp\": datetime.utcnow() + timedelta(minutes=30)},\n    SECRET_KEY,\n    algorithm=ALGORITHM\n)\nprint(f\"   {{ access_token: '{example_token[:40]}...', token_type: 'bearer' }}\")\nprint()\nprint(\"4. Client stores token and includes in subsequent requests:\")\nprint(\"   Authorization: Bearer <token>\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Protected Routes",
+              "content": "**Protecting Endpoints with JWT**\n\nThis example shows how to create protected routes that require valid JWT tokens.\n\n**Key Components:**\n- `OAuth2PasswordBearer`: Extracts token from Authorization header\n- `get_current_user`: Dependency that validates token and returns user\n- Protected endpoints use `Depends(get_current_user)`\n\n**Error Handling:**\n- `ExpiredSignatureError`: Token has expired\n- `InvalidTokenError`: Token is malformed or signature invalid\n- Always return 401 for auth failures",
+              "code": "from fastapi import FastAPI, Depends, HTTPException\nfrom fastapi.security import OAuth2PasswordBearer\nfrom sqlalchemy.ext.asyncio import AsyncSession\nimport jwt\nfrom datetime import datetime, timedelta\n\napp = FastAPI()\n\n# JWT settings\nSECRET_KEY = \"your-secret-key\"\nALGORITHM = \"HS256\"\n\n# OAuth2 scheme - tells FastAPI where to find the token\n# tokenUrl points to our login endpoint\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\n\ndef decode_token(token: str) -> dict:\n    \"\"\"Decode and verify JWT token.\"\"\"\n    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])\n\nasync def get_current_user(\n    token: str = Depends(oauth2_scheme),\n    db: AsyncSession = Depends(get_db)\n):\n    \"\"\"Dependency to get current authenticated user.\n    \n    Extracts and validates JWT from Authorization header,\n    then fetches the user from database.\n    \n    Raises HTTPException 401 if:\n    - Token is missing or invalid\n    - Token has expired\n    - User not found in database\n    \"\"\"\n    credentials_exception = HTTPException(\n        status_code=401,\n        detail=\"Could not validate credentials\",\n        headers={\"WWW-Authenticate\": \"Bearer\"}\n    )\n    \n    try:\n        # Decode and verify token\n        payload = decode_token(token)\n        email: str = payload.get(\"sub\")\n        if email is None:\n            raise credentials_exception\n    except jwt.ExpiredSignatureError:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Token expired\",\n            headers={\"WWW-Authenticate\": \"Bearer\"}\n        )\n    except jwt.InvalidTokenError:\n        raise HTTPException(\n            status_code=401,\n            detail=\"Invalid token\",\n            headers={\"WWW-Authenticate\": \"Bearer\"}\n        )\n    \n    # Fetch user from database\n    user = await get_user_by_email(db, email)\n    if user is None:\n        raise credentials_exception\n    \n    return user\n\n# Protected endpoint - requires valid JWT\n@app.get(\"/users/me\")\nasync def read_users_me(current_user = Depends(get_current_user)):\n    \"\"\"Get current user's profile.\n    \n    This endpoint is protected - requires valid JWT token\n    in Authorization header.\n    \"\"\"\n    return {\n        \"id\": current_user.id,\n        \"email\": current_user.email,\n        \"name\": current_user.name\n    }\n\n@app.get(\"/users/me/items\")\nasync def read_own_items(current_user = Depends(get_current_user)):\n    \"\"\"Get current user's items.\n    \n    Another protected endpoint example.\n    \"\"\"\n    return {\"items\": [], \"owner\": current_user.email}\n\n# Demonstration\nprint(\"=== Protected Routes Demo ===\")\nprint()\nprint(\"Request to protected endpoint:\")\nprint(\"  GET /users/me\")\nprint(\"  Headers: { Authorization: 'Bearer eyJhbG...' }\")\nprint()\nprint(\"Server processing:\")\nprint(\"  1. OAuth2PasswordBearer extracts token from header\")\nprint(\"  2. get_current_user dependency validates token\")\nprint(\"  3. If valid, user object passed to endpoint\")\nprint(\"  4. Endpoint returns user data\")\nprint()\nprint(\"Possible responses:\")\nprint(\"  200: { id: 1, email: 'alice@example.com', name: 'Alice' }\")\nprint(\"  401: { detail: 'Token expired' }\")\nprint(\"  401: { detail: 'Invalid token' }\")\nprint(\"  401: { detail: 'Could not validate credentials' }\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "JWT Authentication Takeaways",
+              "content": "**Core Concepts:**\n\n1. **JWT Structure** - Three parts: header.payload.signature\n   - Header: Algorithm info\n   - Payload: User claims (sub, exp, etc.)\n   - Signature: Verifies integrity\n\n2. **Use PyJWT** - Modern, maintained library\n   ```python\n   import jwt\n   token = jwt.encode(payload, secret, algorithm=\"HS256\")\n   data = jwt.decode(token, secret, algorithms=[\"HS256\"])\n   ```\n\n3. **Token Flow:**\n   - Login: Verify credentials, return token\n   - Requests: Include token in Authorization header\n   - Server: Validate token, extract user\n\n4. **Security Best Practices:**\n   - Short expiration (15-60 minutes)\n   - Store secrets in environment variables\n   - Use HTTPS in production\n   - Handle expiration gracefully\n\n**Quick Reference:**\n\n```python\n# Installation\nuv add pyjwt\n\n# Create token\ntoken = jwt.encode(\n    {\"sub\": email, \"exp\": datetime.utcnow() + timedelta(minutes=30)},\n    SECRET_KEY,\n    algorithm=\"HS256\"\n)\n\n# Verify token\ntry:\n    payload = jwt.decode(token, SECRET_KEY, algorithms=[\"HS256\"])\nexcept jwt.ExpiredSignatureError:\n    # Handle expired\nexcept jwt.InvalidTokenError:\n    # Handle invalid\n```\n\n**Security Checklist:**\n- [ ] Use pyjwt (not python-jose)\n- [ ] Set appropriate expiration times\n- [ ] Store SECRET_KEY in environment\n- [ ] Always validate tokens on protected routes\n- [ ] Return generic error messages\n- [ ] Use HTTPS in production"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-jwt-challenge",
+              "title": "Build a JWT Authentication System",
+              "description": "Create a complete JWT authentication system with token creation, validation, and protected routes.",
+              "instructions": "Create a JWT authentication module that:\n\n1. Implements `create_access_token(data, expires_delta)` function\n2. Implements `decode_token(token)` function with error handling\n3. Creates a mock `get_current_user(token)` function that:\n   - Decodes the token\n   - Handles ExpiredSignatureError\n   - Handles InvalidTokenError\n   - Returns user data from token payload\n4. Demonstrates the complete flow:\n   - Create a token for a user\n   - Decode and validate it\n   - Handle an expired token\n   - Handle an invalid token",
+              "starterCode": "import jwt\nfrom datetime import datetime, timedelta\nfrom typing import Optional\n\nSECRET_KEY = \"your-secret-key\"\nALGORITHM = \"HS256\"\n\n# TODO: Implement create_access_token\ndef create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:\n    \"\"\"Create a JWT access token with expiration.\"\"\"\n    pass\n\n# TODO: Implement decode_token\ndef decode_token(token: str) -> dict:\n    \"\"\"Decode and verify a JWT token.\"\"\"\n    pass\n\n# TODO: Implement get_current_user\ndef get_current_user(token: str) -> Optional[dict]:\n    \"\"\"Get user from token.\n    \n    Returns user dict on success, None on failure.\n    Should handle ExpiredSignatureError and InvalidTokenError.\n    \"\"\"\n    pass\n\n# Test your implementation\nif __name__ == \"__main__\":\n    print(\"=== JWT Authentication Test ===\")\n    \n    # Test 1: Create and decode valid token\n    user_data = {\"sub\": \"alice@example.com\", \"role\": \"admin\"}\n    token = create_access_token(user_data, timedelta(minutes=30))\n    print(f\"1. Token created: {token[:40]}...\")\n    \n    # Test 2: Get user from valid token\n    user = get_current_user(token)\n    print(f\"2. User from token: {user}\")\n    \n    # Test 3: Handle expired token\n    expired_token = create_access_token(user_data, timedelta(seconds=-1))\n    expired_user = get_current_user(expired_token)\n    print(f\"3. Expired token result: {expired_user}\")\n    \n    # Test 4: Handle invalid token\n    invalid_user = get_current_user(\"invalid.token.here\")\n    print(f\"4. Invalid token result: {invalid_user}\")",
+              "solution": "import jwt\nfrom datetime import datetime, timedelta\nfrom typing import Optional\n\nSECRET_KEY = \"your-secret-key\"\nALGORITHM = \"HS256\"\n\ndef create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:\n    \"\"\"Create a JWT access token with expiration.\n    \n    Args:\n        data: Payload to encode (e.g., {\"sub\": \"user@example.com\"})\n        expires_delta: Optional custom expiration time\n        \n    Returns:\n        Encoded JWT token string\n    \"\"\"\n    to_encode = data.copy()\n    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))\n    to_encode.update({\"exp\": expire})\n    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)\n\ndef decode_token(token: str) -> dict:\n    \"\"\"Decode and verify a JWT token.\n    \n    Args:\n        token: The JWT token string\n        \n    Returns:\n        Decoded payload dictionary\n        \n    Raises:\n        jwt.ExpiredSignatureError: If token has expired\n        jwt.InvalidTokenError: If token is invalid\n    \"\"\"\n    return jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])\n\ndef get_current_user(token: str) -> Optional[dict]:\n    \"\"\"Get user from token.\n    \n    Returns user dict on success, None on failure.\n    Handles ExpiredSignatureError and InvalidTokenError.\n    \"\"\"\n    try:\n        payload = decode_token(token)\n        email = payload.get(\"sub\")\n        if email is None:\n            return None\n        # Return user data from token\n        return {\n            \"email\": email,\n            \"role\": payload.get(\"role\"),\n            \"exp\": payload.get(\"exp\")\n        }\n    except jwt.ExpiredSignatureError:\n        print(\"  Error: Token has expired\")\n        return None\n    except jwt.InvalidTokenError:\n        print(\"  Error: Invalid token\")\n        return None\n\n# Test the implementation\nif __name__ == \"__main__\":\n    print(\"=== JWT Authentication Test ===\")\n    print()\n    \n    # Test 1: Create and decode valid token\n    user_data = {\"sub\": \"alice@example.com\", \"role\": \"admin\"}\n    token = create_access_token(user_data, timedelta(minutes=30))\n    print(f\"1. Token created: {token[:40]}...\")\n    \n    # Test 2: Get user from valid token\n    user = get_current_user(token)\n    print(f\"2. User from token: {user}\")\n    print()\n    \n    # Test 3: Handle expired token\n    print(\"3. Testing expired token:\")\n    expired_token = create_access_token(user_data, timedelta(seconds=-1))\n    expired_user = get_current_user(expired_token)\n    print(f\"   Result: {expired_user}\")\n    print()\n    \n    # Test 4: Handle invalid token\n    print(\"4. Testing invalid token:\")\n    invalid_user = get_current_user(\"invalid.token.here\")\n    print(f\"   Result: {invalid_user}\")\n    print()\n    \n    print(\"=== All tests completed ===\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-jwt-1",
+                  "description": "create_access_token produces valid JWT",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-jwt-2",
+                  "description": "decode_token extracts correct payload",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-jwt-3",
+                  "description": "get_current_user returns user for valid token",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-jwt-4",
+                  "description": "get_current_user returns None for expired token",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-jwt-5",
+                  "description": "get_current_user returns None for invalid token",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use jwt.encode() with SECRET_KEY and algorithm to create tokens. Include an 'exp' claim for expiration."
+                },
+                {
+                  "level": 2,
+                  "text": "Use jwt.decode() with algorithms as a list [ALGORITHM]. Wrap in try/except to handle errors."
+                },
+                {
+                  "level": 3,
+                  "text": "Catch jwt.ExpiredSignatureError for expired tokens and jwt.InvalidTokenError for malformed tokens."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using python-jose instead of pyjwt",
+                  "consequence": "python-jose is deprecated and may have security issues",
+                  "correction": "Use pyjwt: 'uv add pyjwt' and 'import jwt'"
+                },
+                {
+                  "mistake": "Storing SECRET_KEY in code",
+                  "consequence": "Secret exposed in version control",
+                  "correction": "Load from environment: os.getenv('SECRET_KEY')"
+                },
+                {
+                  "mistake": "Not setting token expiration",
+                  "consequence": "Tokens valid forever if stolen",
+                  "correction": "Always include 'exp' claim with reasonable timeout"
+                },
+                {
+                  "mistake": "Using algorithm as string in decode instead of list",
+                  "consequence": "Can cause algorithm confusion attacks",
+                  "correction": "Use algorithms=[ALGORITHM] (list) in jwt.decode()"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-03b",
           "title": "Object-Relational Mapping with SQLAlchemy",
           "moduleId": "module-14",
-          "order": 10,
+          "order": 12,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
