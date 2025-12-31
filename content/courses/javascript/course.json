@@ -10500,6 +10500,488 @@
           ]
         }
       ]
+    },
+    {
+      "id": "module-20",
+      "title": "Module 20: Capstone - Task Manager API",
+      "description": "Build a complete REST API from scratch using everything you've learned. This capstone project combines TypeScript, Hono, Prisma, authentication, and validation into a production-ready Task Manager API.",
+      "difficulty": "advanced",
+      "estimatedHours": 4,
+      "lessons": [
+        {
+          "id": "20.1",
+          "title": "Project Setup & Planning",
+          "moduleId": "module-20",
+          "order": 1,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "What We're Building",
+              "content": "Over the next lessons, you'll build a production-ready Task Manager API. This isn't a toy project - it's a real API that demonstrates professional patterns:\n\n**Features:**\n- User registration and login with JWT authentication\n- CRUD operations for tasks and categories\n- Input validation with Zod\n- Database persistence with Prisma and SQLite\n- Owner-only access control\n- Filtering and pagination\n\n**Tech Stack:**\n- **Bun** - Fast JavaScript runtime\n- **TypeScript** - Type safety in strict mode\n- **Hono** - Lightweight web framework\n- **Prisma** - Type-safe database ORM\n- **Zod** - Runtime validation\n- **JWT** - Token-based authentication\n\nBy the end, you'll have a complete API that could serve a real mobile or web app."
+            },
+            {
+              "type": "CODE",
+              "title": "Initialize the Project",
+              "content": "Let's set up our project with Bun and TypeScript in strict mode:",
+              "language": "bash",
+              "code": "# Create project directory\nmkdir task-manager-api && cd task-manager-api\n\n# Initialize Bun project\nbun init -y\n\n# Install dependencies\nbun add hono @hono/zod-validator zod prisma @prisma/client\nbun add -d @types/bun typescript\n\n# Initialize Prisma with SQLite\nbunx prisma init --datasource-provider sqlite"
+            },
+            {
+              "type": "CODE",
+              "title": "Configure TypeScript Strict Mode",
+              "content": "Create a tsconfig.json with strict settings. Strict mode catches more bugs at compile time:",
+              "language": "json",
+              "code": "{\n  \"compilerOptions\": {\n    \"target\": \"ESNext\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"bundler\",\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"noEmit\": true,\n    \"esModuleInterop\": true,\n    \"allowSyntheticDefaultImports\": true,\n    \"resolveJsonModule\": true,\n    \"isolatedModules\": true,\n    \"noUncheckedIndexedAccess\": true,\n    \"noImplicitReturns\": true,\n    \"noFallthroughCasesInSwitch\": true,\n    \"forceConsistentCasingInFileNames\": true,\n    \"types\": [\"bun-types\"]\n  },\n  \"include\": [\"src/**/*\"],\n  \"exclude\": [\"node_modules\"]\n}"
+            },
+            {
+              "type": "CODE",
+              "title": "Project Structure",
+              "content": "Create a clean project structure that separates concerns:",
+              "language": "bash",
+              "code": "# Create directory structure\nmkdir -p src/{routes,middleware,lib,schemas}\n\n# Your project should look like this:\n# task-manager-api/\n# ├── prisma/\n# │   └── schema.prisma\n# ├── src/\n# │   ├── routes/\n# │   │   ├── auth.ts      # Registration & login\n# │   │   ├── tasks.ts     # Task CRUD\n# │   │   └── categories.ts # Category CRUD\n# │   ├── middleware/\n# │   │   └── auth.ts      # JWT verification\n# │   ├── lib/\n# │   │   └── db.ts        # Prisma client\n# │   ├── schemas/\n# │   │   └── validation.ts # Zod schemas\n# │   └── index.ts         # Entry point\n# ├── package.json\n# └── tsconfig.json"
+            },
+            {
+              "type": "CODE",
+              "title": "Create the Entry Point",
+              "content": "Set up the main application file with Hono:",
+              "language": "typescript",
+              "code": "// src/index.ts\nimport { Hono } from 'hono';\nimport { cors } from 'hono/cors';\nimport { logger } from 'hono/logger';\n\nconst app = new Hono();\n\n// Middleware\napp.use('*', logger());\napp.use('*', cors());\n\n// Health check\napp.get('/', (c) => {\n  return c.json({\n    status: 'ok',\n    message: 'Task Manager API',\n    version: '1.0.0',\n    endpoints: {\n      auth: '/api/auth/*',\n      tasks: '/api/tasks/*',\n      categories: '/api/categories/*'\n    }\n  });\n});\n\n// Routes will be added here in later lessons\n// app.route('/api/auth', authRoutes);\n// app.route('/api/tasks', taskRoutes);\n// app.route('/api/categories', categoryRoutes);\n\nconst port = process.env.PORT || 3000;\nconsole.log(`Server running on http://localhost:${port}`);\n\nexport default {\n  port,\n  fetch: app.fetch\n};"
+            },
+            {
+              "type": "CODE",
+              "title": "Update package.json Scripts",
+              "content": "Add convenient scripts for development and database management:",
+              "language": "json",
+              "code": "{\n  \"name\": \"task-manager-api\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"dev\": \"bun run --watch src/index.ts\",\n    \"start\": \"bun run src/index.ts\",\n    \"db:generate\": \"bunx prisma generate\",\n    \"db:push\": \"bunx prisma db push\",\n    \"db:migrate\": \"bunx prisma migrate dev\",\n    \"db:seed\": \"bun run prisma/seed.ts\",\n    \"db:studio\": \"bunx prisma studio\",\n    \"typecheck\": \"tsc --noEmit\"\n  },\n  \"dependencies\": {\n    \"hono\": \"^4.0.0\",\n    \"@hono/zod-validator\": \"^0.2.0\",\n    \"zod\": \"^3.22.0\",\n    \"prisma\": \"^5.0.0\",\n    \"@prisma/client\": \"^5.0.0\"\n  },\n  \"devDependencies\": {\n    \"@types/bun\": \"latest\",\n    \"typescript\": \"^5.0.0\"\n  }\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "API Endpoint Planning",
+              "content": "Before coding, let's plan our API endpoints:\n\n**Authentication (Public)**\n```\nPOST /api/auth/register  - Create new user\nPOST /api/auth/login     - Get JWT token\nGET  /api/auth/me        - Get current user (protected)\n```\n\n**Tasks (Protected - Owner Only)**\n```\nGET    /api/tasks        - List user's tasks (with filters)\nPOST   /api/tasks        - Create new task\nGET    /api/tasks/:id    - Get single task\nPUT    /api/tasks/:id    - Update task\nDELETE /api/tasks/:id    - Delete task\n```\n\n**Categories (Protected - Owner Only)**\n```\nGET    /api/categories       - List user's categories\nPOST   /api/categories       - Create category\nPUT    /api/categories/:id   - Update category\nDELETE /api/categories/:id   - Delete category\n```\n\n**Query Parameters for Tasks:**\n- `?status=pending|completed` - Filter by status\n- `?categoryId=123` - Filter by category\n- `?page=1&limit=10` - Pagination\n- `?search=keyword` - Search in title/description"
+            },
+            {
+              "type": "WARNING",
+              "title": "Environment Variables",
+              "content": "Create a `.env` file for sensitive configuration. Never commit this to git!\n\n```bash\n# .env\nDATABASE_URL=\"file:./dev.db\"\nJWT_SECRET=\"your-super-secret-key-change-in-production\"\nPORT=3000\n```\n\n**Security Checklist:**\n1. Add `.env` to your `.gitignore` immediately\n2. Use a strong, random JWT_SECRET in production (at least 32 characters)\n3. Never log sensitive values like passwords or tokens\n4. Use environment variables for all configuration that changes between environments\n\n```bash\n# .gitignore\nnode_modules/\n.env\n*.db\n*.db-journal\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.1-challenge",
+              "title": "Verify Project Setup",
+              "description": "Complete the project setup and verify everything works.",
+              "instructions": "Create the Prisma client helper and verify your server starts correctly. The lib/db.ts file should export a singleton Prisma client instance.",
+              "starterCode": "// src/lib/db.ts\n// Create a singleton Prisma client instance\n// This prevents multiple connections during hot reload\n\nimport { PrismaClient } from '@prisma/client';\n\n// Your code here: Create and export a singleton PrismaClient\n",
+              "solution": "// src/lib/db.ts\nimport { PrismaClient } from '@prisma/client';\n\nconst globalForPrisma = globalThis as unknown as {\n  prisma: PrismaClient | undefined;\n};\n\nexport const prisma = globalForPrisma.prisma ?? new PrismaClient({\n  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],\n});\n\nif (process.env.NODE_ENV !== 'production') {\n  globalForPrisma.prisma = prisma;\n}\n\nexport default prisma;",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Exports a prisma instance",
+                  "expectedOutput": "PrismaClient",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Uses singleton pattern",
+                  "expectedOutput": "globalForPrisma",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use globalThis to store the client instance, preventing multiple connections during hot reload"
+                },
+                {
+                  "level": 2,
+                  "text": "Check if prisma already exists on globalThis before creating a new instance"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Creating a new PrismaClient on every import",
+                  "consequence": "Causes 'too many connections' errors during development with hot reload",
+                  "correction": "Store the client in globalThis and reuse it"
+                },
+                {
+                  "mistake": "Not configuring logging based on environment",
+                  "consequence": "Either missing debug info in development or noisy logs in production",
+                  "correction": "Use the log option with environment-based configuration"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.2",
+          "title": "Database Schema Design",
+          "moduleId": "module-20",
+          "order": 2,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "Data Modeling for Task Manager",
+              "content": "Good database design is the foundation of any application. Let's think through our data model:\n\n**Entities:**\n1. **User** - The person using the app\n   - Has many tasks\n   - Has many categories\n   - Stores hashed password (never plain text!)\n\n2. **Task** - A todo item\n   - Belongs to one user (owner)\n   - Optionally belongs to one category\n   - Has status, priority, due date\n\n3. **Category** - For organizing tasks\n   - Belongs to one user (owner)\n   - Has many tasks\n   - Simple: just name and color\n\n**Key Relationships:**\n- User 1:N Tasks (one user has many tasks)\n- User 1:N Categories (one user has many categories)\n- Category 1:N Tasks (one category has many tasks)\n\n**Access Control:**\n- Users can only see/modify their own tasks and categories\n- No sharing between users in this version"
+            },
+            {
+              "type": "CODE",
+              "title": "Complete Prisma Schema",
+              "content": "Create your database schema with proper relationships and constraints:",
+              "language": "prisma",
+              "code": "// prisma/schema.prisma\ngenerator client {\n  provider = \"prisma-client-js\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id           String     @id @default(cuid())\n  email        String     @unique\n  passwordHash String\n  name         String?\n  createdAt    DateTime   @default(now())\n  updatedAt    DateTime   @updatedAt\n\n  tasks        Task[]\n  categories   Category[]\n\n  @@map(\"users\")\n}\n\nmodel Task {\n  id          String    @id @default(cuid())\n  title       String\n  description String?\n  status      String    @default(\"pending\") // pending, in_progress, completed\n  priority    String    @default(\"medium\")  // low, medium, high\n  dueDate     DateTime?\n  createdAt   DateTime  @default(now())\n  updatedAt   DateTime  @updatedAt\n\n  // Relations\n  userId      String\n  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  \n  categoryId  String?\n  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)\n\n  @@index([userId])\n  @@index([categoryId])\n  @@index([status])\n  @@index([dueDate])\n  @@map(\"tasks\")\n}\n\nmodel Category {\n  id        String   @id @default(cuid())\n  name      String\n  color     String   @default(\"#3B82F6\") // Default blue\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  // Relations\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  \n  tasks     Task[]\n\n  @@unique([userId, name]) // User can't have duplicate category names\n  @@index([userId])\n  @@map(\"categories\")\n}"
+            },
+            {
+              "type": "THEORY",
+              "title": "Schema Design Decisions Explained",
+              "content": "**Why cuid() instead of autoincrement?**\n- CUIDs are URL-safe, unique across systems\n- No information leakage (can't guess total users from ID)\n- Safe for distributed systems\n\n**Why separate passwordHash field?**\n- Never store plain passwords\n- Name reminds developers this is a hash, not password\n\n**Why onDelete: Cascade for tasks?**\n- When user is deleted, their tasks are automatically deleted\n- Maintains referential integrity\n\n**Why onDelete: SetNull for category on tasks?**\n- If category is deleted, tasks remain but lose their category\n- Alternative: Cascade would delete tasks too (usually not desired)\n\n**Why indexes on userId, categoryId, status, dueDate?**\n- These are the fields we'll filter/sort by\n- Indexes make queries much faster\n\n**Why @@unique([userId, name]) on Category?**\n- Prevents duplicate category names per user\n- Different users can have categories with the same name"
+            },
+            {
+              "type": "CODE",
+              "title": "Run the Migration",
+              "content": "Apply the schema to create your database:",
+              "language": "bash",
+              "code": "# Generate Prisma Client (creates TypeScript types)\nbunx prisma generate\n\n# Create the database and apply schema\nbunx prisma db push\n\n# Or, for production-ready migrations:\nbunx prisma migrate dev --name init\n\n# Open Prisma Studio to view your database\nbunx prisma studio"
+            },
+            {
+              "type": "CODE",
+              "title": "Create a Seed Script",
+              "content": "Create sample data for development and testing:",
+              "language": "typescript",
+              "code": "// prisma/seed.ts\nimport { PrismaClient } from '@prisma/client';\n\nconst prisma = new PrismaClient();\n\nasync function main() {\n  console.log('Seeding database...');\n\n  // Create a demo user (password: 'password123')\n  // In real app, this hash would come from Bun.password.hash()\n  const demoHash = await Bun.password.hash('password123');\n  \n  const user = await prisma.user.upsert({\n    where: { email: 'demo@example.com' },\n    update: {},\n    create: {\n      email: 'demo@example.com',\n      passwordHash: demoHash,\n      name: 'Demo User',\n    },\n  });\n\n  console.log('Created user:', user.email);\n\n  // Create categories\n  const workCategory = await prisma.category.upsert({\n    where: { \n      userId_name: { userId: user.id, name: 'Work' }\n    },\n    update: {},\n    create: {\n      name: 'Work',\n      color: '#EF4444', // Red\n      userId: user.id,\n    },\n  });\n\n  const personalCategory = await prisma.category.upsert({\n    where: { \n      userId_name: { userId: user.id, name: 'Personal' }\n    },\n    update: {},\n    create: {\n      name: 'Personal',\n      color: '#22C55E', // Green\n      userId: user.id,\n    },\n  });\n\n  console.log('Created categories:', workCategory.name, personalCategory.name);\n\n  // Create sample tasks\n  const tasks = await prisma.task.createMany({\n    data: [\n      {\n        title: 'Complete API documentation',\n        description: 'Write OpenAPI spec for all endpoints',\n        status: 'in_progress',\n        priority: 'high',\n        userId: user.id,\n        categoryId: workCategory.id,\n        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 1 week\n      },\n      {\n        title: 'Review pull requests',\n        description: 'Check pending PRs from team',\n        status: 'pending',\n        priority: 'medium',\n        userId: user.id,\n        categoryId: workCategory.id,\n      },\n      {\n        title: 'Buy groceries',\n        description: 'Milk, eggs, bread, vegetables',\n        status: 'pending',\n        priority: 'low',\n        userId: user.id,\n        categoryId: personalCategory.id,\n      },\n      {\n        title: 'Learn Prisma',\n        description: 'Complete the Prisma tutorial',\n        status: 'completed',\n        priority: 'medium',\n        userId: user.id,\n        categoryId: personalCategory.id,\n      },\n    ],\n    skipDuplicates: true,\n  });\n\n  console.log('Created tasks:', tasks.count);\n  console.log('Seeding complete!');\n}\n\nmain()\n  .catch((e) => {\n    console.error('Seeding failed:', e);\n    process.exit(1);\n  })\n  .finally(async () => {\n    await prisma.$disconnect();\n  });"
+            },
+            {
+              "type": "CODE",
+              "title": "Run the Seed",
+              "content": "Execute the seed script to populate your database:",
+              "language": "bash",
+              "code": "# Run the seed script\nbun run prisma/seed.ts\n\n# Expected output:\n# Seeding database...\n# Created user: demo@example.com\n# Created categories: Work Personal\n# Created tasks: 4\n# Seeding complete!\n\n# Verify with Prisma Studio\nbunx prisma studio"
+            },
+            {
+              "type": "WARNING",
+              "title": "Database Best Practices",
+              "content": "**Never do these:**\n1. Store plain text passwords - Always hash with bcrypt/argon2\n2. Skip migrations in production - Use `prisma migrate deploy`\n3. Forget indexes on frequently queried fields\n4. Delete production data without backup\n\n**Always do these:**\n1. Use transactions for multiple related operations\n2. Validate data before it hits the database (Zod schemas)\n3. Use parameterized queries (Prisma does this automatically)\n4. Test your schema with seed data before deployment\n\n**Development vs Production:**\n```bash\n# Development (schema changes, quick iteration)\nbunx prisma db push\n\n# Production (tracked migrations, safe rollbacks)\nbunx prisma migrate deploy\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.2-challenge",
+              "title": "Add Task Queries",
+              "description": "Create a database queries module with common task operations.",
+              "instructions": "Create a queries file that exports functions for common task operations: findTasksByUser, findTaskById, and countTasksByStatus.",
+              "starterCode": "// src/lib/queries.ts\nimport { prisma } from './db';\n\n// Find all tasks for a user with optional status filter\nexport async function findTasksByUser(\n  userId: string,\n  options?: { status?: string; categoryId?: string }\n) {\n  // Your code here\n}\n\n// Find a single task by ID (only if owned by user)\nexport async function findTaskById(taskId: string, userId: string) {\n  // Your code here\n}\n\n// Count tasks grouped by status for a user\nexport async function countTasksByStatus(userId: string) {\n  // Your code here\n}",
+              "solution": "// src/lib/queries.ts\nimport { prisma } from './db';\n\nexport async function findTasksByUser(\n  userId: string,\n  options?: { status?: string; categoryId?: string }\n) {\n  return prisma.task.findMany({\n    where: {\n      userId,\n      ...(options?.status && { status: options.status }),\n      ...(options?.categoryId && { categoryId: options.categoryId }),\n    },\n    include: {\n      category: {\n        select: { id: true, name: true, color: true },\n      },\n    },\n    orderBy: [\n      { priority: 'desc' },\n      { dueDate: 'asc' },\n      { createdAt: 'desc' },\n    ],\n  });\n}\n\nexport async function findTaskById(taskId: string, userId: string) {\n  return prisma.task.findFirst({\n    where: {\n      id: taskId,\n      userId, // Ensures user can only access their own tasks\n    },\n    include: {\n      category: true,\n    },\n  });\n}\n\nexport async function countTasksByStatus(userId: string) {\n  const counts = await prisma.task.groupBy({\n    by: ['status'],\n    where: { userId },\n    _count: { status: true },\n  });\n\n  return counts.reduce((acc, item) => {\n    acc[item.status] = item._count.status;\n    return acc;\n  }, {} as Record<string, number>);\n}",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "findTasksByUser filters by userId and optional status",
+                  "expectedOutput": "prisma.task.findMany",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "findTaskById checks both taskId and userId for security",
+                  "expectedOutput": "userId",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "countTasksByStatus uses groupBy",
+                  "expectedOutput": "groupBy",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use prisma.task.findMany with a where clause that includes userId"
+                },
+                {
+                  "level": 2,
+                  "text": "Use the spread operator with conditional object properties: ...(condition && { field: value })"
+                },
+                {
+                  "level": 3,
+                  "text": "For groupBy, use prisma.task.groupBy({ by: ['status'], where: { userId }, _count: { status: true } })"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not including userId in findTaskById",
+                  "consequence": "Users could access tasks belonging to other users",
+                  "correction": "Always filter by both taskId AND userId"
+                },
+                {
+                  "mistake": "Using findUnique instead of findFirst for owner check",
+                  "consequence": "findUnique only works with unique fields (id), can't combine with userId",
+                  "correction": "Use findFirst with a where clause containing multiple conditions"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.3",
+          "title": "Authentication Implementation",
+          "moduleId": "module-20",
+          "order": 3,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "JWT Authentication Flow",
+              "content": "Our API uses JWT (JSON Web Tokens) for stateless authentication:\n\n**Registration Flow:**\n1. User sends email + password\n2. Server validates input (Zod)\n3. Server checks email isn't taken\n4. Server hashes password (Bun.password)\n5. Server creates user in database\n6. Server returns JWT token\n\n**Login Flow:**\n1. User sends email + password\n2. Server finds user by email\n3. Server verifies password against hash\n4. If valid, server returns JWT token\n5. If invalid, server returns 401\n\n**Protected Route Flow:**\n1. Client sends request with `Authorization: Bearer <token>`\n2. Middleware extracts and verifies token\n3. If valid, request continues with user context\n4. If invalid, middleware returns 401\n\n**Why JWT?**\n- Stateless: No server-side session storage needed\n- Scalable: Works across multiple servers\n- Self-contained: Token carries user info"
+            },
+            {
+              "type": "CODE",
+              "title": "Zod Validation Schemas",
+              "content": "Create validation schemas for authentication endpoints:",
+              "language": "typescript",
+              "code": "// src/schemas/auth.ts\nimport { z } from 'zod';\n\nexport const registerSchema = z.object({\n  email: z\n    .string()\n    .email('Invalid email format')\n    .toLowerCase()\n    .trim(),\n  password: z\n    .string()\n    .min(8, 'Password must be at least 8 characters')\n    .max(100, 'Password too long')\n    .regex(\n      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/,\n      'Password must contain uppercase, lowercase, and number'\n    ),\n  name: z\n    .string()\n    .min(1, 'Name is required')\n    .max(100, 'Name too long')\n    .trim()\n    .optional(),\n});\n\nexport const loginSchema = z.object({\n  email: z\n    .string()\n    .email('Invalid email format')\n    .toLowerCase()\n    .trim(),\n  password: z\n    .string()\n    .min(1, 'Password is required'),\n});\n\n// Type inference from schemas\nexport type RegisterInput = z.infer<typeof registerSchema>;\nexport type LoginInput = z.infer<typeof loginSchema>;"
+            },
+            {
+              "type": "CODE",
+              "title": "JWT Utilities",
+              "content": "Create helper functions for JWT token generation and verification:",
+              "language": "typescript",
+              "code": "// src/lib/jwt.ts\nimport { sign, verify } from 'hono/jwt';\n\nconst JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';\nconst TOKEN_EXPIRY = '7d'; // 7 days\n\nexport interface JWTPayload {\n  sub: string;      // User ID\n  email: string;\n  iat: number;      // Issued at\n  exp: number;      // Expires at\n}\n\nexport async function generateToken(user: { id: string; email: string }): Promise<string> {\n  const now = Math.floor(Date.now() / 1000);\n  const expiresIn = 7 * 24 * 60 * 60; // 7 days in seconds\n\n  const payload: JWTPayload = {\n    sub: user.id,\n    email: user.email,\n    iat: now,\n    exp: now + expiresIn,\n  };\n\n  return sign(payload, JWT_SECRET);\n}\n\nexport async function verifyToken(token: string): Promise<JWTPayload | null> {\n  try {\n    const payload = await verify(token, JWT_SECRET) as JWTPayload;\n    return payload;\n  } catch (error) {\n    return null;\n  }\n}\n\nexport { JWT_SECRET };"
+            },
+            {
+              "type": "CODE",
+              "title": "Auth Middleware",
+              "content": "Create middleware that protects routes and provides user context:",
+              "language": "typescript",
+              "code": "// src/middleware/auth.ts\nimport { Context, Next } from 'hono';\nimport { verifyToken, JWTPayload } from '../lib/jwt';\nimport { prisma } from '../lib/db';\n\n// Extend Hono's context to include user\nexport interface AuthContext {\n  userId: string;\n  email: string;\n}\n\nexport async function authMiddleware(c: Context, next: Next) {\n  const authHeader = c.req.header('Authorization');\n\n  if (!authHeader || !authHeader.startsWith('Bearer ')) {\n    return c.json(\n      { error: 'Missing or invalid Authorization header' },\n      401\n    );\n  }\n\n  const token = authHeader.slice(7); // Remove 'Bearer ' prefix\n\n  const payload = await verifyToken(token);\n  if (!payload) {\n    return c.json(\n      { error: 'Invalid or expired token' },\n      401\n    );\n  }\n\n  // Verify user still exists in database\n  const user = await prisma.user.findUnique({\n    where: { id: payload.sub },\n    select: { id: true, email: true },\n  });\n\n  if (!user) {\n    return c.json(\n      { error: 'User not found' },\n      401\n    );\n  }\n\n  // Attach user to context for use in route handlers\n  c.set('userId', user.id);\n  c.set('email', user.email);\n\n  await next();\n}"
+            },
+            {
+              "type": "CODE",
+              "title": "Auth Routes",
+              "content": "Implement registration and login endpoints:",
+              "language": "typescript",
+              "code": "// src/routes/auth.ts\nimport { Hono } from 'hono';\nimport { zValidator } from '@hono/zod-validator';\nimport { prisma } from '../lib/db';\nimport { generateToken } from '../lib/jwt';\nimport { registerSchema, loginSchema } from '../schemas/auth';\nimport { authMiddleware } from '../middleware/auth';\n\nconst auth = new Hono();\n\n// POST /api/auth/register\nauth.post(\n  '/register',\n  zValidator('json', registerSchema),\n  async (c) => {\n    const { email, password, name } = c.req.valid('json');\n\n    // Check if user exists\n    const existing = await prisma.user.findUnique({\n      where: { email },\n    });\n\n    if (existing) {\n      return c.json({ error: 'Email already registered' }, 409);\n    }\n\n    // Hash password\n    const passwordHash = await Bun.password.hash(password, {\n      algorithm: 'argon2id',\n    });\n\n    // Create user\n    const user = await prisma.user.create({\n      data: {\n        email,\n        passwordHash,\n        name,\n      },\n      select: {\n        id: true,\n        email: true,\n        name: true,\n        createdAt: true,\n      },\n    });\n\n    // Generate token\n    const token = await generateToken(user);\n\n    return c.json({\n      message: 'Registration successful',\n      user,\n      token,\n    }, 201);\n  }\n);\n\n// POST /api/auth/login\nauth.post(\n  '/login',\n  zValidator('json', loginSchema),\n  async (c) => {\n    const { email, password } = c.req.valid('json');\n\n    // Find user\n    const user = await prisma.user.findUnique({\n      where: { email },\n    });\n\n    if (!user) {\n      // Use same message for both cases (security)\n      return c.json({ error: 'Invalid email or password' }, 401);\n    }\n\n    // Verify password\n    const validPassword = await Bun.password.verify(\n      password,\n      user.passwordHash\n    );\n\n    if (!validPassword) {\n      return c.json({ error: 'Invalid email or password' }, 401);\n    }\n\n    // Generate token\n    const token = await generateToken(user);\n\n    return c.json({\n      message: 'Login successful',\n      user: {\n        id: user.id,\n        email: user.email,\n        name: user.name,\n      },\n      token,\n    });\n  }\n);\n\n// GET /api/auth/me (protected)\nauth.get('/me', authMiddleware, async (c) => {\n  const userId = c.get('userId');\n\n  const user = await prisma.user.findUnique({\n    where: { id: userId },\n    select: {\n      id: true,\n      email: true,\n      name: true,\n      createdAt: true,\n      _count: {\n        select: {\n          tasks: true,\n          categories: true,\n        },\n      },\n    },\n  });\n\n  return c.json({ user });\n});\n\nexport default auth;"
+            },
+            {
+              "type": "CODE",
+              "title": "Wire Up Auth Routes",
+              "content": "Add the auth routes to your main application:",
+              "language": "typescript",
+              "code": "// src/index.ts (updated)\nimport { Hono } from 'hono';\nimport { cors } from 'hono/cors';\nimport { logger } from 'hono/logger';\nimport auth from './routes/auth';\n\nconst app = new Hono();\n\n// Middleware\napp.use('*', logger());\napp.use('*', cors());\n\n// Health check\napp.get('/', (c) => {\n  return c.json({\n    status: 'ok',\n    message: 'Task Manager API',\n    version: '1.0.0',\n  });\n});\n\n// Routes\napp.route('/api/auth', auth);\n\n// Error handler\napp.onError((err, c) => {\n  console.error('Server error:', err);\n  return c.json(\n    { error: 'Internal server error' },\n    500\n  );\n});\n\n// 404 handler\napp.notFound((c) => {\n  return c.json(\n    { error: 'Not found' },\n    404\n  );\n});\n\nconst port = process.env.PORT || 3000;\nconsole.log(`Server running on http://localhost:${port}`);\n\nexport default {\n  port,\n  fetch: app.fetch\n};"
+            },
+            {
+              "type": "CODE",
+              "title": "Test the Endpoints",
+              "content": "Use curl or HTTPie to test your authentication endpoints:",
+              "language": "bash",
+              "code": "# Start the server\nbun run dev\n\n# Register a new user\ncurl -X POST http://localhost:3000/api/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"email\": \"test@example.com\",\n    \"password\": \"Password123\",\n    \"name\": \"Test User\"\n  }'\n\n# Response:\n# {\n#   \"message\": \"Registration successful\",\n#   \"user\": { \"id\": \"...\", \"email\": \"test@example.com\", ... },\n#   \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n# }\n\n# Login\ncurl -X POST http://localhost:3000/api/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"email\": \"test@example.com\",\n    \"password\": \"Password123\"\n  }'\n\n# Get current user (use token from login response)\ncurl http://localhost:3000/api/auth/me \\\n  -H \"Authorization: Bearer YOUR_TOKEN_HERE\""
+            },
+            {
+              "type": "WARNING",
+              "title": "Security Best Practices",
+              "content": "**Critical Security Points:**\n\n1. **Same error message for login failures**\n   - Don't reveal whether email exists: 'Invalid email or password'\n   - Prevents email enumeration attacks\n\n2. **Password hashing is mandatory**\n   - Always use `Bun.password.hash()` with argon2id\n   - Never store, log, or transmit plain passwords\n\n3. **Token security**\n   - Use strong secret (32+ characters) in production\n   - Set reasonable expiration (7 days is common)\n   - Never expose token in URLs\n\n4. **Rate limiting (add in production)**\n```typescript\nimport { rateLimiter } from 'hono-rate-limiter';\n\napp.use('/api/auth/*', rateLimiter({\n  windowMs: 15 * 60 * 1000, // 15 minutes\n  limit: 10, // 10 requests per window\n}));\n```\n\n5. **HTTPS only in production**\n   - Tokens sent over HTTP can be intercepted"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.3-challenge",
+              "title": "Add Password Change Endpoint",
+              "description": "Implement a protected endpoint for users to change their password.",
+              "instructions": "Create a PUT /api/auth/password endpoint that requires the current password and a new password. Verify the current password before updating to the new one.",
+              "starterCode": "// Add to src/routes/auth.ts\n\nconst changePasswordSchema = z.object({\n  currentPassword: z.string().min(1, 'Current password required'),\n  newPassword: z\n    .string()\n    .min(8, 'Password must be at least 8 characters')\n    .regex(\n      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/,\n      'Password must contain uppercase, lowercase, and number'\n    ),\n});\n\n// PUT /api/auth/password\nauth.put(\n  '/password',\n  authMiddleware,\n  zValidator('json', changePasswordSchema),\n  async (c) => {\n    // Your implementation here\n  }\n);",
+              "solution": "// Add to src/routes/auth.ts\n\nconst changePasswordSchema = z.object({\n  currentPassword: z.string().min(1, 'Current password required'),\n  newPassword: z\n    .string()\n    .min(8, 'Password must be at least 8 characters')\n    .regex(\n      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)/,\n      'Password must contain uppercase, lowercase, and number'\n    ),\n});\n\nauth.put(\n  '/password',\n  authMiddleware,\n  zValidator('json', changePasswordSchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const { currentPassword, newPassword } = c.req.valid('json');\n\n    // Get user with password hash\n    const user = await prisma.user.findUnique({\n      where: { id: userId },\n    });\n\n    if (!user) {\n      return c.json({ error: 'User not found' }, 404);\n    }\n\n    // Verify current password\n    const validPassword = await Bun.password.verify(\n      currentPassword,\n      user.passwordHash\n    );\n\n    if (!validPassword) {\n      return c.json({ error: 'Current password is incorrect' }, 401);\n    }\n\n    // Hash new password\n    const newHash = await Bun.password.hash(newPassword, {\n      algorithm: 'argon2id',\n    });\n\n    // Update password\n    await prisma.user.update({\n      where: { id: userId },\n      data: { passwordHash: newHash },\n    });\n\n    return c.json({ message: 'Password updated successfully' });\n  }\n);",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Uses authMiddleware for protection",
+                  "expectedOutput": "authMiddleware",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Verifies current password before changing",
+                  "expectedOutput": "Bun.password.verify",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Hashes new password with argon2id",
+                  "expectedOutput": "argon2id",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "First verify the current password matches the stored hash"
+                },
+                {
+                  "level": 2,
+                  "text": "Use Bun.password.verify() for current password and Bun.password.hash() for new password"
+                },
+                {
+                  "level": 3,
+                  "text": "Get userId from context using c.get('userId') since authMiddleware sets it"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not verifying current password before changing",
+                  "consequence": "Anyone with a stolen token could change the password",
+                  "correction": "Always verify the current password first"
+                },
+                {
+                  "mistake": "Not using authMiddleware",
+                  "consequence": "Anyone could change any user's password",
+                  "correction": "Protected routes must use authMiddleware"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "20.4",
+          "title": "CRUD API Endpoints",
+          "moduleId": "module-20",
+          "order": 4,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "CONCEPT",
+              "title": "RESTful CRUD Operations",
+              "content": "Now we'll build the core of our API: Task and Category CRUD operations. Every operation requires authentication and enforces owner-only access.\n\n**CRUD = Create, Read, Update, Delete**\n\n| Operation | HTTP Method | Endpoint | Description |\n|-----------|-------------|----------|-------------|\n| Create | POST | /tasks | Create new task |\n| Read (list) | GET | /tasks | List all user's tasks |\n| Read (one) | GET | /tasks/:id | Get single task |\n| Update | PUT | /tasks/:id | Update task |\n| Delete | DELETE | /tasks/:id | Delete task |\n\n**Key Principles:**\n1. All routes are protected (require JWT)\n2. Users can only access their own data\n3. Input is validated with Zod\n4. Consistent error responses\n5. Proper HTTP status codes"
+            },
+            {
+              "type": "CODE",
+              "title": "Task Validation Schemas",
+              "content": "Create Zod schemas for task operations:",
+              "language": "typescript",
+              "code": "// src/schemas/task.ts\nimport { z } from 'zod';\n\nexport const taskStatusEnum = z.enum(['pending', 'in_progress', 'completed']);\nexport const taskPriorityEnum = z.enum(['low', 'medium', 'high']);\n\nexport const createTaskSchema = z.object({\n  title: z\n    .string()\n    .min(1, 'Title is required')\n    .max(200, 'Title too long')\n    .trim(),\n  description: z\n    .string()\n    .max(2000, 'Description too long')\n    .trim()\n    .optional(),\n  status: taskStatusEnum.default('pending'),\n  priority: taskPriorityEnum.default('medium'),\n  dueDate: z\n    .string()\n    .datetime()\n    .optional()\n    .transform((val) => (val ? new Date(val) : undefined)),\n  categoryId: z.string().cuid().optional(),\n});\n\nexport const updateTaskSchema = createTaskSchema.partial();\n\nexport const taskQuerySchema = z.object({\n  status: taskStatusEnum.optional(),\n  priority: taskPriorityEnum.optional(),\n  categoryId: z.string().cuid().optional(),\n  search: z.string().optional(),\n  page: z.coerce.number().int().positive().default(1),\n  limit: z.coerce.number().int().min(1).max(100).default(20),\n});\n\nexport type CreateTaskInput = z.infer<typeof createTaskSchema>;\nexport type UpdateTaskInput = z.infer<typeof updateTaskSchema>;\nexport type TaskQuery = z.infer<typeof taskQuerySchema>;"
+            },
+            {
+              "type": "CODE",
+              "title": "Task Routes - List and Create",
+              "content": "Implement GET (list) and POST (create) endpoints:",
+              "language": "typescript",
+              "code": "// src/routes/tasks.ts\nimport { Hono } from 'hono';\nimport { zValidator } from '@hono/zod-validator';\nimport { prisma } from '../lib/db';\nimport { authMiddleware } from '../middleware/auth';\nimport {\n  createTaskSchema,\n  updateTaskSchema,\n  taskQuerySchema,\n} from '../schemas/task';\n\nconst tasks = new Hono();\n\n// All routes require authentication\ntasks.use('*', authMiddleware);\n\n// GET /api/tasks - List tasks with filtering and pagination\ntasks.get(\n  '/',\n  zValidator('query', taskQuerySchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const { status, priority, categoryId, search, page, limit } = c.req.valid('query');\n\n    const skip = (page - 1) * limit;\n\n    // Build where clause dynamically\n    const where = {\n      userId,\n      ...(status && { status }),\n      ...(priority && { priority }),\n      ...(categoryId && { categoryId }),\n      ...(search && {\n        OR: [\n          { title: { contains: search } },\n          { description: { contains: search } },\n        ],\n      }),\n    };\n\n    // Execute queries in parallel\n    const [tasks, total] = await Promise.all([\n      prisma.task.findMany({\n        where,\n        include: {\n          category: {\n            select: { id: true, name: true, color: true },\n          },\n        },\n        orderBy: [\n          { priority: 'desc' },\n          { dueDate: 'asc' },\n          { createdAt: 'desc' },\n        ],\n        skip,\n        take: limit,\n      }),\n      prisma.task.count({ where }),\n    ]);\n\n    return c.json({\n      tasks,\n      pagination: {\n        page,\n        limit,\n        total,\n        totalPages: Math.ceil(total / limit),\n      },\n    });\n  }\n);\n\n// POST /api/tasks - Create task\ntasks.post(\n  '/',\n  zValidator('json', createTaskSchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const data = c.req.valid('json');\n\n    // Verify category belongs to user (if provided)\n    if (data.categoryId) {\n      const category = await prisma.category.findFirst({\n        where: { id: data.categoryId, userId },\n      });\n      if (!category) {\n        return c.json({ error: 'Category not found' }, 404);\n      }\n    }\n\n    const task = await prisma.task.create({\n      data: {\n        ...data,\n        userId,\n      },\n      include: {\n        category: {\n          select: { id: true, name: true, color: true },\n        },\n      },\n    });\n\n    return c.json({ task }, 201);\n  }\n);\n\nexport default tasks;"
+            },
+            {
+              "type": "CODE",
+              "title": "Task Routes - Get, Update, Delete",
+              "content": "Implement single-task operations with owner verification:",
+              "language": "typescript",
+              "code": "// Continue in src/routes/tasks.ts\n\n// GET /api/tasks/:id - Get single task\ntasks.get('/:id', async (c) => {\n  const userId = c.get('userId');\n  const taskId = c.req.param('id');\n\n  const task = await prisma.task.findFirst({\n    where: { id: taskId, userId }, // Owner check!\n    include: {\n      category: true,\n    },\n  });\n\n  if (!task) {\n    return c.json({ error: 'Task not found' }, 404);\n  }\n\n  return c.json({ task });\n});\n\n// PUT /api/tasks/:id - Update task\ntasks.put(\n  '/:id',\n  zValidator('json', updateTaskSchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const taskId = c.req.param('id');\n    const data = c.req.valid('json');\n\n    // Verify task exists and belongs to user\n    const existing = await prisma.task.findFirst({\n      where: { id: taskId, userId },\n    });\n\n    if (!existing) {\n      return c.json({ error: 'Task not found' }, 404);\n    }\n\n    // Verify new category belongs to user (if changing)\n    if (data.categoryId && data.categoryId !== existing.categoryId) {\n      const category = await prisma.category.findFirst({\n        where: { id: data.categoryId, userId },\n      });\n      if (!category) {\n        return c.json({ error: 'Category not found' }, 404);\n      }\n    }\n\n    const task = await prisma.task.update({\n      where: { id: taskId },\n      data,\n      include: {\n        category: {\n          select: { id: true, name: true, color: true },\n        },\n      },\n    });\n\n    return c.json({ task });\n  }\n);\n\n// DELETE /api/tasks/:id - Delete task\ntasks.delete('/:id', async (c) => {\n  const userId = c.get('userId');\n  const taskId = c.req.param('id');\n\n  // Verify task exists and belongs to user\n  const existing = await prisma.task.findFirst({\n    where: { id: taskId, userId },\n  });\n\n  if (!existing) {\n    return c.json({ error: 'Task not found' }, 404);\n  }\n\n  await prisma.task.delete({\n    where: { id: taskId },\n  });\n\n  return c.json({ message: 'Task deleted successfully' });\n});\n\nexport default tasks;"
+            },
+            {
+              "type": "CODE",
+              "title": "Category Routes",
+              "content": "Implement complete CRUD for categories:",
+              "language": "typescript",
+              "code": "// src/routes/categories.ts\nimport { Hono } from 'hono';\nimport { zValidator } from '@hono/zod-validator';\nimport { z } from 'zod';\nimport { prisma } from '../lib/db';\nimport { authMiddleware } from '../middleware/auth';\n\nconst categories = new Hono();\n\ncategories.use('*', authMiddleware);\n\nconst categorySchema = z.object({\n  name: z.string().min(1).max(50).trim(),\n  color: z\n    .string()\n    .regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex color')\n    .default('#3B82F6'),\n});\n\n// GET /api/categories\ncategories.get('/', async (c) => {\n  const userId = c.get('userId');\n\n  const items = await prisma.category.findMany({\n    where: { userId },\n    include: {\n      _count: {\n        select: { tasks: true },\n      },\n    },\n    orderBy: { name: 'asc' },\n  });\n\n  return c.json({ categories: items });\n});\n\n// POST /api/categories\ncategories.post(\n  '/',\n  zValidator('json', categorySchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const data = c.req.valid('json');\n\n    // Check for duplicate name\n    const existing = await prisma.category.findFirst({\n      where: { userId, name: data.name },\n    });\n\n    if (existing) {\n      return c.json({ error: 'Category with this name already exists' }, 409);\n    }\n\n    const category = await prisma.category.create({\n      data: { ...data, userId },\n    });\n\n    return c.json({ category }, 201);\n  }\n);\n\n// PUT /api/categories/:id\ncategories.put(\n  '/:id',\n  zValidator('json', categorySchema.partial()),\n  async (c) => {\n    const userId = c.get('userId');\n    const categoryId = c.req.param('id');\n    const data = c.req.valid('json');\n\n    const existing = await prisma.category.findFirst({\n      where: { id: categoryId, userId },\n    });\n\n    if (!existing) {\n      return c.json({ error: 'Category not found' }, 404);\n    }\n\n    // Check for duplicate name (if changing)\n    if (data.name && data.name !== existing.name) {\n      const duplicate = await prisma.category.findFirst({\n        where: { userId, name: data.name },\n      });\n      if (duplicate) {\n        return c.json({ error: 'Category with this name already exists' }, 409);\n      }\n    }\n\n    const category = await prisma.category.update({\n      where: { id: categoryId },\n      data,\n    });\n\n    return c.json({ category });\n  }\n);\n\n// DELETE /api/categories/:id\ncategories.delete('/:id', async (c) => {\n  const userId = c.get('userId');\n  const categoryId = c.req.param('id');\n\n  const existing = await prisma.category.findFirst({\n    where: { id: categoryId, userId },\n  });\n\n  if (!existing) {\n    return c.json({ error: 'Category not found' }, 404);\n  }\n\n  await prisma.category.delete({\n    where: { id: categoryId },\n  });\n\n  return c.json({ message: 'Category deleted successfully' });\n});\n\nexport default categories;"
+            },
+            {
+              "type": "CODE",
+              "title": "Wire Up All Routes",
+              "content": "Update the main entry point with all routes:",
+              "language": "typescript",
+              "code": "// src/index.ts (final version)\nimport { Hono } from 'hono';\nimport { cors } from 'hono/cors';\nimport { logger } from 'hono/logger';\nimport auth from './routes/auth';\nimport tasks from './routes/tasks';\nimport categories from './routes/categories';\n\nconst app = new Hono();\n\n// Middleware\napp.use('*', logger());\napp.use('*', cors());\n\n// Health check\napp.get('/', (c) => {\n  return c.json({\n    status: 'ok',\n    message: 'Task Manager API',\n    version: '1.0.0',\n    endpoints: {\n      auth: '/api/auth/*',\n      tasks: '/api/tasks/*',\n      categories: '/api/categories/*',\n    },\n  });\n});\n\n// Routes\napp.route('/api/auth', auth);\napp.route('/api/tasks', tasks);\napp.route('/api/categories', categories);\n\n// Error handler\napp.onError((err, c) => {\n  console.error('Server error:', err);\n  return c.json({ error: 'Internal server error' }, 500);\n});\n\n// 404 handler\napp.notFound((c) => {\n  return c.json({ error: 'Not found' }, 404);\n});\n\nconst port = process.env.PORT || 3000;\nconsole.log(`Task Manager API running on http://localhost:${port}`);\n\nexport default {\n  port,\n  fetch: app.fetch,\n};"
+            },
+            {
+              "type": "CODE",
+              "title": "Test the Complete API",
+              "content": "Test all endpoints with curl:",
+              "language": "bash",
+              "code": "# Start the server\nbun run dev\n\n# 1. Register and save the token\nTOKEN=$(curl -s -X POST http://localhost:3000/api/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\": \"test@example.com\", \"password\": \"Password123\"}' \\\n  | jq -r '.token')\n\necho \"Token: $TOKEN\"\n\n# 2. Create a category\ncurl -X POST http://localhost:3000/api/categories \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"name\": \"Work\", \"color\": \"#EF4444\"}'\n\n# 3. Create a task (use the category ID from above)\ncurl -X POST http://localhost:3000/api/tasks \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"Complete capstone project\",\n    \"description\": \"Build the Task Manager API\",\n    \"priority\": \"high\",\n    \"categoryId\": \"YOUR_CATEGORY_ID\"\n  }'\n\n# 4. List tasks with filters\ncurl \"http://localhost:3000/api/tasks?status=pending&page=1&limit=10\" \\\n  -H \"Authorization: Bearer $TOKEN\"\n\n# 5. Update a task\ncurl -X PUT http://localhost:3000/api/tasks/YOUR_TASK_ID \\\n  -H \"Authorization: Bearer $TOKEN\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"status\": \"completed\"}'\n\n# 6. Delete a task\ncurl -X DELETE http://localhost:3000/api/tasks/YOUR_TASK_ID \\\n  -H \"Authorization: Bearer $TOKEN\""
+            },
+            {
+              "type": "THEORY",
+              "title": "Owner-Only Access Pattern",
+              "content": "Notice how every database query includes `userId` in the where clause:\n\n```typescript\n// WRONG - Allows access to any user's data!\nconst task = await prisma.task.findUnique({\n  where: { id: taskId },\n});\n\n// RIGHT - Only returns data owned by the authenticated user\nconst task = await prisma.task.findFirst({\n  where: { id: taskId, userId },\n});\n```\n\n**Why findFirst instead of findUnique?**\n- `findUnique` only works with unique constraints\n- `id` alone is unique, but we need to check `id + userId`\n- `findFirst` allows multiple conditions\n\n**Defense in Depth:**\n1. JWT verifies the user is authenticated\n2. Middleware extracts userId from token\n3. Every query filters by userId\n4. Even if an attacker guesses a valid task ID, they can't access it"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common API Mistakes to Avoid",
+              "content": "**1. Forgetting owner checks**\n```typescript\n// NEVER do this for user-owned resources\nconst task = await prisma.task.delete({\n  where: { id: taskId }, // Missing userId check!\n});\n```\n\n**2. Leaking sensitive data**\n```typescript\n// DON'T return password hash\nconst user = await prisma.user.findUnique({\n  where: { id: userId },\n}); // Includes passwordHash!\n\n// DO use select to limit fields\nconst user = await prisma.user.findUnique({\n  where: { id: userId },\n  select: { id: true, email: true, name: true },\n});\n```\n\n**3. Not validating foreign keys**\n```typescript\n// DON'T trust client-provided categoryId\nawait prisma.task.create({\n  data: { categoryId: userInput }, // Could be another user's category!\n});\n\n// DO verify ownership first\nconst category = await prisma.category.findFirst({\n  where: { id: userInput, userId },\n});\nif (!category) return c.json({ error: 'Category not found' }, 404);\n```\n\n**4. Inconsistent error responses**\nAlways use the same structure:\n```typescript\n{ error: 'Message here' }  // For errors\n{ task: {...} }            // For success\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "20.4-challenge",
+              "title": "Add Bulk Task Operations",
+              "description": "Implement endpoints for bulk task operations.",
+              "instructions": "Create two new endpoints: POST /api/tasks/bulk to create multiple tasks at once, and PUT /api/tasks/bulk/status to update the status of multiple tasks by their IDs.",
+              "starterCode": "// Add to src/routes/tasks.ts\n\nconst bulkCreateSchema = z.object({\n  tasks: z.array(createTaskSchema).min(1).max(50),\n});\n\nconst bulkStatusSchema = z.object({\n  taskIds: z.array(z.string().cuid()).min(1).max(50),\n  status: taskStatusEnum,\n});\n\n// POST /api/tasks/bulk - Create multiple tasks\ntasks.post(\n  '/bulk',\n  zValidator('json', bulkCreateSchema),\n  async (c) => {\n    // Your implementation here\n  }\n);\n\n// PUT /api/tasks/bulk/status - Update status of multiple tasks\ntasks.put(\n  '/bulk/status',\n  zValidator('json', bulkStatusSchema),\n  async (c) => {\n    // Your implementation here\n  }\n);",
+              "solution": "// Add to src/routes/tasks.ts\n\nconst bulkCreateSchema = z.object({\n  tasks: z.array(createTaskSchema).min(1).max(50),\n});\n\nconst bulkStatusSchema = z.object({\n  taskIds: z.array(z.string().cuid()).min(1).max(50),\n  status: taskStatusEnum,\n});\n\n// POST /api/tasks/bulk - Create multiple tasks\ntasks.post(\n  '/bulk',\n  zValidator('json', bulkCreateSchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const { tasks: taskInputs } = c.req.valid('json');\n\n    // Collect all unique categoryIds\n    const categoryIds = [...new Set(\n      taskInputs\n        .map(t => t.categoryId)\n        .filter((id): id is string => id !== undefined)\n    )];\n\n    // Verify all categories belong to user\n    if (categoryIds.length > 0) {\n      const validCategories = await prisma.category.findMany({\n        where: { id: { in: categoryIds }, userId },\n        select: { id: true },\n      });\n\n      const validIds = new Set(validCategories.map(c => c.id));\n      const invalidId = categoryIds.find(id => !validIds.has(id));\n\n      if (invalidId) {\n        return c.json({ error: `Category ${invalidId} not found` }, 404);\n      }\n    }\n\n    // Create all tasks in a transaction\n    const created = await prisma.task.createMany({\n      data: taskInputs.map(task => ({ ...task, userId })),\n    });\n\n    return c.json({\n      message: `Created ${created.count} tasks`,\n      count: created.count,\n    }, 201);\n  }\n);\n\n// PUT /api/tasks/bulk/status - Update status of multiple tasks\ntasks.put(\n  '/bulk/status',\n  zValidator('json', bulkStatusSchema),\n  async (c) => {\n    const userId = c.get('userId');\n    const { taskIds, status } = c.req.valid('json');\n\n    // Update only tasks owned by user\n    const result = await prisma.task.updateMany({\n      where: {\n        id: { in: taskIds },\n        userId, // Owner check!\n      },\n      data: { status },\n    });\n\n    return c.json({\n      message: `Updated ${result.count} tasks`,\n      count: result.count,\n    });\n  }\n);",
+              "language": "typescript",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Bulk create validates categories belong to user",
+                  "expectedOutput": "prisma.category.findMany",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Bulk status update includes userId in where clause",
+                  "expectedOutput": "userId",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Uses updateMany for efficiency",
+                  "expectedOutput": "updateMany",
+                  "isVisible": false
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For bulk create, first collect all unique categoryIds and verify them in one query"
+                },
+                {
+                  "level": 2,
+                  "text": "Use prisma.task.createMany for efficient bulk insert"
+                },
+                {
+                  "level": 3,
+                  "text": "For bulk status update, use updateMany with { in: taskIds } and always include userId in where"
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not verifying category ownership for bulk create",
+                  "consequence": "Users could assign tasks to other users' categories",
+                  "correction": "Verify all categoryIds belong to the user before creating"
+                },
+                {
+                  "mistake": "Updating tasks without userId filter",
+                  "consequence": "Users could update other users' tasks",
+                  "correction": "Always include userId in the where clause"
+                },
+                {
+                  "mistake": "Making individual queries for each task",
+                  "consequence": "Poor performance with many tasks",
+                  "correction": "Use createMany and updateMany for bulk operations"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
