@@ -208,6 +208,11 @@
               "content": "Starting with Java 10, you can use 'var' for LOCAL VARIABLE TYPE INFERENCE.\n\nInstead of writing the type explicitly:\n\nString name = \"Alice\";\nint age = 25;\nArrayList<String> names = new ArrayList<String>();\n\nYou can let Java figure out the type:\n\nvar name = \"Alice\";          // Java knows it's a String\nvar age = 25;                 // Java knows it's an int\nvar names = new ArrayList<String>();  // Java knows the type!\n\nWHY USE var?\n1. Less typing (especially for long type names)\n2. Cleaner code when the type is obvious\n3. Required for some advanced features (like anonymous classes)\n\nWHEN TO USE var:\n✓ When the type is obvious from the right side\n✓ For complex generic types: var map = new HashMap<String, List<Integer>>();\n✓ In for-each loops: for (var item : list) { ... }\n\nWHEN NOT TO USE var:\n✗ When the type isn't obvious: var result = getResult();  // What type is this?\n✗ For method parameters or return types (not allowed)\n✗ For class fields (not allowed)\n\nIMPORTANT: var is NOT like JavaScript's var - the type is still fixed at compile time!\nvar age = 25;\nage = \"hello\";  // ERROR! age is still an int"
             },
             {
+              "type": "KEY_POINT",
+              "title": "Dual Syntax: var vs Explicit Types",
+              "content": "You'll see TWO styles for declaring variables in Java:\n\nMODERN SYNTAX (Java 10+):\nvar name = \"Alice\";\nvar age = 25;\nvar price = 19.99;\nvar items = new ArrayList<String>();\n\nUse this when: The type is obvious from the right side.\n\nTRADITIONAL SYNTAX (Java 8+):\nString name = \"Alice\";\nint age = 25;\ndouble price = 19.99;\nArrayList<String> items = new ArrayList<String>();\n\nUse this when: Working with Java 8, the type isn't obvious, or for class fields and parameters.\n\nWHY BOTH EXIST:\n- 'var' was added in Java 10 to reduce boilerplate\n- Many codebases still use explicit types for clarity\n- Enterprise environments often prefer explicit types\n\nBOTH ARE VALID! The underlying type is the same. Choose based on readability and your team's style guide."
+            },
+            {
               "type": "EXAMPLE",
               "title": "Using var in Practice",
               "content": "The var keyword enables local type inference, reducing boilerplate while maintaining type safety. It's especially useful for complex generic types and in for-each loops where the type is obvious from context.",
@@ -355,6 +360,11 @@
               "type": "KEY_POINT",
               "title": "Key Takeaways",
               "content": "✓ 'if' statements let your program make decisions\n✓ The condition in parentheses must be true or false\n✓ Only the code in the TRUE block runs\n✓ Use 'else' to handle the FALSE case\n✓ Use == to compare (not =)\n\nThink of it as:\nif (something is true) {\n    do this\n} else {\n    do that instead\n}"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Dual Syntax: Pattern Matching vs Traditional instanceof",
+              "content": "When checking object types, you'll see TWO styles:\n\nMODERN SYNTAX (Java 16+):\nif (obj instanceof String s) {\n    println(s.length());  // s is already a String!\n}\n\nUse this when: Type check AND use the value together.\n\nTRADITIONAL SYNTAX (Java 8-15):\nif (obj instanceof String) {\n    String s = (String) obj;  // Must cast separately\n    System.out.println(s.length());\n}\n\nUse this when: Working with Java 8-15 LTS or older codebases.\n\nWHY THE DIFFERENCE?\n- Pattern matching (Java 16+) combines the type check AND creates the variable in one step\n- Traditional syntax requires a separate cast, which is repetitive and error-prone\n- Both achieve the same result, but pattern matching is cleaner\n\nNOTE: Basic if/else works the same in all Java versions. Pattern matching is an enhancement for type checking specifically."
             }
           ],
           "challenges": [
@@ -541,6 +551,11 @@
               "type": "KEY_POINT",
               "title": "When to Use Modern Switch Features",
               "content": "USE SWITCH EXPRESSIONS WHEN:\n- Assigning a value based on multiple conditions\n- Mapping one value to another\n- Replacing if-else-if chains\n\nUSE PATTERN MATCHING instanceof WHEN:\n- You need to check type AND use the value\n- Processing heterogeneous collections\n- Simplifying type-checking code\n\nUSE PATTERN MATCHING IN SWITCH WHEN:\n- Processing different types differently\n- Combining type checks with value conditions\n- Working with sealed classes/interfaces\n\nBEST PRACTICES:\n- Always handle all cases (be exhaustive)\n- Use guards (when) for additional conditions\n- Handle null explicitly when needed\n- Prefer switch expressions over statements for assignments"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Dual Syntax: Switch Expressions vs Traditional Switch",
+              "content": "You'll see TWO styles for switch in Java:\n\nMODERN SYNTAX (Java 14+):\nString result = switch (day) {\n    case \"MON\", \"TUE\", \"WED\" -> \"Weekday\";\n    case \"SAT\", \"SUN\" -> \"Weekend\";\n    default -> \"Unknown\";\n};\n\nUse this when: Assigning values, Java 14+, cleaner code.\n\nTRADITIONAL SYNTAX (Java 8+):\nString result;\nswitch (day) {\n    case \"MON\":\n    case \"TUE\":\n    case \"WED\":\n        result = \"Weekday\";\n        break;\n    case \"SAT\":\n    case \"SUN\":\n        result = \"Weekend\";\n        break;\n    default:\n        result = \"Unknown\";\n        break;\n}\n\nUse this when: Working with Java 8-13, or when you need fall-through behavior.\n\nKEY DIFFERENCES:\n- Arrow syntax (->) = no fall-through, can return values directly\n- Colon syntax (:) = requires 'break', can fall-through intentionally\n- Modern: multiple cases on one line (case \"A\", \"B\" ->)\n- Traditional: cases must be stacked\n\nBOTH ARE VALID! Arrow syntax is preferred in modern Java for clarity and safety."
             }
           ],
           "challenges": [
@@ -703,6 +718,11 @@
               "type": "KEY_POINT",
               "title": "When to Use These Features",
               "content": "USE IMPLICIT MAIN WHEN:\n- Learning Java\n- Writing quick scripts\n- Building small utilities\n- Prototyping ideas\n\nUSE TRADITIONAL SYNTAX WHEN:\n- Building production applications\n- Working on team projects\n- Creating reusable libraries\n- Need explicit class structure\n\nUSE UNNAMED _ WHEN:\n- Variable is required but unused\n- Catch blocks where exception details don't matter\n- Loop counters you don't need\n\nUSE MODULE IMPORTS WHEN:\n- Learning/prototyping\n- Need many classes from java.base\n- Explicit imports become tedious\n\nBEST PRACTICE: Start simple with these features, then add structure as your program grows."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Dual Syntax: Modern Java 23+ vs Traditional Java 21 LTS",
+              "content": "Here's a complete comparison of the features in this lesson:\n\nIMPLICIT MAIN (Java 23+):\nvoid main() {\n    println(\"Hello!\");\n}\n\nTRADITIONAL MAIN (Java 8-21 LTS):\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello!\");\n    }\n}\n\nUNNAMED VARIABLES (Java 22+):\ncatch (Exception _) { ... }\nfor (var _ : list) { ... }\n\nTRADITIONAL UNUSED VARIABLES (Java 8-21):\ncatch (Exception ignored) { ... }\nfor (var unused : list) { ... }\n\nMODULE IMPORTS (Java 23+):\nimport module java.base;\n\nTRADITIONAL IMPORTS (Java 8-21):\nimport java.util.List;\nimport java.util.Map;\nimport java.io.IOException;\n// ... one import per class\n\nIMPORTANT: Most enterprise codebases use Java 17 or 21 LTS. When you start a job, you'll likely work with traditional syntax. This course teaches modern syntax first (it's easier to learn!), but you MUST recognize both to read real-world code."
             }
           ],
           "challenges": [
