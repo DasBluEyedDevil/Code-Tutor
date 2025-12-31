@@ -9904,6 +9904,109 @@
               "difficulty": "advanced"
             }
           ]
+        },
+        {
+          "id": "lesson-15-04",
+          "title": "Test-Driven Development (Red-Green-Refactor)",
+          "moduleId": "module-15",
+          "order": 4,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Understanding TDD",
+              "content": "Imagine you're an architect building a house. Would you start hammering nails before drawing blueprints? Of course not! Test-Driven Development (TDD) applies this same principle to code: you write the test (the blueprint) BEFORE you write the implementation.\n\nThe TDD cycle follows three simple steps, known as Red-Green-Refactor:\n\n1. RED: Write a failing test first. The test describes what you WANT the code to do, but since the code doesn't exist yet, the test fails (shows red in most test runners).\n\n2. GREEN: Write the MINIMUM code needed to make the test pass. Don't over-engineer - just enough to turn that red light green.\n\n3. REFACTOR: Now that tests pass, clean up your code. Remove duplication, improve names, simplify logic. The tests protect you - if you break something, they'll catch it!\n\nWhy start with tests? Because tests written AFTER code often just verify what you already wrote, not what you actually need. Tests written FIRST force you to think about the interface, edge cases, and requirements BEFORE getting lost in implementation details.\n\nThink: 'TDD is like GPS navigation - you decide the destination before you start driving!'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "TDD in Action: ShopFlow Cart Total",
+              "content": "Let's build a shopping cart calculator using TDD. We'll go through each step of Red-Green-Refactor.",
+              "code": "using Xunit;\n\n// ===== STEP 1: RED - Write a Failing Test =====\n// We want a CartCalculator that calculates totals\n// Start by describing what we WANT, not what exists!\n\npublic class CartCalculatorTests\n{\n    [Fact]\n    public void CalculateTotal_SingleItem_ReturnsItemPrice()\n    {\n        // Arrange\n        var calculator = new CartCalculator();\n        var items = new List<CartItem>\n        {\n            new CartItem(\"Widget\", 10.00m, 1)\n        };\n        \n        // Act\n        decimal total = calculator.CalculateTotal(items);\n        \n        // Assert\n        Assert.Equal(10.00m, total);\n    }\n    // This test FAILS - CartCalculator doesn't exist yet! (RED)\n}\n\n// ===== STEP 2: GREEN - Minimal Implementation =====\n// Write JUST ENOUGH code to pass the test\n\npublic record CartItem(string Name, decimal Price, int Quantity);\n\npublic class CartCalculator\n{\n    public decimal CalculateTotal(List<CartItem> items)\n    {\n        // Simplest thing that works:\n        return items.Sum(i => i.Price * i.Quantity);\n    }\n}\n// Test now PASSES! (GREEN)\n\n// ===== STEP 3: Add More Tests, Repeat Cycle =====\n\npublic class CartCalculatorTests_Extended\n{\n    private readonly CartCalculator _calculator = new();\n    \n    [Fact]\n    public void CalculateTotal_MultipleItems_ReturnsSumOfAll()\n    {\n        var items = new List<CartItem>\n        {\n            new CartItem(\"Widget\", 10.00m, 2),   // 20.00\n            new CartItem(\"Gadget\", 25.00m, 1)    // 25.00\n        };\n        \n        Assert.Equal(45.00m, _calculator.CalculateTotal(items));\n    }\n    \n    [Fact]\n    public void CalculateTotal_EmptyCart_ReturnsZero()\n    {\n        var items = new List<CartItem>();\n        Assert.Equal(0m, _calculator.CalculateTotal(items));\n    }\n    \n    [Fact]\n    public void CalculateTotal_WithDiscount_AppliesDiscount()\n    {\n        // RED: This test fails - no discount support yet!\n        var items = new List<CartItem>\n        {\n            new CartItem(\"Widget\", 100.00m, 1)\n        };\n        \n        decimal total = _calculator.CalculateTotal(items, discountPercent: 10);\n        \n        Assert.Equal(90.00m, total); // 100 - 10% = 90\n    }\n}\n\n// ===== GREEN: Add discount support =====\npublic class CartCalculatorWithDiscount\n{\n    public decimal CalculateTotal(List<CartItem> items, decimal discountPercent = 0)\n    {\n        decimal subtotal = items.Sum(i => i.Price * i.Quantity);\n        decimal discount = subtotal * (discountPercent / 100);\n        return subtotal - discount;\n    }\n}\n\n// ===== REFACTOR: Clean up the code =====\npublic class CartCalculatorRefactored\n{\n    public decimal CalculateTotal(List<CartItem> items, decimal discountPercent = 0)\n    {\n        decimal subtotal = CalculateSubtotal(items);\n        return ApplyDiscount(subtotal, discountPercent);\n    }\n    \n    private decimal CalculateSubtotal(List<CartItem> items)\n        => items.Sum(i => i.Price * i.Quantity);\n    \n    private decimal ApplyDiscount(decimal amount, decimal percent)\n        => amount * (1 - percent / 100);\n}\n// Tests still pass! Safe refactoring.\n\nConsole.WriteLine(\"TDD Cycle Complete!\");\nConsole.WriteLine(\"1. RED: Write failing test\");\nConsole.WriteLine(\"2. GREEN: Make it pass (minimal code)\");\nConsole.WriteLine(\"3. REFACTOR: Clean up (tests protect you)\");",
+              "language": "csharp"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why TDD Works",
+              "content": "## The Science Behind TDD\n\nTest-Driven Development isn't just a trendy methodology - it's a disciplined approach that delivers measurable benefits:\n\n**1. Design Feedback Loop**\nWhen you write tests first, you immediately discover if your API is awkward to use. Difficult-to-test code is often difficult-to-use code. TDD forces you to design for usability because YOU are the first user of your own code. If setting up a test requires 20 lines of boilerplate, your real callers will suffer the same pain.\n\n**2. Executable Specification**\nTests written before code serve as living documentation. They describe WHAT the code should do in precise, executable terms. Unlike comments or documentation that can become stale, tests fail when they don't match reality. New team members can read tests to understand expected behavior.\n\n**3. Confidence to Refactor**\nWith comprehensive tests, you can fearlessly improve code structure. Rename methods, extract classes, simplify algorithms - if tests pass, you haven't broken anything. Without tests, refactoring becomes risky surgery. With TDD, it's routine maintenance.\n\n**4. Reduced Debugging Time**\nBugs caught by tests are found immediately, in the context where you wrote the code. Bugs found later require you to reload mental context. Studies show TDD reduces defect density by 40-80%. The time 'lost' writing tests is recovered many times over in reduced debugging.\n\n**The TDD Mantra**\n'Red, Green, Refactor' - repeat this cycle in short iterations (minutes, not hours). Small steps mean small mistakes. Each cycle adds one small, verified piece of functionality. The result: a codebase that grows steadily with confidence.\n\n**When TDD Shines**\nTDD is particularly valuable for: business logic with clear inputs/outputs, API design (forces good interfaces), bug fixes (write test that reproduces bug first), and legacy code modification (add tests before changing)."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common TDD Mistakes",
+              "content": "## TDD Anti-Patterns to Avoid\n\n**1. Writing Too Much Test Code at Once**\nThe RED phase should be ONE failing test, not ten. If you write many tests before any implementation, you've lost the rapid feedback loop. One test, one implementation, one refactor - repeat.\n\n**2. Skipping the RED Phase**\nAlways see your test FAIL first! A test that never failed might not test what you think. If you write implementation first 'just to see how it works,' you've abandoned TDD and lost its design benefits.\n\n**3. Over-Engineering in GREEN**\nGREEN means MINIMAL code to pass. Don't add features the test doesn't require. Don't optimize. Don't handle edge cases you haven't tested yet. Write the simplest thing that works:\n\n```csharp\n// BAD - Over-engineered for one test\npublic decimal Calculate(List<Item> items) {\n    if (items == null) throw new ArgumentNullException();\n    if (!items.Any()) return 0;\n    return items.Where(i => i.IsValid).Sum(i => i.Total);\n}\n\n// GOOD - Just enough for current test\npublic decimal Calculate(List<Item> items) {\n    return items.Sum(i => i.Price);\n}\n```\n\n**4. Skipping the REFACTOR Phase**\nAfter GREEN, you MUST consider refactoring. Code that 'just works' accumulates technical debt. Refactor while context is fresh and tests protect you.\n\n**5. Testing Implementation Instead of Behavior**\nTest WHAT code does, not HOW it does it:\n\n```csharp\n// BAD - Tests implementation details\nAssert.True(calculator._internalCache.ContainsKey(\"total\"));\n\n// GOOD - Tests observable behavior\nAssert.Equal(100m, calculator.GetTotal());\n```\n\nImplementation-focused tests break when you refactor, even if behavior is unchanged. Behavior-focused tests let you freely restructure internals."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-15-04-challenge-01",
+              "title": "TDD Practice: Password Validator",
+              "description": "Apply Test-Driven Development to build a password validator step by step.",
+              "instructions": "Build a PasswordValidator using TDD!\n\nRequirements (implement one at a time with TDD):\n1. Password must be at least 8 characters\n2. Password must contain at least one uppercase letter\n3. Password must contain at least one digit\n4. Password must contain at least one special character (!@#$%^&*)\n\nTDD Process:\n1. Write a failing test for requirement 1\n2. Implement minimum code to pass\n3. Refactor if needed\n4. Repeat for each requirement\n\nCreate:\n- PasswordValidator class with Validate(string password) method\n- Return a ValidationResult with IsValid and ErrorMessages\n- Write tests for valid passwords and each failure case",
+              "starterCode": "using Xunit;\nusing System.Collections.Generic;\n\npublic class ValidationResult\n{\n    public bool IsValid { get; set; }\n    public List<string> ErrorMessages { get; set; } = new();\n}\n\npublic class PasswordValidator\n{\n    public ValidationResult Validate(string password)\n    {\n        // TODO: Implement using TDD\n        // Start with just length check, then add others\n        return new ValidationResult { IsValid = false };\n    }\n}\n\npublic class PasswordValidatorTests\n{\n    private readonly PasswordValidator _validator = new();\n    \n    // STEP 1: Test for minimum length (RED first!)\n    [Fact]\n    public void Validate_PasswordTooShort_ReturnsInvalid()\n    {\n        var result = _validator.Validate(\"Ab1!\");\n        \n        Assert.False(result.IsValid);\n        Assert.Contains(result.ErrorMessages, \n            m => m.Contains(\"8 characters\"));\n    }\n    \n    [Fact]\n    public void Validate_ValidPassword_ReturnsValid()\n    {\n        var result = _validator.Validate(\"SecureP@ss1\");\n        \n        Assert.True(result.IsValid);\n        Assert.Empty(result.ErrorMessages);\n    }\n    \n    // TODO: Add tests for uppercase, digit, special character\n}",
+              "solution": "using Xunit;\nusing System.Collections.Generic;\nusing System.Linq;\n\npublic class ValidationResult\n{\n    public bool IsValid { get; set; }\n    public List<string> ErrorMessages { get; set; } = new();\n}\n\npublic class PasswordValidator\n{\n    public ValidationResult Validate(string password)\n    {\n        var result = new ValidationResult { IsValid = true };\n        \n        // Requirement 1: Minimum length\n        if (password.Length < 8)\n        {\n            result.IsValid = false;\n            result.ErrorMessages.Add(\"Password must be at least 8 characters\");\n        }\n        \n        // Requirement 2: Uppercase letter\n        if (!password.Any(char.IsUpper))\n        {\n            result.IsValid = false;\n            result.ErrorMessages.Add(\"Password must contain at least one uppercase letter\");\n        }\n        \n        // Requirement 3: Digit\n        if (!password.Any(char.IsDigit))\n        {\n            result.IsValid = false;\n            result.ErrorMessages.Add(\"Password must contain at least one digit\");\n        }\n        \n        // Requirement 4: Special character\n        var specialChars = \"!@#$%^&*\";\n        if (!password.Any(c => specialChars.Contains(c)))\n        {\n            result.IsValid = false;\n            result.ErrorMessages.Add(\"Password must contain at least one special character (!@#$%^&*)\");\n        }\n        \n        return result;\n    }\n}\n\npublic class PasswordValidatorTests\n{\n    private readonly PasswordValidator _validator = new();\n    \n    [Fact]\n    public void Validate_PasswordTooShort_ReturnsInvalid()\n    {\n        var result = _validator.Validate(\"Ab1!\");\n        \n        Assert.False(result.IsValid);\n        Assert.Contains(result.ErrorMessages, m => m.Contains(\"8 characters\"));\n    }\n    \n    [Fact]\n    public void Validate_NoUppercase_ReturnsInvalid()\n    {\n        var result = _validator.Validate(\"lowercase1!\");\n        \n        Assert.False(result.IsValid);\n        Assert.Contains(result.ErrorMessages, m => m.Contains(\"uppercase\"));\n    }\n    \n    [Fact]\n    public void Validate_NoDigit_ReturnsInvalid()\n    {\n        var result = _validator.Validate(\"NoDigits!!\");\n        \n        Assert.False(result.IsValid);\n        Assert.Contains(result.ErrorMessages, m => m.Contains(\"digit\"));\n    }\n    \n    [Fact]\n    public void Validate_NoSpecialChar_ReturnsInvalid()\n    {\n        var result = _validator.Validate(\"NoSpecial1A\");\n        \n        Assert.False(result.IsValid);\n        Assert.Contains(result.ErrorMessages, m => m.Contains(\"special\"));\n    }\n    \n    [Fact]\n    public void Validate_ValidPassword_ReturnsValid()\n    {\n        var result = _validator.Validate(\"SecureP@ss1\");\n        \n        Assert.True(result.IsValid);\n        Assert.Empty(result.ErrorMessages);\n    }\n    \n    [Fact]\n    public void Validate_MultipleErrors_ReturnsAllErrors()\n    {\n        var result = _validator.Validate(\"bad\");\n        \n        Assert.False(result.IsValid);\n        Assert.True(result.ErrorMessages.Count >= 3);\n    }\n}\n\nConsole.WriteLine(\"TDD Password Validator Complete!\");\nConsole.WriteLine(\"Tests cover: length, uppercase, digit, special char\");",
+              "language": "csharp",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Output should confirm TDD implementation",
+                  "expectedOutput": "TDD",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Output should mention password validation",
+                  "expectedOutput": "Password",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start with ONE requirement. Write a test that fails, then make it pass. Don't add all validations at once!"
+                },
+                {
+                  "level": 2,
+                  "text": "Use LINQ methods: password.Any(char.IsUpper), password.Any(char.IsDigit) for character checks."
+                },
+                {
+                  "level": 3,
+                  "text": "Return ALL error messages, not just the first. Users want to know everything wrong at once."
+                },
+                {
+                  "level": 4,
+                  "text": "Assert.Contains with a predicate: Assert.Contains(list, item => item.Contains('text')) checks if any item matches."
+                },
+                {
+                  "level": 5,
+                  "text": "After all tests pass, REFACTOR: extract validation rules into separate methods for cleaner code."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Writing all tests before any implementation",
+                  "consequence": "You lose the TDD feedback loop! 10 red tests don't give you design feedback like 1 red test at a time.",
+                  "correction": "One test at a time: RED (one test fails) -> GREEN (pass it) -> REFACTOR -> repeat."
+                },
+                {
+                  "mistake": "Not seeing the test fail first",
+                  "consequence": "A test that never failed might not test what you think! It could be testing the wrong thing or always pass.",
+                  "correction": "ALWAYS run the test before implementing. See it fail with the expected failure message."
+                },
+                {
+                  "mistake": "Implementing more than the test requires",
+                  "consequence": "You're guessing at requirements instead of letting tests drive them. Extra code means extra bugs.",
+                  "correction": "GREEN means MINIMUM code. If test only checks length, only implement length check."
+                },
+                {
+                  "mistake": "Returning on first error instead of collecting all",
+                  "consequence": "User fixes one error, submits, gets another error. Frustrating! Collect all errors in one pass.",
+                  "correction": "Check ALL validations, collect errors in a list, return complete ValidationResult."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
