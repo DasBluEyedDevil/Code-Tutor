@@ -6787,10 +6787,116 @@
           ]
         },
         {
+          "id": "module-14-lesson-di",
+          "title": "Dependency Injection in FastAPI",
+          "moduleId": "module-14",
+          "order": 5,
+          "estimatedMinutes": 40,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Dependency Injection?",
+              "content": "**Dependency Injection (DI)** is a design pattern where objects receive their dependencies from external sources rather than creating them internally.\n\n**Why FastAPI Uses Dependency Injection:**\n\n1. **Reusability** - Write once, use in many endpoints\n2. **Testing** - Easy to swap real dependencies with mocks\n3. **Separation of Concerns** - Each function does one thing well\n4. **Clean Code** - No repetitive setup code in every endpoint\n\n**The Depends() Function:**\n\nFastAPI's `Depends()` is the key to DI:\n\n```python\nfrom fastapi import Depends\n\ndef get_database():\n    return DatabaseConnection()\n\n@app.get('/items')\ndef read_items(db = Depends(get_database)):\n    return db.get_all_items()\n```\n\n**How It Works:**\n1. FastAPI sees `Depends(get_database)`\n2. Before calling your endpoint, it calls `get_database()`\n3. The return value is injected as `db`\n4. Your endpoint uses `db` without knowing how it was created\n\n**Common Use Cases:**\n- Database connections\n- Authentication/Authorization\n- Configuration/Settings\n- Logging\n- Rate limiting\n- Pagination parameters"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Simple Dependencies",
+              "content": "**Basic dependency pattern:**\n\nA dependency is just a function that returns something your endpoint needs.\n\n**Key Points:**\n- Dependencies can be regular functions or async functions\n- They can return any type\n- FastAPI automatically calls them and passes the result\n- Multiple endpoints can share the same dependency",
+              "code": "from fastapi import FastAPI, Depends\n\napp = FastAPI()\n\ndef get_db_connection():\n    \"\"\"Simulated database connection\"\"\"\n    return {\"connection\": \"active\", \"pool_size\": 10}\n\ndef get_settings():\n    \"\"\"Application settings\"\"\"\n    return {\n        \"app_name\": \"My API\",\n        \"debug\": True,\n        \"version\": \"1.0.0\"\n    }\n\n@app.get(\"/status\")\nasync def get_status(db = Depends(get_db_connection)):\n    \"\"\"Endpoint receives db connection automatically\"\"\"\n    return {\"db_status\": db[\"connection\"]}\n\n@app.get(\"/info\")\nasync def get_info(\n    db = Depends(get_db_connection),\n    settings = Depends(get_settings)\n):\n    \"\"\"Multiple dependencies in one endpoint\"\"\"\n    return {\n        \"app\": settings[\"app_name\"],\n        \"version\": settings[\"version\"],\n        \"db_pool\": db[\"pool_size\"]\n    }\n\n# Demonstration\nprint(\"=== Simple Dependencies ===\")\nprint(\"\\nDependency functions:\")\nprint(f\"  get_db_connection() -> {get_db_connection()}\")\nprint(f\"  get_settings() -> {get_settings()}\")\n\nprint(\"\\nEndpoints use Depends() to inject these automatically:\")\nprint(\"  @app.get('/status')\")\nprint(\"  async def get_status(db = Depends(get_db_connection)):\")\nprint(\"      return {'db_status': db['connection']}\")\n\nprint(\"\\nBenefits:\")\nprint(\"  - Endpoints don't create their own connections\")\nprint(\"  - Easy to swap dependencies for testing\")\nprint(\"  - Shared logic across multiple endpoints\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Dependencies with Yield (Cleanup)",
+              "content": "**Dependencies that need cleanup use `yield`:**\n\nSome resources (database connections, file handles) need to be properly closed after use. Use `yield` instead of `return` to ensure cleanup.\n\n**Pattern:**\n```python\ndef get_resource():\n    resource = acquire_resource()  # Setup\n    try:\n        yield resource              # Provide to endpoint\n    finally:\n        resource.close()            # Cleanup (always runs)\n```\n\n**How It Works:**\n1. Code before `yield` runs before the endpoint\n2. The yielded value is injected into the endpoint\n3. Code after `yield` (in finally) runs after the response\n4. Cleanup runs even if the endpoint raises an exception",
+              "code": "from fastapi import FastAPI, Depends\nfrom typing import Generator\n\napp = FastAPI()\n\ndef get_db() -> Generator[dict, None, None]:\n    \"\"\"Database connection with automatic cleanup\"\"\"\n    db = {\"connection\": \"open\", \"queries\": 0}\n    print(\"Opening database connection\")\n    try:\n        yield db\n    finally:\n        print(\"Closing database connection\")\n        db[\"connection\"] = \"closed\"\n\ndef get_file_handler() -> Generator[dict, None, None]:\n    \"\"\"File handler with cleanup\"\"\"\n    file = {\"name\": \"data.txt\", \"status\": \"open\"}\n    print(\"Opening file\")\n    try:\n        yield file\n    finally:\n        print(\"Closing file\")\n        file[\"status\"] = \"closed\"\n\n@app.get(\"/data\")\nasync def get_data(db = Depends(get_db)):\n    \"\"\"Database connection is automatically cleaned up after response\"\"\"\n    db[\"queries\"] += 1\n    return {\"status\": db[\"connection\"], \"queries\": db[\"queries\"]}\n\n@app.get(\"/read-file\")\nasync def read_file(\n    db = Depends(get_db),\n    file = Depends(get_file_handler)\n):\n    \"\"\"Multiple cleanup dependencies\"\"\"\n    return {\n        \"db\": db[\"connection\"],\n        \"file\": file[\"status\"]\n    }\n\n# Demonstration\nprint(\"=== Dependencies with Yield ===\")\nprint(\"\\nSimulating request lifecycle:\")\n\n# Simulate what FastAPI does\ndb_gen = get_db()\ndb = next(db_gen)  # Setup - opens connection\nprint(f\"  Endpoint receives: {db}\")\nprint(\"  Endpoint does its work...\")\n\n# Simulate cleanup after response\ntry:\n    next(db_gen)\nexcept StopIteration:\n    pass\n\nprint(f\"  After cleanup: connection is closed\")\n\nprint(\"\\nKey benefits:\")\nprint(\"  - Resources are ALWAYS cleaned up\")\nprint(\"  - Works even if endpoint raises exception\")\nprint(\"  - Perfect for DB connections, file handles, locks\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Chaining Dependencies",
+              "content": "**Dependencies can depend on other dependencies:**\n\nThis creates a chain where each dependency builds on the previous one.\n\n**Common Pattern: Authentication Chain**\n```\nget_settings -> verify_token -> get_current_user\n```\n\n**Benefits:**\n- Each step has a single responsibility\n- Easy to test each step independently\n- Reuse intermediate dependencies\n- Clear error handling at each level",
+              "code": "from fastapi import FastAPI, Depends, HTTPException\n\napp = FastAPI()\n\n# Level 1: Basic settings\ndef get_settings():\n    \"\"\"Provide application settings\"\"\"\n    return {\"api_key\": \"secret123\", \"admin_emails\": [\"admin@example.com\"]}\n\n# Level 2: Depends on settings\ndef verify_api_key(settings = Depends(get_settings)):\n    \"\"\"Verify API key (simulated - real app would check header)\"\"\"\n    # In real app: get key from header and compare\n    # For demo, we just return True\n    if settings[\"api_key\"]:\n        return True\n    raise HTTPException(status_code=401, detail=\"Invalid API key\")\n\n# Level 3: Depends on verification\ndef get_current_user(verified = Depends(verify_api_key)):\n    \"\"\"Get user only if API key is valid\"\"\"\n    if not verified:\n        raise HTTPException(status_code=401, detail=\"Not authenticated\")\n    return {\"user_id\": 1, \"name\": \"Alice\", \"role\": \"admin\"}\n\n# Level 4: Depends on current user\ndef require_admin(user = Depends(get_current_user)):\n    \"\"\"Check if user is admin\"\"\"\n    if user[\"role\"] != \"admin\":\n        raise HTTPException(status_code=403, detail=\"Admin required\")\n    return user\n\n@app.get(\"/me\")\nasync def read_user(user = Depends(get_current_user)):\n    \"\"\"Get current user info\"\"\"\n    return user\n\n@app.get(\"/admin/dashboard\")\nasync def admin_dashboard(admin = Depends(require_admin)):\n    \"\"\"Admin-only endpoint\"\"\"\n    return {\"message\": f\"Welcome, {admin['name']}!\", \"admin_panel\": True}\n\n# Demonstration\nprint(\"=== Chaining Dependencies ===\")\nprint(\"\\nDependency chain:\")\nprint(\"  get_settings()\")\nprint(\"      |\")\nprint(\"      v\")\nprint(\"  verify_api_key(settings)\")\nprint(\"      |\")\nprint(\"      v\")\nprint(\"  get_current_user(verified)\")\nprint(\"      |\")\nprint(\"      v\")\nprint(\"  require_admin(user)\")\n\nprint(\"\\nWhen /admin/dashboard is called:\")\nprint(\"  1. get_settings() returns config\")\nprint(\"  2. verify_api_key() checks the key\")\nprint(\"  3. get_current_user() returns user\")\nprint(\"  4. require_admin() checks admin role\")\nprint(\"  5. Endpoint runs with admin user\")\n\nprint(\"\\nSimulating the chain:\")\nsettings = get_settings()\nprint(f\"  Settings: {settings['api_key'][:6]}...\")\nverified = verify_api_key(settings)\nprint(f\"  Verified: {verified}\")\nuser = get_current_user(verified)\nprint(f\"  User: {user['name']} ({user['role']})\")\nadmin = require_admin(user)\nprint(f\"  Admin check passed: {admin['name']}\")",
+              "language": "python"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Class-Based Dependencies",
+              "content": "**Use classes for dependencies with state or configuration:**\n\nClasses are useful when:\n- Dependencies have configuration options\n- You need to reuse with different settings\n- Dependencies maintain state across requests\n\n**Pattern: Callable Class**\n```python\nclass MyDependency:\n    def __init__(self, config):\n        self.config = config\n    \n    def __call__(self):\n        return self.config\n```\n\n**Shortcut: Depends() with class**\n```python\n# FastAPI automatically calls the class\n@app.get('/items')\ndef get_items(pagination: Pagination = Depends()):\n    # pagination is an instance of Pagination\n```",
+              "code": "from fastapi import FastAPI, Depends, Query\n\napp = FastAPI()\n\nclass Pagination:\n    \"\"\"Reusable pagination parameters\"\"\"\n    \n    def __init__(\n        self,\n        skip: int = Query(0, ge=0, description=\"Items to skip\"),\n        limit: int = Query(10, ge=1, le=100, description=\"Max items\")\n    ):\n        self.skip = skip\n        self.limit = limit\n\nclass DatabaseConfig:\n    \"\"\"Database configuration as dependency\"\"\"\n    \n    def __init__(self, db_name: str = \"default\"):\n        self.db_name = db_name\n        self.connection_string = f\"sqlite:///{db_name}.db\"\n    \n    def __call__(self):\n        \"\"\"Makes the instance callable\"\"\"\n        return {\n            \"db\": self.db_name,\n            \"connection\": self.connection_string\n        }\n\n# Create instances with different configs\ndefault_db = DatabaseConfig(\"main\")\ntest_db = DatabaseConfig(\"test\")\n\n@app.get(\"/items\")\nasync def list_items(pagination: Pagination = Depends()):\n    \"\"\"Pagination is auto-instantiated from query params\"\"\"\n    return {\n        \"skip\": pagination.skip,\n        \"limit\": pagination.limit,\n        \"items\": [f\"item_{i}\" for i in range(pagination.skip, pagination.skip + pagination.limit)]\n    }\n\n@app.get(\"/users\")\nasync def list_users(pagination: Pagination = Depends()):\n    \"\"\"Same pagination class, different endpoint\"\"\"\n    return {\n        \"skip\": pagination.skip,\n        \"limit\": pagination.limit,\n        \"users\": [f\"user_{i}\" for i in range(pagination.skip, pagination.skip + pagination.limit)]\n    }\n\n@app.get(\"/db-info\")\nasync def get_db_info(db = Depends(default_db)):\n    \"\"\"Uses callable class instance\"\"\"\n    return db\n\n# Demonstration\nprint(\"=== Class-Based Dependencies ===\")\n\nprint(\"\\n1. Pagination class:\")\npagination = Pagination()  # Uses defaults\nprint(f\"   Default: skip={pagination.skip}, limit={pagination.limit}\")\n\nprint(\"\\n2. DatabaseConfig as callable:\")\nprint(f\"   default_db() -> {default_db()}\")\nprint(f\"   test_db() -> {test_db()}\")\n\nprint(\"\\n3. How Depends() works with classes:\")\nprint(\"   @app.get('/items')\")\nprint(\"   async def list_items(pagination: Pagination = Depends()):\")\nprint(\"       # FastAPI creates Pagination instance from query params\")\nprint(\"       # ?skip=10&limit=20 -> Pagination(skip=10, limit=20)\")\n\nprint(\"\\n4. Benefits of class-based dependencies:\")\nprint(\"   - Encapsulate related parameters\")\nprint(\"   - Add validation in __init__\")\nprint(\"   - Reuse across multiple endpoints\")\nprint(\"   - Configure different instances for different contexts\")",
+              "language": "python"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Dependency Injection Key Takeaways",
+              "content": "**Core Concepts:**\n- **Depends()** - FastAPI's DI mechanism\n- **Function dependencies** - Return values are injected\n- **Yield dependencies** - For cleanup (db connections, files)\n- **Chained dependencies** - Dependencies can use other dependencies\n- **Class dependencies** - For configurable, stateful dependencies\n\n**Patterns Summary:**\n```python\n# Simple function\ndef get_db():\n    return Database()\n\n# With cleanup\ndef get_db():\n    db = Database()\n    try:\n        yield db\n    finally:\n        db.close()\n\n# Chained\ndef get_user(db = Depends(get_db)):\n    return db.get_user()\n\n# Class-based\nclass Pagination:\n    def __init__(self, skip: int = 0, limit: int = 10):\n        self.skip = skip\n        self.limit = limit\n```\n\n**Best Practices:**\n- Keep dependencies focused on one task\n- Use `yield` for resources needing cleanup\n- Chain dependencies for authentication flows\n- Use classes for configurable dependencies\n- Dependencies are great for cross-cutting concerns"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-14-lesson-di-challenge",
+              "title": "Build a Rate Limiter Dependency",
+              "description": "Create a rate limiting dependency that tracks requests per user and blocks if they exceed the limit.",
+              "instructions": "Build a FastAPI application with a rate limiting dependency:\n\n1. Create a RateLimiter class that:\n   - Tracks request counts per user (use a dictionary)\n   - Has configurable max_requests and time_window\n   - Raises HTTPException(429) if limit exceeded\n\n2. Create a get_current_user dependency that returns a user dict\n\n3. Create a rate_limit dependency that:\n   - Depends on get_current_user\n   - Uses the RateLimiter to check/update request count\n   - Returns the user if allowed, raises 429 if not\n\n4. Create endpoints:\n   - GET /public - No rate limiting\n   - GET /api/data - Rate limited endpoint\n   - GET /api/status - Shows current request count",
+              "starterCode": "from fastapi import FastAPI, Depends, HTTPException\nfrom datetime import datetime, timedelta\nfrom typing import Dict\n\napp = FastAPI()\n\n# TODO: Create RateLimiter class\n# - __init__(max_requests: int, time_window: int) - window in seconds\n# - check_rate_limit(user_id: str) -> bool - returns True if allowed\n# - get_request_count(user_id: str) -> int\n\nclass RateLimiter:\n    def __init__(self, max_requests: int = 10, time_window: int = 60):\n        pass  # Store config and create request tracking dict\n    \n    def check_rate_limit(self, user_id: str) -> bool:\n        pass  # Check if user is within limit\n    \n    def get_request_count(self, user_id: str) -> int:\n        pass  # Return current count for user\n\n# Create rate limiter instance\nrate_limiter = RateLimiter(max_requests=5, time_window=60)\n\n# TODO: Create get_current_user dependency\n# Returns: {\"user_id\": \"user123\", \"name\": \"Test User\"}\n\ndef get_current_user():\n    pass\n\n# TODO: Create rate_limit dependency\n# - Depends on get_current_user\n# - Checks rate limit, raises HTTPException(429) if exceeded\n# - Returns user if allowed\n\ndef rate_limit(user = Depends(get_current_user)):\n    pass\n\n# TODO: Create endpoints\n# GET /public - No rate limiting, returns {\"message\": \"Public endpoint\"}\n# GET /api/data - Rate limited, returns {\"data\": \"Secret data\", \"user\": user[\"name\"]}\n# GET /api/status - Rate limited, returns request count for user\n\n@app.get(\"/public\")\nasync def public_endpoint():\n    pass\n\n@app.get(\"/api/data\")\nasync def get_data(user = Depends(rate_limit)):\n    pass\n\n@app.get(\"/api/status\")\nasync def get_status(user = Depends(rate_limit)):\n    pass",
+              "solution": "from fastapi import FastAPI, Depends, HTTPException\nfrom datetime import datetime, timedelta\nfrom typing import Dict, List\n\napp = FastAPI()\n\nclass RateLimiter:\n    \"\"\"Rate limiter using sliding window.\"\"\"\n    \n    def __init__(self, max_requests: int = 10, time_window: int = 60):\n        self.max_requests = max_requests\n        self.time_window = time_window  # seconds\n        self.requests: Dict[str, List[datetime]] = {}\n    \n    def _clean_old_requests(self, user_id: str) -> None:\n        \"\"\"Remove requests outside the time window.\"\"\"\n        if user_id not in self.requests:\n            return\n        \n        cutoff = datetime.now() - timedelta(seconds=self.time_window)\n        self.requests[user_id] = [\n            req_time for req_time in self.requests[user_id]\n            if req_time > cutoff\n        ]\n    \n    def check_rate_limit(self, user_id: str) -> bool:\n        \"\"\"Check if user is within rate limit. Records request if allowed.\"\"\"\n        self._clean_old_requests(user_id)\n        \n        if user_id not in self.requests:\n            self.requests[user_id] = []\n        \n        if len(self.requests[user_id]) >= self.max_requests:\n            return False\n        \n        # Record this request\n        self.requests[user_id].append(datetime.now())\n        return True\n    \n    def get_request_count(self, user_id: str) -> int:\n        \"\"\"Get current request count for user.\"\"\"\n        self._clean_old_requests(user_id)\n        return len(self.requests.get(user_id, []))\n\n# Create rate limiter instance\nrate_limiter = RateLimiter(max_requests=5, time_window=60)\n\ndef get_current_user():\n    \"\"\"Simulated user authentication.\"\"\"\n    # In real app, would extract from JWT token or session\n    return {\"user_id\": \"user123\", \"name\": \"Test User\"}\n\ndef rate_limit(user = Depends(get_current_user)):\n    \"\"\"Rate limiting dependency.\"\"\"\n    if not rate_limiter.check_rate_limit(user[\"user_id\"]):\n        raise HTTPException(\n            status_code=429,\n            detail=f\"Rate limit exceeded. Max {rate_limiter.max_requests} requests per {rate_limiter.time_window} seconds.\"\n        )\n    return user\n\n@app.get(\"/public\")\nasync def public_endpoint():\n    \"\"\"Public endpoint - no rate limiting.\"\"\"\n    return {\"message\": \"Public endpoint\"}\n\n@app.get(\"/api/data\")\nasync def get_data(user = Depends(rate_limit)):\n    \"\"\"Rate limited endpoint.\"\"\"\n    return {\n        \"data\": \"Secret data\",\n        \"user\": user[\"name\"]\n    }\n\n@app.get(\"/api/status\")\nasync def get_status(user = Depends(rate_limit)):\n    \"\"\"Get rate limit status.\"\"\"\n    return {\n        \"user\": user[\"name\"],\n        \"requests_made\": rate_limiter.get_request_count(user[\"user_id\"]),\n        \"max_requests\": rate_limiter.max_requests,\n        \"time_window_seconds\": rate_limiter.time_window\n    }\n\n# Demonstration\nif __name__ == \"__main__\":\n    print(\"=== Rate Limiter Dependency Demo ===\")\n    \n    print(\"\\n1. Testing rate limiter:\")\n    user = get_current_user()\n    print(f\"   User: {user['name']}\")\n    \n    print(\"\\n2. Making requests within limit:\")\n    for i in range(5):\n        allowed = rate_limiter.check_rate_limit(user[\"user_id\"])\n        count = rate_limiter.get_request_count(user[\"user_id\"])\n        print(f\"   Request {i+1}: {'Allowed' if allowed else 'Blocked'} (count: {count})\")\n    \n    print(\"\\n3. Request exceeding limit:\")\n    allowed = rate_limiter.check_rate_limit(user[\"user_id\"])\n    print(f\"   Request 6: {'Allowed' if allowed else 'Blocked - 429 Too Many Requests'}\")\n    \n    print(\"\\nRun with: uvicorn solution:app --reload\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "RateLimiter allows requests within limit",
+                  "expectedOutput": "",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "RateLimiter blocks requests over limit",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Store request timestamps in a list per user. Clean out timestamps older than time_window."
+                },
+                {
+                  "level": 2,
+                  "text": "Use datetime.now() and timedelta(seconds=time_window) to check if requests are within the window."
+                },
+                {
+                  "level": 3,
+                  "text": "The rate_limit dependency should call rate_limiter.check_rate_limit(user['user_id']) and raise HTTPException(status_code=429) if it returns False."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not cleaning old requests from the tracking dict",
+                  "consequence": "Users stay rate-limited forever",
+                  "correction": "Filter out requests older than time_window before checking count"
+                },
+                {
+                  "mistake": "Forgetting to record successful requests",
+                  "consequence": "Rate limit never triggers",
+                  "correction": "Append datetime.now() to user's request list when allowed"
+                },
+                {
+                  "mistake": "Using return instead of raise for HTTPException",
+                  "consequence": "429 status not sent properly",
+                  "correction": "Use 'raise HTTPException(status_code=429, detail=...)'"
+                }
+              ],
+              "difficulty": "advanced"
+            }
+          ]
+        },
+        {
           "id": "module-14-lesson-04",
           "title": "Database Integration with SQLite",
           "moduleId": "module-14",
-          "order": 5,
+          "order": 6,
           "estimatedMinutes": 40,
           "difficulty": "advanced",
           "contentSections": [
