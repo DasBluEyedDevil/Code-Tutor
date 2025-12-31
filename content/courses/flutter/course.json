@@ -7323,6 +7323,254 @@
               "difficulty": "intermediate"
             }
           ]
+        },
+        {
+          "id": "7.5",
+          "title": "Lesson 7.5: Middleware",
+          "moduleId": "module-07",
+          "order": 5,
+          "estimatedMinutes": 30,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "What is Middleware?",
+              "content": "\nMiddleware is code that runs **BEFORE** your route handler executes. Think of it as a security checkpoint or processing station that every request must pass through.\n\n**Common Use Cases**:\n- **Logging**: Record every request and response\n- **Authentication**: Verify users are logged in before accessing protected routes\n- **CORS**: Add headers that allow cross-origin requests\n- **Error Handling**: Catch and format errors consistently\n- **Rate Limiting**: Prevent abuse by limiting requests per user\n\n**Chain of Responsibility Pattern**:\nMiddleware forms a chain - each middleware can:\n1. Process the request\n2. Call the next handler in the chain\n3. Process the response before returning\n\n```\nRequest → [Logging] → [Auth] → [CORS] → Route Handler → Response\n                ↓                              ↑\n           (each middleware can modify request/response)\n```\n\nThis pattern keeps your route handlers clean and focused on business logic, while cross-cutting concerns like logging and auth are handled in reusable middleware.\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating Middleware",
+              "content": "\nIn Dart Frog, middleware is defined in a special file called `_middleware.dart`. The underscore prefix is important - it tells Dart Frog this is middleware, not a route.\n\n**Basic Structure**:\n\n",
+              "code": "// routes/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    // ============================================\n    // BEFORE the route handler runs\n    // ============================================\n    print('Request: ${context.request.method} ${context.request.uri}');\n    final stopwatch = Stopwatch()..start();\n    \n    // ============================================\n    // Call the next handler (your route)\n    // ============================================\n    final response = await handler(context);\n    \n    // ============================================\n    // AFTER the route handler completes\n    // ============================================\n    stopwatch.stop();\n    print('Response: ${response.statusCode} in ${stopwatch.elapsedMilliseconds}ms');\n    \n    return response;\n  };\n}",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "CORS Middleware",
+              "content": "\nCORS (Cross-Origin Resource Sharing) headers are essential when your Flutter web app or other clients need to access your API from a different domain.\n\n**The Problem**: Browsers block requests to different domains by default for security.\n**The Solution**: Add CORS headers to tell browsers it's safe to allow the request.\n\n",
+              "code": "// routes/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    // Handle preflight OPTIONS requests\n    if (context.request.method == HttpMethod.options) {\n      return Response(\n        statusCode: 200,\n        headers: {\n          'Access-Control-Allow-Origin': '*',\n          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',\n          'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',\n        },\n      );\n    }\n    \n    // Call the route handler\n    final response = await handler(context);\n    \n    // Add CORS headers to all responses\n    return response.copyWith(\n      headers: {\n        ...response.headers,\n        'Access-Control-Allow-Origin': '*',\n        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',\n        'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',\n      },\n    );\n  };\n}\n\n// Now any route in this folder (and subfolders) will have CORS headers!\n// Example: GET /api/users will include Access-Control-Allow-Origin: *",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Middleware Scope",
+              "content": "\nMiddleware applies to all routes in its folder AND all subfolders. This gives you precise control over which routes use which middleware.\n\n**Folder Structure Example**:\n```\nroutes/\n├── _middleware.dart       ← Applies to ALL routes\n├── index.dart             ← Uses root middleware\n├── public/\n│   └── health.dart        ← Uses root middleware only\n└── api/\n    ├── _middleware.dart   ← Applies to /api/* routes\n    ├── users.dart         ← Uses BOTH middlewares\n    └── admin/\n        ├── _middleware.dart  ← Applies to /api/admin/* routes\n        └── settings.dart     ← Uses ALL THREE middlewares\n```\n\n**Middleware Execution Order**:\nMiddleware chains from outer to inner:\n1. `routes/_middleware.dart` runs first\n2. `routes/api/_middleware.dart` runs second\n3. `routes/api/admin/_middleware.dart` runs third\n4. Route handler executes\n5. Then responses flow back through in reverse order\n\n**Practical Example**:\n```\nRequest to /api/admin/settings:\n\n[Root Middleware: Logging]\n    ↓\n[API Middleware: Auth Check]\n    ↓\n[Admin Middleware: Admin Role Check]\n    ↓\n[settings.dart: Route Handler]\n    ↓\n[Responses flow back up the chain]\n```\n\nThis layered approach lets you:\n- Log ALL requests at the root level\n- Require authentication for ALL /api/* routes\n- Require admin role for ONLY /api/admin/* routes\n\n"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Common Middleware Patterns",
+              "content": "\n**1. Request Logging**\n```dart\nHandler middleware(Handler handler) {\n  return (context) async {\n    print('[${DateTime.now()}] ${context.request.method} ${context.request.uri}');\n    final response = await handler(context);\n    print('[${DateTime.now()}] Response: ${response.statusCode}');\n    return response;\n  };\n}\n```\n\n**2. Authentication Check**\n```dart\nHandler middleware(Handler handler) {\n  return (context) async {\n    final authHeader = context.request.headers['Authorization'];\n    \n    if (authHeader == null || !authHeader.startsWith('Bearer ')) {\n      return Response.json(\n        body: {'error': 'Unauthorized - No token provided'},\n        statusCode: 401,\n      );\n    }\n    \n    // Token exists, continue to route handler\n    return handler(context);\n  };\n}\n```\n\n**3. Error Handling Wrapper**\n```dart\nHandler middleware(Handler handler) {\n  return (context) async {\n    try {\n      return await handler(context);\n    } catch (e, stackTrace) {\n      print('Error: $e\\n$stackTrace');\n      return Response.json(\n        body: {'error': 'Internal server error'},\n        statusCode: 500,\n      );\n    }\n  };\n}\n```\n\n**4. Dependency Injection (Provider)**\n```dart\n// Provide a database connection to all routes\nHandler middleware(Handler handler) {\n  return handler.use(\n    provider<DatabaseConnection>((context) => myDbConnection),\n  );\n}\n\n// In your route, access it with:\n// final db = context.read<DatabaseConnection>();\n```\n\n**Key Takeaways**:\n- Middleware runs before AND after route handlers\n- Use `_middleware.dart` naming convention\n- Scope middleware to specific folders for fine-grained control\n- Chain middleware for layered processing\n- Return early (without calling handler) to block requests\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.5-challenge-1",
+              "title": "Create Logging Middleware",
+              "description": "Create middleware that logs request details and response status.",
+              "instructions": "Build a `_middleware.dart` file that:\n\n1. Logs the HTTP method and request path BEFORE the route handler runs\n2. Calls the route handler and captures the response\n3. Logs the response status code AFTER the handler completes\n4. Returns the response\n\nThe log format should be:\n- Before: `[REQUEST] GET /api/users`\n- After: `[RESPONSE] 200`",
+              "starterCode": "// routes/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    // TODO: Log the request method and path\n    // Format: [REQUEST] METHOD /path\n    \n    // TODO: Call the route handler\n    \n    // TODO: Log the response status code\n    // Format: [RESPONSE] statusCode\n    \n    // TODO: Return the response\n    return Response(body: 'Not implemented');\n  };\n}",
+              "solution": "// routes/_middleware.dart\nimport 'package:dart_frog/dart_frog.dart';\n\nHandler middleware(Handler handler) {\n  return (context) async {\n    // Log the incoming request\n    final method = context.request.method.name.toUpperCase();\n    final path = context.request.uri.path;\n    print('[REQUEST] $method $path');\n    \n    // Call the route handler and get the response\n    final response = await handler(context);\n    \n    // Log the response status\n    print('[RESPONSE] ${response.statusCode}');\n    \n    // Return the response to the client\n    return response;\n  };\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Function returns a Handler",
+                  "expectedOutput": "Handler middleware(Handler handler)",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Logs request method and path",
+                  "expectedOutput": "[REQUEST]",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Calls the handler to get response",
+                  "expectedOutput": "await handler(context)",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Logs response status code",
+                  "expectedOutput": "[RESPONSE]",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Returns the response",
+                  "expectedOutput": "return response",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Use context.request.method and context.request.uri.path to get request details."
+                },
+                {
+                  "level": 2,
+                  "text": "Store the response: 'final response = await handler(context);'"
+                },
+                {
+                  "level": 3,
+                  "text": "Access status with response.statusCode and use print() for logging."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to await the handler call",
+                  "consequence": "Response is a Future, not the actual Response object",
+                  "correction": "Use 'final response = await handler(context);'"
+                },
+                {
+                  "mistake": "Not returning the response",
+                  "consequence": "Route returns nothing to the client",
+                  "correction": "Always 'return response;' at the end"
+                },
+                {
+                  "mistake": "Calling handler multiple times",
+                  "consequence": "Route handler executes multiple times",
+                  "correction": "Call handler exactly once and store the result"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "7.6",
+          "title": "Lesson 7.6: Database Integration",
+          "moduleId": "module-07",
+          "order": 6,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Database Options for Dart",
+              "content": "\nWhen building a Dart Frog backend, you have several database options:\n\n**1. PostgreSQL** (with `postgres` package)\n- Industry-standard relational database\n- Powerful querying with SQL\n- Great for structured data with relationships\n- Used by: Instagram, Spotify, Netflix\n\n**2. SQLite** (with `sqlite3` package)\n- Lightweight, file-based database\n- Perfect for development and small apps\n- No separate server required\n- Easy to set up and test\n\n**3. Firebase/Supabase** (covered in Module 8)\n- Cloud-hosted, managed databases\n- Real-time sync capabilities\n- No database administration needed\n\n**4. MongoDB** (with `mongo_dart` package)\n- Document-oriented (NoSQL)\n- Flexible schema\n- Great for unstructured data\n\n**In This Lesson**: We focus on PostgreSQL basics because it's the most common choice for production backends and teaches fundamental database concepts you can apply anywhere.\n\n"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setting Up PostgreSQL",
+              "content": "\n**Step 1: Add the dependency** to your `pubspec.yaml`:\n\n```yaml\ndependencies:\n  dart_frog: ^1.0.0\n  postgres: ^3.0.0\n```\n\n**Step 2: Create a database connection**:\n\n",
+              "code": "import 'package:postgres/postgres.dart';\n\n// Create a connection to PostgreSQL\nFuture<Connection> createDatabaseConnection() async {\n  final connection = await Connection.open(\n    Endpoint(\n      host: 'localhost',        // Database server address\n      database: 'myapp',        // Database name\n      username: 'postgres',     // Username\n      password: 'password',     // Password\n    ),\n    settings: ConnectionSettings(\n      sslMode: SslMode.disable, // For local development\n    ),\n  );\n  \n  print('Connected to database!');\n  return connection;\n}\n\n// Usage:\n// final db = await createDatabaseConnection();\n// Now you can run queries on 'db'",
+              "language": "dart"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "CRUD Operations",
+              "content": "\nCRUD stands for **C**reate, **R**ead, **U**pdate, **D**elete - the four fundamental database operations.\n\nAssuming you have a `users` table:\n```sql\nCREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  name VARCHAR(100) NOT NULL,\n  email VARCHAR(100) UNIQUE NOT NULL,\n  created_at TIMESTAMP DEFAULT NOW()\n);\n```\n\nHere's how to perform CRUD operations:\n\n",
+              "code": "import 'package:postgres/postgres.dart';\n\nFuture<void> crudExamples(Connection db) async {\n  // ============================================\n  // CREATE - Insert a new user\n  // ============================================\n  await db.execute(\n    r'INSERT INTO users (name, email) VALUES ($1, $2)',\n    parameters: ['John Doe', 'john@example.com'],\n  );\n  print('User created!');\n  \n  // ============================================\n  // READ - Query all users\n  // ============================================\n  final allUsers = await db.execute('SELECT * FROM users');\n  for (final row in allUsers) {\n    // row[0] = id, row[1] = name, row[2] = email\n    print('User: id=${row[0]}, name=${row[1]}, email=${row[2]}');\n  }\n  \n  // READ - Query with a condition\n  final result = await db.execute(\n    r'SELECT * FROM users WHERE email = $1',\n    parameters: ['john@example.com'],\n  );\n  if (result.isNotEmpty) {\n    print('Found user: ${result.first[1]}');\n  }\n  \n  // ============================================\n  // UPDATE - Modify existing user\n  // ============================================\n  await db.execute(\n    r'UPDATE users SET name = $1 WHERE id = $2',\n    parameters: ['Jane Doe', 1],\n  );\n  print('User updated!');\n  \n  // ============================================\n  // DELETE - Remove a user\n  // ============================================\n  await db.execute(\n    r'DELETE FROM users WHERE id = $1',\n    parameters: [1],\n  );\n  print('User deleted!');\n}",
+              "language": "dart"
+            },
+            {
+              "type": "THEORY",
+              "title": "Providing Database via Middleware",
+              "content": "\nInstead of creating a new database connection for every request (slow and wasteful), use middleware to share a single connection across all routes.\n\n**The Provider Pattern**: Middleware injects the database connection into the request context, and routes access it via `context.read<T>()`.\n\n",
+              "code": "// lib/db.dart - Create a shared database connection\nimport 'package:postgres/postgres.dart';\n\nlate Connection dbConnection;\n\nFuture<void> initDatabase() async {\n  dbConnection = await Connection.open(\n    Endpoint(\n      host: 'localhost',\n      database: 'myapp',\n      username: 'postgres',\n      password: 'password',\n    ),\n    settings: ConnectionSettings(sslMode: SslMode.disable),\n  );\n  print('Database connected!');\n}\n\n// routes/_middleware.dart - Provide the connection to all routes\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:postgres/postgres.dart';\nimport '../lib/db.dart';\n\nHandler middleware(Handler handler) {\n  return handler.use(\n    provider<Connection>((context) => dbConnection),\n  );\n}\n\n// routes/users.dart - Use the connection in your route\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:postgres/postgres.dart';\n\nFuture<Response> onRequest(RequestContext context) async {\n  // Read the database connection from context\n  final db = context.read<Connection>();\n  \n  // Query the database\n  final result = await db.execute('SELECT id, name, email FROM users');\n  \n  // Convert rows to maps for JSON response\n  final users = result.map((row) => {\n    'id': row[0],\n    'name': row[1],\n    'email': row[2],\n  }).toList();\n  \n  return Response.json(body: {'users': users});\n}",
+              "language": "dart"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Database Best Practices",
+              "content": "\n**1. Use Environment Variables for Credentials**\n```dart\n// DON'T hardcode credentials!\nfinal password = 'my_password'; // BAD!\n\n// DO use environment variables\nimport 'dart:io';\n\nfinal host = Platform.environment['DB_HOST'] ?? 'localhost';\nfinal database = Platform.environment['DB_NAME'] ?? 'myapp';\nfinal username = Platform.environment['DB_USER'] ?? 'postgres';\nfinal password = Platform.environment['DB_PASSWORD'] ?? '';\n```\n\n**2. Connection Pooling for Production**\nFor high-traffic apps, use a connection pool instead of a single connection:\n```dart\n// Single connection - OK for development\nfinal db = await Connection.open(endpoint);\n\n// Connection pool - BETTER for production\nfinal pool = Pool.withEndpoints([endpoint], settings: PoolSettings(\n  maxConnectionCount: 10,\n));\n```\n\n**3. Always Use Parameterized Queries**\nPrevents SQL injection attacks (see next section).\n\n**4. Close Connections Properly**\n```dart\n// When shutting down your server:\nawait db.close();\n```\n\n**5. Handle Connection Errors**\n```dart\ntry {\n  final db = await Connection.open(endpoint);\n} on PostgreSQLException catch (e) {\n  print('Database connection failed: ${e.message}');\n  // Handle gracefully - maybe use fallback or retry\n}\n```\n\n"
+            },
+            {
+              "type": "WARNING",
+              "title": "Security: SQL Injection",
+              "content": "\n**SQL Injection** is one of the most dangerous security vulnerabilities. It allows attackers to execute arbitrary SQL commands on your database.\n\n**The Attack**:\nIf you build SQL queries by concatenating user input:\n```dart\n// DANGEROUS! Never do this!\nfinal name = request.queryParameters['name']; // User provides: \"'; DROP TABLE users; --\"\nfinal query = \"SELECT * FROM users WHERE name = '$name'\";\n// Resulting query: SELECT * FROM users WHERE name = ''; DROP TABLE users; --'\n// This DELETES your entire users table!\n```\n\n**The Solution: Parameterized Queries**\n\n```dart\n// BAD - SQL injection vulnerable!\nawait db.execute(\n  \"SELECT * FROM users WHERE name = '$name'\",\n);\n\n// GOOD - parameterized query (SAFE!)\nawait db.execute(\n  r'SELECT * FROM users WHERE name = $1',\n  parameters: [name],\n);\n```\n\n**Why Parameterized Queries Work**:\n- The database treats parameters as DATA, not as SQL code\n- Even if the user enters `'; DROP TABLE users; --`, it's treated as a literal string to search for\n- The SQL structure is fixed - parameters can only fill in values\n\n**Rule of Thumb**: NEVER concatenate user input into SQL strings. ALWAYS use parameterized queries.\n\n**More Examples**:\n```dart\n// BAD - All of these are vulnerable\nawait db.execute(\"INSERT INTO users (name) VALUES ('$name')\");\nawait db.execute('DELETE FROM users WHERE id = $id'); // $id is Dart interpolation!\nawait db.execute('UPDATE users SET email = \"$email\" WHERE id = $id');\n\n// GOOD - All of these are safe\nawait db.execute(r'INSERT INTO users (name) VALUES ($1)', parameters: [name]);\nawait db.execute(r'DELETE FROM users WHERE id = $1', parameters: [id]);\nawait db.execute(r'UPDATE users SET email = $1 WHERE id = $2', parameters: [email, id]);\n\n// Note: The 'r' prefix makes it a raw string, so $1 is literal text, not Dart interpolation\n```\n\n"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "7.6-challenge-1",
+              "title": "Build a Todos API with In-Memory Storage",
+              "description": "Create a /api/todos endpoint that handles GET (list all) and POST (create new) using in-memory storage.",
+              "instructions": "Build a `/api/todos` endpoint that:\n\n1. **GET /api/todos** - Returns all todos as a JSON array\n2. **POST /api/todos** - Creates a new todo from JSON body with 'title' field\n   - Generate an ID using the current timestamp\n   - Set 'completed' to false by default\n   - Return the created todo with 201 status\n3. Returns 405 for other HTTP methods\n\nUse an in-memory list to store todos (no database needed for this exercise).\n\nExpected JSON format:\n```json\n{\n  \"id\": \"1234567890\",\n  \"title\": \"Buy groceries\",\n  \"completed\": false\n}\n```",
+              "starterCode": "// routes/api/todos.dart\nimport 'package:dart_frog/dart_frog.dart';\n\n// In-memory storage for todos\nfinal List<Map<String, dynamic>> todos = [];\n\nFuture<Response> onRequest(RequestContext context) async {\n  switch (context.request.method) {\n    case HttpMethod.get:\n      // TODO: Return all todos\n      return Response(body: 'Not implemented');\n    \n    case HttpMethod.post:\n      // TODO: Read JSON body, create new todo, add to list\n      // TODO: Return created todo with 201 status\n      return Response(body: 'Not implemented');\n    \n    default:\n      // TODO: Return 405 Method Not Allowed\n      return Response(body: 'Not implemented');\n  }\n}",
+              "solution": "// routes/api/todos.dart\nimport 'package:dart_frog/dart_frog.dart';\n\n// In-memory storage for todos\nfinal List<Map<String, dynamic>> todos = [];\n\nFuture<Response> onRequest(RequestContext context) async {\n  switch (context.request.method) {\n    case HttpMethod.get:\n      // Return all todos\n      return Response.json(\n        body: {'todos': todos},\n      );\n    \n    case HttpMethod.post:\n      // Read the JSON body\n      final body = await context.request.json() as Map<String, dynamic>;\n      final title = body['title'] as String;\n      \n      // Create a new todo with generated ID\n      final newTodo = {\n        'id': DateTime.now().millisecondsSinceEpoch.toString(),\n        'title': title,\n        'completed': false,\n      };\n      \n      // Add to our in-memory list\n      todos.add(newTodo);\n      \n      // Return the created todo with 201 status\n      return Response.json(\n        body: newTodo,\n        statusCode: 201,\n      );\n    \n    default:\n      // Method not allowed\n      return Response.json(\n        body: {'error': 'Method not allowed'},\n        statusCode: 405,\n      );\n  }\n}",
+              "language": "dart",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Has in-memory todos list",
+                  "expectedOutput": "List<Map<String, dynamic>> todos",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "GET returns todos in JSON response",
+                  "expectedOutput": "Response.json",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "POST reads JSON body with await",
+                  "expectedOutput": "await context.request.json()",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "POST creates todo with id, title, and completed fields",
+                  "expectedOutput": "'completed': false",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "POST returns 201 status code",
+                  "expectedOutput": "statusCode: 201",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Returns 405 for other methods",
+                  "expectedOutput": "405",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "For GET, use Response.json(body: {'todos': todos}) to return the list."
+                },
+                {
+                  "level": 2,
+                  "text": "For POST, use DateTime.now().millisecondsSinceEpoch.toString() to generate a unique ID."
+                },
+                {
+                  "level": 3,
+                  "text": "Don't forget to add the new todo to the list with todos.add(newTodo) before returning."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to add the new todo to the list",
+                  "consequence": "Todo is created but not persisted, GET returns empty list",
+                  "correction": "Call todos.add(newTodo) before returning the response"
+                },
+                {
+                  "mistake": "Using 200 instead of 201 for created resources",
+                  "consequence": "Non-standard REST API behavior",
+                  "correction": "Use statusCode: 201 for successful POST operations"
+                },
+                {
+                  "mistake": "Not handling the default case for other HTTP methods",
+                  "consequence": "PUT, DELETE, etc. may behave unexpectedly",
+                  "correction": "Add a default case returning 405 Method Not Allowed"
+                },
+                {
+                  "mistake": "Returning the list directly instead of wrapping in an object",
+                  "consequence": "Inconsistent API response format",
+                  "correction": "Wrap in an object: {'todos': todos} for easier future expansion"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
