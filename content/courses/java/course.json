@@ -1709,6 +1709,494 @@
       ]
     },
     {
+      "id": "module-git",
+      "title": "Git & Development Workflow",
+      "description": "Master version control with Git and collaborative development with GitHub. Learn to track changes, work with branches, and collaborate effectively on code projects.",
+      "difficulty": "beginner",
+      "estimatedHours": 2.5,
+      "lessons": [
+        {
+          "id": "git-lesson-1",
+          "title": "Lesson 3.1: Why Version Control?",
+          "moduleId": "module-git",
+          "order": 1,
+          "estimatedMinutes": 25,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Code Without History",
+              "content": "Imagine you're working on a Java project. You've spent hours building a feature, and it works perfectly. Then you decide to 'improve' it:\n\n1. You delete some code that seems unnecessary\n2. You refactor a method to be 'cleaner'\n3. You realize your changes broke everything\n4. You frantically try to remember what you deleted\n5. You can't. Hours of work - gone.\n\nOr imagine this scenario:\n- Monday: Your code works perfectly\n- Tuesday: You add a new feature\n- Wednesday: You find a bug - but where did it come from?\n- You have no way to see what changed between Monday and Wednesday\n\nWithout version control, you're:\n❌ Working without a safety net\n❌ Unable to track when bugs were introduced\n❌ Risking losing hours or days of work\n❌ Unable to collaborate effectively with others\n❌ Creating chaos with files like 'project_final_v2_REAL_final.zip'\n\nThis is why every professional developer uses version control."
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Git: The Time Machine for Code",
+              "content": "Git is a VERSION CONTROL SYSTEM - software that tracks changes to your code over time.\n\nThink of Git as a time machine for your project:\n\n✓ SAVE CHECKPOINTS: At any point, you can save a 'snapshot' of your entire project\n✓ TIME TRAVEL: You can go back to any previous snapshot instantly\n✓ SEE WHAT CHANGED: Compare any two points in time to see exactly what was modified\n✓ PARALLEL UNIVERSES: Work on experimental features without affecting your main code\n✓ COLLABORATION: Multiple developers can work on the same project without chaos\n\nGit was created by Linus Torvalds (the creator of Linux) in 2005. Today, it's used by:\n- 100+ million developers worldwide\n- Every major tech company (Google, Microsoft, Amazon, Netflix...)\n- Open source projects of all sizes\n- Solo developers managing personal projects\n\nIn 2025, knowing Git is not optional - it's expected. According to industry surveys, over 95% of developers use Git daily."
+            },
+            {
+              "type": "THEORY",
+              "title": "Mental Model: Snapshots, Not Changes",
+              "content": "Unlike some older version control systems, Git thinks in SNAPSHOTS, not changes.\n\nImagine photographing your desk every hour:\n- 9 AM: Photo shows laptop, coffee, notebook\n- 10 AM: Photo shows laptop, coffee (notebook moved)\n- 11 AM: Photo shows laptop, water, notebook (coffee replaced with water)\n\nEach photo is a complete picture of your desk at that moment. Git works the same way - each 'commit' is a complete snapshot of your entire project.\n\nKey Git concepts:\n\n1. REPOSITORY (repo): Your project folder with Git tracking enabled\n   - Contains all your code AND its complete history\n   - The '.git' folder stores all the magic\n\n2. COMMIT: A saved snapshot of your project at a point in time\n   - Has a unique ID (like a fingerprint)\n   - Includes a message describing what changed\n   - Points to its parent commit(s)\n\n3. WORKING DIRECTORY: Your current files that you're editing\n   - What you see in your file explorer\n   - Can be different from the last commit\n\n4. STAGING AREA (Index): A preparation zone for your next commit\n   - You choose which changes to include in the next snapshot\n   - Gives you control over what gets saved"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "The Git Workflow: Edit, Stage, Commit",
+              "content": "The basic Git workflow has three steps:\n\n1. EDIT: Make changes to your files (write code!)\n   └─> Changes exist only in your working directory\n\n2. STAGE: Choose which changes to include in your next snapshot\n   └─> git add <file> moves changes to the staging area\n\n3. COMMIT: Save the staged changes as a permanent snapshot\n   └─> git commit -m 'description' creates the snapshot\n\nThink of it like packing for a trip:\n1. You gather items from around your house (EDITING)\n2. You put selected items in your suitcase (STAGING)\n3. You close and lock the suitcase (COMMITTING)\n\nYou can open the suitcase later (go back to that commit) and find exactly what you packed!"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "A Day in the Life with Git",
+              "content": "Here's how a typical development session looks with Git:\n\nMorning:\n- You open your Java project\n- You check the current status: git status\n- You see no uncommitted changes - starting fresh!\n\nCoding Session:\n- You write a new method for validating user input\n- You test it - it works!\n- You stage your changes: git add UserValidator.java\n- You commit: git commit -m 'Add input validation for email field'\n\nAfternoon:\n- You realize the validation has a bug with edge cases\n- You compare with yesterday's version: git diff HEAD~1\n- You see exactly what you changed\n- You fix the bug and commit again\n\nEnd of Day:\n- You push your changes to GitHub: git push\n- Your code is safely backed up in the cloud\n- Your teammates can see your work tomorrow\n\nThis workflow becomes second nature - you'll commit dozens of times per day!",
+              "code": "// Example: Your first day using Git\n\n// Terminal commands (you'll learn these in the next lesson)\n$ git init                              // Start tracking this project\n$ git status                            // See what's changed\n$ git add UserValidator.java            // Stage the file\n$ git commit -m 'Add email validation'  // Save the snapshot\n$ git log                               // See your history\n$ git push origin main                  // Upload to GitHub",
+              "language": "bash"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Git vs GitHub: What's the Difference?",
+              "content": "Many beginners confuse Git and GitHub. They're related but different:\n\nGIT:\n- Software that runs on your computer\n- Tracks changes locally on your machine\n- Works completely offline\n- Free and open source\n- Created in 2005 by Linus Torvalds\n\nGITHUB:\n- A website/cloud service (github.com)\n- Hosts Git repositories online\n- Enables collaboration with other developers\n- Adds features: issues, pull requests, code review\n- Owned by Microsoft since 2018\n\nAnalogy:\nGit = The engine of a car (does the actual work)\nGitHub = A parking garage (a place to store your car and meet others)\n\nYou can use Git without GitHub (local-only version control).\nYou cannot use GitHub without Git (GitHub stores Git repositories).\n\nOther Git hosting services exist: GitLab, Bitbucket, Azure DevOps.\nThey all use Git - they're just different 'parking garages'."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Beginner Mistakes to Avoid",
+              "content": "MISTAKES YOU'LL WANT TO AVOID:\n\n1. NOT COMMITTING OFTEN ENOUGH:\n   Bad: One giant commit with 500 lines of changes\n   Good: Multiple small commits, each with one logical change\n   \n2. VAGUE COMMIT MESSAGES:\n   Bad: 'fixed stuff', 'updates', 'asdfgh'\n   Good: 'Fix null pointer exception in login validation'\n   \n3. COMMITTING SENSITIVE DATA:\n   Never commit: passwords, API keys, personal data\n   Use .gitignore to exclude sensitive files\n   \n4. IGNORING .gitignore:\n   Don't commit: compiled files (.class), IDE settings, node_modules\n   Always set up .gitignore for your project type\n   \n5. FEAR OF COMMITTING:\n   Git is forgiving - you can almost always undo mistakes\n   Commit early, commit often, push regularly\n\nRemember: The goal of version control is to give you confidence to experiment. If something breaks, you can always go back!"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-1-mc-1",
+              "title": "Understanding Version Control",
+              "description": "What is the primary purpose of version control?",
+              "question": "What is the PRIMARY purpose of version control?",
+              "options": [
+                "To make your code run faster",
+                "To track changes over time and enable collaboration",
+                "To compress your files and save disk space",
+                "To automatically fix bugs in your code"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Version control systems like Git track changes to your code over time, allowing you to see history, revert to previous versions, and collaborate with others. They don't affect runtime performance, compression, or bug fixing.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-1-mc-2",
+              "title": "Git vs GitHub",
+              "description": "Understanding the difference between Git and GitHub",
+              "question": "What is the relationship between Git and GitHub?",
+              "options": [
+                "Git and GitHub are the same thing",
+                "GitHub is a newer version of Git",
+                "Git is version control software; GitHub is a cloud service that hosts Git repositories",
+                "GitHub is required to use Git"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Git is the version control software that runs locally on your computer. GitHub is a cloud-based service that hosts Git repositories online and adds collaboration features. You can use Git without GitHub, but GitHub requires Git.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-1-mc-3",
+              "title": "The Git Workflow",
+              "description": "Understanding the basic Git workflow",
+              "question": "What is the correct order of the basic Git workflow?",
+              "options": [
+                "Commit, Stage, Edit",
+                "Stage, Commit, Edit",
+                "Edit, Stage, Commit",
+                "Edit, Commit, Stage"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The correct workflow is: 1) Edit your files, 2) Stage the changes you want to save (git add), 3) Commit the staged changes as a snapshot (git commit). This gives you control over exactly what goes into each commit.",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "git-lesson-2",
+          "title": "Lesson 3.2: Git Basics",
+          "moduleId": "module-git",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Setting Up Git",
+              "content": "Before using Git, you need to install it and configure your identity.\n\n1. INSTALLING GIT:\n\nWindows:\n- Download from git-scm.com\n- Run the installer (accept defaults)\n- Use 'Git Bash' terminal or Windows Terminal\n\nmacOS:\n- Open Terminal and type: git --version\n- If not installed, it will prompt you to install Xcode Command Line Tools\n- Or use Homebrew: brew install git\n\nLinux (Ubuntu/Debian):\n- sudo apt update && sudo apt install git\n\n2. CONFIGURING YOUR IDENTITY:\n\nGit needs to know who you are (for commit authorship):\n\n$ git config --global user.name 'Your Name'\n$ git config --global user.email 'your.email@example.com'\n\nThe --global flag sets this for all repositories on your computer.\n\n3. VERIFY INSTALLATION:\n\n$ git --version\n  git version 2.43.0  (or similar)\n\n$ git config --list\n  user.name=Your Name\n  user.email=your.email@example.com\n\nYou only need to do this setup once per computer!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Essential Git Commands: init and status",
+              "content": "GIT INIT - Create a New Repository\n\nTo start tracking a project with Git:\n\n$ cd my-java-project      # Navigate to your project folder\n$ git init                 # Initialize Git tracking\n  Initialized empty Git repository in /path/to/my-java-project/.git/\n\nThis creates a hidden '.git' folder that stores all version history.\n\nNOTE: Only run 'git init' once per project, at the project root!\n\n\nGIT STATUS - Check Current State\n\nThis is the command you'll use most often:\n\n$ git status\n\nPossible outputs:\n\n1. Clean state (nothing to commit):\n   On branch main\n   nothing to commit, working tree clean\n\n2. Untracked files (new files Git doesn't know about):\n   Untracked files:\n     HelloWorld.java\n\n3. Modified files (existing files you've changed):\n   Changes not staged for commit:\n     modified: HelloWorld.java\n\n4. Staged files (ready to commit):\n   Changes to be committed:\n     new file: HelloWorld.java\n\nRun 'git status' frequently - it tells you exactly what's happening!"
+            },
+            {
+              "type": "THEORY",
+              "title": "git add - Staging Changes",
+              "content": "The 'git add' command moves changes from your working directory to the staging area.\n\nThink of staging as choosing which photos to put in an album:\n- You have 20 photos (all your changed files)\n- You select 5 for this album (stage specific files)\n- You create the album (commit those 5)\n\nCOMMANDS:\n\n1. Stage a specific file:\n   $ git add HelloWorld.java\n\n2. Stage multiple specific files:\n   $ git add HelloWorld.java UserService.java\n\n3. Stage all files in current directory:\n   $ git add .\n\n4. Stage all changes in the entire repository:\n   $ git add -A\n   or\n   $ git add --all\n\n5. Stage parts of a file interactively:\n   $ git add -p HelloWorld.java\n\nBEST PRACTICES:\n- Don't blindly 'git add .' - review what you're staging\n- Stage related changes together\n- Keep commits focused on one logical change"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "git commit - Saving Snapshots",
+              "content": "The 'git commit' command creates a permanent snapshot of your staged changes.\n\nBASIC SYNTAX:\n$ git commit -m 'Your commit message here'\n\nEXAMPLE:\n$ git add HelloWorld.java\n$ git commit -m 'Add greeting method to HelloWorld class'\n  [main abc1234] Add greeting method to HelloWorld class\n   1 file changed, 5 insertions(+)\n\n\nWRITING GOOD COMMIT MESSAGES:\n\nA good commit message is like a good news headline:\n- Summarizes WHAT changed and WHY\n- Uses imperative mood ('Add feature' not 'Added feature')\n- Is specific and meaningful\n\nGOOD MESSAGES:\n✓ 'Fix null pointer exception in user login'\n✓ 'Add email validation to registration form'\n✓ 'Refactor database connection to use connection pool'\n✓ 'Update README with installation instructions'\n\nBAD MESSAGES:\n✗ 'fix' (too vague)\n✗ 'Updated stuff' (what stuff?)\n✗ 'WIP' (work in progress - not ready to commit)\n✗ 'asdfasdf' (meaningless)\n\n\nCONVENTIONAL COMMITS (Industry Standard):\nMany teams use prefixes:\n- feat: Add user authentication\n- fix: Resolve memory leak in image processing\n- docs: Update API documentation\n- refactor: Simplify validation logic\n- test: Add unit tests for UserService"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Workflow: init, add, commit",
+              "content": "Let's walk through a complete example of creating a new Java project and making your first commits.",
+              "code": "# Step 1: Create project directory\n$ mkdir JavaCalculator\n$ cd JavaCalculator\n\n# Step 2: Initialize Git repository\n$ git init\nInitialized empty Git repository in /home/user/JavaCalculator/.git/\n\n# Step 3: Create your first Java file\n$ echo 'public class Calculator {\n    public int add(int a, int b) {\n        return a + b;\n    }\n}' > Calculator.java\n\n# Step 4: Check status - file is untracked\n$ git status\nUntracked files:\n  Calculator.java\n\n# Step 5: Stage the file\n$ git add Calculator.java\n\n# Step 6: Check status again - file is staged\n$ git status\nChanges to be committed:\n  new file: Calculator.java\n\n# Step 7: Commit with a message\n$ git commit -m 'feat: Add Calculator class with add method'\n[main (root-commit) a1b2c3d] feat: Add Calculator class with add method\n 1 file changed, 5 insertions(+)\n create mode 100644 Calculator.java\n\n# Step 8: Verify the commit\n$ git log --oneline\na1b2c3d (HEAD -> main) feat: Add Calculator class with add method",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "git log - Viewing History",
+              "content": "The 'git log' command shows the commit history of your repository.\n\nBASIC USAGE:\n$ git log\n\nOUTPUT:\ncommit a1b2c3d4e5f6789 (HEAD -> main)\nAuthor: Your Name <you@email.com>\nDate:   Mon Jan 15 10:30:00 2025 -0500\n\n    feat: Add Calculator class with add method\n\ncommit 9876543210abcdef\nAuthor: Your Name <you@email.com>\nDate:   Sun Jan 14 15:45:00 2025 -0500\n\n    Initial project setup\n\n\nUSEFUL VARIATIONS:\n\n$ git log --oneline              # Compact one-line format\na1b2c3d feat: Add Calculator class\n9876543 Initial project setup\n\n$ git log -n 3                   # Show only last 3 commits\n\n$ git log --stat                 # Show files changed in each commit\n\n$ git log --graph                # Show branching visually\n\n$ git log --author='Name'        # Filter by author\n\n$ git log --since='2025-01-01'   # Filter by date\n\n\nEXITING THE LOG:\nIf the log is longer than your terminal, use:\n- Press 'q' to quit\n- Press Space to scroll down\n- Press 'b' to scroll up"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "git diff - Comparing Changes",
+              "content": "The 'git diff' command shows exactly what changed in your files.\n\nCOMMON USES:\n\n1. See unstaged changes (working directory vs staging area):\n   $ git diff\n\n2. See staged changes (staging area vs last commit):\n   $ git diff --staged\n   or\n   $ git diff --cached\n\n3. See all changes since last commit:\n   $ git diff HEAD\n\n4. Compare two commits:\n   $ git diff abc1234 def5678\n\n5. Compare with previous commit:\n   $ git diff HEAD~1\n   (HEAD~1 means 'one commit before HEAD')\n\n6. Diff a specific file:\n   $ git diff Calculator.java\n\n\nREADING DIFF OUTPUT:\n\n- Lines starting with '+' are ADDITIONS (green)\n- Lines starting with '-' are DELETIONS (red)\n- Lines starting with '@@' show line numbers\n- Context lines (unchanged) have no prefix\n\nExample output:\n@@ -1,5 +1,8 @@\n public class Calculator {\n     public int add(int a, int b) {\n         return a + b;\n     }\n+\n+    public int subtract(int a, int b) {\n+        return a - b;\n+    }\n }"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "The .gitignore File",
+              "content": "The .gitignore file tells Git which files to ignore (never track).\n\nCREATING A .gitignore FOR JAVA PROJECTS:\n\nCreate a file named '.gitignore' in your project root:",
+              "code": "# .gitignore for Java projects\n\n# Compiled class files\n*.class\n\n# Package files\n*.jar\n*.war\n*.ear\n\n# Build directories\n/target/\n/build/\n/out/\n/bin/\n\n# IDE settings\n.idea/\n*.iml\n.vscode/\n*.swp\n.project\n.classpath\n.settings/\n\n# Maven\n/target/\npom.xml.tag\npom.xml.releaseBackup\n\n# Gradle\n.gradle/\nbuild/\n\n# Logs\n*.log\n\n# OS files\n.DS_Store\nThumbs.db\n\n# Environment files (NEVER commit these!)\n.env\n*.env.local\napplication-secret.properties\n\n# Sensitive data\n**/secrets/\n*.pem\n*.key",
+              "language": "gitignore"
+            },
+            {
+              "type": "WARNING",
+              "title": "Critical Git Safety Rules",
+              "content": "THINGS YOU SHOULD NEVER COMMIT:\n\n1. PASSWORDS AND SECRETS:\n   - Database passwords\n   - API keys and tokens\n   - Private encryption keys\n   - .env files with credentials\n   Once committed, secrets can be found even after deletion!\n\n2. PERSONAL DATA:\n   - Customer information\n   - Email addresses\n   - Payment information\n   If in doubt, don't commit it.\n\n3. LARGE BINARY FILES:\n   - Videos, large images\n   - Database dumps\n   - Compiled executables\n   Git is optimized for text files, not binaries.\n\n4. IDE AND OS FILES:\n   - .idea/, .vscode/\n   - .DS_Store, Thumbs.db\n   These are personal to your setup.\n\n\nIF YOU ACCIDENTALLY COMMIT SECRETS:\n1. Change the password/key IMMEDIATELY\n2. The secret is already exposed - treat it as compromised\n3. Use 'git filter-branch' or BFG Repo Cleaner to remove from history\n4. Force push the cleaned history\n\nPREVENTION:\n- Set up .gitignore BEFORE your first commit\n- Use environment variables for secrets\n- Review 'git diff --staged' before every commit"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-2-mc-1",
+              "title": "Understanding git add",
+              "description": "What does the git add command do?",
+              "question": "What is the purpose of the 'git add' command?",
+              "options": [
+                "It creates a new commit in the repository",
+                "It moves changes from the working directory to the staging area",
+                "It uploads files to GitHub",
+                "It creates a new file in the project"
+              ],
+              "correctAnswer": 1,
+              "explanation": "The 'git add' command moves changes from your working directory to the staging area, preparing them to be included in the next commit. It doesn't create commits (that's 'git commit') or upload files (that's 'git push').",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-2-mc-2",
+              "title": "Good Commit Messages",
+              "description": "Which commit message follows best practices?",
+              "question": "Which of these is the BEST commit message?",
+              "options": [
+                "fixed bug",
+                "Changes to UserService.java",
+                "Fix null pointer exception in password validation",
+                "update"
+              ],
+              "correctAnswer": 2,
+              "explanation": "A good commit message is specific about WHAT was changed and WHY. 'Fix null pointer exception in password validation' clearly describes the bug fixed and where it occurred. The other options are too vague to be useful when reviewing history.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-2-mc-3",
+              "title": "The .gitignore File",
+              "description": "Understanding what should be in .gitignore",
+              "question": "Which of these should typically be in a Java project's .gitignore file?",
+              "options": [
+                "*.java files",
+                "README.md",
+                "*.class files and .idea/ directory",
+                "All test files"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The .gitignore should include compiled files (*.class), IDE settings (.idea/, .vscode/), and build output directories. Source files (*.java), documentation (README.md), and tests should be committed and tracked.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-2-mc-4",
+              "title": "Viewing Changes",
+              "description": "Which command shows uncommitted changes?",
+              "question": "You modified a file but haven't staged it yet. Which command shows what you changed?",
+              "options": [
+                "git log",
+                "git status",
+                "git diff",
+                "git show"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The 'git diff' command shows the actual content changes in your working directory compared to the staging area. 'git status' shows which files changed but not the content. 'git log' shows commit history, not uncommitted changes.",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "git-lesson-3",
+          "title": "Lesson 3.3: Branching & Merging",
+          "moduleId": "module-git",
+          "order": 3,
+          "estimatedMinutes": 45,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "The Problem: Parallel Development",
+              "content": "Imagine you're building a calculator app. Your calculator works perfectly for addition and subtraction. Now you want to add new features:\n\n1. Multiplication and division\n2. A history feature to show past calculations\n3. A graphing mode for visualizing equations\n\nProblem: If you work on all three simultaneously in the same code:\n- Feature 1 might break while working on Feature 2\n- If Feature 3 has a bug, it's mixed in with Features 1 and 2\n- Your teammate working on Feature 1 will conflict with your Feature 2 changes\n- You can't release Feature 1 (which is done) without also releasing buggy Feature 3\n\nYou need a way to:\n✓ Work on features independently\n✓ Keep the main code stable\n✓ Switch between features easily\n✓ Combine features when they're ready\n\nThis is exactly what BRANCHES do!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Branches: Parallel Universes for Your Code",
+              "content": "A BRANCH is an independent line of development.\n\nThink of it like a tree:\n- The MAIN branch (trunk) is your stable, production-ready code\n- FEATURE branches (branches) grow from the trunk to develop new features\n- When a feature is complete, you MERGE it back to the trunk\n\nVisually:\n                    feature/add-history\n                   /\nmain: A---B---C---D---E---F---G\n                       \\\n                        feature/multiplication\n\nEach branch has its own separate timeline:\n- main: The stable, working version\n- feature/add-history: Experimental history feature\n- feature/multiplication: New math operations\n\nKEY BENEFITS:\n1. ISOLATION: Bugs in one branch don't affect others\n2. EXPERIMENTATION: Try risky changes safely\n3. COLLABORATION: Different people work on different branches\n4. ORGANIZATION: Keep work-in-progress separate from stable code\n\nBRANCHES ARE CHEAP:\n- Creating a branch takes milliseconds\n- Switching branches is instant\n- Having many branches costs almost nothing"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating and Switching Branches",
+              "content": "VIEWING BRANCHES:\n\n$ git branch              # List local branches\n* main                    # The * shows current branch\n  feature/login\n  feature/payment\n\n$ git branch -a           # List all branches (including remote)\n\n\nCREATING A NEW BRANCH:\n\n$ git branch feature/add-multiply    # Create branch\n$ git checkout feature/add-multiply  # Switch to it\n\nOr use the shorthand:\n$ git checkout -b feature/add-multiply  # Create AND switch\n\nOr the modern way (Git 2.23+):\n$ git switch -c feature/add-multiply    # Create AND switch\n\n\nSWITCHING BRANCHES:\n\n$ git checkout main       # Switch to main branch\n$ git switch main         # Modern alternative\n\nWhen you switch branches:\n- Your working directory changes to that branch's files\n- It's like stepping into a parallel universe\n- Uncommitted changes come with you (be careful!)\n\n\nDELETING A BRANCH:\n\n$ git branch -d feature/old-branch    # Delete (safe - only if merged)\n$ git branch -D feature/old-branch    # Force delete (even if not merged)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Practical Branching Workflow",
+              "content": "Let's create a feature branch, make changes, and prepare to merge.",
+              "code": "# Start on main branch with a working Calculator\n$ git branch\n* main\n\n# Create and switch to a new feature branch\n$ git switch -c feature/add-multiply\nSwitched to a new branch 'feature/add-multiply'\n\n# Verify we're on the new branch\n$ git branch\n  main\n* feature/add-multiply\n\n# Make changes to Calculator.java - add multiply method\n$ echo '    public int multiply(int a, int b) {\n        return a * b;\n    }' >> Calculator.java\n\n# Stage and commit the changes\n$ git add Calculator.java\n$ git commit -m 'feat: Add multiply method to Calculator'\n[feature/add-multiply b2c3d4e] feat: Add multiply method to Calculator\n 1 file changed, 3 insertions(+)\n\n# View the log - shows our new commit\n$ git log --oneline\nb2c3d4e (HEAD -> feature/add-multiply) feat: Add multiply method\na1b2c3d (main) feat: Add Calculator with add method\n\n# Switch back to main - notice the multiply code disappears!\n$ git switch main\n$ cat Calculator.java   # Only has add method - multiply isn't here\n\n# Switch back to feature branch - multiply code reappears!\n$ git switch feature/add-multiply\n$ cat Calculator.java   # Has both add and multiply methods",
+              "language": "bash"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Merging: Combining Branches",
+              "content": "MERGING combines changes from one branch into another.\n\nTypical workflow:\n1. Complete your feature on a feature branch\n2. Switch to main (the target branch)\n3. Merge the feature branch into main\n\nBASIC MERGE SYNTAX:\n\n$ git switch main                     # Go to target branch\n$ git merge feature/add-multiply      # Merge feature into main\n\n\nTYPES OF MERGES:\n\n1. FAST-FORWARD MERGE:\n   If main hasn't changed since you branched:\n   \n   Before:   main: A---B\n                        \\\n             feature:    C---D\n   \n   After:    main: A---B---C---D\n   \n   Git just moves the main pointer forward.\n\n2. THREE-WAY MERGE (Merge Commit):\n   If main has new commits since you branched:\n   \n   Before:   main: A---B---E---F\n                        \\\n             feature:    C---D\n   \n   After:    main: A---B---E---F---M\n                        \\         /\n             feature:    C---D---/\n   \n   Git creates a new 'merge commit' (M) that combines both histories.\n\n\nAFTER MERGING:\n$ git branch -d feature/add-multiply  # Delete the merged branch\n\nKeep your branch list clean - delete branches after merging!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Handling Merge Conflicts",
+              "content": "A MERGE CONFLICT happens when Git can't automatically combine changes.\n\nWHEN DO CONFLICTS OCCUR?\n- Two branches modified the same line in the same file\n- One branch deleted a file that another branch modified\n\nWHAT HAPPENS DURING A CONFLICT:\n\n$ git merge feature/new-algorithm\nAuto-merging Calculator.java\nCONFLICT (content): Merge conflict in Calculator.java\nAutomatic merge failed; fix conflicts and then commit the result.\n\n\nWHAT THE CONFLICT LOOKS LIKE IN THE FILE:\n\npublic int add(int a, int b) {\n<<<<<<< HEAD\n    // Main branch version\n    return a + b;\n=======\n    // Feature branch version\n    int sum = a + b;\n    System.out.println(\"Sum: \" + sum);\n    return sum;\n>>>>>>> feature/new-algorithm\n}\n\nMEANING:\n- <<<<<<< HEAD: Start of your current branch's version\n- =======: Separator between the two versions\n- >>>>>>> feature/...: Start of incoming branch's version\n\n\nRESOLVING THE CONFLICT:\n\n1. Open the file in your editor\n2. Decide which version to keep (or combine them)\n3. Remove the conflict markers (<<<<, ====, >>>>)\n4. Save the file\n5. Stage and commit:\n   $ git add Calculator.java\n   $ git commit -m 'Resolve merge conflict in Calculator.java'"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Branch and Merge Example",
+              "content": "Here's a complete workflow showing branching, making changes, merging, and handling a conflict.",
+              "code": "# === SETUP: Start with a clean main branch ===\n$ git switch main\n$ git log --oneline\na1b2c3d (HEAD -> main) Initial Calculator with add method\n\n# === STEP 1: Create and work on feature branch ===\n$ git switch -c feature/subtract\n$ # Edit Calculator.java to add subtract method\n$ git add Calculator.java\n$ git commit -m 'feat: Add subtract method'\n\n# === STEP 2: Meanwhile, someone else updates main ===\n$ git switch main\n$ # Edit Calculator.java to add comments\n$ git add Calculator.java  \n$ git commit -m 'docs: Add comments to add method'\n\n# === STEP 3: Merge feature back to main ===\n$ git merge feature/subtract\n# If no conflict: Merge made by the 'ort' strategy.\n# If conflict: CONFLICT (content): Merge conflict in Calculator.java\n\n# === STEP 4: If there's a conflict, resolve it ===\n$ git status  # Shows conflicted files\n# Edit Calculator.java - remove conflict markers, keep both changes\n$ git add Calculator.java\n$ git commit -m 'Merge feature/subtract into main'\n\n# === STEP 5: Clean up ===\n$ git branch -d feature/subtract   # Delete merged branch\n$ git log --oneline --graph        # See the merge visually\n* e5f6g7h (HEAD -> main) Merge feature/subtract into main\n|\\\n| * c3d4e5f (feature/subtract) feat: Add subtract method\n* | b2c3d4e docs: Add comments to add method\n|/\n* a1b2c3d Initial Calculator with add method",
+              "language": "bash"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Branch Naming Conventions",
+              "content": "Good branch names make collaboration easier. Here are common conventions:\n\nFEATURE BRANCHES:\n- feature/user-authentication\n- feature/add-payment-processing\n- feature/dark-mode\n- feat/login (shorter version)\n\nBUG FIX BRANCHES:\n- bugfix/login-error\n- fix/null-pointer-in-checkout\n- hotfix/security-patch (urgent production fix)\n\nOTHER COMMON PATTERNS:\n- release/v1.2.0 (preparing a release)\n- docs/update-readme\n- refactor/simplify-validation\n- test/add-unit-tests\n- experiment/try-new-algorithm\n\nRULES:\n✓ Use lowercase\n✓ Use hyphens or slashes to separate words\n✓ Be descriptive but concise\n✓ Include ticket/issue number if applicable: feature/JIRA-123-user-login\n\n✗ Avoid spaces (use hyphens)\n✗ Avoid special characters except / and -\n✗ Don't use your name as a branch: john-branch (not descriptive)\n\nTIP: If your team uses a project management tool (Jira, GitHub Issues), reference the ticket number in the branch name for traceability."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Branching Mistakes",
+              "content": "MISTAKES TO AVOID:\n\n1. WORKING DIRECTLY ON MAIN:\n   Problem: Your incomplete work affects everyone\n   Solution: Always create a feature branch for new work\n\n2. LONG-LIVED FEATURE BRANCHES:\n   Problem: The longer a branch lives, the harder it is to merge\n   Solution: Keep branches short-lived (days, not weeks)\n   Best practice: Merge to main at least once per week\n\n3. NOT PULLING BEFORE BRANCHING:\n   Problem: Your feature branch starts from outdated code\n   Solution: Always pull latest main before creating a branch:\n   $ git switch main\n   $ git pull origin main\n   $ git switch -c feature/new-feature\n\n4. FORGETTING TO DELETE MERGED BRANCHES:\n   Problem: Branch list becomes cluttered and confusing\n   Solution: Delete branches immediately after merging:\n   $ git branch -d feature/completed-work\n\n5. MERGE CONFLICT PANIC:\n   Problem: Seeing conflicts causes stress and mistakes\n   Solution: Conflicts are normal! Take your time, understand both sides, test after resolving.\n\n6. FORCE PUSHING SHARED BRANCHES:\n   Problem: Overwrites teammates' work\n   Solution: Never 'git push --force' on shared branches\n   Only force push on your personal feature branches"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-3-mc-1",
+              "title": "Understanding Branches",
+              "description": "What is the primary purpose of Git branches?",
+              "question": "What is the PRIMARY purpose of Git branches?",
+              "options": [
+                "To backup your code to multiple locations",
+                "To work on features independently without affecting the main codebase",
+                "To make your repository faster",
+                "To share code with other developers"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Branches allow you to work on features, fixes, or experiments in isolation. Changes on a branch don't affect the main codebase until you explicitly merge them. This keeps your main branch stable while development continues.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-3-mc-2",
+              "title": "Creating Branches",
+              "description": "Which command creates a new branch AND switches to it?",
+              "question": "Which command creates a new branch named 'feature/login' AND switches to it in one step?",
+              "options": [
+                "git branch feature/login",
+                "git checkout feature/login",
+                "git switch -c feature/login",
+                "git merge feature/login"
+              ],
+              "correctAnswer": 2,
+              "explanation": "The 'git switch -c feature/login' command (or 'git checkout -b feature/login') creates a new branch AND switches to it in one step. Just 'git branch' only creates the branch without switching. Just 'git checkout' without -b switches to an existing branch.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-3-mc-3",
+              "title": "Merge Conflicts",
+              "description": "When does a merge conflict occur?",
+              "question": "When does a merge conflict occur?",
+              "options": [
+                "Whenever you merge any two branches",
+                "When two branches have modified the same lines in the same file",
+                "When you try to merge a branch that doesn't exist",
+                "When your internet connection is lost during a merge"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Merge conflicts occur when Git cannot automatically determine which version to keep - specifically when two branches have modified the same lines in the same file. Git can automatically merge changes to different files or different lines in the same file.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-3-mc-4",
+              "title": "Branch Naming",
+              "description": "Which branch name follows best practices?",
+              "question": "Which of these branch names follows best practices?",
+              "options": [
+                "MyNewFeature",
+                "john_work_jan_2025",
+                "feature/add-user-authentication",
+                "NEW FEATURE LOGIN"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Good branch names use lowercase, are descriptive about what the branch contains, and use a prefix indicating the type of work (feature/, bugfix/, etc.). 'feature/add-user-authentication' clearly indicates it's a feature branch for user authentication. Avoid spaces, capital letters, and personal identifiers.",
+              "difficulty": "beginner"
+            }
+          ]
+        },
+        {
+          "id": "git-lesson-4",
+          "title": "Lesson 3.4: GitHub & Collaboration",
+          "moduleId": "module-git",
+          "order": 4,
+          "estimatedMinutes": 40,
+          "difficulty": "beginner",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Remote Repositories: Beyond Your Computer",
+              "content": "So far, all your Git work has been LOCAL - on your own computer. But what if:\n- Your computer crashes and you lose everything?\n- You want to work from a different machine?\n- You need to collaborate with teammates?\n\nThis is where REMOTE REPOSITORIES come in.\n\nA REMOTE is a copy of your repository stored somewhere else, usually on a server like GitHub, GitLab, or Bitbucket.\n\nKEY CONCEPTS:\n\n1. ORIGIN: The default name for your main remote repository\n   When you clone a repo, Git automatically names that remote 'origin'\n\n2. PUSH: Upload your local commits to the remote\n   Your work becomes visible to others and is backed up\n\n3. PULL: Download changes from the remote to your local repo\n   Get your teammates' work onto your machine\n\n4. CLONE: Create a local copy of a remote repository\n   Start working on an existing project\n\n5. FORK: Create your own remote copy of someone else's repository\n   Used for contributing to open source projects"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Setting Up GitHub",
+              "content": "STEP 1: Create a GitHub Account\n- Go to github.com and sign up\n- Choose a professional username (you'll use it forever!)\n- Set up two-factor authentication for security\n\nSTEP 2: Create an SSH Key (Recommended)\nSSH keys let you push/pull without entering your password each time.\n\n$ ssh-keygen -t ed25519 -C 'your.email@example.com'\n  # Press Enter to accept default location\n  # Enter a passphrase (optional but recommended)\n\n$ cat ~/.ssh/id_ed25519.pub\n  # Copy this output\n\nIn GitHub:\n- Go to Settings > SSH and GPG keys\n- Click 'New SSH key'\n- Paste your public key and save\n\nSTEP 3: Test Connection\n$ ssh -T git@github.com\n  Hi username! You've successfully authenticated...\n\nALTERNATIVE: Use HTTPS with Personal Access Token\n- GitHub > Settings > Developer settings > Personal access tokens\n- Generate a token with 'repo' scope\n- Use this token as your password when prompted"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Connecting Local Repo to GitHub",
+              "content": "There are two ways to connect your code to GitHub:\n\nOPTION 1: Push an existing local repository to GitHub",
+              "code": "# 1. Create a new repository on GitHub (github.com/new)\n#    - Give it a name (e.g., 'java-calculator')\n#    - DON'T initialize with README (we have local commits)\n\n# 2. In your local project, add the remote\n$ cd JavaCalculator\n$ git remote add origin git@github.com:yourusername/java-calculator.git\n\n# 3. Push your code to GitHub\n$ git push -u origin main\n  # -u sets up tracking (only needed first time)\n\n# Verify the remote\n$ git remote -v\norigin  git@github.com:yourusername/java-calculator.git (fetch)\norigin  git@github.com:yourusername/java-calculator.git (push)\n\n\n# OPTION 2: Clone an existing GitHub repository\n$ git clone git@github.com:someuser/some-project.git\n$ cd some-project\n# You're ready to work - remote is already configured!",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "Push and Pull: Syncing with Remote",
+              "content": "GIT PUSH - Upload Local Changes\n\nSends your commits from local to remote:\n$ git push origin main\n\nBreakdown:\n- 'push': Upload commits\n- 'origin': The remote name\n- 'main': The branch to push\n\nIf you set up tracking (-u flag), you can just use:\n$ git push\n\n\nGIT PULL - Download Remote Changes\n\nGets commits from remote to your local repo:\n$ git pull origin main\n\nOr simply:\n$ git pull\n\nWHAT PULL DOES:\n1. Fetches changes from remote (git fetch)\n2. Merges them into your current branch (git merge)\n\n\nGIT FETCH - Download Without Merging\n\nSometimes you want to see changes before merging:\n$ git fetch origin\n$ git log origin/main  # See what's new\n$ git merge origin/main  # Merge when ready\n\n\nTYPICAL WORKFLOW:\n1. Start your day: git pull (get latest changes)\n2. Do your work: edit, add, commit\n3. End your day: git push (share your changes)\n4. Repeat!"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Pull Requests: The Heart of Collaboration",
+              "content": "A PULL REQUEST (PR) is a request to merge your branch into another branch.\n\nIt's called a 'pull' request because you're asking the maintainer to 'pull' your changes into their branch.\n\nWHY USE PULL REQUESTS?\n1. CODE REVIEW: Teammates can review your code before it's merged\n2. DISCUSSION: Discuss changes, ask questions, suggest improvements\n3. QUALITY GATE: Run automated tests before merging\n4. DOCUMENTATION: PRs create a record of why changes were made\n\nPR WORKFLOW:\n\n1. Create a feature branch and push it:\n   $ git switch -c feature/add-validation\n   $ # make changes, commit\n   $ git push -u origin feature/add-validation\n\n2. On GitHub:\n   - Click 'Compare & pull request' (or go to Pull Requests > New)\n   - Write a description of your changes\n   - Request reviewers\n   - Submit the PR\n\n3. Reviewers examine your code:\n   - Leave comments on specific lines\n   - Request changes if needed\n   - Approve when satisfied\n\n4. Merge the PR:\n   - Click 'Merge pull request' on GitHub\n   - Delete the feature branch\n\n5. Update your local main:\n   $ git switch main\n   $ git pull origin main"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete GitHub Collaboration Workflow",
+              "content": "Here's a realistic example of working on a team project:",
+              "code": "# === MORNING: Start fresh ===\n$ git switch main\n$ git pull origin main    # Get latest changes from team\n\n# === CREATE FEATURE BRANCH ===\n$ git switch -c feature/user-profile-page\n\n# === DO YOUR WORK ===\n# ... write code, make commits ...\n$ git add UserProfile.java\n$ git commit -m 'feat: Add user profile page layout'\n$ git add ProfileService.java\n$ git commit -m 'feat: Add service to fetch user data'\n\n# === PUSH YOUR BRANCH ===\n$ git push -u origin feature/user-profile-page\n\n# === CREATE PULL REQUEST ON GITHUB ===\n# Go to github.com/yourteam/project\n# Click 'Compare & pull request'\n# Fill in:\n#   Title: Add user profile page\n#   Description: \n#     - Added UserProfile component\n#     - Integrated with ProfileService\n#     - Includes responsive layout\n# Request review from teammate\n# Submit!\n\n# === RESPOND TO REVIEW FEEDBACK ===\n# Reviewer comments: 'Add null check for empty profile'\n$ git switch feature/user-profile-page\n# ... make the requested changes ...\n$ git add UserProfile.java\n$ git commit -m 'fix: Add null check for empty profile'\n$ git push\n# The PR automatically updates!\n\n# === AFTER APPROVAL: MERGE ON GITHUB ===\n# Click 'Merge pull request'\n# Click 'Delete branch' (on GitHub)\n\n# === CLEAN UP LOCALLY ===\n$ git switch main\n$ git pull origin main    # Get the merged changes\n$ git branch -d feature/user-profile-page  # Delete local branch",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "Writing Good Pull Requests",
+              "content": "A good PR description helps reviewers understand your changes quickly.\n\nPR TITLE:\n- Be concise but descriptive\n- Use the same prefixes as commits: feat:, fix:, docs:, etc.\n\nExamples:\n✓ 'feat: Add user authentication with JWT'\n✓ 'fix: Resolve null pointer in checkout flow'\n✗ 'Updates' (too vague)\n✗ 'Fixed that thing we talked about' (not descriptive)\n\nPR DESCRIPTION TEMPLATE:\n\n## Summary\nBrief description of what this PR does and why.\n\n## Changes\n- Added UserAuthentication class\n- Integrated JWT token validation\n- Updated login endpoint to return tokens\n\n## Testing\n- [ ] Unit tests pass\n- [ ] Manual testing completed\n- [ ] Tested edge cases: expired token, invalid token\n\n## Screenshots (if applicable)\n[Add screenshots for UI changes]\n\n## Related Issues\nCloses #123\n\n\nPR ETIQUETTE:\n1. Keep PRs small and focused (easier to review)\n2. Respond promptly to review comments\n3. Be open to feedback - it makes code better\n4. Thank reviewers for their time"
+            },
+            {
+              "type": "KEY_POINT",
+              "title": "Code Review Best Practices",
+              "content": "CODE REVIEW is one of the most valuable practices in software development.\n\nAS A REVIEWER:\n\n1. Be constructive and respectful:\n   ✓ 'Consider using a constant here for readability'\n   ✗ 'This is wrong'\n\n2. Ask questions instead of demanding:\n   ✓ 'What happens if userId is null?'\n   ✗ 'You forgot null check'\n\n3. Praise good code:\n   ✓ 'Nice use of the builder pattern here!'\n   People learn from positive feedback too.\n\n4. Focus on:\n   - Logic errors and bugs\n   - Code clarity and maintainability\n   - Missing edge cases\n   - Security issues\n   - Performance concerns\n\n5. Approve when requirements are met:\n   Don't block for minor style preferences.\n\n\nAS A PR AUTHOR:\n\n1. Don't take feedback personally\n   Reviewers are improving the code, not criticizing you.\n\n2. Respond to all comments\n   Either make the change or explain why not.\n\n3. Say thank you\n   Reviewing takes time and mental energy.\n\n4. Learn from feedback\n   Use reviews to grow as a developer."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Forking and Contributing to Open Source",
+              "content": "Contributing to open source is a great way to learn and build your portfolio. Here's the workflow:",
+              "code": "# === STEP 1: FORK THE REPOSITORY ===\n# On GitHub: Click 'Fork' button on the project page\n# This creates YOUR copy at github.com/YOU/project\n\n# === STEP 2: CLONE YOUR FORK ===\n$ git clone git@github.com:YOUR-USERNAME/project.git\n$ cd project\n\n# === STEP 3: ADD ORIGINAL AS 'UPSTREAM' ===\n$ git remote add upstream git@github.com:ORIGINAL-OWNER/project.git\n$ git remote -v\norigin    git@github.com:YOUR-USERNAME/project.git (fetch)\nupstream  git@github.com:ORIGINAL-OWNER/project.git (fetch)\n\n# === STEP 4: CREATE A BRANCH FOR YOUR CONTRIBUTION ===\n$ git switch -c fix/typo-in-readme\n\n# === STEP 5: MAKE YOUR CHANGES ===\n$ # edit files...\n$ git add README.md\n$ git commit -m 'docs: Fix typo in installation instructions'\n\n# === STEP 6: PUSH TO YOUR FORK ===\n$ git push -u origin fix/typo-in-readme\n\n# === STEP 7: CREATE PULL REQUEST ===\n# Go to the ORIGINAL project on GitHub\n# Click 'New Pull Request'\n# Choose 'compare across forks'\n# Select your fork and branch\n# Write a description and submit!\n\n# === KEEP YOUR FORK UPDATED ===\n$ git fetch upstream\n$ git switch main\n$ git merge upstream/main\n$ git push origin main",
+              "language": "bash"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common GitHub Mistakes",
+              "content": "MISTAKES TO AVOID:\n\n1. PUSHING TO MAIN DIRECTLY:\n   Problem: Bypasses code review, can introduce bugs\n   Solution: Always use feature branches and PRs\n\n2. FORCE PUSHING TO SHARED BRANCHES:\n   Problem: Destroys teammates' work, causes sync issues\n   Solution: Never use 'git push --force' on shared branches\n   Only force push on your own feature branches if needed\n\n3. NOT PULLING BEFORE STARTING WORK:\n   Problem: Your changes conflict with recent updates\n   Solution: Always 'git pull' on main before creating a branch\n\n4. IGNORING CI/CD FAILURES:\n   Problem: Broken builds get merged into main\n   Solution: Fix failing tests before merging\n\n5. HUGE PULL REQUESTS:\n   Problem: Hard to review, high risk of bugs\n   Solution: Keep PRs small (<400 lines is a good target)\n   Break large features into multiple smaller PRs\n\n6. NOT READING PROJECT CONTRIBUTION GUIDELINES:\n   Problem: Your PR doesn't follow project conventions\n   Solution: Always read CONTRIBUTING.md before contributing\n\n7. COMMITTING SENSITIVE DATA:\n   Problem: Passwords/keys exposed publicly forever\n   Solution: Use .gitignore, environment variables\n   If exposed: rotate the credentials IMMEDIATELY"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-4-mc-1",
+              "title": "Understanding Remotes",
+              "description": "What is a remote repository?",
+              "question": "What is the purpose of a remote repository?",
+              "options": [
+                "A faster version of your local repository",
+                "A copy of your repository stored on a server for backup and collaboration",
+                "A repository that only stores remote images",
+                "A temporary storage for deleted files"
+              ],
+              "correctAnswer": 1,
+              "explanation": "A remote repository is a copy of your repository stored on a server (like GitHub). It serves as a backup for your code and enables collaboration with others. Team members can push their changes to and pull others' changes from the remote.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-4-mc-2",
+              "title": "Push vs Pull",
+              "description": "Understanding the difference between push and pull",
+              "question": "What is the difference between 'git push' and 'git pull'?",
+              "options": [
+                "They do the same thing",
+                "Push creates branches, pull deletes them",
+                "Push uploads local commits to the remote; pull downloads remote commits to local",
+                "Push is for GitHub, pull is for GitLab"
+              ],
+              "correctAnswer": 2,
+              "explanation": "git push uploads your local commits to the remote repository, sharing your work with others. git pull downloads commits from the remote repository to your local machine, getting others' work. They're opposite operations for syncing between local and remote.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-4-mc-3",
+              "title": "Pull Requests",
+              "description": "Understanding the purpose of pull requests",
+              "question": "What is the PRIMARY purpose of a Pull Request?",
+              "options": [
+                "To download code from GitHub",
+                "To automatically fix merge conflicts",
+                "To request code review and approval before merging changes",
+                "To delete branches from the remote"
+              ],
+              "correctAnswer": 2,
+              "explanation": "A Pull Request (PR) is a request to merge your branch into another branch, but more importantly, it's a mechanism for code review. Team members can review your changes, leave comments, suggest improvements, and approve the merge. This improves code quality and knowledge sharing.",
+              "difficulty": "beginner"
+            },
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "git-lesson-4-mc-4",
+              "title": "Forking",
+              "description": "When do you fork a repository?",
+              "question": "When would you typically fork a repository instead of just cloning it?",
+              "options": [
+                "When you want to work offline",
+                "When you want to contribute to a project you don't have write access to",
+                "When the repository is too large",
+                "When you want to speed up git operations"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Forking creates your own copy of someone else's repository on GitHub. This is typically done when contributing to open source projects where you don't have direct write access. You fork, make changes, then create a pull request to propose your changes to the original project.",
+              "difficulty": "beginner"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "module-03",
       "title": "Object-Oriented Programming",
       "description": "Master OOP concepts: classes, objects, encapsulation, inheritance, polymorphism, records, and sealed classes.",
