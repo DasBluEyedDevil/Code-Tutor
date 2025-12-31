@@ -4193,7 +4193,7 @@
       "title": "Modules & Packages",
       "description": "Organizing and reusing code with modern Python tooling",
       "difficulty": "intermediate",
-      "estimatedHours": 8,
+      "estimatedHours": 4,
       "lessons": [
         {
           "id": "module-10-lesson-01",
@@ -4454,7 +4454,7 @@
             {
               "type": "EXAMPLE",
               "title": "Installing uv",
-              "content": "**Installing uv is a one-line command.** Once installed, it manages itself - no Python required for installation!\n\n**Note:** Python 3.13 is the current stable version (December 2025). Python 3.14 is in beta and will be released in October 2025.",
+              "content": "**Installing uv is a one-line command.** Once installed, it manages itself - no Python required for installation!\n\n**Note:** Python 3.13 is the current stable version. Python 3.14 was released in October 2025.",
               "code": "# This code demonstrates uv installation commands\n# Run these in your terminal, not in Python!\n\nprint(\"=\"*60)\nprint(\"INSTALLING uv - Choose your platform:\")\nprint(\"=\"*60)\n\nprint(\"\"\"\n# ============================================\n# WINDOWS (PowerShell) - Recommended\n# ============================================\npowershell -ExecutionPolicy ByPass -c \"irm https://astral.sh/uv/install.ps1 | iex\"\n\n# Or using winget:\nwinget install astral-sh.uv\n\n# ============================================\n# MAC/LINUX (Terminal)\n# ============================================\ncurl -LsSf https://astral.sh/uv/install.sh | sh\n\n# Or using Homebrew (Mac):\nbrew install uv\n\n# ============================================\n# VERIFY INSTALLATION\n# ============================================\nuv --version\n# Output: uv 0.5.x (or newer)\n\n# ============================================\n# UPDATE uv (it updates itself!)\n# ============================================\nuv self update\n\"\"\")\n\nprint(\"\\n\" + \"=\"*60)\nprint(\"AFTER INSTALLATION - Test it works:\")\nprint(\"=\"*60)\n\nprint(\"\"\"\n# Check uv version\nuv --version\n\n# See all available commands\nuv help\n\n# uv is now ready to use!\n\"\"\")",
               "language": "python"
             },
@@ -4903,7 +4903,40 @@
               "content": "- **Packages = directories with __init__.py** - Organize related modules together\n- **__init__.py controls package interface** - Use __all__ to define public API\n- **Modules are reusable** - Write once, import anywhere in your package\n- **if __name__ == '__main__':' is essential** - Test modules independently\n- **requirements.txt manages dependencies** - Document what packages your project needs\n- **Virtual environments isolate projects** - Each project gets its own package versions\n- **Proper structure scales** - Start organized, stay organized as project grows\n- **Import from packages with dot notation** - from .module import function for relative imports"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "module-10-lesson-07-challenge-1",
+              "title": "Extend the Project Initializer",
+              "description": "Add a new project template to the initializer. Create a 'cli' template for command-line applications that includes argparse setup, a main entry point, and appropriate project structure.",
+              "instructions": "Create a new template module called cli_template.py that:\n1. Defines REQUIREMENTS with click or argparse\n2. Defines STRUCTURE with src/, tests/, and docs/ directories\n3. Defines MAIN_CODE with a CLI skeleton using argparse\n4. Implements get_template() to return the configuration\n5. Register your template in templates/__init__.py",
+              "starterCode": "# cli_template.py - Create a CLI project template\n\"\"\"Template for command-line application projects.\"\"\"\n\n# TODO: Define REQUIREMENTS with CLI dependencies\nREQUIREMENTS = \"\"\"\n# CLI Dependencies\n# Add appropriate packages here\n\"\"\".strip()\n\n# TODO: Define project STRUCTURE\nSTRUCTURE = {\n    # Add your directory structure here\n}\n\n# TODO: Define MAIN_CODE with argparse CLI skeleton\nMAIN_CODE = '''\n# Your CLI application code here\n'''\n\ndef get_template():\n    \"\"\"Return complete CLI project template.\"\"\"\n    # TODO: Return template configuration dict\n    pass\n\n# Test your template\nif __name__ == '__main__':\n    template = get_template()\n    print(f\"Template: {template['description']}\")\n    print(f\"Requirements:\\n{template['requirements']}\")",
+              "solution": "# cli_template.py - CLI project template\n\"\"\"Template for command-line application projects.\"\"\"\n\nREQUIREMENTS = \"\"\"\n# CLI Dependencies\nclick>=8.1.0\nrich>=13.0.0\npytest>=7.4.0\n\"\"\".strip()\n\nSTRUCTURE = {\n    'src': {\n        'commands': {},\n        'utils': {}\n    },\n    'tests': {},\n    'docs': {}\n}\n\nMAIN_CODE = '''\nimport argparse\nimport sys\n\ndef main():\n    parser = argparse.ArgumentParser(\n        description='My CLI Application',\n        formatter_class=argparse.RawDescriptionHelpFormatter\n    )\n    \n    parser.add_argument('--version', action='version', version='1.0.0')\n    parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output')\n    \n    subparsers = parser.add_subparsers(dest='command', help='Available commands')\n    \n    # Add 'run' subcommand\n    run_parser = subparsers.add_parser('run', help='Run the application')\n    run_parser.add_argument('name', help='Name to greet')\n    \n    args = parser.parse_args()\n    \n    if args.command == 'run':\n        print(f\"Hello, {args.name}!\")\n    else:\n        parser.print_help()\n\nif __name__ == '__main__':\n    main()\n'''\n\ndef get_template():\n    \"\"\"Return complete CLI project template.\"\"\"\n    return {\n        'requirements': REQUIREMENTS,\n        'structure': STRUCTURE,\n        'main_code': MAIN_CODE,\n        'description': 'Command-line application with argparse'\n    }\n\nif __name__ == '__main__':\n    template = get_template()\n    print(f\"Template: {template['description']}\")\n    print(f\"Requirements:\\n{template['requirements']}\")",
+              "language": "python",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Template module runs without errors",
+                  "expectedOutput": "",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Follow the pattern from web_template.py and data_template.py. Your get_template() function should return a dictionary with 'requirements', 'structure', 'main_code', and 'description' keys."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Forgetting to return a dictionary from get_template()",
+                  "consequence": "TypeError when the main application tries to access template keys",
+                  "correction": "Return a dict with all required keys: requirements, structure, main_code, description"
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
         }
       ]
     },
