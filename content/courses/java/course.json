@@ -3248,6 +3248,11 @@
             },
             {
               "type": "THEORY",
+              "title": "Understanding Generics: Type Parameters",
+              "content": "The <String> in ArrayList<String> is a TYPE PARAMETER (generics).\n\nWITHOUT GENERICS (old Java):\nArrayList list = new ArrayList();  // Raw type - AVOID!\nlist.add(\"hello\");\nlist.add(123);  // No error! Mixed types = bugs later\nString s = (String) list.get(1);  // CRASH at runtime!\n\nWITH GENERICS:\nArrayList<String> list = new ArrayList<String>();\nlist.add(\"hello\");\nlist.add(123);  // Compile error! Caught early\nString s = list.get(0);  // No cast needed\n\nDIAMOND OPERATOR (Java 7+):\nArrayList<String> names = new ArrayList<>();  // <> infers type\n// Compiler knows it's ArrayList<String> from left side\n\nMULTIPLE TYPE PARAMETERS:\nHashMap<String, Integer> ages = new HashMap<>();\n// K=String (key), V=Integer (value)\n\nBOUNDED TYPES (advanced):\nList<? extends Number> nums;  // Any Number subtype (Integer, Double...)\nList<? super Integer> items;  // Integer or its supertypes"
+            },
+            {
+              "type": "THEORY",
               "title": "ArrayList vs Array: Key Differences",
               "content": "ARRAY:\nint[] arr = new int[5];\n- Fixed size: 5 elements forever\n- Access: arr[0]\n- Length: arr.length\n- Can hold primitives (int, double, char)\n\nARRAYLIST:\nArrayList<Integer> list = new ArrayList<>();\n- Dynamic size: grows/shrinks\n- Access: list.get(0)\n- Length: list.size()\n- Only holds objects (Integer, String, not int)\n\nAUTOBOXING (automatic conversion):\nArrayList<Integer> nums = new ArrayList<>();\nnums.add(5);  // int 5 → Integer 5 (autoboxing)\nint x = nums.get(0);  // Integer → int (auto-unboxing)"
             },
@@ -3817,6 +3822,16 @@
               "content": "All collections implement common interfaces:\n\nCollection (interface)\n  |\n  ├─ List (interface)\n  │   ├─ ArrayList (class)\n  │   └─ LinkedList (class)\n  │\n  ├─ Set (interface) - No duplicates\n  │   ├─ HashSet (class)\n  │   └─ TreeSet (class) - Sorted\n  │\n  └─ Queue (interface)\n      └─ LinkedList (class)\n\nMap (separate hierarchy)\n  ├─ HashMap (class)\n  ├─ LinkedHashMap (maintains order)\n  └─ TreeMap (sorted by key)\n\nCommon methods ALL collections share:\n- add(element)\n- remove(element)\n- size()\n- isEmpty()\n- clear()\n- contains(element)"
             },
             {
+              "type": "KEY_POINT",
+              "title": "Java 21: Sequenced Collections (JEP 431)",
+              "content": "Java 21 introduced three new interfaces for ordered collections:\n\nSequencedCollection<E> - ordered with first/last access:\n- getFirst() / getLast() - get elements\n- addFirst(e) / addLast(e) - add elements\n- removeFirst() / removeLast() - remove elements\n- reversed() - returns reversed view\n\nImplemented by: List, Deque, LinkedHashSet, SortedSet\n\nSequencedSet<E> extends SequencedCollection<E>:\n- Same methods, but no duplicates\n- addFirst()/addLast() repositions existing elements\n\nImplemented by: LinkedHashSet, TreeSet\n\nSequencedMap<K,V> - ordered key-value pairs:\n- firstEntry() / lastEntry()\n- pollFirstEntry() / pollLastEntry()\n- putFirst(k,v) / putLast(k,v)\n- sequencedKeySet() / sequencedValues() / sequencedEntrySet()\n\nImplemented by: LinkedHashMap, TreeMap\n\nNote: HashMap/HashSet do NOT implement these (no order)!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Using Sequenced Collections (Java 21+)",
+              "content": "BEFORE Java 21:\nArrayList<String> list = new ArrayList<>();\nlist.add(\"A\"); list.add(\"B\"); list.add(\"C\");\n\nString first = list.get(0);  // Must use index\nString last = list.get(list.size() - 1);  // Awkward!\n\nAFTER Java 21:\nString first = list.getFirst();  // Clean!\nString last = list.getLast();    // Clean!\n\nREVERSED VIEW:\nList<String> reversed = list.reversed();\nfor (String s : reversed) {\n    System.out.println(s);  // Prints C, B, A\n}\n// Original list unchanged - reversed is a VIEW\n\nLINKEDHASHSET WITH ORDERING:\nLinkedHashSet<String> set = new LinkedHashSet<>();\nset.add(\"X\"); set.add(\"Y\"); set.add(\"Z\");\nset.addFirst(\"NEW\");  // Moves or adds to front\n// Now: [NEW, X, Y, Z]\n\nLINKEDHASHMAP ENTRIES:\nLinkedHashMap<String, Integer> map = new LinkedHashMap<>();\nmap.put(\"A\", 1); map.put(\"B\", 2);\nMap.Entry<String, Integer> first = map.firstEntry();  // A=1\nMap.Entry<String, Integer> last = map.lastEntry();    // B=2"
+            },
+            {
               "type": "THEORY",
               "title": "💻 Real-World Example: Leaderboard",
               "content": "```java\nBuilding a game leaderboard:\n\nimport java.util.*;\n\nclass Player {\n    String name;\n    int score;\n    \n    Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n}\n\nArrayList<Player> players = new ArrayList<>();\nplayers.add(new Player(\"Alice\", 500));\nplayers.add(new Player(\"Bob\", 750));\nplayers.add(new Player(\"Carol\", 300));\n\n// Sort by score (highest first)\nCollections.sort(players, (p1, p2) -> p2.score - p1.score);\n\n// Display leaderboard\nfor (int i = 0; i < players.size(); i++) {\n    Player p = players.get(i);\n    System.out.println((i+1) + \". \" + p.name + \": \" + p.score);\n}\n\nOutput:\n1. Bob: 750\n2. Alice: 500\n3. Carol: 300\n```"
@@ -3824,7 +3839,7 @@
             {
               "type": "WARNING",
               "title": "Sorting and Collections Pitfalls",
-              "content": "Collections.sort() modifies in place:\nList<Integer> nums = List.of(3, 1, 2);\nCollections.sort(nums);  // CRASH! List.of() returns immutable list\n\nUse mutable list:\nList<Integer> nums = new ArrayList<>(List.of(3, 1, 2));\nCollections.sort(nums);  // OK\n\nComparable vs Comparator:\nCustom objects need Comparable or explicit Comparator:\nCollections.sort(people, Comparator.comparing(Person::getName));\n\nNull elements cause NullPointerException:\nCollections.sort(listWithNulls);  // CRASH!\nUse Comparator.nullsFirst() or nullsLast().\n\nJava 21+ Sequenced Collections:\nNew interfaces: SequencedCollection, SequencedSet, SequencedMap.\nNew methods: getFirst(), getLast(), reversed()."
+              "content": "Collections.sort() modifies in place:\nList<Integer> nums = List.of(3, 1, 2);\nCollections.sort(nums);  // CRASH! List.of() returns immutable list\n\nUse mutable list:\nList<Integer> nums = new ArrayList<>(List.of(3, 1, 2));\nCollections.sort(nums);  // OK\n\nComparable vs Comparator:\nCustom objects need Comparable or explicit Comparator:\nCollections.sort(people, Comparator.comparing(Person::getName));\n\nNull elements cause NullPointerException:\nCollections.sort(listWithNulls);  // CRASH!\nUse Comparator.nullsFirst() or nullsLast().\n\nJava 21+ Sequenced Collections Compatibility:\nIf your class implements List and defines getFirst() with a different signature, you'll get a compile error when upgrading to Java 21. The new SequencedCollection interface defines getFirst()/getLast() which List now inherits."
             }
           ],
           "challenges": [
