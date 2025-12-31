@@ -8559,7 +8559,22 @@
               "content": "CORS ERRORS:\nBrowser blocks requests from different origins by default.\nFix: Add @CrossOrigin annotation to your Spring controllers.\n\nHARDCODED URLS:\nDon't hardcode 'localhost:8080' in production code!\nFix: Use environment variables or config files.\n\nNO ERROR HANDLING:\nFetch doesn't throw on HTTP errors (404, 500).\nFix: Always check response.ok before processing.\n\nMIXED CONTENT:\nHTTPS pages can't call HTTP APIs.\nFix: Use HTTPS everywhere in production.\n\nJSON PARSING ERRORS:\nForgetting Content-Type header on POST requests.\nFix: Always set headers: { 'Content-Type': 'application/json' }"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-1-cors",
+              "title": "CORS Configuration",
+              "description": "Why do you need CORS configuration when React runs on localhost:5173 and Spring on localhost:8080?",
+              "options": [
+                "The ports are different",
+                "Browsers block cross-origin requests by default",
+                "React and Spring use different protocols",
+                "Spring requires explicit frontend registration"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Browsers enforce Same-Origin Policy. Different ports = different origins. CORS headers explicitly allow cross-origin requests."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-2",
@@ -8605,7 +8620,22 @@
               "content": "N+1 QUERY PROBLEM:\nLoading 100 users with their orders = 101 database queries!\nFix: Use @EntityGraph or JOIN FETCH for related entities.\n\nCIRCULAR JSON REFERENCES:\nUser has Orders, Order has User = infinite JSON loop!\nFix: Use @JsonIgnore or DTOs to break the cycle.\n\nMISSING @TRANSACTIONAL:\nLazy-loaded entities fail outside of session.\nFix: Add @Transactional to service methods that load relationships.\n\nFRONTEND STATE OUT OF SYNC:\nUser creates item but list doesn't update.\nFix: Always refresh data after mutations or use optimistic updates."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-2-flow",
+              "title": "Request Flow",
+              "description": "In a full-stack app, what is the correct order when a user submits a form?",
+              "options": [
+                "Database -> Backend -> Frontend",
+                "Frontend -> Database -> Backend",
+                "Frontend -> Backend -> Database -> Backend -> Frontend",
+                "Backend -> Frontend -> Database"
+              ],
+              "correctAnswer": 2,
+              "explanation": "User action -> Frontend (React) -> API call -> Backend (Spring) -> Database -> Response -> Backend -> Frontend -> UI update."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-3",
@@ -8666,7 +8696,22 @@
               "content": "```java\n@RestController\n@RequestMapping(\"/api/v1/products\")\n@Validated\npublic class ProductController {\n    private final ProductService productService;\n    \n    public ProductController(ProductService productService) {\n        this.productService = productService;\n    }\n    \n    // GET all (with pagination)\n    @GetMapping\n    public ResponseEntity<Page<Product>> getAll(\n            @RequestParam(defaultValue = \"0\") int page,\n            @RequestParam(defaultValue = \"20\") int size) {\n        Pageable pageable = PageRequest.of(page, size);\n        Page<Product> products = productService.findAll(pageable);\n        return ResponseEntity.ok(products);  // 200 OK\n    }\n    \n    // GET one\n    @GetMapping(\"/{id}\")\n    public ResponseEntity<Product> getById(@PathVariable Long id) {\n        return productService.findById(id)\n            .map(ResponseEntity::ok)  // 200 OK\n            .orElse(ResponseEntity.notFound().build());  // 404 Not Found\n    }\n    \n    // POST (create)\n    @PostMapping\n    public ResponseEntity<Product> create(\n            @Valid @RequestBody Product product) {\n        Product saved = productService.save(product);\n        URI location = URI.create(\"/api/v1/products/\" + saved.getId());\n        return ResponseEntity.created(location).body(saved);  // 201 Created\n    }\n    \n    // PUT (replace)\n    @PutMapping(\"/{id}\")\n    public ResponseEntity<Product> replace(\n            @PathVariable Long id,\n            @Valid @RequestBody Product product) {\n        if (!productService.exists(id)) {\n            return ResponseEntity.notFound().build();  // 404\n        }\n        Product updated = productService.replace(id, product);\n        return ResponseEntity.ok(updated);  // 200 OK\n    }\n    \n    // PATCH (partial update)\n    @PatchMapping(\"/{id}\")\n    public ResponseEntity<Product> update(\n            @PathVariable Long id,\n            @RequestBody Map<String, Object> updates) {\n        return productService.partialUpdate(id, updates)\n            .map(ResponseEntity::ok)  // 200 OK\n            .orElse(ResponseEntity.notFound().build());  // 404\n    }\n    \n    // DELETE\n    @DeleteMapping(\"/{id}\")\n    public ResponseEntity<Void> delete(@PathVariable Long id) {\n        if (!productService.exists(id)) {\n            return ResponseEntity.notFound().build();  // 404\n        }\n        productService.delete(id);\n        return ResponseEntity.noContent().build();  // 204 No Content\n    }\n}\n\nThis controller demonstrates:\n✓ Correct HTTP methods\n✓ Proper status codes\n✓ Resource-based URLs (no verbs)\n✓ Pagination support\n✓ Validation with @Valid\n✓ Constructor injection\n✓ API versioning in path\n```"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-3-api-design",
+              "title": "RESTful URL Design",
+              "description": "Which URL follows REST best practices for getting user 123's orders?",
+              "options": [
+                "GET /getUserOrders?id=123",
+                "GET /users/123/orders",
+                "POST /orders/getByUser/123",
+                "GET /api/fetch-orders-for-user-123"
+              ],
+              "correctAnswer": 1,
+              "explanation": "REST uses nouns (resources) and nesting. /users/123/orders is resource-oriented. Verbs belong in HTTP methods, not URLs."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-4",
@@ -8722,7 +8767,22 @@
               "content": "❌ MISTAKE 1: Catching and ignoring exceptions\ntry {\n    userService.create(user);\n} catch (Exception e) {\n    // Nothing here - ERROR VANISHES!\n}\n\n❌ MISTAKE 2: Generic error messages\ndisplayError(\"Error occurred\");  // What error? How to fix?\n\n✓ FIX: Be specific\ndisplayError(\"Email already exists. Please use a different email.\");\n\n❌ MISTAKE 3: Not validating on both sides\n// Only frontend validation - can be bypassed!\n// Only backend validation - bad UX (slow feedback)\n\n✓ FIX: Validate on BOTH frontend and backend\n\n❌ MISTAKE 4: Returning 200 OK with error\nreturn ResponseEntity.ok(Map.of(\"error\", \"User not found\"));\n\n✓ FIX: Use proper status codes\nreturn ResponseEntity.status(HttpStatus.NOT_FOUND)\n    .body(problemDetail);\n\n❌ MISTAKE 5: Not logging errors\n// Error happens, no log, no way to debug\n\n✓ FIX: Always log exceptions\nlogger.error(\"Failed to create user: {}\", ex.getMessage(), ex);"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-4-errors",
+              "title": "Error Handling Flow",
+              "description": "When a database constraint fails, how should the error reach the user?",
+              "options": [
+                "Show the SQL error message directly",
+                "Return 500 Internal Server Error with no details",
+                "Catch exception, return structured error response, display user-friendly message",
+                "Let the frontend handle the raw exception"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Backend catches DB exceptions, maps to Problem Details (RFC 7807), returns appropriate status. Frontend shows user-friendly message."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-5",
@@ -8853,7 +8913,22 @@
               "content": "Configure proper logging:\n\napplication-prod.yml:\nlogging:\n  level:\n    root: INFO\n    com.myapp: INFO\n    org.springframework.web: WARN\n  file:\n    name: /var/log/myapp/application.log\n  pattern:\n    console: \"%d{yyyy-MM-dd HH:mm:ss} - %msg%n\"\n    file: \"%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n\"\n\nUse structured logging:\n\n@RestController\npublic class UserController {\n    private static final Logger logger = \n        LoggerFactory.getLogger(UserController.class);\n    \n    @PostMapping(\"/api/users\")\n    public User create(@RequestBody User user) {\n        logger.info(\"Creating user: email={}\", user.getEmail());\n        try {\n            User saved = userService.create(user);\n            logger.info(\"User created: id={}, email={}\", \n                       saved.getId(), saved.getEmail());\n            return saved;\n        } catch (DuplicateResourceException e) {\n            logger.warn(\"Duplicate user creation attempt: email={}\", \n                       user.getEmail());\n            throw e;\n        } catch (Exception e) {\n            logger.error(\"Failed to create user: email={}\", \n                        user.getEmail(), e);\n            throw e;\n        }\n    }\n}\n\nNEVER log sensitive data:\n❌ logger.info(\"User: {}\", user.getPassword());\n❌ logger.info(\"Credit card: {}\", creditCard);\n✓ logger.info(\"User authenticated: id={}\", user.getId());"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-5-deployment",
+              "title": "Production Deployment",
+              "description": "Why use environment variables for database credentials instead of hardcoding?",
+              "options": [
+                "Environment variables are faster",
+                "Hardcoded values don't work in production",
+                "Secrets shouldn't be in source code (security + flexibility)",
+                "Environment variables use less memory"
+              ],
+              "correctAnswer": 2,
+              "explanation": "Source code is often public (GitHub). Environment variables keep secrets separate and allow different values per environment."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-6",
@@ -8919,7 +8994,22 @@
               "content": "Test from DATABASE → FRONTEND:\n\n1. TEST DATABASE:\npsql> SELECT * FROM tasks;\nShould see tasks table\n\n2. TEST REPOSITORY (Unit test):\n@Test\nvoid shouldFindTasksByUserId() {\n    List<Task> tasks = taskRepository.findByUserId(1L);\n    assertFalse(tasks.isEmpty());\n}\n\n3. TEST SERVICE (Unit test):\n@Test\nvoid shouldCreateTask() {\n    Task task = new Task(\"Buy milk\", \"From store\", user);\n    Task saved = taskService.createTask(task, 1L);\n    assertNotNull(saved.getId());\n}\n\n4. TEST API (Integration test or Postman):\nPOST http://localhost:8080/api/tasks\n{\n  \"title\": \"Test task\",\n  \"description\": \"Testing\"\n}\nExpect: 201 Created\n\n5. TEST FRONTEND:\nOpen index.html in browser\n- Create task → Should appear in list\n- Mark complete → Should show checkmark\n- Delete → Should disappear\n\n6. TEST ERROR CASES:\n- No title → Should show error\n- Server down → Should show 'cannot connect'\n- Delete someone else's task → Should return 403"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-15-6-integration",
+              "title": "Full-Stack Testing",
+              "description": "What's the difference between unit tests and integration tests?",
+              "options": [
+                "Unit tests are faster, integration tests are slower",
+                "Unit tests test components in isolation, integration tests test components together",
+                "Unit tests use mocks, integration tests don't",
+                "Integration tests require a browser"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Unit tests isolate single components (mock dependencies). Integration tests verify components work together correctly."
+            }
+          ]
         },
         {
           "id": "epoch-8-lesson-7",
