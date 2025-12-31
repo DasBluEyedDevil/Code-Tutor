@@ -6149,7 +6149,22 @@
               "content": "Unlike variables in your program, database changes are PERMANENT:\n\n- DELETE removes data forever (unless you have backups)\n- UPDATE cannot be undone without restoring from backup\n- No Ctrl+Z in production databases!\n\nALWAYS:\n- Test queries on development data first\n- Back up data before running DELETE or UPDATE\n- Use WHERE clauses carefully - forgetting WHERE deletes ALL rows\n- In production, use transactions so you can rollback mistakes"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-1-persistence",
+              "title": "Why Databases?",
+              "description": "Why can't we just use variables to store user data permanently?",
+              "options": [
+                "Variables are too slow",
+                "Variables only exist while the program runs",
+                "Variables can only store numbers",
+                "Variables are not secure"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Variables exist in RAM (memory) and disappear when the program ends. Databases store data on disk permanently."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-2",
@@ -6195,7 +6210,22 @@
               "content": "1. FORGETTING NOT NULL:\n   - Fields without NOT NULL can have empty values\n   - Required fields should always have NOT NULL\n\n2. WRONG DATA TYPES:\n   - Using VARCHAR for numbers = slow sorting, bad comparisons\n   - Using FLOAT for money = rounding errors (use DECIMAL instead)\n\n3. DUPLICATE DATA:\n   - Storing same data in multiple tables = inconsistency\n   - Use foreign keys and JOINs instead\n\n4. NO PRIMARY KEY:\n   - Every table needs a PRIMARY KEY\n   - Without it, you cannot uniquely identify rows\n\n5. SELECT * IN PRODUCTION:\n   - Retrieves all columns, even unused ones\n   - Wastes bandwidth and memory\n   - Always specify needed columns: SELECT name, age FROM..."
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-2-create-table",
+              "title": "SQL CREATE TABLE",
+              "description": "Which SQL keyword defines a column that cannot contain NULL values?",
+              "options": [
+                "REQUIRED",
+                "NOT NULL",
+                "MANDATORY",
+                "NO_EMPTY"
+              ],
+              "correctAnswer": 1,
+              "explanation": "NOT NULL is the SQL constraint that prevents a column from containing NULL values."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-3",
@@ -6236,7 +6266,22 @@
               "content": "1. AVOID SELECT * ON LARGE TABLES:\n   - Fetches all columns, wastes memory\n   - Specify only needed columns\n\n2. MISSING INDEXES:\n   - Queries on non-indexed columns are SLOW\n   - Add indexes on columns used in WHERE, ORDER BY, JOIN\n\n3. LIKE WITH LEADING WILDCARD:\n   - LIKE '%text' cannot use indexes = full table scan\n   - LIKE 'text%' CAN use indexes = faster\n\n4. NULL COMPARISONS:\n   - WHERE column = NULL never works!\n   - Use WHERE column IS NULL instead\n\n5. AGGREGATES WITHOUT GROUP BY:\n   - COUNT(*), SUM(), AVG() without GROUP BY = one result for entire table\n   - Easily missed mistake in complex queries"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-3-select-where",
+              "title": "SQL SELECT with WHERE",
+              "description": "What does 'SELECT * FROM students WHERE gpa > 3.5 ORDER BY gpa DESC' return?",
+              "options": [
+                "All students, sorted by GPA",
+                "Students with GPA above 3.5, sorted highest first",
+                "Students with GPA above 3.5, sorted lowest first",
+                "The student with the highest GPA"
+              ],
+              "correctAnswer": 1,
+              "explanation": "WHERE filters to gpa > 3.5, ORDER BY gpa DESC sorts descending (highest first). * selects all columns."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-4",
@@ -6282,7 +6327,22 @@
               "content": "1. CARTESIAN PRODUCT (Accidental Cross Join):\n   - Forgetting ON clause = rows multiply!\n   - 100 x 100 = 10,000 rows unexpectedly\n\n2. WRONG JOIN TYPE:\n   - INNER when you need LEFT = missing rows\n   - LEFT when you need INNER = unexpected NULLs\n\n3. AMBIGUOUS COLUMNS:\n   - SELECT name FROM A JOIN B = Error if both have 'name'\n   - Always use table prefixes: SELECT A.name, B.name\n\n4. N+1 QUERY PROBLEM:\n   - Looping through results and querying for each = SLOW\n   - Use a single JOIN instead of multiple queries\n\n5. JOINING ON WRONG COLUMNS:\n   - Always join PRIMARY KEY to FOREIGN KEY\n   - Verify column types match (INT to INT, not INT to VARCHAR)"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-4-join-types",
+              "title": "JOIN Types",
+              "description": "You want ALL students, even those not enrolled in any course. Which JOIN should you use?",
+              "options": [
+                "INNER JOIN",
+                "LEFT JOIN from students",
+                "RIGHT JOIN from courses",
+                "CROSS JOIN"
+              ],
+              "correctAnswer": 1,
+              "explanation": "LEFT JOIN keeps all rows from the left table (students) even if there's no match in the right table (enrollments)."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-5",
@@ -6333,7 +6393,22 @@
               "content": "1. ALWAYS USE TRY-WITH-RESOURCES\n   - Auto-closes connections, statements, resultsets\n   - Prevents resource leaks\n\n2. USE PREPAREDSTATEMENT, NOT STATEMENT\n   - Security (prevents SQL injection)\n   - Performance (pre-compiled)\n\n3. DON'T CONCATENATE SQL WITH USER INPUT\n   - Use ? placeholders\n   - Set parameters with setString(), setInt(), etc.\n\n4. USE CONNECTION POOLING IN PRODUCTION\n   - Libraries: HikariCP, Apache DBCP\n   - Reuse connections (expensive to create)\n\n5. HANDLE EXCEPTIONS PROPERLY\n   - Log errors\n   - Don't expose SQL details to users\n\n6. CLOSE RESOURCES IN FINALLY OR USE TRY-WITH-RESOURCES\n   - Connection leaks kill performance"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-5-prepared-stmt",
+              "title": "Why PreparedStatement?",
+              "description": "Why should you use PreparedStatement instead of concatenating SQL strings?",
+              "options": [
+                "PreparedStatement is faster",
+                "PreparedStatement prevents SQL injection attacks",
+                "PreparedStatement uses less memory",
+                "PreparedStatement is easier to write"
+              ],
+              "correctAnswer": 1,
+              "explanation": "PreparedStatement parameterizes queries, preventing attackers from injecting malicious SQL. String concatenation is a major security vulnerability."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-6",
@@ -6384,7 +6459,22 @@
               "content": "1. N+1 QUERY PROBLEM:\n   - Loading a list, then accessing relationships = many queries\n   - Fix: Use JOIN FETCH or @EntityGraph\n\n2. LAZY LOADING EXCEPTIONS:\n   - Accessing lazy relationships outside transaction = error\n   - Fix: Use @Transactional or fetch eagerly when needed\n\n3. ENTITY LIFECYCLE CONFUSION:\n   - Detached entities don't auto-save\n   - Use merge() to reattach\n\n4. OVERFETCHING:\n   - Don't load entire entities when you only need ID\n   - Use projections or DTOs for read operations\n\n5. MISSING @Transactional:\n   - JPA operations need transaction context\n   - Spring Boot: Add @Transactional to service methods\n\n6. BIDIRECTIONAL RELATIONSHIP BUGS:\n   - Must set both sides of relationship\n   - Use helper methods: student.addEnrollment(enrollment)"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-6-jpa-entity",
+              "title": "JPA Annotations",
+              "description": "Which annotation marks a class as a database entity in JPA?",
+              "options": [
+                "@Table",
+                "@Entity",
+                "@Repository",
+                "@Model"
+              ],
+              "correctAnswer": 1,
+              "explanation": "@Entity marks a class as a JPA entity (maps to a database table). @Table customizes the table name. @Repository is for Spring Data."
+            }
+          ]
         },
         {
           "id": "epoch-5-lesson-7",
@@ -6435,7 +6525,22 @@
               "content": "LOCAL DEVELOPMENT:\n1. Create entity class with JPA annotations\n2. Write Flyway migration for schema\n3. Run app - Flyway creates table\n4. JPA handles all CRUD operations\n\nDEPLOYMENT:\n1. Push code (includes migration files)\n2. CI/CD deploys application\n3. App starts, Flyway runs pending migrations\n4. Database schema is now updated\n5. Application uses JPA to access data\n\nTHE STACK:\n- Flyway: Schema versioning and migrations\n- JPA/Hibernate: Object-relational mapping\n- JDBC: Low-level (JPA uses it internally)\n- SQL: The language that makes it all work\n\nEach layer builds on the previous one!"
             }
           ],
-          "challenges": []
+          "challenges": [
+            {
+              "type": "MULTIPLE_CHOICE",
+              "id": "lesson-9-7-flyway",
+              "title": "Flyway Naming",
+              "description": "What is the correct Flyway migration file naming convention?",
+              "options": [
+                "migration_1.sql",
+                "V1__create_users.sql",
+                "1_create_users.sql",
+                "create_users_v1.sql"
+              ],
+              "correctAnswer": 1,
+              "explanation": "Flyway uses V{version}__{description}.sql format. The V prefix and double underscore are required. Version determines execution order."
+            }
+          ]
         }
       ],
       "order": 9
