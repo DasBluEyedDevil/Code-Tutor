@@ -70,8 +70,8 @@
             },
             {
               "type": "KEY_POINT",
-              "title": "Historical Note: The Full Syntax",
-              "content": "You may see older Java code using this fuller syntax:\n\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n\nThis is still valid but modern Java simplifies it with 'implicit classes' - the compiler adds the class wrapper for you.\n\nIn older code:\n- 'public class HelloWorld' - a container for code\n- 'public static void main(String[] args)' - the entry point\n- 'System.out.println' - the full way to print\n\nModern Java removes this boilerplate so you can focus on learning programming concepts!"
+              "title": "Which Syntax Should You Use?",
+              "content": "You'll see TWO styles of Java code in the real world:\n\nMODERN SYNTAX (Java 23+):\nvoid main() {\n    println(\"Hello, World!\");\n}\n\nUse this when: Learning, prototyping, or using Java 23+.\n\nTRADITIONAL SYNTAX (Java 8-21 LTS):\npublic class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n\nUse this when: Working in enterprise codebases, using Java 21 LTS, or in job interviews.\n\nIMPORTANT: According to the 2025 Java Developer Report, 61% of developers use Java 17 and 45% use Java 21 LTS. You MUST recognize both syntaxes!\n\nThis course teaches modern syntax first (it's simpler to learn!) but ALWAYS shows the traditional equivalent. When you see code at work or in tutorials, you'll know exactly what's happening."
             }
           ],
           "challenges": [
@@ -1244,6 +1244,11 @@
               "type": "KEY_POINT",
               "title": "While vs For: When to Use Each",
               "content": "Use FOR when:\n✓ You know how many times to loop\n✓ You're counting or iterating\n✓ You have a clear start, end, and step\n\nfor (int i = 0; i < 100; i++) { ... }  // \"Do this 100 times\"\n\nUse WHILE when:\n✓ You DON'T know how many times to loop\n✓ The condition is complex\n✓ Not necessarily counting\n\nwhile (userWantsMore) { ... }  // \"Keep going until user says stop\"\n\nRule of thumb:\nCounting → for\nCondition-based → while"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common For Loop Pitfalls",
+              "content": "Watch out for these common mistakes:\n\n1. OFF-BY-ONE ERRORS:\n// WRONG: Starts at 1, misses index 0\nfor (int i = 1; i < array.length; i++)\n\n// WRONG: Uses <=, goes past last index\nfor (int i = 0; i <= array.length; i++)\n\n// CORRECT: Start at 0, use < length\nfor (int i = 0; i < array.length; i++)\n\n2. INFINITE LOOPS:\n// WRONG: Forgot to increment!\nfor (int i = 0; i < 10; ) { }\n\n// WRONG: Incrementing wrong direction\nfor (int i = 10; i > 0; i++) { }\n\n3. MODIFYING LOOP VARIABLE:\n// DANGEROUS: Changing i inside loop\nfor (int i = 0; i < 10; i++) {\n    i = i + 2;  // Skips iterations unexpectedly\n}\n\n4. STRING CONCATENATION IN LOOPS:\n// SLOW: Creates new String objects each time\nString result = \"\";\nfor (int i = 0; i < 1000; i++) {\n    result += i;  // Use StringBuilder instead!\n}\n\n5. SCOPE OF LOOP VARIABLE:\n// i only exists inside the loop\nfor (int i = 0; i < 5; i++) { }\nSystem.out.println(i);  // ERROR: i not defined here"
             }
           ],
           "challenges": [
@@ -1435,6 +1440,11 @@
               "type": "KEY_POINT",
               "title": "void vs Returning a Value",
               "content": "When to use 'void' (no return value):\n✓ Method performs an action (print, modify something)\n✓ You don't need a result back\n\npublic static void printBanner() {\n    System.out.println(\"============\");\n    System.out.println(\"WELCOME\");\n    System.out.println(\"============\");\n}\n\nWhen to return a value:\n✓ Method calculates something\n✓ You need the result for later\n\npublic static double calculateTip(double bill, double percent) {\n    return bill * (percent / 100);\n}\n\ndouble tip = calculateTip(50.0, 15);  // tip is 7.5\n\nKey difference:\n- void methods DO something\n- Returning methods CALCULATE and give you something back"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Method Mistakes",
+              "content": "Avoid these frequent errors:\n\n1. RETURNING FROM VOID METHOD:\n// WRONG: void methods cannot return a value\npublic static void sayHi() {\n    return \"Hi\";  // COMPILE ERROR!\n}\n\n2. FORGETTING TO RETURN:\n// WRONG: Missing return statement\npublic static int add(int a, int b) {\n    int sum = a + b;\n    // Forgot to return sum!  COMPILE ERROR\n}\n\n3. WRONG RETURN TYPE:\n// WRONG: Method says int, but returns double\npublic static int divide(int a, int b) {\n    return a / (double) b;  // COMPILE ERROR!\n}\n\n4. USING VOID RETURN VALUE:\n// WRONG: void has no value to store\npublic static void printHi() { System.out.println(\"Hi\"); }\nString result = printHi();  // COMPILE ERROR!\n\n5. CONFUSING METHOD WITH CONSTRUCTOR:\n// This is a METHOD named Student (returns void)\npublic static void Student() { }\n\n// This is a CONSTRUCTOR (no return type at all)\npublic Student() { }\n\n6. ALWAYS USE @Override WHEN OVERRIDING:\n// Without @Override, typos create new methods!\n@Override\npublic String toString() { ... }  // Safe - compiler checks!"
             }
           ],
           "challenges": [
@@ -1632,6 +1642,11 @@
               "type": "KEY_POINT",
               "title": "Putting It All Together",
               "content": "public static void main(String[] args)\n  |      |     |    |     └─ Parameter: array of Strings\n  |      |     |    └─ Name: main (special name, program entry)\n  |      |     └─ Return type: void (doesn't return anything)\n  |      └─ static: Can be called without creating an object\n  └─ public: Must be accessible from anywhere (JVM needs to call it)\n\npublic static int add(int a, int b)\n  |      |     |   |   └─ Parameters\n  |      |     |   └─ Name\n  |      |     └─ Return type: int (returns an integer)\n  |      └─ static: Utility method, no object needed\n  └─ public: Other classes can use this\n\nprivate void updateDisplay()\n  |      |    └─ Name\n  |      └─ Return type: void (performs action, no return)\n  └─ private: Only THIS class can call this\n\nQUICK REFERENCE:\n- void: Returns nothing\n- int/String/etc: Returns that type\n- public: Everyone can access\n- private: Only this class can access\n- static: Class-level, no object needed\n- (no static): Instance-level, needs object"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Access Modifier Mistakes",
+              "content": "Avoid these frequent errors:\n\n1. MAKING EVERYTHING PUBLIC:\n// BAD: Exposes internal implementation\npublic class User {\n    public String password;  // Anyone can read/modify!\n}\n\n// GOOD: Use private with getters\nprivate String password;\npublic boolean checkPassword(String input) { ... }\n\n2. CALLING NON-STATIC FROM STATIC:\n// WRONG: Cannot access instance field from static method\npublic class Example {\n    String name;\n    public static void main(String[] args) {\n        System.out.println(name);  // COMPILE ERROR!\n    }\n}\n\n3. FORGETTING main() MUST BE public static:\n// WRONG: JVM cannot find entry point\nprivate static void main(String[] args) { }  // ERROR\nstatic void main(String[] args) { }  // Package-private, fails\n\n4. ACCESSING PRIVATE FROM ANOTHER CLASS:\n// In class A:\nprivate void helper() { }\n\n// In class B:\nA obj = new A();\nobj.helper();  // COMPILE ERROR: helper has private access\n\n5. USING DEFAULT (PACKAGE-PRIVATE) ACCIDENTALLY:\n// No modifier = package-private, NOT public!\nvoid myMethod() { }  // Only accessible within same package\npublic void myMethod() { }  // Accessible everywhere"
             }
           ],
           "challenges": []
@@ -1672,6 +1687,11 @@
               "type": "KEY_POINT",
               "title": "Class vs Object - The Key Difference",
               "content": "CLASS:\n✓ A template/blueprint\n✓ Defined once\n✓ Describes structure and behavior\n✓ Example: 'Student' class\n\nOBJECT:\n✓ An instance created from the class\n✓ Created many times with 'new'\n✓ Has actual data values\n✓ Example: alice and bob are Student objects\n\nAnalogy:\nClass = Cookie cutter\nObject = Actual cookie\n\nYou use ONE cookie cutter to make MANY cookies."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Classes and Objects Pitfalls",
+              "content": "COMMON MISTAKES TO AVOID:\n\n1. FORGETTING new KEYWORD:\n   Student alice;  // Only declares a variable (null)\n   alice.name = \"Alice\";  // NullPointerException!\n   CORRECT: Student alice = new Student();\n\n2. CONFUSING CLASS WITH OBJECT:\n   Student.name = \"Alice\";  // ERROR! Cannot access fields on the class\n   CORRECT: Student s = new Student(); s.name = \"Alice\";\n\n3. PUBLIC FIELDS (BAD PRACTICE):\n   Directly accessing fields like myCar.speed = -500 allows invalid data.\n   Use encapsulation (private fields + getters/setters) instead.\n\n4. FORGETTING TO INITIALIZE FIELDS:\n   Fields have default values (0, null, false), but relying on them causes bugs.\n   Always initialize fields explicitly via constructors.\n\n5. JAVA 16+ ALTERNATIVE - RECORDS:\n   For simple data classes, consider using records:\n   record Student(String name, int age) {}\n   Records auto-generate constructor, getters, equals, hashCode, toString."
             }
           ],
           "challenges": [
@@ -1749,6 +1769,11 @@
               "type": "KEY_POINT",
               "title": "The 'this' Keyword",
               "content": "'this' refers to the current object.\n\nthis.name = name;\n  ↑          ↑\n field    parameter\n\nWithout 'this', Java gets confused about which 'name' you mean!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Constructor Pitfalls",
+              "content": "COMMON MISTAKES TO AVOID:\n\n1. ADDING RETURN TYPE:\n   public void Student(String name) { }  // This is a METHOD, not constructor!\n   CORRECT: public Student(String name) { }  // No return type\n\n2. FORGETTING this WITH SAME PARAMETER NAMES:\n   public Student(String name) {\n       name = name;  // Does NOTHING! Assigns parameter to itself\n   }\n   CORRECT: this.name = name;\n\n3. NOT CALLING super() IN SUBCLASS:\n   If parent has no default constructor, you MUST call super(...) first.\n\n4. CONSTRUCTOR CHAINING MISTAKES:\n   this(...) or super(...) must be the FIRST statement in constructor.\n\n5. JAVA 22+ FEATURE - STATEMENTS BEFORE super():\n   Java 22 allows statements before super() for validation/transformation.\n   Pre-Java 22: super() must always be first line.\n\n6. CONSIDER RECORDS FOR DATA CLASSES:\n   record Student(String name, int age) {}\n   Records generate canonical constructor, compact constructor validation."
             }
           ],
           "challenges": [
@@ -1832,6 +1857,11 @@
               "type": "KEY_POINT",
               "title": "Why Encapsulation Matters",
               "content": "1. DATA VALIDATION\n   - Prevent invalid states (negative speed, empty names)\n   - Enforce business rules\n\n2. FLEXIBILITY\n   - Change internal implementation without breaking other code\n   - Example: Change from int to double, only modify inside class\n\n3. DEBUGGING\n   - Put breakpoints in setters to find who's changing data\n   - Add logging to track changes\n\n4. SECURITY\n   - Hide sensitive data\n   - Control who can modify critical fields\n\nProfessional code ALWAYS uses encapsulation!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Encapsulation Pitfalls",
+              "content": "COMMON MISTAKES TO AVOID:\n\n1. EXPOSING MUTABLE OBJECTS:\n   private List<String> items;\n   public List<String> getItems() { return items; }  // BAD!\n   Caller can modify your internal list!\n   CORRECT: return new ArrayList<>(items);  // Return a copy\n\n2. SETTERS FOR EVERYTHING (ANEMIC CLASSES):\n   Auto-generating all getters/setters defeats encapsulation.\n   Only expose what is truly needed. Prefer behavior methods.\n\n3. BREAKING IMMUTABILITY WITH ARRAYS:\n   private int[] scores;\n   public int[] getScores() { return scores; }  // BAD!\n   CORRECT: return Arrays.copyOf(scores, scores.length);\n\n4. FORGETTING VALIDATION IN CONSTRUCTORS:\n   Validate in constructor too, not just setters.\n   new BankAccount(-1000);  // Should this work?\n\n5. JAVA 16+ ALTERNATIVE - RECORDS:\n   Records are immutable by default with automatic encapsulation:\n   record Account(double balance) {}\n   Fields are final, only getters (no setters), perfect for DTOs.\n\n6. FRAMEWORK REQUIREMENTS:\n   Some frameworks (Hibernate, Spring) need getters/setters.\n   Use records for DTOs, traditional classes for JPA entities."
             }
           ],
           "challenges": [
@@ -2070,6 +2100,11 @@
               "type": "KEY_POINT",
               "title": "Inheritance Best Practices",
               "content": "1. IS-A RELATIONSHIP:\n   - Dog IS-A Animal ✓ (inheritance makes sense)\n   - Car IS-A Engine ✗ (Car HAS-A Engine, use composition instead)\n\n2. INHERITANCE HIERARCHY:\n   Object (built-in Java class)\n     ↑\n   Animal\n     ↑\n   Dog, Cat, Bird (all extend Animal)\n\n3. EVERYTHING EXTENDS Object:\n   - Every Java class automatically extends Object\n   - Object provides: toString(), equals(), hashCode()\n\n4. SINGLE INHERITANCE ONLY:\n   - Java: class Dog extends Animal (ONE parent only)\n   - Multiple inheritance causes problems (diamond problem)\n   - Use interfaces for multiple \"contracts\" (later lesson)"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Inheritance Pitfalls",
+              "content": "COMMON MISTAKES TO AVOID:\n\n1. INHERITANCE FOR CODE REUSE ONLY:\n   Stack extends Vector // BAD! Stack is NOT a Vector\n   Prefer composition: class Stack { private List items; }\n\n2. DEEP INHERITANCE HIERARCHIES:\n   A -> B -> C -> D -> E  // Too deep! Hard to maintain\n   Keep hierarchies shallow (2-3 levels max).\n\n3. BREAKING PARENT CONTRACT:\n   Override methods must honor parent behavior expectations.\n   Violating Liskov Substitution Principle causes bugs.\n\n4. FORGETTING super() CALL:\n   If parent has no default constructor, must call super(...) explicitly.\n   Java 22+ allows statements before super() for validation.\n\n5. JAVA 17+ SEALED CLASSES:\n   sealed class Shape permits Circle, Square {}\n   Controls exactly which classes can extend yours.\n   Enables exhaustive pattern matching in switch.\n\n6. PREFER COMPOSITION OVER INHERITANCE:\n   Composition is more flexible and avoids tight coupling.\n   Use inheritance only for true IS-A relationships."
             }
           ],
           "challenges": [
@@ -2284,8 +2319,13 @@
             },
             {
               "type": "THEORY",
-              "title": "⚠️ Overriding vs Overloading - Don't Confuse Them!",
+              "title": "Overriding vs Overloading - Don't Confuse Them!",
               "content": "OVERRIDING (this lesson):\n- SAME method signature in child class\n- REPLACES parent's version\n- Requires inheritance\n\nclass Animal {\n    void eat() { ... }\n}\nclass Dog extends Animal {\n    @Override\n    void eat() { ... }  // OVERRIDING\n}\n\nOVERLOADING (Epoch 1):\n- DIFFERENT parameters, same name\n- ADDS new version\n- Same class\n\nclass Calculator {\n    int add(int a, int b) { ... }\n    double add(double a, double b) { ... }  // OVERLOADING\n}"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Polymorphism Pitfalls",
+              "content": "1. FORGETTING @Override ANNOTATION:\nWithout @Override, typos create NEW methods instead of overriding!\n\nclass Dog extends Animal {\n    public void makesound() { ... }  // TYPO! New method, not override\n}\n\nWith @Override, the compiler catches the error.\n\n2. CALLING OVERRIDABLE METHODS IN CONSTRUCTORS:\nNever call non-final methods from constructors - subclass fields are not initialized yet!\n\nclass Animal {\n    Animal() { makeSound(); }  // DANGEROUS!\n}\n\n3. EXCESSIVE DOWNCASTING:\nAvoid casting parent to child type - it defeats polymorphism:\nAnimal a = new Dog();\n((Dog) a).fetch();  // BAD - redesign with polymorphism\n\n4. REDUCING VISIBILITY:\nOverriding methods cannot be MORE restrictive:\npublic in parent -> must be public in child\n\n5. MODERN ALTERNATIVE - SEALED CLASSES (Java 17+):\nFor controlled hierarchies, consider sealed classes to restrict which classes can extend yours."
             }
           ],
           "challenges": [
@@ -2514,6 +2554,11 @@
               "type": "KEY_POINT",
               "title": "Multiple Interfaces: Java's Alternative to Multiple Inheritance",
               "content": "Java doesn't allow:\nclass Dog extends Animal, Robot { }  // ERROR!\n\nBut DOES allow:\nclass RobotDog extends Robot implements Walkable, Barkable { }\n\nReal example:\ninterface Swimmable { void swim(); }\ninterface Flyable { void fly(); }\ninterface Walkable { void walk(); }\n\nclass Duck extends Animal implements Flyable, Swimmable, Walkable {\n    public void fly() { System.out.println(\"Flying\"); }\n    public void swim() { System.out.println(\"Swimming\"); }\n    public void walk() { System.out.println(\"Walking\"); }\n}\n\nNow Duck can be used as:\n- Animal (inheritance)\n- Flyable (interface)\n- Swimmable (interface)\n- Walkable (interface)\n\nThis is POWERFUL for flexible design!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Abstract Classes and Interfaces Pitfalls",
+              "content": "1. CONFUSING WHEN TO USE EACH:\n- Use ABSTRACT CLASS for IS-A with shared state/code\n- Use INTERFACE for CAN-DO behavior contracts\n\n2. FORGETTING abstract KEYWORD:\nclass Shape { abstract void draw(); }  // ERROR! Class must be abstract\n\n3. INTERFACE DEFAULT METHODS (Java 8+):\nInterfaces CAN have default implementations now:\ninterface Drawable {\n    default void draw() { System.out.println(\"Drawing...\"); }\n}\nBut use sparingly - can cause diamond problem!\n\n4. SEALED TYPES (Java 17+):\nFor controlled hierarchies, consider sealed classes/interfaces:\nsealed interface Shape permits Circle, Rectangle, Triangle {}\n\n5. FUNCTIONAL INTERFACES:\nInterfaces with ONE abstract method can be used with lambdas:\n@FunctionalInterface\ninterface Runnable { void run(); }\nRunnable r = () -> System.out.println(\"Running!\");"
             }
           ],
           "challenges": [
@@ -2738,6 +2783,11 @@
               "type": "THEORY",
               "title": "When to Use Records",
               "content": "USE RECORDS FOR:\n- Data Transfer Objects (DTOs)\n- API response/request objects\n- Value objects (Money, Coordinate, Range)\n- Configuration objects\n- Tuple-like groupings of data\n- Immutable data holders\n\nRECORD EXAMPLES:\n\n// API Response\nrecord ApiResponse<T>(T data, String message, int status) {}\n\n// Geographic coordinates\nrecord Coordinate(double latitude, double longitude) {\n    public double distanceTo(Coordinate other) {\n        // Calculate distance...\n    }\n}\n\n// Money with currency\nrecord Money(BigDecimal amount, String currency) {\n    public Money add(Money other) {\n        if (!currency.equals(other.currency)) {\n            throw new IllegalArgumentException(\"Currency mismatch\");\n        }\n        return new Money(amount.add(other.amount), currency);\n    }\n}\n\nDON'T USE RECORDS FOR:\n- Entities that need to change (use regular classes)\n- Classes that need inheritance hierarchies\n- Classes with complex initialization logic\n- JPA/Hibernate entities (they need no-arg constructors)"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Records Pitfalls (Java 16+)",
+              "content": "1. USING getTitle() INSTEAD OF title():\nRecord accessors do NOT use get prefix!\nbook.getTitle()  // ERROR - method not found\nbook.title()     // CORRECT\n\n2. TRYING TO MODIFY RECORD FIELDS:\nRecords are IMMUTABLE - fields cannot be changed after creation.\nbook.title = \"New Title\";  // ERROR - cannot assign\n// Create new record instead:\nvar updated = new Book(\"New Title\", book.author(), book.pages());\n\n3. RECORDS WITH MUTABLE FIELDS:\nIf a record contains a mutable object (List, array), the record is still logically mutable!\nrecord Team(List<String> members) {}\n// The list can be modified externally!\n// Use defensive copies in compact constructor.\n\n4. FORGETTING COMPACT CONSTRUCTOR SYNTAX:\nrecord Age(int years) {\n    public Age(int years) { ... }  // Verbose\n    public Age { ... }              // Compact - preferred\n}\n\n5. RECORDS CANNOT EXTEND CLASSES:\nrecord Point(int x, int y) extends Shape {}  // ERROR!\n// But records CAN implement interfaces:\nrecord Point(int x, int y) implements Serializable {}\n\n6. RECORD PATTERNS (Java 21+):\nUse pattern matching with records for cleaner code:\nif (obj instanceof Point(int x, int y)) {\n    // x and y extracted automatically!\n}"
             }
           ],
           "challenges": [
@@ -2887,6 +2937,11 @@
               "type": "THEORY",
               "title": "Array Syntax",
               "content": "Creating an array:\n\n// Method 1: Declare size, fill later\nint[] numbers = new int[5];\nnumbers[0] = 10;\nnumbers[1] = 20;\n\n// Method 2: Declare with values\nint[] numbers = {10, 20, 30, 40, 50};\n\nAccessing elements:\nSystem.out.println(numbers[0]);  // 10\nSystem.out.println(numbers[4]);  // 50\n\nArray length:\nnumbers.length  // 5\n\nLooping through array:\nfor (int i = 0; i < numbers.length; i++) {\n    System.out.println(numbers[i]);\n}"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Array Pitfalls",
+              "content": "ArrayIndexOutOfBoundsException:\nint[] arr = new int[5];\narr[5] = 10;  // CRASH! Valid indexes are 0-4\n\nArrays start at 0, so arr[arr.length] is ALWAYS invalid.\n\nFixed size cannot change:\nint[] arr = new int[3];\n// Cannot add a 4th element - use ArrayList instead!\n\nDefault values:\n- int[]: all zeros\n- boolean[]: all false\n- Object[]: all null (NullPointerException risk!)\n\nFor dynamic sizing, prefer ArrayList over arrays."
             }
           ],
           "challenges": [
@@ -2974,6 +3029,11 @@
               "type": "KEY_POINT",
               "title": "Common ArrayList Methods",
               "content": "ADDING:\n- add(item) → adds to end\n- add(index, item) → inserts at position\n\nREMOVING:\n- remove(index) → removes at position\n- remove(object) → removes first occurrence\n- clear() → removes all\n\nACCESSING:\n- get(index) → retrieves element\n- set(index, item) → replaces element\n\nQUERYING:\n- size() → number of elements\n- isEmpty() → true if empty\n- contains(item) → true if found\n- indexOf(item) → position of item (-1 if not found)\n\nLOOPING:\nfor (int i = 0; i < list.size(); i++) {\n    System.out.println(list.get(i));\n}\n\n// Enhanced for loop (easier!)\nfor (String item : list) {\n    System.out.println(item);\n}"
+            },
+            {
+              "type": "WARNING",
+              "title": "ArrayList Gotchas",
+              "content": "IndexOutOfBoundsException:\nArrayList<String> list = new ArrayList<>();\nlist.get(0);  // CRASH! List is empty\nAlways check size() before accessing by index.\n\nRemove while iterating (ConcurrentModificationException):\nfor (String s : list) {\n    if (condition) list.remove(s);  // CRASH!\n}\nUse removeIf() instead:\nlist.removeIf(s -> s.startsWith(\"test\"));\n\nPrimitive remove() confusion:\nArrayList<Integer> nums = new ArrayList<>();\nnums.add(1); nums.add(2);\nnums.remove(1);  // Removes at INDEX 1, not value 1!\nnums.remove(Integer.valueOf(1));  // Removes VALUE 1\n\nJava 21+ Sequenced Collections:\nArrayList now supports getFirst(), getLast(), addFirst(), reversed()."
             }
           ],
           "challenges": [
@@ -3188,6 +3248,11 @@
               "type": "THEORY",
               "title": "⚠️ HashMap Keys Must Be Unique",
               "content": "HashMap<String, Integer> map = new HashMap<>();\nmap.put(\"Alice\", 25);\nmap.put(\"Bob\", 30);\nmap.put(\"Alice\", 26);  // OVERWRITES previous Alice value!\n\nSystem.out.println(map.get(\"Alice\"));  // 26 (not 25)\nSystem.out.println(map.size());  // 2 (not 3)\n\nEach KEY can only appear ONCE.\nIf you put() with an existing key, it REPLACES the value.\n\nBut VALUES can be duplicated:\nmap.put(\"Carol\", 30);  // Same value as Bob - totally fine!"
+            },
+            {
+              "type": "WARNING",
+              "title": "HashMap Pitfalls",
+              "content": "NullPointerException with get():\nHashMap<String, Integer> map = new HashMap<>();\nint value = map.get(\"missing\");  // CRASH! get() returns null, auto-unboxing fails\n\nUse getOrDefault() instead:\nint value = map.getOrDefault(\"missing\", 0);\n\nMutable keys are dangerous:\nIf you modify a key object after insertion, you cannot find it again!\n\nNo ordering guarantee:\nHashMap does NOT maintain insertion order.\nUse LinkedHashMap for insertion order.\nUse TreeMap for sorted key order.\n\nJava 21+ Note:\nHashMap does NOT implement SequencedMap (no ordering).\nLinkedHashMap does implement SequencedMap with getFirst(), getLast()."
             }
           ],
           "challenges": [
@@ -3414,6 +3479,11 @@
               "type": "THEORY",
               "title": "💻 Queue Example with LinkedList",
               "content": "```java\nA QUEUE is FIFO (First In, First Out) like a line at a store:\n\nLinkedList<String> queue = new LinkedList<>();\n\n// People join the line (add to end)\nqueue.addLast(\"Alice\");\nqueue.addLast(\"Bob\");\nqueue.addLast(\"Carol\");\n\n// Serve customers (remove from front)\nString first = queue.removeFirst();  // \"Alice\"\nString second = queue.removeFirst(); // \"Bob\"\n\n// Who's next?\nString next = queue.getFirst();  // \"Carol\" (peek without removing)\n\nLinkedList is PERFECT for queues because:\n- addLast() is O(1)\n- removeFirst() is O(1)\nBoth operations are FAST!\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "LinkedList Pitfalls",
+              "content": "NoSuchElementException:\nLinkedList<String> list = new LinkedList<>();\nlist.getFirst();  // CRASH! List is empty\n\nUse peekFirst() for null-safe access:\nString first = list.peekFirst();  // Returns null if empty\n\nRandom access is SLOW:\nlist.get(500);  // Must traverse 500 nodes! O(n)\nUse ArrayList if you need fast random access.\n\nMemory overhead:\nEach element has prev/next pointers - more memory than ArrayList.\n\nJava 21+ Sequenced Collections:\nLinkedList implements SequencedCollection.\nNew methods: reversed() returns reversed view."
             }
           ],
           "challenges": [
@@ -3524,6 +3594,11 @@
               "type": "THEORY",
               "title": "💻 Real-World Example: Leaderboard",
               "content": "```java\nBuilding a game leaderboard:\n\nimport java.util.*;\n\nclass Player {\n    String name;\n    int score;\n    \n    Player(String name, int score) {\n        this.name = name;\n        this.score = score;\n    }\n}\n\nArrayList<Player> players = new ArrayList<>();\nplayers.add(new Player(\"Alice\", 500));\nplayers.add(new Player(\"Bob\", 750));\nplayers.add(new Player(\"Carol\", 300));\n\n// Sort by score (highest first)\nCollections.sort(players, (p1, p2) -> p2.score - p1.score);\n\n// Display leaderboard\nfor (int i = 0; i < players.size(); i++) {\n    Player p = players.get(i);\n    System.out.println((i+1) + \". \" + p.name + \": \" + p.score);\n}\n\nOutput:\n1. Bob: 750\n2. Alice: 500\n3. Carol: 300\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Sorting and Collections Pitfalls",
+              "content": "Collections.sort() modifies in place:\nList<Integer> nums = List.of(3, 1, 2);\nCollections.sort(nums);  // CRASH! List.of() returns immutable list\n\nUse mutable list:\nList<Integer> nums = new ArrayList<>(List.of(3, 1, 2));\nCollections.sort(nums);  // OK\n\nComparable vs Comparator:\nCustom objects need Comparable or explicit Comparator:\nCollections.sort(people, Comparator.comparing(Person::getName));\n\nNull elements cause NullPointerException:\nCollections.sort(listWithNulls);  // CRASH!\nUse Comparator.nullsFirst() or nullsLast().\n\nJava 21+ Sequenced Collections:\nNew interfaces: SequencedCollection, SequencedSet, SequencedMap.\nNew methods: getFirst(), getLast(), reversed()."
             }
           ],
           "challenges": [
@@ -3739,6 +3814,11 @@
               "content": "Lambdas work with functional interfaces like Comparator, Predicate, Function, and Consumer. Method references (::) provide cleaner syntax when a lambda just calls an existing method.",
               "code": "import java.util.*;\nimport java.util.function.*;\n\npublic class LambdaDemo {\n    public static void main(String[] args) {\n        // Lambda as Comparator\n        List<String> names = new ArrayList<>(List.of(\"Alice\", \"Bob\", \"Charlie\", \"Dan\"));\n        names.sort((a, b) -> a.length() - b.length());\n        System.out.println(names); // [Bob, Dan, Alice, Charlie]\n        \n        // Lambda with forEach\n        names.forEach(name -> System.out.println(\"Hello, \" + name));\n        \n        // Method reference\n        names.forEach(System.out::println);\n        \n        // Predicate - filter condition\n        Predicate<String> startsWithA = s -> s.startsWith(\"A\");\n        System.out.println(startsWithA.test(\"Alice\")); // true\n        System.out.println(startsWithA.test(\"Bob\"));   // false\n        \n        // Function - transform\n        Function<String, Integer> getLength = String::length;\n        System.out.println(getLength.apply(\"Hello\")); // 5\n        \n        // Consumer - action\n        Consumer<String> shout = s -> System.out.println(s.toUpperCase() + \"!\");\n        shout.accept(\"hello\"); // HELLO!\n        \n        // Custom functional interface\n        Calculator add = (a, b) -> a + b;\n        Calculator multiply = (a, b) -> a * b;\n        System.out.println(operate(10, 5, add));      // 15\n        System.out.println(operate(10, 5, multiply)); // 50\n    }\n    \n    @FunctionalInterface\n    interface Calculator {\n        int calculate(int a, int b);\n    }\n    \n    static int operate(int a, int b, Calculator calc) {\n        return calc.calculate(a, b);\n    }\n}",
               "language": "java"
+            },
+            {
+              "type": "WARNING",
+              "title": "Lambda Expression Pitfalls",
+              "content": "Capturing mutable variables:\nint count = 0;\nlist.forEach(s -> count++);  // COMPILE ERROR!\nVariables captured by lambdas must be effectively final.\n\nUse AtomicInteger for counters:\nAtomicInteger count = new AtomicInteger(0);\nlist.forEach(s -> count.incrementAndGet());\n\nShadowing parameters:\n(String s) -> { String s = \"test\"; }  // COMPILE ERROR!\nParameter names cannot be reused inside lambda body.\n\nReturn type ambiguity:\nComparator<String> c = (a, b) -> { a.length() - b.length(); };  // MISSING RETURN!\nWith braces, you need explicit return:\nComparator<String> c = (a, b) -> { return a.length() - b.length(); };\n\nException handling:\nLambdas cannot throw checked exceptions unless functional interface declares them."
             }
           ],
           "challenges": [
@@ -3855,6 +3935,11 @@
               "type": "THEORY",
               "title": "Best Practices for Streams",
               "content": "DO:\n- Use streams for transforming collections\n- Chain operations for readability\n- Use method references when possible\n- Use parallel streams for CPU-intensive operations on large data\n\nDON'T:\n- Use streams for simple loops (overkill)\n- Modify external state in stream operations\n- Reuse streams (they can only be consumed once)\n- Use parallel streams for I/O operations\n\nPARALLEL STREAMS:\nList<String> result = names.parallelStream()\n    .filter(n -> n.length() > 3)\n    .map(String::toUpperCase)\n    .collect(Collectors.toList());\n\nNote: Parallel streams split work across CPU cores.\nOnly use for CPU-bound operations on large datasets!\n\nWHEN TO USE STREAMS:\n- Filtering, mapping, reducing collections\n- When you want declarative, readable code\n- When operations can be parallelized\n\nWHEN NOT TO USE:\n- Simple iteration with side effects\n- When performance is critical and data is small\n- When you need to modify the original collection"
+            },
+            {
+              "type": "WARNING",
+              "title": "Stream API Pitfalls",
+              "content": "Streams can only be consumed ONCE:\nStream<String> stream = names.stream();\nstream.count();  // OK\nstream.forEach(System.out::println);  // IllegalStateException!\n\nLazy evaluation surprises:\nnames.stream().peek(System.out::println);  // Prints NOTHING!\nPeek only runs when terminal operation is called.\n\nCollectors.toList() vs Stream.toList() (Java 16+):\n.collect(Collectors.toList())  // Mutable list\n.toList()  // IMMUTABLE list - cannot modify!\n\nParallel stream ordering:\nParallel streams may not preserve order. Use forEachOrdered() if order matters.\n\nJava 22+ Stream Gatherers (Preview):\nNew gather() operation for custom intermediate operations.\nBuilt-in gatherers: Gatherers.fold(), windowFixed(), scan()."
             }
           ],
           "challenges": [
@@ -4235,9 +4320,9 @@
               "content": "```java\nSTEP 1: Write first test (RED)\n@Test\nvoid testPasswordTooShort() {\n    assertFalse(PasswordValidator.isValid(\"abc\"));\n}\n// Fails: PasswordValidator doesn't exist\n\nSTEP 2: Write minimal code (GREEN)\npublic class PasswordValidator {\n    public static boolean isValid(String password) {\n        return password.length() >= 8;\n    }\n}\n// Test passes!\n\nSTEP 3: Add another test (RED)\n@Test\nvoid testPasswordMustHaveNumber() {\n    assertFalse(PasswordValidator.isValid(\"abcdefgh\"));\n}\n// Fails: password \"abcdefgh\" is considered valid\n\nSTEP 4: Update code (GREEN)\npublic static boolean isValid(String password) {\n    if (password.length() < 8) return false;\n    return password.matches(\".*\\\\d.*\");  // Must contain digit\n}\n// Both tests pass!\n\nSTEP 5: Continue with more tests\n@Test\nvoid testPasswordMustHaveUppercase() { ... }\n@Test\nvoid testValidPassword() { ... }\n\nBuild feature incrementally, one test at a time!\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common TDD Mistakes",
-              "content": "❌ Writing too much code at once\n   - Only write code to pass the CURRENT test\n\n❌ Skipping the refactor step\n   - Clean code is as important as working code\n\n❌ Testing implementation details\n   - Test BEHAVIOR, not internal structure\n\n❌ Not running tests frequently\n   - Run tests after every small change\n\n❌ Writing tests that depend on each other\n   - Each test should be independent\n\n✓ Good TDD: Small steps, frequent feedback"
+              "type": "WARNING",
+              "title": "Common TDD Mistakes",
+              "content": "AVOID THESE TDD PITFALLS:\n\n1. WRITING TOO MUCH CODE AT ONCE\n   Only write code to pass the CURRENT test.\n\n2. SKIPPING THE REFACTOR STEP\n   Clean code is as important as working code.\n\n3. TESTING IMPLEMENTATION DETAILS\n   Test BEHAVIOR, not internal structure.\n\n4. NOT RUNNING TESTS FREQUENTLY\n   Run tests after every small change.\n\n5. WRITING TESTS THAT DEPEND ON EACH OTHER\n   Each test should be independent.\n\nGood TDD: Small steps, frequent feedback."
             }
           ],
           "challenges": []
@@ -4258,7 +4343,7 @@
             {
               "type": "THEORY",
               "title": "What is Maven?",
-              "content": "MAVEN is a build automation tool that:\n\n✓ Manages dependencies (downloads libraries)\n✓ Compiles your code\n✓ Runs tests\n✓ Packages your app (creates JAR file)\n✓ Enforces standard project structure\n\nInstead of:\n- \"Download JUnit JAR\"\n- \"Add to classpath\"\n- \"Hope it works\"\n\nYou write in pom.xml:\n<dependency>\n    <groupId>junit</groupId>\n    <artifactId>junit</artifactId>\n    <version>5.9.3</version>\n</dependency>\n\nMaven downloads it automatically! ✨"
+              "content": "MAVEN is a build automation tool that:\n\n✓ Manages dependencies (downloads libraries)\n✓ Compiles your code\n✓ Runs tests\n✓ Packages your app (creates JAR file)\n✓ Enforces standard project structure\n\nInstead of:\n- \"Download JUnit JAR\"\n- \"Add to classpath\"\n- \"Hope it works\"\n\nYou write in pom.xml:\n<dependency>\n    <groupId>junit</groupId>\n    <artifactId>junit</artifactId>\n    <version>5.11.0</version>\n</dependency>\n\nMaven downloads it automatically! ✨"
             },
             {
               "type": "KEY_POINT",
@@ -4273,7 +4358,7 @@
             {
               "type": "THEORY",
               "title": "The pom.xml File - Project Object Model",
-              "content": "pom.xml is the heart of a Maven project:\n\n<project>\n    <groupId>com.yourcompany</groupId>\n    <artifactId>my-app</artifactId>\n    <version>1.0.0</version>\n    \n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n    \n    <dependencies>\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n\nKEY SECTIONS:\n- groupId: Your organization (like package)\n- artifactId: Project name\n- version: Your project version\n- properties: Configuration (Java version, etc.)\n- dependencies: External libraries you need"
+              "content": "pom.xml is the heart of a Maven project:\n\n<project>\n    <groupId>com.yourcompany</groupId>\n    <artifactId>my-app</artifactId>\n    <version>1.0.0</version>\n    \n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n    \n    <dependencies>\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.11.0</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n\nKEY SECTIONS:\n- groupId: Your organization (like package)\n- artifactId: Project name\n- version: Your project version\n- properties: Configuration (Java version, etc.)\n- dependencies: External libraries you need"
             },
             {
               "type": "THEORY",
@@ -4288,7 +4373,12 @@
             {
               "type": "THEORY",
               "title": "💻 Real pom.xml Example",
-              "content": "```java\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0\n         http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.example</groupId>\n    <artifactId>my-web-app</artifactId>\n    <version>1.0-SNAPSHOT</version>\n\n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <!-- JSON parsing -->\n        <dependency>\n            <groupId>com.google.code.gson</groupId>\n            <artifactId>gson</artifactId>\n            <version>2.10.1</version>\n        </dependency>\n\n        <!-- Testing -->\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.9.3</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n```"
+              "content": "```xml\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0\n         http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>com.example</groupId>\n    <artifactId>my-web-app</artifactId>\n    <version>1.0-SNAPSHOT</version>\n\n    <properties>\n        <maven.compiler.source>23</maven.compiler.source>\n        <maven.compiler.target>23</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <!-- JSON parsing -->\n        <dependency>\n            <groupId>com.google.code.gson</groupId>\n            <artifactId>gson</artifactId>\n            <version>2.11.0</version>\n        </dependency>\n\n        <!-- Testing -->\n        <dependency>\n            <groupId>org.junit.jupiter</groupId>\n            <artifactId>junit-jupiter</artifactId>\n            <version>5.11.0</version>\n            <scope>test</scope>\n        </dependency>\n    </dependencies>\n</project>\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Maven Pitfalls",
+              "content": "AVOID THESE MISTAKES:\n\n1. NOT USING DEPENDENCY MANAGEMENT\n   In multi-module projects, use <dependencyManagement> to centralize versions.\n\n2. USING SNAPSHOT VERSIONS IN PRODUCTION\n   SNAPSHOT versions can change unexpectedly. Use release versions for production.\n\n3. NOT SPECIFYING ENCODING\n   Add <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> to properties.\n\n4. FORGETTING MAVEN WRAPPER\n   Use mvnw (Maven Wrapper) so all developers use the same Maven version.\n\n5. IGNORING DEPENDENCY CONFLICTS\n   Run 'mvn dependency:tree' to check for version conflicts."
             }
           ],
           "challenges": []
@@ -4310,13 +4400,13 @@
               "type": "EXAMPLE",
               "title": "build.gradle.kts Structure",
               "content": "A Gradle build file defines plugins, repositories, dependencies, and application config. Notice how much shorter it is than Maven's pom.xml! Plugins define build behavior, repositories specify where to download dependencies, and the application block configures how to run your app.",
-              "code": "plugins {\n    kotlin(\"jvm\") version \"1.9.0\"\n    application\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n    testImplementation(kotlin(\"test\"))\n}\n\napplication {\n    mainClass.set(\"MainKt\")\n}",
+              "code": "plugins {\n    kotlin(\"jvm\") version \"2.1.0\"\n    application\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n    testImplementation(kotlin(\"test\"))\n}\n\napplication {\n    mainClass.set(\"MainKt\")\n}",
               "language": "kotlin"
             },
             {
               "type": "KEY_POINT",
               "title": "Kotlin DSL vs Groovy",
-              "content": "TWO WAYS TO WRITE GRADLE FILES:\n\nKOTLIN DSL (.gradle.kts):\nplugins {\n    kotlin(\"jvm\") version \"1.9.0\"\n}\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n}\n\nGROOVY DSL (.gradle):\nplugins {\n    id 'org.jetbrains.kotlin.jvm' version '1.9.0'\n}\ndependencies {\n    implementation 'com.google.guava:guava:32.1.2-jre'\n}\n\nWHY KOTLIN DSL IS PREFERRED:\n✓ Type safety (IDE catches errors)\n✓ Better autocomplete in IntelliJ\n✓ Easier refactoring\n✓ More readable for Kotlin developers\n\nMost new projects use Kotlin DSL (.gradle.kts)"
+              "content": "TWO WAYS TO WRITE GRADLE FILES:\n\nKOTLIN DSL (.gradle.kts):\nplugins {\n    kotlin(\"jvm\") version \"2.1.0\"\n}\ndependencies {\n    implementation(\"com.google.guava:guava:32.1.2-jre\")\n}\n\nGROOVY DSL (.gradle):\nplugins {\n    id 'org.jetbrains.kotlin.jvm' version '2.1.0'\n}\ndependencies {\n    implementation 'com.google.guava:guava:32.1.2-jre'\n}\n\nWHY KOTLIN DSL IS PREFERRED:\n✓ Type safety (IDE catches errors)\n✓ Better autocomplete in IntelliJ\n✓ Easier refactoring\n✓ More readable for Kotlin developers\n\nMost new projects use Kotlin DSL (.gradle.kts)"
             },
             {
               "type": "EXAMPLE",
@@ -4333,7 +4423,12 @@
             {
               "type": "KEY_POINT",
               "title": "Gradle Wrapper",
-              "content": "ALWAYS USE THE WRAPPER!\n\n✓ ./gradlew build (correct)\n✗ gradle build (wrong)\n\nWHY?\n- Wrapper ensures EVERYONE uses same Gradle version\n- No need to install Gradle separately\n- Works on any machine with Java\n\nFILES CREATED:\n- gradlew (Unix script)\n- gradlew.bat (Windows script)\n- gradle/wrapper/gradle-wrapper.jar\n- gradle/wrapper/gradle-wrapper.properties\n\nCOMMIT THESE TO GIT!\nTeammates don't need Gradle installed.\n\nUPDATING WRAPPER VERSION:\n./gradlew wrapper --gradle-version 8.5"
+              "content": "ALWAYS USE THE WRAPPER!\n\nCORRECT: ./gradlew build\nWRONG: gradle build\n\nWHY?\n- Wrapper ensures EVERYONE uses same Gradle version\n- No need to install Gradle separately\n- Works on any machine with Java\n\nFILES CREATED:\n- gradlew (Unix script)\n- gradlew.bat (Windows script)\n- gradle/wrapper/gradle-wrapper.jar\n- gradle/wrapper/gradle-wrapper.properties\n\nCOMMIT THESE TO GIT!\nTeammates don't need Gradle installed.\n\nUPDATING WRAPPER VERSION:\n./gradlew wrapper --gradle-version 8.11"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Gradle Pitfalls",
+              "content": "AVOID THESE MISTAKES:\n\n1. NOT USING THE WRAPPER\n   Always use ./gradlew instead of gradle to ensure consistent versions.\n\n2. MIXING GROOVY AND KOTLIN DSL\n   Pick one and stick with it. Kotlin DSL (.gradle.kts) is recommended for new projects.\n\n3. APPLYING PLUGINS THE OLD WAY\n   Use plugins { } block, not apply plugin: 'java' (deprecated).\n\n4. NOT CONFIGURING TEST PLATFORM\n   For JUnit 5, add tasks.test { useJUnitPlatform() }.\n\n5. COMMITTING .gradle FOLDER\n   Add .gradle/ to .gitignore - it contains local cache files."
             }
           ],
           "challenges": [
@@ -4346,9 +4441,18 @@
               "starterCode": "// build.gradle.kts\n// Add your configuration here\n",
               "solution": "plugins {\n    java\n}\n\ngroup = \"com.example\"\nversion = \"1.0.0\"\n\njava {\n    toolchain {\n        languageVersion.set(JavaLanguageVersion.of(23))\n    }\n}\n\nrepositories {\n    mavenCentral()\n}\n\ndependencies {\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.10.0\")\n}\n\ntasks.test {\n    useJUnitPlatform()\n}",
               "hints": [
-                {"level": 1, "text": "Use the 'java' plugin for Java projects"},
-                {"level": 2, "text": "JUnit 5 dependency is 'org.junit.jupiter:junit-jupiter'"},
-                {"level": 3, "text": "useJUnitPlatform() tells Gradle to use JUnit 5"}
+                {
+                  "level": 1,
+                  "text": "Use the 'java' plugin for Java projects"
+                },
+                {
+                  "level": 2,
+                  "text": "JUnit 5 dependency is 'org.junit.jupiter:junit-jupiter'"
+                },
+                {
+                  "level": 3,
+                  "text": "useJUnitPlatform() tells Gradle to use JUnit 5"
+                }
               ],
               "testCases": []
             },
@@ -4361,9 +4465,18 @@
               "starterCode": "// Add to build.gradle.kts\n\ntasks.register(\"projectInfo\") {\n    // Your code here\n}",
               "solution": "tasks.register(\"projectInfo\") {\n    group = \"help\"\n    description = \"Displays project information\"\n    \n    doLast {\n        println(\"================================\")\n        println(\"Project Information\")\n        println(\"================================\")\n        println(\"Name: ${project.name}\")\n        println(\"Version: ${project.version}\")\n        println(\"Java Version: ${java.toolchain.languageVersion.get()}\")\n        println(\"================================\")\n    }\n}",
               "hints": [
-                {"level": 1, "text": "Use doLast { } to define what the task does"},
-                {"level": 2, "text": "Access project properties with 'project.name', 'project.version'"},
-                {"level": 3, "text": "Use string templates with ${} for interpolation"}
+                {
+                  "level": 1,
+                  "text": "Use doLast { } to define what the task does"
+                },
+                {
+                  "level": 2,
+                  "text": "Access project properties with 'project.name', 'project.version'"
+                },
+                {
+                  "level": 3,
+                  "text": "Use string templates with ${} for interpolation"
+                }
               ],
               "testCases": []
             }
@@ -4393,7 +4506,7 @@
               "content": "Instead of println, use your IDE's DEBUGGER:\n\nKEY FEATURES:\n\n1. BREAKPOINTS\n   - Click next to line number (red dot appears)\n   - Program PAUSES when it reaches that line\n   - Inspect ALL variables at that moment\n\n2. STEP THROUGH CODE\n   - Step Over: Execute current line, move to next\n   - Step Into: Go inside method call\n   - Step Out: Finish current method, return to caller\n\n3. WATCH VARIABLES\n   - See how variables change\n   - Evaluate expressions on-the-fly\n\n4. CALL STACK\n   - See path of method calls\n   - Navigate to any point\n\nDEBUGGING WORKFLOW:\n1. Set breakpoint where problem might be\n2. Run in debug mode\n3. When paused, inspect variables\n4. Step through code line by line\n5. Watch how values change\n6. Identify where logic goes wrong"
             },
             {
-              "type": "KEY_POINT",
+              "type": "ANALOGY",
               "title": "Logging vs Debugging",
               "content": "LOGGING = Security cameras:\n- Always recording\n- Review footage after incident\n- See what happened over time\n- Good for: production issues, patterns\n\nExample:\n\"Why did the server crash at 3am?\"\n→ Check logs for ERROR messages at that time\n\nDEBUGGING = Live investigation:\n- Stop and examine everything NOW\n- Step-by-step analysis\n- Immediate feedback\n- Good for: development, understanding flow\n\nExample:\n\"Why is calculateTotal() returning wrong value?\"\n→ Set breakpoint, inspect variables, step through logic\n\nUSE BOTH!"
             },
@@ -4408,9 +4521,16 @@
               "content": "1. USE VERSION CONTROL (Git)\n   - Commit frequently\n   - Write meaningful commit messages\n   - \"Fixed bug\" ✗\n   - \"Fix NullPointerException in user login when email is empty\" ✓\n\n2. CODE REVIEWS\n   - Have others review your code\n   - Catches bugs, improves quality\n   - Learn from feedback\n\n3. CONSISTENT FORMATTING\n   - Use IDE auto-format (Ctrl+Alt+L in IntelliJ)\n   - Follow team style guide\n   - Consistent = readable\n\n4. MEANINGFUL NAMES\n   - int d; ✗\n   - int daysSinceCreation; ✓\n\n5. SMALL COMMITS\n   - One logical change per commit\n   - Easy to review and revert\n\n6. TEST BEFORE PUSHING\n   - Always run tests\n   - Don't break the build for teammates\n\n7. CONTINUOUS LEARNING\n   - Read others' code\n   - Stay updated on best practices\n   - Refactor as you learn"
             },
             {
-              "type": "THEORY",
-              "title": "💻 Real Logging Example",
-              "content": "```java\nimport org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\n\npublic class UserService {\n    private static final Logger logger = \n        LoggerFactory.getLogger(UserService.class);\n\n    public User authenticateUser(String username, String password) {\n        logger.debug(\"Attempting authentication for user: {}\", username);\n        \n        User user = userRepository.findByUsername(username);\n        \n        if (user == null) {\n            logger.warn(\"Authentication failed: user not found - {}\", username);\n            return null;\n        }\n        \n        if (!passwordMatches(user, password)) {\n            logger.warn(\"Authentication failed: incorrect password for {}\", username);\n            return null;\n        }\n        \n        logger.info(\"User {} authenticated successfully\", username);\n        return user;\n    }\n}\n\nOUTPUT (with timestamps automatically added):\n2025-01-15 10:30:15 DEBUG UserService - Attempting authentication for user: alice\n2025-01-15 10:30:15 INFO UserService - User alice authenticated successfully\n```"
+              "type": "EXAMPLE",
+              "title": "Real Logging Example",
+              "content": "A proper logging setup using SLF4J with different log levels for authentication flow.",
+              "code": "import org.slf4j.Logger;\nimport org.slf4j.LoggerFactory;\n\npublic class UserService {\n    private static final Logger logger = \n        LoggerFactory.getLogger(UserService.class);\n\n    public User authenticateUser(String username, String password) {\n        logger.debug(\"Attempting authentication for user: {}\", username);\n        \n        User user = userRepository.findByUsername(username);\n        \n        if (user == null) {\n            logger.warn(\"Authentication failed: user not found - {}\", username);\n            return null;\n        }\n        \n        if (!passwordMatches(user, password)) {\n            logger.warn(\"Authentication failed: incorrect password for {}\", username);\n            return null;\n        }\n        \n        logger.info(\"User {} authenticated successfully\", username);\n        return user;\n    }\n}\n\n// OUTPUT (with timestamps automatically added):\n// 2025-01-15 10:30:15 DEBUG UserService - Attempting authentication for user: alice\n// 2025-01-15 10:30:15 INFO UserService - User alice authenticated successfully",
+              "language": "java"
+            },
+            {
+              "type": "WARNING",
+              "title": "Debugging and Logging Pitfalls",
+              "content": "AVOID THESE MISTAKES:\n\n1. LEAVING DEBUG PRINTLNS IN CODE\n   Remove System.out.println() before committing. Use proper logging instead.\n\n2. LOGGING SENSITIVE DATA\n   NEVER log passwords, credit cards, or personal data. Logs can be accessed by many people.\n\n3. NOT LOGGING ENOUGH CONTEXT\n   Bad: logger.error(\"Failed\")\n   Good: logger.error(\"Failed to process order {} for user {}\", orderId, userId)\n\n4. IGNORING EXCEPTION STACK TRACES\n   Always include the exception: logger.error(\"Error processing\", exception)\n\n5. DEBUGGING IN PRODUCTION\n   Use logging for production issues. Debuggers are for development only."
             }
           ],
           "challenges": []
@@ -4446,6 +4566,11 @@
               "type": "THEORY",
               "title": "SQL - The Database Language",
               "content": "SQL (Structured Query Language) is how you talk to databases.\n\nFour essential operations (CRUD):\n\nCREATE (Insert data):\nINSERT INTO students (name, age) VALUES ('Alice', 20);\n\nREAD (Query data):\nSELECT * FROM students WHERE age > 18;\n\nUPDATE (Modify data):\nUPDATE students SET age = 21 WHERE name = 'Alice';\n\nDELETE (Remove data):\nDELETE FROM students WHERE age < 18;"
+            },
+            {
+              "type": "WARNING",
+              "title": "Database Operations Are Permanent",
+              "content": "Unlike variables in your program, database changes are PERMANENT:\n\n- DELETE removes data forever (unless you have backups)\n- UPDATE cannot be undone without restoring from backup\n- No Ctrl+Z in production databases!\n\nALWAYS:\n- Test queries on development data first\n- Back up data before running DELETE or UPDATE\n- Use WHERE clauses carefully - forgetting WHERE deletes ALL rows\n- In production, use transactions so you can rollback mistakes"
             }
           ],
           "challenges": []
@@ -4487,6 +4612,11 @@
               "type": "KEY_POINT",
               "title": "Primary Keys - The Unique Identifier",
               "content": "Every table should have a PRIMARY KEY:\n\nWHY?\n- Uniquely identifies each row\n- Prevents duplicate entries\n- Allows referencing from other tables\n\nGOOD PRIMARY KEYS:\n✓ id INT AUTO_INCREMENT\n✓ email (if truly unique)\n✓ username (if truly unique)\n\nBAD PRIMARY KEYS:\n✗ name (not unique - many \"John Smith\"s)\n✗ age (definitely not unique)\n\nBEST PRACTICE:\nAlways use an auto-incrementing ID as primary key.\nSimple, guaranteed unique, fast."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common SQL Mistakes to Avoid",
+              "content": "1. FORGETTING NOT NULL:\n   - Fields without NOT NULL can have empty values\n   - Required fields should always have NOT NULL\n\n2. WRONG DATA TYPES:\n   - Using VARCHAR for numbers = slow sorting, bad comparisons\n   - Using FLOAT for money = rounding errors (use DECIMAL instead)\n\n3. DUPLICATE DATA:\n   - Storing same data in multiple tables = inconsistency\n   - Use foreign keys and JOINs instead\n\n4. NO PRIMARY KEY:\n   - Every table needs a PRIMARY KEY\n   - Without it, you cannot uniquely identify rows\n\n5. SELECT * IN PRODUCTION:\n   - Retrieves all columns, even unused ones\n   - Wastes bandwidth and memory\n   - Always specify needed columns: SELECT name, age FROM..."
             }
           ],
           "challenges": []
@@ -4523,6 +4653,11 @@
               "type": "KEY_POINT",
               "title": "Query Order Matters!",
               "content": "SQL queries are executed in this order:\n\n1. FROM - Which table(s)\n2. WHERE - Filter rows\n3. GROUP BY - Group rows\n4. HAVING - Filter groups\n5. SELECT - Choose columns\n6. ORDER BY - Sort results\n7. LIMIT - Restrict number\n\nExample query using all:\n\nSELECT age, COUNT(*) as count, AVG(gpa) as avg_gpa\nFROM students\nWHERE email IS NOT NULL\nGROUP BY age\nHAVING count > 3\nORDER BY avg_gpa DESC\nLIMIT 5;"
+            },
+            {
+              "type": "WARNING",
+              "title": "Query Performance Pitfalls",
+              "content": "1. AVOID SELECT * ON LARGE TABLES:\n   - Fetches all columns, wastes memory\n   - Specify only needed columns\n\n2. MISSING INDEXES:\n   - Queries on non-indexed columns are SLOW\n   - Add indexes on columns used in WHERE, ORDER BY, JOIN\n\n3. LIKE WITH LEADING WILDCARD:\n   - LIKE '%text' cannot use indexes = full table scan\n   - LIKE 'text%' CAN use indexes = faster\n\n4. NULL COMPARISONS:\n   - WHERE column = NULL never works!\n   - Use WHERE column IS NULL instead\n\n5. AGGREGATES WITHOUT GROUP BY:\n   - COUNT(*), SUM(), AVG() without GROUP BY = one result for entire table\n   - Easily missed mistake in complex queries"
             }
           ],
           "challenges": []
@@ -4564,6 +4699,11 @@
               "type": "THEORY",
               "title": "Many-to-Many Relationships",
               "content": "SCENARIO: Students can take many courses, courses have many students\n\nBAD DESIGN: Store courses in student table\nstudents:\n| id | name  | courses_taken          |\n|----|-------|------------------------|\n| 1  | Alice | Math 101, Physics 201  |  ← Hard to query!\n\nGOOD DESIGN: Junction table (join table)\n\nstudents:\n| id | name  |\n\ncourses:\n| id | course_name |\n\nenrollments (junction table):\n| student_id | course_id |\n|------------|----------|\n| 1          | 101      |\n| 1          | 201      |\n| 2          | 101      |\n\nTHREE-WAY JOIN:\nSELECT students.name, courses.course_name\nFROM students\nINNER JOIN enrollments ON students.id = enrollments.student_id\nINNER JOIN courses ON enrollments.course_id = courses.id;"
+            },
+            {
+              "type": "WARNING",
+              "title": "JOIN Gotchas to Avoid",
+              "content": "1. CARTESIAN PRODUCT (Accidental Cross Join):\n   - Forgetting ON clause = rows multiply!\n   - 100 x 100 = 10,000 rows unexpectedly\n\n2. WRONG JOIN TYPE:\n   - INNER when you need LEFT = missing rows\n   - LEFT when you need INNER = unexpected NULLs\n\n3. AMBIGUOUS COLUMNS:\n   - SELECT name FROM A JOIN B = Error if both have 'name'\n   - Always use table prefixes: SELECT A.name, B.name\n\n4. N+1 QUERY PROBLEM:\n   - Looping through results and querying for each = SLOW\n   - Use a single JOIN instead of multiple queries\n\n5. JOINING ON WRONG COLUMNS:\n   - Always join PRIMARY KEY to FOREIGN KEY\n   - Verify column types match (INT to INT, not INT to VARCHAR)"
             }
           ],
           "challenges": []
@@ -4607,6 +4747,11 @@
               "content": "PreparedStatement benefits:\n✓ Prevents SQL injection\n✓ Better performance (compiled once, reused)\n✓ Handles special characters automatically\n\nString sql = \"INSERT INTO students (name, age, email) VALUES (?, ?, ?)\";\n\ntry (PreparedStatement pstmt = conn.prepareStatement(sql)) {\n    // Set parameters (1-indexed)\n    pstmt.setString(1, \"Alice Johnson\");\n    pstmt.setInt(2, 20);\n    pstmt.setString(3, \"alice@example.com\");\n    \n    int rowsInserted = pstmt.executeUpdate();\n    System.out.println(\"Inserted: \" + rowsInserted);\n}\n\nBATCH INSERT (multiple rows):\npstmt.setString(1, \"Alice\");\npstmt.setInt(2, 20);\npstmt.addBatch();\n\npstmt.setString(1, \"Bob\");\npstmt.setInt(2, 21);\npstmt.addBatch();\n\nint[] results = pstmt.executeBatch();  // Execute all at once"
             },
             {
+              "type": "WARNING",
+              "title": "Critical JDBC Security and Resource Management",
+              "content": "SECURITY RISKS:\n- SQL Injection was the #1 web vulnerability in 2023\n- NEVER concatenate user input into SQL strings\n- ALWAYS use PreparedStatement with ? placeholders\n\nRESOURCE LEAKS:\n- Unclosed connections exhaust database pool\n- Always use try-with-resources (Java 7+)\n- Close in order: ResultSet, Statement, Connection\n\nCONNECTION POOL EXHAUSTION:\n- Creating connections is expensive (100-500ms each)\n- Use HikariCP or similar pool in production\n- Set reasonable pool size (10-20 connections typical)\n\nCREDENTIAL EXPOSURE:\n- Never hardcode database passwords in source code\n- Use environment variables or secrets management\n- Rotate credentials regularly"
+            },
+            {
               "type": "KEY_POINT",
               "title": "JDBC Best Practices",
               "content": "1. ALWAYS USE TRY-WITH-RESOURCES\n   - Auto-closes connections, statements, resultsets\n   - Prevents resource leaks\n\n2. USE PREPAREDSTATEMENT, NOT STATEMENT\n   - Security (prevents SQL injection)\n   - Performance (pre-compiled)\n\n3. DON'T CONCATENATE SQL WITH USER INPUT\n   - Use ? placeholders\n   - Set parameters with setString(), setInt(), etc.\n\n4. USE CONNECTION POOLING IN PRODUCTION\n   - Libraries: HikariCP, Apache DBCP\n   - Reuse connections (expensive to create)\n\n5. HANDLE EXCEPTIONS PROPERLY\n   - Log errors\n   - Don't expose SQL details to users\n\n6. CLOSE RESOURCES IN FINALLY OR USE TRY-WITH-RESOURCES\n   - Connection leaks kill performance"
@@ -4645,6 +4790,11 @@
               "type": "THEORY",
               "title": "HTTP Requests and Responses",
               "content": "When you visit a website:\n\n1. CLIENT SENDS REQUEST:\nGET /api/users/123 HTTP/1.1\nHost: example.com\n\nThis means: \"Give me information about user 123\"\n\n2. SERVER PROCESSES REQUEST:\n- Looks up user 123 in database\n- Prepares the data\n\n3. SERVER SENDS RESPONSE:\nHTTP/1.1 200 OK\nContent-Type: application/json\n{\"name\": \"Alice\", \"age\": 20}\n\nCommon HTTP methods:\n- GET: Retrieve data (\"show me\")\n- POST: Create data (\"save this\")\n- PUT: Update data (\"change this\")\n- DELETE: Remove data (\"delete this\")"
+            },
+            {
+              "type": "WARNING",
+              "title": "Web Development Considerations",
+              "content": "IMPORTANT CONCEPTS FOR REAL-WORLD WEB DEVELOPMENT:\n\n1. HTTPS IS MANDATORY\n   - Never use plain HTTP in production\n   - All modern browsers flag HTTP as insecure\n   - SSL/TLS encrypts data in transit\n\n2. CORS (Cross-Origin Resource Sharing)\n   - Browsers block requests to different domains by default\n   - Backend must explicitly allow frontend origins\n   - Spring Boot: Use @CrossOrigin or configure WebMvcConfigurer\n\n3. THIS COURSE IS SIMPLIFIED\n   - Real web apps need authentication, rate limiting\n   - Production requires proper error handling and logging\n   - Security headers (CSP, HSTS) are essential\n\n4. API DESIGN MATTERS\n   - RESTful conventions make APIs predictable\n   - Versioning prevents breaking changes\n   - Documentation (OpenAPI/Swagger) is essential"
             }
           ],
           "challenges": []
@@ -4686,6 +4836,11 @@
               "type": "KEY_POINT",
               "title": "REST API Best Practices",
               "content": "1. USE NOUNS, NOT VERBS IN URLS:\n   ✓ GET /api/users\n   ✗ GET /api/getUsers\n\n2. USE PLURAL NOUNS:\n   ✓ /api/users/123\n   ✗ /api/user/123\n\n3. USE HTTP METHODS FOR ACTIONS:\n   Don't: POST /api/users/delete/123\n   Do: DELETE /api/users/123\n\n4. VERSION YOUR API:\n   /api/v1/users\n   /api/v2/users\n\n5. RETURN APPROPRIATE STATUS CODES:\n   Success → 200\n   Created → 201\n   Not Found → 404\n\n6. USE QUERY PARAMETERS FOR FILTERING:\n   /api/users?age=20&active=true"
+            },
+            {
+              "type": "WARNING",
+              "title": "REST API Security and Best Practices",
+              "content": "CRITICAL CONSIDERATIONS FOR PRODUCTION APIs:\n\n1. AUTHENTICATION IS REQUIRED\n   - Never expose APIs without authentication\n   - Use JWT tokens or OAuth2 for stateless auth\n   - API keys for service-to-service calls\n\n2. INPUT VALIDATION\n   - Never trust client data\n   - Validate all inputs on the server\n   - Sanitize data to prevent injection attacks\n\n3. RATE LIMITING\n   - Protect against abuse and DDoS\n   - Implement per-user and per-IP limits\n   - Return 429 Too Many Requests\n\n4. VERSIONING STRATEGY\n   - Plan for API evolution from day one\n   - URL versioning (/api/v1/) is most common\n   - Document deprecation timelines\n\n5. ERROR RESPONSES\n   - Never expose stack traces to clients\n   - Use consistent error format (RFC 7807)\n   - Log details server-side for debugging"
             }
           ],
           "challenges": []
@@ -4722,6 +4877,11 @@
               "type": "KEY_POINT",
               "title": "Error Handling for HTTP Requests",
               "content": "ALWAYS handle errors:\n\ntry {\n    HttpResponse<String> response = client.send(request, ...);\n    \n    // Check status code\n    if (response.statusCode() == 200) {\n        // Success!\n        String body = response.body();\n    } else if (response.statusCode() == 404) {\n        System.err.println(\"Resource not found\");\n    } else if (response.statusCode() >= 500) {\n        System.err.println(\"Server error: \" + response.statusCode());\n    } else {\n        System.err.println(\"Error: \" + response.statusCode());\n    }\n    \n} catch (IOException e) {\n    // Network error (can't reach server)\n    System.err.println(\"Network error: \" + e.getMessage());\n} catch (InterruptedException e) {\n    // Request was interrupted\n    System.err.println(\"Request interrupted\");\n}\n\nCOMMON ERRORS:\n- IOException: Network issues, timeout\n- 4xx codes: Client problems (bad request, not found)\n- 5xx codes: Server problems (crash, overload)"
+            },
+            {
+              "type": "WARNING",
+              "title": "HttpClient Production Considerations",
+              "content": "WHEN USING HTTPCLIENT IN PRODUCTION:\n\n1. CONNECTION POOLING\n   - Reuse HttpClient instances (they are thread-safe)\n   - Creating new clients per request wastes resources\n   - Configure connection timeouts appropriately\n\n2. TIMEOUT CONFIGURATION\n   HttpClient client = HttpClient.newBuilder()\n       .connectTimeout(Duration.ofSeconds(10))\n       .build();\n\n3. ERROR HANDLING\n   - Handle IOException for network errors\n   - Handle InterruptedException for cancellation\n   - Check status codes (4xx, 5xx)\n\n4. HTTPS ONLY\n   - Never use HTTP for sensitive data\n   - Verify SSL certificates in production\n\n5. ASYNC FOR PERFORMANCE\n   - Use sendAsync() for non-blocking calls\n   - CompletableFuture for concurrent requests\n   - Consider reactive alternatives (WebClient)\n\n6. JSON LIBRARIES\n   - Gson is simple but Jackson is more powerful\n   - Consider using records for DTOs (Java 17+)"
             }
           ],
           "challenges": []
@@ -4766,7 +4926,12 @@
             {
               "type": "KEY_POINT",
               "title": "Spring Boot 4.0 (November 2025) - What's New",
-              "content": "Spring Boot 4.0 Key Changes:\n\n1. FULL JAKARTA EE 11 EMBRACE\n   - Complete migration to Jakarta EE 11 APIs\n   - All javax.* packages now jakarta.*\n\n2. REMOVED LEGACY SERVLET SUPPORT\n   - No more backward compatibility with old servlet APIs\n   - Cleaner, more modern codebase\n\n3. BASELINE: Java 17+ (We recommend Java 23+)\n   - Java 17 is the minimum required version\n   - Use Java 23+ to get all modern features\n\n4. VIRTUAL THREADS BY DEFAULT\n   - No configuration needed for virtual threads\n   - Massive scalability improvements out of the box\n\n5. NATIVE COMPILATION IMPROVEMENTS\n   - Better GraalVM native image support\n   - Faster startup, lower memory usage\n\nWHY THIS MATTERS:\n- Simpler code (no legacy workarounds)\n- Better performance (virtual threads)\n- Modern Java features (records, sealed classes, pattern matching)\n- Production-ready cloud-native applications"
+              "content": "Spring Boot 4.0 Key Changes:\n\n1. SPRING FRAMEWORK 7 + MODULAR ARCHITECTURE\n   - Built on Spring Framework 7\n   - Complete modularization with smaller, focused JARs\n   - JSpecify null-safety annotations portfolio-wide\n\n2. JAKARTA EE 11 + SERVLET 6.1 BASELINE\n   - Complete migration to Jakarta EE 11 APIs\n   - All javax.* packages now jakarta.*\n   - Requires Servlet 6.1 compatible containers\n\n3. JAVA VERSION: 17+ Required, 25 Recommended\n   - Java 17 is the minimum required version\n   - Supports up to and including Java 25\n   - LTS releases (17, 21, 25) encouraged for production\n\n4. HTTP SERVICE CLIENTS (NEW!)\n   - Auto-configuration for HTTP Service Clients\n   - Annotate Java interfaces, Spring implements them\n   - Similar to Spring Data Repository pattern\n\n5. API VERSIONING SUPPORT (NEW!)\n   - Built-in API versioning for MVC and WebFlux\n   - Configure via spring.mvc.apiversion.* properties\n\n6. VIRTUAL THREADS INTEGRATION\n   - HttpClient uses virtual threads when enabled\n   - Set spring.threads.virtual.enabled=true\n   - Massive scalability improvements\n\n7. GRAALVM NATIVE IMAGE\n   - Requires GraalVM v25 or later\n   - Improved native compilation support\n\nWHY THIS MATTERS:\n- Simpler code (modular, null-safe)\n- Better performance (virtual threads)\n- Modern Java features (records, sealed classes, pattern matching)\n- Production-ready cloud-native applications"
+            },
+            {
+              "type": "WARNING",
+              "title": "Spring Boot Migration Considerations",
+              "content": "MIGRATING FROM SPRING BOOT 3.x TO 4.0:\n\n1. JAVAX TO JAKARTA MIGRATION\n   If you have not migrated yet:\n   - All javax.* imports must become jakarta.*\n   - javax.servlet.* -> jakarta.servlet.*\n   - javax.validation.* -> jakarta.validation.*\n\n2. BREAKING CHANGES\n   - Some deprecated APIs removed\n   - Check migration guide at github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide\n\n3. VIRTUAL THREADS CAUTION\n   - Virtual threads require Java 21+\n   - ThreadLocal usage needs review\n   - Some libraries may not be compatible\n\n4. DEVELOPMENT VS PRODUCTION\n   - This course teaches concepts, not production setup\n   - Production apps need: proper security, monitoring, logging\n   - Consider Spring Cloud for microservices"
             }
           ],
           "challenges": []
@@ -4803,6 +4968,11 @@
               "type": "KEY_POINT",
               "title": "Validation with Spring Boot",
               "content": "Use Bean Validation annotations:\n\npublic class User {\n    @NotNull(message = \"ID is required\")\n    private Long id;\n    \n    @NotBlank(message = \"Name cannot be empty\")\n    @Size(min = 2, max = 100, message = \"Name must be 2-100 characters\")\n    private String name;\n    \n    @Min(value = 18, message = \"Must be at least 18\")\n    private int age;\n    \n    @Email(message = \"Invalid email format\")\n    private String email;\n}\n\nIn controller:\n@PostMapping\npublic ResponseEntity<User> createUser(@Valid @RequestBody User user) {\n    // If validation fails, Spring returns 400 automatically\n    return ResponseEntity.ok(userService.save(user));\n}\n\n@Valid triggers validation!\nInvalid request → 400 Bad Request with error details"
+            },
+            {
+              "type": "WARNING",
+              "title": "REST Controller Best Practices",
+              "content": "AVOID COMMON CONTROLLER MISTAKES:\n\n1. CONTROLLER SHOULD BE THIN\n   - No business logic in controllers\n   - Delegate to service layer\n   - Controllers only handle HTTP concerns\n\n2. USE DTOs (Data Transfer Objects)\n   - Never expose entities directly\n   - DTOs hide internal structure\n   - Separate input/output DTOs if needed\n\n3. PROPER HTTP STATUS CODES\n   - 201 for resource creation (not 200)\n   - 204 for successful deletion\n   - 400 for validation errors\n   - 404 for not found\n\n4. VALIDATION IS REQUIRED\n   - Always use @Valid on @RequestBody\n   - Bean Validation annotations on DTOs\n   - Custom validators for complex rules\n\n5. EXCEPTION HANDLING\n   - Use @RestControllerAdvice globally\n   - Never expose stack traces\n   - Return ProblemDetail (RFC 7807)"
             }
           ],
           "challenges": []
@@ -4844,6 +5014,11 @@
               "type": "KEY_POINT",
               "title": "Service Layer Pattern",
               "content": "BEST PRACTICE: Controller → Service → Repository\n\n@RestController\npublic class UserController {\n    @Autowired\n    private UserService userService;  // Not Repository!\n    \n    @GetMapping(\"/api/users\")\n    public List<User> getAll() {\n        return userService.getAllUsers();\n    }\n}\n\n@Service\npublic class UserService {\n    @Autowired\n    private UserRepository userRepository;\n    \n    public List<User> getAllUsers() {\n        return userRepository.findAll();\n    }\n    \n    public User createUser(User user) {\n        // Business logic here\n        validateUser(user);\n        return userRepository.save(user);\n    }\n}\n\nWHY?\n- Separation of concerns\n- Business logic in service, not controller\n- Easier to test\n- Reusable services"
+            },
+            {
+              "type": "WARNING",
+              "title": "JPA and Database Best Practices",
+              "content": "CRITICAL JPA CONSIDERATIONS:\n\n1. NEVER USE ddl-auto IN PRODUCTION\n   - Use: spring.jpa.hibernate.ddl-auto=validate\n   - Use Flyway or Liquibase for migrations\n   - ddl-auto=update can cause data loss\n\n2. N+1 QUERY PROBLEM\n   - Lazy loading can cause performance issues\n   - Use @EntityGraph or JOIN FETCH\n   - Monitor with spring.jpa.show-sql=true\n\n3. TRANSACTION MANAGEMENT\n   - Use @Transactional on service methods\n   - Understand propagation and isolation\n   - Avoid long transactions\n\n4. ENTITY RELATIONSHIPS\n   - Prefer @ManyToOne over @OneToMany\n   - Avoid bidirectional if possible\n   - Use cascade carefully (especially REMOVE)\n\n5. CONNECTION POOLING\n   - HikariCP is the default (and best)\n   - Configure pool size appropriately\n   - Monitor connection leaks"
             }
           ],
           "challenges": []
@@ -5148,6 +5323,11 @@
               "type": "THEORY",
               "title": "Fetching Data from JavaScript",
               "content": "Your API endpoint:\nGET /api/users/1 → {\"name\": \"Alice\", \"age\": 20}\n\nJavaScript code to call it:\n\nfetch('http://localhost:8080/api/users/1')\n  .then(response => response.json())\n  .then(user => {\n    console.log(user.name);  // \"Alice\"\n    document.getElementById('username').textContent = user.name;\n  });\n\nThis:\n1. Sends HTTP GET request to your API\n2. Receives JSON response\n3. Displays it on the webpage\n\nFull-stack = Backend (Java) + Frontend (HTML/JS) working together!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Frontend-Backend Connection Mistakes",
+              "content": "CORS ERRORS:\nBrowser blocks requests from different origins by default.\nFix: Add @CrossOrigin annotation to your Spring controllers.\n\nHARDCODED URLS:\nDon't hardcode 'localhost:8080' in production code!\nFix: Use environment variables or config files.\n\nNO ERROR HANDLING:\nFetch doesn't throw on HTTP errors (404, 500).\nFix: Always check response.ok before processing.\n\nMIXED CONTENT:\nHTTPS pages can't call HTTP APIs.\nFix: Use HTTPS everywhere in production.\n\nJSON PARSING ERRORS:\nForgetting Content-Type header on POST requests.\nFix: Always set headers: { 'Content-Type': 'application/json' }"
             }
           ],
           "challenges": []
@@ -5189,6 +5369,11 @@
               "type": "KEY_POINT",
               "title": "The Full Flow",
               "content": "USER ACTION:\n1. User fills form, clicks \"Add User\"\n\nFRONTEND:\n2. JavaScript captures form data\n3. fetch() sends POST to http://localhost:8080/api/users\n4. Sends JSON: {\"name\":\"Alice\",\"email\":\"alice@email.com\"}\n\nBACKEND:\n5. @PostMapping receives request\n6. @RequestBody converts JSON to User object\n7. UserService.createUser() called\n8. UserRepository.save() inserts to database\n\nDATABASE:\n9. INSERT INTO users...\n10. Returns generated ID\n\nBACKEND RESPONSE:\n11. Return User object as JSON\n12. Status: 200 OK\n\nFRONTEND:\n13. Receives response\n14. Calls loadUsers() to refresh list\n15. GET /api/users\n16. Displays updated user list\n\nCOMPLETE CYCLE!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Full-Stack Development Pitfalls",
+              "content": "N+1 QUERY PROBLEM:\nLoading 100 users with their orders = 101 database queries!\nFix: Use @EntityGraph or JOIN FETCH for related entities.\n\nCIRCULAR JSON REFERENCES:\nUser has Orders, Order has User = infinite JSON loop!\nFix: Use @JsonIgnore or DTOs to break the cycle.\n\nMISSING @TRANSACTIONAL:\nLazy-loaded entities fail outside of session.\nFix: Add @Transactional to service methods that load relationships.\n\nFRONTEND STATE OUT OF SYNC:\nUser creates item but list doesn't update.\nFix: Always refresh data after mutations or use optimistic updates."
             }
           ],
           "challenges": []
@@ -5543,7 +5728,7 @@
             {
               "type": "THEORY",
               "title": "Spring Boot with Virtual Threads",
-              "content": "Virtual Threads in Spring Boot:\n\nSpring Boot 4.0+: Virtual threads are ENABLED BY DEFAULT!\nNo configuration needed - just use Java 21+.\n\nSpring Boot 3.2-3.x: Enable manually:\n# application.properties\nspring.threads.virtual.enabled=true\n\nBEFORE (Platform Threads):\n- Tomcat default: 200 threads\n- 200 concurrent requests max\n- Request 201 waits in queue\n\nAFTER (Virtual Threads):\n- Each request gets its own virtual thread\n- Handle 10,000+ concurrent requests\n- No thread pool exhaustion!\n\nYour existing code works unchanged:\n\n@RestController\npublic class UserController {\n    @GetMapping(\"/api/users/{id}\")\n    public User getUser(@PathVariable Long id) {\n        // This blocks waiting for DB - that's FINE now!\n        return userRepository.findById(id).orElseThrow();\n    }\n}\n\nWith virtual threads enabled:\n- JVM automatically \"parks\" virtual thread during DB wait\n- Platform thread freed to handle other requests\n- Virtual thread \"unparked\" when DB returns\n- You don't change ANY code!"
+              "content": "Virtual Threads in Spring Boot:\n\nSpring Boot 4.0+: Virtual threads require configuration.\nSet spring.threads.virtual.enabled=true in application.properties.\n\nSpring Boot 3.2-3.x: Enable manually:\n# application.properties\nspring.threads.virtual.enabled=true\n\nBEFORE (Platform Threads):\n- Tomcat default: 200 threads\n- 200 concurrent requests max\n- Request 201 waits in queue\n\nAFTER (Virtual Threads):\n- Each request gets its own virtual thread\n- Handle 10,000+ concurrent requests\n- No thread pool exhaustion!\n\nYour existing code works unchanged:\n\n@RestController\npublic class UserController {\n    @GetMapping(\"/api/users/{id}\")\n    public User getUser(@PathVariable Long id) {\n        // This blocks waiting for DB - that's FINE now!\n        return userRepository.findById(id).orElseThrow();\n    }\n}\n\nWith virtual threads enabled:\n- JVM automatically \"parks\" virtual thread during DB wait\n- Platform thread freed to handle other requests\n- Virtual thread \"unparked\" when DB returns\n- You don't change ANY code!"
             },
             {
               "type": "THEORY",
@@ -5568,12 +5753,17 @@
             {
               "type": "THEORY",
               "title": "Migration Checklist: Adopting Virtual Threads",
-              "content": "STEP 1: Update to Java 23+ and Spring Boot 4.x\n<java.version>23</java.version>\n<parent>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-parent</artifactId>\n    <version>4.0.0</version>\n</parent>\n\nSTEP 2: Virtual Threads Configuration\nSpring Boot 4.0+: Enabled by default! No action needed.\nSpring Boot 3.2-3.x: Add spring.threads.virtual.enabled=true\n\nSTEP 3: Update Dependencies\n- JDBC drivers (PostgreSQL 42.7+, MySQL 8.3+)\n- HikariCP (5.1+)\n- Hibernate (6.4+)\n\nSTEP 4: Check for Pinning\n# Run with tracing\njava -Djdk.tracePinnedThreads=full -jar app.jar\n\nSTEP 5: Replace synchronized\n// Before\nsynchronized (this) { ... }\n\n// After\nprivate final ReentrantLock lock = new ReentrantLock();\nlock.lock();\ntry { ... } finally { lock.unlock(); }\n\nSTEP 6: Load Test\n- Use JMeter or Gatling\n- Simulate 10,000 concurrent users\n- Compare metrics before/after\n\nSTEP 7: Monitor in Production\n- Watch thread metrics in Actuator\n- Monitor memory usage\n- Check response times"
+              "content": "STEP 1: Update to Java 23+ and Spring Boot 4.x\n<java.version>21</java.version>\n<parent>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-parent</artifactId>\n    <version>4.0.0</version>\n</parent>\n\nSTEP 2: Virtual Threads Configuration\nSpring Boot 4.0+: Enabled by default! No action needed.\nSpring Boot 3.2-3.x: Add spring.threads.virtual.enabled=true\n\nSTEP 3: Update Dependencies\n- JDBC drivers (PostgreSQL 42.7+, MySQL 8.3+)\n- HikariCP (5.1+)\n- Hibernate (6.4+)\n\nSTEP 4: Check for Pinning\n# Run with tracing\njava -Djdk.tracePinnedThreads=full -jar app.jar\n\nSTEP 5: Replace synchronized\n// Before\nsynchronized (this) { ... }\n\n// After\nprivate final ReentrantLock lock = new ReentrantLock();\nlock.lock();\ntry { ... } finally { lock.unlock(); }\n\nSTEP 6: Load Test\n- Use JMeter or Gatling\n- Simulate 10,000 concurrent users\n- Compare metrics before/after\n\nSTEP 7: Monitor in Production\n- Watch thread metrics in Actuator\n- Monitor memory usage\n- Check response times"
             },
             {
               "type": "KEY_POINT",
               "title": "TL;DR - Virtual Threads Summary",
-              "content": "WHAT: Lightweight threads managed by JVM (not OS)\nWHY: Handle millions of concurrent connections\nWHEN: Java 21+ (LTS), Spring Boot 3.2+ (enabled by default in 4.0+)\n\nSpring Boot 4.0+: Virtual threads enabled by default!\nSpring Boot 3.2-3.x: spring.threads.virtual.enabled=true\n\nCreate manually:\nThread.startVirtualThread(() -> doWork());\nExecutors.newVirtualThreadPerTaskExecutor();\n\nBEST FOR:\n✓ Web servers (HTTP requests)\n✓ Microservices\n✓ Database-heavy applications\n✓ API gateways\n✓ Any I/O-bound workload\n\nAVOID:\n✗ CPU-intensive math/processing\n✗ synchronized blocks (use ReentrantLock)\n✗ Pooling virtual threads (create new ones)\n\nIMPACT:\n- 5-10x throughput improvement\n- Simpler code than reactive programming\n- Lower memory usage\n- Better latency under load\n\nThis is the BIGGEST change to Java concurrency since threads were introduced!"
+              "content": "WHAT: Lightweight threads managed by JVM (not OS)\nWHY: Handle millions of concurrent connections\nWHEN: Java 21+ (LTS), Spring Boot 3.2+ (enable with spring.threads.virtual.enabled=true)\n\nSpring Boot 4.0+: Virtual threads enabled by default!\nSpring Boot 3.2-3.x: spring.threads.virtual.enabled=true\n\nCreate manually:\nThread.startVirtualThread(() -> doWork());\nExecutors.newVirtualThreadPerTaskExecutor();\n\nBEST FOR:\n✓ Web servers (HTTP requests)\n✓ Microservices\n✓ Database-heavy applications\n✓ API gateways\n✓ Any I/O-bound workload\n\nAVOID:\n✗ CPU-intensive math/processing\n✗ synchronized blocks (use ReentrantLock)\n✗ Pooling virtual threads (create new ones)\n\nIMPACT:\n- 5-10x throughput improvement\n- Simpler code than reactive programming\n- Lower memory usage\n- Better latency under load\n\nThis is the BIGGEST change to Java concurrency since threads were introduced!"
+            },
+            {
+              "type": "WARNING",
+              "title": "Virtual Thread Adoption Considerations",
+              "content": "PINNING IS STILL A CONCERN:\nJava 21's virtual threads can still be pinned by synchronized blocks.\nFix: Replace synchronized with ReentrantLock for blocking operations.\n\nDON'T POOL VIRTUAL THREADS:\nCreating a fixed pool defeats the purpose of virtual threads.\nFix: Use Executors.newVirtualThreadPerTaskExecutor() - create per task.\n\nTHREAD LOCALS HAVE OVERHEAD:\nVirtual threads copy ThreadLocal values at creation time.\nFix: Consider ScopedValues (stable in Java 23) for request-scoped data.\n\nUPDATE YOUR LIBRARIES:\nOlder JDBC drivers and libraries may not be virtual-thread friendly.\nFix: Use latest versions of PostgreSQL driver (42.7+), HikariCP (5.1+).\n\nMONITOR CARRIER THREAD USAGE:\nIf all carrier threads are pinned, your app will stall.\nFix: Use -Djdk.tracePinnedThreads=full to detect pinning issues."
             }
           ],
           "challenges": [
@@ -5743,8 +5933,8 @@
               "content": "```java\nPROJECT: Personal Task Manager\n\nVISION:\nA web application where users can create, manage, and track\ntheir daily tasks. Users can register, log in, and manage\ntheir own personal task list.\n\nMVP FEATURES:\n1. User registration with email/password\n2. User login with session management\n3. Create new tasks (title + description)\n4. View all my tasks\n5. Mark tasks as complete/incomplete\n6. Delete tasks\n\nTECH STACK:\n- Backend: Java 23, Spring Boot 4, Spring Security, Spring Data JPA\n- Database: PostgreSQL\n- Frontend: HTML, CSS, Vanilla JavaScript\n- Tools: Maven, Docker\n\nDATABASE TABLES:\nusers: id, email, password, name, created_at\ntasks: id, title, description, completed, user_id, created_at\n\nAPI ENDPOINTS:\nPOST   /api/auth/register - Register new user\nPOST   /api/auth/login    - Login user\nPOST   /api/auth/logout   - Logout user\nGET    /api/tasks         - Get all my tasks\nPOST   /api/tasks         - Create new task\nPUT    /api/tasks/{id}    - Update task\nDELETE /api/tasks/{id}    - Delete task\n\nTIMELINE:\nWeek 1: Backend setup, entities, repositories, services\nWeek 2: REST controllers, Spring Security, test with Postman\nWeek 3: Frontend HTML/CSS/JS, connect to backend\nWeek 4: Polish, error handling, documentation, deploy\n\nSUCCESS CRITERIA:\n✓ Can register and log in\n✓ Can create, view, update, delete tasks\n✓ Tasks persist in database\n✓ Each user sees only their own tasks\n✓ Works in production environment\n✓ Has README with setup instructions\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Planning Mistakes",
+              "type": "WARNING",
+              "title": "Common Planning Mistakes",
               "content": "❌ MISTAKE 1: Planning for months without coding\n\"I need the perfect plan before I start!\"\nFIX: Plan MVP, start coding, adjust as you go\n\n❌ MISTAKE 2: No plan at all\n\"I'll just figure it out as I code!\"\nFIX: Spend 1-2 days planning before coding\n\n❌ MISTAKE 3: MVP too ambitious\n\"MVP will have 20 features!\"\nFIX: MVP = 5-6 core features maximum\n\n❌ MISTAKE 4: Choosing unfamiliar technologies\n\"Let me learn React, GraphQL, and Kubernetes!\"\nFIX: Use what you know, learn ONE new thing max\n\n❌ MISTAKE 5: Perfectionism\n\"UI must be perfect before I move to backend!\"\nFIX: Embrace iteration, improve over time\n\n❌ MISTAKE 6: No deadline\n\"I'll finish... eventually\"\nFIX: Set 4-week deadline for MVP\n\n❌ MISTAKE 7: Building for imaginary users\n\"Users will want to export to 20 file formats!\"\nFIX: Build features YOU would actually use"
             },
             {
@@ -5796,32 +5986,7 @@
             {
               "type": "THEORY",
               "title": "Step 4: Install PostgreSQL",
-              "content": "PostgreSQL = Production-ready relational database\n\nINSTALLATION:\n\nWINDOWS:\n1. Download: https://www.postgresql.org/download/windows/\n2. Run installer\n3. Set password for 'postgres' user (REMEMBER THIS!)\n4. Port: 5432 (default)\n5. Install Stack Builder? → Skip\n\nMAC:\nbrew install postgresql@15\nbrew services start postgresql@15\n\nLINUX:\nsudo apt install postgresql postgresql-contrib\nsudo systemctl start postgresql\n\nVERIFY:\npsql --version\nShould show: psql (PostgreSQL) 15.x\n\nCREATE DATABASE FOR YOUR PROJECT:"
-            },
-            {
-              "type": "THEORY",
-              "title": "Connect to PostgreSQL",
-              "content": "psql -U postgres\n(Enter password)"
-            },
-            {
-              "type": "THEORY",
-              "title": "Create database",
-              "content": "CREATE DATABASE taskmanager;"
-            },
-            {
-              "type": "THEORY",
-              "title": "Create user",
-              "content": "CREATE USER taskuser WITH PASSWORD 'yourpassword';"
-            },
-            {
-              "type": "THEORY",
-              "title": "Grant permissions",
-              "content": "GRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskuser;"
-            },
-            {
-              "type": "THEORY",
-              "title": "Exit",
-              "content": "\\q\n\nALTERNATIVE: Use H2 Database (In-Memory)\n✓ No installation needed\n✓ Add dependency in Spring Boot\n✓ Good for development, not for production\n\n✓ SUCCESS: Can connect to PostgreSQL"
+              "content": "PostgreSQL = Production-ready relational database\n\nINSTALLATION:\n\nWINDOWS:\n1. Download: https://www.postgresql.org/download/windows/\n2. Run installer\n3. Set password for 'postgres' user (REMEMBER THIS!)\n4. Port: 5432 (default)\n5. Install Stack Builder? → Skip\n\nMAC:\nbrew install postgresql@16\nbrew services start postgresql@16\n\nLINUX:\nsudo apt install postgresql postgresql-contrib\nsudo systemctl start postgresql\n\nVERIFY:\npsql --version\nShould show: psql (PostgreSQL) 16.x\n\nCREATE DATABASE FOR YOUR PROJECT:\n\nConnect to PostgreSQL:\npsql -U postgres\n(Enter password you set during installation)\n\nCreate database:\nCREATE DATABASE taskmanager;\n\nCreate user with password:\nCREATE USER taskuser WITH PASSWORD 'yourpassword';\n\nGrant all permissions:\nGRANT ALL PRIVILEGES ON DATABASE taskmanager TO taskuser;\n\nExit:\n\\q\n\nALTERNATIVE: Use H2 Database (In-Memory)\n- No installation needed\n- Add dependency in Spring Boot\n- Good for development, not for production\n\nSUCCESS: Can connect to PostgreSQL"
             },
             {
               "type": "KEY_POINT",
@@ -5854,8 +6019,8 @@
               "content": "```java\nRUN THE APPLICATION:\n\nIntelliJ IDEA:\n1. Open TaskmanagerApplication.java\n2. Click green play button next to main method\n3. Or: Right-click → Run 'TaskmanagerApplication'\n\nVS Code:\n1. Open TaskmanagerApplication.java\n2. Click \"Run\" above main method\n3. Or: Press F5\n\nCommand Line:\n./mvnw spring-boot:run\n(Windows: mvnw.cmd spring-boot:run)\n\nEXPECTED OUTPUT:\n  .   ____          _            __ _ _\n /\\\\ / ___'_ __ _ _(_)_ __  __ _ \\ \\ \\ \\\n( ( )\\___ | '_ | '_| | '_ \\/ _` | \\ \\ \\ \\\n \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )\n  '  |____| .__|_| |_|_| |_\\__, | / / / /\n =========|_|==============|___/=/_/_/_/\n :: Spring Boot ::                (v3.3.0)\n\n...\nTomcat started on port 8080\nStarted TaskmanagerApplication in 2.5 seconds\n\n✓ SUCCESS: Application starts without errors!\n\nTEST IN BROWSER:\nOpen: http://localhost:8080\nExpected: \"Whitelabel Error Page\" (normal for new project)\n\nTEST DATABASE CONNECTION:\nIf you see SQL output in console → Database connected!\n\nTROUBLESHOOTING:\n❌ Port 8080 already in use:\n   Change in application.yml: server.port: 8081\n\n❌ Cannot connect to database:\n   1. Check PostgreSQL is running\n   2. Check username/password in application.yml\n   3. Check database exists: psql -U postgres -l\n\n❌ Java version error:\n   Ensure Java 21 is installed and JAVA_HOME is set\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Setup Mistakes",
+              "type": "WARNING",
+              "title": "Common Setup Mistakes",
               "content": "❌ MISTAKE 1: Wrong Java version\nDownloaded Java 8 instead of Java 21\nFIX: Download Java 21 from adoptium.net\n\n❌ MISTAKE 2: JAVA_HOME not set\nIDE can't find Java\nFIX: Set JAVA_HOME environment variable\n\n❌ MISTAKE 3: Forgot to start PostgreSQL\nApplication fails with connection error\nFIX: Start PostgreSQL service\n\n❌ MISTAKE 4: Hardcoded passwords in application.yml\nThen committed to GitHub (security risk!)\nFIX: Use environment variables or application-local.yml (in .gitignore)\n\n❌ MISTAKE 5: Installed too many tools at once\nOverwhelmed and confused\nFIX: Install one at a time, test each\n\n❌ MISTAKE 6: Skipped verification steps\nDon't know if tools work until much later\nFIX: Test each tool immediately after installing\n\n❌ MISTAKE 7: Used Community Edition expecting Ultimate features\nSome IntelliJ features require paid version\nFIX: Community Edition is sufficient for most projects"
             },
             {
@@ -5920,8 +6085,8 @@
               "content": "```java\nCreate a test to verify repositories work:\n\nsrc/test/java/com/yourname/taskmanager/repository/UserRepositoryTest.java\n\npackage com.yourname.taskmanager.repository;\n\nimport com.yourname.taskmanager.model.User;\nimport org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;\nimport java.util.Optional;\nimport static org.assertj.core.api.Assertions.assertThat;\n\n@DataJpaTest\nclass UserRepositoryTest {\n    \n    @Autowired\n    private UserRepository userRepository;\n    \n    @Test\n    void shouldSaveAndFindUser() {\n        // Create user\n        User user = new User(\"test@email.com\", \"password123\", \"Test User\");\n        \n        // Save to database\n        User saved = userRepository.save(user);\n        \n        // Verify ID was generated\n        assertThat(saved.getId()).isNotNull();\n        \n        // Find by ID\n        Optional<User> found = userRepository.findById(saved.getId());\n        assertThat(found).isPresent();\n        assertThat(found.get().getEmail()).isEqualTo(\"test@email.com\");\n    }\n    \n    @Test\n    void shouldFindUserByEmail() {\n        // Create and save user\n        User user = new User(\"alice@email.com\", \"password\", \"Alice\");\n        userRepository.save(user);\n        \n        // Find by email\n        Optional<User> found = userRepository.findByEmail(\"alice@email.com\");\n        assertThat(found).isPresent();\n        assertThat(found.get().getName()).isEqualTo(\"Alice\");\n    }\n    \n    @Test\n    void shouldCheckEmailExists() {\n        // Create and save user\n        User user = new User(\"bob@email.com\", \"password\", \"Bob\");\n        userRepository.save(user);\n        \n        // Check exists\n        assertThat(userRepository.existsByEmail(\"bob@email.com\")).isTrue();\n        assertThat(userRepository.existsByEmail(\"charlie@email.com\")).isFalse();\n    }\n}\n\nRUN TESTS:\nIntelliJ: Right-click test class → Run\nCommand line: ./mvnw test\n\n✓ All tests pass → Repositories work!\n❌ Tests fail → Check error messages, fix code\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Entity and Repository Mistakes",
+              "type": "WARNING",
+              "title": "Common Entity and Repository Mistakes",
               "content": "❌ MISTAKE 1: No default constructor\npublic class User {\n    // Only parameterized constructor\n    public User(String email) { ... }\n}\nFIX: JPA requires no-arg constructor:\npublic User() {}\n\n❌ MISTAKE 2: Forgot @Id annotation\nJPA doesn't know which field is the primary key\nFIX: Always mark primary key with @Id\n\n❌ MISTAKE 3: Storing plain text passwords\nprivate String password = \"password123\";  // NEVER!\nFIX: Hash passwords before storing (BCrypt)\n\n❌ MISTAKE 4: EAGER fetching relationships\n@OneToMany(fetch = FetchType.EAGER)\nCauses N+1 query problem, poor performance\nFIX: Use LAZY (default for @OneToMany)\n\n❌ MISTAKE 5: Exposing entities to controllers\nreturn userRepository.findAll();  // Returns password field!\nFIX: Use DTOs (Data Transfer Objects)\n\n❌ MISTAKE 6: Not handling Optional\nUser user = userRepository.findById(id);  // Compile error!\nFIX: Optional<User> user = userRepository.findById(id);\n      user.orElseThrow(() -> new NotFoundException(...));\n\n❌ MISTAKE 7: Circular references in JSON\nUser has tasks, Task has user → infinite loop!\nFIX: Use @JsonIgnore or DTOs"
             },
             {
@@ -5986,8 +6151,8 @@
               "content": "```java\nNow test your complete backend!\n\n1. START APPLICATION:\n   Run TaskmanagerApplication.java\n   Check console: \"Started TaskmanagerApplication\"\n\n2. TEST CREATE TASK:\n   POST http://localhost:8080/api/tasks\n   Headers: Content-Type: application/json\n   Body:\n   {\n     \"title\": \"Buy groceries\",\n     \"description\": \"Milk, eggs, bread\"\n   }\n   \n   Expected: 201 Created\n   Response:\n   {\n     \"id\": 1,\n     \"title\": \"Buy groceries\",\n     \"description\": \"Milk, eggs, bread\",\n     \"completed\": false,\n     \"userId\": 1,\n     \"createdAt\": \"2025-01-15T10:30:00\",\n     \"updatedAt\": \"2025-01-15T10:30:00\"\n   }\n\n3. TEST GET ALL TASKS:\n   GET http://localhost:8080/api/tasks\n   \n   Expected: 200 OK\n   Response: Array of tasks\n\n4. TEST UPDATE TASK:\n   PUT http://localhost:8080/api/tasks/1\n   Body:\n   {\n     \"title\": \"Buy groceries\",\n     \"completed\": true\n   }\n   \n   Expected: 200 OK\n   Response: Updated task with completed=true\n\n5. TEST VALIDATION:\n   POST http://localhost:8080/api/tasks\n   Body:\n   {\n     \"title\": \"\"\n   }\n   \n   Expected: 400 Bad Request\n   Response:\n   {\n     \"status\": 400,\n     \"title\": \"Invalid Request\",\n     \"detail\": \"Validation failed\",\n     \"errors\": {\n       \"title\": \"Title is required\"\n     }\n   }\n\n6. TEST DELETE:\n   DELETE http://localhost:8080/api/tasks/1\n   \n   Expected: 204 No Content\n   (No response body)\n\n✓ ALL TESTS PASS = Backend is working!\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Service and Controller Mistakes",
+              "type": "WARNING",
+              "title": "Common Service and Controller Mistakes",
               "content": "❌ MISTAKE 1: Business logic in controller\n@PostMapping\npublic Task create(@RequestBody Task task) {\n    if (taskRepository.existsByTitle(task.getTitle())) {\n        throw new Exception(\"Duplicate\");\n    }\n    return taskRepository.save(task);  // Logic in controller!\n}\nFIX: Move ALL business logic to service layer\n\n❌ MISTAKE 2: Returning entities from controller\nreturn userRepository.findAll();  // Exposes password!\nFIX: Always use DTOs\n\n❌ MISTAKE 3: No @Valid on @RequestBody\n@PostMapping\npublic Task create(@RequestBody TaskRequest request) {\n    // Validation annotations ignored!\n}\nFIX: @Valid @RequestBody TaskRequest request\n\n❌ MISTAKE 4: Not checking authorization\npublic void deleteTask(Long taskId) {\n    taskRepository.deleteById(taskId);  // Anyone can delete!\n}\nFIX: Check if task belongs to current user\n\n❌ MISTAKE 5: Wrong HTTP status codes\nreturn ResponseEntity.ok(created);  // Should be 201 Created\nFIX: Use appropriate status codes:\n- 200 OK (GET, PUT)\n- 201 Created (POST)\n- 204 No Content (DELETE)\n- 400 Bad Request (validation)\n- 404 Not Found\n- 403 Forbidden\n\n❌ MISTAKE 6: Not handling Optional\nTask task = taskRepository.findById(id);  // Compile error!\nFIX: .orElseThrow(() -> new ResourceNotFoundException(...))\n\n❌ MISTAKE 7: Swallowing exceptions\ntry {\n    taskService.delete(id);\n} catch (Exception e) {\n    // Silent failure - user never knows!\n}\nFIX: Let exceptions propagate to GlobalExceptionHandler"
             },
             {
@@ -6052,8 +6217,8 @@
               "content": "1. REGISTER USER:\n   POST http://localhost:8080/api/auth/register\n   Body:\n   {\n     \"email\": \"alice@email.com\",\n     \"password\": \"password123\",\n     \"name\": \"Alice\"\n   }\n   \n   Expected: 200 OK\n   Response: {\"message\": \"User registered successfully\"}\n\n2. LOGIN:\n   POST http://localhost:8080/api/auth/login\n   Body:\n   {\n     \"email\": \"alice@email.com\",\n     \"password\": \"password123\"\n   }\n   \n   Expected: 200 OK\n\n3. ACCESS PROTECTED ENDPOINT (with HTTP Basic Auth):\n   GET http://localhost:8080/api/tasks\n   \n   In Postman:\n   - Go to Authorization tab\n   - Type: Basic Auth\n   - Username: alice@email.com\n   - Password: password123\n   \n   Expected: 200 OK + your tasks\n\n4. WITHOUT AUTH:\n   GET http://localhost:8080/api/tasks\n   (No Authorization header)\n   \n   Expected: 401 Unauthorized"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Authentication Mistakes",
+              "type": "WARNING",
+              "title": "Common Authentication Mistakes",
               "content": "❌ MISTAKE 1: Storing plain passwords\nuser.setPassword(\"password123\");  // NEVER!\nFIX: Always use PasswordEncoder\n\n❌ MISTAKE 2: Comparing hashed passwords with ==\nif (user.getPassword().equals(inputPassword)) { }  // Wrong!\nFIX: Use passwordEncoder.matches(inputPassword, user.getPassword())\n\n❌ MISTAKE 3: Not disabling CSRF for APIs\nFor stateless APIs, CSRF protection causes issues\nFIX: .csrf().disable() in SecurityFilterChain\n\n❌ MISTAKE 4: Returning password in API responses\nreturn userRepository.findAll();  // Exposes passwords!\nFIX: Use DTOs without password field\n\n❌ MISTAKE 5: Weak passwords allowed\nNo validation on password strength\nFIX: @Size(min = 8) on DTO, consider regex pattern\n\n❌ MISTAKE 6: Not handling authentication failures\nUser gets generic \"401 Unauthorized\"\nFIX: Custom error messages in exception handler\n\n❌ MISTAKE 7: Hard-coding user IDs\nLong userId = 1L;  // Always user 1!\nFIX: Get from @AuthenticationPrincipal"
             },
             {
@@ -6118,8 +6283,8 @@
               "content": "```java\nCreate: src/main/resources/static/js/tasks.js\n\n// Load tasks when page loads\ndocument.addEventListener('DOMContentLoaded', async () => {\n    requireAuth();  // Redirect if not logged in\n    \n    // Display user email\n    const userEmail = localStorage.getItem('userEmail');\n    document.getElementById('userEmail').textContent = userEmail;\n    \n    // Load tasks\n    await loadTasks();\n    \n    // Attach form listener\n    document.getElementById('createTaskForm')\n        .addEventListener('submit', createTask);\n});\n\n// Load all tasks\nasync function loadTasks() {\n    try {\n        const tasks = await apiRequest('/tasks');\n        displayTasks(tasks);\n    } catch (error) {\n        showMessage('Failed to load tasks', 'error');\n    }\n}\n\n// Display tasks in UI\nfunction displayTasks(tasks) {\n    const container = document.getElementById('tasks');\n    \n    if (tasks.length === 0) {\n        container.innerHTML = '<p>No tasks yet. Create one above!</p>';\n        return;\n    }\n    \n    // Modern template literals and map\n    container.innerHTML = tasks.map(task => `\n        <div class=\"task-card ${task.completed ? 'completed' : ''}\">\n            <div class=\"task-content\">\n                <h3>${escapeHtml(task.title)}</h3>\n                <p>${escapeHtml(task.description || '')}</p>\n                <small>Created: ${new Date(task.createdAt).toLocaleDateString()}</small>\n            </div>\n            <div class=\"task-actions\">\n                <button onclick=\"toggleComplete(${task.id}, ${!task.completed})\" \n                        class=\"btn ${task.completed ? 'btn-secondary' : 'btn-success'}\">\n                    ${task.completed ? 'Undo' : 'Complete'}\n                </button>\n                <button onclick=\"deleteTask(${task.id})\" class=\"btn btn-danger\">\n                    Delete\n                </button>\n            </div>\n        </div>\n    `).join('');\n}\n\n// Create new task\nasync function createTask(event) {\n    event.preventDefault();\n    \n    const title = document.getElementById('title').value;\n    const description = document.getElementById('description').value;\n    \n    try {\n        await apiRequest('/tasks', {\n            method: 'POST',\n            body: JSON.stringify({ title, description })\n        });\n        \n        // Clear form\n        document.getElementById('createTaskForm').reset();\n        \n        showMessage('Task created!', 'success');\n        await loadTasks();  // Reload tasks\n        \n    } catch (error) {\n        showMessage(error.message, 'error');\n    }\n}\n\n// Toggle task completion\nasync function toggleComplete(taskId, completed) {\n    try {\n        await apiRequest(`/tasks/${taskId}`, {\n            method: 'PUT',\n            body: JSON.stringify({ completed })\n        });\n        \n        await loadTasks();\n    } catch (error) {\n        showMessage(error.message, 'error');\n    }\n}\n\n// Delete task\nasync function deleteTask(taskId) {\n    if (!confirm('Delete this task?')) return;\n    \n    try {\n        await apiRequest(`/tasks/${taskId}`, {\n            method: 'DELETE'\n        });\n        \n        showMessage('Task deleted', 'success');\n        await loadTasks();\n    } catch (error) {\n        showMessage(error.message, 'error');\n    }\n}\n\n// Prevent XSS attacks\nfunction escapeHtml(text) {\n    const div = document.createElement('div');\n    div.textContent = text;\n    return div.innerHTML;\n}\n\nfunction showMessage(text, type) {\n    const messageEl = document.getElementById('message');\n    messageEl.textContent = text;\n    messageEl.className = `message ${type}`;\n    messageEl.style.display = 'block';\n    setTimeout(() => messageEl.style.display = 'none', 3000);\n}\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Frontend Mistakes",
+              "type": "WARNING",
+              "title": "Common Frontend Mistakes",
               "content": "❌ MISTAKE 1: Not escaping user input\ninnerHTML = task.title;  // XSS vulnerability!\nFIX: Use textContent or escapeHtml() function\n\n❌ MISTAKE 2: Not handling errors\nconst data = await fetch('/api/tasks');  // No try-catch!\nFIX: Always wrap fetch in try-catch\n\n❌ MISTAKE 3: Storing passwords in localStorage\nlocalStorage is NOT secure!\nFIX: Use JWT tokens instead (better security)\n\n❌ MISTAKE 4: Not checking response.ok\nconst data = await response.json();  // Might be error!\nFIX: Check if (!response.ok) throw error\n\n❌ MISTAKE 5: Forgetting async on function\nfunction loadTasks() { await fetch(...) }  // Error!\nFIX: async function loadTasks()\n\n❌ MISTAKE 6: Not clearing forms after submit\nForm still has old data\nFIX: form.reset() after successful submit\n\n❌ MISTAKE 7: Hardcoding URLs\nfetch('http://localhost:8080/api/tasks')\nFIX: Use const API_BASE_URL"
             },
             {
@@ -6189,8 +6354,8 @@
               "content": "RUN ALL TESTS:\n\nCommand line:\n./mvnw test\n\nIntelliJ IDEA:\n1. Right-click on src/test/java\n2. Select \"Run 'All Tests'\"\n\nVS Code:\n1. Click Testing icon in sidebar\n2. Click \"Run All Tests\"\n\nRUN SPECIFIC TEST:\n./mvnw test -Dtest=TaskServiceTest\n\nCONTINUOUS TESTING:\n./mvnw test --watch  # Reruns on file change\n\nTEST COVERAGE:\n./mvnw test jacoco:report\nOpen: target/site/jacoco/index.html\n\nEXPECTED OUTPUT:\n[INFO] Tests run: 15, Failures: 0, Errors: 0, Skipped: 0\n[INFO] BUILD SUCCESS\n\n✓ ALL GREEN = Ready to deploy!"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Testing Mistakes",
+              "type": "WARNING",
+              "title": "Common Testing Mistakes",
               "content": "❌ MISTAKE 1: Not testing edge cases\nOnly testing happy path\nFIX: Test null, empty, invalid, boundary values\n\n❌ MISTAKE 2: Tests depend on each other\n@Test void test1() { ... }\n@Test void test2() { /* Assumes test1 ran */ }\nFIX: Each test should be independent\n\n❌ MISTAKE 3: Using real external services\nCalling real payment API in tests\nFIX: Mock external dependencies\n\n❌ MISTAKE 4: No assertions\n@Test void test() {\n    service.doSomething();  // What's being tested?\n}\nFIX: Always have assertions\n\n❌ MISTAKE 5: Testing too much in one test\n100-line test method testing everything\nFIX: One test per behavior\n\n❌ MISTAKE 6: Ignoring failing tests\n@Disabled  // \"Will fix later\" (never fixed)\nFIX: Fix or delete the test\n\n❌ MISTAKE 7: Not running tests before commit\nCommit broken code\nFIX: Always run ./mvnw test before git commit"
             },
             {
@@ -6222,117 +6387,22 @@
             {
               "type": "THEORY",
               "title": "Step 1: Create Production-Ready Dockerfile",
-              "content": "Create: Dockerfile (in project root)"
-            },
-            {
-              "type": "THEORY",
-              "title": "Multi-stage build for smaller image (2024-2025 best practice)",
-              "content": "FROM eclipse-temurin:23-jdk-alpine AS builder\nWORKDIR /app"
-            },
-            {
-              "type": "THEORY",
-              "title": "Copy Maven wrapper and pom.xml first (for layer caching)",
-              "content": "COPY .mvn/ .mvn/\nCOPY mvnw pom.xml ./"
-            },
-            {
-              "type": "THEORY",
-              "title": "Download dependencies (cached if pom.xml unchanged)",
-              "content": "RUN ./mvnw dependency:go-offline"
-            },
-            {
-              "type": "THEORY",
-              "title": "Copy source code",
-              "content": "COPY src ./src"
-            },
-            {
-              "type": "THEORY",
-              "title": "Build application",
-              "content": "RUN ./mvnw clean package -DskipTests"
-            },
-            {
-              "type": "THEORY",
-              "title": "Production stage - smaller image",
-              "content": "FROM eclipse-temurin:23-jre-alpine\nWORKDIR /app"
-            },
-            {
-              "type": "THEORY",
-              "title": "Create non-root user for security",
-              "content": "RUN addgroup -S spring && adduser -S spring -G spring\nUSER spring:spring"
-            },
-            {
-              "type": "THEORY",
-              "title": "Copy JAR from builder",
-              "content": "COPY --from=builder /app/target/*.jar app.jar"
-            },
-            {
-              "type": "THEORY",
-              "title": "Expose port",
-              "content": "EXPOSE 8080"
-            },
-            {
-              "type": "THEORY",
-              "title": "Health check",
-              "content": "HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \\\n  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"
-            },
-            {
-              "type": "THEORY",
-              "title": "Run application",
-              "content": "ENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nKEY FEATURES:\n✓ Multi-stage build (smaller final image)\n✓ Layer caching (faster builds)\n✓ Non-root user (security)\n✓ Health check (monitoring)\n✓ Alpine Linux (lightweight)"
+              "content": "Create: Dockerfile (in project root)\n\n# Multi-stage build for smaller image (2025 best practice)\nFROM eclipse-temurin:23-jdk-alpine AS builder\nWORKDIR /app\n\n# Copy Maven wrapper and pom.xml first (for layer caching)\nCOPY .mvn/ .mvn/\nCOPY mvnw pom.xml ./\n\n# Download dependencies (cached if pom.xml unchanged)\nRUN ./mvnw dependency:go-offline\n\n# Copy source code\nCOPY src ./src\n\n# Build application\nRUN ./mvnw clean package -DskipTests\n\n# Production stage - smaller image\nFROM eclipse-temurin:23-jre-alpine\nWORKDIR /app\n\n# Create non-root user for security\nRUN addgroup -S spring && adduser -S spring -G spring\nUSER spring:spring\n\n# Copy JAR from builder\nCOPY --from=builder /app/target/*.jar app.jar\n\n# Expose port\nEXPOSE 8080\n\n# Health check\nHEALTHCHECK --interval=30s --timeout=3s --start-period=40s   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1\n\n# Run application\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n\nKEY FEATURES:\n- Multi-stage build (smaller final image)\n- Layer caching (faster builds)\n- Non-root user (security)\n- Health check (monitoring)\n- Alpine Linux (lightweight)"
             },
             {
               "type": "THEORY",
               "title": "Step 2: Create Docker Compose Configuration",
-              "content": "Create: docker-compose.yml\n\nversion: '3.8'\n\nservices:\n  # PostgreSQL Database\n  db:\n    image: postgres:15-alpine\n    container_name: taskmanager-db\n    environment:\n      POSTGRES_DB: taskmanager\n      POSTGRES_USER: ${DB_USER:-taskuser}\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?Database password required}\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    ports:\n      - \"5432:5432\"\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U taskuser\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n    networks:\n      - taskmanager-network\n\n  # Spring Boot Application\n  app:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    container_name: taskmanager-app\n    environment:\n      SPRING_PROFILES_ACTIVE: prod\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskmanager\n      SPRING_DATASOURCE_USERNAME: ${DB_USER:-taskuser}\n      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:?Database password required}\n      SPRING_JPA_HIBERNATE_DDL_AUTO: validate\n      SERVER_PORT: 8080\n    ports:\n      - \"8080:8080\"\n    depends_on:\n      db:\n        condition: service_healthy\n    restart: unless-stopped\n    networks:\n      - taskmanager-network\n\nvolumes:\n  postgres-data:\n\nnetworks:\n  taskmanager-network:\n    driver: bridge\n\nKEY FEATURES:\n✓ Environment variables (secure secrets)\n✓ Health checks (wait for database)\n✓ Named volumes (persistent data)\n✓ Custom network (container communication)\n✓ Restart policy (automatic recovery)"
+              "content": "Create: docker-compose.yml\n\nversion: '3.8'\n\nservices:\n  # PostgreSQL Database\n  db:\n    image: postgres:16-alpine\n    container_name: taskmanager-db\n    environment:\n      POSTGRES_DB: taskmanager\n      POSTGRES_USER: ${DB_USER:-taskuser}\n      POSTGRES_PASSWORD: ${DB_PASSWORD:?Database password required}\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    ports:\n      - \"5432:5432\"\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U taskuser\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n    networks:\n      - taskmanager-network\n\n  # Spring Boot Application\n  app:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    container_name: taskmanager-app\n    environment:\n      SPRING_PROFILES_ACTIVE: prod\n      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/taskmanager\n      SPRING_DATASOURCE_USERNAME: ${DB_USER:-taskuser}\n      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:?Database password required}\n      SPRING_JPA_HIBERNATE_DDL_AUTO: validate\n      SERVER_PORT: 8080\n    ports:\n      - \"8080:8080\"\n    depends_on:\n      db:\n        condition: service_healthy\n    restart: unless-stopped\n    networks:\n      - taskmanager-network\n\nvolumes:\n  postgres-data:\n\nnetworks:\n  taskmanager-network:\n    driver: bridge\n\nKEY FEATURES:\n✓ Environment variables (secure secrets)\n✓ Health checks (wait for database)\n✓ Named volumes (persistent data)\n✓ Custom network (container communication)\n✓ Restart policy (automatic recovery)"
             },
             {
               "type": "KEY_POINT",
               "title": "Step 3: Environment Variables for Production",
-              "content": "Create: .env (NEVER commit this file!)"
-            },
-            {
-              "type": "THEORY",
-              "title": "Database Configuration",
-              "content": "DB_USER=taskuser\nDB_PASSWORD=super-secure-password-change-this"
-            },
-            {
-              "type": "THEORY",
-              "title": "Application Configuration",
-              "content": "SPRING_PROFILES_ACTIVE=prod\n\nAdd to .gitignore:\n.env\n*.env\n\nCreate: .env.example (commit this one)"
-            },
-            {
-              "type": "THEORY",
-              "title": "Database Configuration",
-              "content": "DB_USER=taskuser\nDB_PASSWORD=your-secure-password-here"
-            },
-            {
-              "type": "THEORY",
-              "title": "Application Configuration",
-              "content": "SPRING_PROFILES_ACTIVE=prod\n\nWHY?\n✓ .env contains real secrets (never in Git)\n✓ .env.example shows what variables are needed\n✓ Team members copy .env.example to .env\n✓ Each environment has different .env file\n\nPRODUCTION SECRETS:\nOn AWS/Azure/Heroku:\n- Set environment variables in dashboard\n- Never hardcode in docker-compose.yml\n- Use secrets management (AWS Secrets Manager, etc.)"
+              "content": "Create: .env (NEVER commit this file!)\n\n# Database Configuration\nDB_USER=taskuser\nDB_PASSWORD=super-secure-password-change-this\n\n# Application Configuration\nSPRING_PROFILES_ACTIVE=prod\n\nAdd to .gitignore:\n.env\n*.env\n\nCreate: .env.example (commit this one)\n\n# Database Configuration\nDB_USER=taskuser\nDB_PASSWORD=your-secure-password-here\n\n# Application Configuration\nSPRING_PROFILES_ACTIVE=prod\n\nWHY?\n- .env contains real secrets (never in Git)\n- .env.example shows what variables are needed\n- Team members copy .env.example to .env\n- Each environment has different .env file\n\nPRODUCTION SECRETS:\nOn AWS/Azure/Heroku:\n- Set environment variables in dashboard\n- Never hardcode in docker-compose.yml\n- Use secrets management (AWS Secrets Manager, etc.)"
             },
             {
               "type": "THEORY",
               "title": "Step 4: Deploy with Docker Compose",
-              "content": "BUILD AND RUN:"
-            },
-            {
-              "type": "THEORY",
-              "title": "Build the Docker image",
-              "content": "docker compose build"
-            },
-            {
-              "type": "THEORY",
-              "title": "Start all services (app + database)",
-              "content": "docker compose up -d"
-            },
-            {
-              "type": "THEORY",
-              "title": "View logs",
-              "content": "docker compose logs -f app"
-            },
-            {
-              "type": "THEORY",
-              "title": "Check status",
-              "content": "docker compose ps\n\nExpected output:\nNAME                  IMAGE              STATUS\ntaskmanager-db        postgres:15-alpine  Up (healthy)\ntaskmanager-app       taskmanager_app     Up\n\nACCESS APPLICATION:\nhttp://localhost:8080\n\nVERIFY HEALTH:\ncurl http://localhost:8080/actuator/health\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"db\": {\"status\": \"UP\"},\n    \"diskSpace\": {\"status\": \"UP\"}\n  }\n}\n\nUSEFUL COMMANDS:\ndocker compose down          # Stop all services\ndocker compose down -v       # Stop and delete volumes\ndocker compose restart app   # Restart app only\ndocker compose exec app sh   # Shell into container\ndocker compose logs db       # Database logs"
+              "content": "BUILD AND RUN:\n\n# Build the Docker image\ndocker compose build\n\n# Start all services (app + database)\ndocker compose up -d\n\n# View logs\ndocker compose logs -f app\n\n# Check status\ndocker compose ps\n\nExpected output:\nNAME                  IMAGE              STATUS\ntaskmanager-db        postgres:16-alpine  Up (healthy)\ntaskmanager-app       taskmanager_app     Up\n\nACCESS APPLICATION:\nhttp://localhost:8080\n\nVERIFY HEALTH:\ncurl http://localhost:8080/actuator/health\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"db\": {\"status\": \"UP\"},\n    \"diskSpace\": {\"status\": \"UP\"}\n  }\n}\n\nUSEFUL COMMANDS:\ndocker compose down          # Stop all services\ndocker compose down -v       # Stop and delete volumes\ndocker compose restart app   # Restart app only\ndocker compose exec app sh   # Shell into container\ndocker compose logs db       # Database logs"
             },
             {
               "type": "THEORY",
@@ -6350,8 +6420,8 @@
               "content": "```java\nAutomate deployment on every push to main:\n\nCreate: .github/workflows/deploy.yml\n\nname: Deploy to Production\n\non:\n  push:\n    branches: [ main ]\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Set up JDK 21\n        uses: actions/setup-java@v4\n        with:\n          java-version: '21'\n          distribution: 'temurin'\n      \n      - name: Run tests\n        run: ./mvnw test\n\n  deploy:\n    needs: test\n    runs-on: ubuntu-latest\n    if: github.ref == 'refs/heads/main'\n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Deploy to Heroku\n        uses: akhileshns/heroku-deploy@v3.13.15\n        with:\n          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}\n          heroku_app_name: \"taskmanager-yourname\"\n          heroku_email: \"your.email@example.com\"\n\nWORKFLOW:\n1. Push code to GitHub\n2. GitHub Actions runs tests\n3. If tests pass, deploys to Heroku\n4. Users see new version automatically\n\nADD HEROKU API KEY:\n1. Get key: heroku auth:token\n2. GitHub → Settings → Secrets → New secret\n3. Name: HEROKU_API_KEY\n4. Value: paste token\n```"
             },
             {
-              "type": "THEORY",
-              "title": "⚠️ Common Deployment Mistakes",
+              "type": "WARNING",
+              "title": "Common Deployment Mistakes",
               "content": "❌ MISTAKE 1: Using development profile in production\nddl-auto: create-drop (deletes all data on restart!)\nFIX: SPRING_PROFILES_ACTIVE=prod, ddl-auto: validate\n\n❌ MISTAKE 2: Hardcoding database URL\nurl: jdbc:postgresql://localhost:5432/db\nFIX: Use environment variables\n\n❌ MISTAKE 3: No health checks\nContainer appears running but app is crashed\nFIX: Add HEALTHCHECK in Dockerfile\n\n❌ MISTAKE 4: Root user in container\nSecurity vulnerability\nFIX: Create non-root user in Dockerfile\n\n❌ MISTAKE 5: Exposing sensitive endpoints\n/actuator/env shows all environment variables!\nFIX: Restrict actuator endpoints in production\n\n❌ MISTAKE 6: No database backups\nData loss if server fails\nFIX: Configure automated backups\n\n❌ MISTAKE 7: Ignoring logs\nApp fails, no idea why\nFIX: Set up log monitoring (Papertrail, Loggly)\n\n❌ MISTAKE 8: No rollback plan\nDeployment breaks everything\nFIX: Keep previous version, test before full rollout"
             },
             {
