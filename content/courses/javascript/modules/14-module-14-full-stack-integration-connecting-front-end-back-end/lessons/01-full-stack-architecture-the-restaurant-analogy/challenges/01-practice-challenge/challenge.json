@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common full-stack mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common full-stack mistakes:"
+      "mistake": "CORS errors when frontend calls backend",
+      "consequence": "Browser blocks requests between different origins for security.",
+      "correction": "Enable CORS on your backend: import cors and use app.use(cors())."
     },
     {
-      "mistake": "**CORS errors**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**CORS errors**:\n   ```\n   Error: Access to fetch at 'http://localhost:4000/api/users' from origin 'http://localhost:3000' \n   has been blocked by CORS policy\n   ```\n   Solution: Enable CORS on backend:\n   ```javascript\n   import cors from 'cors';\n   app.use(cors());\n   ```"
-    },
-    {
-      "mistake": "**Wrong API URLs**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong API URLs**:\n   ```javascript\n   // Wrong! (missing http://)\n   fetch('localhost:4000/api/users')\n   \n   // Correct!\n   fetch('http://localhost:4000/api/users')\n   \n   // Better! (use environment variable)\n   fetch(`${import.meta.env.VITE_API_URL}/api/users`)\n   ```"
+      "mistake": "Wrong API URLs (missing protocol)",
+      "consequence": "fetch('localhost:4000') fails; the protocol (http://) is required.",
+      "correction": "Use full URLs: fetch('http://localhost:4000/api/users') or use environment variables."
     }
   ],
   "difficulty": "beginner"

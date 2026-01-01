@@ -33,19 +33,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting 'async' keyword",
+      "consequence": "Using await inside a non-async function causes a SyntaxError.",
+      "correction": "Mark the function as async: async function getData() { ... }"
     },
     {
-      "mistake": "Forgetting 'async' keyword:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting 'async' keyword:\n   function getData() {\n     let result = await fetch();  // ERROR!\n   }\n   \n   Must be:\n   async function getData() {\n     let result = await fetch();\n   }"
-    },
-    {
-      "mistake": "Not awaiting Promises:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not awaiting Promises:\n   async function getData() {\n     let data = fetchData();  // data is a Promise!\n     console.log(data.name);  // undefined!\n   }\n   \n   Must await:\n   async function getData() {\n     let data = await fetchData();\n     console.log(data.name);  // Works!\n   }"
+      "mistake": "Not awaiting Promises",
+      "consequence": "Without await, you get a Promise object instead of the resolved value.",
+      "correction": "Add await before async calls: let data = await fetchData();"
     }
   ],
   "difficulty": "beginner"

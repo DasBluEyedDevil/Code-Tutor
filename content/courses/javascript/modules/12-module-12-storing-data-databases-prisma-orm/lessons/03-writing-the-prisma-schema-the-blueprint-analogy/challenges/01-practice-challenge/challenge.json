@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common Prisma schema mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common Prisma schema mistakes:"
+      "mistake": "Using semicolons in Prisma schema",
+      "consequence": "Prisma schema uses its own syntax without semicolons, causing parse errors.",
+      "correction": "Remove semicolons: use 'id Int @id' not 'id Int @id;'"
     },
     {
-      "mistake": "**Forgetting semicolons or using wrong syntax**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting semicolons or using wrong syntax**:\n   ```prisma\n   // Wrong! Prisma doesn't use semicolons\n   model User {\n     id Int @id;\n   }\n   \n   // Correct!\n   model User {\n     id Int @id\n   }\n   ```"
-    },
-    {
-      "mistake": "**Wrong field type capitalization**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong field type capitalization**:\n   ```prisma\n   // Wrong!\n   name string  // lowercase\n   \n   // Correct!\n   name String  // Pascal case\n   ```"
+      "mistake": "Wrong field type capitalization",
+      "consequence": "Prisma types are PascalCase; 'string' is invalid, causing schema errors.",
+      "correction": "Use String, Int, Boolean (PascalCase), not string, int, boolean."
     }
   ],
   "difficulty": "beginner"

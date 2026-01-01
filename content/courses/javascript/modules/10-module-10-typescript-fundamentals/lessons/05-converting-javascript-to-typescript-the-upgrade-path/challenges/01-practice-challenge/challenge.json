@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common migration mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common migration mistakes:"
+      "mistake": "Trying to convert everything at once",
+      "consequence": "Overwhelming and error-prone; too many type errors to fix at once.",
+      "correction": "Convert one file or module at a time, starting with core utilities."
     },
     {
-      "mistake": "**Trying to convert everything at once**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Trying to convert everything at once**:\n   - This is overwhelming and error-prone\n   - Convert one file or module at a time\n   - Start with core utilities, then work outward"
-    },
-    {
-      "mistake": "**Using 'any' everywhere**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using 'any' everywhere**:\n   ```typescript\n   function process(data: any): any {  // Bad!\n     // ...\n   }\n   ```\n   - This defeats the purpose of TypeScript\n   - Take time to figure out the correct types\n   - Use 'any' only as a temporary placeholder"
+      "mistake": "Using 'any' everywhere",
+      "consequence": "Defeats the purpose of TypeScript; you lose all type checking benefits.",
+      "correction": "Take time to define proper types; use 'any' only as a temporary placeholder."
     }
   ],
   "difficulty": "beginner"

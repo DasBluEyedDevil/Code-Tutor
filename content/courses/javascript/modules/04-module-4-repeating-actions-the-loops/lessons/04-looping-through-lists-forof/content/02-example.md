@@ -20,13 +20,11 @@ let total = 0;
 for (const price of prices) {
     total = total + price;
 }
-console.log(`
-Total price: $${total}`);
+console.log(`Total price: $${total}`);
 
 // 3. Looping through characters in a string
 const word = "BUN";
-console.log("
-Spelling it out:");
+console.log("Spelling it out:");
 for (const char of word) {
     console.log(char);
 }

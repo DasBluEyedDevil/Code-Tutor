@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common JSX mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common JSX mistakes:"
+      "mistake": "Using class instead of className",
+      "consequence": "JSX errors because 'class' is a reserved JavaScript keyword.",
+      "correction": "Use className for CSS classes in JSX: <div className=\"container\">"
     },
     {
-      "mistake": "**Using `class` instead of `className`**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using `class` instead of `className`**:\n   ```jsx\n   // Wrong!\n   <div class=\"container\">  // Error in JSX\n   \n   // Correct!\n   <div className=\"container\">\n   ```"
-    },
-    {
-      "mistake": "**Forgetting to close tags**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to close tags**:\n   ```jsx\n   // Wrong!\n   <img src=\"logo.png\">     // Error!\n   <br>                     // Error!\n   \n   // Correct!\n   <img src=\"logo.png\" />\n   <br />\n   ```"
+      "mistake": "Forgetting to close self-closing tags",
+      "consequence": "JSX requires all tags to be closed, causing syntax errors.",
+      "correction": "Add self-closing slash: <img src=\"logo.png\" /> and <br />"
     }
   ],
   "difficulty": "beginner"

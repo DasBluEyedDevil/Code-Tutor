@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common React deployment mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common React deployment mistakes:"
+      "mistake": "Wrong environment variable prefix in Vite",
+      "consequence": "Variables without VITE_ prefix aren't exposed to browser code.",
+      "correction": "Use import.meta.env.VITE_API_URL (must start with VITE_)"
     },
     {
-      "mistake": "**Wrong environment variable prefix**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong environment variable prefix**:\n   ```javascript\n   // WRONG! Won't work in Vite\n   const API_URL = process.env.REACT_APP_API_URL;  // ✗\n   const API_URL = process.env.API_URL;             // ✗\n   \n   // CORRECT for Vite!\n   const API_URL = import.meta.env.VITE_API_URL;   // ✓\n   ```"
-    },
-    {
-      "mistake": "**Hardcoded API URL**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Hardcoded API URL**:\n   ```javascript\n   // WRONG! Won't work after deployment\n   fetch('http://localhost:3000/api/users');  // ✗\n   \n   // CORRECT!\n   const API_URL = import.meta.env.VITE_API_URL;\n   fetch(`${API_URL}/api/users`);  // ✓\n   ```"
+      "mistake": "Hardcoded localhost URL",
+      "consequence": "App works locally but breaks in production pointing to wrong server.",
+      "correction": "Use environment variables: import.meta.env.VITE_API_URL"
     }
   ],
   "difficulty": "beginner"

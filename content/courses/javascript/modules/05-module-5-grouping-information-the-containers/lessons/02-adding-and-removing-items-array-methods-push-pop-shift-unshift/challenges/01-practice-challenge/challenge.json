@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Confusing shift() and unshift()",
+      "consequence": "Using the wrong one adds instead of removes, or vice versa.",
+      "correction": "shift() removes, unshift() adds. 'un' = undo removal = add."
     },
     {
-      "mistake": "Forgetting these methods modify the array:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting these methods modify the array:\n   let arr = [1, 2, 3];\n   arr.push(4);  // arr is NOW [1, 2, 3, 4]\n   // It's not arr2 = arr.push(4)"
+      "mistake": "Expecting push() to return the array",
+      "consequence": "push() returns the new length, not the modified array.",
+      "correction": "Call push() for its side effect, then use the array separately."
     },
     {
-      "mistake": "Expecting push/pop to work on both ends:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Expecting push/pop to work on both ends:\n   arr.pop()  // Removes from END, not front\n   // Use shift() to remove from front"
+      "mistake": "Using pop() when you want shift()",
+      "consequence": "Removes from the end instead of the front.",
+      "correction": "pop() = end, shift() = front. Remember: FIFO uses shift()."
     }
   ],
   "difficulty": "beginner"

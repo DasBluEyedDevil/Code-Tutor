@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes with interfaces:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes with interfaces:"
+      "mistake": "Forgetting required properties",
+      "consequence": "TypeScript errors when you omit required properties from an object.",
+      "correction": "Include all required properties; only properties with ? are optional."
     },
     {
-      "mistake": "**Forgetting required properties**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting required properties**:\n   ```typescript\n   let user: User = { id: 1 }; // ERROR: Missing username, email, isActive\n   ```\n   Solution: Include ALL required properties"
-    },
-    {
-      "mistake": "**Wrong property names**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong property names**:\n   ```typescript\n   let user: User = { \n     id: 1, \n     userName: 'alice' // ERROR: Should be 'username' not 'userName'\n   };\n   ```\n   Solution: Match property names exactly (case-sensitive!)"
+      "mistake": "Wrong property names",
+      "consequence": "Property names are case-sensitive; userName is not the same as username.",
+      "correction": "Match property names exactly as defined in the interface."
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting the . or # prefix",
+      "consequence": "querySelector('myClass') looks for a <myClass> tag element, not a class selector.",
+      "correction": "Use .myClass for classes, #myId for IDs: document.querySelector('.myClass')"
     },
     {
-      "mistake": "Forgetting the . or # prefix:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting the . or # prefix:\n   document.querySelector('myClass')  // WRONG - looks for <myClass> tag\n   document.querySelector('.myClass')  // CORRECT - looks for class"
-    },
-    {
-      "mistake": "Expecting querySelectorAll to be an array:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Expecting querySelectorAll to be an array:\n   let items = document.querySelectorAll('.item');\n   items.map(...)  // ERROR - NodeList doesn't have map\n   \n   Convert first:\n   Array.from(items).map(...)\n   // Or use forEach (works on NodeList):\n   items.forEach(...)"
+      "mistake": "Expecting querySelectorAll to be an array",
+      "consequence": "NodeList doesn't have array methods like map() or filter(), causing errors.",
+      "correction": "Convert first: Array.from(items).map(...) or use forEach which works on NodeList."
     }
   ],
   "difficulty": "beginner"

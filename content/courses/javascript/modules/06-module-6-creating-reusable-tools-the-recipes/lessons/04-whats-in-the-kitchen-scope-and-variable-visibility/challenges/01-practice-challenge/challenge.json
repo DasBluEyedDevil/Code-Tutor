@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Declaring variables inside blocks with let",
+      "consequence": "let discount inside if {} is not accessible outside.",
+      "correction": "Declare discount before the if block: let discount = 0;"
     },
     {
-      "mistake": "Using variables outside their scope:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using variables outside their scope:\n   function test() {\n     let x = 5;\n   }\n   console.log(x);  // ERROR - x only exists inside test()"
+      "mistake": "Using var to 'fix' scope issues",
+      "consequence": "var creates function scope but leads to other bugs.",
+      "correction": "Use let declared at the correct level, never var."
     },
     {
-      "mistake": "Forgetting var escapes block scope:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting var escapes block scope:\n   if (true) {\n     var x = 5;  // Function scoped, not block scoped!\n   }\n   console.log(x);  // 5 - var leaks out\n   \n   Always use let/const, never var!"
+      "mistake": "Forgetting to initialize with a default value",
+      "consequence": "discount is undefined if the if condition is false.",
+      "correction": "Initialize: let discount = 0; then update in if block."
     }
   ],
   "difficulty": "beginner"

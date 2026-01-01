@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Using 'in' instead of 'of'",
+      "consequence": "for...in gives indices (0, 1, 2), not the actual values.",
+      "correction": "Use for...of to get values: for (let celsius of celsiusTemps)"
     },
     {
-      "mistake": "Using 'in' instead of 'of':",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using 'in' instead of 'of':\n   for (let fruit in fruits)  // WRONG - gives index, not item!\n   for (let fruit of fruits)  // CORRECT - gives the item\n   \n   Confusing, right? Remember: 'of' for values, 'in' for keys (we'll learn later)"
+      "mistake": "Forgetting the conversion formula",
+      "consequence": "Wrong Fahrenheit values.",
+      "correction": "Fahrenheit = (celsius * 9/5) + 32. Use parentheses for clarity."
     },
     {
-      "mistake": "Trying to get the index:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Trying to get the index:\n   for (let fruit of fruits) {\n     console.log(i);  // ERROR - i doesn't exist!\n   }\n   If you need the index, use a regular for loop or .forEach() (later)"
+      "mistake": "Trying to use an index variable",
+      "consequence": "for...of doesn't create an index variable like i.",
+      "correction": "If you need the index, use a regular for loop instead."
     }
   ],
   "difficulty": "beginner"

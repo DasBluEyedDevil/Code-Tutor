@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Not returning the value",
+      "consequence": "The function calculates the grade but returns undefined.",
+      "correction": "Use return: return 'A'; instead of just 'A';"
     },
     {
-      "mistake": "Wrong number of arguments:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Wrong number of arguments:\n   function add(a, b) { return a + b; }\n   add(5);  // b is undefined, returns NaN\n   add(5, 3, 7);  // 7 is ignored"
+      "mistake": "Wrong order in if/else if chain",
+      "consequence": "if (score >= 60) before if (score >= 90) catches everything.",
+      "correction": "Check from highest to lowest: 90+, then 80+, then 70+, etc."
     },
     {
-      "mistake": "Not returning the value:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not returning the value:\n   function add(a, b) {\n     a + b;  // Calculated but not returned!\n   }\n   let result = add(5, 3);  // undefined"
+      "mistake": "Using = instead of >= for comparison",
+      "consequence": "Only exact matches work, not ranges.",
+      "correction": "Use >= for ranges: if (score >= 90) return 'A';"
     }
   ],
   "difficulty": "beginner"

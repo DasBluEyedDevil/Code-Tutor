@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common conditional rendering mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common conditional rendering mistakes:"
+      "mistake": "Using if statement inside JSX",
+      "consequence": "if statements are not allowed in JSX expressions, causing syntax errors.",
+      "correction": "Use ternary: {isLoggedIn ? <Welcome /> : <Login />}"
     },
     {
-      "mistake": "**Using if statement inside JSX**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using if statement inside JSX**:\n   ```jsx\n   // WRONG! Can't use if in JSX\n   return (\n     <div>\n       {if (isLoggedIn) { <p>Welcome</p> }}  // Syntax error!\n     </div>\n   );\n   \n   // CORRECT! Use ternary\n   return (\n     <div>\n       {isLoggedIn ? <p>Welcome</p> : <p>Login</p>}\n     </div>\n   );\n   \n   // Or if/else before return:\n   if (isLoggedIn) {\n     return <div><p>Welcome</p></div>;\n   }\n   return <div><p>Login</p></div>;\n   ```"
-    },
-    {
-      "mistake": "**Wrong use of && operator**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong use of && operator**:\n   ```jsx\n   // WRONG! Renders \"0\" when count is 0\n   {count && <p>You have {count} items</p>}\n   \n   // CORRECT! Use explicit boolean\n   {count > 0 && <p>You have {count} items</p>}\n   ```"
+      "mistake": "Wrong use of && operator with numbers",
+      "consequence": "{count && ...} renders '0' when count is 0 because 0 is falsy but rendered.",
+      "correction": "Use explicit boolean: {count > 0 && ...}"
     }
   ],
   "difficulty": "beginner"

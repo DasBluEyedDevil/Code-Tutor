@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Expecting async code to run in order",
+      "consequence": "Code after setTimeout runs immediately, not after the delay. 'B' prints before 'A'.",
+      "correction": "Remember: setTimeout schedules code for later; surrounding code keeps running."
     },
     {
-      "mistake": "Expecting async code to run in order:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Expecting async code to run in order:\n   setTimeout(() => console.log('A'), 1000);\n   console.log('B');\n   // Output: B, (wait), A  (not A, B!)"
-    },
-    {
-      "mistake": "Not storing interval ID to clear it:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not storing interval ID to clear it:\n   setInterval(() => console.log('Hi'), 1000);\n   // Can't stop it now!\n   \n   Correct:\n   let id = setInterval(() => console.log('Hi'), 1000);\n   clearInterval(id);  // Can stop it"
+      "mistake": "Not storing interval ID to clear it",
+      "consequence": "The interval runs forever with no way to stop it.",
+      "correction": "Store the ID: let id = setInterval(...); then clearInterval(id); when done."
     }
   ],
   "difficulty": "beginner"

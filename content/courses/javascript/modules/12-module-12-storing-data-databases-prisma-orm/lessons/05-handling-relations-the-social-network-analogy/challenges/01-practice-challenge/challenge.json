@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common relation mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common relation mistakes:"
+      "mistake": "Forgetting foreign key field",
+      "consequence": "Relation references a field that doesn't exist, causing schema validation errors.",
+      "correction": "Add the foreign key field: authorId Int alongside the author User relation."
     },
     {
-      "mistake": "**Forgetting foreign key field**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting foreign key field**:\n   ```prisma\n   // WRONG! Missing authorId\n   model Post {\n     id     Int  @id\n     author User @relation(fields: [authorId], references: [id])\n   }\n   \n   // CORRECT!\n   model Post {\n     id       Int  @id\n     authorId Int  // Foreign key field\n     author   User @relation(fields: [authorId], references: [id])\n   }\n   ```"
-    },
-    {
-      "mistake": "**Wrong array syntax**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong array syntax**:\n   ```prisma\n   // WRONG!\n   model User {\n     posts Post  // Missing brackets!\n   }\n   \n   // CORRECT!\n   model User {\n     posts Post[]  // Array of posts\n   }\n   ```"
+      "mistake": "Wrong array syntax for one-to-many relations",
+      "consequence": "Missing brackets means single relation, not array of related items.",
+      "correction": "Use Post[] for arrays on the 'one' side: posts Post[]"
     }
   ],
   "difficulty": "beginner"

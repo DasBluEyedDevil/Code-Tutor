@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common CORS mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common CORS mistakes:"
+      "mistake": "CORS middleware placed after routes",
+      "consequence": "Routes defined before CORS middleware don't have CORS headers applied.",
+      "correction": "Place app.use(cors()) before any route definitions."
     },
     {
-      "mistake": "**CORS middleware placed AFTER routes**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**CORS middleware placed AFTER routes**:\n   ```javascript\n   // WRONG!\n   app.get('/api/users', (req, res) => { ... });\n   app.use(cors());  // Too late! Routes already defined\n   \n   // CORRECT!\n   app.use(cors());  // BEFORE routes!\n   app.get('/api/users', (req, res) => { ... });\n   ```"
-    },
-    {
-      "mistake": "**Forgot to install cors package**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgot to install cors package**:\n   ```bash\n   # Error: Cannot find module 'cors'\n   npm install cors\n   ```"
+      "mistake": "Forgot to install cors package",
+      "consequence": "Cannot find module 'cors' error at startup.",
+      "correction": "Install with: npm install cors (or bun add cors)"
     }
   ],
   "difficulty": "beginner"

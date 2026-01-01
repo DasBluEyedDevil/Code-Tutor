@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Using 'and' or 'or' instead of symbols",
+      "consequence": "if (age > 18 and hasLicense) causes a syntax error.",
+      "correction": "Use && for AND and || for OR: if (age > 18 && hasLicense)"
     },
     {
-      "mistake": "Using 'and' or 'or' instead of symbols:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using 'and' or 'or' instead of symbols:\n   if (age > 18 and hasLicense)  // WRONG\n   if (age > 18 && hasLicense)   // CORRECT"
+      "mistake": "Confusing && and ||",
+      "consequence": "Using || when you need && (or vice versa) gives wrong results.",
+      "correction": "Read it aloud: && means BOTH must be true, || means EITHER can be true."
     },
     {
-      "mistake": "Confusing && and ||:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Confusing && and ||:\n   if (isWeekend || hasWork)  // Do I work on weekends or any day?\n   vs\n   if (isWeekend && !hasWork) // Free weekend?\n   Read them out loud to check!"
+      "mistake": "Forgetting parentheses for grouping",
+      "consequence": "Operator precedence may evaluate differently than expected.",
+      "correction": "Use parentheses to make grouping explicit: ((a && b) || c)"
     }
   ],
   "difficulty": "beginner"

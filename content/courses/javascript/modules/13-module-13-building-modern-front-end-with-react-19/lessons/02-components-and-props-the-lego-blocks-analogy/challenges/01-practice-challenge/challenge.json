@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common component/props mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common component/props mistakes:"
+      "mistake": "Modifying props directly",
+      "consequence": "Props are read-only; modifying them breaks React's data flow and causes bugs.",
+      "correction": "Never mutate props. Create new objects or use state for changeable data."
     },
     {
-      "mistake": "**Modifying props (forbidden!)**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Modifying props (forbidden!)**:\n   ```jsx\n   function UserCard(props) {\n     props.name = 'Different';  // ERROR! Props are read-only!\n     return <h1>{props.name}</h1>;\n   }\n   ```\n   Props flow down (parent → child) and cannot be changed by child."
-    },
-    {
-      "mistake": "**Forgetting to pass props**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to pass props**:\n   ```jsx\n   function Greeting({ name }) {\n     return <h1>Hello, {name}!</h1>;\n   }\n   \n   // Wrong!\n   <Greeting />  // name is undefined!\n   \n   // Correct!\n   <Greeting name=\"Alice\" />\n   ```"
+      "mistake": "Forgetting to pass required props",
+      "consequence": "Props you expect will be undefined, causing errors or empty UI.",
+      "correction": "Always pass required props: <Greeting name=\"Alice\" />"
     }
   ],
   "difficulty": "beginner"

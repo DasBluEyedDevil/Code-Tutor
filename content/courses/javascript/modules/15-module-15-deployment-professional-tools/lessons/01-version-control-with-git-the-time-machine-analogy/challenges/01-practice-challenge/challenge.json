@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common Git mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common Git mistakes:"
+      "mistake": "Forgetting to commit frequently",
+      "consequence": "Large commits with 50+ files are hard to review and describe in one message.",
+      "correction": "Commit after each feature or logical change with focused commit messages."
     },
     {
-      "mistake": "**Forgetting to commit**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to commit**:\n   ```bash\n   # Made lots of changes, forgot to commit\n   # Now have 50 files changed\n   # Hard to write one commit message!\n   \n   # Better: Commit after each feature\n   git add .\n   git commit -m \"Add user login\"\n   # Then continue coding\n   ```"
-    },
-    {
-      "mistake": "**Committing secrets**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Committing secrets**:\n   ```bash\n   # NEVER commit .env files!\n   # Add to .gitignore:\n   .env\n   .env.local\n   config/secrets.js\n   ```"
+      "mistake": "Committing secrets and credentials",
+      "consequence": "Secrets in git history can be exposed even if deleted later.",
+      "correction": "Add .env and secret files to .gitignore before making any commits."
     }
   ],
   "difficulty": "beginner"

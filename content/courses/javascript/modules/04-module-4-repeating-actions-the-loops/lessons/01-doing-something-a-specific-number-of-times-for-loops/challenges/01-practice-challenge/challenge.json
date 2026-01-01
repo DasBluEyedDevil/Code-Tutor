@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Off-by-one errors",
+      "consequence": "Using i < 10 vs i <= 10 changes whether 10 is included.",
+      "correction": "Test your loop: for (let i = 1; i <= 10; i++) runs 10 times (1 through 10)."
     },
     {
-      "mistake": "Off-by-one errors (VERY common!):",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Off-by-one errors (VERY common!):\n   for (let i = 0; i < 5; i++)  // Runs 5 times (0,1,2,3,4)\n   for (let i = 1; i < 5; i++)  // Runs 4 times (1,2,3,4)\n   for (let i = 1; i <= 5; i++) // Runs 5 times (1,2,3,4,5)\n   Always test: does this loop run the right number of times?"
+      "mistake": "Creating an infinite loop",
+      "consequence": "for (let i = 0; i < 5; i--) makes i smaller forever, freezing the program.",
+      "correction": "Ensure the increment moves toward the condition becoming false."
     },
     {
-      "mistake": "Infinite loops:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Infinite loops:\n   for (let i = 0; i < 5; i--) // i gets SMALLER, never reaches 5!\n   This will crash your program!"
+      "mistake": "Putting a semicolon after for()",
+      "consequence": "for (let i = 0; i < 5; i++); runs an empty loop, then the block runs once.",
+      "correction": "Never put a semicolon between the for() and the opening brace."
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting camelCase for CSS properties",
+      "consequence": "element.style.background-color causes a syntax error; hyphens aren't valid in property names.",
+      "correction": "Use camelCase: element.style.backgroundColor = 'red';"
     },
     {
-      "mistake": "Forgetting camelCase for CSS properties:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting camelCase for CSS properties:\n   element.style.background-color = 'red';  // SYNTAX ERROR\n   element.style.backgroundColor = 'red';  // CORRECT"
-    },
-    {
-      "mistake": "Forgetting units:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting units:\n   element.style.width = 200;  // WRONG - no effect\n   element.style.width = '200px';  // CORRECT"
+      "mistake": "Forgetting units",
+      "consequence": "element.style.width = 200 has no effect because CSS needs units.",
+      "correction": "Always include units as a string: element.style.width = '200px';"
     }
   ],
   "difficulty": "beginner"

@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common event handling mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common event handling mistakes:"
+      "mistake": "Calling function immediately instead of passing reference",
+      "consequence": "handleClick() runs immediately on render, not on click.",
+      "correction": "Pass reference without parentheses: onClick={handleClick}"
     },
     {
-      "mistake": "**Calling function immediately instead of passing reference**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Calling function immediately instead of passing reference**:\n   ```jsx\n   // WRONG! (calls immediately on render)\n   <button onClick={handleClick()}>Click</button>\n   \n   // CORRECT! (passes function reference)\n   <button onClick={handleClick}>Click</button>\n   \n   // Or use arrow function:\n   <button onClick={() => handleClick()}>Click</button>\n   ```"
-    },
-    {
-      "mistake": "**Forgetting e.preventDefault() on forms**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting e.preventDefault() on forms**:\n   ```jsx\n   function handleSubmit(e) {\n     // WRONG! (page reloads)\n     console.log('Submitted');\n     \n     // CORRECT!\n     e.preventDefault();  // Stop page reload\n     console.log('Submitted');\n   }\n   ```"
+      "mistake": "Forgetting e.preventDefault() on forms",
+      "consequence": "Form submits and page reloads, losing state and causing issues.",
+      "correction": "Call e.preventDefault() first in form submit handlers."
     }
   ],
   "difficulty": "beginner"

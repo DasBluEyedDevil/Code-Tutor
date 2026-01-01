@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting to update the condition variable",
+      "consequence": "The condition never becomes false, causing an infinite loop.",
+      "correction": "Always include code that changes the variable: guess++; inside the loop."
     },
     {
-      "mistake": "Forgetting to update the condition variable:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting to update the condition variable:\n   let x = 0;\n   while (x < 10) {\n     console.log(x);  // x never changes - INFINITE LOOP!\n   }"
+      "mistake": "Updating in the wrong direction",
+      "consequence": "Using guess-- when you need guess++ moves away from the target.",
+      "correction": "Ensure your update moves the variable toward making the condition false."
     },
     {
-      "mistake": "Updating in the wrong direction:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Updating in the wrong direction:\n   let x = 0;\n   while (x < 10) {\n     console.log(x);\n     x--;  // x gets MORE negative - INFINITE LOOP!\n   }"
+      "mistake": "Wrong comparison operator",
+      "consequence": "Using !== vs < can cause the loop to skip over the target value.",
+      "correction": "Choose operators carefully: !== for exact match, < for ranges."
     }
   ],
   "difficulty": "beginner"

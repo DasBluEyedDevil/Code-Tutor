@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common database misconceptions:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common database misconceptions:"
+      "mistake": "Thinking databases are too complex for beginners",
+      "consequence": "You avoid learning databases and rely on in-memory storage or files.",
+      "correction": "Start with SQLite or Prisma ORM - they make database operations simple and beginner-friendly."
     },
     {
-      "mistake": "**\"Databases are too complex for beginners\"**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**\"Databases are too complex for beginners\"**:\n   - Start simple with SQLite or Prisma\n   - You don't need to be a DBA to use databases\n   - ORMs (like Prisma) make it much easier"
-    },
-    {
-      "mistake": "**\"I can just use variables/files instead\"**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**\"I can just use variables/files instead\"**:\n   ```javascript\n   // This seems easier but...\n   let users = [];  // Lost on restart!\n   \n   // Or\n   fs.writeFileSync('users.json', JSON.stringify(users));\n   // File corruption? Race conditions? Concurrent access?\n   ```\n   Databases solve these problems professionally"
+      "mistake": "Using variables or files instead of a database",
+      "consequence": "In-memory data is lost on restart; files can corrupt with concurrent access.",
+      "correction": "Use databases for persistent, concurrent-safe data storage even for small projects."
     }
   ],
   "difficulty": "beginner"

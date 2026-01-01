@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting to return a promise from a function",
+      "consequence": "Without 'return', the function returns undefined instead of the Promise.",
+      "correction": "Always return the Promise: return new Promise((resolve) => { ... });"
     },
     {
-      "mistake": "Forgetting to return a promise from a function:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting to return a promise from a function:\n   function getData() {\n     new Promise((resolve) => { ... });  // WRONG - not returned!\n   }\n   \n   function getData() {\n     return new Promise((resolve) => { ... });  // CORRECT\n   }"
-    },
-    {
-      "mistake": "Not returning in .then() for chaining:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not returning in .then() for chaining:\n   promise\n     .then(data => {\n       processData(data);  // Returns undefined!\n     })\n     .then(result => {\n       console.log(result);  // undefined\n     });\n   \n   Must return:\n   .then(data => {\n     return processData(data);\n   })"
+      "mistake": "Not returning in .then() for chaining",
+      "consequence": "The next .then() receives undefined instead of your processed data.",
+      "correction": "Return values in .then(): .then(data => { return processData(data); })"
     }
   ],
   "difficulty": "beginner"
