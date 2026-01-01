@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common migration mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common migration mistakes:"
+      "mistake": "Forgetting to run migrations",
+      "consequence": "Schema changes don't apply to database, causing column not found errors.",
+      "correction": "Run npx prisma migrate dev after every schema change."
     },
     {
-      "mistake": "**Forgetting to run migrations**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to run migrations**:\n   ```bash\n   # Changed schema.prisma but database not updated!\n   \n   # Must run:\n   npx prisma migrate dev\n   ```"
-    },
-    {
-      "mistake": "**Using db push in production**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using db push in production**:\n   ```bash\n   # NEVER do this in production:\n   npx prisma db push  # No migration history!\n   \n   # Use migrate deploy instead:\n   npx prisma migrate deploy\n   ```"
+      "mistake": "Using db push in production",
+      "consequence": "db push doesn't track migration history, making rollbacks impossible.",
+      "correction": "Use npx prisma migrate deploy in production for proper migration history."
     }
   ],
   "difficulty": "beginner"

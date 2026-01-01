@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common environment variable mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common environment variable mistakes:"
+      "mistake": "Committing .env to Git",
+      "consequence": "Secrets are exposed in git history, even if deleted later (security breach).",
+      "correction": "Add .env to .gitignore before your first commit. Rotate any leaked secrets immediately."
     },
     {
-      "mistake": "**Committing .env to Git** (MAJOR security issue!):",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Committing .env to Git** (MAJOR security issue!):\n   ```bash\n   # Check if .env is tracked:\n   git ls-files | grep .env\n   \n   # If it returns .env, you've committed secrets!\n   # Fix immediately:\n   git rm --cached .env\n   echo \".env\" >> .gitignore\n   git commit -m \"Remove .env from git\"\n   \n   # If already pushed to GitHub:\n   # 1. Rotate all secrets immediately!\n   # 2. Consider the secrets compromised\n   ```"
-    },
-    {
-      "mistake": "**Forgot to load dotenv**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgot to load dotenv**:\n   ```javascript\n   // Error: process.env.DATABASE_URL is undefined\n   \n   // Fix: Load dotenv at the very top\n   import 'dotenv/config';  // Must be first!\n   import express from 'express';\n   \n   // or\n   require('dotenv').config();  // Must be first!\n   const express = require('express');\n   ```"
+      "mistake": "Forgot to load dotenv",
+      "consequence": "process.env variables are undefined, causing app crashes.",
+      "correction": "Import dotenv at the very top: import 'dotenv/config'; before other imports."
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common full-stack integration mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common full-stack integration mistakes:"
+      "mistake": "Forgetting to enable CORS on backend",
+      "consequence": "Browser blocks cross-origin requests from frontend to backend.",
+      "correction": "Add app.use('*', cors()) in your Hono backend."
     },
     {
-      "mistake": "**Forgetting to enable CORS**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to enable CORS**:\n   ```javascript\n   // Hono backend missing:\n   app.use('*', cors());  // Add this!\n   ```"
-    },
-    {
-      "mistake": "**Wrong API URL**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong API URL**:\n   ```jsx\n   // Wrong!\n   fetch('localhost:4000/api/todos')  // Missing http://\n   \n   // Correct!\n   fetch('http://localhost:4000/api/todos')\n   \n   // Best!\n   const API_URL = import.meta.env.VITE_API_URL;\n   fetch(`${API_URL}/api/todos`);\n   ```"
+      "mistake": "Wrong API URL format",
+      "consequence": "Missing http:// causes fetch to fail or look in wrong location.",
+      "correction": "Use full URL with protocol: http://localhost:4000/api/todos"
     }
   ],
   "difficulty": "beginner"

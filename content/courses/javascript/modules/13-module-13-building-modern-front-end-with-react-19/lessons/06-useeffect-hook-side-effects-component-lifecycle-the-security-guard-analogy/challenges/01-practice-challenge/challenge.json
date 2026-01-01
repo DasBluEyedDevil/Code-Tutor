@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common useEffect mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common useEffect mistakes:"
+      "mistake": "Forgetting dependency array",
+      "consequence": "Effect runs after every render, causing infinite loops if it updates state.",
+      "correction": "Add [] for mount-only, or [dep1, dep2] for specific dependencies."
     },
     {
-      "mistake": "**Forgetting dependency array**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting dependency array**:\n   ```jsx\n   // WRONG! Runs after EVERY render\n   useEffect(() => {\n     fetchData();  // Infinite loop if it updates state!\n   });\n   \n   // CORRECT!\n   useEffect(() => {\n     fetchData();\n   }, []);  // Run once on mount\n   ```"
-    },
-    {
-      "mistake": "**Using async directly in useEffect**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using async directly in useEffect**:\n   ```jsx\n   // WRONG!\n   useEffect(async () => {  // Can't make effect async!\n     const data = await fetch('/api/users');\n   }, []);\n   \n   // CORRECT!\n   useEffect(() => {\n     async function fetchData() {\n       const data = await fetch('/api/users');\n     }\n     fetchData();\n   }, []);\n   ```"
+      "mistake": "Using async directly in useEffect",
+      "consequence": "useEffect can't be async directly; it must return a cleanup function or nothing.",
+      "correction": "Define async function inside effect and call it: async function fetch() {...}; fetch();"
     }
   ],
   "difficulty": "beginner"

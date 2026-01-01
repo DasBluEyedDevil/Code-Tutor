@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting quotes around IDs",
+      "consequence": "document.getElementById(heading) treats 'heading' as a variable, not a string, causing a ReferenceError.",
+      "correction": "Always use quotes: document.getElementById('heading')"
     },
     {
-      "mistake": "Forgetting quotes around IDs:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting quotes around IDs:\n   document.getElementById(heading)  // WRONG - thinks heading is a variable\n   document.getElementById('heading')  // CORRECT - string literal"
-    },
-    {
-      "mistake": "Running JavaScript before HTML loads:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Running JavaScript before HTML loads:\n   <script>document.getElementById('myButton')</script>\n   <button id=\"myButton\">Click</button>\n   The script runs before button exists! Put scripts at end of <body>"
+      "mistake": "Running JavaScript before HTML loads",
+      "consequence": "The script runs before the elements exist, returning null and causing errors when you try to use them.",
+      "correction": "Put <script> tags at the end of <body>, or use DOMContentLoaded event."
     }
   ],
   "difficulty": "beginner"

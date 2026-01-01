@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common useState mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common useState mistakes:"
+      "mistake": "Mutating state directly",
+      "consequence": "Mutating state object doesn't trigger re-render; React sees same reference.",
+      "correction": "Create new objects: setUser({ ...user, name: 'Bob' })"
     },
     {
-      "mistake": "**Mutating state directly**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Mutating state directly**:\n   ```jsx\n   // WRONG!\n   const [user, setUser] = useState({ name: 'Alice' });\n   user.name = 'Bob';     // Don't mutate!\n   setUser(user);         // React won't re-render\n   \n   // CORRECT!\n   setUser({ ...user, name: 'Bob' });  // New object\n   ```"
-    },
-    {
-      "mistake": "**Forgetting to use setter**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting to use setter**:\n   ```jsx\n   const [count, setCount] = useState(0);\n   \n   // WRONG!\n   count = count + 1;     // Won't work!\n   \n   // CORRECT!\n   setCount(count + 1);   // Use setter\n   ```"
+      "mistake": "Forgetting to use the setter function",
+      "consequence": "Assigning to state variable directly won't update UI or trigger re-render.",
+      "correction": "Always use setter: setCount(count + 1), never count = count + 1"
     }
   ],
   "difficulty": "beginner"

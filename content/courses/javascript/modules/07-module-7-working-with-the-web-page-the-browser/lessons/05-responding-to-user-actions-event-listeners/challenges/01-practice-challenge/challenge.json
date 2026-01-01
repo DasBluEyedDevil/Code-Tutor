@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Calling the function immediately",
+      "consequence": "Using myFunction() with parentheses runs it immediately instead of on the event.",
+      "correction": "Pass the function reference without parentheses: button.addEventListener('click', myFunction);"
     },
     {
-      "mistake": "Calling the function immediately:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Calling the function immediately:\n   button.addEventListener('click', myFunction());  // WRONG - runs now!\n   button.addEventListener('click', myFunction);  // CORRECT - runs on click"
-    },
-    {
-      "mistake": "Forgetting event.preventDefault() for forms:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting event.preventDefault() for forms:\n   form.addEventListener('submit', function(event) {\n     // Form submits and page reloads before your code runs!\n   });\n   \n   Must prevent default:\n   form.addEventListener('submit', function(event) {\n     event.preventDefault();  // Now your code can run\n   });"
+      "mistake": "Forgetting event.preventDefault() for forms",
+      "consequence": "The form submits and the page reloads before your JavaScript code can run.",
+      "correction": "Call event.preventDefault() at the start of your submit handler to stop the default behavior."
     }
   ],
   "difficulty": "beginner"

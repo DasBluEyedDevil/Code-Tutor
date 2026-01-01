@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Not awaiting response.json()",
+      "consequence": "response.json() returns a Promise, so without await you get a Promise object, not data.",
+      "correction": "Always await: let data = await response.json();"
     },
     {
-      "mistake": "Not awaiting response.json():",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not awaiting response.json():\n   let response = await fetch(url);\n   let data = response.json();  // WRONG - data is a Promise!\n   \n   Must await:\n   let data = await response.json();"
-    },
-    {
-      "mistake": "Forgetting to check response.ok:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting to check response.ok:\n   let response = await fetch(url);\n   let data = await response.json();  // Might fail!\n   \n   Always check:\n   if (!response.ok) {\n     throw new Error('HTTP error');\n   }"
+      "mistake": "Forgetting to check response.ok",
+      "consequence": "fetch() doesn't throw on HTTP errors (404, 500), so you may try to parse an error page.",
+      "correction": "Check before parsing: if (!response.ok) throw new Error('HTTP error');"
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common useEffect + fetch mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common useEffect + fetch mistakes:"
+      "mistake": "Forgetting dependency array in useEffect",
+      "consequence": "Effect runs after every render, causing infinite loops when updating state.",
+      "correction": "Add [] to run once, or [dep] to run when dependency changes."
     },
     {
-      "mistake": "**Forgetting dependency array**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting dependency array**:\n   ```jsx\n   // WRONG! Infinite loop!\n   useEffect(() => {\n     fetch('/api/users')\n       .then(res => res.json())\n       .then(data => setUsers(data)); // State update triggers re-render\n   }); // No dependency array → runs every render → infinite loop!\n   \n   // CORRECT!\n   useEffect(() => {\n     fetch('/api/users')\n       .then(res => res.json())\n       .then(data => setUsers(data));\n   }, []); // Empty array → run once\n   ```"
-    },
-    {
-      "mistake": "**Using async directly in useEffect**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Using async directly in useEffect**:\n   ```jsx\n   // WRONG!\n   useEffect(async () => {  // ← Can't do this!\n     const res = await fetch('/api/users');\n   }, []);\n   \n   // CORRECT!\n   useEffect(() => {\n     async function fetchData() {  // Define async function inside\n       const res = await fetch('/api/users');\n     }\n     fetchData();  // Call it\n   }, []);\n   ```"
+      "mistake": "Using async directly in useEffect",
+      "consequence": "useEffect can't be async directly; it breaks cleanup function handling.",
+      "correction": "Define async function inside effect and call it: const fetchData = async () => {...}; fetchData();"
     }
   ],
   "difficulty": "beginner"

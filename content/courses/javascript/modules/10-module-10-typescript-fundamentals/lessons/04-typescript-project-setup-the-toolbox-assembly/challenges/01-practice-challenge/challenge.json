@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common setup mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common setup mistakes:"
+      "mistake": "Wrong tsconfig.json location",
+      "consequence": "TypeScript won't find your configuration if it's not in the project root.",
+      "correction": "Place tsconfig.json in the project root, not inside src/ or other folders."
     },
     {
-      "mistake": "**Wrong tsconfig.json location**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Wrong tsconfig.json location**:\n   - Must be in project root (not inside src/)\n   - Must be named exactly 'tsconfig.json' (case-sensitive)"
-    },
-    {
-      "mistake": "**JSON syntax errors**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**JSON syntax errors**:\n   ```json\n   {\n     \"target\": \"ES2024\",  // ERROR: No trailing comma on last item!\n   }\n   ```\n   Solution: Remove trailing commas in JSON files"
+      "mistake": "JSON syntax errors",
+      "consequence": "Trailing commas or comments cause JSON parsing errors.",
+      "correction": "Standard JSON doesn't allow trailing commas or // comments."
     }
   ],
   "difficulty": "beginner"

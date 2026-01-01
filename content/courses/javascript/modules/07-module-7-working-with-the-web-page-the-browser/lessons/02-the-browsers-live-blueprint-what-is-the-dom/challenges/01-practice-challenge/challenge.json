@@ -21,19 +21,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Confusing the DOM with HTML",
+      "consequence": "Thinking changes to your HTML file will update the running page, or that DOM changes persist to the file.",
+      "correction": "Remember: HTML is static source code; DOM is the live structure. Change DOM to update the page immediately."
     },
     {
-      "mistake": "Confusing the DOM with HTML:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Confusing the DOM with HTML:\n   - HTML: Static code you write\n   - DOM: Live structure in browser\n   - Changing HTML file doesn't change running page\n   - Changing DOM changes page immediately"
-    },
-    {
-      "mistake": "Null reference errors:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Null reference errors:\n   let element = document.getElementById('wrong-id');\n   element.textContent = 'Hi';  // ERROR - element is null!\n   \n   Always check:\n   if (element !== null) {\n     element.textContent = 'Hi';\n   }"
+      "mistake": "Null reference errors",
+      "consequence": "Calling methods on null when getElementById returns nothing for a wrong ID.",
+      "correction": "Always check: if (element !== null) { element.textContent = 'Hi'; }"
     }
   ],
   "difficulty": "beginner"

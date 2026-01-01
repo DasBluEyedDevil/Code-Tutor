@@ -27,19 +27,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common Prisma mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common Prisma mistakes:"
+      "mistake": "Forgetting async/await with Prisma",
+      "consequence": "Prisma methods return Promises; without await you get a Promise object, not data.",
+      "correction": "Always await: let user = await prisma.user.findUnique({ where: { id: 1 } });"
     },
     {
-      "mistake": "**Forgetting async/await**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Forgetting async/await**:\n   ```typescript\n   // Wrong!\n   let user = prisma.user.findUnique({ where: { id: 1 } });\n   console.log(user.name); // ERROR: user is a Promise!\n   \n   // Correct!\n   let user = await prisma.user.findUnique({ where: { id: 1 } });\n   console.log(user.name); // Works!\n   ```"
-    },
-    {
-      "mistake": "**Not running migrations**:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "**Not running migrations**:\n   - After changing schema.prisma, run: `npx prisma migrate dev`\n   - Then: `npx prisma generate` to update TypeScript types\n   - Without this, your code won't match the database!"
+      "mistake": "Not running migrations after schema changes",
+      "consequence": "Your schema.prisma doesn't match the actual database, causing runtime errors.",
+      "correction": "Run npx prisma migrate dev after schema changes, then npx prisma generate."
     }
   ],
   "difficulty": "beginner"
