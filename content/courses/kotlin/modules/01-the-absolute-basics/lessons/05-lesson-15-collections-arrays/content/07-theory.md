@@ -24,7 +24,15 @@ numbers[1] = 10     // Modify the second element
 While they look similar, lists are generally preferred in Kotlin because they provide a much richer set of functions and support immutability (read-only).
 
 **When to use Arrays vs Lists**:
-...
+
+| Use Arrays when... | Use Lists when... |
+|-------------------|-------------------|
+| Working with Java interop | Building typical Kotlin apps |
+| Performance-critical numeric operations | You want rich collection functions |
+| Fixed-size data is guaranteed | Size may change or vary |
+| Using primitive arrays (IntArray, etc.) | Readability and safety matter most |
+
+In most Kotlin code, prefer `List` over `Array`.
 
 
 

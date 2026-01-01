@@ -14,7 +14,8 @@ If you specify a return type, every possible path through your function must act
 - `fun getMessage(isValid: Boolean): String { if (isValid) return "OK" }` ❌ (What if isValid is false?)
 
 ### Mistake 3: Wrong Argument Order
-...
+
+When calling functions with multiple parameters of the same type, it's easy to accidentally swap them. Use named arguments to prevent this error and improve code readability.
 
 
 

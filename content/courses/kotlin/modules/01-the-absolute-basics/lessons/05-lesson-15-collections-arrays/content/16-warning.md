@@ -16,7 +16,8 @@ Trying to access an index that doesn't exist will crash your program.
 - `println(items[1])` ❌ (Index 1 doesn't exist, only 0 does)
 
 ### Mistake 3: Forgetting Map Values are Nullable
-...
+
+When you access a map with a key that doesn't exist, the result is `null`. Always handle this case to avoid null pointer exceptions.
 
 
 

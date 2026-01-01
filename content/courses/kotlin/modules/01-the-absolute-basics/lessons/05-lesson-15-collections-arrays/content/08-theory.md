@@ -37,7 +37,8 @@ val results = numbers
 ```
 
 ### More Useful Operations
-...
+
+Here are additional collection functions you'll use frequently:
 
 
 

@@ -48,3 +48,15 @@ fun main() {
 ```
 
 **Sample Output**:
+
+```text
+=== BMI Calculator ===
+Enter your name: Alice
+Enter your weight (kg): 68
+Enter your height (meters): 1.75
+
+=== BMI Report for Alice ===
+BMI: 22.20
+Category: Normal weight
+==============================
+```

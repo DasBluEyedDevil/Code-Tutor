@@ -20,7 +20,10 @@ data class Calculation(
 ```
 
 **What this does**:
-...
+- Creates an immutable data structure to store each calculation
+- The `data class` automatically provides `equals()`, `hashCode()`, and `toString()`
+- Custom `toString()` formats the calculation nicely for display
+
 ### Step 2: Core Calculation Functions
 
 ```kotlin
@@ -31,7 +34,10 @@ fun divide(a: Double, b: Double) = if (b != 0.0) a / b else null
 ```
 
 **Key Points**:
-...
+- Each operation is a simple single-expression function
+- Division returns `null` to handle divide-by-zero safely instead of crashing
+- The `if` expression returns the result or `null` based on the condition
+
 ### Step 3: Input Validation Functions
 
 ```kotlin
@@ -47,7 +53,10 @@ fun getMenuChoice(): Int? {
 ```
 
 **Why nullable returns?**
-...
+- Users might type "abc" instead of a number
+- `toDoubleOrNull()` returns `null` for invalid input instead of crashing
+- We propagate the `null` so the caller can handle it gracefully
+
 ### Step 4: UI Functions
 
 ```kotlin
@@ -74,7 +83,10 @@ fun displayHistory(history: List<Calculation>) {
 ```
 
 **Design choices**:
-...
+- Menu is displayed as numbered options for easy selection
+- History uses `forEachIndexed` to show numbered entries
+- Empty history check provides clear user feedback
+
 ### Step 5: Operation Handler
 
 ```kotlin

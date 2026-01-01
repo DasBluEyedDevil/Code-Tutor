@@ -17,7 +17,10 @@ fun main() {
 ```
 
 **Benefits of Named Arguments**:
-...
+1. **Clarity**: Code is self-documenting—readers instantly know what each argument means
+2. **Flexibility**: You can pass arguments in any order when using names
+3. **Selective Defaults**: Skip some default parameters while specifying others
+4. **Fewer Bugs**: Prevents accidentally swapping arguments of the same type
 
 
 

@@ -35,7 +35,8 @@ Bananas: 5 items
 ```
 
 ### Map Operations
-...
+
+Maps provide useful functions for checking contents and accessing data:
 
 
 

@@ -41,7 +41,8 @@ createUser(name = "Alice", age = 25)
 ---
 
 **Question 5: C) The receiver object (the object the function is called on)**
-...
+
+In extension functions, `this` refers to the object the function is being called on (the "receiver").
 
 In extension functions, `this` is the object being extended:
 

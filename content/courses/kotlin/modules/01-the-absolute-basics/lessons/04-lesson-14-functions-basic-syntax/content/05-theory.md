@@ -46,12 +46,10 @@ fun printReceipt(item: String, price: Double, quantity: Int) {
 }
 ```
 
-**Output**:
-...
-
-
+**Output** (when called with `printReceipt("Widget", 19.99, 3)`):
 
 ```kotlin
+Item: Widget
 Subtotal: $59.97
 Tax: $4.7976
 Total: $64.7676

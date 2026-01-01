@@ -31,7 +31,8 @@ fun process(data: String?) {
 ```
 
 ### Pattern 4: let for Complex Logic
-...
+
+Use `let` when you need to perform multiple operations on a non-null value. The variable is named (here `id`) for clarity:
 
 
 

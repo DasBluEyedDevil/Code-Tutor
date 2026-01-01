@@ -43,7 +43,8 @@ println(s!!.length) // 2
 ---
 
 **Question 5: B) null**
-...
+
+The `as?` operator is a safe cast that returns `null` if the cast fails, rather than throwing an exception.
 
 Safe cast returns null on failure:
 

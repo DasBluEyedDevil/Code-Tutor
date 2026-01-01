@@ -25,7 +25,8 @@ If the value is null, the `let` block is skipped entirely.
 Use `let` when you want to call one or more functions that require a non-null argument.
 
 ### let with Return Value
-...
+
+The `let` block returns the result of its last expression. This is useful when you want to transform a nullable value:
 
 
 

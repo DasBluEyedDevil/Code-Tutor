@@ -33,7 +33,8 @@ names.removeAt(0)  // ✅ Removes "Alice"
 ```
 
 ### List Operations
-...
+
+Lists come with many useful functions for searching, filtering, and transforming data:
 
 
 

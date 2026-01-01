@@ -26,7 +26,8 @@ You can chain multiple safe calls together. If any part of the chain is null, th
 ```
 
 ### Safe Calls with Methods
-...
+
+The safe call operator works with any method. If the variable is null, the method is not called and `null` is returned instead:
 
 
 
