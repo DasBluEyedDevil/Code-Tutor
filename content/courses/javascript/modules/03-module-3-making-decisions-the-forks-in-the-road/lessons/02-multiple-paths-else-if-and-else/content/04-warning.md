@@ -1,22 +1,16 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Logic Chain Errors"
 ---
 
-Common mistakes:
+### 1. The `else` with a condition
+A very common beginner mistake is trying to give an `else` its own condition.
+*   **Wrong:** `else (score < 50) { ... }`
+*   **Right:** `else if (score < 50) { ... }` OR just `else { ... }`
+Remember: `else` is the "everything else" bucket. It doesn't need to be told when to run.
 
-1. Wrong order of conditions:
-   if (score >= 60) { ... } else if (score >= 90) { ... }
-   This is wrong! If score is 95, the first condition (>= 60) is true, so it stops there. Always check from most specific to least specific.
+### 2. Overlapping Conditions
+If your conditions overlap (e.g., `score > 50` and `score > 80`), make sure the order is correct. If you check `> 50` first, someone with a score of 90 will trigger the `> 50` block and the `> 80` block will be ignored.
 
-2. Using separate if statements instead of else if:
-   if (temp > 80) { ... }
-   if (temp > 60) { ... }  // WRONG - both could run!
-   Instead use: else if (temp > 60) { ... }
-
-3. Forgetting the 'else' keyword: writing if (cond1) { } if (cond2) { } won't work as intended.
-
-4. Putting code between the blocks:
-   if (x > 5) { }
-   console.log('hello');  // This runs no matter what!
-   else { }  // ERROR - can't have code between if and else
+### 3. Forgetting the `else`
+If you leave out the `else`, and none of your `if` or `else if` conditions are true, **nothing** will happen. This might be what you want, but often it leads to a "silent fail" where the user gets no feedback. Always consider if a "default" message is needed.

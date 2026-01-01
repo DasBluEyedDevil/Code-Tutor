@@ -1,50 +1,33 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The for...of Loop"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Old way: using a regular for loop with an index
-let fruits = ['apple', 'banana', 'cherry'];
+// 1. Looping through a list of names (Array)
+const guests = ['Alice', 'Bob', 'Charlie', 'Diana'];
 
-for (let i = 0; i < fruits.length; i++) {
-  console.log(fruits[i]);  // Need to use fruits[i] to get the item
+console.log("Guest List:");
+for (const guest of guests) {
+    // In each lap, 'guest' becomes the next name in the list
+    console.log(`- ${guest}`);
 }
 
-// New way: for...of loop (much cleaner!)
-for (let fruit of fruits) {
-  console.log(fruit);  // Direct access to each item
-}
-
-// Another example: summing numbers
-let numbers = [10, 20, 30, 40, 50];
+// 2. Calculating a total from a list
+const prices = [10.99, 5.50, 20.00, 3.25];
 let total = 0;
 
-for (let num of numbers) {
-  total += num;
+for (const price of prices) {
+    total = total + price;
 }
-console.log('Total: ' + total);  // 150
+console.log(`
+Total price: $${total}`);
 
-// Works with strings too! (string is a list of characters)
-let word = 'hello';
-
-for (let letter of word) {
-  console.log(letter);  // h, e, l, l, o
+// 3. Looping through characters in a string
+const word = "BUN";
+console.log("
+Spelling it out:");
+for (const char of word) {
+    console.log(char);
 }
-
-// Practical: find if item exists
-let shoppingCart = ['milk', 'eggs', 'bread', 'butter'];
-let lookingFor = 'eggs';
-let hasItem = false;
-
-for (let item of shoppingCart) {
-  if (item === lookingFor) {
-    hasItem = true;
-    break;
-  }
-}
-
-console.log(hasItem ? 'Found it!' : 'Not in cart');
 ```

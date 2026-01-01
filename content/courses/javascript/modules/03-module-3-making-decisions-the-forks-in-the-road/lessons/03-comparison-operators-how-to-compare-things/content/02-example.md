@@ -1,48 +1,28 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Comparing Values"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Greater than (>)
-let age = 25;
-if (age > 18) {
-  console.log('You are an adult');  // true, runs
-}
+const myScore = 80;
+const passingScore = 70;
 
-// Less than (<)
-let temperature = 32;
-if (temperature < 40) {
-  console.log('It is very cold');  // true, runs
-}
+// 1. Equality and Inequality
+console.log(myScore === 80); // true (exact match)
+console.log(myScore !== 100); // true (they are different)
 
-// Greater than or equal to (>=)
-let score = 60;
-if (score >= 60) {
-  console.log('You passed!');  // true, runs (60 equals 60)
-}
+// 2. Greater Than / Less Than
+console.log(myScore > 100);  // false
+console.log(myScore < 100);  // true
 
-// Less than or equal to (<=)
-let speed = 55;
-if (speed <= 55) {
-  console.log('You are within the speed limit');  // true, runs
-}
+// 3. Inclusive Comparisons (Greater/Less than OR Equal)
+console.log(myScore >= 80);  // true (it is exactly 80)
+console.log(myScore >= 70);  // true (it is more than 70)
 
-// Equal to (===)
-let userAnswer = 'Paris';
-if (userAnswer === 'Paris') {
-  console.log('Correct!');  // true, runs
-}
+// 4. Using results in an 'if'
+const isWinner = myScore > passingScore;
 
-// Not equal to (!==)
-let status = 'pending';
-if (status !== 'complete') {
-  console.log('Still waiting...');  // true, runs
+if (isWinner) {
+    console.log("Congratulations, you passed!");
 }
-
-// You can also store comparison results in variables!
-let isAdult = age >= 18;  // isAdult now holds true or false
-console.log(isAdult);  // Displays: true
 ```

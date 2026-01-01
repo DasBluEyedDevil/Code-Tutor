@@ -1,37 +1,29 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The For Loop in Action"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Basic for loop - count from 0 to 4
+// 1. A basic loop (Counting up)
+// Start at 0; run as long as i < 5; add 1 each time
 for (let i = 0; i < 5; i++) {
-  console.log('Count: ' + i);
-}
-// Displays: Count: 0, Count: 1, Count: 2, Count: 3, Count: 4
-
-// Count from 1 to 10
-for (let i = 1; i <= 10; i++) {
-  console.log(i);
+    console.log(`Lap number: ${i}`);
 }
 
-// Count by twos (even numbers)
-for (let i = 0; i <= 10; i += 2) {
-  console.log(i);  // 0, 2, 4, 6, 8, 10
+// 2. Counting down
+console.log("Blast off in...");
+for (let i = 5; i > 0; i--) {
+    console.log(i);
+}
+console.log("LIFTOFF!");
+
+// 3. Skipping numbers (Step by 2)
+for (let i = 0; i <= 10; i = i + 2) {
+    console.log(`Even number: ${i}`);
 }
 
-// Count backwards
-for (let i = 10; i >= 1; i--) {
-  console.log(i);
-}
-console.log('Blast off!');
-
-// Practical example: calculate total
-let total = 0;
+// 4. Using the loop variable in a calculation
 for (let i = 1; i <= 5; i++) {
-  total += i;  // Same as: total = total + i
+    console.log(`${i} squared is: ${i * i}`);
 }
-console.log('Sum of 1 to 5: ' + total);  // 15
 ```

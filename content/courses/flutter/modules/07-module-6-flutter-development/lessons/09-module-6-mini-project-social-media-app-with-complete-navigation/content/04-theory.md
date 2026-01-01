@@ -1,31 +1,29 @@
 ---
 type: "THEORY"
-title: "What This Project Demonstrates"
+title: "Step 3: Create the Main Scaffold"
 ---
 
+The `MainScaffold` manages the `NavigationBar` and coordinates with GoRouter to highlight the correct destination.
 
-### Navigation Patterns:
-- ✅ **GoRouter**: Modern declarative routing
-- ✅ **ShellRoute**: Persistent bottom navigation
-- ✅ **Path Parameters**: Dynamic routes (/post/:id, /user/:id)
-- ✅ **Deep Linking**: Direct access to any screen
-- ✅ **Named Routes**: Type-safe navigation
+```dart
+class MainScaffold extends StatelessWidget {
+  final Widget child;
+  const MainScaffold({required this.child, super.key});
 
-### UI Patterns:
-- ✅ **Bottom Navigation**: 5 primary destinations
-- ✅ **Drawer**: Secondary navigation
-- ✅ **Tabs**: Content categories with state preservation
-- ✅ **Badges**: Notification counts
-- ✅ **Modal Bottom Sheets**: Contextual actions
-
-### State Management:
-- ✅ **AutomaticKeepAliveClientMixin**: Preserve scroll positions
-- ✅ **StatefulWidget**: UI state management
-- ✅ **Route-based Selection**: Highlight current destination
-
-### Best Practices:
-- ✅ **Reusable Widgets**: PostCard, ScaffoldWithNav, AppDrawer
-- ✅ **Clean Architecture**: Organized file structure
-- ✅ **Responsive Design**: Works on all screen sizes
-- ✅ **User Experience**: Smooth transitions, visual feedback
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _calculateSelectedIndex(context),
+        onDestinationSelected: (index) => _onDestinationSelected(context, index),
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.search), label: 'Search'),
+          // ...
+        ],
+      ),
+    );
+  }
+}
+```

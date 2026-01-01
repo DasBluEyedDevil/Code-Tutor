@@ -1,29 +1,30 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Power of Comments"
 ---
 
-See the code example above demonstrating Code Example.
+Comments are for humans, not computers. We use them to explain complex logic or temporarily disable code during testing (often called "commenting out").
 
 ```javascript
-// This is a single-line comment
-// The computer ignores everything after the //
+// 1. Single-line comments
+// This is used for brief notes.
+console.log('Main engine started.'); // You can also put notes here
 
-console.log('This runs!');  // You can also put comments at the end of a line
+// 2. Multi-line comments
+/*
+   This block of text is a multi-line comment.
+   It is perfect for headers or long explanations
+   of how a specific system works.
+*/
 
-// console.log('This does NOT run because it is commented out');
+// 3. Commenting out code
+// Sometimes we want to "turn off" code without deleting it.
+// console.log('This will not appear in the results.');
 
 /*
-  This is a multi-line comment.
-  Everything between the /* and */ is ignored.
-  This is useful for longer explanations.
+console.log('Multiple lines');
+console.log('can be turned off at once.');
 */
 
-console.log('This also runs!');
-
-/* You can also use multi-line comments
-   to temporarily 'turn off' code:
-   console.log('This is turned off');
-   console.log('So is this');
-*/
+console.log('Systems check complete.');
 ```

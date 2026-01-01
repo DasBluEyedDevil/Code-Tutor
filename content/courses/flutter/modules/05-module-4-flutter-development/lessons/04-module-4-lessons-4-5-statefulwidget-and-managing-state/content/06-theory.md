@@ -1,15 +1,12 @@
 ---
 type: "THEORY"
-title: "What's Next?"
+title: "What Did We Learn?"
 ---
 
+- ✅ **StatelessWidget**: Use for UI that never changes once built.
+- ✅ **StatefulWidget**: Use for UI that needs to update when data changes.
+- ✅ **setState()**: The function that tells Flutter "something changed, please redraw the screen!"
+- ✅ **initState()**: For one-time setup (like controllers).
+- ✅ **dispose()**: For cleaning up resources to prevent memory leaks.
 
-**Module 5: State Management!**
-
-setState works great for simple apps. But what about:
-- Sharing data between screens?
-- Complex app state?
-- Better organization?
-
-Next module: **Provider, Riverpod, and professional state management**!
-
+Understanding the difference between Static and State is the biggest hurdle for new Flutter developers. You've cleared it!

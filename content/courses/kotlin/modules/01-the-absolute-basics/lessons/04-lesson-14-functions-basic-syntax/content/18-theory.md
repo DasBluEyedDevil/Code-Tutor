@@ -5,25 +5,44 @@ title: "Solution 3: Simple Banking Functions"
 
 
 
-**Sample Output**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-=== Simple Banking System ===
-Current Balance: $1000.00
+fun deposit(balance: Double, amount: Double): Double {
+    println("Deposited: $$amount")
+    return balance + amount
+}
 
-Depositing $500...
-Deposited: $500.0
-Current Balance: $1500.00
+fun withdraw(balance: Double, amount: Double): Double {
+    if (amount > balance) {
+        println("Insufficient funds! Current balance: $$balance")
+        return balance
+    }
+    println("Withdrawn: $$amount")
+    return balance - amount
+}
 
-Withdrawing $200...
-Withdrawn: $200.0
-Current Balance: $1300.00
+fun displayBalance(balance: Double) {
+    println("Current Balance: $%.2f".format(balance))
+}
 
-Attempting to withdraw $2000...
-Insufficient funds! Current balance: $1300.0
-Current Balance: $1300.00
+fun main() {
+    println("=== Simple Banking System ===")
+    var balance = 1000.0
+    displayBalance(balance)
+
+    println("\nDepositing $500...")
+    balance = deposit(balance, 500.0)
+    displayBalance(balance)
+
+    println("\nWithdrawing $200...")
+    balance = withdraw(balance, 200.0)
+    displayBalance(balance)
+
+    println("\nAttempting to withdraw $2000...")
+    balance = withdraw(balance, 2000.0)
+    displayBalance(balance)
+}
 ```
+
+**Sample Output**:

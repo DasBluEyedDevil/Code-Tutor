@@ -1,21 +1,29 @@
 ---
 type: "EXAMPLE"
-title: "Import Attributes Syntax"
+title: "Securing your Imports"
 ---
 
-Use the `with` keyword to declare what type of content you're importing:
-
 ```javascript
-// Import JSON with type assertion
-import config from './config.json' with { type: 'json' };
-import packageJson from '../package.json' with { type: 'json' };
+// 1. Static Import with Attributes
+// We use the 'with' keyword to declare the expected type
+import config from "./config.json" with { type: "json" };
 
-console.log(`Running ${packageJson.name} v${packageJson.version}`);
-console.log(`Database: ${config.database.host}`);
+console.log(`Current Version: ${config.version}`);
+console.log(`Server URL: ${config.apiUrl}`);
 
-// Import CSS (browser/bundler contexts)
-import styles from './styles.css' with { type: 'css' };
+// 2. Dynamic Import with Attributes
+// Useful for loading data on-demand
+async function loadStyles() {
+    // In some environments, you might import CSS this way:
+    const theme = await import("./theme.json", {
+        with: { type: "json" }
+    });
+    console.log("Theme loaded:", theme.default);
+}
 
-// Dynamic import with attributes
-const data = await import('./data.json', { with: { type: 'json' } });
+// 3. Why this is better than 'fetch'
+// When you use import, the file is cached and managed 
+// by the JavaScript module system automatically.
+import userData from "./user-seed.json" with { type: "json" };
+console.log(`Loaded ${userData.length} users.`);
 ```

@@ -1,50 +1,44 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Object Literals and Access"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Creating an object
-let person = {
-  name: 'Alice',
-  age: 25,
-  city: 'New York',
-  isStudent: false
+// 1. Creating an Object
+// We use curly braces { } and key:value pairs
+const user = {
+    username: 'CyberKnight',
+    level: 42,
+    isOnline: true,
+    achievements: ['First Login', 'Bug Hunter']
 };
 
-// Accessing properties (two ways)
-console.log(person.name);      // Alice (dot notation)
-console.log(person['age']);    // 25 (bracket notation)
+// 2. Accessing Properties (Dot Notation)
+// Most common and readable way
+console.log(`Welcome, ${user.username}!`);
+console.log(`Level: ${user.level}`);
 
-// Changing a property
-person.age = 26;
-console.log(person.age);  // 26
+// 3. Accessing Properties (Bracket Notation)
+// Useful when the property name is stored in a variable
+const propertyToLookUp = 'isOnline';
+console.log(user[propertyToLookUp]); // true
 
-// Adding a new property
-person.email = 'alice@example.com';
-console.log(person.email);  // alice@example.com
+// 4. Updating Properties
+user.level = 43;
+user.isOnline = false;
+console.log(`${user.username} is now level ${user.level}`);
 
-// Deleting a property
-delete person.isStudent;
-console.log(person.isStudent);  // undefined
+// 5. Adding New Properties
+user.email = 'knight@example.com';
+console.log(user.email);
 
-// Object with different types
-let product = {
-  name: 'Laptop',
-  price: 999.99,
-  inStock: true,
-  specs: ['16GB RAM', '512GB SSD'],  // Array inside object!
-  manufacturer: {
-    name: 'Dell',
-    country: 'USA'
-  }  // Object inside object!
+// 6. Nested Objects
+const laptop = {
+    brand: 'Apple',
+    specs: {
+        cpu: 'M3',
+        ram: '16GB'
+    }
 };
-
-console.log(product.specs[0]);  // 16GB RAM
-console.log(product.manufacturer.name);  // Dell
-
-// Empty object
-let empty = {};
+console.log(laptop.specs.cpu); // M3
 ```

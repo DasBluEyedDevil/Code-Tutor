@@ -1,56 +1,28 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Order of Execution"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// SYNCHRONOUS (Blocking) - Everything waits
-console.log('Start');
-for (let i = 0; i < 3; i++) {
-  console.log('Step ' + i);
-}
-console.log('End');
-// Output: Start, Step 0, Step 1, Step 2, End (in order)
+// 1. Synchronous Code (One by one)
+console.log("Step 1: Boiling water...");
+console.log("Step 2: Adding noodles...");
+console.log("Step 3: Meal is ready!");
 
-// ASYNCHRONOUS (Non-blocking) - Using setTimeout
-console.log('Start');
+console.log("-------------------");
 
-setTimeout(function() {
-  console.log('This runs after 2 seconds');
+// 2. Asynchronous Code (The Waiting Game)
+console.log("A: Ordering a custom pizza...");
+
+// setTimeout simulates a task that takes time (2 seconds)
+setTimeout(() => {
+    console.log("B: PIZZA IS READY! (Buzzer goes off)");
 }, 2000);
 
-console.log('End');
-// Output: Start, End, (wait 2 seconds), This runs after 2 seconds
-// Notice 'End' comes BEFORE the timeout!
+console.log("C: Browsing the bookstore while I wait...");
+console.log("D: Buying a new pen...");
 
-// Practical example: Loading data
-console.log('Fetching user data...');
-
-// Simulating a slow network request (async)
-setTimeout(function() {
-  console.log('User data loaded: Alice, age 25');
-}, 1000);
-
-console.log('Continuing with other tasks...');
-// Output:
-// Fetching user data...
-// Continuing with other tasks...
-// (1 second later) User data loaded: Alice, age 25
-
-// Multiple async operations
-console.log('Cooking eggs');
-
-setTimeout(() => console.log('Eggs done!'), 2000);
-setTimeout(() => console.log('Toast done!'), 1000);
-setTimeout(() => console.log('Coffee done!'), 1500);
-
-console.log('Started all cooking tasks');
-// Output:
-// Cooking eggs
-// Started all cooking tasks
-// (1s) Toast done!
-// (1.5s) Coffee done!
-// (2s) Eggs done!
+// Note the output order! 
+// Even though B is written first, C and D happen before it 
+// because JavaScript doesn't wait around for the timer.
 ```

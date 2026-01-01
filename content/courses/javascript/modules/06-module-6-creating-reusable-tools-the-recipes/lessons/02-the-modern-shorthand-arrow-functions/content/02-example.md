@@ -1,47 +1,35 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Arrow Function Syntax"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Traditional function
-function add(a, b) {
-  return a + b;
+// 1. Classic Function (for comparison)
+function double(n) {
+    return n * 2;
 }
 
-// Arrow function (same thing, shorter)
-const add = (a, b) => {
-  return a + b;
+// 2. Arrow Function (Long Form)
+const doubleArrow = (n) => {
+    return n * 2;
 };
 
-// Even shorter (implicit return for one-liners)
+// 3. Arrow Function (Short Form / Implicit Return)
+// If there's only one line of code, we can remove { } and 'return'
+const doubleShort = n => n * 2;
+
+console.log(doubleShort(10)); // 20
+
+// 4. Multiple Parameters
+// If you have 0 or 2+ parameters, you MUST use ( )
 const add = (a, b) => a + b;
+console.log(add(5, 5)); // 10
 
-// Examples of different arrow function forms
+const sayHi = () => console.log("Hi!");
+sayHi();
 
-// No parameters
-const sayHello = () => console.log('Hello!');
-sayHello();  // Hello!
-
-// One parameter (parentheses optional)
-const double = num => num * 2;
-console.log(double(5));  // 10
-
-// Multiple parameters (need parentheses)
-const multiply = (a, b) => a * b;
-console.log(multiply(3, 4));  // 12
-
-// Multiple lines (need curly braces and explicit return)
-const greetPerson = (name) => {
-  let greeting = 'Hello, ' + name;
-  return greeting + '!';
-};
-console.log(greetPerson('Alice'));  // Hello, Alice!
-
-// Using with array methods
-let numbers = [1, 2, 3, 4, 5];
-let doubled = numbers.map(n => n * 2);
-console.log(doubled);  // [2, 4, 6, 8, 10]
+// 5. Practical usage in a loop
+const numbers = [1, 2, 3];
+const squares = numbers.map(x => x * x);
+console.log(squares); // [1, 4, 9]
 ```

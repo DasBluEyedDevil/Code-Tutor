@@ -5,16 +5,28 @@ title: "Function Basics"
 
 
 ### Function Declaration
+A function is a reusable block of code. You declare it using the `fun` keyword.
 
+```kotlin
+fun sayHello() {
+    println("Hello from a function!")
+}
+
+fun main() {
+    sayHello() // Calling the function
+}
+```
 
 **Output**:
+```text
+Hello from a function!
+```
 
 **Anatomy of a Function**:
-
 - `fun` = keyword to declare a function
-- `functionName` = what you call the function
-- `()` = parameters go here (empty if none)
-- `{}` = function body (code to execute)
+- `sayHello` = the name of the function
+- `()` = parameters (inputs) go here. We have none here.
+- `{}` = the "body" containing the code to run.
 
 ---
 

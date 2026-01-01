@@ -1,115 +1,52 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Fetching Live Data"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Basic fetch - GET request
-async function getUsers() {
-  try {
-    let response = await fetch('https://jsonplaceholder.typicode.com/users');
+// 1. Basic GET Request
+async function getUser() {
+    try {
+        // Step 1: Wait for the network response
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+        
+        // Step 2: Extract the JSON data
+        const data = await response.json();
+        
+        console.log(`User Name: ${data.name}`);
+    } catch (error) {
+        console.error("Network Error:", error);
+    }
+}
+
+// 2. Handling HTTP Errors (Important!)
+async function safeFetch() {
+    const response = await fetch('https://api.example.com/missing');
     
-    // Check if request was successful
+    // fetch only throws an error on network failure (like no internet)
+    // For 404 (Not Found) or 500 (Server Error), we must check manually:
     if (!response.ok) {
-      throw new Error('Request failed: ' + response.status);
+        console.log(`API Error: ${response.status}`);
+        return;
     }
     
-    // Parse JSON response
-    let users = await response.json();
-    console.log(users);
-    
-    return users;
-  } catch (error) {
-    console.log('Error:', error);
-  }
+    const data = await response.json();
+    console.log(data);
 }
 
-// Fetch with options - POST request
-async function createUser(userData) {
-  try {
-    let response = await fetch('https://api.example.com/users', {
-      method: 'POST',  // HTTP method
-      headers: {
-        'Content-Type': 'application/json'  // Sending JSON
-      },
-      body: JSON.stringify(userData)  // Convert object to JSON string
+// 3. Sending Data (POST Request)
+async function createUser() {
+    const newUser = { name: "Alice", email: "alice@test.com" };
+    
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newUser) // Convert object to text for the network
     });
     
-    let newUser = await response.json();
-    console.log('Created:', newUser);
-    return newUser;
-  } catch (error) {
-    console.log('Error:', error);
-  }
-}
-
-// Example: Create user
-createUser({
-  name: 'Alice',
-  email: 'alice@example.com',
-  age: 25
-});
-
-// UPDATE - PUT/PATCH request
-async function updateUser(userId, updates) {
-  let response = await fetch(`https://api.example.com/users/${userId}`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(updates)
-  });
-  
-  return await response.json();
-}
-
-// DELETE request
-async function deleteUser(userId) {
-  let response = await fetch(`https://api.example.com/users/${userId}`, {
-    method: 'DELETE'
-  });
-  
-  if (response.ok) {
-    console.log('User deleted');
-  }
-}
-
-// Practical example: Display users on page
-async function displayUsers() {
-  try {
-    let response = await fetch('https://jsonplaceholder.typicode.com/users');
-    let users = await response.json();
-    
-    let userList = document.querySelector('#userList');
-    
-    users.forEach(user => {
-      let li = document.createElement('li');
-      li.textContent = user.name;
-      userList.appendChild(li);
-    });
-  } catch (error) {
-    console.log('Failed to load users:', error);
-  }
-}
-
-// With loading state
-async function fetchWithLoading() {
-  let loadingEl = document.querySelector('#loading');
-  let contentEl = document.querySelector('#content');
-  
-  try {
-    loadingEl.style.display = 'block';  // Show loading
-    
-    let response = await fetch('/api/data');
-    let data = await response.json();
-    
-    contentEl.textContent = JSON.stringify(data);
-  } catch (error) {
-    contentEl.textContent = 'Error loading data';
-  } finally {
-    loadingEl.style.display = 'none';  // Hide loading
-  }
+    const result = await response.json();
+    console.log("Created user with ID:", result.id);
 }
 ```

@@ -12,9 +12,30 @@ Kotlin was created by JetBrains (makers of IntelliJ IDEA) in 2011 and officially
 
 **1. Modern & Concise**
 
-Compare Java vs Kotlin for the same task:
+Compare Java vs Kotlin for creating a simple "Person" data container:
 
+**Java**:
+```java
+public class Person {
+    private String name;
+    private int age;
 
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public int getAge() { return age; }
+    public void setAge(int age) { this.age = age; }
+}
+```
+
+**Kotlin**:
+```kotlin
+data class Person(var name: String, var age: Int)
+```
 
 **Same functionality, 90% less code!**
 

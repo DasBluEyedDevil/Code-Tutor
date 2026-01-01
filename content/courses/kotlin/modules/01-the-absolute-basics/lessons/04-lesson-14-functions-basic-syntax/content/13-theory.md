@@ -12,10 +12,24 @@ title: "Exercise 1: Temperature Converter Functions"
 3. Create `fahrenheitToCelsius(fahrenheit: Double): Double` function
 4. In `main()`, ask user for temperature in Celsius and display all conversions
 
-**Formulas**:
-- F = (C × 9/5) + 32
-- K = C + 273.15
-- C = (F - 32) × 5/9
+**Starter Code**:
+```kotlin
+// Define your functions here
 
----
+fun main() {
+    println("=== Temperature Converter ===")
+    // Your code here
+}
+```
+
+**Expected Output**:
+```text
+=== Temperature Converter ===
+Enter temperature in Celsius:
+25
+
+Results:
+25.0°C = 77.0°F = 298.15K
+```
+
 

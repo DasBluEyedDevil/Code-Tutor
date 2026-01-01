@@ -4,26 +4,34 @@ title: "Sets"
 ---
 
 
-Sets are collections of **unique** elements (no duplicates).
+Sets are collections of **unique** elements. If you try to add a duplicate item, it will be ignored.
 
 ### Read-Only Sets (setOf)
-
+```kotlin
+val numbers = setOf(1, 2, 3, 3, 3)
+println(numbers) // [1, 2, 3] (Duplicates were removed)
+```
 
 ### Mutable Sets (mutableSetOf)
-
+```kotlin
+val colors = mutableSetOf("Red", "Green")
+colors.add("Blue")
+colors.add("Red") // Ignored
+```
 
 ### Set Operations
+Sets are great for mathematical operations like finding intersection or union.
 
+```kotlin
+val setA = setOf(1, 2, 3)
+val setB = setOf(3, 4, 5)
+
+println(setA intersect setB) // [3]
+println(setA union setB)     // [1, 2, 3, 4, 5]
+```
 
 ### When to Use Sets
-
-Use sets when:
-- You need unique elements
-- Order doesn't matter
-- You need fast membership checking
-
-
----
+...
 
 
 

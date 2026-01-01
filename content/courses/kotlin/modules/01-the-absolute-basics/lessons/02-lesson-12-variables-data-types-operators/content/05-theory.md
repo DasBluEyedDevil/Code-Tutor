@@ -22,6 +22,15 @@ Every variable has a **type** that determines what kind of data it can hold.
 
 ### Examples of Each Type
 
+```kotlin
+val age: Int = 25
+val population: Long = 8_000_000_000L  // Note the 'L' suffix for Long
+val temperature: Double = 23.5
+val price: Float = 19.99f             // Note the 'f' suffix for Float
+val isReady: Boolean = true
+val grade: Char = 'A'                  // Use single quotes for Char
+val message: String = "Welcome!"       // Use double quotes for String
+```
 
 **Note**: Underscores in numbers improve readability:
 

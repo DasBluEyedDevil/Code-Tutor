@@ -6,6 +6,24 @@ title: "Your First Interactive Program"
 
 Let's make something more interesting—a program that talks back!
 
+```kotlin
+fun main() {
+    println("=== Kotlin Greeter ===")
+    
+    println("What's your name?")
+    val name = readln()
+    
+    println("Hello, $name!")
+    println("Welcome to Kotlin programming!")
+    
+    println("\nHow old are you?")
+    val ageString = readln()
+    val age = ageString.toInt()
+    
+    val yearsLeft = 100 - age
+    println("You have $yearsLeft years until you're 100 years old!")
+}
+```
 
 **Run this program** and interact with it:
 

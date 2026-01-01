@@ -1,35 +1,23 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "for...of Limitations"
 ---
 
-Common mistakes:
+### 1. The Object Trap
+The `for...of` loop does **not** work on standard JavaScript Objects (containers like `{ name: 'Alice', age: 25 }`). 
+If you try to use it on an object, you will get a `TypeError: object is not iterable`.
+*   *(Note: There is a different loop called `for...in` for objects, but we'll cover that later!)*
 
-1. Using 'in' instead of 'of':
-   for (let fruit in fruits)  // WRONG - gives index, not item!
-   for (let fruit of fruits)  // CORRECT - gives the item
-   
-   Confusing, right? Remember: 'of' for values, 'in' for keys (we'll learn later)
+### 2. Missing the Index
+As mentioned in the theory section, you don't have access to the position of the item. 
+```javascript
+const colors = ['red', 'green', 'blue'];
+for (const color of colors) {
+    // I know the color is 'red', but I don't know it's at index 0!
+}
+```
+If your logic requires knowing the position, stick to the traditional `for (let i = 0; ...)` loop.
 
-2. Trying to get the index:
-   for (let fruit of fruits) {
-     console.log(i);  // ERROR - i doesn't exist!
-   }
-   If you need the index, use a regular for loop or .forEach() (later)
-
-3. Modifying the array while looping:
-   for (let fruit of fruits) {
-     fruits.push('new');  // DANGEROUS - might cause infinite loop!
-   }
-   Don't modify the array you're looping through
-
-4. Expecting it to work on objects:
-   let person = {name: 'Alice', age: 25};
-   for (let prop of person)  // ERROR - for...of doesn't work on plain objects!
-   Use for...in for objects (later lesson)
-
-5. Using wrong variable name:
-   for (let fruit of fruits) {
-     console.log(fruits);  // Prints whole array each time!
-   }
-   Should be: console.log(fruit);  // Just one item
+### 3. Modifying the List
+It is generally a bad idea to add or remove items from the list *while* you are looping through it using `for...of`. This can lead to skipped items or strange behavior. 
+*   **Best Practice:** If you need to filter a list, create a **new** empty list and push the items you want to keep into it.

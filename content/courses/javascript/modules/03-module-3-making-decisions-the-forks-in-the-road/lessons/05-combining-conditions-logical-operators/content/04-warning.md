@@ -1,34 +1,28 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Logical Landmines"
 ---
 
-Common mistakes:
+### 1. Complex Conditions = Unreadable Code
+If your `if` statement has 5 different `&&` and `||` operators, it’s hard for humans to understand.
+*   **Fix:** Break complex logic into smaller variables with descriptive names.
+```javascript
+// Hard to read:
+if (age > 18 && hasTicket && !isBanned && (isMember || hasGuestPass))
 
-1. Using 'and' or 'or' instead of symbols:
-   if (age > 18 and hasLicense)  // WRONG
-   if (age > 18 && hasLicense)   // CORRECT
+// Easier to read:
+const isAdultWithTicket = age > 18 && hasTicket;
+const hasValidEntry = isMember || hasGuestPass;
+if (isAdultWithTicket && hasValidEntry && !isBanned)
+```
 
-2. Confusing && and ||:
-   if (isWeekend || hasWork)  // Do I work on weekends or any day?
-   vs
-   if (isWeekend && !hasWork) // Free weekend?
-   Read them out loud to check!
+### 2. The `!` with Non-Booleans
+Remember "Truthy" and "Falsy"? Using `!` on a number or string will convert it to a boolean and then flip it.
+*   `!0` becomes `true` (because 0 is falsy).
+*   `!"Hello"` becomes `false` (because "Hello" is truthy).
+Be careful using `!` on variables unless you are sure they contain booleans.
 
-3. Forgetting parentheses with mixed operators:
-   if (a || b && c)  // Unclear!
-   if (a || (b && c))  // Better
-   if ((a || b) && c)  // Different meaning!
-
-4. Double negatives:
-   if (!!isLoggedIn)  // Just use: if (isLoggedIn)
-   Don't overthink it!
-
-5. Not understanding short-circuit:
-   if (user && user.name)  // Safe - checks user exists first
-   if (user.name && user)  // DANGEROUS - might error if user is null
-
-6. Trying to check multiple values at once:
-   if (x === 1 || 2 || 3)  // WRONG - doesn't work!
-   if (x === 1 || x === 2 || x === 3)  // CORRECT
-   Or better: if ([1,2,3].includes(x))  // We'll learn this later!
+### 3. Confusing `&&` and `||`
+It sounds simple, but it’s a very common logic bug. For example: "I want to block users if they aren't an Admin AND they aren't a Moderator."
+If you write `if (role !== 'Admin' || role !== 'Moderator')`, it will **always** be true, because a user can't be both at the exact same time! 
+*   **Think carefully:** Do you need BOTH to be true, or just ONE?

@@ -1,16 +1,22 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Rules of the Playground"
 ---
 
-Let's look at what's happening:
+Now that you're writing code in a real environment, there are two key concepts to understand about how JavaScript "thinks."
 
-1. console.log(5 + 3); - The computer will actually do the math (5 + 3 = 8) and then display '8'. The computer evaluates (figures out) what's inside the parentheses first, then displays the result.
+### 1. Top-to-Bottom Execution
+Computers are very obedient. They start at line 1 and move to the end. If line 5 depends on something that happens on line 2, you must make sure line 2 stays at the top. This order is called the **Execution Flow**.
 
-2. Multiple console.log statements run in order, from top to bottom. The computer executes them one at a time, like following a recipe step by step.
+### 2. The Overloaded `+` Operator
+In JavaScript, the plus sign `+` is a bit of a multitasker.
+*   **Addition:** When used between two numbers, it adds them: `5 + 5` becomes `10`.
+*   **Concatenation:** When used with text, it joins them: `'Hello' + ' World'` becomes `'Hello World'`.
 
-3. The + symbol does two things in JavaScript:
-   - When used with numbers, it adds them: 5 + 3 = 8
-   - When used with text (in quotes), it joins them together: 'Hello' + ' ' + 'World' becomes 'Hello World'
+### 3. Order of Operations
+Just like in math class, JavaScript follows rules for what to calculate first (often called **Operator Precedence**).
+*   Multiplication `*` and Division `/` happen before Addition `+`.
+*   Parentheses `( )` can be used to force certain parts of your code to run first.
 
-4. Notice the parentheses around (10 * 2) in the last example? That tells the computer 'do this math first, then join it with the text.'
+Example:
+`console.log('Result: ' + (10 + 2));` — Here, the computer adds 10 and 2 first, then joins the result (12) to the text.

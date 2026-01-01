@@ -1,31 +1,31 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Basic 'if' Statement"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-let temperature = 75;
+let userBalance = 50.00;
+let itemPrice = 19.99;
 
-// The 'if' statement: "IF this condition is true, THEN do this"
-if (temperature > 70) {
-  console.log('It is warm outside!');
+console.log("Starting purchase...");
+
+// 1. A basic check
+if (userBalance >= itemPrice) {
+    // Everything inside the { } only runs if the condition is TRUE
+    console.log("Transaction approved!");
+    userBalance = userBalance - itemPrice;
+    console.log(`Remaining balance: $${userBalance}`);
 }
 
-console.log('This line runs no matter what');
-
-// Another example
-let isRaining = true;
-
-if (isRaining) {
-  console.log('Take an umbrella');
+// 2. What if the condition is FALSE?
+let age = 16;
+if (age >= 18) {
+    console.log("Access granted to the Adult section.");
+    // This line will be completely skipped!
 }
 
-// You can check if something is false
-let hasKeys = false;
+console.log("Application finished.");
 
-if (!hasKeys) {  // The ! means "NOT"
-  console.log('Go back and get your keys!');
-}
+// 3. One-line shortcut (use sparingly)
+if (isLoggedIn) console.log("Welcome back!");
 ```

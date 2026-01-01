@@ -1,29 +1,22 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Modification Mistakes"
 ---
 
-Common mistakes:
+### 1. The Return Value Trap
+Remember that `push` and `unshift` return the **new length**, not the updated array.
+```javascript
+let list = [1, 2];
+let result = list.push(3);
+console.log(result); // Result: 3 (the length), NOT [1, 2, 3]
+```
 
-1. Forgetting these methods modify the array:
-   let arr = [1, 2, 3];
-   arr.push(4);  // arr is NOW [1, 2, 3, 4]
-   // It's not arr2 = arr.push(4)
+### 2. Popping from an Empty Array
+If you call `pop()` or `shift()` on an empty array `[]`, JavaScript won't error out. It will simply return `undefined`. Always check if an array has items (`list.length > 0`) if you depend on the value you are removing.
 
-2. Expecting push/pop to work on both ends:
-   arr.pop()  // Removes from END, not front
-   // Use shift() to remove from front
+### 3. Confusion between Shift and Unshift
+The names are very similar. 
+*   **Trick to remember:** `unshift` is the longer word, so it's "adding" something. `shift` is shorter, so it's "removing" something.
 
-3. Not using the return value:
-   arr.pop();  // Item is removed AND returned
-   let item = arr.pop();  // Save the removed item!
-
-4. Confusing shift/unshift names:
-   shift = remove first (shifts everything left)
-   unshift = add to first (unshifts everything right)
-   Confusing, but that's the name!
-
-5. Using on non-arrays:
-   let str = 'hello';
-   str.push('x');  // ERROR - strings don't have push
-   // Convert to array first: str.split('')
+### 4. Direct Index Assignment vs. Push
+While you *can* add an item by doing `list[list.length] = 'new'`, it is much cleaner and more readable to use `list.push('new')`. Use the methods whenever possible!

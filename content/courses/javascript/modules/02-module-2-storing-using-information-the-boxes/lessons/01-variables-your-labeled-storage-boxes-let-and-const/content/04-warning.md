@@ -1,18 +1,27 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Common Pitfalls & Errors"
 ---
 
-Common mistakes:
+### 1. Assignment to Constant Variable
+If you try to change a `const`, your program will crash with a `TypeError`. 
+*   **Fix:** If the value needs to change, use `let`.
 
-1. Forgetting 'let' or 'const': Writing just age = 25; instead of let age = 25; In strict mode, this causes an error.
+### 2. Using Before Declaration (The "Dead Zone")
+In JavaScript, you cannot use a `let` or `const` variable before the line where you create it.
+```javascript
+console.log(myNumber); // ERROR!
+let myNumber = 5;
+```
+This is called the **Temporal Dead Zone**. The computer knows the variable exists, but it refuses to let you touch it until the declaration line is reached.
 
-2. Using 'let' or 'const' when USING a variable: You only use 'let' or 'const' when CREATING the variable. After that, just use the name:
-   Correct: let age = 25; age = 26;
-   Wrong: let age = 25; let age = 26; (Can't create the same box twice!)
+### 3. Redeclaring Variables
+You cannot create two boxes with the same name in the same scope.
+```javascript
+let user = 'Bob';
+let user = 'Alice'; // ERROR! "user" has already been declared
+```
+If you want to change Bob to Alice, just use `user = 'Alice';` without the `let`.
 
-3. Trying to change a 'const': Remember, const means 'constant'. Once set, it cannot be changed.
-
-4. Misspelling variable names: If you create 'userName' but later try to use 'username', JavaScript will say 'username is not defined' because it's looking for a box with that exact label.
-
-5. Not using quotes for text: let name = Alice; won't work. Text must be in quotes: let name = 'Alice';
+### 4. Forgetting Quotes for Strings
+If you write `let name = Alice;` without quotes, JavaScript looks for another variable named `Alice`. If it doesn't find one, it crashes with a `ReferenceError: Alice is not defined`.

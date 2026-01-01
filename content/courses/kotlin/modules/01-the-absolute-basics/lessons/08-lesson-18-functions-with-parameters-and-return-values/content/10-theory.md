@@ -30,7 +30,11 @@ Parameters are placeholders in the function signature. Arguments are the actual 
 ### Question 2
 What does this function return?
 
-
+```kotlin
+fun calculate(x: Int): Int {
+    x * 2
+}
+```
 A) 0
 B) The value of x multiplied by 2
 C) Nothing - it's an error
@@ -44,35 +48,25 @@ D) Unit
 Explanation: The function has a return type of `Int` but no `return` statement. The calculation `x * 2` happens but the result is not returned.
 
 **Correct version**:
-
+```kotlin
+fun calculate(x: Int): Int {
+    return x * 2
+}
+```
 </details>
-
----
-
-### Question 3
-Which of the following is a valid single-expression function?
-
-A) `fun add(a: Int, b: Int): Int { a + b }`
-B) `fun add(a: Int, b: Int) = a + b`
-C) `fun add(a: Int, b: Int) => a + b`
-D) `fun add(a: Int, b: Int) return a + b`
-
-<details>
-<summary>Show Answer</summary>
-
-**Answer: B) `fun add(a: Int, b: Int) = a + b`**
-
-Explanation: Single-expression functions use `=` instead of curly braces and don't need the `return` keyword.
-
-
-</details>
-
----
 
 ### Question 4
 What will this code output?
 
+```kotlin
+fun greet(name: String = "Guest", greeting: String = "Hello") {
+    println("$greeting, $name!")
+}
 
+fun main() {
+    greet()
+}
+```
 A) Error: Missing arguments
 B) Hello, Guest!
 C) Guest, Hello!

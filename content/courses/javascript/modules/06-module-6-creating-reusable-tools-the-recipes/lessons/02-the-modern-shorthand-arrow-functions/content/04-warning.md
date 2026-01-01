@@ -1,35 +1,23 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Arrow Function Pitfalls"
 ---
 
-Common mistakes:
+### 1. The Braces Trap
+If you add curly braces `{ }`, you **MUST** add the word `return`. 
+```javascript
+const add = (a, b) => { a + b }; 
+console.log(add(1, 1)); // Result: undefined!
+```
+*   **Fix:** Either remove the `{ }` or add `return a + b;`.
 
-1. Forgetting parentheses with multiple parameters:
-   const add = a, b => a + b;  // WRONG
-   const add = (a, b) => a + b;  // CORRECT
+### 2. Returning an Object
+This is a tricky syntax error. If you want to use the short form to return an object literal, JavaScript gets confused between the object's `{ }` and the function's `{ }`.
+*   **Wrong:** `const getUser = id => { id: id };` (JavaScript thinks those are code block braces)
+*   **Right:** `const getUser = id => ({ id: id });` (Wrap it in parentheses to show it's a value)
 
-2. Forgetting curly braces for multi-line:
-   const greet = name =>
-     let msg = 'Hello';
-     return msg;  // WRONG - syntax error
-   
-   const greet = name => {
-     let msg = 'Hello';
-     return msg;  // CORRECT
-   };
+### 3. Readability
+Just because you can write an arrow function on one line doesn't mean you should. If your logic involves multiple steps or complex decisions, a standard function or a multi-line arrow function is much easier for your team to read and debug.
 
-3. Trying to return an object without parentheses:
-   const getUser = () => {name: 'Alice'};  // WRONG - thinks { } is function body
-   const getUser = () => ({name: 'Alice'});  // CORRECT - wrapped in ()
-
-4. Using arrow function as method:
-   const person = {
-     name: 'Alice',
-     greet: () => console.log(this.name)  // WRONG - 'this' doesn't work as expected
-   };
-   Use traditional function for object methods
-
-5. Mixing up = and =>:
-   const add = (a, b) = a + b;  // WRONG - single =
-   const add = (a, b) => a + b;  // CORRECT - arrow =>
+### 4. Not for everything
+Arrow functions cannot be used as "Constructors" (to create new objects with the `new` keyword), and they don't have the `arguments` object that standard functions have. Use them primarily for data transformation and simple callbacks.

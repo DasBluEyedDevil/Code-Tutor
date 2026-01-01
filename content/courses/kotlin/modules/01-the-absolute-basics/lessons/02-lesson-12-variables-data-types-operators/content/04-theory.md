@@ -14,15 +14,20 @@ In Kotlin, you can create two kinds of variables:
 **When to use**: Use `val` by default for values that won't change.
 
 **Real-World Examples**:
+- `val birthYear = 1995` (Your birth year never changes)
+- `val pi = 3.14159` (Mathematical constants don't change)
+- `val appName = "MyCoolApp"` (The app name is usually constant)
 
 ### `var` - Mutable (Can Change)
-
 
 `var` stands for **variable**. You can change what's in the box anytime.
 
 **When to use**: Use `var` only when the value needs to change.
 
 **Real-World Examples**:
+- `var score = 0` (A player's score increases during a game)
+- `var currentCity = "London"` (A user might move to a different city)
+- `var healthPoints = 100` (Health goes down when taking damage)
 
 ### Best Practice: Prefer `val` Over `var`
 

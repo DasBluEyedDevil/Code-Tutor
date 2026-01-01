@@ -1,37 +1,20 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Modification Pitfalls"
 ---
 
-Common mistakes:
+### 1. The `innerHTML` Security Risk
+NEVER use `innerHTML` to display data that came from a user (like a comment or a username). An attacker could provide a "username" that contains a `<script>` tag, allowing them to steal passwords from other users visiting your site. Always prefer `textContent`.
 
-1. Forgetting camelCase for CSS properties:
-   element.style.background-color = 'red';  // SYNTAX ERROR
-   element.style.backgroundColor = 'red';  // CORRECT
+### 2. `textContent` vs. `value`
+If you are working with an **Input** field (like a text box), `textContent` won't work!
+*   **Wrong:** `myInput.textContent = "Hello";`
+*   **Right:** `myInput.value = "Hello";`
 
-2. Forgetting units:
-   element.style.width = 200;  // WRONG - no effect
-   element.style.width = '200px';  // CORRECT
+### 3. CamelCase for Styles
+Remember that you can't use dashes in JavaScript property names.
+*   **Wrong:** `el.style.background-color = 'red';` (JavaScript thinks you are trying to subtract a variable called `color`).
+*   **Right:** `el.style.backgroundColor = 'red';`
 
-3. Overusing inline styles instead of classes:
-   Bad:
-   element.style.color = 'red';
-   element.style.fontWeight = 'bold';
-   
-   Better:
-   element.classList.add('error');
-   // Define .error in CSS
-
-4. Confusing textContent, innerHTML, and innerText:
-   textContent: Safest, pure text
-   innerHTML: Can include HTML (security risk if user input!)
-   innerText: Respects CSS (slower)
-
-5. Not checking if element exists:
-   let el = document.querySelector('.missing');
-   el.textContent = 'Hi';  // ERROR if el is null!
-   
-   Always check:
-   if (el) {
-     el.textContent = 'Hi';
-   }
+### 4. Overwriting `className`
+There is an older property called `className` (`el.className = "active"`). Avoid using this because it **overwrites** every class on the element. If your element had 3 classes and you use `className`, the other 2 will be deleted. Always use `classList.add()` instead.

@@ -1,76 +1,33 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Data Flow in Functions"
 ---
 
-Understanding parameters and returns:
+Understanding how data enters and leaves a function is the key to writing clean code.
 
-**Parameters** (Function Definition):
-function doSomething(param1, param2, param3) {
-                     │      │      │
-                     └──────┴──────┴─ Placeholders for values
+### 1. Parameters vs. Arguments
+*   **Parameters:** The placeholders you define in the function signature (e.g., `price` and `quantity`).
+*   **Arguments:** The actual values you pass in when you call it (e.g., `19.99` and `3`).
+
+### 2. The `return` Keyword
+When a function hits a `return` statement:
+1.  It calculates the value following the word `return`.
+2.  It immediately **stops** running the rest of the function.
+3.  It replaces the function call with that value.
+
+If you don't use `return`, your function returns `undefined` by default.
+
+### 3. Default Parameters
+You can provide "fallback" values for your parameters. This makes your functions more flexible and prevents `undefined` errors if a user forgets to provide an input.
+`function greet(name = "User") { ... }`
+
+### 4. Returning Multiple Values
+Technically, a function can only return **one thing**. However, that "one thing" can be an **Array** or an **Object**, which can contain as much data as you want.
+```javascript
+function getStats() {
+    return {
+        strength: 10,
+        agility: 15
+    };
 }
-
-**Arguments** (Function Call):
-doSomething(value1, value2, value3);
-            │       │       │
-            └───────┴───────┴─ Actual values passed in
-
-Parameter patterns:
-
-1. **No parameters**:
-   function sayHello() {
-     return 'Hello!';
-   }
-
-2. **One parameter**:
-   function double(x) {
-     return x * 2;
-   }
-
-3. **Multiple parameters**:
-   function add(a, b) {
-     return a + b;
-   }
-
-4. **Default parameters** (ES2015):
-   function greet(name = 'Guest', greeting = 'Hello') {
-     return greeting + ', ' + name;
-   }
-   greet();  // Hello, Guest
-   greet('Alice');  // Hello, Alice
-   greet('Bob', 'Hi');  // Hi, Bob
-
-5. **Rest parameters** (collect all remaining args):
-   function sum(...numbers) {
-     return numbers.reduce((total, n) => total + n, 0);
-   }
-   sum(1, 2, 3, 4);  // 10
-
-Return value patterns:
-
-1. **Return a value**:
-   return 42;
-   return 'text';
-   return true;
-
-2. **Return early** (exit function immediately):
-   if (error) {
-     return 'Error';
-   }
-   // Rest of function
-
-3. **No return** (implicitly returns undefined):
-   function doSomething() {
-     console.log('Done');
-   }
-
-4. **Return object** (use parentheses with arrow functions):
-   const getUser = () => ({name: 'Alice', age: 25});
-
-5. **Return another function**:
-   function outer() {
-     return function inner() {
-       return 'Hello';
-     };
-   }
+```

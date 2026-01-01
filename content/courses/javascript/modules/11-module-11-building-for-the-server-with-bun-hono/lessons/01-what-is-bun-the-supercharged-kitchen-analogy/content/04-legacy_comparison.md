@@ -1,39 +1,17 @@
 ---
 type: "LEGACY_COMPARISON"
-title: "Node.js Equivalent"
+title: "The Shift from Node to Bun"
 ---
 
-If you've used Node.js before, here's how Bun compares:
+If you've used Node.js before, here is how Bun changes your workflow in 2025.
 
-**Node.js** requires separate tools:
-- `npm` or `yarn` for packages
-- `tsc` for TypeScript compilation
-- `jest` or `vitest` for testing
-- `webpack` or `esbuild` for bundling
+| Feature | The Node.js Way (Legacy) | The Bun Way (Modern) |
+| :--- | :--- | :--- |
+| **Running TS** | Install `tsx` or compile with `tsc` first. | `bun run app.ts` (Native support). |
+| **Packages** | `npm install` (Often slow with large `node_modules`). | `bun install` (Extremely fast, uses global cache). |
+| **Environment** | Install `dotenv`, then `require('dotenv').config()`. | `.env` files are loaded automatically. |
+| **APIs** | Use `fs.readFile` with callbacks or promises. | Use `Bun.file()` for high-performance I/O. |
+| **Testing** | Install `Jest` or `Vitest` and configure them. | Use `bun test` (Built-in and Vitest-compatible). |
 
-**Bun** has everything built-in!
-
-The code patterns are similar, but Bun is faster and simpler.
-
-```javascript
-// Node.js way (requires setup):
-// 1. npm init
-// 2. npm install typescript ts-node
-// 3. Create tsconfig.json
-// 4. npx ts-node app.ts
-
-// Node.js file reading:
-const fs = require('fs');
-fs.readFile('data.txt', 'utf8', (err, data) => {
-  if (err) throw err;
-  console.log(data);
-});
-
-// Node.js HTTP server:
-const http = require('http');
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello from Node.js!');
-});
-server.listen(3000);
-```
+### Why the change?
+Node.js was built in a different era (2009). Bun was built for the modern era of high-speed cloud deployments, edge computing, and TypeScript-first development. While Node.js is still very reliable, Bun offers a developer experience that is significantly faster and requires much less configuration.

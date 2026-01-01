@@ -1,28 +1,16 @@
 ---
 type: "THEORY"
-title: "Enhancement Ideas"
+title: "Step 4: Deep Link Configuration"
 ---
 
-
-### 1. Add Real Authentication
-
-### 2. Add Riverpod for State
-
-### 3. Add Real Backend
-- Firebase/Supabase for data storage
-- Real-time updates for messages
-- Push notifications for new messages
-
-### 4. Add More Features
-- Camera integration for posts
-- Image filters and editing
-- Video posts
-- Stories (24-hour content)
-- Direct messaging with typing indicators
-
-
+To support deep linking, ensure your app is configured to handle the specific URL scheme or domain in your platform files (AndroidManifest.xml and Info.plist).
 
 ```dart
-final postsProvider = FutureProvider.autoDispose.family<List<Post>, String>(...);
-final notificationCountProvider = StateProvider<int>((ref) => 5);
+// In main.dart, initialize deep link listener
+void main() {
+  final router = _createRouter();
+  runApp(MaterialApp.router(routerConfig: router));
+}
 ```
+
+Now, when a user clicks `myapp://post/123`, GoRouter automatically extracts `123` and navigates to the `PostDetailScreen`!

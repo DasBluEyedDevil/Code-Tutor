@@ -4,24 +4,52 @@ title: "Default Parameters"
 ---
 
 
-Kotlin lets you provide default values for parameters:
+Kotlin lets you provide default values for parameters. If the caller doesn't provide a value for that parameter, the default value is used.
 
+```kotlin
+fun greet(name: String = "Guest", message: String = "Hello") {
+    println("$message, $name!")
+}
+
+fun main() {
+    greet()                   // Output: Hello, Guest!
+    greet("Alice")            // Output: Hello, Alice!
+    greet("Bob", "Hi")        // Output: Hi, Bob!
+}
+```
 
 **Output**:
+```text
+Hello, Guest!
+Hello, Alice!
+Hi, Bob!
+```
 
 ---
 
 ### Multiple Default Parameters
-
-
-**Output**:
+You can have multiple parameters with default values. When calling the function, you can choose which ones to override.
 
 ---
 
 ### Named Arguments
 
-You can specify parameter names when calling functions:
+You can specify parameter names when calling functions. This makes the code much more readable and allows you to pass arguments in a different order, especially useful with default parameters.
 
+```kotlin
+fun configureGame(
+    players: Int = 2,
+    difficulty: String = "Normal",
+    soundEnabled: Boolean = true
+) {
+    println("Game configured with $players players, $difficulty difficulty, sound: $soundEnabled")
+}
+
+fun main() {
+    configureGame(difficulty = "Hard", players = 4) // Order doesn't matter
+    configureGame(soundEnabled = false) // Only override one default
+}
+```
 
 **Benefits of named arguments**:
 - Code is more readable

@@ -1,39 +1,37 @@
 ---
 type: "THEORY"
-title: "Extracting a Widget"
+title: "The Structure of a Custom Widget"
 ---
 
+A custom `StatelessWidget` always follows this pattern:
 
-**Before**: Messy code with repetition
-
-
-**After**: Clean custom widget
-
-
-
+1.  **Class Declaration**: Extends `StatelessWidget`.
+2.  **Fields**: Marked as `final` because widgets are immutable (they don't change after being built).
+3.  **Constructor**: Initializes the fields and uses `super.key` for Flutter's internal tracking.
+4.  **Build Method**: Returns the widget tree for this component.
 
 ```dart
-// Define once
-class CustomCard extends StatelessWidget {
-  final String text;
-  
-  CustomCard({required this.text});
-  
+class MyHeader extends StatelessWidget {
+  // 1. Final fields
+  final String title;
+  final IconData icon;
+
+  // 2. Constructor with super.key
+  const MyHeader({
+    required this.title,
+    required this.icon,
+    super.key,
+  });
+
+  // 3. The build method
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [BoxShadow(color: Colors.grey, blurRadius: 4)],
-      ),
-      child: Text(text),
+    return Row(
+      children: [
+        Icon(icon),
+        Text(title),
+      ],
     );
   }
 }
-
-// Use many times
-CustomCard(text: 'Hello'),
-CustomCard(text: 'World'),
 ```

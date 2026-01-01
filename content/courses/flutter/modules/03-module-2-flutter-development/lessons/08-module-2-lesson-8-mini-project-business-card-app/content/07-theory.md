@@ -1,45 +1,28 @@
 ---
 type: "THEORY"
-title: "Step 6: Create Contact Info Cards"
+title: "Step 4: Add Name and Title"
 ---
 
-
-Let's create a reusable widget for contact info:
-
-
-
+After the `CircleAvatar`, add two `Text` widgets for your name and professional title.
 
 ```dart
-// Add this widget outside BusinessCardScreen class
-class ContactCard extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  ContactCard({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.teal),
-          SizedBox(width: 10),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.teal[900],
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// Inside the Column children list:
+CircleAvatar(...),
+Text(
+  'Your Name',
+  style: TextStyle(
+    fontSize: 40,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  ),
+),
+Text(
+  'FLUTTER DEVELOPER',
+  style: TextStyle(
+    fontSize: 20,
+    color: Colors.teal.shade100,
+    letterSpacing: 2.5,
+    fontWeight: FontWeight.bold,
+  ),
+),
 ```

@@ -1,33 +1,31 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Anatomy of an 'if' Statement"
 ---
 
-Let's break down an if statement:
+The `if` statement is the most fundamental building block of logic. Here is how it breaks down:
 
+```javascript
 if (condition) {
-│  │          │ │
-│  │          │ └─ The code to run (the 'action')
-│  │          └─── Closing parenthesis
-│  └─────────────── The condition (must be true/false)
-└────────────────── The 'if' keyword
+    // Code to run if condition is true
+}
+```
 
-Key points:
+### 1. The Condition `( ... )`
+The part inside the parentheses must eventually boil down to a **Boolean** (`true` or `false`). 
+*   It can be a simple variable: `if (isLoggedIn)`
+*   It can be a comparison: `if (age > 18)`
 
-1. if - This keyword says "I'm about to check a condition"
+### 2. The Code Block `{ ... }`
+The curly braces `{ }` define the "scope" of the decision. Everything inside those braces belongs to that `if` statement. If the condition is false, the computer jumps directly from the opening `{` to the closing `}` and continues with the rest of the program.
 
-2. (condition) - This must be something that evaluates to true or false
-   - temperature > 70 → either true or false
-   - isRaining → already a boolean (true or false)
-   - !hasKeys → the ! flips the boolean (false becomes true)
+### 3. Automatic "Truthiness"
+JavaScript is flexible. You don't always have to use a boolean.
+*   The number `0` is treated as `false`.
+*   Any other number (like `1` or `-50`) is treated as `true`.
+*   An empty string `""` is `false`, while a string with text `"Hello"` is `true`.
 
-3. { } - Curly braces contain the code that runs IF the condition is true
-   - If the condition is false, everything inside { } is skipped
-   - You can have multiple lines of code inside { }
+We call this **Truthy** and **Falsy**.
 
-4. Code outside the if statement runs no matter what
-
-The ! operator (NOT):
-- !true → false
-- !false → true
-- It flips/inverts the boolean value
+### 4. Code Flow
+The most important thing to remember is that an `if` statement is **additive**. It doesn't stop the rest of the code from running; it just decides whether to run an *extra* piece of code before moving on.

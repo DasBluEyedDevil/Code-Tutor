@@ -4,13 +4,24 @@ title: "Single-Expression Functions"
 ---
 
 
-When a function returns a single expression, you can use shorthand:
+When a function returns a single expression, you can use a concise shorthand by omitting the curly braces and the `return` keyword.
 
 ### Long Form vs Short Form
 
+**Long Form**:
+```kotlin
+fun multiply(a: Int, b: Int): Int {
+    return a * b
+}
+```
+
+**Short Form (Single-Expression)**:
+```kotlin
+fun multiply(a: Int, b: Int) = a * b
+```
 
 ### More Examples
-
+Kotlin can infer the return type of single-expression functions, so you don't even need to specify `: Int` or `: String`.
 
 ---
 

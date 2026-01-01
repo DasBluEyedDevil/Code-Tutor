@@ -1,59 +1,29 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Mastering the Object"
 ---
 
-Three key Object methods:
+Because objects are not ordered, we can't use a regular `for` loop with `i = 0`. Instead, we use tools that convert the object into something easier to work with.
 
-1. **Object.keys(obj)**
-   - Returns array of property names
-   - {a: 1, b: 2} → ['a', 'b']
-   - Use when you need property names
+### 1. The `Object` Utility
+The `Object` keyword (with a capital O) provides several helper functions:
+*   **`Object.keys(obj)`:** Returns an Array of all property names.
+*   **`Object.values(obj)`:** Returns an Array of all property values.
+*   **`Object.entries(obj)`:** Returns an Array of Arrays, where each inner array is `[key, value]`. This is perfect for when you want to use array methods (like `map` or `filter`) on an object.
 
-2. **Object.values(obj)**
-   - Returns array of property values
-   - {a: 1, b: 2} → [1, 2]
-   - Use when you only need values
-
-3. **Object.entries(obj)**
-   - Returns array of [key, value] pairs
-   - {a: 1, b: 2} → [['a', 1], ['b', 2]]
-   - Use when you need both keys and values
-
-Loop patterns:
-
-// Pattern 1: Loop through keys
-for (let key of Object.keys(obj)) {
-  console.log(key);          // Property name
-  console.log(obj[key]);     // Property value
+### 2. The `for...in` Loop
+This loop is designed specifically to visit every "enumerable" property in an object.
+```javascript
+for (const key in myObject) {
+    // key is the label
+    // myObject[key] is the value
 }
+```
+**Important:** `for...in` should be used for Objects. `for...of` should be used for Arrays. Don't mix them up!
 
-// Pattern 2: Loop through values
-for (let value of Object.values(obj)) {
-  console.log(value);  // Just the values
-}
+### 3. Modifying Properties
+*   **Adding/Updating:** Just assign a value: `obj.newKey = 'value'`.
+*   **Removing:** Use the `delete` keyword: `delete obj.keyToRemove`. This completely removes the key from the object, so that `'keyToRemove' in obj` becomes `false`.
 
-// Pattern 3: Loop through entries (destructuring)
-for (let [key, value] of Object.entries(obj)) {
-  console.log(key, value);  // Both at once
-}
-
-// Pattern 4: for...in loop (older)
-for (let key in obj) {
-  console.log(key, obj[key]);
-}
-
-Destructuring in loops:
-// This:
-for (let entry of Object.entries(obj)) {
-  let key = entry[0];
-  let value = entry[1];
-}
-
-// Can be written as:
-for (let [key, value] of Object.entries(obj)) {
-  // key and value are extracted automatically!
-}
-
-Counting properties:
-Object.keys(obj).length  // Number of properties
+### 4. Counting Properties
+To find out how many properties an object has, use `Object.keys(obj).length`.

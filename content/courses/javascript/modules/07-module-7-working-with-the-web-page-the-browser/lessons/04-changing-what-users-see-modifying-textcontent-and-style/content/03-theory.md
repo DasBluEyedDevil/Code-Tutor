@@ -1,84 +1,30 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Manipulating Elements"
 ---
 
-Modifying DOM elements:
+Once you have found an element using `querySelector`, you can use its properties to change how it looks and what it contains.
 
-**1. Changing Text Content:**
+### 1. `textContent` vs. `innerHTML`
+*   **`textContent`:** Changes the plain text inside an element. It treats everything you give it as literal text, making it safe from security risks.
+*   **`innerHTML`:** Allows you to insert **actual HTML tags**. 
+    *   `el.textContent = '<b>Hi</b>'` displays the literal words "<b>Hi</b>".
+    *   `el.innerHTML = '<b>Hi</b>'` displays a **bold** Hi.
+    *   **Security Warning:** Never use `innerHTML` with text provided by a user, as it can lead to XSS (Cross-Site Scripting) attacks!
 
-// textContent (recommended - safe, text only)
-element.textContent = 'New text';
+### 2. The `style` Property
+Every element has a `.style` object. You can set any CSS property here.
+*   **Rule:** Properties that have a dash in CSS (`font-size`) must use `camelCase` in JavaScript (`fontSize`).
+*   **Inline Styles:** Setting `.style` adds the style directly to the HTML tag (`style="..."`). This gives it very high priority, overriding most CSS files.
 
-// innerHTML (can include HTML, but risky!)
-element.innerHTML = '<b>Bold text</b>';
+### 3. The `classList` API
+This is the professional way to handle styles. Instead of micromanaging colors and pixels in your JavaScript, you define those styles in your CSS file and just "toggle" the class on or off.
+*   `.classList.add('name')`
+*   `.classList.remove('name')`
+*   `.classList.toggle('name')`
+*   `.classList.contains('name')` — Returns `true` or `false`.
 
-// innerText (similar to textContent, but respects CSS visibility)
-element.innerText = 'New text';
-
-**Best practice**: Use textContent unless you specifically need HTML
-
-**2. Changing Inline Styles:**
-
-element.style.propertyName = 'value';
-
-Key points:
-- CSS properties with hyphens become camelCase
-- Values are strings (include units: '20px', '50%')
-- This adds inline styles (highest priority)
-
-Examples:
-CSS Property        → JavaScript Property
-color               → color
-background-color    → backgroundColor
-font-size           → fontSize
-margin-top          → marginTop
-border-radius       → borderRadius
-z-index             → zIndex
-
-**3. Working with Classes (Preferred Method):**
-
-// classList provides methods to manipulate classes
-element.classList.add('class1', 'class2');
-element.classList.remove('class1');
-element.classList.toggle('class1');  // Add if missing, remove if present
-element.classList.contains('class1');  // Returns true/false
-element.classList.replace('old', 'new');
-
-// Old way (not recommended):
-element.className = 'class1 class2';  // Replaces all classes
-
-**Why use classes instead of inline styles?**
-
-✓ Separation of concerns (CSS in CSS, JS in JS)
-✓ Easier to maintain
-✓ Can change multiple properties at once
-✓ Better performance
-✓ CSS can be cached
-✓ Easier to override
-
-Example:
-// Instead of:
-element.style.color = 'red';
-element.style.fontWeight = 'bold';
-element.style.fontSize = '20px';
-
-// Do this:
-element.classList.add('error');
-
-// And in CSS:
-.error {
-  color: red;
-  font-weight: bold;
-  font-size: 20px;
-}
-
-**4. Reading Styles:**
-
-// Inline styles only
-element.style.color  // Only returns inline styles
-
-// All computed styles (including CSS)
-let styles = window.getComputedStyle(element);
-styles.color
-styles.fontSize
+### 4. Attributes
+You can also change other parts of a tag, like the `src` of an image or the `href` of a link:
+`myImage.src = 'new-photo.jpg';`
+`myLink.href = 'https://google.com';`

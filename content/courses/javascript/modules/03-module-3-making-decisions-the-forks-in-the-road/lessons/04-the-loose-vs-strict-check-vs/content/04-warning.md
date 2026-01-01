@@ -1,27 +1,16 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "The Equality Trap"
 ---
 
-Common mistakes:
+### 1. The Only "Acceptable" Use for `==`
+Some developers use `if (value == null)` as a shortcut to check if something is **either** `null` or `undefined`. 
+While this works, it’s often clearer for beginners to write:
+`if (value === null || value === undefined)`
 
-1. Using == when you mean ===:
-   This is SO common. Most bugs from == are subtle and hard to spot.
-   Rule of thumb: ALWAYS use ===
+### 2. Don't believe everything you see
+Because `==` is so flexible, it can trick you into thinking your data is one type when it’s actually another. If you use `==`, you might not realize that a variable you *think* is a number is actually a string, which will cause massive headaches when you try to do math later.
 
-2. Not understanding type coercion:
-   if (userInput == true)  // Almost never what you want
-   Better: if (userInput === true) or just if (userInput)
-
-3. Assuming null == 0:
-   Actually, null == 0 → false
-   But null == undefined → true
-   Weird, right? That's why we use ===
-
-4. Forgetting that form inputs are strings:
-   <input type='number'> still gives you a string!
-   Always convert: Number(input.value)
-
-5. Triple equals in other languages:
-   PHP has ===, but most languages (Java, Python, C#) only have ==
-   JavaScript is unique in needing this distinction
+### 3. The Golden Rule
+**Use `===` for everything.**
+There is almost no situation in modern JavaScript where `==` is required, and the risks far outweigh the benefits. Most "Linters" (tools that check your code quality) will actually flag `==` as an error.

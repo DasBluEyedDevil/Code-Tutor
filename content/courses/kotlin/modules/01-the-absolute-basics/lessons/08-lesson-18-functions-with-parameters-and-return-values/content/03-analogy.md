@@ -7,8 +7,10 @@ title: "The Concept"
 ### The Recipe Analogy
 
 **Simple Functions** (what you know already):
+Imagine a simple recipe for "Boil Water." It always does the same thing.
 
 **Functions with Parameters** (what you're learning now):
+Now imagine a recipe for "Bake Cake." It has ingredients (parameters) like `flour`, `sugar`, `eggs`. Depending on what you put in, you get a different cake!
 
 **Real-World Examples**:
 - **Coffee Shop**: `makeCoffee(size, type, milk)` → Takes your preferences, returns your custom coffee

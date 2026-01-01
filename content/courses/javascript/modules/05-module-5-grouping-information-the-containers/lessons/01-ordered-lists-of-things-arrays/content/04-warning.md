@@ -1,30 +1,32 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Array Pitfalls"
 ---
 
-Common mistakes:
+### 1. Out of Bounds
+If you try to access an index that doesn't exist (like `fruits[99]`), JavaScript doesn't crash. It simply returns `undefined`.
+```javascript
+const list = ['a', 'b'];
+console.log(list[5]); // Result: undefined
+```
+Always check the `.length` of an array before trying to access deep indices.
 
-1. Starting at index 1 instead of 0:
-   array[1]  // This is the SECOND item, not first!
-   array[0]  // This is the first item
+### 2. The `length` vs. `index` Mistake
+If an array has 3 items, its `length` is `3`. But the highest index is `2`. 
+*   **Error:** Trying to access `list[list.length]` will return `undefined`.
+*   **Fix:** The last item is always at `list.length - 1`.
 
-2. Accessing index === length:
-   let arr = ['a', 'b', 'c'];  // length is 3
-   arr[3]  // undefined - no such index!
-   // Valid indices: 0, 1, 2
+### 3. Trailing Commas
+```javascript
+const colors = ['red', 'green', 'blue',];
+```
+In modern JavaScript, a comma after the last item is perfectly legal and actually encouraged in professional codebases because it makes "git diffs" cleaner when you add new items.
 
-3. Forgetting .length is a property, not a method:
-   array.length()  // WRONG
-   array.length    // CORRECT (no parentheses)
-
-4. Confusing length with last index:
-   let arr = ['a', 'b', 'c'];
-   arr.length       // 3 (count of items)
-   arr[arr.length]  // undefined!
-   arr[arr.length - 1]  // 'c' (last item)
-
-5. Treating arrays like single values:
-   let arr = [1, 2, 3];
-   console.log(arr);  // Prints whole array [1, 2, 3]
-   console.log(arr[0]);  // Prints just first item: 1
+### 4. Hole-y Arrays (Avoid these!)
+If you assign an index far beyond the current length:
+```javascript
+let nums = [1, 2];
+nums[5] = 10;
+console.log(nums); // [1, 2, <3 empty items>, 10]
+```
+This creates "holes" in your array (`undefined` values), which can cause loops and calculations to behave unpredictably. Always add items using specific methods (which we'll learn in the next lesson) instead of jumping indices.

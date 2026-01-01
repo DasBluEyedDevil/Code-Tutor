@@ -14,13 +14,19 @@ title: "Solution: Simple Calculator"
 
 ---
 
-
-
 ```kotlin
-=== Simple Calculator ===
-Enter first number:
-15
-Enter second number:
-27
-15 + 27 = 42
+fun main() {
+    println("=== Simple Calculator ===")
+    
+    print("Enter first number: ")
+    val num1 = readln().toInt()
+    
+    print("Enter second number: ")
+    val num2 = readln().toInt()
+    
+    val sum = num1 + num2
+    println("$num1 + $num2 = $sum")
+}
 ```
+
+**Sample Run**:

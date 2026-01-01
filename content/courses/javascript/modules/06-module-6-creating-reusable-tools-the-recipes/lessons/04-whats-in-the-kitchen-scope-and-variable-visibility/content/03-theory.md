@@ -1,72 +1,29 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Hierarchy of Scope"
 ---
 
-Understanding scope:
+JavaScript uses **Lexical Scoping**, which means that the "inner" parts of your code have access to the "outer" parts, but not the other way around.
 
-**1. Global Scope**
-- Variables declared outside any function
-- Accessible everywhere in your code
-- Use sparingly - can cause naming conflicts
+### 1. Global Scope
+Variables declared outside of any function or block. 
+*   **Pros:** Easy to access from anywhere.
+*   **Cons:** Can be changed by any part of the program, leading to "spaghetti code" and hard-to-find bugs.
 
-let globalVar = 'accessible everywhere';
+### 2. Function Scope
+Each function creates its own "bubble." Any variable declared inside that bubble (including the function's parameters) is invisible to the outside world.
 
-function anywhere() {
-  console.log(globalVar);  // Can access
-}
+### 3. Block Scope
+Introduced with `let` and `const` in ES6. A block is anything inside curly braces `{ }`, such as an `if` statement or a `for` loop. 
+*(Note: Older `var` variables do NOT have block scope, which is one reason we don't use them!)*
 
-**2. Function Scope**
-- Variables declared inside a function
-- Only accessible inside that function
-- Includes parameters
+### 4. Shadowing
+When you declare a variable with the same name as one in an outer scope, the inner variable "wins" while inside that scope. This is useful for avoiding name collisions, but it can be confusing if overused.
 
-function myFunc(param) {  // param has function scope
-  let localVar = 'only here';  // localVar has function scope
-}
-
-**3. Block Scope** (let and const only)
-- Variables declared inside { }
-- Only accessible inside that block
-- if, for, while, etc. create blocks
-
-if (true) {
-  let x = 5;  // Block scoped
-  const y = 10;  // Block scoped
-  var z = 15;  // Function scoped (escapes block!)
-}
-
-**Scope Chain** (looking up variables):
-
-let a = 'global';
-
-function outer() {
-  let b = 'outer';
-  
-  function inner() {
-    let c = 'inner';
-    
-    // JavaScript looks for variables in this order:
-    // 1. Current scope (inner) - c
-    // 2. Parent scope (outer) - b
-    // 3. Grandparent scope (global) - a
-  }
-}
-
-**Best Practices**:
-
-1. Use let and const (not var)
-   - They respect block scope
-   - Prevent accidental global variables
-
-2. Keep variables in smallest scope needed
-   - Declare inside functions/blocks when possible
-   - Reduces naming conflicts
-
-3. Avoid global variables
-   - Hard to track who modifies them
-   - Can cause bugs
-
-4. Don't shadow variables (same name in nested scopes)
-   - Confusing to read
-   - Use different names
+### 5. Scope Chain
+When you use a variable, JavaScript looks for it in this order:
+1.  Current local scope.
+2.  Next outer scope.
+3.  ...repeat until...
+4.  Global scope.
+If it still isn't found, you get a `ReferenceError`.

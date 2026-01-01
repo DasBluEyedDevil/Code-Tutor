@@ -1,34 +1,29 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Core Data Types"
 ---
 
-The three basic data types:
+JavaScript is a **dynamically typed** language, meaning you don't have to explicitly tell the computer "this variable is a string." It figures it out based on the value you provide.
 
-1. STRING - Text
-   - Always enclosed in quotes (single ' or double ")
-   - Can be empty: let empty = '';
-   - Can contain numbers as text: let code = '12345';
-   - Use + to join strings: 'Hello' + ' ' + 'World' = 'Hello World'
+### 1. Strings (Text)
+Strings can be created with single quotes (`'...'`), double quotes (`"..."`), or **backticks** (`` `...` ``).
+*   **Template Literals (Backticks):** These are powerful because they allow you to "interpolate" variables directly into the text using `${variableName}` syntax. No more messy `+` signs!
 
-2. NUMBER - Numeric values
-   - NO quotes
-   - Can be positive, negative, or decimal
-   - Can do math: +, -, *, / (division), % (remainder)
-   - Special values: Infinity, -Infinity, NaN (Not a Number)
+### 2. Numbers
+Unlike some languages, JavaScript only has one type for numbers. Whether it's an integer (`5`) or a decimal (`5.5`), it's a `Number`.
+*   **NaN (Not a Number):** This is a special value that appears when you try to do math with something that isn't a number (like `"hello" / 2`).
 
-3. BOOLEAN - True or False
-   - Only two possible values: true or false
-   - NO quotes (quotes would make it a string)
-   - Used for yes/no, on/off, exists/doesn't exist
-   - We'll use these a lot when making decisions (if statements)
+### 3. Booleans
+Named after mathematician George Boole, these represent logical states. They are the foundation of all computer decision-making (if something is true, do X; if false, do Y).
 
-How to remember:
-- If it's text, it needs quotes → String
-- If it's a number for math, no quotes → Number
-- If it's true or false, no quotes → Boolean
+### 4. Null vs. Undefined (The "Nothing" Types)
+This is a frequent source of confusion:
+*   **undefined:** Means the variable exists, but no value has been put in it yet. It's the default state of a new `let` variable.
+*   **null:** Is an **intentional** absence of a value. It's like a box that you've purposely marked as "empty."
 
-The + operator:
-- With numbers: 5 + 3 = 8 (addition)
-- With strings: 'Hello' + 'World' = 'HelloWorld' (joining)
-- Mixed: 'Age: ' + 25 = 'Age: 25' (converts number to string and joins)
+### 5. Checking Types
+You can use the `typeof` keyword to ask JavaScript what type a variable is:
+```javascript
+console.log(typeof 42);      // "number"
+console.log(typeof "Alice"); // "string"
+```

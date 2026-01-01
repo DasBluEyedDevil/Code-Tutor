@@ -1,56 +1,21 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Generic Pitfalls"
 ---
 
-Common mistakes with generics:
+### 1. Over-Engineering
+Don't use generics if you don't need them.
+*   **Wrong:** `function getName<T extends { name: string }>(item: T): string { ... }`
+*   **Right:** `function getName(item: { name: string }): string { ... }`
+If your function only ever works with one specific shape of data, a generic is just making your code harder to read.
 
-1. **Using `any` instead of generics**:
-   ```typescript
-   // Bad - loses type safety
-   function getFirst(arr: any[]): any {
-     return arr[0];
-   }
-   
-   // Good - preserves type safety
-   function getFirst<T>(arr: T[]): T | undefined {
-     return arr[0];
-   }
-   ```
+### 2. Missing Constraints
+If you use a generic `T` and then try to use a property like `T.name`, TypeScript will complain.
+*   **Why:** TypeScript doesn't know if `T` is an object, a number, or a boolean. 
+*   **Fix:** Use `extends` to tell TypeScript that `T` is an object with a `name` property.
 
-2. **Forgetting type constraints**:
-   ```typescript
-   // Error - T might not have 'length'
-   function logLength<T>(item: T): void {
-     console.log(item.length);  // ERROR!
-   }
-   
-   // Fixed - constrain T to have length
-   function logLength<T extends { length: number }>(item: T): void {
-     console.log(item.length);  // OK
-   }
-   ```
+### 3. Naming Confusion
+While `<T>` is standard, if you have a complex function with many generics, using names like `<UserType>`, `<ResponseType>`, and `<ErrorType>` makes your code much easier for other developers to understand.
 
-3. **Over-complicating with generics**:
-   - Don't use generics when a simple union type works
-   - `string | number` might be clearer than `T`
-   - Use generics when you need type relationships
-
-4. **Confusing generic syntax**:
-   - `<T>` goes after function name: `function name<T>(...)`
-   - `<T>` goes after interface name: `interface Name<T> {...}`
-   - Arrow functions: `const fn = <T>(x: T): T => x;`
-
-5. **Not specifying return types**:
-   ```typescript
-   // TypeScript infers, but explicit is clearer
-   function getFirst<T>(arr: T[]): T | undefined {
-     return arr[0];
-   }
-   ```
-
-6. **Naming conventions**:
-   - T, U, V for general types
-   - K for keys, V for values
-   - E for elements in collections
-   - More descriptive names also work: `TItem`, `TResponse`
+### 4. Nested Generics
+Be careful when nesting generics (e.g., `Map<string, List<T>>`). The syntax can quickly become a "triangle of death" that is hard to debug. If it gets too complex, consider breaking it down into smaller, named interfaces.

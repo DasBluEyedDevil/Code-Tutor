@@ -1,47 +1,44 @@
 ---
 type: "EXAMPLE"
-title: "Extending the Error Class Properly"
+title: "Defining Custom Errors"
 ---
 
-The correct way to create custom error classes in JavaScript, with all necessary setup for proper error behavior.
-
 ```javascript
-// Basic custom error class
-class CustomError extends Error {
-  constructor(message) {
-    super(message); // Call parent constructor with message
-    this.name = 'CustomError'; // Set the error name
-    
-    // This line is needed for proper stack traces in some environments
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, CustomError);
+// 1. Creating a Basic Custom Error
+// We use ES6 classes to extend the built-in Error
+class ValidationError extends Error {
+    constructor(message) {
+        super(message); // Call the parent Error constructor
+        this.name = "ValidationError"; // Set the error type name
     }
-  }
 }
 
-// Using the custom error
+// 2. Custom Error with Extra Data
+class NetworkError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.name = "NetworkError";
+        this.statusCode = statusCode; // Add custom property
+    }
+}
+
+// 3. Using Custom Errors
+function login(username, password) {
+    if (!username || !password) {
+        throw new ValidationError("Username and password are required.");
+    }
+    
+    // Simulate server error
+    throw new NetworkError("Server unreachable", 503);
+}
+
 try {
-  throw new CustomError('Something custom went wrong');
-} catch (error) {
-  console.log(error.name);    // 'CustomError'
-  console.log(error.message); // 'Something custom went wrong'
-  console.log(error instanceof CustomError); // true
-  console.log(error instanceof Error);       // true (inherits from Error)
-}
-
-// More realistic example with application context
-class ApplicationError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'ApplicationError';
-    this.timestamp = new Date().toISOString();
-  }
-}
-
-try {
-  throw new ApplicationError('Application initialization failed');
-} catch (error) {
-  console.log(`[${error.timestamp}] ${error.name}: ${error.message}`);
-  // Output: [2024-01-15T10:30:00.000Z] ApplicationError: Application initialization failed
+    login("Alice", "");
+} catch (e) {
+    if (e instanceof ValidationError) {
+        console.warn(`User Mistake: ${e.message}`);
+    } else if (e instanceof NetworkError) {
+        console.error(`System Error: ${e.message} (Status: ${e.statusCode})`);
+    }
 }
 ```

@@ -1,21 +1,22 @@
 ---
 type: "THEORY"
-title: "GridView.extent - Maximum Item Size"
+title: "Controlling Grid Spacing"
 ---
 
+A grid without spacing looks crowded. Use these properties to add breathing room:
 
-Instead of specifying columns, specify max width per item:
-
-
-Automatically adjusts columns based on screen size - **responsive**!
-
-
+- **`crossAxisSpacing`**: Space between columns
+- **`mainAxisSpacing`**: Space between rows
+- **`padding`**: Space around the entire grid
 
 ```dart
-GridView.extent(
-  maxCrossAxisExtent: 150,  // Max 150px per item
+GridView.count(
+  crossAxisCount: 3,
+  crossAxisSpacing: 10,  // Horizontal gap
+  mainAxisSpacing: 10,   // Vertical gap
+  padding: EdgeInsets.all(10),
   children: [
-    // Items adjust to fit screen width
+    // ...
   ],
 )
 ```

@@ -1,36 +1,25 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "The Return Pitfall"
 ---
 
-Common mistakes:
+### 1. `console.log` is NOT `return`
+This is the most common confusion for new programmers. 
+*   `console.log` displays a message to a human.
+*   `return` sends a value back to the program.
+If your function logs a result but doesn't return it, you won't be able to use that result in another calculation.
 
-1. Wrong number of arguments:
-   function add(a, b) { return a + b; }
-   add(5);  // b is undefined, returns NaN
-   add(5, 3, 7);  // 7 is ignored
+### 2. Unreachable Code
+Because `return` stops the function, anything written below it will never run.
+```javascript
+function sayHello() {
+    return "Hello";
+    console.log("This will never be seen!"); // DEAD CODE
+}
+```
 
-2. Not returning the value:
-   function add(a, b) {
-     a + b;  // Calculated but not returned!
-   }
-   let result = add(5, 3);  // undefined
+### 3. Returning "Nothing"
+A `return;` statement by itself (with no value) will simply exit the function and return `undefined`. This is often used for "Guard Clauses" where you want to stop a function early if something is wrong.
 
-3. Trying to use parameters outside function:
-   function greet(name) {
-     return 'Hello, ' + name;
-   }
-   console.log(name);  // ERROR - name only exists inside function
-
-4. Forgetting to call the function:
-   let result = add;  // result is the function itself
-   let result = add(5, 3);  // result is 8
-
-5. Returning in wrong place:
-   function test() {
-     if (true) {
-       let x = 5;
-       return x;  // WRONG - x might not be accessible
-     }
-   }
-   Better: calculate first, then return
+### 4. Forgetting to return
+If you do a bunch of math in a function but forget to `return` the result, the function call will evaluate to `undefined`. Always check that your function ends with the result you want!

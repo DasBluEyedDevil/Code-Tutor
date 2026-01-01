@@ -1,56 +1,36 @@
 ---
 type: "EXAMPLE"
-title: "window.onerror (Browser)"
+title: "Setting up Global Listeners"
 ---
 
-The classic browser global error handler for synchronous errors.
-
 ```javascript
-// window.onerror - catches uncaught synchronous errors
+// 1. In the Browser: window.onerror
+// Catches standard synchronous runtime errors
 window.onerror = function(message, source, lineno, colno, error) {
-  console.log('=== Global Error Handler ===');
-  console.log('Message:', message);
-  console.log('Source:', source);    // Script URL
-  console.log('Line:', lineno);       // Line number
-  console.log('Column:', colno);      // Column number
-  console.log('Error object:', error); // Full error object
-  
-  // Send to your error tracking service
-  sendToErrorService({
-    type: 'uncaught_error',
-    message: message,
-    source: source,
-    line: lineno,
-    column: colno,
-    stack: error?.stack
-  });
-  
-  // Return true to prevent default browser error logging
-  // Return false (or nothing) to still log to console
-  return false;
+    console.log("--- BROWSER GLOBAL ERROR ---");
+    console.error(`Message: ${message}`);
+    // Here, you would send this to a service like Sentry or LogRocket
+    return true; // Prevents the error from showing in the dev console
 };
 
-// Using addEventListener (modern approach)
-window.addEventListener('error', function(event) {
-  console.log('Error event:', event.error);
-  console.log('Error message:', event.message);
-  console.log('Filename:', event.filename);
-  console.log('Line:', event.lineno);
-  
-  // Can prevent default error logging
-  // event.preventDefault();
+// 2. In the Browser: unhandledrejection
+// Catches async errors (Promises) that don't have a .catch()
+window.addEventListener('unhandledrejection', (event) => {
+    console.warn("--- UNHANDLED PROMISE ---");
+    console.warn(`Reason: ${event.reason}`);
 });
 
-// Testing it
-function causeError() {
-  // This error will be caught by window.onerror
-  throw new Error('Uncaught error in function');
-}
+// 3. In Node.js: uncaughtException
+process.on('uncaughtException', (err) => {
+    console.error("--- NODE CRITICAL ERROR ---");
+    console.error(err.stack);
+    // CRITICAL: Always restart the server after an uncaught exception!
+    process.exit(1); 
+});
 
-// causeError(); // Uncomment to test
-
-// Note: window.onerror does NOT catch:
-// - Promise rejections (use onunhandledrejection)
-// - Errors in async code without await
-// - Syntax errors (script won't run at all)
+// 4. In Node.js: unhandledRejection
+process.on('unhandledRejection', (reason, promise) => {
+    console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Application-specific logging here
+});
 ```

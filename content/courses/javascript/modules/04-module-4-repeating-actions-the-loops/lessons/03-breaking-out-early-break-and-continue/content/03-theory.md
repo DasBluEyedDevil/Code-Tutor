@@ -1,53 +1,19 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Loop Control Flow"
 ---
 
-Two flow control keywords:
+Sometimes, the logic defined in the `for` or `while` header isn't enough. `break` and `continue` allow you to change the loop's behavior based on conditions *inside* the loop.
 
-**break**
-- Immediately exits the loop
-- Execution continues after the loop
-- Use when you've found what you're looking for
-- Use when a condition makes continuing pointless
+### 1. `break` (The Emergency Stop)
+When JavaScript hits a `break` statement, it immediately jumps out of the current loop and continues with the first line of code *after* the loop's closing brace `}`. 
+*   **Common Use Case:** Finding a specific result in a list (like a search function). Once you find it, you don't want to waste computer power looking at the rest of the list.
 
-Example:
-for (let i = 0; i < 100; i++) {
-  if (found) {
-    break;  // Don't check remaining 90 items
-  }
-}
-console.log('Continue here');  // This runs after break
+### 2. `continue` (The Skip Button)
+When JavaScript hits a `continue` statement, it stops running the code for the *current* lap and immediately jumps to the next one.
+*   **In a `for` loop:** It jumps to the increment (`i++`) step.
+*   **In a `while` loop:** It jumps back to the condition check.
+*   **Common Use Case:** Filtering out "bad" data. If a user record is missing an email address, you might `continue` to the next user instead of trying to send them an email.
 
-**continue**
-- Skips the rest of the current iteration
-- Goes directly to the next iteration
-- Use to skip invalid/unwanted values
-- Use to avoid deep nesting
-
-Example:
-for (let i = 0; i < 10; i++) {
-  if (i === 5) {
-    continue;  // Skip when i is 5
-  }
-  console.log(i);  // This doesn't run when i is 5
-  // But runs for all other values
-}
-
-Comparing break vs continue:
-
-break:
-for (let i = 0; i < 5; i++) {
-  if (i === 3) break;
-  console.log(i);
-}
-// Prints: 0, 1, 2 (then EXITS loop)
-
-continue:
-for (let i = 0; i < 5; i++) {
-  if (i === 3) continue;
-  console.log(i);
-}
-// Prints: 0, 1, 2, 4 (SKIPS 3, continues loop)
-
-Important: break and continue only affect the INNERMOST loop they're in. If you have nested loops, they don't break out of all loops.
+### 3. Loop Scope
+Crucially, these keywords only affect the **innermost** loop they are in. If you have a loop inside a loop, `break` will stop the inner loop, but the outer loop will keep running!

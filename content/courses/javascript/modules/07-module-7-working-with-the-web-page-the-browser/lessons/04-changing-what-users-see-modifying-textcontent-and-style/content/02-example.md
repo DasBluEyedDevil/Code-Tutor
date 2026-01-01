@@ -1,66 +1,42 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Updating the UI"
 ---
 
-See the code example above demonstrating Code Example.
+```html
+<h1 id="status-text">System Offline</h1>
+<div id="box" style="width: 100px; height: 100px; background: grey;"></div>
+<button id="update-btn">Activate System</button>
 
-```javascript
-// Changing text content
-let heading = document.querySelector('h1');
-heading.textContent = 'New Heading';
+<style>
+  .active-state {
+    border: 5px solid gold;
+    box-shadow: 0 0 10px yellow;
+  }
+</style>
 
-let paragraph = document.querySelector('p');
-paragraph.textContent = 'New paragraph text';
+<script>
+  const status = document.querySelector('#status-text');
+  const box = document.querySelector('#box');
+  const btn = document.querySelector('#update-btn');
 
-// Changing inline styles (CSS properties)
-let box = document.querySelector('.box');
-box.style.color = 'red';  // Text color
-box.style.backgroundColor = 'yellow';  // Background (note camelCase!)
-box.style.fontSize = '24px';  // Font size
-box.style.width = '200px';  // Width
-box.style.padding = '20px';  // Padding
-box.style.border = '2px solid black';  // Border
+  // 1. Changing Text
+  status.textContent = "System Online!";
 
-// CSS properties with hyphens become camelCase in JavaScript
-// CSS: background-color → JavaScript: backgroundColor
-// CSS: font-size → JavaScript: fontSize
-// CSS: margin-top → JavaScript: marginTop
+  // 2. Changing Style Directly (Inline Styles)
+  // Note: CSS properties with dashes like 'background-color' 
+  // become camelCase in JS: 'backgroundColor'
+  box.style.backgroundColor = 'limegreen';
+  box.style.borderRadius = '50%';
 
-// Working with classes (better than inline styles!)
-let element = document.querySelector('.item');
+  // 3. Using ClassList (Best Practice)
+  // Instead of changing 10 styles, just add one class
+  box.classList.add('active-state');
 
-// Add a class
-element.classList.add('active');
-
-// Remove a class
-element.classList.remove('inactive');
-
-// Toggle a class (add if missing, remove if present)
-element.classList.toggle('highlighted');
-
-// Check if class exists
-if (element.classList.contains('active')) {
-  console.log('Element is active');
-}
-
-// Practical example: Dark mode toggle
-let button = document.querySelector('#darkModeBtn');
-button.addEventListener('click', function() {
-  document.body.classList.toggle('dark-mode');
-});
-
-// Changing multiple styles at once
-let card = document.querySelector('.card');
-Object.assign(card.style, {
-  width: '300px',
-  height: '200px',
-  backgroundColor: '#f0f0f0',
-  borderRadius: '10px',
-  padding: '20px'
-});
-
-// Getting current styles
-let computedStyle = window.getComputedStyle(element);
-console.log(computedStyle.color);  // Current color
+  // 4. Toggling
+  // If it's there, remove it. If it's not, add it.
+  btn.addEventListener('click', () => {
+    box.classList.toggle('active-state');
+  });
+</script>
 ```

@@ -1,64 +1,40 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Input and Output"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Function with one parameter
-function greet(name) {
-  return 'Hello, ' + name + '!';
+// 1. Basic Return Value
+function calculateTotal(price, quantity) {
+    const total = price * quantity;
+    return total; // Hands the value back to whoever called the function
 }
 
-let message = greet('Alice');
-console.log(message);  // Hello, Alice!
+// We capture the "handed back" value in a variable
+const myBill = calculateTotal(19.99, 3);
+console.log(`Your bill is: $${myBill}`);
 
-// Function with multiple parameters
-function calculateArea(width, height) {
-  return width * height;
+// 2. Default Parameters
+// If 'name' is missing, it defaults to 'Guest'
+function welcomeUser(name = 'Guest') {
+    return `Welcome, ${name}!`;
 }
 
-let area = calculateArea(5, 10);
-console.log(area);  // 50
+console.log(welcomeUser('Alice')); // "Welcome, Alice!"
+console.log(welcomeUser());        // "Welcome, Guest!"
 
-// Parameters with default values (ES2015+)
-function greet(name = 'Guest') {
-  return 'Hello, ' + name + '!';
+// 3. Early Return (The "Guard Clause")
+function checkAge(age) {
+    if (age < 0) {
+        return "Invalid age!"; // Stops the function immediately
+    }
+    
+    if (age >= 18) {
+        return "You are an adult.";
+    } else {
+        return "You are a minor.";
+    }
 }
 
-console.log(greet());        // Hello, Guest!
-console.log(greet('Bob'));   // Hello, Bob!
-
-// Function that doesn't return (returns undefined)
-function logMessage(msg) {
-  console.log(msg);
-  // No return statement
-}
-
-let result = logMessage('Test');
-console.log(result);  // undefined
-
-// Returning early
-function divide(a, b) {
-  if (b === 0) {
-    return 'Cannot divide by zero';
-  }
-  return a / b;
-}
-
-console.log(divide(10, 2));  // 5
-console.log(divide(10, 0));  // Cannot divide by zero
-
-// Returning objects
-function createUser(name, age) {
-  return {
-    name: name,
-    age: age,
-    isAdult: age >= 18
-  };
-}
-
-let user = createUser('Alice', 25);
-console.log(user);  // {name: 'Alice', age: 25, isAdult: true}
+console.log(checkAge(-5)); // "Invalid age!"
 ```

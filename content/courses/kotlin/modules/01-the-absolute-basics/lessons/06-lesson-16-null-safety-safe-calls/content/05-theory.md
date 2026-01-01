@@ -5,16 +5,20 @@ title: "Nullable vs Non-Nullable Types"
 
 
 ### Non-Nullable Types (Default)
+In Kotlin, you cannot assign `null` to a regular variable. This guarantees that your program won't crash when you use that variable.
 
-
-**By default, all types in Kotlin are non-nullable.**
+```kotlin
+var name: String = "Alice"
+// name = null ❌ Error: Null can not be a value of a non-null type String
+```
 
 ### Nullable Types (Type?)
+If you *want* a variable to be able to hold a `null` value, you must explicitly declare it by adding a question mark `?` after the type.
 
-Add `?` to make a type nullable:
-
-
-**Examples**:
+```kotlin
+var middleName: String? = "John"
+middleName = null // ✅ OK
+```
 
 ---
 

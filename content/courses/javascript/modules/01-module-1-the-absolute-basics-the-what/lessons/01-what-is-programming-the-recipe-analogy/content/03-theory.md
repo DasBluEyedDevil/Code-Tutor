@@ -1,16 +1,20 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Anatomy of a Statement"
 ---
 
-Let's break down that code line by line:
+A single line of code that tells the computer to do something is called a **statement**. Let's deconstruct the most famous statement in programming:
 
-1. Lines starting with // are comments. They're ignored by the computer. Think of them as sticky notes you leave for yourself (or other programmers) to explain what the code does.
+`console.log('Hello, World!');`
 
-2. console.log('Hello, World!'); - This is an instruction (we'll call it a 'statement' later). Let's unpack it:
-   - console is like a special message board built into your web browser
-   - log means 'write a message'
-   - The text inside the parentheses and quotes ('Hello, World!') is the message we want to write
-   - The semicolon ; at the end is like a period at the end of a sentence - it tells the computer 'this instruction is complete'
+### 1. The Object: `console`
+The `console` is a built-in "object" in JavaScript that handles input and output. Think of it as the control panel of your application.
 
-So the whole thing means: 'Computer, write the message Hello, World! to the console.'
+### 2. The Method: `.log()`
+The `.log` is an action (or "method") that belongs to the console. It tells the console to record or display information. 
+
+### 3. The Argument: `('Hello, World!')`
+The information you put inside the parentheses is called an **argument**. It's the "input" for the action. In this case, we are providing a **String** (text) wrapped in single quotes.
+
+### 4. The Terminator: `;`
+The semicolon is like the period at the end of a sentence. It tells the JavaScript engine that this specific instruction is finished. While JavaScript can often guess where a line ends, explicitly using `;` is a professional habit that prevents bugs.

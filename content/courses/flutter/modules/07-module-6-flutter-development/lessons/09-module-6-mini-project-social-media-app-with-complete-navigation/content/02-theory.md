@@ -1,14 +1,19 @@
 ---
 type: "THEORY"
-title: "Features"
+title: "Step 1: Define Your Route Constants"
 ---
 
+Start by defining all your route names and paths in a central location. This prevents typos and makes refactoring easier.
 
-1. **Bottom Navigation**: Home, Search, Notifications, Messages, Profile (5 tabs)
-2. **Drawer**: Settings, Saved Posts, Blocked Users, Help, Logout
-3. **Tabs**: Home feed (Following, For You, Trending)
-4. **Deep Linking**: Open specific posts, profiles, and messages
-5. **Navigation**: Post detail, User profile, Comments, Edit profile
-6. **State Preservation**: Scroll positions, tab selections
-7. **Badges**: Unread notification and message counts
-
+```dart
+class AppRoutes {
+  static const String home = '/home';
+  static const String search = '/search';
+  static const String notifications = '/notifications';
+  static const String messages = '/messages';
+  static const String profile = '/profile';
+  
+  static const String postDetail = '/post/:id';
+  static const String userDetail = '/user/:id';
+}
+```

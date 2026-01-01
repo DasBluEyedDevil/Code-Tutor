@@ -1,73 +1,28 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Query API"
 ---
 
-querySelector syntax (uses CSS selectors):
+The `querySelector` methods are the modern standard for finding elements in the DOM. They allow you to use the full power of CSS selectors directly in your JavaScript.
 
-**Basic Selectors:**
+### 1. `document.querySelector(selector)`
+*   **Returns:** The **first** element that matches the selector.
+*   **If no match is found:** It returns `null`.
+*   **Common Selectors:**
+    *   `'#id'` (ID)
+    *   `'.class'` (Class)
+    *   `'tag'` (Tag name like `div` or `h1`)
+    *   `'[attribute]'` (Attribute like `[type="text"]`)
 
-1. By ID: #idName
-   document.querySelector('#myId')
-   // Same as: document.getElementById('myId')
+### 2. `document.querySelectorAll(selector)`
+*   **Returns:** A **NodeList** containing all elements that match.
+*   **If no match is found:** It returns an empty list `[]`.
+*   **NodeList vs. Array:** A NodeList is "array-like." In modern browsers, you can use `.forEach()` on it, but you might need to convert it to a real array (`[...list]`) if you want to use methods like `map` or `filter`.
 
-2. By class: .className
-   document.querySelector('.myClass')
-   document.querySelectorAll('.myClass')  // All matches
+### 3. The Power of CSS
+Because these methods use CSS logic, you can be very specific:
+*   `'#nav .active'` — Find an element with class "active" inside the element with ID "nav."
+*   `'button:disabled'` — Find all buttons that are currently disabled.
 
-3. By tag: tagname
-   document.querySelector('p')
-   document.querySelectorAll('div')
-
-4. By attribute: [attribute]
-   document.querySelector('[href]')  // Has href attribute
-   document.querySelector('[type="submit"]')  // type="submit"
-
-**Combinators:**
-
-1. Descendant: space (anywhere inside)
-   document.querySelector('div p')  // p inside any div
-
-2. Direct child: >
-   document.querySelector('div > p')  // p directly inside div
-
-3. Multiple selectors: comma
-   document.querySelectorAll('h1, h2, h3')  // All headings
-
-4. Combined: no space
-   document.querySelector('button.primary')  // button with class 'primary'
-
-**Pseudo-selectors:**
-
-1. :first-child, :last-child
-2. :nth-child(n) - The nth child
-3. :nth-child(even), :nth-child(odd)
-4. :not(selector) - Exclude matches
-5. :hover, :focus, :checked (for CSS, less useful in JS)
-
-**Differences from getElementBy...:**
-
-querySelector:
-✓ More flexible (any CSS selector)
-✓ Consistent syntax
-✓ Returns null if not found
-✓ Modern and recommended
-✗ Slightly slower (negligible)
-
-getElementBy...:
-✓ Slightly faster
-✓ Returns live collections (auto-updates)
-✗ Limited to ID, class, or tag
-✗ Different syntax for each
-
-**Best Practice:**
-Use querySelector/querySelectorAll for everything. They're more powerful and the syntax is consistent.
-
-**NodeList vs Array:**
-querySelectorAll returns a NodeList (not an Array)
-- Has .length
-- Has .forEach() (modern browsers)
-- Doesn't have .map(), .filter(), etc.
-
-Convert to array if needed:
-let itemsArray = Array.from(document.querySelectorAll('.item'));
+### 4. Performance
+`querySelector` is slightly slower than older methods like `getElementById`, but the difference is so tiny (microseconds) that it doesn't matter for 99% of applications. The benefit of using a single, powerful API far outweighs the performance cost.

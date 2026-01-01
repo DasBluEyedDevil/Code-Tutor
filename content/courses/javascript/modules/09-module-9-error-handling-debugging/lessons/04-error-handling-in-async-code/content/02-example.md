@@ -1,73 +1,54 @@
 ---
 type: "EXAMPLE"
-title: "The try/await/catch Pattern"
+title: "The Async Blast Shield"
 ---
 
-The most important pattern for modern async error handling. This is what you'll use 90% of the time.
-
 ```javascript
-// The try/await/catch pattern - your go-to for async errors
-async function fetchUserData(userId) {
-  try {
-    // await pauses until the promise resolves or rejects
-    const response = await fetch(`/api/users/${userId}`);
-    
-    // Check for HTTP errors (fetch doesn't throw on 404/500)
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+// 1. Error handling with async/await (The Gold Standard)
+async function fetchSafe() {
+    try {
+        console.log("Fetching...");
+        const response = await fetch('https://invalid-url.xyz');
+        const data = await response.json();
+    } catch (e) {
+        // This catch waits for the promise to fail!
+        console.error("Async Error Caught:", e.message);
     }
-    
-    const data = await response.json();
-    console.log('User data:', data);
-    return data;
-    
-  } catch (error) {
-    // This catches BOTH network errors AND HTTP errors
-    console.error('Failed to fetch user:', error.message);
-    return null;
-  }
 }
 
-// Calling async functions
-async function main() {
-  const user = await fetchUserData(123);
-  if (user) {
-    console.log('Got user:', user.name);
-  } else {
-    console.log('Could not load user');
-  }
+// 2. Error handling with Promises (.catch)
+// If you don't use async/await, you MUST use .catch()
+function fetchWithCatch() {
+    fetch('https://invalid-url.xyz')
+        .then(res => res.json())
+        .catch(err => {
+            console.error("Promise Error Caught:", err.message);
+        });
 }
 
-main();
-
-// Multiple await calls in one try block
-async function getFullProfile(userId) {
-  try {
-    const user = await fetchUser(userId);
-    const posts = await fetchUserPosts(userId);
-    const friends = await fetchUserFriends(userId);
-    
-    return { user, posts, friends };
-    
-  } catch (error) {
-    // Any of the three awaits can trigger this catch
-    console.error('Failed to load profile:', error.message);
-    return null;
-  }
+// 3. The "Unawaited" Danger
+// If you forget 'await', the catch block WON'T work
+async function unawaitedMistake() {
+    try {
+        // DANGER: No await! The function continues immediately.
+        fetch('https://invalid-url.xyz'); 
+    } catch (e) {
+        console.log("This will never run!");
+    }
 }
 
-// With finally for cleanup
-async function loadDataWithLoading() {
-  showLoadingSpinner();
-  
-  try {
-    const data = await fetchData();
-    displayData(data);
-  } catch (error) {
-    showError(error.message);
-  } finally {
-    // Always hide spinner, success or failure
-    hideLoadingSpinner();
-  }
+// 4. Promise.allSettled (Safe parallel handling)
+async function checkAllServices() {
+    const results = await Promise.allSettled([
+        fetch('https://api.a.com'),
+        fetch('https://api.b.com')
+    ]);
+    
+    // results is an array of { status: 'fulfilled' | 'rejected', ... }
+    results.forEach(res => {
+        if (res.status === 'rejected') {
+            console.log("One service failed, but the others are fine.");
+        }
+    });
 }
 ```

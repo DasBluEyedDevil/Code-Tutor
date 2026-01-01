@@ -1,41 +1,29 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Comparison Toolkit"
 ---
 
-The six comparison operators:
+Comparison operators take two values and return a `true` or `false` result.
 
-1. >   Greater than
-   - 5 > 3 → true
-   - 3 > 5 → false
-   - 5 > 5 → false (not greater, they're equal)
+### The Standard Operators
 
-2. <   Less than
-   - 3 < 5 → true
-   - 5 < 3 → false
-   - 5 < 5 → false
+| Symbol | Meaning | Example | Result |
+| :--- | :--- | :--- | :--- |
+| `===` | Strict Equal | `5 === 5` | `true` |
+| `!==` | Strict Not Equal | `5 !== 10` | `true` |
+| `>` | Greater Than | `10 > 5` | `true` |
+| `<` | Less Than | `5 < 10` | `true` |
+| `>=` | Greater Than or Equal | `10 >= 10` | `true` |
+| `<=` | Less Than or Equal | `5 <= 10` | `true` |
 
-3. >=  Greater than OR equal to
-   - 5 >= 5 → true (the equal part makes it true)
-   - 6 >= 5 → true
-   - 4 >= 5 → false
+### Comparing Strings
+You can also compare text!
+*   `'apple' === 'apple'` is `true`.
+*   `'Apple' === 'apple'` is **`false`** (JavaScript is case-sensitive).
+*   `'a' < 'b'` is `true` (JavaScript uses alphabetical order for comparisons).
 
-4. <=  Less than OR equal to
-   - 5 <= 5 → true
-   - 4 <= 5 → true
-   - 6 <= 5 → false
+### Strictness Matters
+In this course, we always use the "triple" symbols (`===` and `!==`). These are **Strict** operators. They ensure that both the **value** and the **type** are the same.
+*   `5 === "5"` is `false` because one is a number and the other is a string.
 
-5. === Exactly equal to (strict equality)
-   - 5 === 5 → true
-   - 5 === '5' → false (number vs string)
-   - 'cat' === 'cat' → true
-   - 'Cat' === 'cat' → false (case matters!)
-
-6. !== Not equal to (strict inequality)
-   - 5 !== 3 → true (they are different)
-   - 5 !== 5 → false (they are the same)
-
-All comparison operators return a boolean (true or false). You can use them:
-- Directly in if statements: if (age > 18)
-- Store in variables: let canVote = age >= 18;
-- Display them: console.log(5 > 3);  // Shows: true
+(We will dive deeper into "Loose" vs "Strict" in the next lesson!)

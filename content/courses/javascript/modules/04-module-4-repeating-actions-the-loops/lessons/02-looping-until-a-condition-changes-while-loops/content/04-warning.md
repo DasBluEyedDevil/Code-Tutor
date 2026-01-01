@@ -1,38 +1,28 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "The While Loop Trap"
 ---
 
-Common mistakes:
+### 1. The Missing Update
+This is the #1 mistake with `while` loops. 
+```javascript
+let count = 0;
+while (count < 5) {
+    console.log("Stuck!");
+    // Forgot count++;
+}
+```
+Because `count` never changes, it will always be less than 5. The loop will never end. 
+*   **Rule:** Always make sure your loop body contains code that eventually makes the condition `false`.
 
-1. Forgetting to update the condition variable:
-   let x = 0;
-   while (x < 10) {
-     console.log(x);  // x never changes - INFINITE LOOP!
-   }
+### 2. The Semi-Colon Death
+Putting a semicolon after the `while` condition.
+```javascript
+while (loading === true); {
+   // This code block is NOT part of the loop!
+}
+```
+This tells JavaScript to loop the "empty space" after the `;` forever, effectively freezing your program.
 
-2. Updating in the wrong direction:
-   let x = 0;
-   while (x < 10) {
-     console.log(x);
-     x--;  // x gets MORE negative - INFINITE LOOP!
-   }
-
-3. Wrong comparison operator:
-   let x = 0;
-   while (x < 10) {
-     console.log(x);
-     x--;  // Should be x++
-   }
-
-4. Condition that's never true:
-   let x = 5;
-   while (x < 0) {  // 5 is not < 0
-     // This never runs at all!
-   }
-
-5. Not initializing before the loop:
-   while (count < 10) {  // count is not defined!
-     count++;
-   }
-   Must declare: let count = 0; BEFORE the while loop
+### 3. Infinite "Falsy" Values
+If your condition checks for a specific value, make sure it’s possible to reach that value. If you're checking `while (score !== 10)`, but your code adds 3 to the score every time (1, 4, 7, 10, 13...), it will land on 10 and stop. But if you start at 2 (2, 5, 8, 11...), you'll **jump over** 10 and loop forever!

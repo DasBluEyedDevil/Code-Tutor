@@ -1,34 +1,20 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Mutually Exclusive Logic"
 ---
 
-The structure:
+The `else if` and `else` keywords allow you to expand a simple "Yes/No" decision into a "Case A / Case B / Case C" decision.
 
-if (first condition) {
-  // Runs if first condition is true
-} else if (second condition) {
-  // Runs if first is false BUT second is true  
-} else if (third condition) {
-  // Runs if first and second are false BUT third is true
-} else {
-  // Runs if ALL above conditions are false (the 'default')
-}
+### 1. The `else if` Bridge
+You can have as many `else if` statements as you want between your `if` and your `else`. They are only checked if the previous conditions were **false**.
 
-Important rules:
+### 2. The `else` Safety Net
+The `else` block is optional, but it acts as a "catch-all." It has no condition in parentheses because it simply runs if **everything else** failed. It’s like the "Otherwise" in a sentence.
 
-1. You MUST start with 'if' - you can't have 'else if' or 'else' without an 'if' first
+### 3. Mutual Exclusivity
+A key feature of the `if/else if` chain is that **only one code block will run**. Even if multiple conditions are technically true, JavaScript only executes the block for the *first* true condition it encounters.
 
-2. You can have as many 'else if' blocks as you want (0, 1, 5, 100...)
-
-3. The 'else' block is optional - it's the "catch-all" for when nothing else is true
-
-4. ONLY ONE block of code will run - the first one with a true condition
-   - If the first 'if' is true, the rest are skipped completely
-   - If the first 'if' is false, check the first 'else if'
-   - And so on...
-
-5. Order matters! In the grade example:
-   - We check >= 90 first
-   - Then >= 80 (which also includes 90-100, but we already handled those)
-   - If we checked >= 60 first, everyone would get a 'D' because 90 >= 60 is true!
+### 4. The Importance of Order
+Because JavaScript stops at the first true condition, you must put your **most specific** conditions at the top and the **most general** ones at the bottom.
+*   **Wrong:** `if (age > 0) ... else if (age > 18) ...` (Everyone is older than 0, so the 18+ check never happens!)
+*   **Right:** `if (age > 18) ... else if (age > 0) ...`

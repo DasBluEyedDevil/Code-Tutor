@@ -14,6 +14,15 @@ title: "Exercise 1: Personalized Greeting"
 
 **Starter Code**:
 
+```kotlin
+fun main() {
+    // 1. Ask for the user's name
+    // 2. Ask for their favorite color
+    // 3. Ask for their hobby
+    // 4. Print the final message using string interpolation ($variable)
+}
+```
+
 **Expected Output**:
 
 ---

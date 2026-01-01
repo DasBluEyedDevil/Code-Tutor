@@ -5,29 +5,36 @@ title: "Solution 1: Student Grade Manager"
 
 
 
-**Sample Output**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-=== Student Grade Manager ===
+fun main() {
+    val grades = mutableMapOf(
+        "Alice" to 92,
+        "Bob" to 78,
+        "Carol" to 95,
+        "Dave" to 88,
+        "Eve" to 73
+    )
 
-All Students:
-  Alice: 92
-  Bob: 78
-  Carol: 95
-  Dave: 88
-  Eve: 73
+    println("=== Student Grade Manager ===\n")
 
-Average Grade: 85.20
+    println("All Students:")
+    grades.forEach { (name, grade) -> println("  $name: $grade") }
 
-Students with grade > 80:
-  Alice: 92
-  Carol: 95
-  Dave: 88
+    val average = grades.values.average()
+    println("\nAverage Grade: %.2f".format(average))
 
-Highest Grade: Carol with 95
-Lowest Grade: Eve with 73
+    println("\nStudents with grade > 80:")
+    grades.filter { it.value > 80 }
+          .forEach { (name, grade) -> println("  $name: $grade") }
+
+    val highest = grades.maxBy { it.value }
+    val lowest = grades.minBy { it.value }
+
+    println("\nHighest Grade: ${highest.key} with ${highest.value}")
+    println("Lowest Grade: ${lowest.key} with ${lowest.value}")
+}
 ```
+
+**Sample Output**:

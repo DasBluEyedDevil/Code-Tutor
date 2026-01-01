@@ -1,14 +1,24 @@
 ---
 type: "THEORY"
-title: "Features"
+title: "Step 1: The Note Model"
 ---
 
+A "Note" isn't just text; it's a structured piece of information. Let's create a class to represent it.
 
-1. **Add notes** with title and content
-2. **Edit existing notes**
-3. **Delete notes** with swipe gesture
-4. **Color-code notes**
-5. **Long press** for quick actions
-6. **Search notes**
-7. **Persistent state** (data survives app restart)
+```dart
+class Note {
+  String id;
+  String title;
+  String content;
+  DateTime dateTime;
+  Color color;
 
+  Note({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.dateTime,
+    this.color = Colors.white,
+  });
+}
+```

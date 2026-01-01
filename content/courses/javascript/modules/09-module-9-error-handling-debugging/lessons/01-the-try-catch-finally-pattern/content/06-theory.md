@@ -1,66 +1,25 @@
 ---
 type: "THEORY"
-title: "Control Flow with try-catch-finally"
+title: "The Error Lifecycle"
 ---
 
-Understanding exactly how control flows through try-catch-finally blocks is crucial for writing robust error handling code. Here's the complete breakdown:
+Error handling is about controlling the flow of your program when the unexpected happens.
 
-**Execution Order:**
+### 1. `try`
+The `try` block contains the code that could potentially throw an error. As soon as an error occurs, JavaScript **immediately stops** running the rest of the `try` block and jumps to the `catch` block.
 
-1. **try block starts** - Code executes line by line
-2. **If NO error occurs:**
-   - try block completes fully
-   - catch block is SKIPPED entirely
-   - finally block runs
-   - Execution continues after the try-catch-finally
+### 2. `catch (error)`
+The `catch` block runs **only if** an error occurred in the `try` block. It gives you access to an "Error Object" which usually has:
+*   `.name`: The type of error (e.g., `ReferenceError`).
+*   `.message`: A human-readable description of what went wrong.
+*   `.stack`: A history of which functions were running when the error happened.
 
-3. **If an error DOES occur:**
-   - try block stops immediately at the error line
-   - Remaining try block code is SKIPPED
-   - catch block runs with the error object
-   - finally block runs
-   - Execution continues after the try-catch-finally
+### 3. `throw`
+You can use the `throw` keyword to manually trigger an error. You can throw anything (a string, a number), but it is best practice to throw an `Error` object:
+`throw new Error("Something went wrong");`
 
-**Key Rules:**
+### 4. `finally`
+The `finally` block **always** runs, regardless of whether there was an error or not. It even runs if you `return` a value from inside the `try` or `catch` blocks! This makes it the perfect place for "Cleanup" code, like closing database connections or hiding "Loading..." messages.
 
-```javascript
-// Rule 1: finally runs even after return
-function test() {
-  try {
-    return 'from try';
-  } finally {
-    console.log('finally still runs!');
-  }
-}
-
-// Rule 2: finally runs even after throw
-function test2() {
-  try {
-    throw new Error('oops');
-  } finally {
-    console.log('finally still runs!');
-  }
-}
-
-// Rule 3: return in finally overrides try/catch return
-function test3() {
-  try {
-    return 'try';
-  } finally {
-    return 'finally'; // This wins!
-  }
-}
-console.log(test3()); // Output: 'finally'
-
-// Rule 4: You can have try-finally without catch
-try {
-  riskyOperation();
-} finally {
-  cleanup(); // Always runs, errors still propagate
-}
-```
-
-**Common Patterns:**
-- `try-catch`: Handle errors and continue
-- `try-finally`: Ensure cleanup, let errors propagate
-- `try-catch-finally`: Handle errors AND ensure cleanup
+### 5. Optional Catch Binding
+In modern JavaScript (ES2019+), if you don't need to look at the error object, you can simply write `catch { ... }` instead of `catch (e) { ... }`.

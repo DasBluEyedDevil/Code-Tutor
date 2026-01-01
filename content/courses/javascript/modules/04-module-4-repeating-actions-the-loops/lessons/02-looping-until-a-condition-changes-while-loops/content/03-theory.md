@@ -1,46 +1,30 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "Condition-Based Iteration"
 ---
 
-Structure of a while loop:
+The `while` loop is simpler in syntax than the `for` loop, but it requires more careful management of your variables.
 
+### 1. The `while` Syntax
+```javascript
 while (condition) {
-       │
-       └─ Keep looping while this is true
-  // Code to repeat
-  // MUST update something that affects the condition!
+    // code block
 }
+```
+The computer checks the condition **before** every run. If the condition is false on the very first try, the loop never runs at all.
 
-How it works:
-1. Check the condition
-2. If true: run the loop body, then go back to step 1
-3. If false: exit the loop
+### 2. The `do...while` Syntax
+This is a variation where the code block runs **before** the condition is checked. 
+```javascript
+do {
+    // code block
+} while (condition);
+```
+**Key Difference:** A `do...while` loop is guaranteed to run **at least once**, regardless of the condition.
 
-Critical difference from for loop:
-- for loop: Use when you KNOW how many times to loop
-  for (let i = 0; i < 10; i++) { }  // Exactly 10 times
+### 3. Loop Management
+In a `for` loop, the counter (`i++`) is built-in. In a `while` loop, you are responsible for updating the state inside the code block. If you forget to change the variable that the condition depends on, you will create an **Infinite Loop**.
 
-- while loop: Use when you DON'T know how many times
-  while (notFullYet) { }  // Until it's full (who knows how long?)
-
-**WARNING**: You MUST change something in the loop that affects the condition, or you'll create an infinite loop!
-
-Good (will eventually stop):
-let x = 0;
-while (x < 5) {
-  console.log(x);
-  x++;  // x changes, will eventually reach 5
-}
-
-BAD (infinite loop!):
-let x = 0;
-while (x < 5) {
-  console.log(x);  // x never changes!
-  // Loop runs forever!
-}
-
-Common while loop patterns:
-- Keep trying until success
-- Process until data runs out
-- Wait for a condition to change
+### 4. When to use which?
+*   Use **For** when you know the start and end points (e.g., "Loop through 10 items").
+*   Use **While** when the end point depends on logic (e.g., "Loop while the user's password is incorrect").

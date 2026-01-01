@@ -1,30 +1,35 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Variable Declaration and Reassignment"
 ---
 
-See the code example above demonstrating Code Example.
+This example shows how to declare variables, update them, and use them to calculate new values.
 
 ```javascript
-// Creating a variable with 'let'
-// 'let' means 'create a new box'
-let age = 25;
-let name = 'Alice';
-let isStudent = true;
+// 1. Declaration and Initialization
+const playerName = 'CyberKnight'; // This won't change
+let currentLevel = 1;             // This will change
+let healthPoints = 100;           // This will change
 
-// Now we can use these boxes!
-console.log(name);  // Displays: Alice
-console.log(age);   // Displays: 25
+console.log('Player: ' + playerName);
+console.log('Starting Level: ' + currentLevel);
 
-// We can change what's inside a 'let' box
-age = 26;  // It's Alice's birthday!
-console.log(age);  // Displays: 26
+// 2. Updating values (Reassignment)
+// We don't use 'let' again when updating!
+currentLevel = 2; 
+healthPoints = healthPoints - 20; // Taking damage
 
-// Creating a variable with 'const'
-// 'const' means 'constant' - a box whose contents CANNOT change
-const birthYear = 1998;
-console.log(birthYear);  // Displays: 1998
+console.log('Level Up! Now at level: ' + currentLevel);
+console.log('Current Health: ' + healthPoints);
 
-// This would cause an ERROR:
-// birthYear = 1999;  // Can't change a const!
+// 3. Using variables in calculations
+const attackPower = 15;
+const criticalHitMultiplier = 2;
+let damageDealt = attackPower * criticalHitMultiplier;
+
+console.log(playerName + ' dealt ' + damageDealt + ' damage!');
+
+// 4. Constants cannot be changed
+// const gravity = 9.8;
+// gravity = 10; // This would throw a "TypeError: Assignment to constant variable"
 ```

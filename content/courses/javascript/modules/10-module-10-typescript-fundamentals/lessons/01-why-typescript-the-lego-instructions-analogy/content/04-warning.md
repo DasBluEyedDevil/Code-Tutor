@@ -1,14 +1,17 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "The TypeScript Trap"
 ---
 
-Common mistakes when starting with TypeScript:
+### 1. The `any` Escape Hatch
+TypeScript has a special type called `any`. It basically tells the compiler: "Stop checking this variable, I know what I'm doing."
+*   **Danger:** If you use `any` everywhere, you lose all the benefits of TypeScript. It’s like throwing your LEGO instructions in the trash. **Avoid `any` whenever possible.**
 
-1. **Forgetting the colon**: `width number` won't work - you need `width: number`
-2. **Using the wrong type**: `width: string` when you mean numbers
-3. **Thinking TypeScript runs in the browser**: TypeScript must be compiled to JavaScript first
-4. **Over-typing everything**: Start simple, add types gradually
-5. **Confusing TypeScript with JavaScript**: TypeScript is a superset - all valid JavaScript is valid TypeScript, but not all TypeScript features work in plain JavaScript
+### 2. Runtime Errors still exist
+TypeScript only checks your **logic**. It cannot check external data. If an API sends you a string when you expected a number, TypeScript won't catch that at development time. You still need to validate your data at runtime!
 
-Remember: TypeScript is JavaScript with type safety training wheels. The training wheels help you learn to avoid crashes!
+### 3. The "False Sense of Security"
+Just because your TypeScript code doesn't have red squiggly lines doesn't mean it's bug-free. You still need to write tests and handle errors logically.
+
+### 4. Build Step Required
+You cannot run `.ts` files directly in a browser. You **must** have a build step (like Bun, Vite, or the TypeScript Compiler) to convert it to JavaScript first.

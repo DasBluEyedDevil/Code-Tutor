@@ -1,47 +1,32 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Modifying Arrays"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-let fruits = ['apple', 'banana'];
-console.log(fruits);  // ['apple', 'banana']
+let cart = ['Apple', 'Banana'];
 
-// push() - add to the END
-fruits.push('cherry');
-console.log(fruits);  // ['apple', 'banana', 'cherry']
+// 1. Adding to the END (push)
+cart.push('Cherry');
+console.log(cart); // ['Apple', 'Banana', 'Cherry']
 
-// Can push multiple at once
-fruits.push('date', 'elderberry');
-console.log(fruits);  // ['apple', 'banana', 'cherry', 'date', 'elderberry']
+// 2. Removing from the END (pop)
+// pop() actually RETURNS the item it removed!
+let lastItem = cart.pop(); 
+console.log(`Removed: ${lastItem}`);
+console.log(cart); // ['Apple', 'Banana']
 
-// pop() - remove from the END, returns the removed item
-let removed = fruits.pop();
-console.log(removed);  // 'elderberry'
-console.log(fruits);  // ['apple', 'banana', 'cherry', 'date']
+// 3. Adding to the FRONT (unshift)
+cart.unshift('Apricot');
+console.log(cart); // ['Apricot', 'Apple', 'Banana']
 
-// unshift() - add to the FRONT
-fruits.unshift('apricot');
-console.log(fruits);  // ['apricot', 'apple', 'banana', 'cherry', 'date']
+// 4. Removing from the FRONT (shift)
+// Like pop(), shift() returns the removed item
+let firstItem = cart.shift();
+console.log(`Removed: ${firstItem}`);
+console.log(cart); // ['Apple', 'Banana']
 
-// shift() - remove from the FRONT, returns the removed item
-let firstItem = fruits.shift();
-console.log(firstItem);  // 'apricot'
-console.log(fruits);  // ['apple', 'banana', 'cherry', 'date']
-
-// Practical: stack (Last In, First Out)
-let stack = [];
-stack.push('task 1');
-stack.push('task 2');
-stack.push('task 3');
-let current = stack.pop();  // 'task 3' - most recent
-
-// Practical: queue (First In, First Out)
-let queue = [];
-queue.push('person 1');
-queue.push('person 2');
-queue.push('person 3');
-let next = queue.shift();  // 'person 1' - first in line
+// 5. Multiple items
+cart.push('Date', 'Elderberry');
+console.log(cart); // ['Apple', 'Banana', 'Date', 'Elderberry']
 ```

@@ -5,19 +5,24 @@ title: "Solution 3: Age Calculator"
 
 
 
-**Sample Output**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-=== Age Calculator ===
-Enter your age in years:
-25
-
-You are approximately:
-9125 days old
-219000 hours old
-13140000 minutes old
+fun main() {
+    println("=== Age Calculator ===")
+    println("Enter your age in years:")
+    
+    val years = readln().toInt()
+    
+    val days = years * 365
+    val hours = days * 24
+    val minutes = hours * 60
+    
+    println("\nYou are approximately:")
+    println("$days days old")
+    println("$hours hours old")
+    println("$minutes minutes old")
+}
 ```
+
+**Sample Output**:

@@ -1,18 +1,18 @@
 ---
 type: "THEORY"
-title: "What's Next?"
+title: "Step 7: Use Contact Cards"
 ---
 
+Now use your new `ContactCard` widget in the main Column.
 
-**Module 2 Complete!** 🎉
-
-You can now build static Flutter apps with beautiful layouts!
-
-In **Module 3**, we'll learn advanced layout techniques:
-- ListView for scrollable lists
-- GridView for grids
-- Stack for overlaying widgets
-- Responsive layouts
-
-Get ready to build more complex UIs! 🚀
-
+```dart
+// Inside the Column children list, after the Divider:
+ContactCard(
+  icon: Icons.phone,
+  text: '+1 234 567 8900',
+),
+ContactCard(
+  icon: Icons.email,
+  text: 'your.email@example.com',
+),
+```

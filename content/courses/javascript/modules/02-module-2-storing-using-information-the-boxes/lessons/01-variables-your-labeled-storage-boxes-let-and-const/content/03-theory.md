@@ -1,35 +1,24 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Lifecycle of a Variable"
 ---
 
-Let's break down the anatomy of creating a variable:
+### 1. Declaration vs. Initialization
+Creating a variable happens in two steps (often done at the same time):
+*   **Declaration:** `let score;` — You tell the computer "I need a box named score." Currently, the box is empty (`undefined`).
+*   **Initialization:** `score = 10;` — You put a value in the box for the first time.
 
-let age = 25;
-│   │   │ │
-│   │   │ └─ The value (what goes IN the box)
-│   │   └─── The equals sign (means 'store this value')
-│   └─────── The variable name (the label on the box)
-└─────────── The keyword 'let' (tells the computer to create a box)
+You can do both at once: `let score = 10;`
 
-Think of it as: let [label] = [contents];
+### 2. let vs. const: The Rule of Thumb
+Always use `const` by default. Only use `let` if you know for a fact the value needs to be reassigned. This makes your code safer because it prevents accidental changes to data that should stay permanent.
 
-Two keywords for creating variables:
+### 3. What about 'var'?
+You might see `var` in older tutorials. It was the original way to create variables in JavaScript. However, it has "quirky" behaviors that often lead to bugs (like being accessible before it's even declared!). 
+**Modern JavaScript developers avoid `var` entirely.** Stick to `let` and `const`.
 
-1. let - Use this when the value might change later
-   - Example: let score = 0; (score will increase during a game)
-   
-2. const - Use this when the value will NEVER change
-   - Example: const PI = 3.14159; (pi is always pi)
-   - If you try to change a const, you'll get an error
-
-Variable naming rules:
-- Must start with a letter, $, or _
-- Can contain letters, numbers, $, or _ (but not spaces!)
-- Cannot be a reserved word (like 'let', 'const', 'if', etc.)
-- Case sensitive: 'age' and 'Age' are different variables
-
-Naming conventions (not required, but everyone does it):
-- Use camelCase: firstName, not firstname or first_name
-- Use descriptive names: userAge, not x or ua
-- Start with lowercase: age, not Age (unless it's a special case we'll learn later)
+### 4. Naming Rules (The Fine Print)
+*   **Camel Case:** JavaScript uses `camelCase` (first word lowercase, subsequent words capitalized: `userAccountBalance`).
+*   **Case Sensitivity:** `myVariable` and `myvariable` are two completely different boxes.
+*   **Allowed Characters:** Names can start with a letter, `$`, or `_`. They cannot start with a number or contain spaces.
+*   **Reserved Words:** You can't name a variable `let`, `const`, `function`, or `if`.

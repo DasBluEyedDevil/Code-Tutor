@@ -4,11 +4,21 @@ title: "Default Parameters"
 ---
 
 
-Provide default values for parameters:
+Kotlin allows you to provide default values for function parameters. This makes your functions more flexible by making certain inputs optional.
 
+```kotlin
+fun greet(name: String = "Guest") {
+    println("Hello, $name!")
+}
+
+fun main() {
+    greet()         // Uses default: "Hello, Guest!"
+    greet("Alice")  // Overrides default: "Hello, Alice!"
+}
+```
 
 ### Multiple Default Parameters
-
+You can have multiple parameters with default values. When calling the function, you can provide values for some, all, or none of them.
 
 ---
 

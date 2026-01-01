@@ -1,46 +1,38 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The While and Do-While Loops"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Basic while loop - count to 5
-let count = 0;
+// 1. A basic while loop
+let health = 100;
 
-while (count < 5) {
-  console.log('Count: ' + count);
-  count++;  // IMPORTANT: Don't forget to update!
+while (health > 0) {
+    console.log(`Still fighting! Health: ${health}`);
+    // Simulate taking damage
+    health = health - 25;
 }
+console.log("Game Over!");
 
-// Practical example: password attempts
-let password = 'secret';
-let userInput = 'wrong';
+// 2. Looping with a Flag (Boolean)
+let isSearching = true;
 let attempts = 0;
-let maxAttempts = 3;
 
-while (userInput !== password && attempts < maxAttempts) {
-  console.log('Attempt ' + (attempts + 1) + ': Incorrect password');
-  // In a real app, you'd ask for input here
-  // For this example, we'll just increment
-  attempts++;
-  if (attempts === 2) {
-    userInput = 'secret';  // Correct on 3rd try
-  }
+while (isSearching) {
+    attempts++;
+    console.log(`Search attempt #${attempts}...`);
+    
+    if (attempts === 3) {
+        console.log("Found the item!");
+        isSearching = false; // This breaks the loop next time it checks
+    }
 }
 
-if (userInput === password) {
-  console.log('Access granted!');
-} else {
-  console.log('Too many failed attempts');
-}
-
-// Countdown example
-let countdown = 5;
-while (countdown > 0) {
-  console.log(countdown);
-  countdown--;
-}
-console.log('Liftoff!');
+// 3. The Do-While Loop
+// This runs at least ONCE, even if the condition is already false
+let energy = 0;
+do {
+    console.log("Applying emergency battery boost...");
+    energy = energy + 10;
+} while (energy < 0);
 ```

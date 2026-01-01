@@ -1,30 +1,32 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Loop Hazards"
 ---
 
-Common mistakes:
+### 1. The Infinite Loop (CRITICAL)
+If your condition never becomes `false`, the loop will run forever. This will freeze your computer or crash your application.
+```javascript
+// DANGER: i is always greater than -1
+for (let i = 0; i > -1; i++) {
+   console.log("I never stop!");
+}
+```
+*   **Fix:** Always ensure your "Increment" step moves your variable toward the "Condition" being false.
 
-1. Off-by-one errors (VERY common!):
-   for (let i = 0; i < 5; i++)  // Runs 5 times (0,1,2,3,4)
-   for (let i = 1; i < 5; i++)  // Runs 4 times (1,2,3,4)
-   for (let i = 1; i <= 5; i++) // Runs 5 times (1,2,3,4,5)
-   Always test: does this loop run the right number of times?
+### 2. The Off-By-One Error
+Do you want to run 10 times? 
+*   `i = 0; i < 10` runs 10 times (0 through 9).
+*   `i = 1; i <= 10` runs 10 times (1 through 10).
+*   `i = 0; i <= 10` runs **11 times**!
+Pay close attention to whether you use `<` or `<=`.
 
-2. Infinite loops:
-   for (let i = 0; i < 5; i--) // i gets SMALLER, never reaches 5!
-   This will crash your program!
+### 3. Forgetting the Increment
+If you forget the `i++`, the value of `i` never changes, which usually leads back to an **Infinite Loop**.
 
-3. Forgetting to increment:
-   for (let i = 0; i < 5; ) // Missing i++
-   Another infinite loop!
-
-4. Using = instead of ==:
-   for (let i = 0; i = 5; i++)  // WRONG - assigns 5 to i!
-   for (let i = 0; i < 5; i++)  // CORRECT
-
-5. Modifying the loop variable inside:
-   for (let i = 0; i < 5; i++) {
-     i = 0;  // BAD - creates infinite loop!
-   }
-   Don't change i inside the loop body!
+### 4. Semicolons in the Wrong Place
+```javascript
+for (let i = 0; i < 5; i++); {
+    console.log("Hi");
+}
+```
+If you put a `;` after the `for` parentheses, the loop finishes instantly without doing anything. The code block `{ }` will then run exactly once, regardless of the loop rules.

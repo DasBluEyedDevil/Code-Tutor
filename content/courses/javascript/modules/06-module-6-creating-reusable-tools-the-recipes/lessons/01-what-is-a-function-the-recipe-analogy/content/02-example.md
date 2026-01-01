@@ -1,38 +1,36 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Declaring and Calling Functions"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Defining a function
-function sayHello() {
-  console.log('Hello, World!');
+// 1. Defining a Function
+// We use the 'function' keyword, a name, and parentheses ()
+function sayGreeting() {
+    console.log("-------------------");
+    console.log("Hello, User!");
+    console.log("Welcome back to the app.");
+    console.log("-------------------");
 }
 
-// Calling (using) the function
-sayHello();  // Hello, World!
-sayHello();  // Hello, World!
-// Can call as many times as you want!
+// 2. Calling (Executing) the Function
+// The function code doesn't run until you "call" its name
+sayGreeting();
+sayGreeting(); // You can call it as many times as you want!
 
-// Function with a parameter (ingredient)
-function greet(name) {
-  console.log('Hello, ' + name + '!');
+// 3. Functions with Input (Parameters)
+function greetUser(username) {
+    console.log(`Hello, ${username}!`);
 }
 
-greet('Alice');   // Hello, Alice!
-greet('Bob');     // Hello, Bob!
-greet('Charlie'); // Hello, Charlie!
+greetUser('Alice');
+greetUser('Bob');
 
-// Function that returns a value
-function add(a, b) {
-  return a + b;
+// 4. Multiple Parameters
+function showSum(a, b) {
+    const result = a + b;
+    console.log(`The sum of ${a} and ${b} is: ${result}`);
 }
 
-let sum = add(5, 3);
-console.log(sum);  // 8
-
-let result = add(10, 20);
-console.log(result);  // 30
+showSum(10, 20);
 ```

@@ -1,48 +1,26 @@
 ---
 type: "THEORY"
-title: "When Each Error Type is Thrown"
+title: "Anatomy of an Error"
 ---
 
-Understanding when JavaScript throws each error type helps you anticipate and handle errors correctly:
+Every error in JavaScript is an **Object** based on the built-in `Error` class.
 
-**TypeError** - Thrown when:
-- Calling a non-function: `(5)()`
-- Accessing properties on null/undefined: `null.x`
-- Using wrong type for built-in operations: `'hello' - 5`
-- Calling methods that don't exist on a type: `(42).toUpperCase()`
+### 1. The Big 6 Error Types
+*   **`Error`:** The generic base class.
+*   **`ReferenceError`:** Using a variable that hasn't been declared.
+*   **`TypeError`:** Using a value in an incompatible way (like `null.name`).
+*   **`SyntaxError`:** Interpreting code that violates the rules of JavaScript.
+*   **`RangeError`:** Using a number that is out of range (e.g., `new Array(9999999999)`).
+*   **`URIError`:** Using global URI handling functions incorrectly.
 
-**ReferenceError** - Thrown when:
-- Using an undeclared variable: `console.log(xyz)`
-- Accessing `let`/`const` before declaration (TDZ)
-- Assigning to an undeclared variable in strict mode
+### 2. Error Properties
+When you catch an error object `e`, it has three standard properties:
+1.  **`e.name`:** The string name of the error type (e.g., `"TypeError"`).
+2.  **`e.message`:** The human-readable string you provided when throwing the error.
+3.  **`e.stack`:** A non-standard but widely supported property showing the "trace"—the sequence of function calls that led to the crash.
 
-**SyntaxError** - Thrown when:
-- Invalid syntax in eval() or Function()
-- Parsing JSON with JSON.parse() when JSON is malformed
-- Note: Static syntax errors prevent code from running at all
+### 3. The `instanceof` Operator
+Because errors are classes, you can use the `instanceof` keyword to differentiate them in your `catch` block. This allows you to handle specific problems (like a missing variable) differently than generic crashes.
 
-**RangeError** - Thrown when:
-- Array with invalid length: `new Array(-1)`
-- Number methods with out-of-range arguments: `(1).toFixed(200)`
-- Stack overflow from too much recursion
-- Invalid date: `new Date('invalid').toISOString()`
-
-**URIError** - Thrown when:
-- decodeURI() or decodeURIComponent() with malformed sequences
-- encodeURI() or encodeURIComponent() with invalid characters
-
-**AggregateError** - Thrown when:
-- Promise.any() rejects (all promises rejected)
-- Multiple errors need to be grouped together
-
-**Summary Table:**
-```
-| Error Type      | Common Cause                          |
-|-----------------|---------------------------------------|
-| TypeError       | Wrong type, null access, bad method  |
-| ReferenceError  | Undefined variable                   |
-| SyntaxError     | Bad JSON, eval() syntax              |
-| RangeError      | Out of bounds, stack overflow        |
-| URIError        | Malformed URI                        |
-| AggregateError  | Multiple grouped errors              |
-```
+### 4. Why distinguish?
+Professional apps use different error types to provide better feedback. A `TypeError` might mean the programmer made a mistake, while a custom `NetworkError` might mean the user's internet is down.

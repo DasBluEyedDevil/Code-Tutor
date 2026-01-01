@@ -1,76 +1,26 @@
 ---
 type: "WARNING"
-title: "Common Mistakes"
+title: "Error Handling Pitfalls"
 ---
 
-Avoid these common error handling anti-patterns that can make debugging harder and hide real problems:
-
-**1. Empty catch blocks (Error swallowing):**
+### 1. Swallowing Errors
+The most dangerous thing you can do is have an empty `catch` block.
 ```javascript
-// BAD: Silently ignoring errors
 try {
-  doSomethingRisky();
-} catch (error) {
-  // Error is completely lost!
-}
-
-// GOOD: At least log it
-try {
-  doSomethingRisky();
-} catch (error) {
-  console.error('Operation failed:', error);
+    saveData();
+} catch (e) {
+    // Empty! No log, no alert.
 }
 ```
+If `saveData()` fails, your user will never know, and you will have no idea why your database is empty. **Always at least log the error.**
 
-**2. Catching too broadly:**
-```javascript
-// BAD: Catching all errors the same way
-try {
-  validateInput();
-  processData();
-  saveToDatabase();
-} catch (error) {
-  console.log('Something failed'); // Which step? No idea!
-}
+### 2. Over-wrapping
+Don't wrap your entire 5,000-line program in a single `try/catch`. 
+*   **Result:** If an error happens, you'll know "something" went wrong, but you won't know where.
+*   **Fix:** Wrap only the specific pieces of code that you *expect* might fail (like API calls or file reading).
 
-// GOOD: Handle specific scenarios
-try {
-  validateInput();
-} catch (error) {
-  console.log('Invalid input:', error.message);
-  return;
-}
-// Now we know validation passed...
-```
+### 3. Syntax Errors
+`try/catch` only catches **Runtime Errors** (things that happen while the code is running). It **cannot** catch Syntax Errors (like forgetting a closing bracket). If your code has a syntax error, it won't even start running.
 
-**3. Using try-catch for control flow:**
-```javascript
-// BAD: Using exceptions for normal logic
-function isNumber(value) {
-  try {
-    parseInt(value);
-    return true;
-  } catch {
-    return false; // parseInt doesn't throw for invalid input!
-  }
-}
-
-// GOOD: Check conditions normally
-function isNumber(value) {
-  return !isNaN(parseFloat(value));
-}
-```
-
-**4. Forgetting async error handling:**
-```javascript
-// BAD: try-catch doesn't catch async errors this way!
-try {
-  setTimeout(() => {
-    throw new Error('This escapes!');
-  }, 100);
-} catch (error) {
-  console.log('Never runs');
-}
-
-// We'll cover async error handling in Lesson 9.4
-```
+### 4. `finally` vs. `return`
+If you `return` a value in the `try` block and also have code in the `finally` block, the `finally` block will run **before** the value is actually returned to the caller. If you also `return` a value in the `finally` block, it will overwrite the previous return value!

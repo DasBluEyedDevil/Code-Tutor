@@ -1,31 +1,19 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Iteration Pitfalls"
 ---
 
-Common mistakes:
+### 1. `for...in` on Arrays
+Technically, you *can* use `for...in` on an array, but you **should not**. It will loop through the indices as strings (`"0"`, `"1"`, `"2"`), and it can sometimes pick up extra properties that aren't part of the data. 
+*   **Rule:** Use `for...of` for arrays. Use `for...in` or `Object.keys` for objects.
 
-1. Calling Object.keys() on non-object:
-   Object.keys([1,2,3])  // Works but returns ['0', '1', '2'] (indices as strings)
-   Object.keys('hello')  // Works but returns ['0', '1', '2', '3', '4']
-   
-2. Forgetting Object.keys() returns an array:
-   Object.keys(obj)  // Returns ARRAY of keys
-   // Must loop through: for (let key of Object.keys(obj))
+### 2. Order of Properties
+While modern JavaScript engines usually keep properties in the order they were added (with numbers first), you should never strictly rely on the order of keys in an object. If the order of your data is critical, use an **Array** instead.
 
-3. Confusing for...of and for...in:
-   for (let key of obj)  // ERROR - objects aren't iterable with for...of
-   for (let key in obj)  // CORRECT - for...in works on objects
-   for (let key of Object.keys(obj))  // ALSO CORRECT
+### 3. Deleting vs. Setting to `null`
+*   `user.name = null;` — The key "name" still exists, but its value is empty.
+*   `delete user.name;` — The key "name" is gone entirely.
+In most cases, `delete` is slower than setting a value to `null`, but it’s more "correct" if you truly want the property removed.
 
-4. Not using destructuring with entries:
-   for (let entry of Object.entries(obj)) {
-     console.log(entry[0], entry[1]);  // Works but clunky
-   }
-   for (let [key, value] of Object.entries(obj)) {
-     console.log(key, value);  // Much cleaner!
-   }
-
-5. Expecting specific order:
-   Object properties don't have a guaranteed order
-   (Though modern JS usually maintains insertion order)
+### 4. Inherited Properties
+The `for...in` loop can sometimes find properties that were "inherited" from the object's parent. To be safe, many developers use `Object.keys()` + `for...of` instead of `for...in` to ensure they only see the object's "own" properties.

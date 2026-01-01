@@ -1,21 +1,17 @@
 ---
 type: "THEORY"
-title: "Step 7: Use Contact Cards"
+title: "Step 5: Add a Divider"
 ---
 
-
-In your Column, after the divider:
-
-
-
+A thin line helps separate your header from your contact info. Use the `SizedBox` and `Divider` widgets.
 
 ```dart
-ContactCard(
-  icon: Icons.phone,
-  text: '+1 234 567 8900',
-),
-ContactCard(
-  icon: Icons.email,
-  text: 'your.email@example.com',
+// After the Title Text widget:
+SizedBox(
+  height: 20,
+  width: 150,
+  child: Divider(
+    color: Colors.teal.shade100,
+  ),
 ),
 ```

@@ -1,21 +1,27 @@
 ---
 type: "THEORY"
-title: "Why Import Attributes Matter"
+title: "The Evolution of Imports"
 ---
 
-Import Attributes (ES2025) solve three problems:
+As JavaScript has moved away from simple scripts to complex module systems, the way we handle non-code files (like JSON and CSS) has evolved.
 
-**1. Security**
+### 1. The Security Problem
+In the past, if you imported a file, the browser looked at the file extension or the "MIME type" sent by the server. If a hacker managed to compromise a server and change a `.json` file to a `.js` file, your code might accidentally execute malicious script thinking it was just reading data.
+
+### 2. The `with` Keyword (ES2025)
+Import Attributes solve this by moving the validation to the **source code**. By adding `with { type: "json" }`, you are hard-coding a security check. If the browser receives anything other than JSON, it throws an error and stops the script.
+
+### 3. Syntax Breakdown
 ```javascript
-// Without attributes - what if evil.json contains executable code?
-import data from './evil.json';  // DANGEROUS
-
-// With attributes - JavaScript enforces it's ONLY JSON
-import data from './evil.json' with { type: 'json' };  // SAFE
+import data from "./file.json" with { type: "json" };
 ```
+*   `import data`: The name you give the imported content.
+*   `from "./file.json"`: The path to the file.
+*   `with { ... }`: The attributes block.
+*   `type: "json"`: The specific validation rule.
 
-**2. Clarity**
-Anyone reading your code knows exactly what type of file you're importing.
-
-**3. Portability**
-The same syntax works across Bun, Node.js, Deno, and browsers. No more runtime-specific import hacks!
+### 4. Beyond JSON
+While JSON is currently the most common use case, the Import Attributes specification is designed to be extensible. In the future, we will see:
+*   `type: "css"` — For CSS Module Scripts.
+*   `type: "html"` — For importing HTML fragments.
+*   Custom attributes for specific tools or bundlers.

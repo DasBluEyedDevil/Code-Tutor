@@ -15,8 +15,16 @@ The `main()` function is special—every Kotlin program begins execution here. W
 
 `println()` stands for "print line." It displays text on the screen and moves to the next line.
 
+```kotlin
+println("Hello")
+println("Kotlin")
+```
 
 Output:
+```text
+Hello
+Kotlin
+```
 
 ---
 
@@ -24,6 +32,10 @@ Output:
 
 String interpolation lets you embed variables directly in strings:
 
+```kotlin
+val score = 100
+println("Your score is $score")
+```
 
 The `$` tells Kotlin to insert the variable's value.
 
@@ -33,6 +45,14 @@ The `$` tells Kotlin to insert the variable's value.
 
 Kotlin supports two comment styles:
 
+```kotlin
+// Single-line comment
+
+/* 
+   Multi-line
+   comment
+*/
+```
 
 Comments are ignored by the compiler—they're for human readers only.
 
@@ -40,6 +60,9 @@ Comments are ignored by the compiler—they're for human readers only.
 
 **Question 5: C) Reads user input and converts it to an integer**
 
+```kotlin
+val age = readln().toInt()
+```
 
 This does two things:
 1. `readln()` reads text from user: `"25"`
@@ -48,9 +71,3 @@ This does two things:
 Without `.toInt()`, you'd have text, not a number you can do math with.
 
 ---
-
-
-
-```kotlin
-val age = readln().toInt()
-```

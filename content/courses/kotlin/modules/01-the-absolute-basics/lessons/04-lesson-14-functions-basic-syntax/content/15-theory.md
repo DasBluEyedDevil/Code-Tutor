@@ -16,7 +16,30 @@ title: "Exercise 2: BMI Calculator with Functions"
 3. Create `displayBMIReport(name: String, bmi: Double, category: String)` function
 4. In `main()`, get user input and display formatted report
 
-**Formula**: BMI = weight (kg) / height² (m)
+**Starter Code**:
+```kotlin
+// Define your functions here
 
----
+fun main() {
+    println("=== BMI Calculator ===")
+    // Your code here
+}
+```
+
+**Expected Output**:
+```text
+=== BMI Calculator ===
+Enter your name:
+Alice
+Enter your weight (kg):
+65
+Enter your height (meters):
+1.70
+
+=== BMI Report for Alice ===
+BMI: 22.49
+Category: Normal weight
+==============================
+```
+
 

@@ -7,20 +7,26 @@ title: "Safe Call Operator (?.)"
 The safe call operator `?.` safely accesses properties/methods on nullable objects.
 
 ### Basic Usage
+The safe call operator `?.` allows you to call a function or access a property only if the variable is NOT null.
 
+```kotlin
+val name: String? = null
+println(name?.length) // Prints "null" instead of crashing
+```
 
 ### How it Works
-
-
-**If the object is null, the entire expression returns null.**
+1. If the variable is NOT null, it performs the action.
+2. If the variable IS null, it skips the action and returns `null`.
 
 ### Chaining Safe Calls
+You can chain multiple safe calls together. If any part of the chain is null, the whole thing returns null.
 
+```kotlin
+// user?.profile?.avatar?.url
+```
 
 ### Safe Calls with Methods
-
-
----
+...
 
 
 

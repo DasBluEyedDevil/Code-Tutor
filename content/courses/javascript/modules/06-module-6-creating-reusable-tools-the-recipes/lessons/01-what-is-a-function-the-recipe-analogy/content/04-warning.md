@@ -1,33 +1,27 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Function Pitfalls"
 ---
 
-Common mistakes:
+### 1. Defining vs. Calling
+A common mistake is thinking that defining a function makes it run.
+```javascript
+function alert() {
+    console.log("Help!");
+}
+// Nothing happens!
+```
+You **must** use the parentheses `alert();` to trigger the execution.
 
-1. Forgetting parentheses when calling:
-   greet  // Doesn't execute - just references the function
-   greet()  // Executes the function
+### 2. Forgetting the Parentheses
+If you use a function name without parentheses, you are referring to the **function itself**, not its result.
+```javascript
+console.log(sayGreeting); // Displays "[Function: sayGreeting]"
+console.log(sayGreeting()); // Executes the function
+```
 
-2. Confusing parameters and arguments:
-   function greet(name) { }  // 'name' is a parameter (placeholder)
-   greet('Alice');  // 'Alice' is an argument (actual value)
+### 3. Parameter Mismatch
+If you define a function with two parameters `function add(a, b)` but call it with only one `add(5)`, the second parameter (`b`) will be `undefined`. This often leads to `NaN` (Not a Number) errors in math functions.
 
-3. Not returning a value when you need one:
-   function add(a, b) {
-     a + b;  // WRONG - doesn't return anything!
-   }
-   function add(a, b) {
-     return a + b;  // CORRECT
-   }
-
-4. Code after return never runs:
-   function test() {
-     return 5;
-     console.log('This never runs!');  // Unreachable
-   }
-
-5. Wrong number of arguments:
-   function add(a, b) { return a + b; }
-   add(5);  // b is undefined, returns NaN
-   add(5, 3, 7);  // Extra argument ignored, returns 8
+### 4. Too Many Responsibilities
+A function should do **one thing well**. If your function is called `saveUserAndEmailAdminAndLogToDatabase()`, it's trying to do too much. Break it down into three smaller, focused functions.

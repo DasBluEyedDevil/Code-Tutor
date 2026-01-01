@@ -1,77 +1,54 @@
 ---
 type: "EXAMPLE"
-title: "Built-in Error Types"
+title: "The Standard Errors"
 ---
 
-JavaScript has several built-in error types, each indicating a specific category of problem. Understanding these helps you diagnose issues quickly.
-
 ```javascript
-// 1. TypeError - Wrong type for an operation
+// 1. ReferenceError
+// Occurs when you use a variable that doesn't exist
 try {
-  let num = 42;
-  num.toUpperCase(); // Numbers don't have toUpperCase!
-} catch (error) {
-  console.log(error.name);    // 'TypeError'
-  console.log(error.message); // 'num.toUpperCase is not a function'
+    console.log(unknownVariable);
+} catch (e) {
+    console.log(`Type: ${e.name}`); // ReferenceError
 }
 
+// 2. TypeError
+// Occurs when a value is not the expected type
 try {
-  null.toString(); // Can't call methods on null
-} catch (error) {
-  console.log('TypeError:', error.message);
-  // "Cannot read properties of null (reading 'toString')"
+    const num = 5;
+    num.toUpperCase(); // Numbers don't have toUpperCase!
+} catch (e) {
+    console.log(`Type: ${e.name}`); // TypeError
 }
 
-// 2. ReferenceError - Variable doesn't exist
+// 3. SyntaxError
+// Occurs when the code is written incorrectly
+// (Note: This usually prevents code from running at all,
+// but eval() can trigger it at runtime)
 try {
-  console.log(undefinedVariable); // Never declared!
-} catch (error) {
-  console.log(error.name);    // 'ReferenceError'
-  console.log(error.message); // 'undefinedVariable is not defined'
+    eval('const x = ;'); 
+} catch (e) {
+    console.log(`Type: ${e.name}`); // SyntaxError
 }
 
-// 3. SyntaxError - Code structure is invalid (usually caught at parse time)
-// Note: SyntaxErrors are usually caught before code runs
+// 4. RangeError
+// Occurs when a number is outside of its legal range
 try {
-  eval('let x = ;'); // Invalid syntax
-} catch (error) {
-  console.log(error.name);    // 'SyntaxError'
-  console.log(error.message); // 'Unexpected token ;'
+    const arr = new Array(-1); // Can't have negative length
+} catch (e) {
+    console.log(`Type: ${e.name}`); // RangeError
 }
 
-// 4. RangeError - Value outside allowed range
+// 5. Checking for specific types
 try {
-  let arr = new Array(-1); // Can't have negative length
-} catch (error) {
-  console.log(error.name);    // 'RangeError'
-  console.log(error.message); // 'Invalid array length'
+    // ... some code ...
+} catch (e) {
+    if (e instanceof TypeError) {
+        console.log("Input was the wrong type.");
+    } else if (e instanceof ReferenceError) {
+        console.log("A variable is missing.");
+    } else {
+        console.log("An unknown error occurred.");
+    }
 }
-
-try {
-  let num = 1;
-  num.toFixed(200); // Max precision is 100
-} catch (error) {
-  console.log('RangeError:', error.message);
-}
-
-// 5. URIError - Invalid URI handling
-try {
-  decodeURIComponent('%'); // Invalid percent encoding
-} catch (error) {
-  console.log(error.name);    // 'URIError'
-  console.log(error.message); // 'URI malformed'
-}
-
-// 6. EvalError - Error in eval() (rarely used in modern JS)
-// EvalError is mostly historical; errors in eval() now throw other types
-
-// 7. AggregateError - Multiple errors (ES2021)
-// Used with Promise.any() when all promises reject
-let errors = [
-  new Error('First error'),
-  new Error('Second error')
-];
-let aggError = new AggregateError(errors, 'Multiple errors occurred');
-console.log(aggError.name);    // 'AggregateError'
-console.log(aggError.errors);  // Array of errors
 ```

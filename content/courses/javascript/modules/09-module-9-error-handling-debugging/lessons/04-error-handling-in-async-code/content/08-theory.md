@@ -1,45 +1,24 @@
 ---
 type: "THEORY"
-title: "Unhandled Promise Rejection Behavior"
+title: "Catching the Future"
 ---
 
-Understanding what happens when promise rejections aren't handled:
+Asynchronous error handling is different because it involves the **Event Loop**.
 
-**In Node.js (v15+):**
-- Unhandled rejections crash the process by default
-- This is intentional - unhandled errors are bugs!
-- Can be configured with --unhandled-rejections flag
+### 1. Promises and `.catch()`
+A Promise represents an operation that will finish later. If that operation fails, the Promise enters the "Rejected" state. To handle this, you attach a `.catch()` method. 
+*   **The Chain:** If you have multiple `.then()` calls, a single `.catch()` at the bottom will catch an error from **any** of the steps above it.
 
-**In Browsers:**
-- Logs a warning to console
-- Does NOT crash the page
-- Still a bug - should always be handled
+### 2. Async/Await and `try/catch`
+The `await` keyword effectively "unwraps" a Promise. 
+*   If the Promise resolves, `await` returns the value.
+*   If the Promise rejects, `await` **throws** an error.
+This is why we can use standard `try/catch` blocks with `async/await`. It makes asynchronous error handling feel exactly like synchronous error handling.
 
-**Detecting Unhandled Rejections:**
+### 3. Unhandled Rejections
+If a Promise fails and you don't have a `.catch()` or a `try/catch` waiting for it, JavaScript triggers an **Unhandled Rejection**. 
+*   In a browser, this shows up as a red error in the console.
+*   In Node.js, this can sometimes crash the entire process.
 
-```javascript
-// Browser
-window.addEventListener('unhandledrejection', event => {
-  console.error('Unhandled rejection:', event.reason);
-  event.preventDefault(); // Prevent default logging
-});
-
-// Node.js
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled rejection at:', promise);
-  console.error('Reason:', reason);
-});
-```
-
-**Common Causes:**
-1. Forgetting to await: `asyncFunction();` instead of `await asyncFunction();`
-2. Missing .catch(): `promise.then(...)` without `.catch(...)`
-3. Errors in .then() without a .catch()
-4. Throwing in async function called without await
-
-**Best Practices:**
-1. Always await async functions in try-catch blocks
-2. Always add .catch() to promise chains
-3. Use linting rules to catch missing error handling
-4. Set up global rejection handlers as a safety net
-5. In production, log unhandled rejections to monitoring
+### 4. `Promise.allSettled`
+Sometimes you don't want a single failure to stop everything. While `Promise.all` fails immediately if **any** task fails, `Promise.allSettled` waits for **all** tasks to finish, and then gives you a report on which ones succeeded and which ones failed.

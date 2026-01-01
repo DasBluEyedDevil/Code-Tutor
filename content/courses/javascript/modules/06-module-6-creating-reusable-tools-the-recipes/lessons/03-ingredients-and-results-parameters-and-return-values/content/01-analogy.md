@@ -1,17 +1,14 @@
 ---
 type: "ANALOGY"
-title: "Understanding the Concept"
+title: "The Math Tutor"
 ---
 
-A coffee machine is a perfect analogy for functions with parameters and return values:
+Imagine you're working with a math tutor. You give them two numbers and ask, "What is the sum of these?"
 
-**Inputs (Parameters)**: You put in coffee beans, water, and select a size
-**Process**: The machine does its work inside (you don't see this)
-**Output (Return Value)**: You get a cup of coffee
+1.  **The Input (Parameters):** You hand the tutor the numbers 5 and 10. These are the "ingredients" the tutor needs to do their job.
+2.  **The Work (Function Body):** The tutor does the math in their head. You don't see the neurons firing, but you know work is happening.
+3.  **The Output (Return Value):** The tutor says, "The answer is 15." 
 
-Similarly, a function:
-- Takes INPUTS (parameters)
-- Does some PROCESSING (the function body)
-- Gives back an OUTPUT (return value)
+Crucially, **the tutor's job is over now.** They've given you the answer, and now you can choose what to do with it. You might write it down in a notebook, or you might use it to solve another problem. 
 
-Just like you can put different beans in the coffee machine and get different coffee, you can pass different parameters to a function and get different results.
+In programming, `return` is how a function "hands back" an answer to the rest of the code. Without a `return`, the function might do some work, but the rest of your program will never know the result.

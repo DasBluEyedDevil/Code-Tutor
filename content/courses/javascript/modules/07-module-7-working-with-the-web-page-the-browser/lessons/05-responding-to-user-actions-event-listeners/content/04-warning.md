@@ -1,48 +1,18 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Event Pitfalls"
 ---
 
-Common mistakes:
+### 1. Calling the function immediately
+A common mistake is putting parentheses `()` after your function name in the listener.
+*   **Wrong:** `btn.addEventListener('click', myFunc());` (This runs the function **immediately** when the page loads, not when the button is clicked).
+*   **Right:** `btn.addEventListener('click', myFunc);`
 
-1. Calling the function immediately:
-   button.addEventListener('click', myFunction());  // WRONG - runs now!
-   button.addEventListener('click', myFunction);  // CORRECT - runs on click
+### 2. Forgetting `preventDefault()`
+If you're handling a form with JavaScript but forget `e.preventDefault()`, your page will flash and refresh as soon as you click submit. Any data you saved in JavaScript variables will be **deleted** because the page reloaded.
 
-2. Forgetting event.preventDefault() for forms:
-   form.addEventListener('submit', function(event) {
-     // Form submits and page reloads before your code runs!
-   });
-   
-   Must prevent default:
-   form.addEventListener('submit', function(event) {
-     event.preventDefault();  // Now your code can run
-   });
+### 3. Multiple Listeners
+If you call `addEventListener` 10 times on the same button, it will run 10 separate functions every time you click it. Be careful not to accidentally set up duplicate listeners inside a loop or a function that runs multiple times.
 
-3. Confusing input vs change:
-   'input' - Fires on every keystroke (real-time)
-   'change' - Fires when field loses focus (final value)
-
-4. Not getting input values correctly:
-   let value = input;  // WRONG - this is the element!
-   let value = input.value;  // CORRECT - this is the text
-
-5. Trying to remove anonymous function:
-   element.addEventListener('click', function() { });
-   element.removeEventListener('click', function() { });  // Doesn't work!
-   
-   Must use named function:
-   function handleClick() { }
-   element.addEventListener('click', handleClick);
-   element.removeEventListener('click', handleClick);  // Works!
-
-6. Forgetting 'this' context in arrow functions:
-   // Traditional function: 'this' is the element
-   button.addEventListener('click', function() {
-     console.log(this);  // The button
-   });
-   
-   // Arrow function: 'this' is lexical scope
-   button.addEventListener('click', () => {
-     console.log(this);  // NOT the button!
-   });
+### 4. Memory Leaks
+If you create a listener on an element and then delete that element from the page, some older browsers might keep the listener in memory, slowing down your computer. In modern apps, if you're done with a listener, you can use `removeEventListener`.

@@ -1,45 +1,27 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Anatomy of a Function"
 ---
 
-Function anatomy:
+A function in JavaScript consists of several parts:
 
-function functionName(parameter1, parameter2) {
-│        │            │                      │
-│        │            └──────────────────────┴─ Parameters (inputs)
-│        └──────────────────────────────────── Name (you choose)
-└───────────────────────────────────────────── 'function' keyword
-  // Code to run
-  return result;  // Optional: send back a value
+```javascript
+function name(parameter) {
+    // code to run
 }
+```
 
-Key parts:
+### 1. The `function` Keyword
+This tells the computer: "I am about to define a reusable tool."
 
-1. **function keyword** - Tells JavaScript you're creating a function
+### 2. The Name
+Following the same rules as variables, function names should be descriptive and use `camelCase`. A good habit is to start with a verb (e.g., `calculateTotal`, `fetchData`, `isValid`).
 
-2. **Name** - What you call the function (use camelCase)
-   - Should describe what it does: calculateTotal, getUserName, etc.
+### 3. Parameters `( ... )`
+These are the "input slots" for your function. They act like local variables that only exist inside the function. When you call the function, you pass in **Arguments** that fill these slots.
 
-3. **Parameters** - Inputs the function needs (inside parentheses)
-   - Can have 0, 1, 2, or many parameters
-   - Separated by commas
-   - Like variables that exist only inside the function
+### 4. The Body `{ ... }`
+The code between the curly braces is what actually happens when the function is called. This code is "stored" but not executed until the call happens.
 
-4. **Function body** - The code inside { }
-   - The instructions to execute
-
-5. **return statement** - Sends a value back (optional)
-   - Function stops executing when it hits return
-   - If no return, function returns undefined
-
-Calling a function:
-functionName(argument1, argument2);
-
-- Use the function name
-- Add parentheses ()
-- Pass arguments (values) for parameters
-
-Without () it's just a reference:
-greet     // The function itself (reference)
-greet()   // Calling the function (execution)
+### 5. Hoisting (Technical Note)
+In JavaScript, functions declared with the `function` keyword are "hoisted" to the top of their file. This means you can technically call a function on line 1 even if you don't define it until line 10. However, for readability, it is best to define your tools before you use them!

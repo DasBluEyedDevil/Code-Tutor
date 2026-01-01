@@ -1,32 +1,47 @@
 ---
 type: "THEORY"
-title: "Features Walkthrough"
+title: "Step 2: The Main Screen (Stateful)"
 ---
 
+Our main screen needs to keep track of a list of notes. We'll use a `StatefulWidget` so the UI updates when notes are added or removed.
 
-### 1. Search Notes
-- Real-time filtering as you type
-- Searches both title and content
+```dart
+class NotesScreen extends StatefulWidget {
+  const NotesScreen({super.key});
 
-### 2. Swipe to Delete
-- Swipe left on any note
-- Shows red delete background
-- Includes UNDO option
+  @override
+  State<NotesScreen> createState() => _NotesScreenState();
+}
 
-### 3. Long Press Menu
-- Long press any note
-- Shows bottom sheet with options:
-  - Edit
-  - Change Color
-  - Share
-  - Delete
+class _NotesScreenState extends State<NotesScreen> {
+  final List<Note> _notes = [];
 
-### 4. Color Coding
-- 7 different colors
-- Visual organization
-- Tap to change
+  void _addNote(String title, String content) {
+    setState(() {
+      _notes.add(Note(
+        id: DateTime.now().toString(),
+        title: title,
+        content: content,
+        dateTime: DateTime.now(),
+      ));
+    });
+  }
 
-### 5. Empty State
-- Beautiful placeholder when no notes
-- Clear call-to-action
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('My Notes')),
+      body: _notes.isEmpty 
+          ? const Center(child: Text('No notes yet!'))
+          : ListView.builder(
+              itemCount: _notes.length,
+              itemBuilder: (context, index) => NoteTile(note: _notes[index]),
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddNoteDialog(),
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```

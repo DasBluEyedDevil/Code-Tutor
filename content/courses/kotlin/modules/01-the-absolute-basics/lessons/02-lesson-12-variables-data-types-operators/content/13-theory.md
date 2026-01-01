@@ -15,5 +15,24 @@ title: "Exercise 2: Rectangle Calculator"
 2. Calculate area and perimeter
 3. Display results with appropriate units
 
----
+**Starter Code**:
+```kotlin
+fun main() {
+    println("=== Rectangle Calculator ===")
+    // Your code here
+}
+```
+
+**Expected Output**:
+```text
+=== Rectangle Calculator ===
+Enter width (meters):
+5.5
+Enter height (meters):
+2
+Results:
+Area: 11.0 square meters
+Perimeter: 15.0 meters
+```
+
 

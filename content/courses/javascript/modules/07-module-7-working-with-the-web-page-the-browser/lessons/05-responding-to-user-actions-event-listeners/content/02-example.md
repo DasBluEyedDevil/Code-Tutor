@@ -1,99 +1,47 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Handling User Input"
 ---
 
-See the code example above demonstrating Code Example.
+```html
+<button id="click-me">Click Me!</button>
+<input type="text" id="name-input" placeholder="Type your name...">
+<p id="output"></p>
 
-```javascript
-// Basic event listener
-let button = document.querySelector('#myButton');
+<form id="my-form">
+  <button type="submit">Submit Form</button>
+</form>
 
-button.addEventListener('click', function() {
-  console.log('Button was clicked!');
-});
+<script>
+  const btn = document.querySelector('#click-me');
+  const input = document.querySelector('#name-input');
+  const output = document.querySelector('#output');
+  const form = document.querySelector('#my-form');
 
-// Common events
-let input = document.querySelector('#nameInput');
+  // 1. Click Event
+  btn.addEventListener('click', () => {
+    alert('Button was clicked!');
+  });
 
-// 'input' fires when user types
-input.addEventListener('input', function(event) {
-  console.log('User typed:', event.target.value);
-});
+  // 2. Input Event (fires every time you type)
+  input.addEventListener('input', (event) => {
+    // The 'event' object contains info about what happened
+    // event.target is the element that triggered the event (the input)
+    output.textContent = `You are typing: ${event.target.value}`;
+  });
 
-// 'change' fires when input loses focus after being changed
-input.addEventListener('change', function(event) {
-  console.log('Input changed to:', event.target.value);
-});
+  // 3. Submit Event and preventing default behavior
+  form.addEventListener('submit', (e) => {
+    e.preventDefault(); // STOP the page from refreshing!
+    console.log("Form submitted, but page didn't refresh.");
+  });
 
-// 'focus' fires when element receives focus
-input.addEventListener('focus', function() {
-  console.log('Input focused');
-});
-
-// 'blur' fires when element loses focus
-input.addEventListener('blur', function() {
-  console.log('Input lost focus');
-});
-
-// Mouse events
-let box = document.querySelector('.box');
-
-box.addEventListener('mouseenter', function() {
-  console.log('Mouse entered box');
-});
-
-box.addEventListener('mouseleave', function() {
-  console.log('Mouse left box');
-});
-
-box.addEventListener('mousemove', function(event) {
-  console.log('Mouse position:', event.clientX, event.clientY);
-});
-
-// Keyboard events
-document.addEventListener('keydown', function(event) {
-  console.log('Key pressed:', event.key);
-  
-  if (event.key === 'Enter') {
-    console.log('Enter key pressed!');
-  }
-});
-
-// Form events
-let form = document.querySelector('#myForm');
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault();  // Prevent default form submission
-  console.log('Form submitted');
-  
-  // Get form data
-  let formData = new FormData(form);
-  console.log(formData.get('username'));
-});
-
-// Event object
-button.addEventListener('click', function(event) {
-  console.log('Event type:', event.type);  // 'click'
-  console.log('Target element:', event.target);  // The button
-  console.log('Mouse position:', event.clientX, event.clientY);
-});
-
-// Removing event listeners
-function handleClick() {
-  console.log('Clicked!');
-}
-
-button.addEventListener('click', handleClick);
-button.removeEventListener('click', handleClick);  // Must be same function
-
-// Multiple listeners on same event
-button.addEventListener('click', function() {
-  console.log('First listener');
-});
-
-button.addEventListener('click', function() {
-  console.log('Second listener');
-});
-// Both run when button is clicked!
+  // 4. Mouse Events
+  output.addEventListener('mouseenter', () => {
+    output.style.color = 'red';
+  });
+  output.addEventListener('mouseleave', () => {
+    output.style.color = 'black';
+  });
+</script>
 ```

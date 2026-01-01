@@ -1,8 +1,16 @@
 ---
 type: "THEORY"
-title: "What's Next?"
+title: "OrientationBuilder - Portrait vs Landscape"
 ---
 
+Sometimes you just want to know if the phone is being held vertically or horizontally.
 
-You can now build responsive layouts! Next: creating **custom, reusable widgets** to organize your code!
-
+```dart
+OrientationBuilder(
+  builder: (context, orientation) {
+    return orientation == Orientation.portrait
+        ? Column(children: [ ... ])
+        : Row(children: [ ... ]);
+  },
+)
+```

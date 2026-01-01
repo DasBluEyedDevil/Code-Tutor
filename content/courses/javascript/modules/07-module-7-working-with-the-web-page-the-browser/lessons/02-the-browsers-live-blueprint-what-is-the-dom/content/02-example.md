@@ -1,49 +1,37 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Visualizing the DOM"
 ---
 
-See the code example above demonstrating Code Example.
+This is what a simple HTML structure looks like after the browser turns it into a DOM Tree.
 
-```javascript
-// The DOM is a tree structure
-// HTML:
-// <html>
-//   <body>
-//     <h1>Title</h1>
-//     <p>Paragraph</p>
-//   </body>
-// </html>
-//
-// Becomes this tree:
-// document
-//   └─ html
-//      └─ body
-//         ├─ h1 ("Title")
-//         └─ p ("Paragraph")
+```html
+<!-- THE HTML -->
+<body>
+  <div id="wrapper">
+    <h1>Hello World</h1>
+    <p>This is a <span>special</span> paragraph.</p>
+  </div>
+</body>
 
-// Accessing the DOM
-console.log(document);  // The entire page
-console.log(document.body);  // The <body> element
-console.log(document.title);  // Page title
+<!-- THE DOM TREE (Conceptual) -->
+<!--
+document
+ └── html
+      └── body
+           └── div#wrapper
+                ├── h1
+                │    └── "Hello World" (Text Node)
+                └── p
+                     ├── "This is a " (Text Node)
+                     ├── span
+                     │    └── "special" (Text Node)
+                     └── " paragraph." (Text Node)
+-->
 
-// Finding elements (we'll learn more about this next)
-let element = document.getElementById('myId');
-let elements = document.getElementsByClassName('myClass');
-let firstDiv = document.querySelector('div');
-let allDivs = document.querySelectorAll('div');
-
-// The DOM is LIVE - changes appear immediately
-let heading = document.getElementById('title');
-heading.textContent = 'New Title';  // Page updates instantly!
-
-// DOM nodes have properties
-console.log(heading.tagName);  // 'H1'
-console.log(heading.id);  // 'title'
-console.log(heading.className);  // CSS classes
-
-// DOM nodes have relationships (tree structure)
-let parent = heading.parentElement;  // Element above
-let children = parent.children;  // Elements below
-let nextSibling = heading.nextElementSibling;  // Next element at same level
+<script>
+  // In JavaScript, we access this tree via the 'document' object
+  console.log(document.body); // Shows the <body> object
+  console.log(document.body.childNodes); // Shows all children of the body
+</script>
 ```

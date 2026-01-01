@@ -1,30 +1,34 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Object Gotchas"
 ---
 
-Common mistakes:
+### 1. `const` doesn't mean "unmutable"
+Just like arrays, if you declare an object with `const`, you can still change its properties.
+```javascript
+const user = { name: 'Bob' };
+user.name = 'Alice'; // LEGAL
+user = { name: 'Charlie' }; // ERROR!
+```
+If you want to make an object truly unchangeable, you have to use a special command called `Object.freeze(user)`.
 
-1. Forgetting commas between properties:
-   {name: 'Alice' age: 25}  // WRONG - missing comma
-   {name: 'Alice', age: 25}  // CORRECT
+### 2. Missing Property Errors
+While accessing a missing property gives `undefined`, trying to access a property **of** that undefined value will crash your app.
+```javascript
+const user = {};
+console.log(user.address); // undefined
+console.log(user.address.city); // CRASH! "Cannot read property 'city' of undefined"
+```
+*   **Fix:** Always ensure the parent object exists before digging deeper.
 
-2. Using = instead of ::
-   {name = 'Alice'}  // WRONG
-   {name: 'Alice'}   // CORRECT
+### 3. Reserved Words as Keys
+While modern JavaScript allows you to use words like `for` or `if` as keys (e.g., `{ for: 'something' }`), it’s generally a bad idea and can lead to confusion.
 
-3. Trailing comma on last property:
-   {name: 'Alice', age: 25,}  // Works in modern JS, but some old browsers error
-
-4. Confusing arrays and objects:
-   let arr = [1, 2, 3];    // Square brackets
-   let obj = {a: 1, b: 2}; // Curly braces
-
-5. Trying to use dot notation with spaces:
-   obj.first name  // WRONG
-   obj['first name']  // CORRECT
-   obj.firstName   // BETTER - use camelCase
-
-6. Expecting specific order:
-   Objects don't guarantee property order (though modern JS usually preserves it)
-   If order matters, use an array!
+### 4. Naming with Spaces
+If you name a key with a space, like `first name`, you **must** use quotes and you **must** use bracket notation to access it.
+```javascript
+const user = { "first name": "Alice" };
+console.log(user["first name"]); // works
+console.log(user.first name);    // SYNTAX ERROR
+```
+*   **Best Practice:** Always use `camelCase` for your keys (`firstName`).

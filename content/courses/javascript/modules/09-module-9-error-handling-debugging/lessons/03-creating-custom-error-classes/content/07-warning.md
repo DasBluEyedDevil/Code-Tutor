@@ -1,90 +1,17 @@
 ---
 type: "WARNING"
-title: "Common Mistakes"
+title: "Custom Error Pitfalls"
 ---
 
-**1. Forgetting to call super():**
-```javascript
-// BAD: Missing super() call
-class MyError extends Error {
-  constructor(message) {
-    this.name = 'MyError'; // ERROR: Must call super first!
-    this.message = message;
-  }
-}
+### 1. Forgetting `super()`
+If you define a constructor but forget to call `super(message)`, JavaScript will throw an error immediately before your code even has a chance to crash. `super()` is required to initialize the parent `Error` object.
 
-// GOOD: Always call super() first
-class MyError extends Error {
-  constructor(message) {
-    super(message);         // MUST be first!
-    this.name = 'MyError';
-  }
-}
-```
+### 2. Forgetting `.name`
+If you don't set `this.name = "MyError"`, your error will show up in the console as just `Error: message`. This makes it much harder to debug because you can't tell at a glance which custom class triggered the problem.
 
-**2. Not setting the name property:**
-```javascript
-// BAD: Name defaults to 'Error'
-class MyError extends Error {
-  constructor(message) {
-    super(message);
-    // Forgot to set this.name!
-  }
-}
-new MyError('test').name; // 'Error' - not helpful!
+### 3. Inheritance Overload
+Don't create a massive tree of error types (e.g., `DatabaseError` -> `MySQLError` -> `MySQLConnectionError` -> `MySQLConnectionTimeoutError`). 
+*   **Fix:** Keep your error hierarchy shallow (usually just 1 or 2 levels). Use custom properties (like `code: 'TIMEOUT'`) to differentiate minor details instead of creating dozens of new classes.
 
-// GOOD: Always set the name
-class MyError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = 'MyError';  // Now identifiable!
-  }
-}
-```
-
-**3. Checking instanceof in wrong order:**
-```javascript
-// BAD: Base class catches everything
-if (error instanceof AppError) {
-  // This catches ALL app errors!
-} else if (error instanceof ValidationError) {
-  // Never reached! ValidationError is an AppError
-}
-
-// GOOD: Check specific types first
-if (error instanceof ValidationError) {
-  // Most specific first
-} else if (error instanceof AppError) {
-  // General fallback
-}
-```
-
-**4. Throwing strings instead of Error objects:**
-```javascript
-// BAD: Throwing a string
-throw 'Something went wrong';
-
-// GOOD: Always throw Error instances
-throw new Error('Something went wrong');
-throw new ValidationError('Invalid email', 'email');
-```
-
-**5. Not preserving the original error:**
-```javascript
-// BAD: Losing original error information
-try {
-  someOperation();
-} catch (originalError) {
-  throw new AppError('Operation failed');
-  // Original error details are lost!
-}
-
-// GOOD: Preserve with cause
-try {
-  someOperation();
-} catch (originalError) {
-  throw new AppError('Operation failed', {
-    cause: originalError
-  });
-}
-```
+### 4. Throwing vs Returning
+Always use the `throw` keyword with your custom errors. If you just `return new ValidationError()`, it’s just a normal object and won't trigger any `catch` blocks.

@@ -21,15 +21,19 @@ title: "Installation Instructions"
 
 *What's PATH? It's like your computer's phonebook. When you type "flutter" in a terminal, your computer looks through its PATH to find where the flutter program lives. We're adding Flutter's location to that phonebook.*
 
-Open PowerShell (search for "PowerShell" in the Start menu) and run:
+We recommend using the standard Windows settings for safety:
 
+1. Press the **Windows Key** and type "env".
+2. Select **"Edit environment variables for your account"**.
+3. In the "User variables" box (the top one), find and select **Path**.
+4. Click **Edit**.
+5. Click **New**.
+6. Type the path to your Flutter bin folder: `C:\src\flutter\bin`
+7. Click **OK** on all windows to save.
 
 **Step 4: Verify Installation**
 
 Close and reopen PowerShell, then run:
-
-
-
 
 ```powershell
 flutter doctor

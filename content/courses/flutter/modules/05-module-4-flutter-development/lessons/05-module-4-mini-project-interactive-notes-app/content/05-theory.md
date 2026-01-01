@@ -1,16 +1,37 @@
 ---
 type: "THEORY"
-title: "What Did We Learn?"
+title: "Step 4: The Add Note Dialog"
 ---
 
+Use a `showDialog` with a `Form` and two `TextFields` to collect user input.
 
-This project combined EVERYTHING from Module 4:
-- ✅ Multiple button types (FAB, IconButton)
-- ✅ Text input with TextEditingController
-- ✅ Forms and validation
-- ✅ StatefulWidget with complex state
-- ✅ Gestures (tap, long press, swipe)
-- ✅ Navigation between screens
-- ✅ Material Design components
-- ✅ Real-world app architecture
+```dart
+void _showAddNoteDialog() {
+  final titleController = TextEditingController();
+  final contentController = TextEditingController();
 
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('New Note'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(controller: titleController, decoration: const InputDecoration(labelText: 'Title')),
+          TextField(controller: contentController, decoration: const InputDecoration(labelText: 'Content')),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        ElevatedButton(
+          onPressed: () {
+            _addNote(titleController.text, contentController.text);
+            Navigator.pop(context);
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
+}
+```

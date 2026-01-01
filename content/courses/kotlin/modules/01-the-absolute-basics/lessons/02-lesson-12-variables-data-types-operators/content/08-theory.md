@@ -7,21 +7,17 @@ title: "Type Conversions"
 Convert between types explicitly:
 
 ### Number Conversions
+In Kotlin, smaller types (like `Int`) do not automatically convert to larger types (like `Long`). You must perform an explicit conversion.
 
+```kotlin
+val i: Int = 100
+val l: Long = i.toLong()  // Explicitly convert Int to Long
+```
 
 ### Common Conversion Methods
-
-| Method | From → To | Example |
-|--------|-----------|---------|
-| `toInt()` | Any number/String → Int | `"42".toInt()` → 42 |
-| `toDouble()` | Any number/String → Double | `42.toDouble()` → 42.0 |
-| `toLong()` | Any number/String → Long | `42.toLong()` → 42L |
-| `toFloat()` | Any number/String → Float | `42.toFloat()` → 42.0f |
-| `toString()` | Any type → String | `42.toString()` → "42" |
-| `toBoolean()` | String → Boolean | `"true".toBoolean()` → true |
-
+...
 ### Handling Conversion Errors
-
+When you convert from a `String` to a number, the program might crash if the string doesn't contain a valid number. We use "safe" conversion methods like `toIntOrNull()` to prevent crashes.
 
 ---
 

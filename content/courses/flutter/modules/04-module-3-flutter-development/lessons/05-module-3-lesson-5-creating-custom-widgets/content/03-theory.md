@@ -1,36 +1,30 @@
 ---
 type: "THEORY"
-title: "Passing Callbacks"
+title: "Composition: Widgets within Widgets"
 ---
 
+Don't be afraid to create small widgets! Professional Flutter apps are made of hundreds of tiny, focused widgets.
 
-To make your custom widgets interactive, pass callback functions as parameters. Use `VoidCallback` for functions with no arguments, or `Function(Type)` for functions that take parameters.
-
-This lets parent widgets handle the logic while child widgets handle the UI:
-
-
+**Why tiny widgets?**
+- **Readability**: A 50-line file is easier to read than a 500-line file.
+- **Reusability**: You can use that `StarRating` widget in ten different screens.
+- **Performance**: Flutter is optimized for small, constant widgets. Only the parts that need to change will rebuild.
 
 ```dart
-class CustomButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onPressed;  // Function parameter!
-  
-  CustomButton({required this.label, required this.onPressed});
-  
+class ProductItem extends StatelessWidget {
+  final Product product;
+
+  const ProductItem({required this.product, super.key});
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(label),
+    return Column(
+      children: [
+        ProductThumbnail(product.imageUrl), // Small widget!
+        ProductInfo(product.name, product.price), // Small widget!
+        AddToCartButton(onTap: () => handleAdd(product)), // Small widget!
+      ],
     );
   }
 }
-
-// Usage:
-CustomButton(
-  label: 'Click Me',
-  onPressed: () {
-    print('Button clicked!');
-  },
-)
 ```

@@ -4,22 +4,27 @@ title: "Arrays"
 ---
 
 
-Arrays are **fixed-size** collections with indexed access.
+Arrays are **fixed-size** collections. Once you create an array, you cannot change its size (add or remove items), but you can modify the items inside it.
 
 ### Creating Arrays
-
+```kotlin
+val numbers = arrayOf(1, 2, 3, 4, 5)
+val nulls = arrayOfNulls<String>(3) // Array of 3 null strings
+```
 
 ### Accessing Array Elements
+Like lists, arrays use index-based access.
 
+```kotlin
+println(numbers[0]) // 1
+numbers[1] = 10     // Modify the second element
+```
 
 ### Array vs List
-
+While they look similar, lists are generally preferred in Kotlin because they provide a much richer set of functions and support immutability (read-only).
 
 **When to use Arrays vs Lists**:
-- **Arrays**: Performance-critical code, fixed size, interop with Java
-- **Lists**: Most Kotlin code (more flexible, better API)
-
----
+...
 
 
 

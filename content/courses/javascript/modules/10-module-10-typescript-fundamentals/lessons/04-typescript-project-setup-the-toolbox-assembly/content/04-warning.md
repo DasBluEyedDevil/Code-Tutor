@@ -1,42 +1,20 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Setup Pitfalls"
 ---
 
-Common setup mistakes:
+### 1. Global vs. Local Installation
+You might be tempted to run `npm install -g typescript`. 
+*   **Problem:** If you share your project with a friend who doesn't have it installed globally, they won't be able to run your code. 
+*   **Rule:** Always install TypeScript locally in your project (`--save-dev`) and use `npx tsc`.
 
-1. **Wrong tsconfig.json location**:
-   - Must be in project root (not inside src/)
-   - Must be named exactly 'tsconfig.json' (case-sensitive)
+### 2. The "Could not find a declaration file" Error
+If you import a library like `lodash` and see a red squiggly line, it's usually because you forgot the types.
+*   **Fix:** Look for a package starting with `@types/` (e.g., `npm install @types/express`).
 
-2. **JSON syntax errors**:
-   ```json
-   {
-     "target": "ES2024",  // ERROR: No trailing comma on last item!
-   }
-   ```
-   Solution: Remove trailing commas in JSON files
+### 3. Case Sensitivity in Config
+The `tsconfig.json` file is case-sensitive on many operating systems (like Linux). If you type `Rootdir` instead of `rootDir`, your configuration will be ignored.
 
-3. **Running .ts files directly**: `node src/index.ts`
-   - Node.js can't run TypeScript!
-   - Either compile first: `npx tsc` then `node dist/index.js`
-   - Or use ts-node: `npx ts-node src/index.ts`
-
-4. **Forgetting to install TypeScript**:
-   - Must run `npm install -D typescript` first
-   - Check with `npx tsc --version`
-
-5. **Wrong folder structure**:
-   - TypeScript files should be in src/
-   - If you put them elsewhere, update `rootDir` in tsconfig.json
-
-6. **Confusion about compilation**:
-   - TypeScript → JavaScript (compilation/transpilation)
-   - Types are removed during compilation
-   - The .js output has no type information
-   - Type checking happens at compile-time only
-
-7. **Not using strict mode**:
-   - `"strict": false` allows many unsafe patterns
-   - Always use `"strict": true` for maximum safety
-   - You're learning TypeScript to catch bugs - use all its power!
+### 4. Forgetting `node_modules` in `.gitignore`
+When you install TypeScript, it creates a massive `node_modules` folder. NEVER upload this folder to GitHub. 
+*   **Fix:** Ensure your `.gitignore` file contains the line `node_modules/`.

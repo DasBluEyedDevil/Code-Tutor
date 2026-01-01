@@ -1,53 +1,40 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Finding Elements"
 ---
 
-See the code example above demonstrating Code Example.
+```html
+<h1 id="main-header">Shopping List</h1>
 
-```javascript
-// querySelector finds the FIRST match
-// querySelectorAll finds ALL matches
+<ul class="item-list">
+  <li class="item">Apples</li>
+  <li class="item urgent">Milk</li>
+  <li class="item">Bread</li>
+</ul>
 
-// By ID (same as getElementById, but with # prefix)
-let title = document.querySelector('#title');
+<script>
+  // 1. Finding by ID (Use #)
+  const header = document.querySelector('#main-header');
+  console.log(header.textContent);
 
-// By class (same as getElementsByClassName, but with . prefix)
-let firstItem = document.querySelector('.item');
-let allItems = document.querySelectorAll('.item');
+  // 2. Finding by Class (Use .)
+  // querySelector only finds the FIRST match
+  const firstItem = document.querySelector('.item');
+  console.log('First item found:', firstItem.textContent);
 
-// By tag name
-let firstParagraph = document.querySelector('p');
-let allParagraphs = document.querySelectorAll('p');
+  // 3. Finding ALL matches
+  // querySelectorAll returns a list (NodeList)
+  const allItems = document.querySelectorAll('.item');
+  console.log(`Found ${allItems.length} items.`);
 
-// By attribute
-let input = document.querySelector('[type="email"]');
-let required = document.querySelectorAll('[required]');
+  // We can loop through them!
+  allItems.forEach(item => console.log('List Item:', item.textContent));
 
-// Combining selectors
-let redButton = document.querySelector('button.red');
-let containerDiv = document.querySelector('div#container');
-
-// Descendant selectors (inside)
-let linkInNav = document.querySelector('nav a');
-let itemsInList = document.querySelectorAll('ul.menu li');
-
-// Direct children (>)
-let directChild = document.querySelector('div > p');
-
-// Pseudo-selectors
-let firstChild = document.querySelector('li:first-child');
-let lastChild = document.querySelector('li:last-child');
-let evenItems = document.querySelectorAll('li:nth-child(even)');
-
-// Complex example
-let specificButton = document.querySelector('div.container button.primary:not(.disabled)');
-// Finds: button with class 'primary', inside div with class 'container', not having class 'disabled'
-
-// querySelectorAll returns NodeList (array-like)
-let buttons = document.querySelectorAll('button');
-console.log(buttons.length);  // Number of buttons
-buttons.forEach(btn => {
-  console.log(btn.textContent);
-});
+  // 4. Advanced Selection (Nesting)
+  // "Find an item that also has the 'urgent' class"
+  const urgentItem = document.querySelector('.item.urgent');
+  
+  // "Find the span inside the div"
+  const nested = document.querySelector('div p span');
+</script>
 ```

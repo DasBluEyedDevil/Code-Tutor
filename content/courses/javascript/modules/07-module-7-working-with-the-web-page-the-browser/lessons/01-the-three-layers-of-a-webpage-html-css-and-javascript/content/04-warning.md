@@ -1,29 +1,20 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "The Boundaries"
 ---
 
-Common mistakes:
+### 1. Don't use JS for everything
+A common beginner mistake is using JavaScript to do things that CSS can do better. For example, changing a button color when the mouse hovers over it should be done with CSS (`:hover`) instead of a JavaScript event listener. 
+*   **Reason:** CSS is faster and smoother for basic animations and styles.
 
-1. Forgetting quotes around IDs:
-   document.getElementById(heading)  // WRONG - thinks heading is a variable
-   document.getElementById('heading')  // CORRECT - string literal
+### 2. Semantic HTML
+Don't use JavaScript to make a `<div>` act like a button. Use a `<button>` tag! 
+*   **Reason:** Screen readers (for blind users) and search engines (like Google) depend on you using the correct HTML tags to understand what your page is about.
 
-2. Running JavaScript before HTML loads:
-   <script>document.getElementById('myButton')</script>
-   <button id="myButton">Click</button>
-   The script runs before button exists! Put scripts at end of <body>
+### 3. Order Matters
+Browsers usually read files from top to bottom. If your JavaScript tries to find a button on the page, but the button HTML hasn't been "read" by the browser yet, your script will fail.
+*   **Fix:** Most developers place their `<script>` tags at the very bottom of the HTML file, or use the `defer` keyword.
 
-3. Typos in IDs (case-sensitive!):
-   HTML: <div id="myDiv"></div>
-   JS: document.getElementById('mydiv')  // WRONG - lowercase d
-   JS: document.getElementById('myDiv')  // CORRECT
-
-4. Confusing textContent, innerHTML, and value:
-   - textContent: Text only (safe, no HTML)
-   - innerHTML: HTML content (can be dangerous!)
-   - value: For form inputs (<input>, <textarea>)
-
-5. Forgetting to attach event listener:
-   button.addEventListener('click', myFunction)  // Correct
-   button.addEventListener('click', myFunction())  // WRONG - calls immediately!
+### 4. JavaScript is Optional (for the user)
+Users can disable JavaScript in their browsers. If your website's entire layout depends on JavaScript, those users will see a blank page. 
+*   **Rule:** Use HTML/CSS for the "skeleton" and "skin" and JavaScript for the "muscles."

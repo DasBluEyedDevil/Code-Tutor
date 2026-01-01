@@ -1,29 +1,23 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Comparison Slip-ups"
 ---
 
-Common mistakes:
+### 1. `=` vs `===` (The Classic)
+*   `=` is for **Assigning** (putting a value in a box).
+*   `===` is for **Comparing** (asking if two things are the same).
+If you use `=` in an `if` statement, you are accidentally changing your data instead of checking it!
 
-1. Using = instead of ===:
-   if (age = 18)  // WRONG - this assigns 18 to age!
-   if (age === 18)  // CORRECT - this compares
+### 2. The Case Sensitivity Trap
+Beginners often forget that `'User'` is not the same as `'user'`.
+```javascript
+let status = 'Active';
+if (status === 'active') { // FALSE!
+   console.log("Welcome!");
+}
+```
+*   **Solution:** Make sure your comparison strings match the data exactly, or convert both to lowercase before checking.
 
-2. Using == instead of ===:
-   JavaScript has == (loose equality) and === (strict equality)
-   - 5 == '5' → true (converts types, then compares)
-   - 5 === '5' → false (different types)
-   ALWAYS use === and !== to avoid surprises
-
-3. Comparing strings with > or <:
-   'apple' < 'banana' → true (alphabetical order works!)
-   But '10' < '2' → true (compares as strings, not numbers)
-   To compare string numbers, convert first: Number('10') < Number('2') → false
-
-4. Case sensitivity:
-   'Hello' === 'hello' → false
-   To ignore case: 'Hello'.toLowerCase() === 'hello'.toLowerCase()
-
-5. Confusing >= and =>:
-   >= is greater-than-or-equal (comparison)
-   => is for arrow functions (we'll learn later)
+### 3. Comparing Objects or Arrays
+Wait! Comparison operators only work reliably on simple types (Numbers, Strings, Booleans). If you try to compare two arrays or two objects using `===`, it will almost always return `false`, even if they look identical. 
+*(We will learn why this happens when we get to Objects and References later in the course.)*

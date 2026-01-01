@@ -1,51 +1,38 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Three Layers in Code"
 ---
 
-See the code example above demonstrating Code Example.
+While we usually write these in separate files, here is how they look when working together in a single conceptual "web document."
 
-```javascript
-<!-- HTML: The structure (skeleton) -->
-<!DOCTYPE html>
-<html>
-<head>
-  <title>My Page</title>
-  <!-- CSS: The styling (clothes) -->
-  <style>
-    h1 {
-      color: blue;        /* Make heading blue */
-      font-size: 32px;    /* Make it big */
-    }
-    .highlight {
-      background-color: yellow;
-    }
-  </style>
-</head>
-<body>
-  <h1 id="title">Hello, World!</h1>
-  <button id="myButton">Click Me!</button>
-  <p id="message"></p>
+```html
+<!-- 1. HTML: The Structure -->
+<h1 id="main-title">Welcome to my page!</h1>
+<p>This is a paragraph of text.</p>
+<button id="color-button">Change Color</button>
 
-  <!-- JavaScript: The behavior (brain) -->
-  <script>
-    // This code runs when the page loads
-    
-    // Find the button element
-    let button = document.getElementById('myButton');
-    
-    // Make something happen when button is clicked
-    button.addEventListener('click', function() {
-      // Find the message paragraph
-      let message = document.getElementById('message');
-      
-      // Change its text content
-      message.textContent = 'Button was clicked!';
-      
-      // Add styling class
-      message.className = 'highlight';
-    });
-  </script>
-</body>
-</html>
+<!-- 2. CSS: The Styling (Usually in a .css file) -->
+<style>
+  #main-title {
+    color: darkblue;
+    font-family: sans-serif;
+  }
+  
+  .highlight {
+    background-color: yellow;
+    font-weight: bold;
+  }
+</style>
+
+<!-- 3. JavaScript: The Behavior (Usually in a .js file) -->
+<script>
+  // This is the "Director" in action:
+  const button = document.querySelector('#color-button');
+  const title = document.querySelector('#main-title');
+
+  button.addEventListener('click', () => {
+    // Changing the CSS class using JavaScript!
+    title.classList.toggle('highlight');
+  });
+</script>
 ```

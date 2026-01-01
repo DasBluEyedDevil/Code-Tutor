@@ -1,28 +1,38 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The TypeScript Difference"
 ---
 
-See the code example above demonstrating Code Example.
-
-```javascript
-// JavaScript: No type checking (risky)
-function addNumbers(a, b) {
-  return a + b;
+```typescript
+// 1. JavaScript behavior (The mystery)
+function calculateTotal(price, quantity) {
+    return price * quantity;
 }
 
-console.log(addNumbers(5, 3));        // 8 ✓
-console.log(addNumbers('5', '3'));    // '53' (string concatenation - oops!)
-console.log(addNumbers(5, 'hello')); // '5hello' (probably not what you wanted)
+// In JS, this runs but gives NaN (Not a Number)
+// You might not find the bug for days!
+console.log(calculateTotal("19.99", "lots")); 
 
-// TypeScript: Type checking (safer)
-function addNumbersTyped(a: number, b: number): number {
-  return a + b;
+// 2. TypeScript behavior (The safety)
+// We add Type Annotations: price: number, quantity: number
+function calculateTotalTS(price: number, quantity: number): number {
+    return price * quantity;
 }
 
-console.log(addNumbersTyped(5, 3));        // 8 ✓
-// console.log(addNumbersTyped('5', '3'));    // ERROR: Type 'string' is not assignable to type 'number'
-// console.log(addNumbersTyped(5, 'hello')); // ERROR: Argument of type 'string' is not assignable to parameter of type 'number'
+// TypeScript will show a RED SQUIGGLY line here!
+// Error: Argument of type 'string' is not assignable to parameter of type 'number'.
+// calculateTotalTS("19.99", "lots");
 
-// TypeScript catches mistakes BEFORE you run the code!
+// 3. Catching property typos
+const user = {
+    name: "Alice",
+    age: 30
+};
+
+// In JS, this gives 'undefined'
+console.log(user.username); 
+
+// In TS, this is an immediate error
+// Error: Property 'username' does not exist on type '{ name: string; age: number; }'
+// console.log(user.username);
 ```

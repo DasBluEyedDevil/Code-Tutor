@@ -5,29 +5,37 @@ title: "Solution 3: Word Frequency Counter"
 
 
 
-**Sample Run**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-Enter a sentence:
-The quick brown fox jumps over the lazy dog. The fox is quick!
+fun main() {
+    println("Enter a sentence:")
+    val input = readln()
+    
+    // Clean words (remove punctuation and lowercase)
+    val words = input.lowercase()
+        .replace(Regex("[^a-z ]"), "")
+        .split(" ")
+        .filter { it.isNotBlank() }
 
-=== Word Frequency ===
-the: 3
-quick: 2
-fox: 2
-brown: 1
-jumps: 1
-over: 1
-lazy: 1
-dog: 1
-is: 1
+    val frequency = mutableMapOf<String, Int>()
+    
+    for (word in words) {
+        val count = frequency.getOrDefault(word, 0)
+        frequency[word] = count + 1
+    }
 
-Most common word: 'the' (appears 3 times)
+    println("\n=== Word Frequency ===")
+    frequency.forEach { (word, count) -> println("$word: $count") }
 
-Total unique words: 9
-Total words: 12
+    val mostCommon = frequency.maxByOrNull { it.value }
+    if (mostCommon != null) {
+        println("\nMost common word: '${mostCommon.key}' (appears ${mostCommon.value} times)")
+    }
+
+    println("\nTotal unique words: ${frequency.size}")
+    println("Total words: ${words.size}")
+}
 ```
+
+**Sample Run**:

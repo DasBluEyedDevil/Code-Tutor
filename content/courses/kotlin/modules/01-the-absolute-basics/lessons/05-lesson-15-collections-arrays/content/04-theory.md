@@ -4,21 +4,36 @@ title: "Lists"
 ---
 
 
-Lists are ordered collections that can contain duplicates.
+Lists are ordered collections that can contain duplicates. They are one of the most commonly used collection types.
 
 ### Read-Only Lists (listOf)
+By default, lists created with `listOf` are read-only. You cannot add or remove items after the list is created.
 
+```kotlin
+val fruit = listOf("Apple", "Banana", "Cherry")
+// fruit.add("Date") ❌ Error: No add() method on read-only list
+```
 
 ### Accessing List Elements
+You can access elements by their index, starting from 0.
 
+```kotlin
+println(fruit[0]) // Apple
+println(fruit.first()) // Apple
+println(fruit.last()) // Cherry
+```
 
 ### Mutable Lists (mutableListOf)
+If you need to change the list later, use `mutableListOf`.
 
+```kotlin
+val names = mutableListOf("Alice", "Bob")
+names.add("Carol") // ✅ OK
+names.removeAt(0)  // ✅ Removes "Alice"
+```
 
 ### List Operations
-
-
----
+...
 
 
 

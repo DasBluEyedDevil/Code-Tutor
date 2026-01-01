@@ -1,17 +1,19 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Modern Import Pitfalls"
 ---
 
-1. **Forgetting the `with` keyword**: It's `with { type: 'json' }`, not `as json` or `type: 'json'`
+### 1. `with` vs. `assert`
+In early versions of this feature (2021-2023), JavaScript used the `assert` keyword (e.g., `import data from "./file.json" assert { type: "json" }`). This was changed to `with` in the final ES2025 standard.
+*   **Rule:** Always use `with`. The `assert` keyword is deprecated and will eventually stop working.
 
-2. **Wrong type value**: The type must match the file content. `{ type: 'json' }` for JSON, `{ type: 'css' }` for CSS.
+### 2. Browser & Runtime Support
+Because this is a very new feature (standardized in 2025), it might not work in older browsers or older versions of Node.js.
+*   **Fix:** If you are building for the web, ensure you are using a modern build tool (like Bun, Vite, or Esbuild) that can "transpile" this syntax for older browsers.
 
-3. **Dynamic imports use different syntax**:
-```javascript
-// Static import
-import data from './data.json' with { type: 'json' };
+### 3. Missing Attributes
+If you try to import a JSON file without the `type: "json"` attribute in a modern environment, the browser will likely block the import for security reasons. 
+*   **Error:** "Failed to load module script: Expected a JavaScript module script but the server responded with a MIME type of 'application/json'."
 
-// Dynamic import - note the nested object
-const data = await import('./data.json', { with: { type: 'json' } });
-```
+### 4. Not for Logic
+Import attributes are only for **Metadata** and **Validation**. You cannot use them to pass variables into the imported file or change how the code inside the file runs.

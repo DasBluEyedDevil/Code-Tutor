@@ -1,84 +1,17 @@
 ---
 type: "WARNING"
-title: "Common Mistakes"
+title: "Monitoring Pitfalls"
 ---
 
-**1. Using global handlers as primary error handling:**
-```javascript
-// BAD: Relying on global handler instead of local try-catch
-process.on('uncaughtException', (error) => {
-  if (error.message.includes('validation')) {
-    // Trying to do business logic in global handler!
-  }
-});
+### 1. Global is Not Local
+Never use global handlers as a replacement for `try/catch`. 
+*   **Problem:** By the time an error reaches the global handler, you've already lost the "Context." You don't know which function failed or what the variables were at that moment. You can't "fix" the error and keep going.
 
-// GOOD: Handle validation locally
-try {
-  validateInput(data);
-} catch (validationError) {
-  return { error: validationError.message };
-}
-```
+### 2. Don't hide errors from yourself
+If you use `window.onerror` and return `true`, the browser will stop showing errors in the developer console. This makes local debugging much harder. Only return `true` in your production build.
 
-**2. Not exiting after uncaughtException:**
-```javascript
-// BAD: Continuing after uncaught exception
-process.on('uncaughtException', (error) => {
-  console.log('Error:', error);
-  // App continues in potentially corrupted state!
-});
+### 3. The Node.js "Zombies"
+If you catch an `uncaughtException` in Node but don't call `process.exit(1)`, your server might stay alive but stop responding to requests properly. This is called a "Zombie Process." Always crash and restart for safety.
 
-// GOOD: Log and exit
-process.on('uncaughtException', (error) => {
-  console.error('Fatal error:', error);
-  logSync(error); // Use sync logging
-  process.exit(1); // Exit!
-});
-```
-
-**3. Swallowing errors in global handlers:**
-```javascript
-// BAD: Hiding all errors
-window.onerror = function() {
-  return true; // Suppresses all error output
-};
-
-// GOOD: Log then optionally suppress
-window.onerror = function(msg, url, line, col, error) {
-  sendToMonitoring({ msg, url, line, error });
-  return false; // Still show in console
-};
-```
-
-**4. Async operations in sync error handlers:**
-```javascript
-// BAD: Async logging might not complete
-process.on('uncaughtException', async (error) => {
-  await sendToServer(error); // Might not complete!
-  process.exit(1);
-});
-
-// GOOD: Use sync logging or wait properly
-process.on('uncaughtException', (error) => {
-  // Sync logging for critical errors
-  fs.writeFileSync('error.log', error.stack);
-  
-  // Or give async time to complete
-  sendToServer(error).finally(() => {
-    process.exit(1);
-  });
-});
-```
-
-**5. Forgetting to set up handlers early:**
-```javascript
-// BAD: Handler registered after app starts
-startServer();
-// Error happens here before handler is set up!
-process.on('uncaughtException', handler);
-
-// GOOD: Set up handlers first
-process.on('uncaughtException', handler);
-process.on('unhandledRejection', handler);
-startServer(); // Now handlers catch startup errors too
-```
+### 4. Privacy Concerns
+When sending errors to monitoring services like Sentry, be careful not to send **Sensitive Data**. If an error happens while a user is typing their password, and that password is part of the error message, you might accidentally send the password to your logging service! Always scrub sensitive data from your error logs.

@@ -1,39 +1,31 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Array Basics"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// Creating an array
-let fruits = ['apple', 'banana', 'cherry'];
+// 1. Creating an Array
+// We use square brackets [ ] and separate items with commas
+const fruits = ['Apple', 'Banana', 'Cherry'];
 
-// Accessing items by index (position)
-console.log(fruits[0]);  // apple (first item)
-console.log(fruits[1]);  // banana (second item)
-console.log(fruits[2]);  // cherry (third item)
+// 2. Accessing items by Index
+// REMEMBER: We start counting at 0!
+console.log(fruits[0]); // Apple
+console.log(fruits[1]); // Banana
+console.log(fruits[2]); // Cherry
 
-// Arrays can hold different types
-let mixed = ['text', 42, true, null];
-console.log(mixed[1]);  // 42
+// 3. Changing an item (Updating)
+fruits[1] = 'Blueberry';
+console.log(fruits); // ['Apple', 'Blueberry', 'Cherry']
 
-// Empty array
-let empty = [];
+// 4. Getting the size of the array
+console.log(`I have ${fruits.length} fruits.`);
 
-// Array length (how many items)
-console.log(fruits.length);  // 3
+// 5. Accessing the LAST item
+// This is a common pattern: length minus one
+const lastFruit = fruits[fruits.length - 1];
+console.log(`The last fruit is: ${lastFruit}`);
 
-// Last item (using length)
-let lastFruit = fruits[fruits.length - 1];
-console.log(lastFruit);  // cherry
-
-// Changing an item
-fruits[1] = 'blueberry';
-console.log(fruits);  // ['apple', 'blueberry', 'cherry']
-
-// Loop through array
-for (let i = 0; i < fruits.length; i++) {
-  console.log('Item ' + i + ': ' + fruits[i]);
-}
+// 6. Mixed-type arrays (Legal, but use carefully!)
+const mixed = ['Hello', 42, true, null];
 ```

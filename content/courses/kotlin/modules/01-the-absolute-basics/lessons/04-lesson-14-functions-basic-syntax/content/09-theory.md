@@ -4,16 +4,20 @@ title: "Named Arguments"
 ---
 
 
-Call functions with parameter names for clarity:
+When calling a function, you can specify the name of the arguments. This makes the code much clearer, especially for functions with many parameters.
 
+```kotlin
+fun main() {
+    // Without names: What does 'true' mean?
+    formatText("hello", true, false, true)
+
+    // With names: crystal clear!
+    formatText("hello", uppercase = true, trim = false, reverse = true)
+}
+```
 
 **Benefits of Named Arguments**:
-- Code is more readable
-- Order doesn't matter
-- Especially useful with many parameters or default values
-
-
----
+...
 
 
 

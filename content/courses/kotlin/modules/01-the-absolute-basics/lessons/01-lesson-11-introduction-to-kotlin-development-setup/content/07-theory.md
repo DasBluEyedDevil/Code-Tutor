@@ -4,8 +4,13 @@ title: "Understanding Your First Program"
 ---
 
 
-Let's break down what you just wrote:
+Let's break down the classic "Hello World" program:
 
+```kotlin
+fun main() {
+    println("Hello, World!")
+}
+```
 
 ### Line-by-Line Breakdown
 

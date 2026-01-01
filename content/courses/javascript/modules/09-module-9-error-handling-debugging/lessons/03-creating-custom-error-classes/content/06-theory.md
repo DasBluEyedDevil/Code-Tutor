@@ -1,68 +1,26 @@
 ---
 type: "THEORY"
-title: "Error Class Hierarchy and Inheritance"
+title: "Extending the Error Class"
 ---
 
-Understanding error class inheritance is crucial for building a robust error handling system:
+Custom errors allow you to group related errors and provide extra metadata that the standard `Error` class doesn't support.
 
-**Inheritance Chain:**
-```
-Error (built-in)
-  └─ AppError (your base error)
-       ├─ ClientError (4xx errors)
-       │    ├─ ValidationError (400)
-       │    ├─ AuthenticationError (401)
-       │    ├─ AuthorizationError (403)
-       │    └─ NotFoundError (404)
-       └─ ServerError (5xx errors)
-            ├─ DatabaseError (500)
-            └─ ExternalServiceError (502/503)
-```
+### 1. The `extends Error` Syntax
+To create a custom error, you create a class that inherits from the built-in `Error`. This ensures that your custom error still has all the standard features, like a `.stack` trace.
 
-**Benefits of Hierarchy:**
+### 2. The `super(message)` Call
+Inside your custom constructor, the very first thing you must do is call `super(message)`. This passes the message to the parent `Error` class so it can set up the basic object correctly.
 
-1. **Catch at any level:**
-```javascript
-catch (error) {
-  if (error instanceof ClientError) {
-    // Catches ValidationError, NotFoundError, etc.
-  }
-}
-```
+### 3. Overriding `.name`
+By default, every error has the name `"Error"`. To make yours unique (and to make it show up correctly in the console), you should set `this.name` inside your constructor.
 
-2. **Share common behavior:**
-```javascript
-class AppError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.statusCode = statusCode;
-    this.timestamp = Date.now();
-  }
-  
-  // All subclasses get this method
-  toJSON() {
-    return { message: this.message, status: this.statusCode };
-  }
-}
-```
+### 4. Custom Properties
+This is the real power of custom errors. You can add any properties you want:
+*   `statusCode`: For API errors.
+*   `field`: For validation errors.
+*   `isRetryable`: For transient errors like network timeouts.
 
-3. **Type-safe handling:**
-```javascript
-// Handle specific, then general
-if (error instanceof ValidationError) {
-  // Most specific
-} else if (error instanceof ClientError) {
-  // General client errors
-} else if (error instanceof AppError) {
-  // All app errors
-} else {
-  // Unknown errors
-}
-```
-
-**Design Principles:**
-- Always extend from Error or your base AppError
-- Keep the hierarchy shallow (2-3 levels max)
-- Group errors by who can fix them (client vs server)
-- Include HTTP status codes for API errors
-- Add context-specific properties (field, resource, etc.)
+### 5. Benefits of Custom Classes
+*   **Cleaner Catch Blocks:** Use `instanceof` to separate "User Errors" (which you might show to the user) from "System Errors" (which you only log internally).
+*   **Consistency:** Every part of your app will handle a `DatabaseError` the same way.
+*   **Searchability:** It's much easier to search your logs for `OrderProcessingError` than for a generic string like "failed to process."

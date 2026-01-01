@@ -1,36 +1,17 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "DOM Myths"
 ---
 
-Common mistakes:
+### 1. DOM is not HTML
+If you right-click a page and select "View Page Source," you see the static HTML that was sent from the server. If you select "Inspect," you see the **Live DOM**. These can be very different! JavaScript might have deleted elements, added classes, or changed text since the page loaded.
 
-1. Confusing the DOM with HTML:
-   - HTML: Static code you write
-   - DOM: Live structure in browser
-   - Changing HTML file doesn't change running page
-   - Changing DOM changes page immediately
+### 2. The Cost of Speed
+Every time you change the DOM, the browser has to do a lot of math to figure out how the rest of the page should move or change color (this is called "Reflow" and "Repaint").
+*   **Best Practice:** Don't change the DOM 1,000 times in a row inside a loop. Instead, prepare your changes in JavaScript and update the DOM once at the end.
 
-2. Null reference errors:
-   let element = document.getElementById('wrong-id');
-   element.textContent = 'Hi';  // ERROR - element is null!
-   
-   Always check:
-   if (element !== null) {
-     element.textContent = 'Hi';
-   }
+### 3. Case Sensitivity
+While HTML tags are not case-sensitive (`<DIV>` is the same as `<div>`), JavaScript is. If you use a DOM method, you must match the exact case.
 
-3. Mixing up textContent and innerHTML:
-   element.textContent = '<b>Bold</b>';  // Shows literal <b> tags
-   element.innerHTML = '<b>Bold</b>';  // Renders as bold
-   
-   Use textContent for safety (prevents XSS attacks)
-
-4. Timing issues:
-   If JavaScript runs before HTML loads, elements don't exist yet
-   Solution: Put <script> at end of <body> or use DOMContentLoaded event
-
-5. getElementsByClassName returns collection, not array:
-   let items = document.getElementsByClassName('item');
-   items.forEach(...)  // ERROR - not an array!
-   Array.from(items).forEach(...)  // Correct
+### 4. Wait for the Load
+If your script runs too early, the DOM Tree might not be fully built yet. Always ensure your scripts are placed correctly or wrapped in a "DOMContentLoaded" check.

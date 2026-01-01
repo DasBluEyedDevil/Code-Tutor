@@ -1,27 +1,21 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Type Pitfalls"
 ---
 
-Common beginner mistakes:
+### 1. `number` vs `Number` (Case Matters)
+Always use lowercase names for types (`string`, `number`, `boolean`). 
+*   **Why:** Lowercase names refer to the actual primitive type. Uppercase names (`String`, `Number`) refer to built-in JavaScript wrapper objects, which behave differently and should almost never be used as type labels.
 
-1. **Mixing up type names**: `String` vs `string`
-   - Use lowercase: `string`, `number`, `boolean`
-   - Uppercase versions (String, Number, Boolean) are JavaScript wrapper objects - avoid them!
+### 2. Over-Annotation
+Don't feel the need to label everything!
+*   **Wrong:** `const name: string = "Alice";` (TypeScript already knows it's a string).
+*   **Right:** `const name = "Alice";` (Keep your code clean).
+Only add the label when you declare a variable without a value, or when you are defining function parameters.
 
-2. **Forgetting array brackets**: `let nums: number` vs `let nums: number[]`
-   - `number` is a single number
-   - `number[]` is an array of numbers
+### 3. Mixed Arrays
+If you have an array with both strings and numbers, TypeScript will infer it as `(string | number)[]`. Be careful with these, as you'll need to check the type of each item before using it.
 
-3. **Type mismatch errors**: `let age: number = '25'`
-   - '25' is a string, not a number
-   - Remove quotes: `let age: number = 25`
-
-4. **Overusing 'any'**: Using `any` everywhere defeats TypeScript's purpose
-   - Only use 'any' as a last resort
-   - Better to learn the correct type
-
-5. **Type inference confusion**: "Do I always need type annotations?"
-   - No! If you assign immediately, TypeScript infers the type
-   - `let x = 5` is the same as `let x: number = 5`
-   - Explicit types are good for function parameters and return values
+### 4. The `any` temptation
+If you're stuck, it's tempting to use `any` to make the error go away. 
+*   **Rule:** If you use `any`, you are effectively turning off TypeScript for that variable. Use it only as a last resort during migration from JavaScript.

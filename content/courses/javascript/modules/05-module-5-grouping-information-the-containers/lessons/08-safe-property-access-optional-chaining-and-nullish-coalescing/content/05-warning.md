@@ -1,44 +1,25 @@
 ---
 type: "WARNING"
-title: "Common Pitfalls"
+title: "Safe Access Pitfalls"
 ---
 
-Common mistakes:
+### 1. You can't use `?.` for Assignment
+You can use optional chaining to **read** data, but not to **write** it.
+```javascript
+user?.profile?.name = "Alice"; // SYNTAX ERROR
+```
+If you want to assign a value, you must first ensure the path exists.
 
-1. **Using ?. when not needed:**
-   ```javascript
-   let name = user?.name;  // If you KNOW user exists, just use user.name
-   ```
-   Only use ?. when the value might be null/undefined.
+### 2. Overusing `?.` (The "Silent Bug")
+While `?.` prevents crashes, it can also hide real bugs. If you use it everywhere, you might not realize that a critical piece of data (like a user ID) is missing until much later in your code when something else fails mysteriously.
+*   **Rule:** Only use `?.` when you expect that a value might genuinely be missing.
 
-2. **Confusing ?? with ||:**
-   ```javascript
-   let port = config.port || 3000;  // WRONG if port could be 0
-   let port = config.port ?? 3000;  // CORRECT
-   ```
+### 3. Mixing `??` with `&&` or `||`
+For safety, JavaScript doesn't allow you to mix `??` with `&&` or `||` without using parentheses to show exactly what you mean.
+```javascript
+let x = a && b ?? c; // SYNTAX ERROR
+let x = (a && b) ?? c; // OK
+```
 
-3. **Optional chaining doesn't help with undefined properties:**
-   ```javascript
-   let user = { name: undefined };
-   console.log(user?.name);  // undefined (as expected)
-   // ?. checks if user exists, not if user.name has a value
-   ```
-
-4. **Cannot use ?. for assignment:**
-   ```javascript
-   user?.address = 'NYC';  // SYNTAX ERROR!
-   // Optional chaining is for reading, not writing
-   ```
-
-5. **Mixing ?? with || or && without parentheses:**
-   ```javascript
-   let a = null || undefined ?? 'default';  // SYNTAX ERROR!
-   let a = (null || undefined) ?? 'default';  // OK: 'default'
-   ```
-   JavaScript requires parentheses when mixing ?? with || or &&.
-
-6. **Overusing optional chaining (code smell):**
-   ```javascript
-   data?.users?.[0]?.profile?.settings?.theme?.color?.hex
-   // If you need this many ?., your data structure might need rethinking
-   ```
+### 4. Optional Chaining is Not a Solution for Everything
+`?.` only protects against `null` or `undefined`. If a variable exists but is of the wrong type (e.g., you try to call a string as a function `name?()`), your code will still crash.

@@ -5,38 +5,30 @@ title: "Solution 2: String Processor with Null Safety"
 
 
 
-**Sample Output**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-=== Text Processing ===
-Input: Hello World from Kotlin
-Length: 24
-Uppercase: HELLO WORLD FROM KOTLIN
-First word: Hello
-Reversed: niltoK morf dlroW olleH
-Word count: 4
+fun safeLength(str: String?) = str?.length ?: 0
 
-=== Text Processing ===
-Input:    Kotlin
-Length: 12
-Uppercase:    KOTLIN
-First word: Kotlin
-Reversed:    niltoK
-Word count: 1
+fun safeUppercase(str: String?) = str?.uppercase() ?: "EMPTY"
 
-=== Text Processing ===
-Input:
-Length: 0
-Uppercase: EMPTY
-First word: none
+fun extractFirstWord(str: String?) = str?.trim()?.split(" ")?.firstOrNull()
 
-=== Text Processing ===
-Input: null
-Length: 0
-Uppercase: EMPTY
-First word: none
+fun processText(text: String?) {
+    println("=== Text Processing ===")
+    println("Input: ${text ?: "null"}")
+    println("Length: ${safeLength(text)}")
+    println("Uppercase: ${safeUppercase(text)}")
+    println("First word: ${extractFirstWord(text) ?: "none"}")
+    println()
+}
+
+fun main() {
+    processText("Hello World from Kotlin")
+    processText("   Kotlin   ")
+    processText("")
+    processText(null)
+}
 ```
+
+**Sample Output**:

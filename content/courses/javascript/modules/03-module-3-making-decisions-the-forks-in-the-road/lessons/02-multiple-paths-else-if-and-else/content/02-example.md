@@ -1,36 +1,32 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Logic Chain"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-let temperature = 45;
-
-// Multiple conditions with if...else if...else
-if (temperature > 80) {
-  console.log('It is hot! Wear shorts.');
-} else if (temperature > 60) {
-  console.log('It is nice! Wear a t-shirt.');
-} else if (temperature > 40) {
-  console.log('It is cold! Wear a jacket.');
-} else {
-  console.log('It is freezing! Wear a heavy coat.');
-}
-
-// Another example: letter grades
 let score = 85;
 
+console.log(`Your score is: ${score}`);
+
 if (score >= 90) {
-  console.log('Grade: A');
+    console.log("Grade: A");
 } else if (score >= 80) {
-  console.log('Grade: B');
+    // This runs if score < 90 AND score >= 80
+    console.log("Grade: B");
 } else if (score >= 70) {
-  console.log('Grade: C');
-} else if (score >= 60) {
-  console.log('Grade: D');
+    // This runs if score < 80 AND score >= 70
+    console.log("Grade: C");
 } else {
-  console.log('Grade: F');
+    // This runs if NONE of the above are true
+    console.log("Grade: F");
+}
+
+// 2. The importance of order
+let age = 25;
+if (age > 21) {
+    console.log("You can enter the club.");
+} else if (age > 100) {
+    // This code will NEVER run, because 101 is already > 21!
+    console.log("You get a free drink for being a century old.");
 }
 ```

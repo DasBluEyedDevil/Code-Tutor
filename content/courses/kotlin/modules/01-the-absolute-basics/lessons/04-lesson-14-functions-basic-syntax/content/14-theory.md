@@ -5,17 +5,26 @@ title: "Solution 1: Temperature Converter Functions"
 
 
 
-**Sample Output**:
-
----
-
-
+**Solution Code**:
 
 ```kotlin
-=== Temperature Converter ===
-Enter temperature in Celsius:
-25
+fun celsiusToFahrenheit(celsius: Double) = (celsius * 9 / 5) + 32
 
-Results:
-25.0°C = 77.0°F = 298.15K
+fun celsiusToKelvin(celsius: Double) = celsius + 273.15
+
+fun fahrenheitToCelsius(fahrenheit: Double) = (fahrenheit - 32) * 5 / 9
+
+fun main() {
+    println("=== Temperature Converter ===")
+    print("Enter temperature in Celsius: ")
+    val celsius = readln().toDouble()
+
+    val fahrenheit = celsiusToFahrenheit(celsius)
+    val kelvin = celsiusToKelvin(celsius)
+
+    println("\nResults:")
+    println("$celsius°C = $fahrenheit°F = $kelvin K")
+}
 ```
+
+**Sample Output**:

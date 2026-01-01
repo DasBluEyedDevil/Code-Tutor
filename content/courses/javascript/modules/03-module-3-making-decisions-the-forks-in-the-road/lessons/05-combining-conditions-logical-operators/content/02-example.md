@@ -1,52 +1,37 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Combining Conditions"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// AND operator (&&) - ALL must be true
-let hasTicket = true;
-let hasTime = true;
-let isShowing = true;
+let userAge = 25;
+let hasSubscription = true;
+let isBanned = false;
 
-if (hasTicket && hasTime && isShowing) {
-  console.log('You can watch the movie!');  // All true, this runs
+// 1. The AND Operator (&&)
+// All parts must be true
+if (userAge >= 18 && hasSubscription) {
+    console.log("Welcome to the Premium content!");
 }
 
-let age = 25;
-let hasLicense = true;
-
-if (age >= 16 && hasLicense) {
-  console.log('You can drive');  // Both true, this runs
-}
-
-// OR operator (||) - AT LEAST ONE must be true
+// 2. The OR Operator (||)
+// At least one part must be true
 let isWeekend = true;
 let isHoliday = false;
 
 if (isWeekend || isHoliday) {
-  console.log('You can sleep in!');  // One is true, this runs
+    console.log("The office is closed.");
 }
 
-let temperature = 95;
-if (temperature > 90 || temperature < 32) {
-  console.log('Extreme weather!');  // First condition true, runs
+// 3. The NOT Operator (!)
+// Flips the boolean
+if (!isBanned) {
+    console.log("User is allowed to post comments.");
 }
 
-// NOT operator (!) - flips true/false
-let isRaining = false;
-
-if (!isRaining) {
-  console.log('No umbrella needed');  // !false = true, runs
-}
-
-// Combining operators
-let hour = 14;
-let isWeekday = true;
-
-if ((hour >= 9 && hour <= 17) && isWeekday) {
-  console.log('Office is open');
+// 4. Complex Combination
+// We use ( ) to group logic just like in math
+if ((userAge > 13 || hasParentalConsent) && !isBanned) {
+    console.log("Access granted to the game server.");
 }
 ```

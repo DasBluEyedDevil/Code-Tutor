@@ -1,37 +1,38 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Working with Different Data Types"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// STRINGS (text) - always in quotes
-let firstName = 'Alice';
-let lastName = "Smith";  // Single or double quotes both work
-let greeting = 'Hello, World!';
+// 1. STRINGS (Text)
+const firstName = "Alice";
+const lastName = 'Smith';
+// Template Literal (Modern JS using backticks ``)
+const fullName = `${firstName} ${lastName}`; 
 
-// You can join strings together with +
-let fullName = firstName + ' ' + lastName;
-console.log(fullName);  // Displays: Alice Smith
+console.log(`Hello, my name is ${fullName}`);
 
-// NUMBERS - no quotes!
-let age = 25;
-let price = 19.99;  // Decimals are fine
-let temperature = -5;  // Negative numbers too
+// 2. NUMBERS
+const price = 19.99;
+const quantity = 3;
+const total = price * quantity;
 
-// You can do math with numbers
-let total = price + 10;
-console.log(total);  // Displays: 29.99
+console.log(`The total cost is: $${total}`);
 
-// BOOLEANS (true or false) - no quotes!
-let isStudent = true;
-let hasGraduated = false;
-let isRaining = true;
+// Special Number Values
+console.log(10 / 0);      // Infinity
+console.log("Hello" * 5); // NaN (Not a Number)
 
-console.log(isStudent);  // Displays: true
+// 3. BOOLEANS (Logic)
+const isLoggedIn = true;
+const hasPremiumAccount = false;
 
-// A common mistake: don't put quotes around booleans!
-let wrong = 'true';  // This is a STRING containing the word 'true'
-let right = true;    // This is a BOOLEAN with the value true
+console.log(`User logged in: ${isLoggedIn}`);
+
+// 4. NULL vs UNDEFINED
+let userJob;              // Declared but no value yet: undefined
+let userAddress = null;   // Explicitly set to empty: null
+
+console.log(userJob);     // undefined
+console.log(userAddress); // null
 ```

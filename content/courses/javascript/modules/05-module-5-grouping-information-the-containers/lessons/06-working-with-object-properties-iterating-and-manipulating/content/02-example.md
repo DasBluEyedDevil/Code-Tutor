@@ -1,55 +1,40 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "Object Manipulation"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-let student = {
-  name: 'Alice',
-  age: 20,
-  grade: 'A',
-  major: 'Computer Science'
+const stats = {
+    strength: 15,
+    agility: 20,
+    intelligence: 10
 };
 
-// Get all property names (keys)
-let keys = Object.keys(student);
-console.log(keys);  // ['name', 'age', 'grade', 'major']
+// 1. Getting all Keys
+const keys = Object.keys(stats);
+console.log('Keys:', keys); // ["strength", "agility", "intelligence"]
 
-// Get all property values
-let values = Object.values(student);
-console.log(values);  // ['Alice', 20, 'A', 'Computer Science']
+// 2. Getting all Values
+const values = Object.values(stats);
+console.log('Values:', values); // [15, 20, 10]
 
-// Get all key-value pairs
-let entries = Object.entries(student);
-console.log(entries);  // [['name', 'Alice'], ['age', 20], ...]
+// 3. Getting Key-Value Pairs (Entries)
+const entries = Object.entries(stats);
+console.log('Entries:', entries); 
+// [["strength", 15], ["agility", 20], ["intelligence", 10]]
 
-// Loop through keys
-for (let key of Object.keys(student)) {
-  console.log(key + ': ' + student[key]);
+// 4. The for...in Loop
+// This is a special loop just for objects!
+for (const key in stats) {
+    console.log(`${key.toUpperCase()}: ${stats[key]}`);
 }
 
-// Loop through key-value pairs (more elegant)
-for (let [key, value] of Object.entries(student)) {
-  console.log(key + ': ' + value);
-}
+// 5. Deleting a property
+delete stats.intelligence;
+console.log('After delete:', stats); // { strength: 15, agility: 20 }
 
-// for...in loop (older way)
-for (let key in student) {
-  console.log(key + ': ' + student[key]);
+// 6. Checking for a property
+if ('strength' in stats) {
+    console.log("This character is strong!");
 }
-
-// Practical: calculate total prices
-let cart = {
-  laptop: 1000,
-  mouse: 25,
-  keyboard: 75
-};
-
-let total = 0;
-for (let price of Object.values(cart)) {
-  total += price;
-}
-console.log('Total: $' + total);  // $1100
 ```

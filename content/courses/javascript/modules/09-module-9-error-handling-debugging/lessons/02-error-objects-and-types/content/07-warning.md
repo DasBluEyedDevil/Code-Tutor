@@ -1,79 +1,21 @@
 ---
 type: "WARNING"
-title: "Common Mistakes"
+title: "Error Object Pitfalls"
 ---
 
-**1. Don't rely on error messages for logic:**
-```javascript
-// BAD: Error messages can change!
-try {
-  someOperation();
-} catch (error) {
-  if (error.message === 'Network request failed') {
-    // Fragile! Message wording might change
-  }
-}
+### 1. Throwing Strings
+Technically, JavaScript allows you to `throw "Help!"` or `throw 404`. 
+*   **Why it's bad:** These primitive values don't have a `.name` or a `.stack` property. When you catch them, you lose all the helpful debugging information.
+*   **Rule:** Always throw an `Error` object or a subclass of `Error`.
 
-// GOOD: Check error type or use custom errors
-try {
-  someOperation();
-} catch (error) {
-  if (error instanceof TypeError) {
-    // Reliable check based on error type
-  }
-}
-```
+### 2. Stack Trace Leaks
+The `.stack` property contains a lot of information about your computer's file structure and your code's internal logic. 
+*   **Security Risk:** Never show the raw stack trace to a user in a production app. It can give hackers clues about how to attack your system. Only log it to your internal developer console.
 
-**2. Don't ignore the error parameter:**
-```javascript
-// BAD: Not using the error object
-try {
-  riskyOperation();
-} catch {
-  console.log('Something failed'); // What failed? No idea!
-}
+### 3. TypeError vs. ReferenceError
+It's easy to mix these up.
+*   If the variable **doesn't exist**, it's a `ReferenceError`.
+*   If the variable **exists** but you used it wrong (e.g., trying to use `undefined` like an object), it's a `TypeError`.
 
-// GOOD: Always examine the error
-try {
-  riskyOperation();
-} catch (error) {
-  console.log(`${error.name}: ${error.message}`);
-}
-```
-
-**3. Don't assume error structure from external sources:**
-```javascript
-// BAD: Assuming all errors have standard properties
-try {
-  await fetch(url);
-} catch (error) {
-  console.log(error.message); // Might not exist!
-}
-
-// GOOD: Safely access error properties
-try {
-  await fetch(url);
-} catch (error) {
-  const message = error?.message || 'Unknown error';
-  console.log(message);
-}
-```
-
-**4. Remember: not all thrown values are Error objects:**
-```javascript
-// JavaScript allows throwing anything!
-throw 'just a string';
-throw 42;
-throw { code: 500 };
-
-// GOOD: Handle non-Error throws safely
-try {
-  mightThrowAnything();
-} catch (error) {
-  if (error instanceof Error) {
-    console.log(error.message);
-  } else {
-    console.log('Non-error thrown:', error);
-  }
-}
-```
+### 4. Catching Everything
+If you use `instanceof` to check for specific errors, make sure you still have a "default" catch at the end for unexpected problems you didn't plan for!

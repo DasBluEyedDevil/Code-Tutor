@@ -7,14 +7,27 @@ title: "Single-Expression Functions"
 When a function is simple and returns a single expression, Kotlin has a shortcut:
 
 ### Traditional Way vs. Shortcut
+Instead of curly braces `{}` and the `return` keyword, you can use an equals sign `=` followed by the expression.
 
+**Traditional**:
+```kotlin
+fun multiply(a: Int, b: Int): Int {
+    return a * b
+}
+```
+
+**Single-Expression**:
+```kotlin
+fun multiply(a: Int, b: Int) = a * b
+```
+Kotlin automatically infers the return type (`Int` in this case).
 
 All three versions do exactly the same thing, but the single-expression version is more concise!
 
 ---
 
 ### More Single-Expression Examples
-
+Single-expression functions are perfect for short, clear computations.
 
 **When to use single-expression functions**:
 - ✅ Function body is one simple expression

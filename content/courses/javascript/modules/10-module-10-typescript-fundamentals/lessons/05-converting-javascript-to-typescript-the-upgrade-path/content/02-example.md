@@ -1,95 +1,40 @@
 ---
 type: "EXAMPLE"
-title: "Code Example"
+title: "The Upgrade Path"
 ---
 
-See the code example above demonstrating Code Example.
-
 ```javascript
-// BEFORE: Plain JavaScript (works but no type safety)
-function calculateDiscount(price, discountPercent) {
-  if (discountPercent < 0 || discountPercent > 100) {
-    return 'Invalid discount';
-  }
-  let discount = price * (discountPercent / 100);
-  return price - discount;
+// STEP 1: The Original JavaScript (user.js)
+function displayUser(user) {
+    console.log(user.name.toUpperCase());
 }
 
-let product = {
-  name: 'Laptop',
-  price: 1000,
-  category: 'Electronics'
-};
-
-let discountedPrice = calculateDiscount(product.price, 20);
-console.log('Original JavaScript:', discountedPrice); // 800
-
-// Problems with the JavaScript version:
-// calculateDiscount('abc', 'xyz')  // No error until runtime!
-// calculateDiscount(1000, 150)     // Accepts invalid discount percent
-
-// AFTER: TypeScript (type-safe)
-interface Product {
-  name: string;
-  price: number;
-  category: string;
+// STEP 2: JSDoc Migration (No file rename yet!)
+// This tells VS Code about the types without using TypeScript syntax
+/**
+ * @param {{ name: string }} user 
+ */
+function displayUserJSDoc(user) {
+    console.log(user.name.toUpperCase());
 }
 
-function calculateDiscountTyped(
-  price: number, 
-  discountPercent: number
-): number | string {
-  if (discountPercent < 0 || discountPercent > 100) {
-    return 'Invalid discount';
-  }
-  let discount: number = price * (discountPercent / 100);
-  return price - discount;
+// STEP 3: Rename to .ts and add basic types
+interface UserProfile {
+    name: string;
+    email?: string;
 }
 
-let typedProduct: Product = {
-  name: 'Laptop',
-  price: 1000,
-  category: 'Electronics'
-};
-
-let typedDiscountedPrice = calculateDiscountTyped(typedProduct.price, 20);
-console.log('TypeScript version:', typedDiscountedPrice); // 800
-
-// These will now cause COMPILE-TIME errors:
-// calculateDiscountTyped('abc', 'xyz')  // ERROR: string is not assignable to number
-// calculateDiscountTyped(1000, 150)     // Still runs, but you can add validation
-
-// MIGRATION STRATEGY: Step-by-step conversion
-
-// Step 1: Rename .js files to .ts (start simple)
-// app.js → app.ts
-
-// Step 2: Add return types to functions
-function greet(name: string): string {
-  return `Hello, ${name}!`;
+function displayUserTS(user: UserProfile) {
+    // TypeScript will warn us if 'name' might be missing!
+    console.log(user.name.toUpperCase());
 }
 
-// Step 3: Add parameter types
-function add(a: number, b: number): number {
-  return a + b;
+// STEP 4: Refining types (Adding safety)
+function safeDisplay(user: UserProfile | null) {
+    if (user) {
+        console.log(user.name.toUpperCase());
+    } else {
+        console.log("No user found.");
+    }
 }
-
-// Step 4: Create interfaces for complex objects
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-// Step 5: Update variable declarations
-let users: User[] = [
-  { id: 1, name: 'Alice', email: 'alice@example.com' },
-  { id: 2, name: 'Bob', email: 'bob@example.com' }
-];
-
-// Step 6: Enable strict mode in tsconfig.json (gradually)
-// Start with "strict": false, then enable incrementally
-
-console.log('Migration complete!');
-console.log('User count:', users.length); // 2
 ```

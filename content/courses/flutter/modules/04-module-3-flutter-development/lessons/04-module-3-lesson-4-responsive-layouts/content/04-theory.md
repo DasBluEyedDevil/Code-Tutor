@@ -1,19 +1,18 @@
 ---
 type: "THEORY"
-title: "Flexible Columns with GridView"
+title: "LayoutBuilder - Parent-Based Constraints"
 ---
 
-
-
-On 400px screen: 2 columns
-On 800px screen: 4 columns
-Auto-responsive!
-
-
+While `MediaQuery` tells you about the **screen**, `LayoutBuilder` tells you about the **parent widget's size**. This is often more useful for building reusable components.
 
 ```dart
-GridView.extent(
-  maxCrossAxisExtent: 200,  // Adjusts columns automatically!
-  children: items,
+LayoutBuilder(
+  builder: (context, constraints) {
+    if (constraints.maxWidth > 600) {
+      return Row(children: [ ... ]); // Wide layout
+    } else {
+      return Column(children: [ ... ]); // Narrow layout
+    }
+  },
 )
 ```

@@ -15,14 +15,23 @@ title: "Exercise 1: Temperature Converter"
 2. Calculate Fahrenheit and Kelvin
 3. Display all three temperatures
 
-**Expected Output**:
-
----
-
-
+**Starter Code**:
 
 ```kotlin
+fun main() {
+    println("=== Temperature Converter ===")
+    // 1. Get Celsius from user
+    // 2. Convert to Fahrenheit
+    // 3. Convert to Kelvin
+    // 4. Print results
+}
+```
+
+**Expected Output**:
+
+```text
 Enter temperature in Celsius:
 25
 25.0°C = 77.0°F = 298.15K
 ```
+

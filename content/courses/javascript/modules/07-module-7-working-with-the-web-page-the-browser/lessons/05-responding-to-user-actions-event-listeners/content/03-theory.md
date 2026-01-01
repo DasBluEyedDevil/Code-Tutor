@@ -1,87 +1,29 @@
 ---
 type: "THEORY"
-title: "Breaking Down the Syntax"
+title: "The Event Loop"
 ---
 
-Event listeners syntax:
+Events are the heart of interactivity. They are signals sent by the browser to tell your code that "something happened."
 
-element.addEventListener(eventType, callbackFunction);
-│                        │          │
-│                        │          └─ Function to run when event fires
-│                        └──────────── Type of event to listen for
-└───────────────────────────────────── Element to listen on
+### 1. `addEventListener(type, callback)`
+This is the modern way to listen for events. 
+*   **type:** A string representing the event name (e.g., `'click'`, `'submit'`, `'keydown'`, `'mouseover'`).
+*   **callback:** The function that should run when the event happens.
 
-**Common Event Types:**
+### 2. The Event Object (`e`)
+When the browser calls your function, it automatically passes in an **Event Object**. This object contains a wealth of information:
+*   `e.target`: The element that was actually clicked/typed in.
+*   `e.key`: Which key was pressed (for keyboard events).
+*   `e.clientX / e.clientY`: The coordinates of the mouse.
 
-Mouse Events:
-- 'click' - Element is clicked
-- 'dblclick' - Element is double-clicked
-- 'mouseenter' - Mouse enters element
-- 'mouseleave' - Mouse leaves element
-- 'mousemove' - Mouse moves over element
-- 'mousedown' - Mouse button pressed
-- 'mouseup' - Mouse button released
+### 3. `preventDefault()`
+Many HTML elements have "default behaviors." 
+*   Clicking a link refreshes the page or moves to a new URL.
+*   Submitting a form refreshes the page.
+Calling `e.preventDefault()` inside your listener tells the browser: "I'll handle this with JavaScript, don't do your normal routine."
 
-Keyboard Events:
-- 'keydown' - Key is pressed down
-- 'keyup' - Key is released
-- 'keypress' - Key is pressed (deprecated, use keydown)
-
-Form Events:
-- 'submit' - Form is submitted
-- 'input' - Input value changes (real-time)
-- 'change' - Input value changes (on blur)
-- 'focus' - Element receives focus
-- 'blur' - Element loses focus
-
-Window/Document Events:
-- 'load' - Page fully loaded
-- 'DOMContentLoaded' - HTML loaded (before images)
-- 'resize' - Window resized
-- 'scroll' - Page scrolled
-
-**Event Object:**
-
-The callback receives an event object:
-
-element.addEventListener('click', function(event) {
-  // event contains information about the event
-});
-
-Useful properties:
-- event.type - Type of event ('click', 'keydown', etc.)
-- event.target - Element that triggered the event
-- event.currentTarget - Element the listener is attached to
-- event.key - Key that was pressed (keyboard events)
-- event.clientX, event.clientY - Mouse position
-- event.preventDefault() - Prevent default behavior
-- event.stopPropagation() - Stop event bubbling
-
-**Preventing Defaults:**
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault();  // Stop form from actually submitting
-  // Handle with JavaScript instead
-});
-
-link.addEventListener('click', function(event) {
-  event.preventDefault();  // Stop link from navigating
-  // Do something else
-});
-
-**Arrow Functions:**
-
-// Traditional function
-element.addEventListener('click', function() {
-  console.log('Clicked');
-});
-
-// Arrow function (more modern)
-element.addEventListener('click', () => {
-  console.log('Clicked');
-});
-
-// With event parameter
-element.addEventListener('click', (event) => {
-  console.log(event.target);
-});
+### 4. Common Events
+*   **Mouse:** `click`, `dblclick`, `mouseenter`, `mouseleave`.
+*   **Keyboard:** `keydown`, `keyup`, `keypress`.
+*   **Form:** `submit`, `change`, `input`, `focus`, `blur`.
+*   **Window:** `resize`, `scroll`, `load`.
