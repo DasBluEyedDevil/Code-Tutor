@@ -13514,6 +13514,363 @@
             }
           ],
           "challenges": []
+        },
+        {
+          "id": "7.9",
+          "title": "Lesson 7.9: Android App Signing",
+          "moduleId": "module-07",
+          "order": 9,
+          "estimatedMinutes": 45,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nThis lesson covers Android app signing - the process of cryptographically signing your APK or App Bundle to verify its authenticity and integrity for distribution on Google Play Store."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Signing Matters",
+              "content": "### What is App Signing?\n\nEvery Android app must be **digitally signed** before it can be installed on a device or published to the Play Store.\n\n**Signing proves:**\n1. **Identity**: You are who you claim to be\n2. **Integrity**: The app hasn't been tampered with\n3. **Continuity**: Updates come from the same developer\n\n### Key Concepts\n\n| Term | Description |\n|------|-------------|\n| **Keystore** | A secure file containing your signing keys |\n| **Key Alias** | A unique identifier for a key within the keystore |\n| **Upload Key** | Key you use to sign apps before uploading to Play Store |\n| **App Signing Key** | Key Google uses to sign the final app (Play App Signing) |\n\n### Play App Signing (Recommended)\n\nGoogle manages your app signing key, and you only manage an upload key:\n\n```\nYou → Upload Key → Google Play → App Signing Key → Users\n```\n\n**Benefits:**\n- Google securely stores your app signing key\n- If you lose your upload key, you can reset it\n- Enables App Bundle optimization\n- Required for new apps since August 2021"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Creating a Keystore",
+              "content": "Generate a keystore using `keytool` (comes with JDK):",
+              "code": "# Generate a new keystore with a signing key\nkeytool -genkeypair \\\n  -v \\\n  -storetype PKCS12 \\\n  -keystore my-release-key.keystore \\\n  -alias my-key-alias \\\n  -keyalg RSA \\\n  -keysize 2048 \\\n  -validity 10000\n\n# You'll be prompted for:\n# - Keystore password (save this securely!)\n# - Key password (can be same as keystore password)\n# - Your name, organization, location info\n\n# Verify the keystore contents\nkeytool -list -v -keystore my-release-key.keystore\n\n# IMPORTANT: Back up your keystore and passwords!\n# If you lose them, you cannot update your app.",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Configuring Signing in Gradle",
+              "content": "Configure release signing in your `app/build.gradle.kts`:",
+              "code": "// app/build.gradle.kts\nandroid {\n    signingConfigs {\n        create(\"release\") {\n            // Load from environment variables (CI/CD)\n            storeFile = file(System.getenv(\"KEYSTORE_PATH\") ?: \"release.keystore\")\n            storePassword = System.getenv(\"KEYSTORE_PASSWORD\") ?: \"\"\n            keyAlias = System.getenv(\"KEY_ALIAS\") ?: \"\"\n            keyPassword = System.getenv(\"KEY_PASSWORD\") ?: \"\"\n        }\n    }\n    \n    buildTypes {\n        release {\n            isMinifyEnabled = true\n            isShrinkResources = true\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n            signingConfig = signingConfigs.getByName(\"release\")\n        }\n    }\n}\n\n// Alternative: Load from local.properties (for local development)\n// DO NOT commit local.properties to git!\nval keystorePropertiesFile = rootProject.file(\"local.properties\")\nif (keystorePropertiesFile.exists()) {\n    val keystoreProperties = java.util.Properties()\n    keystoreProperties.load(keystorePropertiesFile.inputStream())\n    \n    android.signingConfigs.getByName(\"release\") {\n        storeFile = file(keystoreProperties[\"KEYSTORE_PATH\"] as String)\n        storePassword = keystoreProperties[\"KEYSTORE_PASSWORD\"] as String\n        keyAlias = keystoreProperties[\"KEY_ALIAS\"] as String\n        keyPassword = keystoreProperties[\"KEY_PASSWORD\"] as String\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Keystore Security Best Practices",
+              "content": "### NEVER Do This:\n\n```kotlin\n// ❌ NEVER hardcode credentials in build.gradle.kts\nsigningConfigs {\n    create(\"release\") {\n        storeFile = file(\"release.keystore\")\n        storePassword = \"my_password\"  // NEVER!\n        keyAlias = \"my_alias\"\n        keyPassword = \"my_password\"  // NEVER!\n    }\n}\n```\n\n### Secure Storage Options:\n\n**1. Environment Variables (CI/CD):**\n```bash\nexport KEYSTORE_PASSWORD=your_password\nexport KEY_PASSWORD=your_password\n```\n\n**2. local.properties (Local Development):**\n```properties\n# local.properties (in .gitignore)\nKEYSTORE_PATH=/path/to/keystore\nKEYSTORE_PASSWORD=your_password\nKEY_ALIAS=your_alias\nKEY_PASSWORD=your_password\n```\n\n**3. GitHub Secrets (GitHub Actions):**\n```yaml\n# Base64 encode your keystore\ncat my-release-key.keystore | base64 > keystore_base64.txt\n# Add to GitHub Secrets as KEYSTORE_BASE64\n```\n\n### Backup Checklist:\n- [ ] Keystore file backed up in 2+ secure locations\n- [ ] Passwords stored in password manager\n- [ ] Documented recovery procedure\n- [ ] Team members know the process"
+            },
+            {
+              "type": "THEORY",
+              "title": "Building Signed Releases",
+              "content": "### Build Signed App Bundle (Recommended)\n\n```bash\n# Build signed App Bundle for Play Store\n./gradlew bundleRelease\n\n# Output: app/build/outputs/bundle/release/app-release.aab\n```\n\n### Build Signed APK\n\n```bash\n# Build signed APK for direct distribution\n./gradlew assembleRelease\n\n# Output: app/build/outputs/apk/release/app-release.apk\n```\n\n### Verify the Signature\n\n```bash\n# Verify APK signature\napksigner verify --verbose app-release.apk\n\n# Check signature details\nkeytool -printcert -jarfile app-release.apk\n\n# For App Bundles, use bundletool\nbundletool validate --bundle app-release.aab\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-7-9-1",
+              "title": "Create a Signing Configuration",
+              "description": "Create a secure signing configuration that loads credentials from environment variables with fallback to local.properties.",
+              "difficulty": "intermediate",
+              "starterCode": "// app/build.gradle.kts\nandroid {\n    signingConfigs {\n        // TODO: Create a release signing config that:\n        // 1. First checks environment variables\n        // 2. Falls back to local.properties if env vars not set\n        // 3. Never hardcodes any credentials\n    }\n    \n    buildTypes {\n        release {\n            // TODO: Configure release build type\n        }\n    }\n}",
+              "solution": "// app/build.gradle.kts\nimport java.util.Properties\n\n// Load local.properties if it exists\nval localProperties = Properties()\nval localPropertiesFile = rootProject.file(\"local.properties\")\nif (localPropertiesFile.exists()) {\n    localProperties.load(localPropertiesFile.inputStream())\n}\n\nfun getProperty(envName: String, propName: String): String {\n    return System.getenv(envName) \n        ?: localProperties.getProperty(propName) \n        ?: \"\"\n}\n\nandroid {\n    signingConfigs {\n        create(\"release\") {\n            val keystorePath = getProperty(\"KEYSTORE_PATH\", \"signing.keystorePath\")\n            if (keystorePath.isNotEmpty()) {\n                storeFile = file(keystorePath)\n            }\n            storePassword = getProperty(\"KEYSTORE_PASSWORD\", \"signing.keystorePassword\")\n            keyAlias = getProperty(\"KEY_ALIAS\", \"signing.keyAlias\")\n            keyPassword = getProperty(\"KEY_PASSWORD\", \"signing.keyPassword\")\n        }\n    }\n    \n    buildTypes {\n        release {\n            isMinifyEnabled = true\n            isShrinkResources = true\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n            \n            // Only use signing config if keystore exists\n            val releaseConfig = signingConfigs.findByName(\"release\")\n            if (releaseConfig?.storeFile?.exists() == true) {\n                signingConfig = releaseConfig\n            }\n        }\n    }\n}",
+              "hints": [
+                "Use System.getenv() to read environment variables",
+                "Use Properties class to load from local.properties",
+                "Create a helper function to check both sources",
+                "Check if keystore file exists before using signing config"
+              ],
+              "testCases": [
+                {
+                  "description": "Signing config loads from environment or properties",
+                  "expectedBehavior": "Credentials are never hardcoded and loaded dynamically"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "7.10",
+          "title": "Lesson 7.10: iOS Provisioning and Certificates",
+          "moduleId": "module-07",
+          "order": 10,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers iOS code signing - the provisioning profiles and certificates required to build and distribute iOS apps from your KMP project."
+            },
+            {
+              "type": "THEORY",
+              "title": "iOS Code Signing Overview",
+              "content": "### Why iOS Signing is More Complex\n\nApple requires multiple layers of trust:\n\n```\nApple → Developer Certificate → Provisioning Profile → Your App → Device\n```\n\n### Key Components\n\n| Component | Purpose | Created Where |\n|-----------|---------|---------------|\n| **Apple Developer Account** | Identity with Apple | developer.apple.com |\n| **Certificate** | Proves you're a registered developer | Keychain + Apple |\n| **App ID** | Unique identifier for your app | Developer Portal |\n| **Provisioning Profile** | Links certificate + app ID + devices | Developer Portal |\n\n### Certificate Types\n\n| Type | Use Case |\n|------|----------|\n| **Development** | Testing on your devices |\n| **Distribution (App Store)** | Submitting to App Store |\n| **Distribution (Ad Hoc)** | Testing on specific devices |\n| **Distribution (Enterprise)** | In-house distribution |"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setting Up Certificates",
+              "content": "### Step 1: Create a Certificate Signing Request (CSR)\n\n1. Open **Keychain Access** on your Mac\n2. Menu: Keychain Access → Certificate Assistant → Request a Certificate from a Certificate Authority\n3. Enter your email and name\n4. Select \"Saved to disk\"\n5. Save the `.certSigningRequest` file\n\n### Step 2: Create Certificate in Apple Developer Portal\n\n1. Go to [developer.apple.com/account](https://developer.apple.com/account)\n2. Certificates, Identifiers & Profiles → Certificates\n3. Click \"+\" to create new certificate\n4. Select certificate type (Development or Distribution)\n5. Upload your CSR file\n6. Download the `.cer` file\n7. Double-click to install in Keychain\n\n### Step 3: Verify in Keychain\n\n```bash\n# List signing identities\nsecurity find-identity -v -p codesigning\n\n# You should see something like:\n# 1) ABC123... \"Apple Development: Your Name (TEAMID)\"\n# 2) DEF456... \"Apple Distribution: Your Name (TEAMID)\"\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Creating App ID and Provisioning Profile",
+              "content": "### Create App ID\n\n1. Developer Portal → Identifiers → App IDs\n2. Click \"+\" → Select \"App IDs\" → Continue\n3. Select \"App\" type\n4. Enter description and Bundle ID (e.g., `com.yourcompany.yourapp`)\n5. Select capabilities (Push Notifications, Sign in with Apple, etc.)\n6. Register\n\n### Create Provisioning Profile\n\n1. Developer Portal → Profiles\n2. Click \"+\"\n3. Select profile type:\n   - **iOS App Development** - for testing\n   - **App Store** - for App Store submission\n4. Select your App ID\n5. Select certificate(s)\n6. For development: select test devices\n7. Name and generate the profile\n8. Download and double-click to install\n\n### Verify Profiles\n\n```bash\n# List installed provisioning profiles\nls ~/Library/MobileDevice/Provisioning\\ Profiles/\n\n# View profile details\nsecurity cms -D -i ~/Library/MobileDevice/Provisioning\\ Profiles/YOUR_PROFILE.mobileprovision\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Xcode Project Configuration",
+              "content": "Configure signing in your KMP iOS project:",
+              "code": "// In Xcode, select your iOS target and go to Signing & Capabilities\n\n// Option 1: Automatic Signing (Recommended for development)\n// - Check \"Automatically manage signing\"\n// - Select your Team\n// - Xcode handles certificates and profiles automatically\n\n// Option 2: Manual Signing (Required for CI/CD)\n// - Uncheck \"Automatically manage signing\"\n// - Select specific provisioning profile for Debug and Release\n\n// In your project.pbxproj (usually managed by Xcode):\n// For manual signing, you'll see:\nCODE_SIGN_IDENTITY = \"Apple Distribution\";\nCODE_SIGN_STYLE = Manual;\nDEVELOPMENT_TEAM = YOUR_TEAM_ID;\nPROVISIONING_PROFILE_SPECIFIER = \"Your App Store Profile\";\n\n// For KMP projects, the iOS app is in iosApp/ directory\n// Open iosApp/iosApp.xcodeproj (or .xcworkspace if using CocoaPods)",
+              "language": "swift"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Exporting Certificates for CI/CD",
+              "content": "Export certificates and profiles for use in GitHub Actions:",
+              "code": "# Export certificate as .p12 file from Keychain Access:\n# 1. Open Keychain Access\n# 2. Find your distribution certificate\n# 3. Right-click → Export\n# 4. Save as .p12 with a strong password\n\n# Base64 encode for GitHub Secrets:\nbase64 -i Certificates.p12 | pbcopy\n# Paste into GitHub Secret: IOS_CERTIFICATE_BASE64\n\n# Export provisioning profile:\nbase64 -i ~/Library/MobileDevice/Provisioning\\ Profiles/YOUR_PROFILE.mobileprovision | pbcopy\n# Paste into GitHub Secret: IOS_PROVISIONING_PROFILE_BASE64\n\n# In GitHub Actions, decode and install:\n- name: Install Certificate\n  env:\n    CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}\n    CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}\n  run: |\n    # Create keychain\n    security create-keychain -p \"\" build.keychain\n    security default-keychain -s build.keychain\n    security unlock-keychain -p \"\" build.keychain\n    \n    # Import certificate\n    echo $CERTIFICATE_BASE64 | base64 --decode > certificate.p12\n    security import certificate.p12 -k build.keychain -P \"$CERTIFICATE_PASSWORD\" -T /usr/bin/codesign\n    security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k \"\" build.keychain\n\n- name: Install Provisioning Profile\n  env:\n    PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}\n  run: |\n    mkdir -p ~/Library/MobileDevice/Provisioning\\ Profiles\n    echo $PROFILE_BASE64 | base64 --decode > ~/Library/MobileDevice/Provisioning\\ Profiles/profile.mobileprovision",
+              "language": "bash"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common iOS Signing Issues",
+              "content": "### Issue 1: \"No signing certificate found\"\n\n```bash\n# Check if certificate is in keychain\nsecurity find-identity -v -p codesigning\n\n# If empty, reinstall your certificate:\n# 1. Download from Developer Portal\n# 2. Double-click to install\n```\n\n### Issue 2: \"Provisioning profile doesn't include signing certificate\"\n\n- Regenerate the provisioning profile with the correct certificate\n- Make sure the certificate isn't expired\n\n### Issue 3: \"App ID doesn't match\"\n\n- Check Bundle ID in Xcode matches App ID in Developer Portal\n- For KMP: Check `iosApp/iosApp/Info.plist` → `CFBundleIdentifier`\n\n### Issue 4: Certificate Expiration\n\n- Development certificates expire after 1 year\n- Distribution certificates expire after 1 year\n- Set calendar reminders to renew before expiration\n\n### Pro Tip: Use Fastlane Match\n\nFor teams, use `fastlane match` to share certificates:\n```bash\nfastlane match init\nfastlane match appstore  # Generate/fetch App Store certs\nfastlane match development  # Generate/fetch dev certs\n```"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "7.11",
+          "title": "Lesson 7.11: GitHub Actions for KMP",
+          "moduleId": "module-07",
+          "order": 11,
+          "estimatedMinutes": 55,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 55 minutes\n\nThis lesson covers setting up GitHub Actions workflows for building, testing, and deploying Kotlin Multiplatform applications to both Android and iOS platforms."
+            },
+            {
+              "type": "THEORY",
+              "title": "CI/CD Strategy for KMP",
+              "content": "### Build Matrix\n\nKMP projects need to build for multiple platforms:\n\n| Platform | Runner | Cost | Speed |\n|----------|--------|------|-------|\n| Android | ubuntu-latest | $0.008/min | Fast |\n| iOS | macos-14 | $0.08/min | Slow |\n| Desktop | ubuntu-latest | $0.008/min | Fast |\n| Web | ubuntu-latest | $0.008/min | Fast |\n\n### Recommended Workflow Structure\n\n```\nPR Created/Updated:\n├── Build Android (ubuntu) - Always\n├── Build iOS (macos) - Always\n├── Run Tests (ubuntu) - Always\n└── Lint/Static Analysis - Always\n\nMerge to Main:\n├── All above +\n├── Deploy to Play Store Internal\n└── Deploy to TestFlight\n\nRelease Tag:\n├── Deploy to Play Store Production\n└── Deploy to App Store\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete KMP CI/CD Workflow",
+              "content": "Full workflow for building and testing KMP apps:",
+              "code": "# .github/workflows/build.yml\nname: Build and Test KMP\n\non:\n  push:\n    branches: [main, develop]\n  pull_request:\n    branches: [main]\n\nenv:\n  JAVA_VERSION: '17'\n  GRADLE_OPTS: -Dorg.gradle.jvmargs=\"-Xmx4g -XX:+HeapDumpOnOutOfMemoryError\"\n\njobs:\n  # ===== ANDROID BUILD =====\n  build-android:\n    name: Build Android\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Setup Gradle\n        uses: gradle/gradle-build-action@v3\n        with:\n          cache-read-only: ${{ github.ref != 'refs/heads/main' }}\n      \n      - name: Build Android Debug\n        run: ./gradlew :composeApp:assembleDebug\n      \n      - name: Run Android Unit Tests\n        run: ./gradlew :composeApp:testDebugUnitTest\n      \n      - name: Upload APK\n        uses: actions/upload-artifact@v4\n        with:\n          name: android-debug-apk\n          path: composeApp/build/outputs/apk/debug/*.apk\n          retention-days: 7\n      \n      - name: Upload Test Results\n        if: always()\n        uses: actions/upload-artifact@v4\n        with:\n          name: android-test-results\n          path: '**/build/reports/tests/'\n\n  # ===== IOS BUILD =====\n  build-ios:\n    name: Build iOS\n    runs-on: macos-14\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Setup Gradle\n        uses: gradle/gradle-build-action@v3\n      \n      - name: Build iOS Framework\n        run: ./gradlew :shared:linkDebugFrameworkIosSimulatorArm64\n      \n      - name: Build iOS App (Simulator)\n        run: |\n          cd iosApp\n          xcodebuild build \\\n            -scheme iosApp \\\n            -configuration Debug \\\n            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \\\n            -derivedDataPath build\n      \n      - name: Run iOS Tests\n        run: ./gradlew :shared:iosSimulatorArm64Test\n\n  # ===== SHARED TESTS (JVM) =====\n  test-shared:\n    name: Shared Tests\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Setup Gradle\n        uses: gradle/gradle-build-action@v3\n      \n      - name: Run Shared Tests on JVM\n        run: ./gradlew :shared:jvmTest\n      \n      - name: Generate Coverage Report\n        run: ./gradlew koverXmlReport\n      \n      - name: Upload Coverage to Codecov\n        uses: codecov/codecov-action@v4\n        with:\n          token: ${{ secrets.CODECOV_TOKEN }}\n          files: '**/build/reports/kover/report.xml'\n      \n      - name: Publish Test Results\n        uses: EnricoMi/publish-unit-test-result-action@v2\n        if: always()\n        with:\n          files: '**/build/test-results/**/*.xml'",
+              "language": "yaml"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Release Workflow",
+              "content": "Workflow triggered on version tags for production releases:",
+              "code": "# .github/workflows/release.yml\nname: Release\n\non:\n  push:\n    tags:\n      - 'v*'\n\nenv:\n  JAVA_VERSION: '17'\n\njobs:\n  # ===== ANDROID RELEASE =====\n  release-android:\n    name: Release Android\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Decode Keystore\n        env:\n          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}\n        run: echo \"$KEYSTORE_BASE64\" | base64 --decode > release.keystore\n      \n      - name: Build Release Bundle\n        env:\n          KEYSTORE_PATH: release.keystore\n          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}\n          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}\n          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}\n        run: ./gradlew :composeApp:bundleRelease\n      \n      - name: Upload to Play Store\n        uses: r0adkll/upload-google-play@v1\n        with:\n          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}\n          packageName: com.yourcompany.yourapp\n          releaseFiles: composeApp/build/outputs/bundle/release/*.aab\n          track: production\n          whatsNewDirectory: distribution/whatsnew\n\n  # ===== IOS RELEASE =====\n  release-ios:\n    name: Release iOS\n    runs-on: macos-14\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Install Certificate\n        env:\n          CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}\n          CERTIFICATE_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}\n          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}\n        run: |\n          security create-keychain -p \"$KEYCHAIN_PASSWORD\" build.keychain\n          security default-keychain -s build.keychain\n          security unlock-keychain -p \"$KEYCHAIN_PASSWORD\" build.keychain\n          echo \"$CERTIFICATE_BASE64\" | base64 --decode > certificate.p12\n          security import certificate.p12 -k build.keychain -P \"$CERTIFICATE_PASSWORD\" -T /usr/bin/codesign\n          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k \"$KEYCHAIN_PASSWORD\" build.keychain\n      \n      - name: Install Provisioning Profile\n        env:\n          PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}\n        run: |\n          mkdir -p ~/Library/MobileDevice/Provisioning\\ Profiles\n          echo \"$PROFILE_BASE64\" | base64 --decode > ~/Library/MobileDevice/Provisioning\\ Profiles/profile.mobileprovision\n      \n      - name: Build iOS Framework\n        run: ./gradlew :shared:linkReleaseFrameworkIosArm64\n      \n      - name: Archive iOS App\n        run: |\n          cd iosApp\n          xcodebuild archive \\\n            -scheme iosApp \\\n            -configuration Release \\\n            -archivePath build/iosApp.xcarchive \\\n            -destination 'generic/platform=iOS'\n      \n      - name: Export IPA\n        run: |\n          cd iosApp\n          xcodebuild -exportArchive \\\n            -archivePath build/iosApp.xcarchive \\\n            -exportPath build/export \\\n            -exportOptionsPlist ExportOptions.plist\n      \n      - name: Upload to TestFlight\n        env:\n          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }}\n          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}\n          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_API_KEY }}\n        run: |\n          xcrun altool --upload-app \\\n            -f iosApp/build/export/iosApp.ipa \\\n            --type ios \\\n            --apiKey \"$APP_STORE_CONNECT_API_KEY_ID\" \\\n            --apiIssuer \"$APP_STORE_CONNECT_ISSUER_ID\"",
+              "language": "yaml"
+            },
+            {
+              "type": "THEORY",
+              "title": "Required GitHub Secrets",
+              "content": "### Android Secrets\n\n| Secret Name | Description | How to Get |\n|-------------|-------------|------------|\n| `ANDROID_KEYSTORE_BASE64` | Base64-encoded keystore | `base64 release.keystore` |\n| `ANDROID_KEYSTORE_PASSWORD` | Keystore password | Your password |\n| `ANDROID_KEY_ALIAS` | Key alias name | Your alias |\n| `ANDROID_KEY_PASSWORD` | Key password | Your password |\n| `PLAY_STORE_SERVICE_ACCOUNT` | Google Play API JSON | Play Console → API Access |\n\n### iOS Secrets\n\n| Secret Name | Description | How to Get |\n|-------------|-------------|------------|\n| `IOS_CERTIFICATE_BASE64` | Base64-encoded .p12 | Export from Keychain |\n| `IOS_CERTIFICATE_PASSWORD` | Certificate password | Password when exporting |\n| `IOS_PROVISIONING_PROFILE_BASE64` | Base64-encoded profile | Developer Portal |\n| `KEYCHAIN_PASSWORD` | CI keychain password | Any secure password |\n| `APP_STORE_API_KEY_ID` | App Store Connect key ID | App Store Connect |\n| `APP_STORE_ISSUER_ID` | App Store Connect issuer | App Store Connect |\n| `APP_STORE_API_KEY` | Base64-encoded .p8 key | App Store Connect |"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-7-11-1",
+              "title": "Create a PR Workflow",
+              "description": "Create a GitHub Actions workflow that runs on pull requests to validate the build and tests.",
+              "difficulty": "intermediate",
+              "starterCode": "# .github/workflows/pr-check.yml\n# TODO: Create a workflow that:\n# 1. Triggers on pull requests to main\n# 2. Builds Android debug APK\n# 3. Runs shared tests on JVM\n# 4. Comments test results on the PR\n# 5. Uploads APK as artifact",
+              "solution": "name: PR Check\n\non:\n  pull_request:\n    branches: [main]\n\nenv:\n  JAVA_VERSION: '17'\n\njobs:\n  build-and-test:\n    name: Build and Test\n    runs-on: ubuntu-latest\n    \n    steps:\n      - name: Checkout\n        uses: actions/checkout@v4\n      \n      - name: Set up JDK\n        uses: actions/setup-java@v4\n        with:\n          java-version: ${{ env.JAVA_VERSION }}\n          distribution: 'temurin'\n      \n      - name: Setup Gradle\n        uses: gradle/gradle-build-action@v3\n        with:\n          cache-read-only: true\n      \n      - name: Build Android Debug\n        run: ./gradlew :composeApp:assembleDebug\n      \n      - name: Run Shared Tests\n        run: ./gradlew :shared:jvmTest\n      \n      - name: Publish Test Results\n        uses: EnricoMi/publish-unit-test-result-action@v2\n        if: always()\n        with:\n          files: '**/build/test-results/**/*.xml'\n          comment_mode: always\n          check_name: Test Results\n      \n      - name: Upload APK\n        uses: actions/upload-artifact@v4\n        with:\n          name: pr-${{ github.event.number }}-apk\n          path: composeApp/build/outputs/apk/debug/*.apk\n          retention-days: 3",
+              "hints": [
+                "Use 'on: pull_request' to trigger on PRs",
+                "Use EnricoMi/publish-unit-test-result-action for PR comments",
+                "Set cache-read-only: true for PR builds",
+                "Use github.event.number to name artifacts uniquely"
+              ],
+              "testCases": [
+                {
+                  "description": "Workflow triggers on PRs and runs all checks",
+                  "expectedBehavior": "Build succeeds, tests run, results posted to PR"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "7.12",
+          "title": "Lesson 7.12: Deploying to Google Play Store",
+          "moduleId": "module-07",
+          "order": 12,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers the complete process of publishing your Android app to Google Play Store, from creating your developer account to automating releases."
+            },
+            {
+              "type": "THEORY",
+              "title": "Play Store Prerequisites",
+              "content": "### What You Need\n\n1. **Google Play Developer Account** ($25 one-time fee)\n   - Register at [play.google.com/console](https://play.google.com/console)\n   \n2. **App Bundle** (AAB file)\n   - Signed with your upload key\n   - Generated with `./gradlew bundleRelease`\n\n3. **Store Listing Assets**\n   - App icon (512x512 PNG)\n   - Feature graphic (1024x500 PNG)\n   - Screenshots (min 2, various sizes)\n   - Short description (80 chars max)\n   - Full description (4000 chars max)\n   - Privacy policy URL\n\n4. **Content Rating Questionnaire**\n   - Completed in Play Console\n\n5. **Target API Level**\n   - Must meet Google's current requirements (API 34+ as of 2025)"
+            },
+            {
+              "type": "THEORY",
+              "title": "Play Console Setup",
+              "content": "### Step 1: Create Your App\n\n1. Go to Play Console → All apps → Create app\n2. Enter app name, default language, app type\n3. Accept developer policies\n\n### Step 2: Set Up Your App\n\nComplete all sections in the Dashboard:\n\n**Store Presence:**\n- Main store listing (title, description, graphics)\n- Store settings (app category, contact details)\n\n**Release:**\n- Production, testing tracks\n- Countries and regions\n\n**Policy:**\n- App content (ads, target audience)\n- Content ratings\n- Privacy policy\n- Data safety form\n\n### Step 3: App Signing\n\n1. Go to Setup → App signing\n2. Enable Play App Signing (required for new apps)\n3. Upload your upload key certificate:\n   ```bash\n   keytool -export -rfc \\\n     -keystore release.keystore \\\n     -alias your-alias \\\n     -file upload_certificate.pem\n   ```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Publishing Your First Release",
+              "content": "Step-by-step first release:",
+              "code": "# 1. Build the release bundle\n./gradlew :composeApp:bundleRelease\n# Output: composeApp/build/outputs/bundle/release/composeApp-release.aab\n\n# 2. Verify the bundle\nbundletool validate --bundle composeApp-release.aab\n\n# 3. Check what APKs will be generated\nbundletool build-apks \\\n  --bundle=composeApp-release.aab \\\n  --output=my_app.apks \\\n  --mode=universal\n\n# 4. In Play Console:\n# a. Go to Release → Production → Create new release\n# b. Upload your .aab file\n# c. Add release notes\n# d. Review and rollout\n\n# For internal testing (faster approval):\n# Go to Release → Testing → Internal testing\n# Create a release and add testers by email",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Automating with Fastlane",
+              "content": "Use Fastlane for automated deployments:",
+              "code": "# Install Fastlane\ngem install fastlane\n\n# Initialize in your Android directory\ncd composeApp\nfastlane init\n\n# Create Fastfile\n# fastlane/Fastfile\ndefault_platform(:android)\n\nplatform :android do\n  desc \"Deploy to internal testing track\"\n  lane :internal do\n    gradle(\n      task: \"bundle\",\n      build_type: \"Release\"\n    )\n    upload_to_play_store(\n      track: \"internal\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      json_key: \"play-store-key.json\"\n    )\n  end\n\n  desc \"Promote internal to production\"\n  lane :promote_to_production do\n    upload_to_play_store(\n      track: \"internal\",\n      track_promote_to: \"production\",\n      json_key: \"play-store-key.json\",\n      skip_upload_aab: true,\n      skip_upload_metadata: true,\n      skip_upload_images: true,\n      skip_upload_screenshots: true\n    )\n  end\n\n  desc \"Deploy directly to production\"\n  lane :production do\n    gradle(\n      task: \"bundle\",\n      build_type: \"Release\"\n    )\n    upload_to_play_store(\n      track: \"production\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      json_key: \"play-store-key.json\"\n    )\n  end\nend\n\n# Run deployment\nfastlane internal   # Deploy to internal testing\nfastlane production # Deploy to production",
+              "language": "ruby"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setting Up Play Store API Access",
+              "content": "### Create Service Account\n\n1. Go to Play Console → Setup → API access\n2. Click \"Create new service account\"\n3. Follow link to Google Cloud Console\n4. Create service account with role \"Service Account User\"\n5. Create JSON key and download\n\n### Grant Permissions\n\n1. Back in Play Console → Users and permissions\n2. Invite the service account email\n3. Grant permissions:\n   - Release to production\n   - Release apps to testing tracks\n   - Manage store presence\n\n### Use in CI/CD\n\n```yaml\n# GitHub Actions\n- name: Upload to Play Store\n  uses: r0adkll/upload-google-play@v1\n  with:\n    serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}\n    packageName: com.yourcompany.yourapp\n    releaseFiles: composeApp/build/outputs/bundle/release/*.aab\n    track: internal\n    # track options: internal, alpha, beta, production\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Play Store Issues",
+              "content": "### Issue 1: \"App signing certificate doesn't match\"\n\n- You're using a different key than the one registered with Play Store\n- Solution: Use the same keystore you registered, or reset via Play App Signing\n\n### Issue 2: \"Version code already exists\"\n\n```kotlin\n// Always increment versionCode\nandroid {\n    defaultConfig {\n        versionCode = 2  // Must be higher than previous release\n        versionName = \"1.0.1\"\n    }\n}\n```\n\n### Issue 3: \"Target API level not met\"\n\n```kotlin\n// Update to required API level\nandroid {\n    compileSdk = 34\n    defaultConfig {\n        targetSdk = 34  // Must meet Google's requirements\n    }\n}\n```\n\n### Issue 4: \"Data safety form incomplete\"\n\n- Go to Policy → App content → Data safety\n- Fill out data collection questionnaire\n- This is required before publishing"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "7.13",
+          "title": "Lesson 7.13: Deploying to App Store via TestFlight",
+          "moduleId": "module-07",
+          "order": 13,
+          "estimatedMinutes": 55,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 55 minutes\n\nThis lesson covers deploying your KMP iOS app to the App Store via TestFlight for beta testing and eventually to the public App Store."
+            },
+            {
+              "type": "THEORY",
+              "title": "App Store Prerequisites",
+              "content": "### What You Need\n\n1. **Apple Developer Account** ($99/year)\n   - Enroll at [developer.apple.com/enroll](https://developer.apple.com/enroll)\n\n2. **App Store Connect Account**\n   - Automatically included with developer account\n   - Access at [appstoreconnect.apple.com](https://appstoreconnect.apple.com)\n\n3. **Certificates and Provisioning Profiles**\n   - Distribution certificate\n   - App Store provisioning profile\n\n4. **App Store Assets**\n   - App icon (1024x1024 PNG, no alpha)\n   - Screenshots for each device size\n   - App description, keywords\n   - Privacy policy URL\n   - Support URL\n\n5. **Xcode Archive**\n   - Built with Release configuration\n   - Signed with distribution certificate"
+            },
+            {
+              "type": "THEORY",
+              "title": "App Store Connect Setup",
+              "content": "### Step 1: Create Your App\n\n1. Go to App Store Connect → My Apps → \"+\" → New App\n2. Select platforms (iOS)\n3. Enter app name, primary language, bundle ID\n4. Select your SKU (unique identifier)\n\n### Step 2: App Information\n\n**General Information:**\n- Category (primary and secondary)\n- Content rights\n- Age rating questionnaire\n\n**Pricing and Availability:**\n- Price tier (or Free)\n- Available countries\n\n**App Privacy:**\n- Privacy policy URL\n- Privacy nutrition labels\n\n### Step 3: Prepare for Submission\n\n**Version Information:**\n- Screenshots for each device\n- Promotional text (170 chars)\n- Description (4000 chars)\n- Keywords (100 chars)\n- Support URL\n- Marketing URL (optional)"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Building for App Store",
+              "content": "Build and archive your KMP iOS app:",
+              "code": "# 1. Build the release framework\n./gradlew :shared:linkReleaseFrameworkIosArm64\n\n# 2. Archive in Xcode (GUI method)\n# - Open iosApp/iosApp.xcworkspace in Xcode\n# - Select \"Any iOS Device (arm64)\" as destination\n# - Product → Archive\n# - Once complete, Organizer window opens\n\n# 3. Archive via command line\ncd iosApp\nxcodebuild archive \\\n  -workspace iosApp.xcworkspace \\\n  -scheme iosApp \\\n  -configuration Release \\\n  -archivePath build/iosApp.xcarchive \\\n  -destination 'generic/platform=iOS' \\\n  CODE_SIGN_IDENTITY=\"Apple Distribution\" \\\n  DEVELOPMENT_TEAM=\"YOUR_TEAM_ID\" \\\n  PROVISIONING_PROFILE_SPECIFIER=\"Your App Store Profile\"\n\n# 4. Export IPA\n# Create ExportOptions.plist:\ncat > ExportOptions.plist << EOF\n<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n<plist version=\"1.0\">\n<dict>\n    <key>method</key>\n    <string>app-store</string>\n    <key>teamID</key>\n    <string>YOUR_TEAM_ID</string>\n    <key>uploadSymbols</key>\n    <true/>\n    <key>uploadBitcode</key>\n    <false/>\n</dict>\n</plist>\nEOF\n\nxcodebuild -exportArchive \\\n  -archivePath build/iosApp.xcarchive \\\n  -exportPath build/export \\\n  -exportOptionsPlist ExportOptions.plist\n\n# 5. Upload to App Store Connect\nxcrun altool --upload-app \\\n  -f build/export/iosApp.ipa \\\n  --type ios \\\n  --apiKey \"YOUR_API_KEY_ID\" \\\n  --apiIssuer \"YOUR_ISSUER_ID\"",
+              "language": "bash"
+            },
+            {
+              "type": "THEORY",
+              "title": "TestFlight Beta Testing",
+              "content": "### Internal Testing\n\n- Up to 100 testers\n- Must be App Store Connect users\n- No review required\n- Instant access after upload\n\n### External Testing\n\n- Up to 10,000 testers\n- Anyone with email\n- Requires Beta App Review (usually 24-48 hours)\n- Public link available\n\n### Setting Up TestFlight\n\n1. Upload your build (Xcode Organizer or xcrun altool)\n2. Wait for processing (~10-30 minutes)\n3. Go to App Store Connect → TestFlight\n4. Select your build\n5. Add test information (what to test, feedback email)\n6. Add testers:\n   - Internal: Add App Store Connect users\n   - External: Create group, add emails or public link"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Automating with Fastlane",
+              "content": "Use Fastlane for automated iOS deployments:",
+              "code": "# Install Fastlane\ngem install fastlane\n\n# Initialize in iOS directory\ncd iosApp\nfastlane init\n\n# Create Fastfile\n# fastlane/Fastfile\ndefault_platform(:ios)\n\nplatform :ios do\n  desc \"Build shared framework\"\n  lane :build_framework do\n    sh \"cd .. && ./gradlew :shared:linkReleaseFrameworkIosArm64\"\n  end\n\n  desc \"Deploy to TestFlight\"\n  lane :beta do\n    build_framework\n    \n    # Use match for certificate management\n    match(type: \"appstore\", readonly: true)\n    \n    build_app(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      configuration: \"Release\",\n      export_method: \"app-store\"\n    )\n    \n    upload_to_testflight(\n      skip_waiting_for_build_processing: true\n    )\n  end\n\n  desc \"Deploy to App Store\"\n  lane :release do\n    build_framework\n    \n    match(type: \"appstore\", readonly: true)\n    \n    build_app(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      configuration: \"Release\",\n      export_method: \"app-store\"\n    )\n    \n    upload_to_app_store(\n      submit_for_review: true,\n      automatic_release: true,\n      force: true,\n      precheck_include_in_app_purchases: false\n    )\n  end\nend\n\n# Run deployment\nfastlane beta    # Deploy to TestFlight\nfastlane release # Deploy to App Store",
+              "language": "ruby"
+            },
+            {
+              "type": "THEORY",
+              "title": "App Store Connect API",
+              "content": "### Creating API Key\n\n1. Go to App Store Connect → Users and Access → Keys\n2. Click \"+\" to generate new key\n3. Name it and select role (Admin or App Manager)\n4. Download the .p8 file (only available once!)\n5. Note the Key ID and Issuer ID\n\n### Using in CI/CD\n\n```yaml\n# GitHub Actions\n- name: Upload to TestFlight\n  env:\n    APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }}\n    APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}\n    APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_API_KEY_BASE64 }}\n  run: |\n    mkdir -p ~/.appstoreconnect/private_keys\n    echo \"$APP_STORE_CONNECT_API_KEY\" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8\n    \n    xcrun altool --upload-app \\\n      -f iosApp.ipa \\\n      --type ios \\\n      --apiKey \"$APP_STORE_CONNECT_API_KEY_ID\" \\\n      --apiIssuer \"$APP_STORE_CONNECT_ISSUER_ID\"\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common App Store Issues",
+              "content": "### Issue 1: \"Missing compliance\"\n\n- Your app uses encryption\n- Add `ITSAppUsesNonExemptEncryption` to Info.plist:\n  ```xml\n  <key>ITSAppUsesNonExemptEncryption</key>\n  <false/>\n  ```\n\n### Issue 2: \"Invalid provisioning profile\"\n\n- Profile doesn't match bundle ID or certificate\n- Regenerate profile in Developer Portal\n\n### Issue 3: \"Build processing stuck\"\n\n- Wait longer (can take up to 1 hour)\n- Check App Store Connect status page\n- Re-upload if stuck > 2 hours\n\n### Issue 4: \"App rejected for guideline violation\"\n\n- Read rejection reason carefully\n- Common issues:\n  - Placeholder content\n  - Broken links\n  - Missing privacy policy\n  - Login required without demo account\n  - Crashes (test thoroughly!)\n\n### Issue 5: \"Invalid binary\"\n\n- Check minimum iOS version\n- Ensure all architectures included\n- Verify signing is correct"
+            }
+          ],
+          "challenges": []
+        },
+        {
+          "id": "7.14",
+          "title": "Lesson 7.14: Fastlane Automation",
+          "moduleId": "module-07",
+          "order": 14,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers Fastlane - the industry-standard tool for automating mobile app deployment. You'll learn to automate building, signing, testing, and releasing for both Android and iOS from your KMP project."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Fastlane?",
+              "content": "### Manual Deployment Pain Points\n\n- Remembering all the steps\n- Certificate management\n- Screenshot generation\n- Changelog updates\n- Human error in signing\n- Time-consuming releases\n\n### What Fastlane Automates\n\n| Task | Android | iOS |\n|------|---------|-----|\n| Building | ✅ Gradle tasks | ✅ xcodebuild |\n| Signing | ✅ Keystore | ✅ Certificates + Profiles |\n| Screenshots | ✅ screengrab | ✅ snapshot |\n| Beta Distribution | ✅ Play Store | ✅ TestFlight |\n| Store Metadata | ✅ supply | ✅ deliver |\n| Release | ✅ Play Store | ✅ App Store |\n\n### Fastlane Tools\n\n- **match**: Sync certificates across team\n- **gym**: Build your app\n- **pilot**: Upload to TestFlight\n- **deliver**: Upload to App Store\n- **supply**: Upload to Play Store\n- **snapshot**: Automate screenshots\n- **screengrab**: Android screenshots"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Setting Up Fastlane",
+              "content": "Install and configure Fastlane for your KMP project:",
+              "code": "# Install Fastlane\nbrew install fastlane\n# Or: gem install fastlane\n\n# Project structure for KMP\nmy-kmp-app/\n├── composeApp/          # Android app\n│   └── fastlane/\n│       ├── Fastfile\n│       ├── Appfile\n│       └── Matchfile    # If using match\n├── iosApp/              # iOS app\n│   └── fastlane/\n│       ├── Fastfile\n│       ├── Appfile\n│       └── Matchfile\n├── shared/              # Shared KMP code\n└── fastlane/            # Root Fastfile (optional)\n    └── Fastfile\n\n# Initialize Fastlane for Android\ncd composeApp\nfastlane init\n# Select: Manual setup\n\n# Initialize Fastlane for iOS\ncd ../iosApp\nfastlane init\n# Select: Manual setup or App Store Connect API\n\n# Create Appfile (app configuration)\n# composeApp/fastlane/Appfile\npackage_name(\"com.yourcompany.yourapp\")\njson_key_file(\"play-store-key.json\")\n\n# iosApp/fastlane/Appfile\napp_identifier(\"com.yourcompany.yourapp\")\napple_id(\"your@email.com\")\nitc_team_id(\"123456789\")  # App Store Connect Team ID\nteam_id(\"ABCD1234\")        # Developer Portal Team ID",
+              "language": "bash"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Android Fastfile",
+              "content": "Full Fastlane configuration for Android:",
+              "code": "# composeApp/fastlane/Fastfile\ndefault_platform(:android)\n\nplatform :android do\n  desc \"Run unit tests\"\n  lane :test do\n    gradle(task: \"testDebugUnitTest\")\n  end\n\n  desc \"Build debug APK\"\n  lane :build_debug do\n    gradle(\n      task: \"assembleDebug\",\n      print_command: true\n    )\n  end\n\n  desc \"Build release bundle\"\n  lane :build_release do\n    gradle(\n      task: \"bundleRelease\",\n      print_command: true,\n      properties: {\n        \"android.injected.signing.store.file\" => ENV[\"KEYSTORE_PATH\"],\n        \"android.injected.signing.store.password\" => ENV[\"KEYSTORE_PASSWORD\"],\n        \"android.injected.signing.key.alias\" => ENV[\"KEY_ALIAS\"],\n        \"android.injected.signing.key.password\" => ENV[\"KEY_PASSWORD\"]\n      }\n    )\n  end\n\n  desc \"Deploy to internal testing\"\n  lane :internal do\n    build_release\n    upload_to_play_store(\n      track: \"internal\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      skip_upload_metadata: true,\n      skip_upload_images: true,\n      skip_upload_screenshots: true\n    )\n  end\n\n  desc \"Promote internal to beta\"\n  lane :promote_to_beta do\n    upload_to_play_store(\n      track: \"internal\",\n      track_promote_to: \"beta\",\n      skip_upload_aab: true,\n      skip_upload_metadata: true\n    )\n  end\n\n  desc \"Deploy to production\"\n  lane :production do\n    build_release\n    upload_to_play_store(\n      track: \"production\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      release_status: \"completed\",  # or \"draft\", \"halted\"\n      rollout: \"1.0\"  # 100% rollout, use \"0.1\" for 10%\n    )\n  end\n\n  desc \"Increment version code\"\n  lane :bump_version do\n    # Read current version\n    version_code = google_play_track_version_codes(\n      track: \"internal\"\n    ).max || 0\n    \n    new_version_code = version_code + 1\n    \n    # Update build.gradle.kts\n    # This requires a custom approach or gradle task\n    UI.success(\"Next version code: #{new_version_code}\")\n  end\nend",
+              "language": "ruby"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete iOS Fastfile",
+              "content": "Full Fastlane configuration for iOS:",
+              "code": "# iosApp/fastlane/Fastfile\ndefault_platform(:ios)\n\nplatform :ios do\n  before_all do\n    # Build KMP shared framework before any lane\n    sh \"cd ../.. && ./gradlew :shared:linkReleaseFrameworkIosArm64\"\n  end\n\n  desc \"Sync certificates with match\"\n  lane :sync_certs do\n    match(\n      type: \"appstore\",\n      readonly: is_ci  # Read-only in CI, can create locally\n    )\n  end\n\n  desc \"Run tests\"\n  lane :test do\n    run_tests(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      devices: [\"iPhone 15 Pro\"]\n    )\n  end\n\n  desc \"Build for simulator\"\n  lane :build_debug do\n    build_app(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      configuration: \"Debug\",\n      destination: \"generic/platform=iOS Simulator\",\n      skip_archive: true\n    )\n  end\n\n  desc \"Deploy to TestFlight\"\n  lane :beta do\n    sync_certs\n    \n    increment_build_number(\n      build_number: latest_testflight_build_number + 1\n    )\n    \n    build_app(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      configuration: \"Release\",\n      export_method: \"app-store\"\n    )\n    \n    upload_to_testflight(\n      skip_waiting_for_build_processing: true,\n      distribute_external: false\n    )\n  end\n\n  desc \"Deploy to TestFlight for external testing\"\n  lane :beta_external do\n    beta\n    \n    # Wait for processing and distribute to external testers\n    upload_to_testflight(\n      skip_submission: false,\n      distribute_external: true,\n      groups: [\"Beta Testers\"],\n      changelog: \"Bug fixes and improvements\"\n    )\n  end\n\n  desc \"Deploy to App Store\"\n  lane :release do\n    sync_certs\n    \n    # Capture screenshots (optional)\n    # snapshot\n    \n    build_app(\n      workspace: \"iosApp.xcworkspace\",\n      scheme: \"iosApp\",\n      configuration: \"Release\",\n      export_method: \"app-store\"\n    )\n    \n    deliver(\n      submit_for_review: true,\n      automatic_release: true,\n      force: true,\n      skip_screenshots: true,\n      skip_metadata: false\n    )\n  end\n\n  error do |lane, exception|\n    # Cleanup on error\n    clean_build_artifacts\n  end\nend",
+              "language": "ruby"
+            },
+            {
+              "type": "THEORY",
+              "title": "Fastlane Match for Team Certificate Management",
+              "content": "### What is Match?\n\nMatch stores certificates and profiles in a Git repo or cloud storage, syncing them across your team.\n\n### Setup\n\n```bash\n# Initialize match\nfastlane match init\n\n# Select storage:\n# - git: Private Git repo\n# - google_cloud: GCS bucket\n# - s3: AWS S3 bucket\n\n# Generate certificates\nfastlane match appstore   # App Store distribution\nfastlane match development # Development\nfastlane match adhoc       # Ad Hoc distribution\n```\n\n### Matchfile Configuration\n\n```ruby\n# fastlane/Matchfile\ngit_url(\"git@github.com:yourcompany/certificates.git\")\n\ntype(\"appstore\")\napp_identifier([\"com.yourcompany.yourapp\"])\nusername(\"your@email.com\")\nteam_id(\"ABCD1234\")\n\n# Use readonly in CI\nreadonly(true) if is_ci\n```\n\n### Using in CI\n\n```yaml\n# GitHub Actions\n- name: Install certificates\n  env:\n    MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}\n    MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_AUTH }}\n  run: |\n    cd iosApp\n    fastlane match appstore --readonly\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Unified Fastfile for KMP",
+              "content": "A root Fastfile that orchestrates both platforms:",
+              "code": "# Root fastlane/Fastfile\ndesc \"Build both platforms\"\nlane :build_all do\n  # Build Android\n  Dir.chdir(\"../composeApp\") do\n    sh \"fastlane build_release\"\n  end\n  \n  # Build iOS\n  Dir.chdir(\"../iosApp\") do\n    sh \"fastlane build_release\"\n  end\nend\n\ndesc \"Deploy both platforms to testing\"\nlane :beta_all do\n  # Deploy Android to internal\n  Dir.chdir(\"../composeApp\") do\n    sh \"fastlane internal\"\n  end\n  \n  # Deploy iOS to TestFlight\n  Dir.chdir(\"../iosApp\") do\n    sh \"fastlane beta\"\n  end\nend\n\ndesc \"Release both platforms to production\"\nlane :release_all do\n  # Deploy Android to Play Store\n  Dir.chdir(\"../composeApp\") do\n    sh \"fastlane production\"\n  end\n  \n  # Deploy iOS to App Store\n  Dir.chdir(\"../iosApp\") do\n    sh \"fastlane release\"\n  end\nend\n\n# Environment setup for CI\nbefore_all do\n  # Ensure environment variables are set\n  required_env = [\n    \"KEYSTORE_PATH\",\n    \"KEYSTORE_PASSWORD\",\n    \"KEY_ALIAS\",\n    \"KEY_PASSWORD\"\n  ]\n  \n  required_env.each do |var|\n    UI.user_error!(\"Missing #{var}\") unless ENV[var]\n  end\nend",
+              "language": "ruby"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-7-14-1",
+              "title": "Create a Complete Fastfile",
+              "description": "Create a Fastfile for Android that includes build, test, and deployment lanes.",
+              "difficulty": "advanced",
+              "starterCode": "# composeApp/fastlane/Fastfile\n# TODO: Create lanes for:\n# 1. test - Run unit tests\n# 2. build - Build release bundle\n# 3. deploy_internal - Deploy to internal testing track\n# 4. deploy_production - Deploy to production with changelog",
+              "solution": "default_platform(:android)\n\nplatform :android do\n  desc \"Run unit tests\"\n  lane :test do\n    gradle(task: \"testDebugUnitTest\")\n  end\n\n  desc \"Build release bundle\"\n  lane :build do\n    gradle(\n      task: \"bundleRelease\",\n      properties: {\n        \"android.injected.signing.store.file\" => ENV[\"KEYSTORE_PATH\"],\n        \"android.injected.signing.store.password\" => ENV[\"KEYSTORE_PASSWORD\"],\n        \"android.injected.signing.key.alias\" => ENV[\"KEY_ALIAS\"],\n        \"android.injected.signing.key.password\" => ENV[\"KEY_PASSWORD\"]\n      }\n    )\n  end\n\n  desc \"Deploy to internal testing\"\n  lane :deploy_internal do\n    test\n    build\n    upload_to_play_store(\n      track: \"internal\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      skip_upload_metadata: true,\n      skip_upload_images: true\n    )\n  end\n\n  desc \"Deploy to production\"\n  lane :deploy_production do |options|\n    changelog = options[:changelog] || \"Bug fixes and improvements\"\n    \n    test\n    build\n    upload_to_play_store(\n      track: \"production\",\n      aab: \"build/outputs/bundle/release/composeApp-release.aab\",\n      release_status: \"completed\",\n      rollout: \"1.0\"\n    )\n    \n    # Update changelog\n    File.write(\"metadata/android/en-US/changelogs/default.txt\", changelog)\n  end\nend",
+              "hints": [
+                "Use gradle() action for building",
+                "Pass signing properties via the properties parameter",
+                "Use upload_to_play_store for Play Store deployment",
+                "Lane options can be passed as parameters"
+              ],
+              "testCases": [
+                {
+                  "description": "Fastfile defines all required lanes",
+                  "expectedBehavior": "test, build, deploy_internal, and deploy_production lanes work correctly"
+                }
+              ]
+            }
+          ]
         }
       ]
     },
