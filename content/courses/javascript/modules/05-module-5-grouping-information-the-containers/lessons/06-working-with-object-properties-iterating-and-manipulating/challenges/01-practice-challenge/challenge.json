@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting Object.keys() returns strings",
+      "consequence": "Array indices come back as '0', '1', '2' not numbers.",
+      "correction": "Object.keys() always returns string keys."
     },
     {
-      "mistake": "Calling Object.keys() on non-object:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Calling Object.keys() on non-object:\n   Object.keys([1,2,3])  // Works but returns ['0', '1', '2'] (indices as strings)\n   Object.keys('hello')  // Works but returns ['0', '1', '2', '3', '4']"
+      "mistake": "Trying to loop Object.values() with for...in",
+      "consequence": "for...in gives keys, not values.",
+      "correction": "Use for...of with Object.values(): for (let val of Object.values(obj))"
     },
     {
-      "mistake": "Forgetting Object.keys() returns an array:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting Object.keys() returns an array:\n   Object.keys(obj)  // Returns ARRAY of keys\n   // Must loop through: for (let key of Object.keys(obj))"
+      "mistake": "Not using reduce for summing values",
+      "consequence": "More verbose loop code.",
+      "correction": "Use Object.values(inv).reduce((sum, n) => sum + n, 0)"
     }
   ],
   "difficulty": "beginner"

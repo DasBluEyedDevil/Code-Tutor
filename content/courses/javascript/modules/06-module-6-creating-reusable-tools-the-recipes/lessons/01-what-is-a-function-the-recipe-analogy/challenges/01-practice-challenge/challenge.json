@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting parentheses when calling",
+      "consequence": "celsiusToFahrenheit returns the function, not the result.",
+      "correction": "Always use parentheses: celsiusToFahrenheit(0)"
     },
     {
-      "mistake": "Forgetting parentheses when calling:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting parentheses when calling:\n   greet  // Doesn't execute - just references the function\n   greet()  // Executes the function"
+      "mistake": "Using console.log instead of return",
+      "consequence": "The function prints but doesn't return a usable value.",
+      "correction": "Use return to pass the value back: return (celsius * 9/5) + 32;"
     },
     {
-      "mistake": "Confusing parameters and arguments:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Confusing parameters and arguments:\n   function greet(name) { }  // 'name' is a parameter (placeholder)\n   greet('Alice');  // 'Alice' is an argument (actual value)"
+      "mistake": "Missing the parameter in the function definition",
+      "consequence": "celsius will be undefined inside the function.",
+      "correction": "Include the parameter: function celsiusToFahrenheit(celsius)"
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting that form inputs are strings",
+      "consequence": "'18' === 18 returns false because types differ.",
+      "correction": "Convert with Number(userAge) before comparing to a number."
     },
     {
-      "mistake": "Using == when you mean ===:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using == when you mean ===:\n   This is SO common. Most bugs from == are subtle and hard to spot.\n   Rule of thumb: ALWAYS use ==="
+      "mistake": "Using == to work around type issues",
+      "consequence": "While '18' == 18 works, this hides the real problem and can cause other bugs.",
+      "correction": "Convert types explicitly and use === for predictable behavior."
     },
     {
-      "mistake": "Not understanding type coercion:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Not understanding type coercion:\n   if (userInput == true)  // Almost never what you want\n   Better: if (userInput === true) or just if (userInput)"
+      "mistake": "Not understanding type coercion",
+      "consequence": "Leads to subtle bugs that are hard to debug.",
+      "correction": "Always use === and handle type conversion explicitly."
     }
   ],
   "difficulty": "beginner"

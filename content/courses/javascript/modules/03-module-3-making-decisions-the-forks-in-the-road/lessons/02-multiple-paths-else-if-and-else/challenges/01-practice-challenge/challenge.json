@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Wrong order of conditions",
+      "consequence": "if (age >= 0) catches everyone before if (age >= 18) can run.",
+      "correction": "Check from most specific to least specific: if (age >= 18) before if (age >= 0)."
     },
     {
-      "mistake": "Wrong order of conditions:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Wrong order of conditions:\n   if (score >= 60) { ... } else if (score >= 90) { ... }\n   This is wrong! If score is 95, the first condition (>= 60) is true, so it stops there. Always check from most specific to least specific."
+      "mistake": "Using separate if statements instead of else if",
+      "consequence": "Multiple if statements can all run, causing duplicate output.",
+      "correction": "Use else if to ensure only one block executes."
     },
     {
-      "mistake": "Using separate if statements instead of else if:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using separate if statements instead of else if:\n   if (temp > 80) { ... }\n   if (temp > 60) { ... }  // WRONG - both could run!\n   Instead use: else if (temp > 60) { ... }"
+      "mistake": "Adding a condition to else",
+      "consequence": "else (condition) causes a syntax error.",
+      "correction": "Use else if (condition) or just else without a condition."
     }
   ],
   "difficulty": "beginner"

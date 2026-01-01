@@ -33,19 +33,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting 'let' or 'const' keyword",
+      "consequence": "Writing just age = 25; instead of let age = 25; causes an error in strict mode or creates a global variable.",
+      "correction": "Always declare variables with let or const: let age = 25;"
     },
     {
-      "mistake": "Forgetting 'let' or 'const': Writing just age = 25; instead of let age = 25; In strict mode, this causes an error.",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting 'let' or 'const': Writing just age = 25; instead of let age = 25; In strict mode, this causes an error."
+      "mistake": "Using 'let' or 'const' when updating a variable",
+      "consequence": "Writing let age = 25; let age = 26; throws an error because you can't redeclare the same variable.",
+      "correction": "Only use let/const when creating. To update: let age = 25; age = 26;"
     },
     {
-      "mistake": "Using 'let' or 'const' when USING a variable: You only use 'let' or 'const' when CREATING the variable. After that, just use the name:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using 'let' or 'const' when USING a variable: You only use 'let' or 'const' when CREATING the variable. After that, just use the name:\n   Correct: let age = 25; age = 26;\n   Wrong: let age = 25; let age = 26; (Can't create the same box twice!)"
+      "mistake": "Using const for values that need to change",
+      "consequence": "Trying to reassign a const variable throws a TypeError.",
+      "correction": "Use let for values that will change, const for values that stay the same."
     }
   ],
   "difficulty": "beginner"

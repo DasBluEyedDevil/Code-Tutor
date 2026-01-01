@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Starting at index 1 instead of 0",
+      "consequence": "scores[1] returns the second item, not the first.",
+      "correction": "Arrays are zero-indexed: scores[0] is the first item."
     },
     {
-      "mistake": "Starting at index 1 instead of 0:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Starting at index 1 instead of 0:\n   array[1]  // This is the SECOND item, not first!\n   array[0]  // This is the first item"
+      "mistake": "Using scores[scores.length] for the last item",
+      "consequence": "Returns undefined since there's no item at that index.",
+      "correction": "Use scores[scores.length - 1] to get the last item."
     },
     {
-      "mistake": "Accessing index === length:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Accessing index === length:\n   let arr = ['a', 'b', 'c'];  // length is 3\n   arr[3]  // undefined - no such index!\n   // Valid indices: 0, 1, 2"
+      "mistake": "Dividing by a hardcoded number instead of length",
+      "consequence": "Average is wrong if the array size changes.",
+      "correction": "Use total / scores.length for a flexible solution."
     }
   ],
   "difficulty": "beginner"

@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Forgetting parentheses with multiple parameters",
+      "consequence": "const getFullName = first, last => ... causes a syntax error.",
+      "correction": "Use parentheses: const getFullName = (first, last) => first + ' ' + last"
     },
     {
-      "mistake": "Forgetting parentheses with multiple parameters:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting parentheses with multiple parameters:\n   const add = a, b => a + b;  // WRONG\n   const add = (a, b) => a + b;  // CORRECT"
+      "mistake": "Using curly braces without return",
+      "consequence": "const square = x => { x * x } returns undefined.",
+      "correction": "Either omit braces for implicit return, or add return keyword."
     },
     {
-      "mistake": "Forgetting curly braces for multi-line:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Forgetting curly braces for multi-line:\n   const greet = name =>\n     let msg = 'Hello';\n     return msg;  // WRONG - syntax error\n   \n   const greet = name => {\n     let msg = 'Hello';\n     return msg;  // CORRECT\n   };"
+      "mistake": "Adding parentheses with single parameter unnecessarily",
+      "consequence": "Not an error, just less concise.",
+      "correction": "For one param, parentheses are optional: const square = x => x * x"
     }
   ],
   "difficulty": "beginner"

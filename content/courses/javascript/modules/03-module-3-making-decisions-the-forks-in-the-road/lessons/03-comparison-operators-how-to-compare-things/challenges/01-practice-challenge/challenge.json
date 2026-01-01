@@ -21,19 +21,19 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Common mistakes:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Common mistakes:"
+      "mistake": "Using = instead of ===",
+      "consequence": "if (password = confirmPassword) assigns instead of comparing.",
+      "correction": "Use === for comparison: if (password === confirmPassword)"
     },
     {
-      "mistake": "Using = instead of ===:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using = instead of ===:\n   if (age = 18)  // WRONG - this assigns 18 to age!\n   if (age === 18)  // CORRECT - this compares"
+      "mistake": "Forgetting case sensitivity",
+      "consequence": "'Password' === 'password' returns false.",
+      "correction": "Ensure consistent casing or convert both to lowercase before comparing."
     },
     {
-      "mistake": "Using == instead of ===:",
-      "consequence": "This can lead to errors or unexpected behavior.",
-      "correction": "Using == instead of ===:\n   JavaScript has == (loose equality) and === (strict equality)\n   - 5 == '5' → true (converts types, then compares)\n   - 5 === '5' → false (different types)\n   ALWAYS use === and !== to avoid surprises"
+      "mistake": "Using == instead of ===",
+      "consequence": "Type coercion can cause unexpected matches like '5' == 5 being true.",
+      "correction": "Always use === for strict equality checks."
     }
   ],
   "difficulty": "beginner"
