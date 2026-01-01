@@ -94,5 +94,4 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   build_runner: ^2.4.0
   mockito: ^5.4.0
-  build_runner: ^2.4.0
 ```

@@ -6,6 +6,18 @@ title: "Problem 5: App Builds But Crashes Immediately"
 
 ### Check 1: Clean and Rebuild
 
+```bash
+# Stop the app if running (press 'q' in terminal)
+
+# Clean the project
+flutter clean
+
+# Get fresh dependencies
+flutter pub get
+
+# Run again
+flutter run
+```
 
 ### Check 2: Check for Errors in Code
 

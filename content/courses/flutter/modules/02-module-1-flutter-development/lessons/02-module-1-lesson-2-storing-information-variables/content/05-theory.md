@@ -6,6 +6,17 @@ title: "Using Variables"
 
 Once you create a variable, you can use it anywhere in your code:
 
+```dart
+void main() {
+  var name = 'Alex';
+  var age = 28;
+  var city = 'New York';
+
+  print('My name is $name');
+  print('I am $age years old');
+  print('I live in $city');
+}
+```
 
 **Output**:
 
