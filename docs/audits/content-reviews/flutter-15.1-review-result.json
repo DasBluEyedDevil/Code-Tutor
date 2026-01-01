@@ -1,0 +1,99 @@
+{
+  "lessonId": "15.1",
+  "reviewDate": "2025-12-30",
+  "overallScore": 7,
+  "accuracy": {
+    "score": 8,
+    "issues": [
+      "The CRDT example uses 'List<Operation> operations' without explaining what Operation class looks like",
+      "Code examples are conceptual/pseudo-code rather than runnable Dart code",
+      "Statistics about user abandonment (53%) may be outdated - should cite source"
+    ],
+    "recommendations": [
+      "Add import statements and complete class definitions for conceptual examples",
+      "Add source citations for statistics",
+      "Consider showing a minimal runnable example alongside conceptual code"
+    ]
+  },
+  "completeness": {
+    "score": 6,
+    "missingSections": [
+      "ANALOGY",
+      "WARNING"
+    ],
+    "gaps": [
+      "No explanation of when NOT to use offline-first architecture",
+      "No mention of storage/battery tradeoffs of local-first approaches",
+      "Missing explanation of how sync strategies interact with backend requirements",
+      "No mention of security considerations for local data storage"
+    ],
+    "recommendations": [
+      "Add ANALOGY section comparing offline-first to local document editing (like Word vs Google Docs)",
+      "Add WARNING section about common pitfalls (data staleness, storage limits, encryption needs)",
+      "Expand sync strategies to include real-world example scenarios",
+      "Add discussion of backend requirements for offline-first support"
+    ]
+  },
+  "freshness": {
+    "score": 8,
+    "outdatedItems": [],
+    "currentVersion": "Dart 3.5, Flutter 3.27",
+    "recommendations": [
+      "Consider mentioning new Flutter offline-first packages like synq_manager, flutter_sync_engine released in 2025",
+      "Reference official Flutter documentation at docs.flutter.dev/app-architecture/design-patterns/offline-first",
+      "Consider adding CRDT library examples (like json_crdt or replicated package)"
+    ]
+  },
+  "pedagogicalGaps": {
+    "score": 7,
+    "missingPrerequisites": [
+      "Understanding of async/await patterns",
+      "Basic knowledge of databases and CRUD operations",
+      "Familiarity with network requests and API calls"
+    ],
+    "unansweredQuestions": [
+      "How much local storage is typically needed?",
+      "What happens if local and remote data get too far out of sync?",
+      "How do you handle schema changes in offline data?",
+      "How do you test offline-first apps?"
+    ],
+    "missingUseCases": [
+      "E-commerce apps with cart persistence",
+      "Field data collection apps",
+      "Multi-device sync scenarios"
+    ],
+    "recommendations": [
+      "Add prerequisites section listing assumed knowledge",
+      "Add FAQ section addressing common learner questions",
+      "Include more diverse real-world use case examples",
+      "Add section on testing offline behavior"
+    ]
+  },
+  "contentLengthIssues": {
+    "shortSections": [
+      {
+        "sectionTitle": "Sync Strategies Overview",
+        "currentLength": 50,
+        "recommendation": "Expand to explain each strategy with real-world scenario and when to choose it"
+      }
+    ]
+  },
+  "suggestedNewContent": [
+    {
+      "sectionType": "ANALOGY",
+      "title": "The Library vs Cloud Documents Analogy",
+      "contentOutline": "Compare offline-first to having books at home (always accessible) vs checking out from library (network dependent). Explain how offline-first gives you both local copies and sync capability."
+    },
+    {
+      "sectionType": "WARNING",
+      "title": "Common Offline-First Pitfalls",
+      "contentOutline": "Cover: 1) Storage limits on mobile devices, 2) Data staleness issues, 3) Conflict resolution complexity, 4) Security/encryption requirements for local data, 5) Increased app complexity"
+    },
+    {
+      "sectionType": "THEORY",
+      "title": "When NOT to Use Offline-First",
+      "contentOutline": "Explain scenarios where online-first is better: real-time collaborative apps, security-sensitive data that shouldn't be stored locally, apps requiring always-fresh data (stock prices, live scores)"
+    }
+  ],
+  "priority": "MEDIUM"
+}
