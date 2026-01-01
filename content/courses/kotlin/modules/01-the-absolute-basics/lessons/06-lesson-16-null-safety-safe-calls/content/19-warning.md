@@ -11,7 +11,8 @@ The `!!` operator should be your last resort. If you find yourself using it ofte
 Just because you used `?.` doesn't mean you're finished. A safe call returns `null`, and you often need to handle that null result using `?:` to provide a fallback.
 
 ### Mistake 3: Unnecessary Null Checks
-...
+
+If a variable is already declared as non-nullable, you don't need to check for null. Kotlin's type system guarantees it won't be null:
 
 
 

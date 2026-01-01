@@ -31,7 +31,12 @@ println(setA union setB)     // [1, 2, 3, 4, 5]
 ```
 
 ### When to Use Sets
-...
+
+Use sets when:
+- You need to ensure all elements are unique
+- Order doesn't matter
+- You want fast lookup (checking if an item exists)
+- You need mathematical set operations (union, intersection, difference)
 
 
 

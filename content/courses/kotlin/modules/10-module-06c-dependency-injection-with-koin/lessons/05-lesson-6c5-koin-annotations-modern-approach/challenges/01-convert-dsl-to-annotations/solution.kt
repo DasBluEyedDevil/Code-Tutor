@@ -19,7 +19,10 @@ interface UserApi {
 class UserApiImpl(
     private val client: HttpClient
 ) : UserApi {
-    override suspend fun getUser(id: String): User = TODO()
+    override suspend fun getUser(id: String): User {
+        // In a real app, this would make an HTTP request
+        return User(id, "User $id", "user$id@example.com")
+    }
 }
 
 // Repository layer
@@ -47,7 +50,10 @@ class GetUserUseCase(
 class UpdateUserUseCase(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(user: User) { TODO() }
+    suspend operator fun invoke(user: User) {
+        // In a real app, this would update the user via the repository
+        println("Updating user: ${user.id}")
+    }
 }
 
 // ViewModel

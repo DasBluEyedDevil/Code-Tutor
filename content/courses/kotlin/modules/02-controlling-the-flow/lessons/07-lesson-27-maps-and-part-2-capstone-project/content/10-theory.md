@@ -100,5 +100,16 @@ Enter choice (1-7): 2
     📧 Email: alice@email.com
 
 === MAIN MENU ===
-...
+1. Add Contact
+2. View All Contacts
+3. Search Contact
+4. Update Contact
+5. Delete Contact
+6. Statistics
+7. Exit
+
+Enter choice (1-7): 7
+
+Thank you for using Contact Management System!
+Goodbye! 👋
 ```

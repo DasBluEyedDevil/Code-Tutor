@@ -28,3 +28,10 @@ fun main() {
 ```
 
 **Sample Output**:
+
+```text
+=== Temperature Converter ===
+Enter temperature in Celsius: 25
+Results:
+25.0°C = 77.0°F = 298.15 K
+```

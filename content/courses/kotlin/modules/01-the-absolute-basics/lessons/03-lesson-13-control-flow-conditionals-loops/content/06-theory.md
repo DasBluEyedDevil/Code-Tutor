@@ -36,9 +36,11 @@ do {
 ```
 
 ### Break and Continue
-...
 
+These keywords give you finer control over loop execution:
 
+- **`break`**: Immediately exits the loop entirely
+- **`continue`**: Skips the rest of the current iteration and moves to the next one
 
 ```kotlin
 // Break - exit loop early

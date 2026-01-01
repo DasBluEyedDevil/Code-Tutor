@@ -32,7 +32,8 @@ fun getGrade(score: Int): String {
 ```
 
 ### Unit Return Type (No Return Value)
-...
+
+When a function doesn't return any meaningful value, it has the return type `Unit`. This is similar to `void` in other languages. You can omit `Unit` since it's the default when no return type is specified.
 
 
 

@@ -22,11 +22,13 @@ fun main() {
 ```text
 Added 5 x Apple
 Added 3 x Banana
-...
+Added 4 x Orange
+
 === Shopping Cart ===
   Apple: 5
   Banana: 3
-...
+  Orange: 4
+Total items: 12
 ```
 
 

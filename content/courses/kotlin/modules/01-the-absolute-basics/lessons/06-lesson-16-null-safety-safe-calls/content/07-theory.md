@@ -30,7 +30,8 @@ val length = name?.length ?: 0
 ```
 
 ### Elvis with Expressions
-...
+
+The Elvis operator can use any expression on the right side, not just simple values. This is useful for providing computed defaults:
 
 
 

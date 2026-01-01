@@ -48,7 +48,8 @@ val evens = numbers.filter { it % 2 == 0 } // [2]
 ---
 
 **Question 5: B) `[1, 2, 3]`**
-...
+
+Converting a list to a set removes duplicates.
 
 Converting a list to a set removes duplicates:
 
