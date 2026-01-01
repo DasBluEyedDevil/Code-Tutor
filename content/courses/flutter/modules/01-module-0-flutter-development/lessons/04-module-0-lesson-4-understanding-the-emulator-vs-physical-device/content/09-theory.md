@@ -22,6 +22,17 @@ title: "Common Issues and Fixes"
 
 **Solution**:
 
+```bash
+# Delete the lock file manually
+# Mac/Linux:
+rm -f ~/development/flutter/bin/cache/lockfile
+
+# Windows PowerShell:
+Remove-Item -Force C:\src\flutter\bin\cache\lockfile
+
+# Or simply restart your computer (easiest fix)
+```
+
 ### iOS Simulator not showing
 
 **Mac Only Solution**:

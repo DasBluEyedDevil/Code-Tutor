@@ -5,6 +5,7 @@ title: "Problem 3: \"Waiting for another flutter command...\""
 
 
 ### Error message:
+`Waiting for another flutter command to release the startup lock...`
 
 ### What happened:
 A previous Flutter command didn't finish properly and left a lock file.

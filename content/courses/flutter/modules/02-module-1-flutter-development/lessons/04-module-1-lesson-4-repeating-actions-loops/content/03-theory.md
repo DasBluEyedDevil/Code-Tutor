@@ -14,9 +14,25 @@ Think of it like counting:
 
 **The Pattern**:
 
+```dart
+for (var counter = start; counter <= end; counter++) {
+  // Code to repeat
+}
+```
+
+- `var counter = start`: Initialize a counter variable
+- `counter <= end`: Continue while this condition is true
+- `counter++`: Increase counter by 1 after each loop
 
 **Real Example**:
 
+```dart
+void main() {
+  for (var i = 1; i <= 3; i++) {
+    print('This is repetition number $i');
+  }
+}
+```
 
 **Output**:
 

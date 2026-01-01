@@ -9,9 +9,32 @@ A function is like creating your own command. Once you define it, you can use it
 
 **The Pattern**:
 
+```dart
+// Define a function
+void functionName() {
+  // Code that runs when you call this function
+}
+
+// Call (use) the function
+functionName();
+```
 
 **Real Example**:
 
+```dart
+// Define the function
+void greet() {
+  print('Hello!');
+  print('Welcome to Flutter!');
+  print('Have a great day!');
+}
+
+void main() {
+  // Call it twice - no need to repeat the 3 print statements!
+  greet();
+  greet();
+}
+```
 
 **Output**:
 
