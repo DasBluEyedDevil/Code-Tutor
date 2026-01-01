@@ -11198,6 +11198,530 @@
       ]
     },
     {
+      "id": "module-06c",
+      "title": "Module 06C: Dependency Injection with Koin",
+      "description": "Master dependency injection for Kotlin Multiplatform using Koin. Learn to structure modular, testable applications with clean dependency management across Android, iOS, and shared code.",
+      "difficulty": "intermediate",
+      "estimatedHours": 8,
+      "lessons": [
+        {
+          "id": "6c.1",
+          "title": "Lesson 6C.1: Why Dependency Injection?",
+          "moduleId": "module-06c",
+          "order": 1,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nThis lesson introduces dependency injection (DI) - a fundamental pattern for building maintainable, testable, and modular applications. You'll learn why DI matters and how it transforms code architecture."
+            },
+            {
+              "type": "THEORY",
+              "title": "The Problem: Tight Coupling",
+              "content": "Consider this common pattern in applications:\n\n```kotlin\nclass NotesViewModel {\n    // ❌ Hard-coded dependencies\n    private val database = AppDatabase.getInstance()\n    private val apiClient = ApiClient()\n    private val preferences = UserPreferences()\n    \n    fun loadNotes() {\n        val notes = database.notesDao().getAll()\n        // ...\n    }\n}\n```\n\n**Problems with this approach:**\n\n1. **Untestable**: You can't substitute a fake database for testing\n2. **Rigid**: Changing the database implementation affects this class\n3. **Hidden dependencies**: Readers can't see what this class needs without reading the code\n4. **Lifecycle issues**: Who creates and destroys these objects?\n5. **Singletons everywhere**: `getInstance()` patterns lead to global state"
+            },
+            {
+              "type": "ANALOGY",
+              "title": "The Coffee Shop Analogy",
+              "content": "**Without DI (Bad Coffee Shop):**\nThe barista (your class) runs to the warehouse to get beans, drives to get milk, and builds their own espresso machine. They need to know everything about sourcing.\n\n**With DI (Good Coffee Shop):**\nThe barista receives beans, milk, and an espresso machine when they start work. They focus on making great coffee. If the shop switches milk suppliers, the barista's job doesn't change.\n\n**Your class should receive its tools, not create them.**"
+            },
+            {
+              "type": "THEORY",
+              "title": "Dependency Injection Explained",
+              "content": "**Dependency Injection** = \"Don't create your dependencies, receive them\"\n\n### The Fix: Constructor Injection\n\n```kotlin\nclass NotesViewModel(\n    private val notesRepository: NotesRepository,  // ✅ Injected\n    private val userPreferences: UserPreferences    // ✅ Injected\n) {\n    fun loadNotes() {\n        val notes = notesRepository.getAll()\n        // ...\n    }\n}\n```\n\n**Benefits:**\n\n1. **Testable**: Pass fake implementations for testing\n2. **Flexible**: Change implementations without touching this class\n3. **Explicit**: Constructor shows exactly what's needed\n4. **Decoupled**: Depends on interfaces, not concrete classes\n\n### Testing Becomes Easy\n\n```kotlin\nclass NotesViewModelTest {\n    @Test\n    fun `loadNotes shows notes from repository`() {\n        // Create fake dependencies\n        val fakeRepo = FakeNotesRepository()\n        fakeRepo.addNote(Note(\"Test\", \"Content\"))\n        \n        val viewModel = NotesViewModel(\n            notesRepository = fakeRepo,\n            userPreferences = FakeUserPreferences()\n        )\n        \n        viewModel.loadNotes()\n        \n        assertEquals(1, viewModel.state.value.notes.size)\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "DI Frameworks: Why Not Do It Manually?",
+              "content": "You might think: \"I can just pass dependencies through constructors myself!\"\n\nFor small apps, manual DI works. But as apps grow:\n\n```kotlin\n// Manual DI becomes unwieldy\nfun createNotesScreen(): NotesScreen {\n    val database = createDatabase(context)\n    val notesDao = database.notesDao()\n    val apiClient = createApiClient()\n    val notesApi = NotesApi(apiClient)\n    val notesRepository = NotesRepositoryImpl(notesDao, notesApi)\n    val userPreferences = UserPreferences(context)\n    val viewModel = NotesViewModel(notesRepository, userPreferences)\n    return NotesScreen(viewModel)\n}\n```\n\n**Problems:**\n- Who calls this?\n- What about singletons vs new instances?\n- What about different configurations for debug/release?\n- What about platform-specific implementations?\n\n**DI Frameworks solve:**\n- Automatic wiring of dependencies\n- Lifecycle management (singleton, factory, scoped)\n- Module organization\n- Configuration by environment\n- Platform-specific bindings"
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Koin for KMP?",
+              "content": "### DI Options for Kotlin\n\n| Framework | Kotlin Multiplatform | Compile-time | Learning Curve |\n|-----------|---------------------|--------------|----------------|\n| **Koin** | ✅ Full support | ❌ Runtime | Low |\n| Dagger/Hilt | ❌ Android only | ✅ | High |\n| Kodein | ✅ Full support | ❌ Runtime | Medium |\n| kotlin-inject | ✅ Partial | ✅ | Medium |\n\n### Why Koin Wins for KMP\n\n1. **First-class KMP support**: Designed for multiplatform from the start\n2. **Simple DSL**: Human-readable module definitions\n3. **No code generation**: Works anywhere Kotlin runs\n4. **Koin Annotations**: Optional compile-time safety (Koin 4.0+)\n5. **Compose integration**: `koinViewModel()` works seamlessly\n6. **Active development**: Regular updates, strong community\n\n```kotlin\n// Koin DSL is readable and concise\nval appModule = module {\n    single { AppDatabase.create(get()) }\n    single<NotesRepository> { NotesRepositoryImpl(get()) }\n    viewModel { NotesViewModel(get()) }\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common DI Misconceptions",
+              "content": "### ❌ \"DI is only for testing\"\nTesting is a benefit, but DI also improves modularity, reusability, and team collaboration.\n\n### ❌ \"DI adds complexity\"\nDI *manages* existing complexity. Your app already has dependencies - DI makes them explicit and organized.\n\n### ❌ \"Just use singletons\"\nSingletons create hidden global state, make testing hard, and can cause memory leaks. DI provides controlled singleton behavior when needed.\n\n### ❌ \"I'll add DI later\"\nRetrofitting DI is painful. Start with it from the beginning - even for small projects."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Before and After: Real-World Comparison",
+              "content": "See how DI transforms a typical KMP screen:",
+              "code": "// ========== WITHOUT DI ==========\n\nclass NotesScreen : Screen {\n    // Bad: Creating dependencies internally\n    private val database = DatabaseProvider.getDatabase()\n    private val apiClient = ApiClient.instance\n    private val repository = NotesRepositoryImpl(database, apiClient)\n    private val viewModel = NotesViewModel(repository)\n    \n    @Composable\n    fun Content() {\n        val state by viewModel.state.collectAsState()\n        NotesList(state.notes)\n    }\n}\n\n// Problems:\n// - Can't test with fake data\n// - Screen knows about database, API, repository details\n// - Changing database affects multiple screens\n// - Singletons everywhere\n\n// ========== WITH KOIN DI ==========\n\n// di/AppModule.kt\nval appModule = module {\n    single<NotesRepository> { NotesRepositoryImpl(get(), get()) }\n    viewModel { NotesViewModel(get()) }\n}\n\n// Screen only receives what it needs\nclass NotesScreen : Screen {\n    @Composable\n    fun Content() {\n        val viewModel = koinViewModel<NotesViewModel>()\n        val state by viewModel.state.collectAsState()\n        NotesList(state.notes)\n    }\n}\n\n// Benefits:\n// - Screen is simple - just UI\n// - Dependencies managed centrally\n// - Easy to swap implementations\n// - Testable with fake modules",
+              "language": "kotlin"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-1-1",
+              "title": "Identify the Dependencies",
+              "description": "Given a tightly-coupled class, identify all dependencies that should be injected.",
+              "difficulty": "beginner",
+              "starterCode": "// Analyze this class and list all dependencies that should be injected\n\nclass UserProfileManager {\n    private val database = AppDatabase.getInstance()\n    private val networkClient = RetrofitClient.create()\n    private val cache = LruCache<String, User>(100)\n    private val logger = Logger.getLogger(\"UserProfile\")\n    \n    suspend fun getUser(userId: String): User {\n        // Check cache first\n        cache.get(userId)?.let { return it }\n        \n        // Try database\n        val localUser = database.userDao().findById(userId)\n        if (localUser != null) {\n            cache.put(userId, localUser)\n            return localUser\n        }\n        \n        // Fetch from network\n        logger.info(\"Fetching user $userId from network\")\n        val remoteUser = networkClient.users().getUser(userId)\n        database.userDao().insert(remoteUser)\n        cache.put(userId, remoteUser)\n        return remoteUser\n    }\n}\n\n// TODO: List the dependencies that should be injected:\n// 1. ???\n// 2. ???\n// 3. ???\n// 4. ???\n\n// TODO: Rewrite the class constructor to accept these dependencies",
+              "solution": "// Dependencies that should be injected:\n// 1. UserDao (from database)\n// 2. UserApi (network endpoint)\n// 3. Cache<String, User>\n// 4. Logger\n\n// Refactored with dependency injection:\n\ninterface UserCache {\n    fun get(key: String): User?\n    fun put(key: String, user: User)\n}\n\nclass UserProfileManager(\n    private val userDao: UserDao,           // Injected\n    private val userApi: UserApi,           // Injected\n    private val cache: UserCache,           // Injected\n    private val logger: Logger              // Injected\n) {\n    suspend fun getUser(userId: String): User {\n        // Check cache first\n        cache.get(userId)?.let { return it }\n        \n        // Try database\n        val localUser = userDao.findById(userId)\n        if (localUser != null) {\n            cache.put(userId, localUser)\n            return localUser\n        }\n        \n        // Fetch from network\n        logger.info(\"Fetching user $userId from network\")\n        val remoteUser = userApi.getUser(userId)\n        userDao.insert(remoteUser)\n        cache.put(userId, remoteUser)\n        return remoteUser\n    }\n}\n\n// Benefits:\n// - Each dependency is an interface (can be mocked)\n// - No hidden global state\n// - Constructor clearly shows requirements\n// - Easy to test with fakes:\n\nclass UserProfileManagerTest {\n    @Test\n    fun `getUser returns cached user`() = runTest {\n        val fakeCache = FakeUserCache()\n        fakeCache.put(\"123\", User(\"123\", \"John\"))\n        \n        val manager = UserProfileManager(\n            userDao = FakeUserDao(),\n            userApi = FakeUserApi(),\n            cache = fakeCache,\n            logger = NoOpLogger()\n        )\n        \n        val user = manager.getUser(\"123\")\n        assertEquals(\"John\", user.name)\n    }\n}",
+              "hints": [
+                "Look for any objects created with getInstance(), create(), or getLogger()",
+                "Each of these should become a constructor parameter",
+                "Consider using interfaces to define contracts"
+              ],
+              "testCases": [
+                {
+                  "description": "Identify 4 dependencies: database/dao, network client, cache, and logger",
+                  "expectedBehavior": "All hard-coded dependencies replaced with constructor parameters"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.2",
+          "title": "Lesson 6C.2: Koin Fundamentals",
+          "moduleId": "module-06c",
+          "order": 2,
+          "estimatedMinutes": 55,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 55 minutes\n\nThis lesson covers Koin's core concepts: modules, definitions, scopes, and qualifiers. You'll learn to define and organize dependencies using Koin's Kotlin DSL."
+            },
+            {
+              "type": "THEORY",
+              "title": "Adding Koin to Your Project",
+              "content": "### Gradle Setup (Version Catalog)\n\n```toml\n# gradle/libs.versions.toml\n[versions]\nkoin = \"4.0.0\"\n\n[libraries]\nkoin-core = { module = \"io.insert-koin:koin-core\", version.ref = \"koin\" }\nkoin-compose = { module = \"io.insert-koin:koin-compose\", version.ref = \"koin\" }\nkoin-compose-viewmodel = { module = \"io.insert-koin:koin-compose-viewmodel\", version.ref = \"koin\" }\nkoin-android = { module = \"io.insert-koin:koin-android\", version.ref = \"koin\" }\nkoin-test = { module = \"io.insert-koin:koin-test\", version.ref = \"koin\" }\n```\n\n### Dependencies by Source Set\n\n```kotlin\n// shared/build.gradle.kts\nkotlin {\n    sourceSets {\n        commonMain.dependencies {\n            implementation(libs.koin.core)\n            implementation(libs.koin.compose)\n            implementation(libs.koin.compose.viewmodel)\n        }\n        commonTest.dependencies {\n            implementation(libs.koin.test)\n        }\n        androidMain.dependencies {\n            implementation(libs.koin.android)\n        }\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Defining Modules",
+              "content": "A **module** is a container for dependency definitions:\n\n```kotlin\nimport org.koin.dsl.module\n\nval appModule = module {\n    // Define dependencies here\n}\n```\n\n### Definition Types\n\n| Type | Behavior | Use Case |\n|------|----------|----------|\n| `single { }` | Creates once, reuses | Database, HttpClient, Repository |\n| `factory { }` | Creates new each time | ViewModel (in some cases), Use cases |\n| `viewModel { }` | Lifecycle-aware | ViewModels with Compose |\n| `scoped { }` | Lives within a scope | Session-specific data |\n\n```kotlin\nval appModule = module {\n    // Singleton - one instance for the app\n    single { AppDatabase.create() }\n    \n    // Factory - new instance each time\n    factory { CreateNoteUseCase(get()) }\n    \n    // ViewModel - managed lifecycle\n    viewModel { NotesViewModel(get(), get()) }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "The get() Function",
+              "content": "`get()` retrieves a dependency from Koin:\n\n```kotlin\nval appModule = module {\n    single { AppDatabase.create() }\n    \n    // get() finds AppDatabase and passes it\n    single { NotesDao(get()) }\n    \n    // get() finds NotesDao and passes it\n    single<NotesRepository> { NotesRepositoryImpl(get()) }\n    \n    // get() finds NotesRepository and passes it\n    viewModel { NotesViewModel(get()) }\n}\n```\n\n### How get() Works\n\n1. Koin looks for a matching type in registered modules\n2. If found and it's a `single`, returns the existing instance\n3. If found and it's a `factory`, creates a new instance\n4. If not found, throws an exception at runtime\n\n### Type Safety with Interfaces\n\n```kotlin\nval appModule = module {\n    // Register implementation with interface type\n    single<NotesRepository> { NotesRepositoryImpl(get()) }\n    \n    // ViewModel depends on interface, not implementation\n    viewModel { NotesViewModel(get<NotesRepository>()) }\n}\n```\n\nThe `<NotesRepository>` syntax explicitly tells Koin which type to look for."
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Module Example",
+              "content": "Here's a well-organized Koin module:",
+              "code": "// di/AppModule.kt\nimport org.koin.dsl.module\nimport org.koin.core.module.dsl.viewModel\nimport org.koin.core.module.dsl.singleOf\nimport org.koin.core.module.dsl.bind\n\n// Data layer module\nval dataModule = module {\n    // Database\n    single { AppDatabase.create() }\n    single { get<AppDatabase>().notesQueries }\n    \n    // Network\n    single { createHttpClient() }\n    single { NotesApi(get()) }\n    \n    // Repository: implementation bound to interface\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n}\n\n// Domain layer module\nval domainModule = module {\n    // Use cases - created fresh each time\n    factory { GetAllNotesUseCase(get()) }\n    factory { CreateNoteUseCase(get()) }\n    factory { DeleteNoteUseCase(get()) }\n    factory { SearchNotesUseCase(get()) }\n}\n\n// Presentation layer module\nval presentationModule = module {\n    viewModel { NotesListViewModel(get()) }\n    viewModel { parameters -> \n        NoteDetailViewModel(\n            noteId = parameters.get(),\n            repository = get()\n        )\n    }\n}\n\n// Combine all modules\nval allModules = listOf(\n    dataModule,\n    domainModule,\n    presentationModule\n)",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Qualifiers: Multiple Implementations",
+              "content": "What if you have two implementations of the same interface?\n\n```kotlin\ninterface ApiClient {\n    suspend fun fetch(url: String): String\n}\n\nclass ProductionApiClient : ApiClient { ... }\nclass MockApiClient : ApiClient { ... }\n```\n\n### Using Named Qualifiers\n\n```kotlin\nimport org.koin.core.qualifier.named\n\nval apiModule = module {\n    single<ApiClient>(named(\"production\")) { ProductionApiClient() }\n    single<ApiClient>(named(\"mock\")) { MockApiClient() }\n}\n\n// Retrieving with qualifier\nval productionClient = get<ApiClient>(named(\"production\"))\nval mockClient = get<ApiClient>(named(\"mock\"))\n```\n\n### Using Enum Qualifiers (Cleaner)\n\n```kotlin\nenum class ApiType {\n    PRODUCTION, MOCK\n}\n\nval apiModule = module {\n    single<ApiClient>(named(ApiType.PRODUCTION)) { ProductionApiClient() }\n    single<ApiClient>(named(ApiType.MOCK)) { MockApiClient() }\n}\n```\n\n### Real-World Example: Multiple Dispatchers\n\n```kotlin\nimport kotlinx.coroutines.Dispatchers\nimport org.koin.core.qualifier.named\n\nenum class DispatcherType {\n    IO, DEFAULT, MAIN\n}\n\nval dispatcherModule = module {\n    single(named(DispatcherType.IO)) { Dispatchers.IO }\n    single(named(DispatcherType.DEFAULT)) { Dispatchers.Default }\n    single(named(DispatcherType.MAIN)) { Dispatchers.Main }\n}\n\n// Use in repository\nclass NotesRepositoryImpl(\n    private val ioDispatcher: CoroutineDispatcher,\n    private val database: AppDatabase\n) : NotesRepository {\n    // ...\n}\n\nval dataModule = module {\n    single<NotesRepository> { \n        NotesRepositoryImpl(\n            ioDispatcher = get(named(DispatcherType.IO)),\n            database = get()\n        )\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Parameters: Runtime Values",
+              "content": "Some dependencies need runtime values (like a note ID):\n\n```kotlin\nval presentationModule = module {\n    // ViewModel that needs a noteId at creation time\n    viewModel { parameters ->\n        NoteDetailViewModel(\n            noteId = parameters.get<String>(),\n            repository = get()\n        )\n    }\n}\n```\n\n### Passing Parameters\n\n```kotlin\n// In Compose\n@Composable\nfun NoteDetailScreen(noteId: String) {\n    val viewModel = koinViewModel<NoteDetailViewModel> {\n        parametersOf(noteId)\n    }\n    // ...\n}\n```\n\n### Multiple Parameters\n\n```kotlin\nviewModel { parameters ->\n    SearchViewModel(\n        initialQuery = parameters.get<String>(),\n        category = parameters.get<Category>(),\n        repository = get()\n    )\n}\n\n// Usage\nval viewModel = koinViewModel<SearchViewModel> {\n    parametersOf(\"kotlin\", Category.PROGRAMMING)\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Common Koin Mistakes",
+              "content": "### ❌ Circular Dependencies\n\n```kotlin\nval module = module {\n    single { ServiceA(get()) }  // Needs ServiceB\n    single { ServiceB(get()) }  // Needs ServiceA\n}\n// Runtime error: StackOverflowException\n```\n\n**Fix**: Redesign to break the cycle, often with an interface or lazy injection.\n\n### ❌ Missing Dependencies\n\n```kotlin\nval module = module {\n    single { NotesRepository(get()) }  // Needs Database\n    // Forgot to define Database!\n}\n// Runtime error when resolving NotesRepository\n```\n\n**Fix**: Use Koin's `checkModules()` in tests to catch early.\n\n### ❌ Confusing single vs factory for ViewModels\n\n```kotlin\n// ❌ Wrong: ViewModel reused across screens\nsingle { NotesViewModel(get()) }\n\n// ✅ Right: Use viewModel { } for proper lifecycle\nviewModel { NotesViewModel(get()) }\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-2-1",
+              "title": "Build a Koin Module",
+              "description": "Create a complete Koin module for a book reading app with database, repository, and ViewModel.",
+              "difficulty": "intermediate",
+              "starterCode": "import org.koin.dsl.module\nimport org.koin.core.module.dsl.viewModel\n\n// Given these classes:\nclass AppDatabase {\n    fun booksQueries(): BooksQueries = TODO()\n}\n\ninterface BooksQueries {\n    fun getAll(): List<Book>\n    fun getById(id: String): Book?\n    fun insert(book: Book)\n}\n\ndata class Book(val id: String, val title: String, val author: String)\n\ninterface BookRepository {\n    suspend fun getAllBooks(): List<Book>\n    suspend fun getBook(id: String): Book?\n    suspend fun saveBook(book: Book)\n}\n\nclass BookRepositoryImpl(\n    private val queries: BooksQueries\n) : BookRepository {\n    override suspend fun getAllBooks() = queries.getAll()\n    override suspend fun getBook(id: String) = queries.getById(id)\n    override suspend fun saveBook(book: Book) = queries.insert(book)\n}\n\nclass BookListViewModel(\n    private val repository: BookRepository\n) {\n    // ...\n}\n\nclass BookDetailViewModel(\n    private val bookId: String,\n    private val repository: BookRepository\n) {\n    // ...\n}\n\n// TODO: Create a Koin module that:\n// 1. Provides AppDatabase as a singleton\n// 2. Provides BooksQueries from the database\n// 3. Provides BookRepositoryImpl bound to BookRepository interface\n// 4. Provides BookListViewModel\n// 5. Provides BookDetailViewModel with bookId parameter\n\nval bookModule = module {\n    // Your code here\n}",
+              "solution": "import org.koin.dsl.module\nimport org.koin.core.module.dsl.viewModel\nimport org.koin.core.module.dsl.singleOf\nimport org.koin.core.module.dsl.bind\n\nval bookModule = module {\n    // 1. Database as singleton\n    single { AppDatabase() }\n    \n    // 2. Queries from database\n    single { get<AppDatabase>().booksQueries() }\n    \n    // 3. Repository implementation bound to interface\n    singleOf(::BookRepositoryImpl) { bind<BookRepository>() }\n    // Alternative syntax:\n    // single<BookRepository> { BookRepositoryImpl(get()) }\n    \n    // 4. BookListViewModel\n    viewModel { BookListViewModel(get()) }\n    \n    // 5. BookDetailViewModel with bookId parameter\n    viewModel { parameters ->\n        BookDetailViewModel(\n            bookId = parameters.get(),\n            repository = get()\n        )\n    }\n}\n\n// Usage example:\n// val listViewModel = koinViewModel<BookListViewModel>()\n// val detailViewModel = koinViewModel<BookDetailViewModel> { parametersOf(\"book-123\") }",
+              "hints": [
+                "Use single { } for things that should be created once",
+                "Use singleOf(::ClassName) { bind<Interface>() } for interface binding",
+                "Use viewModel { parameters -> ... } when you need runtime values"
+              ],
+              "testCases": [
+                {
+                  "description": "Module should have all 5 definitions",
+                  "expectedBehavior": "Database, Queries, Repository, and both ViewModels defined"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.3",
+          "title": "Lesson 6C.3: Koin in KMP Projects",
+          "moduleId": "module-06c",
+          "order": 3,
+          "estimatedMinutes": 60,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 60 minutes\n\nThis lesson shows how to structure Koin for Kotlin Multiplatform projects, sharing modules between Android and iOS while supporting platform-specific implementations."
+            },
+            {
+              "type": "THEORY",
+              "title": "KMP Module Structure",
+              "content": "In KMP projects, organize Koin modules by layer and platform:\n\n```\nshared/\n├── src/\n│   ├── commonMain/\n│   │   └── kotlin/\n│   │       └── di/\n│   │           ├── CommonModule.kt      # Shared dependencies\n│   │           ├── DomainModule.kt      # Use cases\n│   │           └── KoinInit.kt          # Initialization\n│   ├── androidMain/\n│   │   └── kotlin/\n│   │       └── di/\n│   │           └── PlatformModule.android.kt\n│   └── iosMain/\n│       └── kotlin/\n│           └── di/\n│               └── PlatformModule.ios.kt\n```\n\n### The Pattern\n\n1. **commonMain**: Shared interfaces and common implementations\n2. **androidMain/iosMain**: Platform-specific implementations\n3. **Expect/Actual**: Bridge for platform modules"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Common Module",
+              "content": "The shared module defines common dependencies:",
+              "code": "// commonMain/kotlin/di/CommonModule.kt\nimport org.koin.dsl.module\nimport org.koin.core.module.dsl.viewModel\nimport org.koin.core.module.dsl.singleOf\nimport org.koin.core.module.dsl.bind\n\nval commonModule = module {\n    // Repository depends on platform-provided database\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n    \n    // Use cases\n    factory { GetAllNotesUseCase(get()) }\n    factory { CreateNoteUseCase(get()) }\n    factory { DeleteNoteUseCase(get()) }\n    factory { SearchNotesUseCase(get()) }\n    \n    // ViewModels\n    viewModel { NotesListViewModel(get()) }\n    viewModel { parameters ->\n        NoteDetailViewModel(\n            noteId = parameters.get(),\n            repository = get()\n        )\n    }\n}\n\n// Network module (shared Ktor client)\nval networkModule = module {\n    single { createHttpClient() }\n    single { NotesApi(get()) }\n}\n\nfun createHttpClient(): HttpClient {\n    return HttpClient {\n        install(ContentNegotiation) {\n            json(Json {\n                ignoreUnknownKeys = true\n                prettyPrint = true\n            })\n        }\n        install(Logging) {\n            level = LogLevel.INFO\n        }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Platform Modules",
+              "content": "Each platform provides its own implementations:",
+              "code": "// ===== androidMain/kotlin/di/PlatformModule.android.kt =====\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\nimport org.koin.dsl.module\n\nval platformModule = module {\n    // Android-specific database driver\n    single {\n        val context = get<Context>()\n        AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"notes.db\"\n        )\n    }\n    \n    // Database using Android driver\n    single { AppDatabase(get()) }\n    \n    // Platform-specific utilities\n    single<PlatformLogger> { AndroidLogger() }\n    single<FileManager> { AndroidFileManager(get()) }\n}\n\n// ===== iosMain/kotlin/di/PlatformModule.ios.kt =====\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\nimport org.koin.dsl.module\n\nval platformModule = module {\n    // iOS-specific database driver\n    single {\n        NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"notes.db\"\n        )\n    }\n    \n    // Database using native driver\n    single { AppDatabase(get()) }\n    \n    // Platform-specific utilities\n    single<PlatformLogger> { IOSLogger() }\n    single<FileManager> { IOSFileManager() }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Initialization Strategy",
+              "content": "### Shared Initialization Function\n\n```kotlin\n// commonMain/kotlin/di/KoinInit.kt\nimport org.koin.core.context.startKoin\nimport org.koin.core.module.Module\nimport org.koin.dsl.KoinAppDeclaration\n\nfun initKoin(\n    platformModule: Module,\n    appDeclaration: KoinAppDeclaration = {}\n) {\n    startKoin {\n        appDeclaration()\n        modules(\n            platformModule,\n            networkModule,\n            commonModule\n        )\n    }\n}\n\n// For iOS (called from Swift)\nfun initKoinIOS() {\n    initKoin(platformModule) {\n        // iOS-specific Koin configuration if needed\n    }\n}\n```\n\n### Android Initialization\n\n```kotlin\n// androidMain or androidApp/src/main/kotlin/App.kt\nclass NotesApplication : Application() {\n    override fun onCreate() {\n        super.onCreate()\n        \n        initKoin(platformModule) {\n            // Provide Android context\n            androidContext(this@NotesApplication)\n            \n            // Android-specific logging\n            androidLogger()\n        }\n    }\n}\n```\n\n### iOS Initialization (Swift)\n\n```swift\n// iosApp/iosApp/iOSApp.swift\nimport shared\n\n@main\nstruct iOSApp: App {\n    init() {\n        KoinInitKt.initKoinIOS()\n    }\n    \n    var body: some Scene {\n        WindowGroup {\n            ContentView()\n        }\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Using Koin in Compose Multiplatform",
+              "content": "### KoinApplication Provider\n\n```kotlin\n// composeApp/commonMain/kotlin/App.kt\nimport org.koin.compose.KoinApplication\nimport org.koin.compose.koinInject\nimport org.koin.compose.viewmodel.koinViewModel\n\n@Composable\nfun App() {\n    KoinApplication(application = {\n        modules(commonModule, platformModule)\n    }) {\n        NotesApp()\n    }\n}\n```\n\n### Injecting in Composables\n\n```kotlin\n@Composable\nfun NotesListScreen() {\n    // Inject ViewModel - lifecycle aware\n    val viewModel = koinViewModel<NotesListViewModel>()\n    val state by viewModel.state.collectAsState()\n    \n    // Inject any dependency\n    val logger: PlatformLogger = koinInject()\n    \n    LazyColumn {\n        items(state.notes) { note ->\n            NoteCard(note)\n        }\n    }\n}\n\n@Composable\nfun NoteDetailScreen(noteId: String) {\n    // ViewModel with parameters\n    val viewModel = koinViewModel<NoteDetailViewModel> {\n        parametersOf(noteId)\n    }\n    // ...\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete KMP Koin Setup",
+              "content": "Here's a full working example:",
+              "code": "// ========== commonMain/kotlin/di/Modules.kt ==========\n\n// Shared module - no platform dependencies\nval commonModule = module {\n    // Repository (needs platform-provided database)\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n    \n    // Use cases\n    factory { GetAllNotesUseCase(get()) }\n    factory { CreateNoteUseCase(get()) }\n    \n    // ViewModels\n    viewModel { NotesListViewModel(get()) }\n    viewModel { params -> NoteDetailViewModel(params.get(), get()) }\n}\n\n// ========== commonMain/kotlin/di/KoinHelper.kt ==========\n\nfun initKoin(platformModule: Module): KoinApplication {\n    return startKoin {\n        modules(platformModule, commonModule)\n    }\n}\n\n// iOS helper (Swift can't call startKoin directly)\nobject KoinHelper {\n    fun start() {\n        initKoin(platformModule)\n    }\n    \n    // Helper to get instances from Swift\n    fun getNotesViewModel(): NotesListViewModel {\n        return KoinPlatform.getKoin().get()\n    }\n}\n\n// ========== androidMain/kotlin/di/PlatformModule.kt ==========\n\nactual val platformModule = module {\n    single {\n        AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = get(),\n            name = \"notes.db\"\n        )\n    }\n    single { AppDatabase(get()) }\n}\n\n// ========== iosMain/kotlin/di/PlatformModule.kt ==========\n\nactual val platformModule = module {\n    single {\n        NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"notes.db\"\n        )\n    }\n    single { AppDatabase(get()) }\n}\n\n// ========== Android Application ==========\n\nclass NotesApp : Application() {\n    override fun onCreate() {\n        super.onCreate()\n        initKoin(platformModule) {\n            androidContext(this@NotesApp)\n        }\n    }\n}\n\n// ========== iOS AppDelegate.swift ==========\n// import shared\n// KoinHelper().start()",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "KMP Koin Pitfalls",
+              "content": "### ❌ Putting platform types in commonModule\n\n```kotlin\n// commonMain - BAD\nval commonModule = module {\n    single { AndroidSqliteDriver(...) }  // Won't compile on iOS!\n}\n```\n\n**Fix**: Platform-specific implementations go in platform source sets.\n\n### ❌ Forgetting to provide Android Context\n\n```kotlin\n// Android drivers need Context\nsingle { AndroidSqliteDriver(..., context = get()) }  // Where does Context come from?\n```\n\n**Fix**: Use `androidContext(this)` in `startKoin`.\n\n### ❌ Multiple startKoin calls\n\n```kotlin\n// If you call startKoin twice, you get an error\nstartKoin { ... }  // First call\nstartKoin { ... }  // Error: A Koin Application has already been started\n```\n\n**Fix**: Call `startKoin` once at app startup. Use `loadKoinModules` to add modules dynamically."
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-3-1",
+              "title": "KMP Module Organization",
+              "description": "Organize a set of dependencies into proper commonMain and platform modules.",
+              "difficulty": "intermediate",
+              "starterCode": "// Given these dependencies, organize them into proper modules:\n// - NotesRepository (interface in commonMain)\n// - NotesRepositoryImpl (implementation in commonMain, needs database)\n// - AppDatabase (platform-specific creation)\n// - AndroidSqliteDriver (Android only)\n// - NativeSqliteDriver (iOS only)\n// - NotesViewModel (shared, needs repository)\n// - NetworkClient (shared Ktor, no platform deps)\n// - PlatformLogger interface (common) with AndroidLogger/IOSLogger impls\n\n// TODO: Create these modules:\n\n// commonMain/kotlin/di/CommonModule.kt\nval commonModule = module {\n    // Add shared dependencies here\n}\n\n// androidMain/kotlin/di/PlatformModule.android.kt  \nval androidPlatformModule = module {\n    // Add Android-specific dependencies here\n}\n\n// iosMain/kotlin/di/PlatformModule.ios.kt\nval iosPlatformModule = module {\n    // Add iOS-specific dependencies here\n}",
+              "solution": "// ========== commonMain/kotlin/di/CommonModule.kt ==========\nimport org.koin.dsl.module\nimport org.koin.core.module.dsl.viewModel\nimport org.koin.core.module.dsl.singleOf\nimport org.koin.core.module.dsl.bind\n\nval commonModule = module {\n    // Network - fully shared, no platform deps\n    single { NetworkClient() }\n    \n    // Repository - implementation depends on database (provided by platform)\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n    \n    // ViewModel - shared\n    viewModel { NotesViewModel(get()) }\n}\n\n// ========== androidMain/kotlin/di/PlatformModule.android.kt ==========\nimport android.content.Context\nimport app.cash.sqldelight.driver.android.AndroidSqliteDriver\nimport org.koin.dsl.module\n\nval platformModule = module {\n    // Android-specific database driver\n    single {\n        val context: Context = get()\n        AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"notes.db\"\n        )\n    }\n    \n    // Database instance using Android driver\n    single { AppDatabase(get()) }\n    \n    // Android logger implementation\n    single<PlatformLogger> { AndroidLogger() }\n}\n\n// ========== iosMain/kotlin/di/PlatformModule.ios.kt ==========\nimport app.cash.sqldelight.driver.native.NativeSqliteDriver\nimport org.koin.dsl.module\n\nval platformModule = module {\n    // iOS-specific database driver\n    single {\n        NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"notes.db\"\n        )\n    }\n    \n    // Database instance using native driver\n    single { AppDatabase(get()) }\n    \n    // iOS logger implementation\n    single<PlatformLogger> { IOSLogger() }\n}\n\n// ========== Initialization ==========\n// Android: initKoin(platformModule) { androidContext(this) }\n// iOS: initKoin(platformModule)",
+              "hints": [
+                "Shared code with no platform deps goes in commonModule",
+                "Database drivers are platform-specific - they go in platformModule",
+                "The commonModule can depend on types provided by platformModule"
+              ],
+              "testCases": [
+                {
+                  "description": "Common module should not have any platform imports",
+                  "expectedBehavior": "NetworkClient, Repository, ViewModel in commonModule"
+                },
+                {
+                  "description": "Platform modules provide database drivers",
+                  "expectedBehavior": "AndroidSqliteDriver in android, NativeSqliteDriver in ios"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.4",
+          "title": "Lesson 6C.4: Platform-Specific Dependencies",
+          "moduleId": "module-06c",
+          "order": 4,
+          "estimatedMinutes": 50,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers advanced patterns for handling platform-specific dependencies in Koin, including expect/actual patterns, conditional binding, and factory providers."
+            },
+            {
+              "type": "THEORY",
+              "title": "Pattern 1: Expect/Actual Module Declaration",
+              "content": "Use expect/actual for the platform module itself:\n\n```kotlin\n// commonMain/kotlin/di/PlatformModule.kt\nimport org.koin.core.module.Module\n\nexpect val platformModule: Module\n```\n\n```kotlin\n// androidMain/kotlin/di/PlatformModule.android.kt\nimport org.koin.dsl.module\n\nactual val platformModule = module {\n    single { AndroidSqliteDriver(...) }\n    single { AppDatabase(get()) }\n    single<PlatformContext> { get<Context>() }\n}\n```\n\n```kotlin\n// iosMain/kotlin/di/PlatformModule.ios.kt\nimport org.koin.dsl.module\n\nactual val platformModule = module {\n    single { NativeSqliteDriver(...) }\n    single { AppDatabase(get()) }\n    single<PlatformContext> { IOSContext() }\n}\n```\n\nNow `platformModule` is available in common code!"
+            },
+            {
+              "type": "THEORY",
+              "title": "Pattern 2: Platform Interface + Injection",
+              "content": "Define interfaces in common, implement per platform:\n\n```kotlin\n// commonMain/kotlin/platform/FileStorage.kt\ninterface FileStorage {\n    suspend fun save(filename: String, data: ByteArray)\n    suspend fun load(filename: String): ByteArray?\n    suspend fun delete(filename: String): Boolean\n    suspend fun listFiles(): List<String>\n}\n```\n\n```kotlin\n// androidMain/kotlin/platform/FileStorage.android.kt\nclass AndroidFileStorage(private val context: Context) : FileStorage {\n    private val filesDir = context.filesDir\n    \n    override suspend fun save(filename: String, data: ByteArray) {\n        withContext(Dispatchers.IO) {\n            File(filesDir, filename).writeBytes(data)\n        }\n    }\n    \n    override suspend fun load(filename: String): ByteArray? {\n        return withContext(Dispatchers.IO) {\n            File(filesDir, filename).takeIf { it.exists() }?.readBytes()\n        }\n    }\n    // ...\n}\n```\n\n```kotlin\n// iosMain/kotlin/platform/FileStorage.ios.kt\nclass IOSFileStorage : FileStorage {\n    private val fileManager = NSFileManager.defaultManager\n    private val documentsDir = NSSearchPathForDirectoriesInDomains(\n        NSDocumentDirectory, \n        NSUserDomainMask, \n        true\n    ).first() as String\n    \n    override suspend fun save(filename: String, data: ByteArray) {\n        val nsData = data.toNSData()\n        nsData.writeToFile(\"$documentsDir/$filename\", atomically = true)\n    }\n    // ...\n}\n```\n\n### Register in Platform Modules\n\n```kotlin\n// androidMain\nval platformModule = module {\n    single<FileStorage> { AndroidFileStorage(get()) }\n}\n\n// iosMain\nval platformModule = module {\n    single<FileStorage> { IOSFileStorage() }\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Real-World: Analytics Provider",
+              "content": "Different analytics SDKs per platform:",
+              "code": "// ========== commonMain ==========\n\ninterface AnalyticsProvider {\n    fun logEvent(name: String, params: Map<String, Any> = emptyMap())\n    fun setUserProperty(key: String, value: String)\n    fun setUserId(userId: String?)\n}\n\n// ========== androidMain ==========\n\nclass FirebaseAnalyticsProvider(\n    private val context: Context\n) : AnalyticsProvider {\n    private val analytics = Firebase.analytics\n    \n    override fun logEvent(name: String, params: Map<String, Any>) {\n        val bundle = Bundle().apply {\n            params.forEach { (key, value) ->\n                when (value) {\n                    is String -> putString(key, value)\n                    is Int -> putInt(key, value)\n                    is Long -> putLong(key, value)\n                    is Double -> putDouble(key, value)\n                    is Boolean -> putBoolean(key, value)\n                }\n            }\n        }\n        analytics.logEvent(name, bundle)\n    }\n    \n    override fun setUserProperty(key: String, value: String) {\n        analytics.setUserProperty(key, value)\n    }\n    \n    override fun setUserId(userId: String?) {\n        analytics.setUserId(userId)\n    }\n}\n\n// ========== iosMain ==========\n\nclass FirebaseAnalyticsIOSProvider : AnalyticsProvider {\n    override fun logEvent(name: String, params: Map<String, Any>) {\n        val nsParams = params.mapValues { (_, value) ->\n            when (value) {\n                is String -> value as NSString\n                is Number -> NSNumber(value.toDouble())\n                else -> value.toString() as NSString\n            }\n        }.toMap() as Map<Any?, *>\n        \n        FIRAnalytics.logEventWithName(name, parameters = nsParams)\n    }\n    \n    override fun setUserProperty(key: String, value: String) {\n        FIRAnalytics.setUserPropertyString(value, forName = key)\n    }\n    \n    override fun setUserId(userId: String?) {\n        FIRAnalytics.setUserID(userId)\n    }\n}\n\n// ========== Platform Modules ==========\n\n// androidMain\nval platformModule = module {\n    single<AnalyticsProvider> { FirebaseAnalyticsProvider(get()) }\n}\n\n// iosMain\nval platformModule = module {\n    single<AnalyticsProvider> { FirebaseAnalyticsIOSProvider() }\n}\n\n// ========== Usage in Common Code ==========\n\nclass NotesViewModel(\n    private val repository: NotesRepository,\n    private val analytics: AnalyticsProvider  // Injected!\n) {\n    fun onNoteCreated(note: Note) {\n        analytics.logEvent(\"note_created\", mapOf(\n            \"title_length\" to note.title.length,\n            \"has_content\" to (note.content.isNotBlank())\n        ))\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Pattern 3: Factory Providers",
+              "content": "For dependencies that need runtime configuration:\n\n```kotlin\n// commonMain\ninterface DatabaseDriverFactory {\n    fun createDriver(): SqlDriver\n}\n\n// androidMain\nclass AndroidDatabaseDriverFactory(\n    private val context: Context\n) : DatabaseDriverFactory {\n    override fun createDriver(): SqlDriver {\n        return AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = context,\n            name = \"notes.db\"\n        )\n    }\n}\n\n// iosMain\nclass IOSDatabaseDriverFactory : DatabaseDriverFactory {\n    override fun createDriver(): SqlDriver {\n        return NativeSqliteDriver(\n            schema = AppDatabase.Schema,\n            name = \"notes.db\"\n        )\n    }\n}\n```\n\n### In Modules\n\n```kotlin\n// commonMain\nval commonModule = module {\n    // Factory creates driver, database uses it\n    single { get<DatabaseDriverFactory>().createDriver() }\n    single { AppDatabase(get()) }\n}\n\n// androidMain\nval platformModule = module {\n    single<DatabaseDriverFactory> { AndroidDatabaseDriverFactory(get()) }\n}\n\n// iosMain  \nval platformModule = module {\n    single<DatabaseDriverFactory> { IOSDatabaseDriverFactory() }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Pattern 4: Conditional Binding (Debug vs Release)",
+              "content": "Different implementations for debug and release builds:\n\n```kotlin\n// commonMain\ninterface ApiConfig {\n    val baseUrl: String\n    val timeout: Long\n    val loggingEnabled: Boolean\n}\n\n// Debug implementation\nclass DebugApiConfig : ApiConfig {\n    override val baseUrl = \"https://api-staging.example.com\"\n    override val timeout = 60_000L\n    override val loggingEnabled = true\n}\n\n// Release implementation\nclass ReleaseApiConfig : ApiConfig {\n    override val baseUrl = \"https://api.example.com\"\n    override val timeout = 30_000L\n    override val loggingEnabled = false\n}\n```\n\n### Using BuildConfig or Flags\n\n```kotlin\n// Android approach\nval configModule = module {\n    single<ApiConfig> {\n        if (BuildConfig.DEBUG) {\n            DebugApiConfig()\n        } else {\n            ReleaseApiConfig()\n        }\n    }\n}\n\n// KMP approach - pass flag during init\nfun initKoin(isDebug: Boolean) {\n    startKoin {\n        modules(\n            module {\n                single<ApiConfig> {\n                    if (isDebug) DebugApiConfig() else ReleaseApiConfig()\n                }\n            },\n            commonModule,\n            platformModule\n        )\n    }\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Platform Dependency Anti-Patterns",
+              "content": "### ❌ Leaking platform types to common code\n\n```kotlin\n// commonMain - BAD\nclass NotesRepository(\n    val context: Context  // Android type in common code!\n) { ... }\n```\n\n**Fix**: Use interfaces or expect/actual.\n\n### ❌ Large platform modules\n\n```kotlin\n// Don't put everything in one file\nval platformModule = module {\n    // 50+ definitions...\n}\n```\n\n**Fix**: Split by feature:\n```kotlin\nval platformDatabaseModule = module { ... }\nval platformNetworkModule = module { ... }\nval platformAnalyticsModule = module { ... }\n\nval platformModules = listOf(\n    platformDatabaseModule,\n    platformNetworkModule,\n    platformAnalyticsModule\n)\n```\n\n### ❌ Duplicate definitions across platforms\n\n```kotlin\n// androidMain\nval platformModule = module {\n    single { NotesRepositoryImpl(get()) }  // Same as iOS!\n}\n\n// iosMain\nval platformModule = module {\n    single { NotesRepositoryImpl(get()) }  // Duplicated!\n}\n```\n\n**Fix**: Keep shared implementations in commonModule."
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-4-1",
+              "title": "Platform-Specific Notification Service",
+              "description": "Create a notification service with platform-specific implementations for Android and iOS.",
+              "difficulty": "intermediate",
+              "starterCode": "// Create a notification service that works on both platforms\n\n// TODO: Define the interface in commonMain\ninterface NotificationService {\n    fun showNotification(title: String, body: String)\n    fun scheduleNotification(title: String, body: String, delayMs: Long)\n    fun cancelAllNotifications()\n}\n\n// TODO: Create Android implementation (use NotificationManager)\n// class AndroidNotificationService(...) : NotificationService\n\n// TODO: Create iOS implementation (use UNUserNotificationCenter)\n// class IOSNotificationService : NotificationService\n\n// TODO: Register in platform modules",
+              "solution": "// ========== commonMain/kotlin/platform/NotificationService.kt ==========\n\ninterface NotificationService {\n    fun showNotification(title: String, body: String)\n    fun scheduleNotification(title: String, body: String, delayMs: Long)\n    fun cancelAllNotifications()\n}\n\n// ========== androidMain/kotlin/platform/NotificationService.android.kt ==========\n\nclass AndroidNotificationService(\n    private val context: Context\n) : NotificationService {\n    \n    private val notificationManager = context.getSystemService(\n        Context.NOTIFICATION_SERVICE\n    ) as NotificationManager\n    \n    private val channelId = \"notes_channel\"\n    \n    init {\n        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {\n            val channel = NotificationChannel(\n                channelId,\n                \"Notes\",\n                NotificationManager.IMPORTANCE_DEFAULT\n            )\n            notificationManager.createNotificationChannel(channel)\n        }\n    }\n    \n    override fun showNotification(title: String, body: String) {\n        val notification = NotificationCompat.Builder(context, channelId)\n            .setSmallIcon(R.drawable.ic_notification)\n            .setContentTitle(title)\n            .setContentText(body)\n            .setPriority(NotificationCompat.PRIORITY_DEFAULT)\n            .build()\n        \n        notificationManager.notify(System.currentTimeMillis().toInt(), notification)\n    }\n    \n    override fun scheduleNotification(title: String, body: String, delayMs: Long) {\n        // Use WorkManager for scheduled notifications\n        val data = workDataOf(\n            \"title\" to title,\n            \"body\" to body\n        )\n        \n        val request = OneTimeWorkRequestBuilder<NotificationWorker>()\n            .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)\n            .setInputData(data)\n            .build()\n        \n        WorkManager.getInstance(context).enqueue(request)\n    }\n    \n    override fun cancelAllNotifications() {\n        notificationManager.cancelAll()\n        WorkManager.getInstance(context).cancelAllWork()\n    }\n}\n\n// ========== iosMain/kotlin/platform/NotificationService.ios.kt ==========\n\nclass IOSNotificationService : NotificationService {\n    \n    private val center = UNUserNotificationCenter.currentNotificationCenter()\n    \n    override fun showNotification(title: String, body: String) {\n        val content = UNMutableNotificationContent().apply {\n            setTitle(title)\n            setBody(body)\n            setSound(UNNotificationSound.defaultSound())\n        }\n        \n        val trigger = UNTimeIntervalNotificationTrigger\n            .triggerWithTimeInterval(0.1, repeats = false)\n        \n        val request = UNNotificationRequest.requestWithIdentifier(\n            NSUUID().UUIDString,\n            content = content,\n            trigger = trigger\n        )\n        \n        center.addNotificationRequest(request) { error ->\n            error?.let { println(\"Notification error: $it\") }\n        }\n    }\n    \n    override fun scheduleNotification(title: String, body: String, delayMs: Long) {\n        val content = UNMutableNotificationContent().apply {\n            setTitle(title)\n            setBody(body)\n            setSound(UNNotificationSound.defaultSound())\n        }\n        \n        val trigger = UNTimeIntervalNotificationTrigger\n            .triggerWithTimeInterval(delayMs / 1000.0, repeats = false)\n        \n        val request = UNNotificationRequest.requestWithIdentifier(\n            NSUUID().UUIDString,\n            content = content,\n            trigger = trigger\n        )\n        \n        center.addNotificationRequest(request, withCompletionHandler = null)\n    }\n    \n    override fun cancelAllNotifications() {\n        center.removeAllPendingNotificationRequests()\n        center.removeAllDeliveredNotifications()\n    }\n}\n\n// ========== Platform Modules ==========\n\n// androidMain/kotlin/di/PlatformModule.kt\nval platformModule = module {\n    single<NotificationService> { AndroidNotificationService(get()) }\n}\n\n// iosMain/kotlin/di/PlatformModule.kt\nval platformModule = module {\n    single<NotificationService> { IOSNotificationService() }\n}",
+              "hints": [
+                "Define interface in commonMain with suspend functions if needed",
+                "Android uses NotificationManager and WorkManager",
+                "iOS uses UNUserNotificationCenter",
+                "Register implementations in respective platform modules"
+              ],
+              "testCases": [
+                {
+                  "description": "Interface should be in commonMain with platform implementations",
+                  "expectedBehavior": "Same API, different implementations per platform"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.5",
+          "title": "Lesson 6C.5: Koin Annotations (Modern Approach)",
+          "moduleId": "module-06c",
+          "order": 5,
+          "estimatedMinutes": 45,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 45 minutes\n\nKoin 4.0 introduced **Koin Annotations** - a compile-time approach that provides type safety and reduces boilerplate. This lesson covers the annotation-based DI approach as the modern alternative to DSL modules."
+            },
+            {
+              "type": "THEORY",
+              "title": "Why Annotations?",
+              "content": "### DSL Approach (Traditional)\n\n```kotlin\nval appModule = module {\n    single<NotesRepository> { NotesRepositoryImpl(get()) }\n    viewModel { NotesViewModel(get()) }\n}\n```\n\n**Pros**: Flexible, no code generation\n**Cons**: Runtime errors if misconfigured, manual wiring\n\n### Annotation Approach (Modern)\n\n```kotlin\n@Single\nclass NotesRepositoryImpl(\n    private val database: AppDatabase\n) : NotesRepository\n\n@KoinViewModel\nclass NotesViewModel(\n    private val repository: NotesRepository\n)\n```\n\n**Pros**: Compile-time safety, less boilerplate, auto-generated modules\n**Cons**: Requires KSP, slightly longer build times"
+            },
+            {
+              "type": "THEORY",
+              "title": "Setup for Koin Annotations",
+              "content": "### Add KSP and Annotations\n\n```toml\n# gradle/libs.versions.toml\n[versions]\nkoin = \"4.0.0\"\nksp = \"2.0.21-1.0.28\"\n\n[libraries]\nkoin-annotations = { module = \"io.insert-koin:koin-annotations\", version.ref = \"koin\" }\nkoin-ksp-compiler = { module = \"io.insert-koin:koin-ksp-compiler\", version.ref = \"koin\" }\n\n[plugins]\nksp = { id = \"com.google.devtools.ksp\", version.ref = \"ksp\" }\n```\n\n```kotlin\n// build.gradle.kts (project level)\nplugins {\n    alias(libs.plugins.ksp) apply false\n}\n\n// shared/build.gradle.kts\nplugins {\n    alias(libs.plugins.ksp)\n}\n\nkotlin {\n    sourceSets {\n        commonMain.dependencies {\n            implementation(libs.koin.core)\n            implementation(libs.koin.annotations)\n        }\n    }\n}\n\ndependencies {\n    add(\"kspCommonMainMetadata\", libs.koin.ksp.compiler)\n    add(\"kspAndroid\", libs.koin.ksp.compiler)\n    add(\"kspIosArm64\", libs.koin.ksp.compiler)\n    add(\"kspIosSimulatorArm64\", libs.koin.ksp.compiler)\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Core Annotations",
+              "content": "### @Module\nMarks a class that groups related definitions:\n\n```kotlin\n@Module\nclass DataModule\n```\n\n### @Single\nCreates a singleton instance:\n\n```kotlin\n@Single\nclass AppDatabase(...)\n\n// With interface binding\n@Single\n@Bind(NotesRepository::class)\nclass NotesRepositoryImpl(...) : NotesRepository\n```\n\n### @Factory\nCreates a new instance each time:\n\n```kotlin\n@Factory\nclass CreateNoteUseCase(private val repository: NotesRepository)\n```\n\n### @KoinViewModel\nFor ViewModels with lifecycle awareness:\n\n```kotlin\n@KoinViewModel\nclass NotesViewModel(private val repository: NotesRepository)\n```\n\n### @Named\nFor multiple implementations:\n\n```kotlin\n@Single\n@Named(\"production\")\nclass ProductionApiClient : ApiClient\n\n@Single\n@Named(\"mock\")\nclass MockApiClient : ApiClient\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Annotated Module",
+              "content": "Here's a full example using annotations:",
+              "code": "// ========== Data Layer ==========\n\n@Module\n@ComponentScan(\"com.example.app.data\")\nclass DataModule\n\n@Single\nclass AppDatabase(\n    driver: SqlDriver\n) {\n    val notesQueries = NotesQueries(driver)\n}\n\n@Single\n@Bind(NotesRepository::class)\nclass NotesRepositoryImpl(\n    private val database: AppDatabase,\n    private val api: NotesApi\n) : NotesRepository {\n    override suspend fun getAllNotes(): List<Note> {\n        return database.notesQueries.getAll().executeAsList()\n    }\n    // ...\n}\n\n// ========== Domain Layer ==========\n\n@Module\n@ComponentScan(\"com.example.app.domain\")\nclass DomainModule\n\n@Factory\nclass GetAllNotesUseCase(\n    private val repository: NotesRepository\n) {\n    suspend operator fun invoke(): List<Note> {\n        return repository.getAllNotes()\n    }\n}\n\n@Factory\nclass CreateNoteUseCase(\n    private val repository: NotesRepository\n) {\n    suspend operator fun invoke(title: String, content: String): Note {\n        return repository.createNote(title, content)\n    }\n}\n\n// ========== Presentation Layer ==========\n\n@Module\n@ComponentScan(\"com.example.app.presentation\")\nclass PresentationModule\n\n@KoinViewModel\nclass NotesListViewModel(\n    private val getAllNotes: GetAllNotesUseCase,\n    private val createNote: CreateNoteUseCase\n) : ViewModel() {\n    // ...\n}\n\n// ========== App Initialization ==========\n\n// Generated: DataModuleModule, DomainModuleModule, PresentationModuleModule\n\nfun initKoin() {\n    startKoin {\n        modules(\n            DataModuleModule().module,\n            DomainModuleModule().module,\n            PresentationModuleModule().module\n        )\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Advanced Annotations",
+              "content": "### @Scope - For Scoped Dependencies\n\n```kotlin\n// Define a scope\n@Scope(name = \"session\")\nannotation class SessionScope\n\n@SessionScope\nclass UserSession {\n    var userId: String? = null\n}\n\n// Usage\nval sessionScope = getKoin().createScope(\"session\", named(\"session\"))\nval session = sessionScope.get<UserSession>()\n// Later: sessionScope.close()\n```\n\n### @Property - For Configuration\n\n```kotlin\n@Single\nclass ApiClient(\n    @Property(\"api.baseUrl\") val baseUrl: String,\n    @Property(\"api.timeout\") val timeout: Long\n)\n\n// In startKoin:\nstartKoin {\n    properties(mapOf(\n        \"api.baseUrl\" to \"https://api.example.com\",\n        \"api.timeout\" to 30000L\n    ))\n}\n```\n\n### @Provided - External Dependencies\n\nFor dependencies that come from outside Koin (like platform modules):\n\n```kotlin\n@Single\nclass NotesRepositoryImpl(\n    @Provided database: AppDatabase  // Provided by platform module\n) : NotesRepository\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "KMP with Annotations",
+              "content": "### Common Module with Annotations\n\n```kotlin\n// commonMain/kotlin/di/CommonModule.kt\n@Module\n@ComponentScan(\"com.example.app\")\nclass CommonModule\n\n@Single\n@Bind(NotesRepository::class)\nclass NotesRepositoryImpl(\n    @Provided database: AppDatabase  // Platform-provided\n) : NotesRepository\n\n@KoinViewModel\nclass NotesViewModel(\n    private val repository: NotesRepository\n)\n```\n\n### Platform Module (Still DSL)\n\nPlatform modules often stay as DSL since they need platform-specific code:\n\n```kotlin\n// androidMain/kotlin/di/PlatformModule.kt\nval platformModule = module {\n    single {\n        AndroidSqliteDriver(\n            schema = AppDatabase.Schema,\n            context = get(),\n            name = \"notes.db\"\n        )\n    }\n    single { AppDatabase(get()) }\n}\n```\n\n### Combining Annotated and DSL Modules\n\n```kotlin\nfun initKoin(platformModule: Module) {\n    startKoin {\n        modules(\n            platformModule,                    // DSL module\n            CommonModuleModule().module        // Generated from annotations\n        )\n    }\n}\n```"
+            },
+            {
+              "type": "WARNING",
+              "title": "Annotation Gotchas",
+              "content": "### ❌ Forgetting to run KSP\n\nAfter changing annotated classes, rebuild the project:\n```bash\n./gradlew clean kspCommonMainKotlinMetadata\n```\n\n### ❌ Missing @Bind for interfaces\n\n```kotlin\n// ❌ Won't be found when requesting NotesRepository\n@Single\nclass NotesRepositoryImpl : NotesRepository\n\n// ✅ Correct\n@Single\n@Bind(NotesRepository::class)\nclass NotesRepositoryImpl : NotesRepository\n```\n\n### ❌ Incorrect ComponentScan path\n\n```kotlin\n// Make sure the package path is correct\n@Module\n@ComponentScan(\"com.example.app.wrong.path\")  // Nothing found!\nclass AppModule\n```\n\n### ❌ Mixing annotation and DSL for same type\n\nDon't define the same type in both annotations and DSL modules - it leads to duplicates."
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-5-1",
+              "title": "Convert DSL to Annotations",
+              "description": "Convert a traditional DSL module to use Koin Annotations.",
+              "difficulty": "intermediate",
+              "starterCode": "// Convert this DSL module to annotations:\n\nval appModule = module {\n    single { HttpClient() }\n    single<UserApi> { UserApiImpl(get()) }\n    single<UserRepository> { UserRepositoryImpl(get()) }\n    factory { GetUserUseCase(get()) }\n    factory { UpdateUserUseCase(get()) }\n    viewModel { UserProfileViewModel(get(), get()) }\n}\n\n// Classes to annotate:\nclass HttpClient()\n\ninterface UserApi {\n    suspend fun getUser(id: String): User\n}\n\nclass UserApiImpl(private val client: HttpClient) : UserApi {\n    override suspend fun getUser(id: String): User = TODO()\n}\n\ninterface UserRepository {\n    suspend fun getUser(id: String): User\n}\n\nclass UserRepositoryImpl(\n    private val api: UserApi\n) : UserRepository {\n    override suspend fun getUser(id: String) = api.getUser(id)\n}\n\nclass GetUserUseCase(private val repository: UserRepository) {\n    suspend operator fun invoke(id: String) = repository.getUser(id)\n}\n\nclass UpdateUserUseCase(private val repository: UserRepository) {\n    suspend operator fun invoke(user: User) { TODO() }\n}\n\nclass UserProfileViewModel(\n    private val getUser: GetUserUseCase,\n    private val updateUser: UpdateUserUseCase\n)\n\n// TODO: Add appropriate annotations to each class",
+              "solution": "import org.koin.core.annotation.*\n\n// Module declaration\n@Module\n@ComponentScan(\"com.example.app.user\")\nclass UserModule\n\n// Network\n@Single\nclass HttpClient()\n\n// API layer\ninterface UserApi {\n    suspend fun getUser(id: String): User\n}\n\n@Single\n@Bind(UserApi::class)\nclass UserApiImpl(\n    private val client: HttpClient\n) : UserApi {\n    override suspend fun getUser(id: String): User = TODO()\n}\n\n// Repository layer\ninterface UserRepository {\n    suspend fun getUser(id: String): User\n}\n\n@Single\n@Bind(UserRepository::class)\nclass UserRepositoryImpl(\n    private val api: UserApi\n) : UserRepository {\n    override suspend fun getUser(id: String) = api.getUser(id)\n}\n\n// Use cases (factory - new instance each time)\n@Factory\nclass GetUserUseCase(\n    private val repository: UserRepository\n) {\n    suspend operator fun invoke(id: String) = repository.getUser(id)\n}\n\n@Factory\nclass UpdateUserUseCase(\n    private val repository: UserRepository\n) {\n    suspend operator fun invoke(user: User) { TODO() }\n}\n\n// ViewModel\n@KoinViewModel\nclass UserProfileViewModel(\n    private val getUser: GetUserUseCase,\n    private val updateUser: UpdateUserUseCase\n)\n\n// Usage in startKoin:\n// modules(UserModuleModule().module)",
+              "hints": [
+                "Use @Single for singletons like HttpClient, Api, Repository",
+                "Use @Bind for interface implementations",
+                "Use @Factory for use cases (stateless, new instance each time)",
+                "Use @KoinViewModel for ViewModels"
+              ],
+              "testCases": [
+                {
+                  "description": "All classes should have appropriate annotations",
+                  "expectedBehavior": "@Single for singletons, @Factory for use cases, @KoinViewModel for ViewModel"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.6",
+          "title": "Lesson 6C.6: Testing with Koin",
+          "moduleId": "module-06c",
+          "order": 6,
+          "estimatedMinutes": 55,
+          "difficulty": "intermediate",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 55 minutes\n\nThis lesson covers testing strategies with Koin: module verification, mocking dependencies, and integration testing patterns for KMP applications."
+            },
+            {
+              "type": "THEORY",
+              "title": "Module Verification",
+              "content": "Koin's `checkModules()` catches configuration errors at test time instead of runtime:\n\n```kotlin\nimport org.koin.test.verify.verify\n\nclass ModuleVerificationTest {\n    @Test\n    fun `verify all modules`() {\n        // This catches:\n        // - Missing dependencies\n        // - Circular dependencies\n        // - Type mismatches\n        \n        appModule.verify(\n            extraTypes = listOf(\n                Context::class,        // Platform types provided externally\n                SqlDriver::class\n            )\n        )\n    }\n}\n```\n\n### What It Catches\n\n```kotlin\nval badModule = module {\n    single { NotesRepository(get()) }  // Needs Database\n    // Oops, forgot to define Database!\n}\n\n// Test:\nbadModule.verify()\n// Error: Missing definition for type 'Database'\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Testing with Koin: Setup",
+              "content": "### Test Dependencies\n\n```toml\n# gradle/libs.versions.toml\n[libraries]\nkoin-test = { module = \"io.insert-koin:koin-test\", version.ref = \"koin\" }\nkoin-test-junit5 = { module = \"io.insert-koin:koin-test-junit5\", version.ref = \"koin\" }\n```\n\n```kotlin\n// commonTest\ncommonTest.dependencies {\n    implementation(libs.koin.test)\n}\n```\n\n### Base Test Class\n\n```kotlin\nimport org.koin.core.context.startKoin\nimport org.koin.core.context.stopKoin\nimport org.koin.test.KoinTest\nimport org.koin.test.inject\nimport kotlin.test.AfterTest\nimport kotlin.test.BeforeTest\n\nabstract class BaseKoinTest : KoinTest {\n    \n    @BeforeTest\n    fun setUp() {\n        startKoin {\n            modules(testModules())\n        }\n    }\n    \n    @AfterTest\n    fun tearDown() {\n        stopKoin()\n    }\n    \n    abstract fun testModules(): List<Module>\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Unit Testing with Fake Modules",
+              "content": "Replace real dependencies with fakes for isolated testing:",
+              "code": "// ========== Fake Implementations ==========\n\nclass FakeNotesRepository : NotesRepository {\n    private val notes = mutableListOf<Note>()\n    \n    override suspend fun getAllNotes(): List<Note> = notes.toList()\n    \n    override suspend fun createNote(title: String, content: String): Note {\n        val note = Note(\n            id = (notes.size + 1).toString(),\n            title = title,\n            content = content,\n            createdAt = Clock.System.now()\n        )\n        notes.add(note)\n        return note\n    }\n    \n    override suspend fun deleteNote(id: String) {\n        notes.removeAll { it.id == id }\n    }\n    \n    // Test helper\n    fun addTestNote(title: String, content: String) {\n        notes.add(Note(\n            id = notes.size.toString(),\n            title = title,\n            content = content,\n            createdAt = Clock.System.now()\n        ))\n    }\n}\n\n// ========== Test Module ==========\n\nval testModule = module {\n    single<NotesRepository> { FakeNotesRepository() }\n    viewModel { NotesListViewModel(get()) }\n}\n\n// ========== Tests ==========\n\nclass NotesListViewModelTest : KoinTest {\n    \n    private val viewModel: NotesListViewModel by inject()\n    private val repository: FakeNotesRepository by inject()\n    \n    @BeforeTest\n    fun setUp() {\n        startKoin {\n            modules(testModule)\n        }\n    }\n    \n    @AfterTest\n    fun tearDown() {\n        stopKoin()\n    }\n    \n    @Test\n    fun `loading notes populates state`() = runTest {\n        // Given\n        repository.addTestNote(\"Test Note\", \"Content\")\n        \n        // When\n        viewModel.loadNotes()\n        advanceUntilIdle()\n        \n        // Then\n        assertEquals(1, viewModel.state.value.notes.size)\n        assertEquals(\"Test Note\", viewModel.state.value.notes[0].title)\n    }\n    \n    @Test\n    fun `creating note adds to list`() = runTest {\n        // When\n        viewModel.createNote(\"New Note\", \"New Content\")\n        advanceUntilIdle()\n        \n        // Then\n        assertEquals(1, viewModel.state.value.notes.size)\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Overriding Modules for Tests",
+              "content": "Use `loadKoinModules` with `override = true` to replace specific dependencies:\n\n```kotlin\nclass NotesViewModelTest : KoinTest {\n    \n    @BeforeTest\n    fun setUp() {\n        startKoin {\n            modules(commonModule, platformModule)\n        }\n        \n        // Override just the repository with a fake\n        loadKoinModules(\n            module {\n                single<NotesRepository>(override = true) { \n                    FakeNotesRepository() \n                }\n            }\n        )\n    }\n}\n```\n\n### declare() for In-Test Overrides\n\n```kotlin\nclass NotesViewModelTest : KoinTest {\n    \n    @Test\n    fun `test with custom mock`() = runTest {\n        // Override for this specific test\n        val mockRepo = mockk<NotesRepository> {\n            coEvery { getAllNotes() } returns listOf(\n                Note(\"1\", \"Mocked\", \"Content\", Clock.System.now())\n            )\n        }\n        \n        declare<NotesRepository> { mockRepo }\n        \n        val viewModel: NotesListViewModel = get()\n        viewModel.loadNotes()\n        \n        assertEquals(\"Mocked\", viewModel.state.value.notes[0].title)\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Integration Testing",
+              "content": "Test multiple layers together with real implementations:\n\n```kotlin\n// Integration test module - uses real implementations but fake data sources\nval integrationTestModule = module {\n    // Real implementations\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n    factory { GetAllNotesUseCase(get()) }\n    factory { CreateNoteUseCase(get()) }\n    viewModel { NotesListViewModel(get()) }\n    \n    // Fake data layer\n    single { createInMemoryDatabase() }\n    single { FakeNotesApi() }\n}\n\nclass NotesIntegrationTest : KoinTest {\n    \n    @BeforeTest\n    fun setUp() {\n        startKoin {\n            modules(integrationTestModule)\n        }\n    }\n    \n    @Test\n    fun `full flow - create and retrieve note`() = runTest {\n        val viewModel: NotesListViewModel = get()\n        \n        // Create note goes through ViewModel -> UseCase -> Repository -> Database\n        viewModel.createNote(\"Integration Test\", \"Testing full stack\")\n        advanceUntilIdle()\n        \n        // Verify it persisted and can be retrieved\n        val notes = viewModel.state.value.notes\n        assertEquals(1, notes.size)\n        assertEquals(\"Integration Test\", notes[0].title)\n    }\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Complete Test Suite Example",
+              "content": "A well-organized test structure:",
+              "code": "// ========== Test Utilities ==========\n\n// commonTest/kotlin/test/TestModules.kt\nobject TestModules {\n    \n    val fakeDataModule = module {\n        single { createInMemoryDatabase() }\n        single<NotesRepository> { FakeNotesRepository() }\n    }\n    \n    val fakePresentationModule = module {\n        viewModel { params ->\n            NotesListViewModel(\n                repository = get(),\n                dispatcher = StandardTestDispatcher()\n            )\n        }\n    }\n    \n    fun allTestModules() = listOf(\n        fakeDataModule,\n        fakePresentationModule\n    )\n}\n\n// ========== Base Test Class ==========\n\nabstract class BaseKoinTest : KoinTest {\n    \n    @BeforeTest\n    fun baseSetUp() {\n        startKoin {\n            modules(TestModules.allTestModules())\n        }\n        additionalSetUp()\n    }\n    \n    @AfterTest\n    fun baseTearDown() {\n        additionalTearDown()\n        stopKoin()\n    }\n    \n    open fun additionalSetUp() {}\n    open fun additionalTearDown() {}\n}\n\n// ========== Repository Tests ==========\n\nclass NotesRepositoryTest : BaseKoinTest() {\n    \n    private val repository: NotesRepository by inject()\n    \n    @Test\n    fun `createNote returns note with generated id`() = runTest {\n        val note = repository.createNote(\"Title\", \"Content\")\n        \n        assertNotNull(note.id)\n        assertEquals(\"Title\", note.title)\n    }\n    \n    @Test\n    fun `deleteNote removes note from storage`() = runTest {\n        val note = repository.createNote(\"To Delete\", \"Content\")\n        \n        repository.deleteNote(note.id)\n        \n        val notes = repository.getAllNotes()\n        assertFalse(notes.any { it.id == note.id })\n    }\n}\n\n// ========== ViewModel Tests ==========\n\nclass NotesListViewModelTest : BaseKoinTest() {\n    \n    private val viewModel: NotesListViewModel by inject()\n    private val testDispatcher = StandardTestDispatcher()\n    \n    @Test\n    fun `initial state is loading`() {\n        assertTrue(viewModel.state.value.isLoading)\n    }\n    \n    @Test\n    fun `loadNotes updates state with notes`() = runTest(testDispatcher) {\n        val fakeRepo = get<NotesRepository>() as FakeNotesRepository\n        fakeRepo.addTestNote(\"Test\", \"Content\")\n        \n        viewModel.loadNotes()\n        advanceUntilIdle()\n        \n        assertFalse(viewModel.state.value.isLoading)\n        assertEquals(1, viewModel.state.value.notes.size)\n    }\n    \n    @Test\n    fun `error state when repository fails`() = runTest(testDispatcher) {\n        // Override with failing repository for this test\n        declare<NotesRepository> {\n            object : NotesRepository {\n                override suspend fun getAllNotes() = \n                    throw Exception(\"Network error\")\n                override suspend fun createNote(t: String, c: String) = \n                    throw Exception(\"Network error\")\n                override suspend fun deleteNote(id: String) {}\n            }\n        }\n        \n        val failingViewModel = NotesListViewModel(get(), testDispatcher)\n        failingViewModel.loadNotes()\n        advanceUntilIdle()\n        \n        assertNotNull(failingViewModel.state.value.error)\n    }\n}\n\n// ========== Module Verification ==========\n\nclass KoinModuleTest {\n    \n    @Test\n    fun `production modules are complete`() {\n        commonModule.verify(\n            extraTypes = listOf(\n                SqlDriver::class,\n                Context::class\n            )\n        )\n    }\n    \n    @Test  \n    fun `test modules are complete`() {\n        TestModules.allTestModules().forEach { it.verify() }\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "WARNING",
+              "title": "Testing Anti-Patterns",
+              "content": "### ❌ Not stopping Koin between tests\n\n```kotlin\n@Test\nfun test1() {\n    startKoin { ... }\n    // Forgot stopKoin()\n}\n\n@Test\nfun test2() {\n    startKoin { ... }  // Error: Koin already started!\n}\n```\n\n**Fix**: Always call `stopKoin()` in `@AfterTest`.\n\n### ❌ Testing with production dependencies\n\n```kotlin\n// BAD: Tests hit real database/network\nstartKoin {\n    modules(productionModule)\n}\n```\n\n**Fix**: Create dedicated test modules with fakes.\n\n### ❌ Not verifying modules\n\n```kotlin\n// Module has missing dependency, but no test catches it\nval module = module {\n    single { ServiceA(get()) }  // Needs ServiceB, not defined\n}\n```\n\n**Fix**: Add module verification test:\n```kotlin\n@Test\nfun `verify modules`() {\n    module.verify()\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-6-1",
+              "title": "Write Koin Tests",
+              "description": "Create a complete test suite for a BookRepository and BookViewModel.",
+              "difficulty": "intermediate",
+              "starterCode": "// Given these classes:\n\ndata class Book(val id: String, val title: String, val author: String)\n\ninterface BookRepository {\n    suspend fun getAllBooks(): List<Book>\n    suspend fun addBook(title: String, author: String): Book\n    suspend fun deleteBook(id: String)\n}\n\nclass BookViewModel(private val repository: BookRepository) {\n    private val _state = MutableStateFlow(BookUiState())\n    val state: StateFlow<BookUiState> = _state.asStateFlow()\n    \n    fun loadBooks() {\n        viewModelScope.launch {\n            _state.update { it.copy(isLoading = true) }\n            try {\n                val books = repository.getAllBooks()\n                _state.update { it.copy(books = books, isLoading = false) }\n            } catch (e: Exception) {\n                _state.update { it.copy(error = e.message, isLoading = false) }\n            }\n        }\n    }\n}\n\ndata class BookUiState(\n    val books: List<Book> = emptyList(),\n    val isLoading: Boolean = false,\n    val error: String? = null\n)\n\n// TODO: Create:\n// 1. FakeBookRepository\n// 2. Test module\n// 3. BookViewModelTest with at least 3 tests",
+              "solution": "import kotlinx.coroutines.test.*\nimport org.koin.core.context.startKoin\nimport org.koin.core.context.stopKoin\nimport org.koin.dsl.module\nimport org.koin.test.KoinTest\nimport org.koin.test.inject\nimport kotlin.test.*\n\n// ========== Fake Repository ==========\n\nclass FakeBookRepository : BookRepository {\n    private val books = mutableListOf<Book>()\n    var shouldFail = false\n    var failureMessage = \"Simulated error\"\n    \n    override suspend fun getAllBooks(): List<Book> {\n        if (shouldFail) throw Exception(failureMessage)\n        return books.toList()\n    }\n    \n    override suspend fun addBook(title: String, author: String): Book {\n        if (shouldFail) throw Exception(failureMessage)\n        val book = Book(\n            id = (books.size + 1).toString(),\n            title = title,\n            author = author\n        )\n        books.add(book)\n        return book\n    }\n    \n    override suspend fun deleteBook(id: String) {\n        if (shouldFail) throw Exception(failureMessage)\n        books.removeAll { it.id == id }\n    }\n    \n    // Test helpers\n    fun addTestBook(title: String, author: String) {\n        books.add(Book((books.size + 1).toString(), title, author))\n    }\n    \n    fun clear() {\n        books.clear()\n        shouldFail = false\n    }\n}\n\n// ========== Test Module ==========\n\nval testModule = module {\n    single { FakeBookRepository() }\n    single<BookRepository> { get<FakeBookRepository>() }\n    factory { params ->\n        BookViewModel(\n            repository = get(),\n            dispatcher = params.getOrNull() ?: StandardTestDispatcher()\n        )\n    }\n}\n\n// ========== Tests ==========\n\nclass BookViewModelTest : KoinTest {\n    \n    private val repository: FakeBookRepository by inject()\n    private val testDispatcher = StandardTestDispatcher()\n    \n    @BeforeTest\n    fun setUp() {\n        startKoin {\n            modules(testModule)\n        }\n    }\n    \n    @AfterTest\n    fun tearDown() {\n        repository.clear()\n        stopKoin()\n    }\n    \n    @Test\n    fun `initial state has isLoading false and empty books`() {\n        val viewModel = BookViewModel(repository, testDispatcher)\n        \n        assertFalse(viewModel.state.value.isLoading)\n        assertTrue(viewModel.state.value.books.isEmpty())\n        assertNull(viewModel.state.value.error)\n    }\n    \n    @Test\n    fun `loadBooks populates state with books from repository`() = runTest(testDispatcher) {\n        // Given\n        repository.addTestBook(\"Clean Code\", \"Robert Martin\")\n        repository.addTestBook(\"Refactoring\", \"Martin Fowler\")\n        \n        val viewModel = BookViewModel(repository, testDispatcher)\n        \n        // When\n        viewModel.loadBooks()\n        advanceUntilIdle()\n        \n        // Then\n        val state = viewModel.state.value\n        assertFalse(state.isLoading)\n        assertEquals(2, state.books.size)\n        assertEquals(\"Clean Code\", state.books[0].title)\n        assertNull(state.error)\n    }\n    \n    @Test\n    fun `loadBooks sets error state when repository fails`() = runTest(testDispatcher) {\n        // Given\n        repository.shouldFail = true\n        repository.failureMessage = \"Network error\"\n        \n        val viewModel = BookViewModel(repository, testDispatcher)\n        \n        // When\n        viewModel.loadBooks()\n        advanceUntilIdle()\n        \n        // Then\n        val state = viewModel.state.value\n        assertFalse(state.isLoading)\n        assertTrue(state.books.isEmpty())\n        assertEquals(\"Network error\", state.error)\n    }\n    \n    @Test\n    fun `loadBooks sets isLoading true while loading`() = runTest(testDispatcher) {\n        val viewModel = BookViewModel(repository, testDispatcher)\n        \n        // When - don't advance dispatcher\n        viewModel.loadBooks()\n        \n        // Then - should be loading\n        assertTrue(viewModel.state.value.isLoading)\n        \n        // Complete the coroutine\n        advanceUntilIdle()\n        assertFalse(viewModel.state.value.isLoading)\n    }\n}",
+              "hints": [
+                "FakeRepository should have a flag to simulate failures",
+                "Use StandardTestDispatcher for controlled coroutine execution",
+                "Test initial state, success case, and error case",
+                "Remember to call advanceUntilIdle() to complete coroutines"
+              ],
+              "testCases": [
+                {
+                  "description": "Tests should cover initial state, loading success, and loading failure",
+                  "expectedBehavior": "All three scenarios tested with appropriate assertions"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "6c.7",
+          "title": "Lesson 6C.7: Advanced Patterns",
+          "moduleId": "module-06c",
+          "order": 7,
+          "estimatedMinutes": 50,
+          "difficulty": "advanced",
+          "contentSections": [
+            {
+              "type": "THEORY",
+              "title": "Introduction",
+              "content": "**Estimated Time**: 50 minutes\n\nThis lesson covers advanced Koin patterns: scopes for session management, dynamic modules for feature flags, lazy injection, and clean architecture organization."
+            },
+            {
+              "type": "THEORY",
+              "title": "Scopes: Beyond Singletons",
+              "content": "Scopes create container-like lifecycles for groups of dependencies:\n\n### User Session Scope\n\n```kotlin\n// Define scope\nval userSessionModule = module {\n    scope(named(\"userSession\")) {\n        scoped { UserSession() }\n        scoped { UserPreferences(get()) }\n        scoped { CartRepository(get(), get()) }\n    }\n}\n\nclass UserSession {\n    var userId: String? = null\n    var authToken: String? = null\n}\n```\n\n### Managing Scope Lifecycle\n\n```kotlin\nclass SessionManager {\n    private var sessionScope: Scope? = null\n    \n    fun login(userId: String, token: String) {\n        // Create new session scope\n        sessionScope = getKoin().createScope(\n            \"session_$userId\",\n            named(\"userSession\")\n        )\n        \n        // Initialize session\n        val session = sessionScope!!.get<UserSession>()\n        session.userId = userId\n        session.authToken = token\n    }\n    \n    fun logout() {\n        // Close scope - all scoped instances are destroyed\n        sessionScope?.close()\n        sessionScope = null\n    }\n    \n    fun <T: Any> getSessionDependency(clazz: KClass<T>): T? {\n        return sessionScope?.get(clazz)\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Feature Flags with Dynamic Modules",
+              "content": "Load modules conditionally based on feature flags:\n\n```kotlin\n// Feature implementations\nval newCheckoutModule = module {\n    single<CheckoutFlow> { NewCheckoutFlowImpl(get()) }\n    viewModel { NewCheckoutViewModel(get()) }\n}\n\nval legacyCheckoutModule = module {\n    single<CheckoutFlow> { LegacyCheckoutFlowImpl(get()) }\n    viewModel { LegacyCheckoutViewModel(get()) }\n}\n\n// Dynamic loading\nclass FeatureManager(private val featureFlags: FeatureFlags) {\n    \n    fun initializeFeatures() {\n        val modules = buildList {\n            // Always load core\n            add(coreModule)\n            \n            // Conditional features\n            if (featureFlags.isNewCheckoutEnabled) {\n                add(newCheckoutModule)\n            } else {\n                add(legacyCheckoutModule)\n            }\n            \n            if (featureFlags.isAnalyticsEnabled) {\n                add(analyticsModule)\n            }\n        }\n        \n        loadKoinModules(modules)\n    }\n    \n    fun toggleFeature(feature: Feature, enabled: Boolean) {\n        when (feature) {\n            Feature.NEW_CHECKOUT -> {\n                if (enabled) {\n                    unloadKoinModules(legacyCheckoutModule)\n                    loadKoinModules(newCheckoutModule)\n                } else {\n                    unloadKoinModules(newCheckoutModule)\n                    loadKoinModules(legacyCheckoutModule)\n                }\n            }\n        }\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Lazy Injection",
+              "content": "Defer dependency resolution for performance or circular dependency handling:\n\n```kotlin\nclass NotesViewModel(\n    // Immediate injection\n    private val repository: NotesRepository,\n    \n    // Lazy injection - only resolved when first accessed\n    private val analyticsLazy: Lazy<AnalyticsProvider>\n) {\n    // Access lazy value\n    private val analytics by analyticsLazy\n    \n    fun onNoteCreated() {\n        // Analytics resolved here, not at construction\n        analytics.logEvent(\"note_created\")\n    }\n}\n\n// In module\nval module = module {\n    viewModel {\n        NotesViewModel(\n            repository = get(),\n            analyticsLazy = inject()  // Returns Lazy<AnalyticsProvider>\n        )\n    }\n}\n```\n\n### Breaking Circular Dependencies\n\n```kotlin\n// Problem: A needs B, B needs A\nclass ServiceA(private val b: ServiceB)  // Needs B first\nclass ServiceB(private val a: ServiceA)  // Needs A first\n\n// Solution: Lazy injection\nclass ServiceA(private val bLazy: Lazy<ServiceB>) {\n    private val b by bLazy\n}\n\nclass ServiceB(private val a: ServiceA)\n\nval module = module {\n    single { ServiceA(inject()) }  // Lazy<ServiceB>\n    single { ServiceB(get()) }      // ServiceA (already created)\n}\n```"
+            },
+            {
+              "type": "EXAMPLE",
+              "title": "Clean Architecture Organization",
+              "content": "Organize modules by architectural layer:",
+              "code": "// ========== Module Structure ==========\n//\n// di/\n// ├── modules/\n// │   ├── CoreModule.kt\n// │   ├── DataModule.kt  \n// │   ├── DomainModule.kt\n// │   ├── PresentationModule.kt\n// │   └── PlatformModule.kt (expect/actual)\n// ├── KoinInit.kt\n// └── ModuleList.kt\n\n// ========== CoreModule.kt ==========\nval coreModule = module {\n    // Shared utilities\n    single { Clock.System }\n    single<CoroutineDispatcher>(named(DispatcherType.IO)) { Dispatchers.IO }\n    single<CoroutineDispatcher>(named(DispatcherType.MAIN)) { Dispatchers.Main }\n}\n\n// ========== DataModule.kt ==========\nval dataModule = module {\n    // Network\n    single { createHttpClient() }\n    single { NotesApi(get()) }\n    \n    // Local storage (uses platform-provided driver)\n    single { get<AppDatabase>().notesQueries }\n    \n    // Repository\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n}\n\n// ========== DomainModule.kt ==========\nval domainModule = module {\n    // Use cases - stateless, so factory is appropriate\n    factory { GetAllNotesUseCase(get()) }\n    factory { GetNoteByIdUseCase(get()) }\n    factory { CreateNoteUseCase(get()) }\n    factory { UpdateNoteUseCase(get()) }\n    factory { DeleteNoteUseCase(get()) }\n    factory { SearchNotesUseCase(get()) }\n}\n\n// ========== PresentationModule.kt ==========\nval presentationModule = module {\n    // ViewModels\n    viewModel { \n        NotesListViewModel(\n            getAllNotes = get(),\n            deleteNote = get(),\n            dispatcher = get(named(DispatcherType.MAIN))\n        )\n    }\n    \n    viewModel { params ->\n        NoteDetailViewModel(\n            noteId = params.get(),\n            getNoteById = get(),\n            updateNote = get()\n        )\n    }\n    \n    viewModel {\n        CreateNoteViewModel(\n            createNote = get()\n        )\n    }\n    \n    viewModel { params ->\n        SearchViewModel(\n            initialQuery = params.getOrNull() ?: \"\",\n            searchNotes = get()\n        )\n    }\n}\n\n// ========== ModuleList.kt ==========\nval sharedModules = listOf(\n    coreModule,\n    dataModule,\n    domainModule,\n    presentationModule\n)\n\nfun allModules(platformModule: Module) = \n    sharedModules + platformModule\n\n// ========== KoinInit.kt ==========\nfun initKoin(\n    platformModule: Module,\n    appDeclaration: KoinAppDeclaration = {}\n) {\n    startKoin {\n        appDeclaration()\n        modules(allModules(platformModule))\n    }\n}",
+              "language": "kotlin"
+            },
+            {
+              "type": "THEORY",
+              "title": "Multi-Module App Organization",
+              "content": "For large apps with Gradle modules:\n\n```\napp/\n├── :core               # Core utilities, base classes\n├── :feature:notes      # Notes feature\n├── :feature:settings   # Settings feature\n├── :feature:profile    # Profile feature\n└── :shared             # KMP shared code\n```\n\n### Each Feature Exports Its Module\n\n```kotlin\n// feature/notes/di/NotesModule.kt\nval notesModule = module {\n    singleOf(::NotesRepositoryImpl) { bind<NotesRepository>() }\n    viewModel { NotesListViewModel(get()) }\n    viewModel { params -> NoteDetailViewModel(params.get(), get()) }\n}\n\n// feature/settings/di/SettingsModule.kt\nval settingsModule = module {\n    singleOf(::SettingsRepositoryImpl) { bind<SettingsRepository>() }\n    viewModel { SettingsViewModel(get()) }\n}\n```\n\n### App Combines All Modules\n\n```kotlin\n// app/di/AppModule.kt\nval appModules = listOf(\n    coreModule,\n    platformModule,\n    // Feature modules\n    notesModule,\n    settingsModule,\n    profileModule\n)\n\nclass App : Application() {\n    override fun onCreate() {\n        super.onCreate()\n        startKoin {\n            androidContext(this@App)\n            modules(appModules)\n        }\n    }\n}\n```"
+            },
+            {
+              "type": "THEORY",
+              "title": "Performance Best Practices",
+              "content": "### 1. Use single for Heavy Objects\n\n```kotlin\n// ✅ Database created once\nsingle { AppDatabase.create() }\n\n// ❌ Database created every time (expensive!)\nfactory { AppDatabase.create() }\n```\n\n### 2. Lazy Load Non-Critical Dependencies\n\n```kotlin\nviewModel {\n    HomeViewModel(\n        essentialRepo = get(),          // Needed immediately\n        analyticsLazy = inject(),        // Loaded when first used\n        crashReportingLazy = inject()    // Loaded when first used\n    )\n}\n```\n\n### 3. Split Large Modules\n\n```kotlin\n// ❌ One huge module with 100 definitions\nval everythingModule = module {\n    // 100 definitions...\n}\n\n// ✅ Split by feature/layer\nval modules = listOf(\n    coreModule,\n    networkModule,\n    databaseModule,\n    notesModule,\n    settingsModule\n)\n```\n\n### 4. Avoid get() in Hot Paths\n\n```kotlin\nclass NotesListScreen {\n    @Composable\n    fun Content() {\n        // ❌ get() called on every recomposition\n        val logger: Logger = LocalKoinScope.current.get()\n        \n        // ✅ Remember the value\n        val logger: Logger = remember { getKoin().get() }\n        \n        // ✅ Or use koinInject() which handles this\n        val logger: Logger = koinInject()\n    }\n}\n```"
+            }
+          ],
+          "challenges": [
+            {
+              "id": "challenge-6c-7-1",
+              "title": "Implement User Session Scope",
+              "description": "Create a user session management system using Koin scopes.",
+              "difficulty": "advanced",
+              "starterCode": "// Implement a session management system with these requirements:\n// 1. UserSession holds user data (id, name, authToken)\n// 2. SessionManager creates/destroys session scopes\n// 3. UserPreferences is scoped to the session\n// 4. When user logs out, all session data is cleared\n\ndata class UserSession(\n    var userId: String = \"\",\n    var userName: String = \"\",\n    var authToken: String = \"\"\n)\n\nclass UserPreferences(private val session: UserSession) {\n    // Preferences tied to current user\n    fun getUserTheme(): String = \"light\" // Would read from storage\n}\n\nclass SessionManager {\n    // TODO: Implement session management with Koin scopes\n    \n    fun login(userId: String, userName: String, token: String): Boolean {\n        // Create session scope and initialize\n        TODO()\n    }\n    \n    fun logout() {\n        // Close session scope, clear all session data\n        TODO()\n    }\n    \n    fun isLoggedIn(): Boolean {\n        TODO()\n    }\n    \n    fun getCurrentSession(): UserSession? {\n        TODO()\n    }\n}\n\n// TODO: Define the Koin module with session scope",
+              "solution": "import org.koin.core.component.KoinComponent\nimport org.koin.core.component.inject\nimport org.koin.core.qualifier.named\nimport org.koin.core.scope.Scope\nimport org.koin.dsl.module\nimport org.koin.mp.KoinPlatform.getKoin\n\n// Session data class\ndata class UserSession(\n    var userId: String = \"\",\n    var userName: String = \"\",\n    var authToken: String = \"\"\n)\n\n// User preferences tied to session\nclass UserPreferences(private val session: UserSession) {\n    fun getUserTheme(): String = \"light\"\n    fun getUserId(): String = session.userId\n}\n\n// Define session scope name\nval USER_SESSION_SCOPE = named(\"userSession\")\n\n// Koin module with session scope\nval sessionModule = module {\n    // Session scope - all these are created per session\n    scope(USER_SESSION_SCOPE) {\n        scoped { UserSession() }\n        scoped { UserPreferences(get()) }\n        // Add more session-scoped dependencies here\n        // scoped { CartRepository(get()) }\n        // scoped { WishlistRepository(get()) }\n    }\n}\n\n// Session manager\nclass SessionManager : KoinComponent {\n    private var sessionScope: Scope? = null\n    \n    fun login(userId: String, userName: String, token: String): Boolean {\n        return try {\n            // Close any existing session\n            logout()\n            \n            // Create new session scope with unique ID\n            sessionScope = getKoin().createScope(\n                scopeId = \"session_$userId\",\n                qualifier = USER_SESSION_SCOPE\n            )\n            \n            // Initialize session data\n            val session = sessionScope!!.get<UserSession>()\n            session.userId = userId\n            session.userName = userName\n            session.authToken = token\n            \n            true\n        } catch (e: Exception) {\n            println(\"Login failed: ${e.message}\")\n            false\n        }\n    }\n    \n    fun logout() {\n        sessionScope?.let { scope ->\n            // Optional: Clear sensitive data before closing\n            try {\n                val session = scope.get<UserSession>()\n                session.authToken = \"\"  // Clear token\n            } catch (_: Exception) {}\n            \n            // Close scope - destroys all scoped instances\n            scope.close()\n        }\n        sessionScope = null\n    }\n    \n    fun isLoggedIn(): Boolean {\n        return sessionScope?.closed == false &&\n               getCurrentSession()?.authToken?.isNotBlank() == true\n    }\n    \n    fun getCurrentSession(): UserSession? {\n        return try {\n            sessionScope?.get<UserSession>()\n        } catch (e: Exception) {\n            null\n        }\n    }\n    \n    // Get any session-scoped dependency\n    inline fun <reified T: Any> getSessionDependency(): T? {\n        return try {\n            sessionScope?.get<T>()\n        } catch (e: Exception) {\n            null\n        }\n    }\n}\n\n// Usage example:\nfun example() {\n    // Include sessionModule in startKoin\n    // startKoin { modules(sessionModule, ...) }\n    \n    val sessionManager = SessionManager()\n    \n    // Login\n    sessionManager.login(\"user123\", \"John Doe\", \"auth_token_xyz\")\n    \n    // Access session\n    val session = sessionManager.getCurrentSession()\n    println(\"Logged in as: ${session?.userName}\")\n    \n    // Get session-scoped dependencies\n    val prefs = sessionManager.getSessionDependency<UserPreferences>()\n    println(\"Theme: ${prefs?.getUserTheme()}\")\n    \n    // Logout - all session data destroyed\n    sessionManager.logout()\n    println(\"Is logged in: ${sessionManager.isLoggedIn()}\") // false\n}",
+              "hints": [
+                "Use scope(named(\"userSession\")) to define the scope",
+                "Use createScope() to create a new scope instance",
+                "Use scope.close() to destroy all scoped dependencies",
+                "Store the scope reference in SessionManager"
+              ],
+              "testCases": [
+                {
+                  "description": "Session should be created on login and destroyed on logout",
+                  "expectedBehavior": "getCurrentSession() returns data after login, null after logout"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "module-07",
       "title": "Professional Development & Deployment",
       "description": "Testing, optimization, security, and deploying your multiplatform apps",
