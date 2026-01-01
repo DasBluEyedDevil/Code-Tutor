@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.3-challenge",
+  "title": "Add Password Change Endpoint",
+  "description": "Implement a protected endpoint for users to change their password.",
+  "instructions": "Create a PUT /api/auth/password endpoint that requires the current password and a new password. Verify the current password before updating to the new one.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses authMiddleware for protection",
+      "expectedOutput": "authMiddleware",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Verifies current password before changing",
+      "expectedOutput": "Bun.password.verify",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Hashes new password with argon2id",
+      "expectedOutput": "argon2id",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "First verify the current password matches the stored hash"
+    },
+    {
+      "level": 2,
+      "text": "Use Bun.password.verify() for current password and Bun.password.hash() for new password"
+    },
+    {
+      "level": 3,
+      "text": "Get userId from context using c.get('userId') since authMiddleware sets it"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not verifying current password before changing",
+      "consequence": "Anyone with a stolen token could change the password",
+      "correction": "Always verify the current password first"
+    },
+    {
+      "mistake": "Not using authMiddleware",
+      "consequence": "Anyone could change any user's password",
+      "correction": "Protected routes must use authMiddleware"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.5-challenge-1",
+  "title": "Create an Update Check Service",
+  "description": "Build a complete update checking service that compares app version against minimum/latest versions and returns appropriate update status.",
+  "instructions": "Create an UpdateChecker class that:\n\n1. Takes current app version in constructor\n2. Has a checkUpdate method that accepts minVersion, recommendedVersion, and latestVersion\n3. Returns UpdateResult with status (upToDate, optional, recommended, required)\n4. Handles edge cases (null versions, invalid formats)\n5. Uses the Version class from the previous challenge for comparison\n6. Includes a static factory method fromPackageInfo that gets current version automatically",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Check version requirements in order of priority: required (minVersion) first, then recommended, then optional."
+    },
+    {
+      "level": 2,
+      "text": "Wrap version parsing in try-catch to handle invalid version strings gracefully."
+    },
+    {
+      "level": 3,
+      "text": "Remember that minVersion being null means there's no required minimum - skip that check entirely."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Checking optional update before required update",
+      "consequence": "Users see optional prompt when they actually need to force update",
+      "correction": "Always check minVersion (required) first, then recommended, then optional"
+    },
+    {
+      "mistake": "Not handling null recommendedVersion",
+      "consequence": "Null pointer exception when recommendedVersion is not provided",
+      "correction": "Check if recommendedVersion is not null before comparing"
+    }
+  ],
+  "difficulty": "intermediate"
+}

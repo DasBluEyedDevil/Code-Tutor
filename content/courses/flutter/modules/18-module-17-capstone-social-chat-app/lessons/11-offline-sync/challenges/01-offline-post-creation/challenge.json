@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.11-challenge-0",
+  "title": "Offline Post Creation",
+  "description": "Implement a complete offline post creation system that queues posts while offline, uploads images when online, and retries failed uploads with progress tracking.",
+  "instructions": "Build a robust offline post creation system:\n\n1. Create an OfflinePostQueue class that manages pending posts\n2. Store posts in local database with pending status when offline\n3. Queue image uploads separately with progress tracking\n4. Implement ImageUploadService that uploads images one by one\n5. Handle partial upload failures (some images succeed, others fail)\n6. Show upload progress for each image in the UI\n7. Implement retry logic with exponential backoff for failed uploads\n8. Update post status from pending to synced after successful upload\n9. Notify user when offline posts are successfully synced",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a StreamController to emit upload progress updates that the UI can listen to"
+    },
+    {
+      "level": 2,
+      "text": "Store each image's upload status separately so partial failures can be retried without re-uploading successful images"
+    },
+    {
+      "level": 3,
+      "text": "Use Future.delayed with Duration(milliseconds: attempt * 1000) for exponential backoff between retries"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to upload all images in parallel without considering memory limits",
+      "consequence": "App crashes on devices with limited memory when multiple large images are processed simultaneously",
+      "correction": "Upload images sequentially or limit parallel uploads to 2-3 at a time using a queue"
+    },
+    {
+      "mistake": "Not persisting upload progress across app restarts",
+      "consequence": "Partially uploaded posts lose progress when app is killed",
+      "correction": "Store uploaded URLs in the database and resume from where upload stopped"
+    }
+  ],
+  "difficulty": "advanced"
+}

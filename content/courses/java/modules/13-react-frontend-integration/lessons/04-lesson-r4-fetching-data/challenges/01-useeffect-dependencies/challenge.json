@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-4-mc-1",
+  "title": "useEffect Dependencies",
+  "description": "Understanding when useEffect runs",
+  "question": "What's the difference between useEffect(() => {...}, []) and useEffect(() => {...}, [userId])?",
+  "options": [
+    "No difference - both run once on mount",
+    "[] runs once on mount; [userId] runs on mount AND whenever userId changes",
+    "[userId] only runs when userId changes, not on mount",
+    "[] is for GET requests, [userId] is for POST requests"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Empty array [] means the effect runs once when the component mounts. [userId] means the effect runs on mount AND re-runs whenever userId changes. This is how you fetch data that depends on a parameter - when the parameter changes, you refetch.",
+  "difficulty": "intermediate"
+}

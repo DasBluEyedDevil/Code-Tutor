@@ -1,0 +1,70 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-18-03-challenge-01",
+  "title": "Create a Value Object",
+  "description": "Implement an Address Value Object following Clean Architecture and DDD principles.",
+  "instructions": "Create an Address value object for the ShopFlow e-commerce system that:\n\n1. Is immutable (use a record or readonly properties)\n2. Validates all required fields in the constructor\n3. Uses value equality (two addresses with same values are equal)\n4. Includes these properties: Street, City, State, PostalCode, Country\n5. Has a computed FullAddress property that formats the complete address\n6. Throws a DomainException for invalid data\n\nRemember: Value Objects have no identity - they ARE their attributes!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Address is immutable (no public setters)",
+      "expectedOutput": "Properties have no setters or private setters only",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Constructor validates Street is required",
+      "expectedOutput": "Throws DomainException for empty street",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Two addresses with same values are equal",
+      "expectedOutput": "address1 == address2 returns true",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "FullAddress returns formatted string",
+      "expectedOutput": "Formatted address string",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "C# records automatically provide value equality and immutability - perfect for Value Objects!"
+    },
+    {
+      "level": 2,
+      "text": "Use 'sealed record Address' to prevent inheritance and ensure immutability."
+    },
+    {
+      "level": 3,
+      "text": "Throw DomainException in the constructor if required fields are null or whitespace."
+    },
+    {
+      "level": 4,
+      "text": "The FullAddress property should use string interpolation to combine all parts: $\"{Street}, {City}, {State} {PostalCode}, {Country}\""
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using public setters on properties",
+      "consequence": "Address becomes mutable, violating Value Object rules",
+      "correction": "Use init-only setters or readonly properties set only in constructor"
+    },
+    {
+      "mistake": "Not validating in constructor",
+      "consequence": "Invalid addresses can be created, causing bugs later",
+      "correction": "Validate all required fields and throw DomainException for invalid data"
+    },
+    {
+      "mistake": "Using class instead of record",
+      "consequence": "Need to manually implement Equals, GetHashCode for value equality",
+      "correction": "Use record type which provides value equality by default"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-05-challenge-1",
+  "title": "Create a Dockerfile for Your Project",
+  "description": "Create a multi-stage Dockerfile for a FastAPI application that:\n1. Uses python:3.13-slim as the base\n2. Installs uv from the official image\n3. Uses a builder stage and a runtime stage\n4. Runs as a non-root user\n5. Exposes port 8000\n\nFill in the missing parts of the Dockerfile.",
+  "instructions": "Complete the Dockerfile with proper multi-stage build, uv installation, and security best practices.",
+  "language": "dockerfile",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses python:3.13-slim base image",
+      "expectedOutput": "python:3.13-slim",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses multi-stage build with --from=builder",
+      "expectedOutput": "--from=builder",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Runs as non-root user",
+      "expectedOutput": "USER appuser",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The uv binary is at `/uv` in the source image and should go to `/usr/local/bin/uv`"
+    },
+    {
+      "level": 2,
+      "text": "Use `--frozen --no-dev` flags with uv sync for production builds"
+    },
+    {
+      "level": 3,
+      "text": "The venv bin path is `/app/.venv/bin`"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting --from=builder when copying from the first stage",
+      "consequence": "Docker will look for files in the current stage instead of the builder stage",
+      "correction": "Use COPY --from=builder /app/.venv /app/.venv"
+    },
+    {
+      "mistake": "Not adding .venv/bin to PATH",
+      "consequence": "Python packages won't be accessible",
+      "correction": "Add ENV PATH=\"/app/.venv/bin:$PATH\""
+    },
+    {
+      "mistake": "Running as root user",
+      "consequence": "Security vulnerability if container is compromised",
+      "correction": "Create a non-root user and switch with USER appuser"
+    }
+  ],
+  "difficulty": "advanced"
+}

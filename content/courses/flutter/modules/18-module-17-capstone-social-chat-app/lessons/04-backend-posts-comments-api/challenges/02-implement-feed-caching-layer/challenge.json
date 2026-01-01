@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.4-challenge-1",
+  "title": "Implement Feed Caching Layer",
+  "description": "Create a caching layer for the social feed to improve performance and reduce database load.",
+  "instructions": "Implement a FeedCache class that:\n\n1. Caches feed results with TTL (time-to-live)\n2. Invalidates cache on new posts\n3. Supports per-user feed caching\n4. Handles cache stampede prevention\n5. Provides cache statistics\n\nThe cache should significantly reduce database queries for frequently accessed feeds.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a Completer to prevent cache stampede - when multiple requests come for the same key, only one should compute"
+    },
+    {
+      "level": 2,
+      "text": "Store pending computations in a map and have other requesters wait on the same future"
+    },
+    {
+      "level": 3,
+      "text": "Remember to clean up the pending computation map in a finally block to handle both success and error cases"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling cache stampede - multiple requests triggering duplicate expensive computations",
+      "consequence": "Database gets hammered when cache expires",
+      "correction": "Use a pending computations map with Completers to serialize concurrent requests for the same key"
+    },
+    {
+      "mistake": "Invalidating too broadly on new posts",
+      "consequence": "Cache hit rate drops dramatically",
+      "correction": "Only invalidate feeds that would actually contain the new post (author + followers' home feeds)"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "QUIZ",
+  "id": "lesson-20-04-challenge-01",
+  "title": "JWT Security Understanding",
+  "description": "Test your understanding of JWT token security.",
+  "instructions": "Answer the following question about JWT expiration times.",
+  "question": "Why should JWT access tokens have short expiration times (15-60 minutes) instead of long expiration times (days or weeks)?",
+  "options": [
+    "Short tokens are smaller in size and faster to transmit",
+    "JWTs cannot be easily invalidated once issued, so short expiration limits the damage window if a token is stolen",
+    "Short tokens use less memory on the server",
+    "The JWT specification requires tokens to expire within one hour"
+  ],
+  "correctAnswer": 1,
+  "explanation": "JWTs are stateless tokens that are validated using cryptographic signatures, not by checking a database. This means once a JWT is issued, it remains valid until it expires - you cannot easily 'revoke' it without implementing additional infrastructure like a token blacklist or changing the signing key (which invalidates ALL tokens).\n\nIf an attacker steals a JWT with a 7-day expiration, they have 7 days to use it. If the token expires in 15 minutes, the attack window is dramatically reduced.\n\nTo provide good user experience with short access tokens, we use refresh tokens: short-lived access tokens (15-60 minutes) paired with longer-lived refresh tokens (days). Refresh tokens can be revoked since they require a database lookup to exchange for new access tokens.\n\nThe other options are incorrect:\n- Token size is determined by the number of claims, not expiration time\n- JWTs are stateless; the server does not store them in memory\n- There is no specification requirement for one-hour expiration",
+  "difficulty": "intermediate"
+}

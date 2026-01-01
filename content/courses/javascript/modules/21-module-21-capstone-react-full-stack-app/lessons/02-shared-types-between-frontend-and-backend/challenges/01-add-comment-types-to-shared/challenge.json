@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.2-challenge",
+  "title": "Add Comment Types to Shared",
+  "description": "Extend the shared types to include a Comment type for task comments.",
+  "instructions": "Create a new file packages/shared/src/types/comment.ts with Comment, CommentWithAuthor types and validation schemas. Export from index.ts.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Comment interface has required fields",
+      "expectedOutput": "id|content|userId|taskId",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "CommentWithAuthor extends Comment with author",
+      "expectedOutput": "author",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Validation schema has content field",
+      "expectedOutput": "content",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create Comment interface with id, content, userId, taskId, timestamps"
+    },
+    {
+      "level": 2,
+      "text": "CommentWithAuthor should extend Comment and add an author object"
+    },
+    {
+      "level": 3,
+      "text": "Use z.string().min(1).max(500) for content validation"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not extending CommentWithAuthor from Comment",
+      "consequence": "Duplicate fields and harder to maintain",
+      "correction": "Use extends keyword: interface CommentWithAuthor extends Comment"
+    }
+  ],
+  "difficulty": "intermediate"
+}

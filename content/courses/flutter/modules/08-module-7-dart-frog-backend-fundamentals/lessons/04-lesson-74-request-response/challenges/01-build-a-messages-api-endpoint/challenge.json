@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.4-challenge-1",
+  "title": "Build a Messages API Endpoint",
+  "description": "Create an endpoint that handles both GET and POST requests for messages.",
+  "instructions": "Build a `/api/messages` endpoint that:\n\n1. **GET** - Returns a list of messages with id, author, and content\n2. **POST** - Accepts a JSON body with 'author' and 'content', returns the created message with a generated id and 201 status\n3. Returns 405 for other HTTP methods\n\nThe endpoint should properly use async/await for reading the POST body.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Function is async and returns Future<Response>",
+      "expectedOutput": "Future<Response>",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Handles GET method returning messages",
+      "expectedOutput": "HttpMethod.get",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Handles POST method with await for body",
+      "expectedOutput": "await context.request.json()",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Returns 201 status for created resources",
+      "expectedOutput": "statusCode: 201",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Returns 405 for unsupported methods",
+      "expectedOutput": "405",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a switch statement on context.request.method to handle different HTTP methods."
+    },
+    {
+      "level": 2,
+      "text": "For POST, use 'await context.request.json() as Map<String, dynamic>' to read the body."
+    },
+    {
+      "level": 3,
+      "text": "Use Response.json(body: {...}, statusCode: 201) to return JSON with a custom status code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting async/await when reading request body",
+      "consequence": "Runtime error: await expression can only be used in async function",
+      "correction": "Mark function as 'Future<Response> onRequest(...) async' and use 'await' before context.request.json()"
+    },
+    {
+      "mistake": "Using 200 status code for resource creation",
+      "consequence": "Non-standard API response, confuses clients",
+      "correction": "Use statusCode: 201 for successful POST/creation operations"
+    },
+    {
+      "mistake": "Not handling unsupported methods",
+      "consequence": "Unexpected behavior or errors for PUT/DELETE requests",
+      "correction": "Add a default case returning Response(statusCode: 405) for method not allowed"
+    },
+    {
+      "mistake": "Not casting JSON body to Map<String, dynamic>",
+      "consequence": "Type errors when accessing body properties",
+      "correction": "Cast with 'as Map<String, dynamic>' after calling context.request.json()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

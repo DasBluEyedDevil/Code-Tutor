@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-14-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Git workflow simulation!\n\nSimulate these Git commands (print what each does):\n\n1. git init - Initialize repository\n2. git add . - Stage all files\n3. git commit -m \"Initial commit\" - First commit\n4. git status - Check status\n5. git branch feature/add-books - Create feature branch\n6. git checkout feature/add-books - Switch to branch\n7. (Make changes)\n8. git add .\n9. git commit -m \"Add book CRUD\"\n10. git checkout main - Back to main\n11. git merge feature/add-books - Merge feature\n12. git push origin main - Push to GitHub\n\nExplain each step!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"git init\"",
+      "expectedOutput": "git init",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"git add\"",
+      "expectedOutput": "git add",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"git commit\"",
+      "expectedOutput": "git commit",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"branch\"",
+      "expectedOutput": "branch",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"merge\"",
+      "expectedOutput": "merge",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"push\"",
+      "expectedOutput": "push",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "git init → add → commit. Create branch, checkout, make changes, commit. Checkout main, merge branch. Push to remote. Learn: add, commit, branch, merge, push!"
+    },
+    {
+      "level": 2,
+      "text": "Committing without staging: 'git commit' commits STAGED files only! Must 'git add' first. 'git commit -am' stages and commits modified files (but not new files!)."
+    },
+    {
+      "level": 3,
+      "text": "Merge conflicts: If same file edited in two branches, merge creates conflict! Git marks conflicts in file. Resolve manually, then 'git add' and 'git commit'."
+    },
+    {
+      "level": 4,
+      "text": "Not pulling before push: Always 'git pull' before 'git push'! If remote has changes you don't have, push rejected. Pull first, resolve conflicts, then push."
+    },
+    {
+      "level": 5,
+      "text": "Committing secrets: NEVER commit passwords, API keys, connection strings! Use .gitignore for appsettings.json. Use environment variables or Azure Key Vault."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Committing without staging",
+      "consequence": "'git commit' commits STAGED files only! Must 'git add' first. 'git commit -am' stages and commits modified files (but not new files!).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Merge conflicts",
+      "consequence": "If same file edited in two branches, merge creates conflict! Git marks conflicts in file. Resolve manually, then 'git add' and 'git commit'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not pulling before push",
+      "consequence": "Always 'git pull' before 'git push'! If remote has changes you don't have, push rejected. Pull first, resolve conflicts, then push.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Committing secrets",
+      "consequence": "NEVER commit passwords, API keys, connection strings! Use .gitignore for appsettings.json. Use environment variables or Azure Key Vault.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

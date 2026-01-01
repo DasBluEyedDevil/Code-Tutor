@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a flexible Button component with many parameters!\n\n1. CustomButton.razor:\n   - [Parameter] string Text\n   - [Parameter] string Color (\"primary\", \"danger\", \"success\")\n   - [Parameter] bool IsDisabled\n   - [Parameter] EventCallback OnClick\n   - Apply Bootstrap classes based on Color\n   - Disable if IsDisabled\n\n2. ButtonGroup.razor that uses CustomButton:\n   - Create 3 buttons: Save (success), Delete (danger), Cancel (primary)\n   - Track which button was clicked\n   - Display last action\n\n3. Demonstrate parameter flexibility\n\nPrint both components!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"CustomButton\"",
+      "expectedOutput": "CustomButton",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"ButtonGroup\"",
+      "expectedOutput": "ButtonGroup",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"[Parameter]\"",
+      "expectedOutput": "[Parameter]",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Color\"",
+      "expectedOutput": "Color",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"IsDisabled\"",
+      "expectedOutput": "IsDisabled",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"OnClick\"",
+      "expectedOutput": "OnClick",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "[Parameter] makes property configurable. EventCallback<T> for passing data back. Invoke with await callback.InvokeAsync(data). Bootstrap: btn-primary, btn-success, btn-danger."
+    },
+    {
+      "level": 2,
+      "text": "Required parameters: No built-in [Required] for Blazor parameters! Check in OnParametersSet(): 'if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException();'."
+    },
+    {
+      "level": 3,
+      "text": "Parameter change detection: OnParametersSet() called when parent changes parameters. Use to react: 'protected override void OnParametersSet() { UpdateData(); }'."
+    },
+    {
+      "level": 4,
+      "text": "Two-way binding: For @bind, need [Parameter] Value AND [Parameter] ValueChanged EventCallback<T>. Or use @bind-Value syntax. Naming convention matters!"
+    },
+    {
+      "level": 5,
+      "text": "Default values: Set default in property initializer or constructor, NOT in OnInitialized! Property initializer: 'public string Color { get; set; } = \"primary\";'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Required parameters",
+      "consequence": "No built-in [Required] for Blazor parameters! Check in OnParametersSet(): 'if (string.IsNullOrEmpty(Name)) throw new ArgumentNullException();'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Parameter change detection",
+      "consequence": "OnParametersSet() called when parent changes parameters. Use to react: 'protected override void OnParametersSet() { UpdateData(); }'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Two-way binding",
+      "consequence": "For @bind, need [Parameter] Value AND [Parameter] ValueChanged EventCallback<T>. Or use @bind-Value syntax. Naming convention matters!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Default values",
+      "consequence": "Set default in property initializer or constructor, NOT in OnInitialized! Property initializer: 'public string Color { get; set; } = \"primary\";'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

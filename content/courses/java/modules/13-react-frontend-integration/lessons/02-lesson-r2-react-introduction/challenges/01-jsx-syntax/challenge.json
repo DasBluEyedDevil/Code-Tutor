@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-2-mc-1",
+  "title": "JSX Syntax",
+  "description": "Understanding JSX differences from HTML",
+  "question": "Which is the correct JSX for a div with a CSS class and a click handler?",
+  "options": [
+    "<div class=\"container\" onclick=\"handleClick()\">",
+    "<div className=\"container\" onClick={handleClick}>",
+    "<div class=\"container\" onClick={handleClick()}>",
+    "<div className=\"container\" onclick={handleClick}>"
+  ],
+  "correctAnswer": 1,
+  "explanation": "JSX uses className instead of class (reserved word in JavaScript), and camelCase for event handlers (onClick not onclick). Event handlers receive function references, not strings or function calls. handleClick (reference) not handleClick() (call) - calling it would execute immediately on render.",
+  "difficulty": "beginner"
+}

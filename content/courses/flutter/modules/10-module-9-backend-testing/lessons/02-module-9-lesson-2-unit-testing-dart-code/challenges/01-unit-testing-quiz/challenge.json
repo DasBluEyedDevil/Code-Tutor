@@ -1,0 +1,57 @@
+{
+  "type": "QUIZ",
+  "id": "9.2-quiz-1",
+  "title": "Unit Testing Quiz",
+  "description": "Test your understanding of unit testing concepts in Dart.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Which matcher would you use to check if a list contains exactly 5 elements?",
+      "options": [
+        "contains(5)",
+        "equals(5)",
+        "hasLength(5)",
+        "isLength(5)"
+      ],
+      "correctAnswer": 2,
+      "explanation": "hasLength(5) checks if a collection has exactly 5 elements. contains(5) checks if the number 5 is in the list, which is different."
+    },
+    {
+      "id": "q2",
+      "text": "When using Mocktail, what method do you use to define what a mock should return?",
+      "options": [
+        "expect()",
+        "when()",
+        "verify()",
+        "mock()"
+      ],
+      "correctAnswer": 1,
+      "explanation": "when() is used to stub mock behavior. For example: when(() => mock.method()).thenReturn(value). verify() is used after the test to check if methods were called."
+    },
+    {
+      "id": "q3",
+      "text": "What happens if you forget to use 'await' in an async test?",
+      "options": [
+        "The test will fail immediately",
+        "The test may pass before the async operation completes",
+        "Dart will automatically add await",
+        "The test runner will show a warning"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Without await, the test function returns immediately while the async operation runs in the background. The test may incorrectly pass because assertions run before the operation completes."
+    },
+    {
+      "id": "q4",
+      "text": "Which function runs before EACH test in a group?",
+      "options": [
+        "setUpAll()",
+        "setUp()",
+        "beforeEach()",
+        "init()"
+      ],
+      "correctAnswer": 1,
+      "explanation": "setUp() runs before each individual test. setUpAll() runs once before all tests in the file or group. beforeEach() is not a Dart test function."
+    }
+  ],
+  "difficulty": "intermediate"
+}

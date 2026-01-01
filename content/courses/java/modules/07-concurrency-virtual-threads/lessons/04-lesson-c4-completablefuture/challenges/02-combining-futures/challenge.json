@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-4-mc-2",
+  "title": "Combining Futures",
+  "description": "Understanding how to combine multiple futures",
+  "question": "You need to fetch data from 3 independent APIs concurrently and proceed only when ALL complete. Which method do you use?",
+  "options": [
+    "thenCombine - combines two futures into one",
+    "anyOf - completes when any future completes",
+    "allOf - completes when all futures complete",
+    "thenCompose - chains futures sequentially"
+  ],
+  "correctAnswer": 2,
+  "explanation": "CompletableFuture.allOf(cf1, cf2, cf3) returns a future that completes when ALL input futures complete. anyOf completes when ANY single future completes. thenCombine only works with exactly two futures. thenCompose is for sequential chaining, not parallel.",
+  "difficulty": "advanced"
+}

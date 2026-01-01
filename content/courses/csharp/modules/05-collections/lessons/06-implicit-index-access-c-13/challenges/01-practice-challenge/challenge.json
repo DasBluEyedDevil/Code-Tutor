@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Practice using the C# 13 implicit 'from end' index (^) in object initializers.",
+  "instructions": "Create a countdown display using the ^ operator in object initializers!\n\n1. Create a class called 'Countdown' with a public int[] Numbers property initialized to size 5\n2. Create an instance using object initializer with ^ operator:\n   - Set [^1] = 1 (last position)\n   - Set [^2] = 2 (second-to-last)\n   - Set [^3] = 3 (third-to-last)\n   - Set [^4] = 4\n   - Set [^5] = 5 (first position)\n3. Display all numbers using a foreach loop\n4. Also display using ^1 index: 'Last number is: X'\n\nThe result should show: 5, 4, 3, 2, 1",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain 'Countdown'",
+      "expectedOutput": "Countdown",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain 'Last number'",
+      "expectedOutput": "Last number",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should show the sequence with 5",
+      "expectedOutput": "5",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The ^ operator counts from the end. ^1 is the last element, ^2 is second-to-last, etc."
+    },
+    {
+      "level": 2,
+      "text": "In object initializers, use the syntax: Numbers = { [^1] = value, [^2] = value }. Note the curly braces after the property name!"
+    },
+    {
+      "level": 3,
+      "text": "Remember: ^0 is OUT OF BOUNDS! It means 'one past the end'. The last valid element is ^1."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using ^0 for the last element",
+      "consequence": "^0 means 'one past the end' and throws IndexOutOfRangeException! The last element is ^1, not ^0.",
+      "correction": "Use ^1 for last, ^2 for second-to-last, etc."
+    },
+    {
+      "mistake": "Forgetting the caret ^ symbol",
+      "consequence": "[1] is the SECOND element (index 1 from start), while [^1] is the LAST element. Without ^, you're indexing from the front!",
+      "correction": "Always include ^ when indexing from the end: [^1], [^2], etc."
+    },
+    {
+      "mistake": "Using ^ outside object initializers in older C# versions",
+      "consequence": "The ^ operator has been available since C# 8, but using it in OBJECT INITIALIZERS is new in C# 13. Make sure your project targets .NET 9.",
+      "correction": "Ensure your project uses C# 13 / .NET 9 for object initializer support"
+    }
+  ],
+  "difficulty": "intermediate"
+}

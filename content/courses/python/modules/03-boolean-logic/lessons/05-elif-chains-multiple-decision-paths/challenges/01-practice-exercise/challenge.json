@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-03-lesson-05-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n<pre>BMI = weight_kg / (height_m ** 2)</pre>**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n<pre>=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n</pre>",
+  "instructions": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n<pre>BMI = weight_kg / (height_m ** 2)</pre>**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n<pre>=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "BMI formula is weight / (height ** 2). For the elif chain, check from smallest to largest: bmi < 18.5, then bmi < 25, then bmi < 30, then else for everything above. Remember: if you're in the second elif, you already know BMI >= 18.5 (because the first check failed), so you only need to check bmi < 25."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

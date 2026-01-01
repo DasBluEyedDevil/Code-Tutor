@@ -1,0 +1,47 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-08-challenge-01",
+  "title": "Build a Flexible Logger",
+  "description": "Create a logging method that accepts messages in multiple ways using C# 13 params.",
+  "instructions": "1. Create a method `LogMessages` that takes `params IEnumerable<string> messages`\n2. Print each message with a timestamp prefix\n3. Test with inline items, collection expression, and an existing list",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-params-inline",
+      "description": "Method accepts inline string arguments",
+      "expectedOutput": "Three timestamped log lines",
+      "isVisible": true
+    },
+    {
+      "id": "test-params-collection",
+      "description": "Method accepts collection expression",
+      "expectedOutput": "Two timestamped log lines",
+      "isVisible": true
+    },
+    {
+      "id": "test-params-list",
+      "description": "Method accepts existing List<string>",
+      "expectedOutput": "Three timestamped log lines",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `params IEnumerable<string>` not `params string[]`"
+    },
+    {
+      "level": 2,
+      "text": "foreach works the same way on IEnumerable as on arrays"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "id": "mistake-1",
+      "mistake": "Using params string[] instead of params IEnumerable<string>",
+      "consequence": "Callers must convert existing collections to arrays before passing them",
+      "correction": "C# 13 extends params to work with IEnumerable<T>. This allows callers to pass existing collections without conversion."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.6-challenge-0",
+  "title": "Build a Comprehensive Logging Middleware",
+  "description": "Create a logging middleware that captures request details, timing, and errors for all endpoint calls.",
+  "instructions": "Create a RequestLogger class that:\n\n1. Captures request start time and generates a unique request ID\n2. Logs request details (endpoint, method, user ID) at the start\n3. Logs response details (status, duration) at the end\n4. Handles errors and logs them with full context\n5. Supports log level configuration based on environment\n6. Provides a wrap() method that can be used to wrap endpoint methods",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Uuid().v4() to generate a unique request ID. Substring it to keep logs readable."
+    },
+    {
+      "level": 2,
+      "text": "In wrap(), use try-catch to handle both success and failure cases. Always call logRequestEnd() before returning or rethrowing."
+    },
+    {
+      "level": 3,
+      "text": "Create a level order map to compare LogLevel values. Debug is lowest, fatal is highest."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not logging the end of request when an error occurs",
+      "consequence": "Missing duration metrics and incomplete request tracking",
+      "correction": "Always call logRequestEnd() in both success and catch blocks"
+    },
+    {
+      "mistake": "Logging sensitive data like passwords or tokens",
+      "consequence": "Security vulnerability - credentials exposed in logs",
+      "correction": "Only log non-sensitive identifiers like userId, never passwords or tokens"
+    }
+  ],
+  "difficulty": "intermediate"
+}

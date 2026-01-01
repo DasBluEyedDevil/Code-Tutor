@@ -1,0 +1,20 @@
+{
+  "type": "FREE_CODING",
+  "id": "capstone-16-3-category-controller",
+  "title": "Implement CategoryController",
+  "description": "Create a CategoryController with CRUD endpoints following the patterns from TaskController.",
+  "instructions": "Implement the CategoryController class with the following endpoints:\n1. GET /api/categories - List all categories for current user\n2. POST /api/categories - Create new category\n3. PUT /api/categories/{id} - Update category\n4. DELETE /api/categories/{id} - Delete category\n\nFollow the same patterns as TaskController: use DTOs, inject the authenticated user, return proper status codes.",
+  "language": "java",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Follow the exact pattern from TaskController - constructor injection, @AuthenticationPrincipal, ResponseEntity return types."
+    },
+    {
+      "level": 2,
+      "text": "Categories do not need pagination since users typically have fewer categories. Return List<CategoryResponse> instead of Page."
+    }
+  ],
+  "difficulty": "intermediate"
+}

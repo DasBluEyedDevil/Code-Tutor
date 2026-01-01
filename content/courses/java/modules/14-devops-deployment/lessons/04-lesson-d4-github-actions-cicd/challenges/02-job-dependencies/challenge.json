@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-4-mc-2",
+  "title": "Job Dependencies",
+  "description": "Understanding job ordering and conditions",
+  "question": "Given 'needs: test' and 'if: github.ref == 'refs/heads/main'', when does the deploy job run?",
+  "options": [
+    "Immediately when any push occurs",
+    "After test passes, but only if the push was to main",
+    "Only on pull requests to main",
+    "After test passes, regardless of branch"
+  ],
+  "correctAnswer": 1,
+  "explanation": "'needs: test' means the deploy job waits for the test job to complete successfully. 'if: github.ref == 'refs/heads/main'' adds an additional condition: the branch must be main. So deploy runs only when: (1) test job passes, AND (2) the push was to the main branch. PRs don't set github.ref to refs/heads/main.",
+  "difficulty": "intermediate"
+}

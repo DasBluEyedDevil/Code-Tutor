@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "19.1-challenge",
+  "title": "Build a Todo API",
+  "description": "Create a simple todo storage using bun:sqlite.",
+  "instructions": "Create a todos table with id, title, and completed. Write functions to add a todo and list all todos.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Creates and retrieves todos",
+      "expectedOutput": "[{\"id\":1,\"title\":\"Learn Bun\",\"completed\":0},{\"id\":2,\"title\":\"Build an app\",\"completed\":0}]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use db.query(...).all() to get all rows as an array"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using db.run() for SELECT queries",
+      "consequence": "run() is for INSERT/UPDATE/DELETE and doesn't return rows",
+      "correction": "Use db.query(...).all() or db.prepare(...).all() for SELECT"
+    }
+  ],
+  "difficulty": "intermediate"
+}

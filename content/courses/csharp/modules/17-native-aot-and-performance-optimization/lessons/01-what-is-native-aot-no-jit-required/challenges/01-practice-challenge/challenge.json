@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-17-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a simple console application that demonstrates AOT compatibility!\n\n1. Create a record called 'AppInfo' with properties:\n   - Name (string)\n   - Version (string)\n   - StartTime (DateTime)\n\n2. In your main code:\n   - Create an AppInfo instance with your app's details\n   - Print the app name and version\n   - Calculate and print how long since the app started (use Stopwatch)\n   - Print whether the process is 64-bit\n   - Print the working set memory in MB\n\n3. Add comments indicating which parts are AOT-compatible\n\nFocus on AOT-safe patterns (no reflection, no dynamic code generation).",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should show app info",
+      "expectedOutput": "App:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should confirm AOT compatibility",
+      "expectedOutput": "AOT-compatible",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Record types: public record AppInfo(string Name, string Version, DateTime StartTime); - single line definition!"
+    },
+    {
+      "level": 2,
+      "text": "Stopwatch: var sw = Stopwatch.StartNew(); then sw.Stop(); then sw.ElapsedMilliseconds"
+    },
+    {
+      "level": 3,
+      "text": "Environment.Is64BitProcess returns bool. Environment.WorkingSet returns long (bytes)."
+    },
+    {
+      "level": 4,
+      "text": "Format memory: (Environment.WorkingSet / (1024.0 * 1024.0)).ToString(\"F2\") for 2 decimal places."
+    },
+    {
+      "level": 5,
+      "text": "String interpolation with format: $\"{value:F2}\" formats as fixed-point with 2 decimals."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using reflection for property access",
+      "consequence": "typeof(T).GetProperties() may not work in AOT! Reflection is limited without special annotations.",
+      "correction": "Access properties directly: appInfo.Name, not reflection. AOT needs to know types at compile time."
+    },
+    {
+      "mistake": "Using dynamic keyword",
+      "consequence": "dynamic requires runtime compilation which doesn't exist in AOT. Will throw at runtime!",
+      "correction": "Use strong typing. Replace 'dynamic' with concrete types or generics."
+    },
+    {
+      "mistake": "Forgetting to specify runtime identifier",
+      "consequence": "dotnet publish without -r fails for AOT! Native code is platform-specific.",
+      "correction": "Always specify: -r win-x64, -r linux-x64, -r osx-arm64, etc."
+    },
+    {
+      "mistake": "Integer division for memory calculation",
+      "consequence": "WorkingSet / (1024 * 1024) uses integer division, losing precision!",
+      "correction": "Use 1024.0 * 1024.0 to force floating-point division for accurate MB values."
+    }
+  ],
+  "difficulty": "advanced"
+}

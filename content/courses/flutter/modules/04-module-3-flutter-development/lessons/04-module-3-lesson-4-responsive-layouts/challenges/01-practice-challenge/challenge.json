@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.4-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create an app that shows: Use MediaQuery or GridView.extent! ---",
+  "instructions": "Create an app that shows: Use MediaQuery or GridView.extent! ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Widget builds without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "GridView.extent auto-adjusts columns based on maxCrossAxisExtent"
+    },
+    {
+      "level": 3,
+      "text": "MediaQuery.sizeOf(context).width gives screen width for manual breakpoints"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using hardcoded column count instead of maxCrossAxisExtent",
+      "consequence": "Grid doesn't adapt to different screen sizes",
+      "correction": "Use GridView.extent with maxCrossAxisExtent for auto columns"
+    },
+    {
+      "mistake": "Forgetting to wrap GridView in Expanded inside Column",
+      "consequence": "Unbounded height error",
+      "correction": "Wrap GridView in Expanded when inside Column"
+    },
+    {
+      "mistake": "Using MediaQuery.of(context).size",
+      "consequence": "Unnecessary rebuilds on any MediaQuery change",
+      "correction": "Use MediaQuery.sizeOf(context) for better performance"
+    }
+  ],
+  "difficulty": "beginner"
+}

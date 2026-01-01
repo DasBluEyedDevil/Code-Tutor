@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-6-payment",
+  "title": "Payment Interface",
+  "description": "Create:\n1. Interface Payable with method: double calculatePayment()\n2. Class Employee implementing Payable with: double salary field, constructor,\n   calculatePayment() returning salary\n3. Class Contractor implementing Payable with: double hourlyRate, int hoursWorked,\n   constructor, calculatePayment() returning hourlyRate * hoursWorked",
+  "instructions": "Create:\n1. Interface Payable with method: double calculatePayment()\n2. Class Employee implementing Payable with: double salary field, constructor,\n   calculatePayment() returning salary\n3. Class Contractor implementing Payable with: double hourlyRate, int hoursWorked,\n   constructor, calculatePayment() returning hourlyRate * hoursWorked",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-6-payment-test-1",
+      "description": "Employee e = new Employee(5000.0);\nreturn e.calculatePayment();",
+      "expectedOutput": "5000.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-6-payment-test-2",
+      "description": "Contractor c = new Contractor(50.0, 40);\nreturn c.calculatePayment();",
+      "expectedOutput": "2000.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-6-payment-test-3",
+      "description": "Payable p = new Employee(3000.0);\nreturn p.calculatePayment();",
+      "expectedOutput": "3000.0",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Define a function using the java syntax. Don't forget the return statement if needed."
+    },
+    {
+      "level": 3,
+      "text": "If stuck, try writing out the solution in plain English first, then convert to java code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting semicolons",
+      "consequence": "Compilation error",
+      "correction": "Add ; at end of statements"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for primitives, .equals() for objects"
+    },
+    {
+      "mistake": "Incorrect capitalization (Java is case-sensitive)",
+      "consequence": "Cannot find symbol error",
+      "correction": "Match exact capitalization"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,69 @@
+{
+  "type": "QUIZ",
+  "id": "9.3-quiz-1",
+  "title": "Dart Frog Testing Concepts",
+  "description": "Test your understanding of Dart Frog route testing patterns.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "When mocking RequestContext for testing, what must you do if your handler accesses context.request.uri.queryParameters?",
+      "options": [
+        "Only mock the RequestContext",
+        "Mock the entire chain: RequestContext, Request, and Uri",
+        "Use real objects instead of mocks",
+        "Skip testing query parameters"
+      ],
+      "correctAnswer": 1,
+      "explanation": "When your handler accesses nested properties like context.request.uri.queryParameters, you must mock the entire object chain. Each object in the chain must be mocked and configured to return the next mock."
+    },
+    {
+      "id": "q2",
+      "text": "What is the correct way to mock an async method like request.json() in mocktail?",
+      "options": [
+        "when(() => request.json()).thenReturn({'key': 'value'})",
+        "when(() => request.json()).thenAnswer((_) async => {'key': 'value'})",
+        "when(() => request.json()).returns({'key': 'value'})",
+        "when(request.json).thenReturn({'key': 'value'})"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Async methods that return Future must use thenAnswer with an async callback. thenReturn is for synchronous values, while thenAnswer allows you to return a Future."
+    },
+    {
+      "id": "q3",
+      "text": "How should you test that a middleware correctly rejects unauthorized requests?",
+      "options": [
+        "Test only that the next handler is called",
+        "Create a mock context without auth headers and verify it returns 401 before calling the next handler",
+        "Skip middleware testing - only test the final handlers",
+        "Test middleware only in integration tests"
+      ],
+      "correctAnswer": 1,
+      "explanation": "To test middleware rejection, create a mock context without the required authorization and verify that the middleware returns an appropriate error response without calling the next handler."
+    },
+    {
+      "id": "q4",
+      "text": "What is the main advantage of integration tests over unit tests for Dart Frog routes?",
+      "options": [
+        "Integration tests are faster to run",
+        "Integration tests catch issues with route configuration, middleware ordering, and real dependencies",
+        "Integration tests do not require any setup",
+        "Integration tests replace the need for unit tests"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Integration tests verify the full request/response cycle, catching issues that unit tests miss: incorrect route configuration, middleware ordering problems, and dependency injection errors."
+    },
+    {
+      "id": "q5",
+      "text": "When testing JSON body parsing, which scenario should NOT be included in your test suite?",
+      "options": [
+        "Valid JSON with all required fields",
+        "Missing required fields",
+        "Testing with a production database",
+        "Malformed JSON that cannot be parsed"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Unit tests for body parsing should use mocked dependencies, not production databases. Testing with production data is dangerous and violates test isolation principles."
+    }
+  ],
+  "difficulty": "intermediate"
+}

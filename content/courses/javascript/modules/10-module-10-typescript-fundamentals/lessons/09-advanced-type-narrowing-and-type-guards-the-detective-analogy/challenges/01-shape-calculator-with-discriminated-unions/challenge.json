@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.10-challenge-1",
+  "title": "Shape Calculator with Discriminated Unions",
+  "description": "Build a type-safe shape calculator using discriminated unions. Create shapes (circle, rectangle, triangle), calculate areas, and use exhaustiveness checking to ensure all shapes are handled.",
+  "instructions": "1. Create interfaces for Circle (kind: 'circle', radius), Rectangle (kind: 'rectangle', width, height), and Triangle (kind: 'triangle', base, height)\n2. Create a Shape union type\n3. Create calculateArea function with exhaustiveness checking\n4. Create a describe function that returns a description string for each shape\n5. Test with all three shapes",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Circle area calculated correctly",
+      "expectedOutput": "78.54",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Rectangle area calculated correctly",
+      "expectedOutput": "40",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Triangle area calculated correctly",
+      "expectedOutput": "24",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each interface needs a 'kind' property with a literal type in quotes: kind: 'circle'"
+    },
+    {
+      "level": 2,
+      "text": "In switch cases, TypeScript narrows the type. After 'case \"circle\":', shape is Circle."
+    },
+    {
+      "level": 3,
+      "text": "The assertNever function in default ensures TypeScript errors if you forget a shape type."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using string instead of literal types for kind",
+      "consequence": "TypeScript can't narrow the type in switch cases",
+      "correction": "Use literal types: kind: 'circle' (with quotes)"
+    },
+    {
+      "mistake": "Forgetting the default case with assertNever",
+      "consequence": "No compile-time error if you add a new shape and forget to handle it",
+      "correction": "Always include default: return assertNever(shape);"
+    }
+  ],
+  "difficulty": "intermediate"
+}

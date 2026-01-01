@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.8-challenge-0",
+  "title": "Post Detail Screen",
+  "description": "Build a full post detail view with comments section, add comment form, and share functionality for a complete social media experience.",
+  "instructions": "Implement a comprehensive post detail screen:\n\n1. Display the full post with all content and images\n2. Show comments list with pagination\n3. Add comment input form at the bottom\n4. Implement real-time comment adding with optimistic updates\n5. Add share functionality with platform share sheet\n6. Handle loading and error states for comments\n7. Support replying to comments (nested comments)",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a CustomScrollView with SliverList for the comments to allow the post header to scroll with the content"
+    },
+    {
+      "level": 2,
+      "text": "Keep the comment input in a bottomSheet or fixed at the bottom using Column with Expanded for the scroll view"
+    },
+    {
+      "level": 3,
+      "text": "For nested comments, use a recursive widget or flat list with indentation based on reply depth"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not scrolling to new comment after adding",
+      "consequence": "User cannot see their comment was added, especially on long comment lists",
+      "correction": "Use scrollController.animateTo() to scroll to the new comment position after adding"
+    },
+    {
+      "mistake": "Blocking UI during share operation",
+      "consequence": "App feels unresponsive when sharing",
+      "correction": "Show share sheet immediately and handle any errors gracefully in the background"
+    }
+  ],
+  "difficulty": "advanced"
+}

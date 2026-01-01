@@ -1,0 +1,22 @@
+{
+  "id": "challenge-4a-1-1",
+  "title": "Parallel Data Fetcher",
+  "description": "Create a function that fetches data from three 'API endpoints' (simulated with delay) in parallel and returns the combined result. The function should complete in approximately 1000ms, not 2400ms.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use async { } to start each fetch concurrently",
+    "Use coroutineScope { } to create a scope for your async calls",
+    "Call .await() on each Deferred to get the results",
+    "The total time should be the max of individual times, not the sum"
+  ],
+  "testCases": [
+    {
+      "description": "Should complete in approximately 1000ms (not 2400ms)",
+      "expectedBehavior": "Time should be around 1000-1100ms since all three run in parallel"
+    },
+    {
+      "description": "Should return all three values",
+      "expectedBehavior": "Triple contains Profile Data, Settings Data, and Notifications"
+    }
+  ]
+}

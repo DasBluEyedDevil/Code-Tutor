@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-16-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Configure resilience for an external weather API client!\n\n1. Create WeatherApiClient with HttpClient injection\n\n2. Configure resilience with:\n   - Retry: 4 attempts, 200ms initial delay, exponential backoff with jitter\n   - Circuit Breaker: Opens at 30% failure rate, 5 request minimum, 20 second break\n   - Timeout: 8 seconds per request\n\n3. Add OnRetry callback that logs the attempt number\n\n4. Handle specific HTTP status codes:\n   - Retry on 503 (Service Unavailable)\n   - Retry on 429 (Too Many Requests)\n\nUse AddResilienceHandler with custom configuration!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm resilience configuration",
+      "expectedOutput": "WeatherApiClient",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention retry configuration",
+      "expectedOutput": "Retry",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": ".AddResilienceHandler('name', pipeline => {...}) chains after AddHttpClient. Pipeline is a builder."
+    },
+    {
+      "level": 2,
+      "text": "HttpRetryStrategyOptions: MaxRetryAttempts, Delay (initial), BackoffType, UseJitter, ShouldHandle, OnRetry."
+    },
+    {
+      "level": 3,
+      "text": "PredicateBuilder<HttpResponseMessage>().HandleResult(r => r.StatusCode == ...) for specific status codes."
+    },
+    {
+      "level": 4,
+      "text": "HttpCircuitBreakerStrategyOptions: FailureRatio (0-1), MinimumThroughput, BreakDuration, OnOpened/OnClosed."
+    },
+    {
+      "level": 5,
+      "text": "Order matters! Retry inside circuit breaker: pipeline.AddRetry().AddCircuitBreaker(). Retries happen before circuit evaluation."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong strategy order",
+      "consequence": "AddCircuitBreaker().AddRetry() means circuit opens BEFORE retries happen. Each retry is counted separately!",
+      "correction": "Usually: AddRetry().AddCircuitBreaker().AddTimeout(). Outer strategies wrap inner ones."
+    },
+    {
+      "mistake": "Too aggressive retry",
+      "consequence": "MaxRetryAttempts=10 with 100ms delay = hammering dying service. Makes problems worse!",
+      "correction": "Use exponential backoff, reasonable limits (3-5 retries), and jitter. Give service time to recover."
+    },
+    {
+      "mistake": "Circuit breaker too sensitive",
+      "consequence": "MinimumThroughput=1, FailureRatio=0.5 means ONE failure opens circuit! False positives everywhere.",
+      "correction": "Set MinimumThroughput high enough (5-10+) for statistical significance. Brief glitches won't trigger."
+    },
+    {
+      "mistake": "Forgetting to handle specific status codes",
+      "consequence": "Default only retries on network exceptions. 503/429 from server won't retry!",
+      "correction": "Use ShouldHandle with PredicateBuilder to include specific HTTP status codes for retry."
+    }
+  ],
+  "difficulty": "advanced"
+}

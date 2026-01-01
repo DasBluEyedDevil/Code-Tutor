@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "15.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Prepare a React app for deployment:\n\n1. Create a `frontendApp` object that:\n   - Has development and production API URLs\n   - Simulates build process\n   - Shows environment-specific configuration\n\n2. Create a `buildApp()` function that:\n   - Shows build steps\n   - Outputs stats (file size, optimization)\n\n3. Test building for both environments",
+  "instructions": "Prepare a React app for deployment:\n\n1. Create a `frontendApp` object that:\n   - Has development and production API URLs\n   - Simulates build process\n   - Shows environment-specific configuration\n\n2. Create a `buildApp()` function that:\n   - Shows build steps\n   - Outputs stats (file size, optimization)\n\n3. Test building for both environments",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should use correct API URL for environment",
+      "expectedOutput": "https://my-api.onrender.com (in production)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use import.meta.env.VITE_* for environment variables in Vite/React"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common React deployment mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common React deployment mistakes:"
+    },
+    {
+      "mistake": "**Wrong environment variable prefix**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong environment variable prefix**:\n   ```javascript\n   // WRONG! Won't work in Vite\n   const API_URL = process.env.REACT_APP_API_URL;  // ✗\n   const API_URL = process.env.API_URL;             // ✗\n   \n   // CORRECT for Vite!\n   const API_URL = import.meta.env.VITE_API_URL;   // ✓\n   ```"
+    },
+    {
+      "mistake": "**Hardcoded API URL**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Hardcoded API URL**:\n   ```javascript\n   // WRONG! Won't work after deployment\n   fetch('http://localhost:3000/api/users');  // ✗\n   \n   // CORRECT!\n   const API_URL = import.meta.env.VITE_API_URL;\n   fetch(`${API_URL}/api/users`);  // ✓\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

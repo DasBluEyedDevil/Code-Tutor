@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.6-challenge",
+  "title": "Practice Challenge",
+  "description": "You have a product inventory object. Calculate:\n1. Total number of products (count of properties)\n2. Total value of all inventory (sum of all prices)\n3. Display each product with its price\n\nlet inventory = {\n  laptop: 1200,\n  mouse: 30,\n  keyboard: 80,\n  monitor: 350\n};",
+  "instructions": "You have a product inventory object. Calculate:\n1. Total number of products (count of properties)\n2. Total value of all inventory (sum of all prices)\n3. Display each product with its price\n\nlet inventory = {\n  laptop: 1200,\n  mouse: 30,\n  keyboard: 80,\n  monitor: 350\n};",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Counts products correctly",
+      "expectedOutput": "2",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Object.keys(inventory).length for count, loop through Object.values() to sum"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Calling Object.keys() on non-object:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Calling Object.keys() on non-object:\n   Object.keys([1,2,3])  // Works but returns ['0', '1', '2'] (indices as strings)\n   Object.keys('hello')  // Works but returns ['0', '1', '2', '3', '4']"
+    },
+    {
+      "mistake": "Forgetting Object.keys() returns an array:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting Object.keys() returns an array:\n   Object.keys(obj)  // Returns ARRAY of keys\n   // Must loop through: for (let key of Object.keys(obj))"
+    }
+  ],
+  "difficulty": "beginner"
+}

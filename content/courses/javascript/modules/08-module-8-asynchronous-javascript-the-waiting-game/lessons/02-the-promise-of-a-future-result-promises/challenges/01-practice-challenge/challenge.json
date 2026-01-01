@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.2-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a function that simulates a dice roll:\n\nfunction rollDice() {\n  // Returns a promise that resolves after 1 second\n  // Resolves with a random number 1-6\n}\n\nUse it like:\nrollDice()\n  .then(result => console.log('Rolled:', result));\n\nHint: Use Math.floor(Math.random() * 6) + 1 for random 1-6",
+  "instructions": "Create a function that simulates a dice roll:\n\nfunction rollDice() {\n  // Returns a promise that resolves after 1 second\n  // Resolves with a random number 1-6\n}\n\nUse it like:\nrollDice()\n  .then(result => console.log('Rolled:', result));\n\nHint: Use Math.floor(Math.random() * 6) + 1 for random 1-6",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Returns a number",
+      "expectedOutput": "4",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "let roll = Math.floor(Math.random() * 6) + 1; resolve(roll);"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Forgetting to return a promise from a function:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting to return a promise from a function:\n   function getData() {\n     new Promise((resolve) => { ... });  // WRONG - not returned!\n   }\n   \n   function getData() {\n     return new Promise((resolve) => { ... });  // CORRECT\n   }"
+    },
+    {
+      "mistake": "Not returning in .then() for chaining:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Not returning in .then() for chaining:\n   promise\n     .then(data => {\n       processData(data);  // Returns undefined!\n     })\n     .then(result => {\n       console.log(result);  // undefined\n     });\n   \n   Must return:\n   .then(data => {\n     return processData(data);\n   })"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-08-lesson-03-challenge-3",
+  "title": "Interactive Exercise: Build a Multi-Exception Data Processor",
+  "description": "Create a function that processes a dictionary of user data safely. The function should:\n1. Accept a dictionary and a key name\n2. Get the value for that key (might not exist → KeyError)\n3. Convert the value to uppercase (might not be a string → AttributeError)\n4. Extract the first character (might be empty string → IndexError)\n5. Return the character, or None if any error occurs\n\nHandle all three exception types separately with specific error messages.\n\n**Your task:**\n\n**Test data:**\n```python\nuser1 = {\"name\": \"Alice\", \"role\": \"admin\"}\nuser2 = {\"name\": \"Bob\"}  # Missing 'role'\nuser3 = {\"name\": \"Carol\", \"role\": 12345}  # role is int, not string\nuser4 = {\"name\": \"Dave\", \"role\": \"\"}  # Empty string\n```\n\n**Starter code:**",
+  "instructions": "Create a function that processes a dictionary of user data safely. The function should:\n1. Accept a dictionary and a key name\n2. Get the value for that key (might not exist → KeyError)\n3. Convert the value to uppercase (might not be a string → AttributeError)\n4. Extract the first character (might be empty string → IndexError)\n5. Return the character, or None if any error occurs\n\nHandle all three exception types separately with specific error messages.\n\n**Your task:**\n\n**Test data:**\n```python\nuser1 = {\"name\": \"Alice\", \"role\": \"admin\"}\nuser2 = {\"name\": \"Bob\"}  # Missing 'role'\nuser3 = {\"name\": \"Carol\", \"role\": 12345}  # role is int, not string\nuser4 = {\"name\": \"Dave\", \"role\": \"\"}  # Empty string\n```\n\n**Starter code:**",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use three separate except blocks: except KeyError, except AttributeError, except IndexError. Each should print a specific message and return None."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

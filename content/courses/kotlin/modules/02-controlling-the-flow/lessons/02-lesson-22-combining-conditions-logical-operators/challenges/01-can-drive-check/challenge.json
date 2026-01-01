@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.2.1",
+  "title": "Can Drive Check",
+  "description": "Check if someone can drive (age >= 16 AND hasLicense is true).",
+  "instructions": "Check if someone can drive (age >= 16 AND hasLicense is true).",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Prints 'Can drive' for age 17 with license",
+      "expectedOutput": "Can drive",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Both conditions must be true to drive",
+      "expectedOutput": "Can drive",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use && for AND logic"
+    },
+    {
+      "level": 2,
+      "text": "Both conditions must be true"
+    },
+    {
+      "level": 3,
+      "text": "Syntax: if (condition1 && condition2)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using || instead of &&",
+      "consequence": "Only one condition needs to be true",
+      "correction": "Use && to require BOTH conditions"
+    },
+    {
+      "mistake": "Comparing boolean with == true",
+      "consequence": "Redundant comparison",
+      "correction": "Use hasLicense directly in condition"
+    },
+    {
+      "mistake": "Wrong age threshold",
+      "consequence": "Incorrect driving age check",
+      "correction": "Driving age is typically 16+"
+    }
+  ],
+  "difficulty": "intermediate"
+}

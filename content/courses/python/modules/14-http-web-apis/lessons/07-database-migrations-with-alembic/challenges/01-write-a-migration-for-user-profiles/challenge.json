@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-alembic-challenge",
+  "title": "Write a Migration for User Profiles",
+  "description": "Create an Alembic migration that adds a user_profiles table with proper relationships and indexes.",
+  "instructions": "Write the upgrade() and downgrade() functions for a migration that:\n\n1. Creates a `user_profiles` table with:\n   - `id` (Integer, primary key)\n   - `user_id` (Integer, foreign key to users.id, unique)\n   - `bio` (String(500), nullable)\n   - `avatar_url` (String(255), nullable)\n   - `location` (String(100), nullable)\n   - `website` (String(255), nullable)\n   - `created_at` (DateTime, server default now)\n   - `updated_at` (DateTime, nullable)\n\n2. Adds a foreign key constraint with CASCADE delete\n\n3. Creates an index on `user_id` for faster lookups\n\n4. The downgrade() should reverse everything in the correct order",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "upgrade() creates user_profiles table with all required columns",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "downgrade() drops index before dropping table",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use op.create_table() with sa.Column() for each column. Include ForeignKeyConstraint in the table definition."
+    },
+    {
+      "level": 2,
+      "text": "For CASCADE delete, add ondelete='CASCADE' to ForeignKeyConstraint."
+    },
+    {
+      "level": 3,
+      "text": "In downgrade(), always drop indexes before dropping the table they belong to."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Dropping table before dropping its indexes in downgrade()",
+      "consequence": "Migration fails because index references a non-existent table",
+      "correction": "Always drop indexes first, then drop the table"
+    },
+    {
+      "mistake": "Forgetting server_default for created_at timestamp",
+      "consequence": "Existing rows would have NULL created_at values",
+      "correction": "Use server_default=sa.func.now() for automatic timestamps"
+    },
+    {
+      "mistake": "Not making user_id unique in a one-to-one relationship",
+      "consequence": "Multiple profiles could be created for the same user",
+      "correction": "Add unique=True to the column or create a unique index"
+    }
+  ],
+  "difficulty": "advanced"
+}

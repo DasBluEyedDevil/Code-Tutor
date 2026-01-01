@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.3-challenge-1",
+  "title": "Implement Session Management",
+  "description": "Create a session tracking system that allows users to view and revoke their active sessions.",
+  "instructions": "Implement session management that:\n\n1. Tracks active sessions with device info\n2. Allows users to list their active sessions\n3. Allows revoking individual sessions\n4. Allows revoking all sessions except current\n5. Updates last activity timestamp\n\nCreate:\n- UserSession protocol model\n- SessionManager service class\n- Endpoint methods for session management",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store the Serverpod authKeyId to link your session record to the actual authentication"
+    },
+    {
+      "level": 2,
+      "text": "Always verify userId ownership before allowing revocation of a session"
+    },
+    {
+      "level": 3,
+      "text": "Use a compound where clause with notEquals to exclude the current session when revoking all others"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not verifying session ownership before revocation",
+      "consequence": "Users could revoke other users' sessions by guessing session IDs",
+      "correction": "Always check that userSession.userId matches the authenticated user"
+    },
+    {
+      "mistake": "Only updating UserSession without invalidating the actual auth key",
+      "consequence": "The session record shows revoked but the auth token still works",
+      "correction": "Also invalidate the Serverpod auth key when revoking a session"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-08-lesson-06-challenge-3",
+  "title": "Your Challenge: Extend the Calculator",
+  "description": "**Challenge 1: Add Scientific Functions**\n\nAdd these operations to the calculator:\n1. `log(number, base)` - Logarithm with base (default base 10)\n2. `sin(angle)` - Sine (angle in degrees)\n3. `cos(angle)` - Cosine (angle in degrees)\n\nRequirements:\n- Validate inputs (log of negative raises error)\n- Convert degrees to radians for sin/cos\n- Handle edge cases\n- Add to history\n- Update interactive menu\n\n**Challenge 2: Expression Evaluator**\n\nAdd ability to evaluate expressions like \"2 + 3 * 4\":\n- Use `eval()` CAREFULLY with validation\n- Only allow numbers and operators\n- Prevent code injection\n- Handle syntax errors\n\n**Challenge 3: Persistent History**\n\nSave calculation history to a file:\n- Use try/except/finally for file operations\n- Handle FileNotFoundError\n- Create file if doesn't exist\n- Load history on startup\n- Save on exit\n\n**Starter code for Challenge 1:**",
+  "instructions": "**Challenge 1: Add Scientific Functions**\n\nAdd these operations to the calculator:\n1. `log(number, base)` - Logarithm with base (default base 10)\n2. `sin(angle)` - Sine (angle in degrees)\n3. `cos(angle)` - Cosine (angle in degrees)\n\nRequirements:\n- Validate inputs (log of negative raises error)\n- Convert degrees to radians for sin/cos\n- Handle edge cases\n- Add to history\n- Update interactive menu\n\n**Challenge 2: Expression Evaluator**\n\nAdd ability to evaluate expressions like \"2 + 3 * 4\":\n- Use `eval()` CAREFULLY with validation\n- Only allow numbers and operators\n- Prevent code injection\n- Handle syntax errors\n\n**Challenge 3: Persistent History**\n\nSave calculation history to a file:\n- Use try/except/finally for file operations\n- Handle FileNotFoundError\n- Create file if doesn't exist\n- Load history on startup\n- Save on exit\n\n**Starter code for Challenge 1:**",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For logarithm: check if number <= 0: raise InvalidNumberError('Log requires positive number'). For sin/cos: angle_rad = math.radians(angle), then math.sin(angle_rad). Don't forget to record in history!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

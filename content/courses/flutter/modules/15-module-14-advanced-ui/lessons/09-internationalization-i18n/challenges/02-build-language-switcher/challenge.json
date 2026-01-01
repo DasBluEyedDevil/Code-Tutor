@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.9-challenge-1",
+  "title": "Build Language Switcher",
+  "description": "Create a language switcher widget that allows users to change the app's locale.",
+  "instructions": "Build a LanguageSwitcher widget that: (1) Shows a dropdown or list of available languages, (2) Displays language names in their native form (English, Espanol, etc.), (3) Indicates the currently selected language, (4) Notifies parent widget when selection changes. Use a callback to communicate the selected locale.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a Map to store language codes and their native names (e.g., 'es' -> 'Espanol')"
+    },
+    {
+      "level": 2,
+      "text": "Use ListTile or DropdownMenuItem to display each language option"
+    },
+    {
+      "level": 3,
+      "text": "Compare locale.languageCode to currentLocale.languageCode to determine if an option is selected"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Displaying language names in English only",
+      "consequence": "Users who don't speak English can't identify their language",
+      "correction": "Display language names in their native form (e.g., 'Deutsch' not 'German')"
+    },
+    {
+      "mistake": "Comparing Locale objects directly with ==",
+      "consequence": "Comparison may fail due to country code differences",
+      "correction": "Compare locale.languageCode for basic language matching"
+    }
+  ],
+  "difficulty": "intermediate"
+}

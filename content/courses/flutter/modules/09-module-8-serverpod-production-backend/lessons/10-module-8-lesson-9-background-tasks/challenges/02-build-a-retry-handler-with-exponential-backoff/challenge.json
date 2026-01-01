@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.9-challenge-1",
+  "title": "Build a Retry Handler with Exponential Backoff",
+  "description": "Implement a robust retry mechanism that handles transient failures gracefully.",
+  "instructions": "Create a RetryExecutor class that:\n\n1. Accepts a function to retry and configuration options\n2. Implements exponential backoff (delay doubles each attempt)\n3. Adds random jitter to prevent thundering herd\n4. Tracks the number of attempts made\n5. Returns a result object with success status, value, and metadata\n6. Distinguishes between retryable and non-retryable errors\n\nThe delay formula should be: baseDelay * (2 ^ attemptNumber) + randomJitter",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Immediate success returns on first attempt",
+      "expectedOutput": "Success after 1 attempt(s): 42",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Success after transient failures",
+      "expectedOutput": "Success after 3 attempt(s): recovered",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Permanent errors do not retry",
+      "expectedOutput": "Failed after 1 attempt(s)",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Exhausts all attempts on persistent failure",
+      "expectedOutput": "Failed after 5 attempt(s)",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Calculates exponential delays correctly",
+      "expectedOutput": "Attempt 2: 400ms (expected: 400)",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For shouldRetry, check the error type: TransientError returns true, PermanentError returns false."
+    },
+    {
+      "level": 2,
+      "text": "For calculateDelay, use the formula: baseDelay.inMilliseconds * (2 ^ attemptNumber). Remember to cap at maxDelay."
+    },
+    {
+      "level": 3,
+      "text": "In execute(), use a for loop from 1 to maxAttempts. Try the operation, catch errors, check shouldRetry, and either return failure or wait and continue."
+    },
+    {
+      "level": 4,
+      "text": "To add jitter: calculate maxJitter as (delayMs * 0.25).toInt(), then add _random.nextInt(maxJitter) if maxJitter > 0."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking if error is retryable before retrying",
+      "consequence": "Permanent errors waste time with futile retries; user waits longer for inevitable failure",
+      "correction": "Always call shouldRetry(error) and return failure immediately for non-retryable errors"
+    },
+    {
+      "mistake": "Using attemptNumber directly for delay without adjustment",
+      "consequence": "First retry has delay of 2x base instead of 1x base",
+      "correction": "Use (attempt - 1) as the exponent, so first retry (attempt=1) uses 2^0 = 1x base delay"
+    },
+    {
+      "mistake": "Not capping delay at maxDelay",
+      "consequence": "Very large delays after many attempts (e.g., 2^10 = 1024x base delay)",
+      "correction": "Use clamp() or min() to cap: delayMs.clamp(0, config.maxDelay.inMilliseconds)"
+    },
+    {
+      "mistake": "Waiting after the last failed attempt",
+      "consequence": "Unnecessary delay before returning final failure",
+      "correction": "Only wait if attempt < maxAttempts (more attempts remaining)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

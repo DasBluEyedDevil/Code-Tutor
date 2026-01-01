@@ -1,0 +1,68 @@
+{
+  "type": "QUIZ",
+  "id": "10.6-quiz",
+  "title": "OAuth and Social Login Quiz",
+  "description": "Test your understanding of OAuth implementation with Google and Apple Sign-In.",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "What is the main purpose of OAuth?",
+      "options": [
+        "To encrypt user passwords before storing them",
+        "To allow users to grant limited access to their accounts without sharing passwords",
+        "To create secure connections between servers",
+        "To validate email addresses automatically"
+      ],
+      "correctAnswer": 1,
+      "explanation": "OAuth (Open Authorization) allows users to grant third-party applications limited access to their accounts on other services without sharing their passwords. The user authenticates directly with the provider (Google, Apple), and the provider gives your app a token representing the user's permission."
+    },
+    {
+      "id": "q2",
+      "question": "Why must you add SHA-1 and SHA-256 fingerprints to Firebase for Android apps?",
+      "options": [
+        "To encrypt the Google Sign-In tokens",
+        "To verify that requests come from your legitimate app, not a fake copy",
+        "To enable offline authentication",
+        "To speed up the authentication process"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The SHA-1 and SHA-256 fingerprints are cryptographic hashes of your app's signing key. Google uses these to verify that authentication requests genuinely come from your app and not from a malicious app pretending to be yours. This prevents attackers from stealing OAuth tokens."
+    },
+    {
+      "id": "q3",
+      "question": "What is special about the user's name in Apple Sign-In?",
+      "options": [
+        "It is always in uppercase",
+        "It is only provided on the first sign-in and never again",
+        "It must be verified by email",
+        "It cannot contain special characters"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Apple only provides the user's name (given name and family name) on the very first sign-in. Subsequent sign-ins will not include the name. This is a privacy feature, but it means you must save the name immediately on first sign-in or you will not have access to it later."
+    },
+    {
+      "id": "q4",
+      "question": "Why should OAuth tokens be verified on the server rather than just trusted from the client?",
+      "options": [
+        "Client-side verification is slower",
+        "A malicious user could send fake tokens from a modified client",
+        "OAuth tokens cannot be read on the client side",
+        "Server verification is required by OAuth specifications"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A malicious user could modify the client app to send fake tokens. Server-side verification contacts the OAuth provider (Google, Apple) directly to validate that the token is genuine and was actually issued for your application. This prevents attackers from bypassing authentication."
+    },
+    {
+      "id": "q5",
+      "question": "When implementing account linking, why should users be required to keep at least one sign-in method?",
+      "options": [
+        "It is required by OAuth providers",
+        "To prevent users from being locked out of their accounts",
+        "To reduce server load",
+        "To comply with GDPR regulations"
+      ],
+      "correctAnswer": 1,
+      "explanation": "If a user unlinks all sign-in methods, they would have no way to access their account. By requiring at least one active sign-in method, you ensure users can always authenticate. This is a critical safety measure to prevent account lockouts."
+    }
+  ]
+}

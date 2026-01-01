@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-09-challenge-1",
+  "title": "Create a Safe Migration Helper",
+  "description": "Build a migration helper class that executes schema changes safely without downtime.",
+  "instructions": "Complete the migration helper to:\n1. Add a nullable column safely\n2. Backfill data in batches to avoid locking\n3. Add a NOT NULL constraint after backfill\n4. Log progress throughout",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Migration helper performs safe schema changes",
+      "expectedOutput": "Migration complete!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** In the backfill, set the column to `default_value` where column `IS NULL`. Break the loop when count `== 0`. For NOT NULL, use `SET NOT NULL`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Adding NOT NULL before backfilling all rows",
+      "consequence": "Migration fails if any NULL values exist",
+      "correction": "Always backfill all rows before adding NOT NULL constraint"
+    },
+    {
+      "mistake": "Updating all rows in one query",
+      "consequence": "Locks the table, blocks other operations",
+      "correction": "Update in small batches with short sleeps between"
+    }
+  ],
+  "difficulty": "advanced"
+}

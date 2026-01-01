@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-05-challenge-1",
+  "title": "Build a Transaction Tagging System",
+  "description": "Implement functions to add, remove, and query tags stored in JSONB metadata.",
+  "instructions": "Complete the tagging system to:\n1. Add a tag to a transaction's metadata\n2. Remove a tag from a transaction\n3. Find all transactions with a specific tag\n4. Use proper JSONB operators and functions",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Tag operations work correctly",
+      "expectedOutput": "Found",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `||` to concatenate/append to JSONB arrays. Use `<>` (not equal) to filter out a value. Use `?` to check if an array contains a string value."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using array_append instead of JSONB concatenation",
+      "consequence": "Type mismatch - array_append is for PostgreSQL arrays, not JSONB",
+      "correction": "Use the || operator: jsonb_array || '\"value\"'::jsonb"
+    },
+    {
+      "mistake": "Forgetting to handle NULL metadata",
+      "consequence": "Error when transaction has no metadata",
+      "correction": "Use COALESCE(metadata, '{}'::jsonb) to provide default"
+    }
+  ],
+  "difficulty": "advanced"
+}

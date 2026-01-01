@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Create an interactive counter with event handling:\n\n1. Create a `CounterApp` object with:\n   - state: { count: 0, history: [] }\n   - handleIncrement() - increases count, adds to history\n   - handleDecrement() - decreases count, adds to history\n   - handleReset() - resets count to 0, clears history\n   - render() - displays current count and history\n\n2. Simulate user interactions and show the results",
+  "instructions": "Create an interactive counter with event handling:\n\n1. Create a `CounterApp` object with:\n   - state: { count: 0, history: [] }\n   - handleIncrement() - increases count, adds to history\n   - handleDecrement() - decreases count, adds to history\n   - handleReset() - resets count to 0, clears history\n   - render() - displays current count and history\n\n2. Simulate user interactions and show the results",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should handle increment",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should track history",
+      "expectedOutput": "1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Update state in event handlers, then call render() to show changes"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common event handling mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common event handling mistakes:"
+    },
+    {
+      "mistake": "**Calling function immediately instead of passing reference**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Calling function immediately instead of passing reference**:\n   ```jsx\n   // WRONG! (calls immediately on render)\n   <button onClick={handleClick()}>Click</button>\n   \n   // CORRECT! (passes function reference)\n   <button onClick={handleClick}>Click</button>\n   \n   // Or use arrow function:\n   <button onClick={() => handleClick()}>Click</button>\n   ```"
+    },
+    {
+      "mistake": "**Forgetting e.preventDefault() on forms**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting e.preventDefault() on forms**:\n   ```jsx\n   function handleSubmit(e) {\n     // WRONG! (page reloads)\n     console.log('Submitted');\n     \n     // CORRECT!\n     e.preventDefault();  // Stop page reload\n     console.log('Submitted');\n   }\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-08-challenge-1",
+  "title": "Build a Complete Auth System",
+  "description": "Implement a complete authentication system with registration, login, logout, password change, and view protection decorators.",
+  "instructions": "Create an authentication system that:\n1. Supports user registration with email validation and password strength checking\n2. Implements login with session management and failed attempt tracking\n3. Provides logout functionality that clears sessions\n4. Includes password change requiring old password verification\n5. Has decorators for login_required and permission_required",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-auth-1",
+      "description": "User registration works with valid data",
+      "expectedOutput": "Registered:",
+      "isVisible": true
+    },
+    {
+      "id": "test-auth-2",
+      "description": "Login creates session for valid credentials",
+      "expectedOutput": "Session created:",
+      "isVisible": true
+    },
+    {
+      "id": "test-auth-3",
+      "description": "Account locks after too many failed attempts",
+      "expectedOutput": "locked",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use regex for validation: r'^[a-zA-Z0-9_]+$' for username, r'[0-9]' to check for numbers in password."
+    },
+    {
+      "level": 2,
+      "text": "Track failed_attempts on the User object. When it exceeds MAX_FAILED_ATTEMPTS, set locked_until to now + LOCKOUT_DURATION."
+    },
+    {
+      "level": 3,
+      "text": "In login(), first check if user is locked (locked_until > now), then verify password, increment failed_attempts on failure."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Storing passwords in plaintext",
+      "consequence": "If database is compromised, all passwords are exposed",
+      "correction": "Always hash passwords with a strong algorithm (bcrypt, PBKDF2)"
+    },
+    {
+      "mistake": "Not rate limiting login attempts",
+      "consequence": "Attackers can brute-force passwords",
+      "correction": "Lock account after N failed attempts with exponential backoff"
+    },
+    {
+      "mistake": "Using predictable session IDs",
+      "consequence": "Session hijacking attacks become possible",
+      "correction": "Use secrets.token_urlsafe() for cryptographically secure tokens"
+    }
+  ],
+  "difficulty": "advanced"
+}

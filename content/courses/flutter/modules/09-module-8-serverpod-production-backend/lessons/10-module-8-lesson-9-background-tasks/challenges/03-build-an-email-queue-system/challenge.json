@@ -1,0 +1,75 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.9-challenge-2",
+  "title": "Build an Email Queue System",
+  "description": "Create a database-backed email queue with status tracking and batch processing.",
+  "instructions": "Implement an EmailQueue class that:\n\n1. Queues emails for later sending (stores in a list simulating database)\n2. Tracks status: 'pending', 'sending', 'sent', 'failed'\n3. Supports maximum retry attempts\n4. Processes emails in batches\n5. Updates status and error messages appropriately\n6. Provides statistics on queue state\n\nThis simulates a database-backed queue without requiring actual database setup.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Enqueue creates emails with incrementing IDs",
+      "expectedOutput": "Queued email #5",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Initial stats show all pending",
+      "expectedOutput": "5 pending",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "getStats counts by status correctly",
+      "expectedOutput": "total: 5",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Failed emails are retrievable",
+      "expectedOutput": "failed",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For enqueue: Create a QueuedEmail with _nextId++, add it to _emails, and return the id."
+    },
+    {
+      "level": 2,
+      "text": "For getStats: Loop through _emails and count how many have each status using a switch statement."
+    },
+    {
+      "level": 3,
+      "text": "For processBatch: Use _emails.where((e) => e.status == 'pending').take(batchSize) to get the batch."
+    },
+    {
+      "level": 4,
+      "text": "Remember to set status to 'sending' BEFORE attempting to send, then update to 'sent' or back to 'pending' (or 'failed') after."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not incrementing attempts before the send attempt",
+      "consequence": "Retry count is always 0; emails retry forever",
+      "correction": "Increment email.attempts++ right after setting status to 'sending', before calling _sender.send()"
+    },
+    {
+      "mistake": "Setting status to 'failed' when attempts < maxAttempts",
+      "consequence": "Emails fail permanently before using all retry attempts",
+      "correction": "Only set 'failed' when email.attempts >= email.maxAttempts; otherwise set back to 'pending'"
+    },
+    {
+      "mistake": "Not clearing lastError on success",
+      "consequence": "Successfully sent emails still show old error messages",
+      "correction": "Set email.lastError = null when email is sent successfully"
+    },
+    {
+      "mistake": "Forgetting to filter for pending status in processBatch",
+      "consequence": "Already sent or failed emails get reprocessed",
+      "correction": "Use .where((e) => e.status == 'pending') to only get emails ready for processing"
+    }
+  ],
+  "difficulty": "intermediate"
+}

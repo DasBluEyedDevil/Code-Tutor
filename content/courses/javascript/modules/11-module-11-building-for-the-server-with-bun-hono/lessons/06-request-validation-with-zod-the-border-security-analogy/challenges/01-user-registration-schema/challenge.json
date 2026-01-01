@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.6-challenge-1",
+  "title": "User Registration Schema",
+  "description": "Create a complete user registration schema with Zod:\n\n1. Define a `registrationSchema` with these fields:\n   - `email`: Valid email, required\n   - `password`: Minimum 8 characters, must contain uppercase, lowercase, and number\n   - `confirmPassword`: Must match password\n   - `username`: 3-20 characters, alphanumeric only\n   - `age`: Optional, but if provided must be 13 or older\n\n2. Use `.refine()` to validate that passwords match\n3. Test with valid and invalid data\n4. Print formatted error messages for invalid input",
+  "instructions": "Create a complete user registration schema with Zod:\n\n1. Define a `registrationSchema` with these fields:\n   - `email`: Valid email, required\n   - `password`: Minimum 8 characters, must contain uppercase, lowercase, and number\n   - `confirmPassword`: Must match password\n   - `username`: 3-20 characters, alphanumeric only\n   - `age`: Optional, but if provided must be 13 or older\n\n2. Use `.refine()` to validate that passwords match\n3. Test with valid and invalid data\n4. Print formatted error messages for invalid input",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid user should pass validation",
+      "expectedOutput": "Validation passed!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Invalid user should fail with errors",
+      "expectedOutput": "Validation failed!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use .regex() for password complexity checks. Chain multiple .regex() calls for each requirement (uppercase, lowercase, number)."
+    },
+    {
+      "level": 2,
+      "text": "The .refine() method takes a function and options. Use { path: ['confirmPassword'] } to show the error on the right field."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to make age optional before adding min constraint",
+      "consequence": "Age becomes required instead of optional with a minimum",
+      "correction": "Chain .optional() after all other constraints: z.number().int().min(13).optional()"
+    },
+    {
+      "mistake": "Not specifying the error path in refine",
+      "consequence": "Password mismatch error appears as a form-level error, not on confirmPassword field",
+      "correction": "Add path option: .refine(fn, { message: '...', path: ['confirmPassword'] })"
+    }
+  ],
+  "difficulty": "intermediate"
+}

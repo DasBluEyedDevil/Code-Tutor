@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.3-challenge",
+  "title": "App Initialization",
+  "description": "Create a proper app initialization sequence.",
+  "instructions": "Use top-level await to load config, validate it, and initialize the app. Log 'App ready' when done.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Initializes correctly",
+      "expectedOutput": "Starting...\\nEnvironment: development\\nApp ready",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use import with type: 'json' for the config file"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not validating config before using it",
+      "consequence": "Cryptic errors later when fields are undefined",
+      "correction": "Always validate required config fields at startup"
+    }
+  ],
+  "difficulty": "beginner"
+}

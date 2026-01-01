@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.3-challenge",
+  "title": "Create a Product Type",
+  "description": "Create a @typedef for Product and use it in a function.",
+  "instructions": "Create a Product typedef with id (number), name (string), price (number), and inStock (boolean). Then use it to type the getProduct function return value.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Returns properly typed product",
+      "expectedOutput": "Widget: $9.99",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "@typedef {Object} Product starts the type definition, then use @property for each field"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Defining typedef inside function",
+      "consequence": "Typedef should be at module level so it can be reused",
+      "correction": "Put @typedef at the top of your file, before any functions"
+    }
+  ],
+  "difficulty": "intermediate"
+}

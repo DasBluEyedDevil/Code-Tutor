@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-4-mc-2",
+  "title": "CORS Configuration",
+  "description": "Understanding CORS for React + Spring Boot",
+  "question": "Your React app at localhost:5173 gets a CORS error when calling your Spring Boot API. What's the MOST LIKELY cause?",
+  "options": [
+    "React doesn't support cross-origin requests",
+    "Spring Boot's CorsConfig doesn't include 'http://localhost:5173' in allowedOrigins",
+    "The fetch call is missing the 'cors' mode option",
+    "You need to use axios instead of fetch for CORS to work"
+  ],
+  "correctAnswer": 1,
+  "explanation": "CORS errors occur when the server doesn't explicitly allow the client's origin. Spring Boot must have CorsConfig (or @CrossOrigin) that includes 'http://localhost:5173' in allowedOrigins. The browser blocks requests that don't have proper CORS headers in the response. React/fetch/axios all support CORS - it's a server configuration issue.",
+  "difficulty": "intermediate"
+}

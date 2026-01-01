@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-04-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Implement a Social Login Handler",
+  "description": "Create a complete social login service that handles user lookup, account creation, and account linking for the Finance Tracker.",
+  "instructions": "Complete the SocialAuthService class to:\n1. Find existing users by social provider ID\n2. Link social accounts to existing users with matching email\n3. Create new users when neither social ID nor email exists\n4. Return appropriate response with user info and new user flag",
+  "startingCode": "from dataclasses import dataclass\nfrom typing import Optional, Dict, Any, List\nfrom datetime import datetime\n\n@dataclass\nclass User:\n    id: int\n    email: str\n    name: str\n    created_at: datetime\n\n@dataclass  \nclass SocialLink:\n    user_id: int\n    provider: str\n    provider_id: str\n\nclass MockDatabase:\n    \"\"\"Simulated database\"\"\"\n    def __init__(self):\n        self.users: Dict[int, User] = {}\n        self.social_links: List[SocialLink] = []\n        self.next_id = 1\n    \n    def get_user_by_id(self, user_id: int) -> Optional[User]:\n        return self.users.get(user_id)\n\nclass SocialAuthService:\n    def __init__(self, db: MockDatabase):\n        self.db = db\n    \n    def find_user_by_social(self, provider: str, provider_id: str) -> Optional[User]:\n        \"\"\"Find user by social provider and ID.\"\"\"\n        # TODO: Search social_links for matching provider + provider_id\n        # TODO: If found, return the linked user\n        # TODO: Return None if not found\n        pass\n    \n    def find_user_by_email(self, email: str) -> Optional[User]:\n        \"\"\"Find user by email (case-insensitive).\"\"\"\n        # TODO: Search users for matching email\n        pass\n    \n    def create_user(self, email: str, name: str) -> User:\n        \"\"\"Create a new user.\"\"\"\n        # TODO: Create User with next available ID\n        # TODO: Store in db.users\n        # TODO: Increment next_id\n        # TODO: Return the new user\n        pass\n    \n    def link_social_account(self, user_id: int, provider: str, provider_id: str):\n        \"\"\"Link a social account to a user.\"\"\"\n        # TODO: Create SocialLink and add to db.social_links\n        pass\n    \n    def handle_social_login(self, provider: str, \n                            social_data: Dict[str, Any]) -> Dict[str, Any]:\n        \"\"\"\n        Process social login from OAuth callback.\n        \n        social_data contains:\n            - provider_id: Provider's user ID\n            - email: User's email\n            - name: User's display name\n        \n        Returns:\n            - success: True\n            - is_new_user: True if new user was created\n            - user: User info dict\n        \"\"\"\n        provider_id = social_data[\"provider_id\"]\n        email = social_data[\"email\"]\n        name = social_data[\"name\"]\n        \n        # TODO: Step 1 - Check if social account exists\n        # TODO: Step 2 - If not, check if email exists (link account)\n        # TODO: Step 3 - If neither, create new user\n        # TODO: Return response with is_new_user flag\n        pass\n\n# Test the social auth service\ndb = MockDatabase()\nauth = SocialAuthService(db)\n\nprint(\"Social Authentication Tests\")\nprint(\"=\" * 50)\n\n# Test 1: New user signup\nprint(\"\\n1. New User - Google Signup:\")\nresult = auth.handle_social_login(\"google\", {\n    \"provider_id\": \"g-12345\",\n    \"email\": \"alice@example.com\",\n    \"name\": \"Alice\"\n})\nprint(f\"   Is new: {result['is_new_user']}, ID: {result['user']['id']}\")\n\n# Test 2: Same user returns\nprint(\"\\n2. Returning User - Google:\")\nresult = auth.handle_social_login(\"google\", {\n    \"provider_id\": \"g-12345\",\n    \"email\": \"alice@example.com\",\n    \"name\": \"Alice\"\n})\nprint(f\"   Is new: {result['is_new_user']}, ID: {result['user']['id']}\")\n\n# Test 3: Same email, different provider (link)\nprint(\"\\n3. Link GitHub to Existing:\")\nresult = auth.handle_social_login(\"github\", {\n    \"provider_id\": \"gh-99999\",\n    \"email\": \"alice@example.com\",\n    \"name\": \"alice-gh\"\n})\nprint(f\"   Is new: {result['is_new_user']}, ID: {result['user']['id']}\")\n\n# Test 4: Login via newly linked GitHub\nprint(\"\\n4. Login via Linked GitHub:\")\nresult = auth.handle_social_login(\"github\", {\n    \"provider_id\": \"gh-99999\",\n    \"email\": \"alice@example.com\",\n    \"name\": \"alice-gh\"\n})\nprint(f\"   Is new: {result['is_new_user']}, ID: {result['user']['id']}\")\n\n# Test 5: Completely new user\nprint(\"\\n5. Different User - New:\")\nresult = auth.handle_social_login(\"google\", {\n    \"provider_id\": \"g-67890\",\n    \"email\": \"bob@example.com\",\n    \"name\": \"Bob\"\n})\nprint(f\"   Is new: {result['is_new_user']}, ID: {result['user']['id']}\")\n\nprint(\"\\nAll tests completed!\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Social auth handles new users, returning users, and account linking",
+      "expectedOutput": "All tests completed!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** For `find_user_by_social`, iterate through `db.social_links` and match both provider AND provider_id. For `find_user_by_email`, compare lowercase emails. In `handle_social_login`, check social first, then email, then create new."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not linking social account when matching by email",
+      "consequence": "Future logins with that social provider will fail",
+      "correction": "Always call link_social_account when finding user by email"
+    },
+    {
+      "mistake": "Case-sensitive email comparison",
+      "consequence": "alice@Example.com and alice@example.com seen as different",
+      "correction": "Compare email.lower() for both stored and input emails"
+    }
+  ],
+  "difficulty": "advanced"
+}

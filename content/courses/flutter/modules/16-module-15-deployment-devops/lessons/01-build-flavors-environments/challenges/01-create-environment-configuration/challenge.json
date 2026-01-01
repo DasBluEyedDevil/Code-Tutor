@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "16.1-challenge-0",
+  "title": "Create Environment Configuration",
+  "description": "Set up a complete environment configuration system for a Flutter app.",
+  "instructions": "Create an AppConfig class that supports dev, staging, and prod environments. Include API URL, app name, logging toggle, analytics toggle, and a feature flag for 'new_dashboard'. Initialize from dart-define values and provide convenient getters.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use String.fromEnvironment() and bool.fromEnvironment() to read compile-time constants"
+    },
+    {
+      "level": 2,
+      "text": "Use a switch statement on the environment name to configure different defaults per flavor"
+    },
+    {
+      "level": 3,
+      "text": "Consider making feature flags always true in dev for easier testing"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using environment variables instead of const fromEnvironment",
+      "consequence": "Values won't be available at compile time and will always be default",
+      "correction": "Use String.fromEnvironment() which reads --dart-define values at compile time"
+    },
+    {
+      "mistake": "Not handling missing environment values",
+      "consequence": "App crashes or uses empty strings for URLs",
+      "correction": "Provide sensible defaults with the defaultValue parameter"
+    }
+  ],
+  "difficulty": "intermediate"
+}

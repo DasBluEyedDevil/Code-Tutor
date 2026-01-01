@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-03-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a movie theater admission system!\n\nVariables:\n- int age (set to any number)\n- bool hasParent (set to true or false)\n- bool hasTicket (set to true or false)\n\nRules using if statements:\n1. If age >= 18 AND hasTicket: 'Welcome! Enjoy the movie.'\n2. Else if age < 18 AND hasParent AND hasTicket: 'Welcome with your parent!'\n3. Else if !hasTicket: 'Please purchase a ticket first.'\n4. Else: 'Sorry, you need a parent to attend.'\n\nTest with different combinations!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should show correct message for minor with parent and ticket",
+      "expectedOutput": "Welcome with your parent!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Code should use logical AND operator",
+      "expectedOutput": "&&",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Code should use the NOT operator for ticket check",
+      "expectedOutput": "!hasTicket",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use && to combine conditions: (age >= 18 && hasTicket). Use ! to check 'not': !hasTicket means 'does NOT have ticket'."
+    },
+    {
+      "level": 2,
+      "text": "Using & or | instead of && or ||: In C#, use DOUBLE symbols for logical operators! & and | are bitwise operators (advanced topic)."
+    },
+    {
+      "level": 3,
+      "text": "Confusing = with ==: if (age = 18) ASSIGNS 18! Use if (age == 18) to COMPARE!"
+    },
+    {
+      "level": 4,
+      "text": "Wrong operator precedence: age > 18 && hasTicket || isVIP is confusing! Use parentheses: (age > 18 && hasTicket) || isVIP"
+    },
+    {
+      "level": 5,
+      "text": "Forgetting ! means 'not': !hasTicket is true when hasTicket is FALSE. It reads as 'if does NOT have ticket'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using & or | instead of && or ||",
+      "consequence": "In C#, use DOUBLE symbols for logical operators! & and | are bitwise operators (advanced topic).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Confusing = with ==",
+      "consequence": "if (age = 18) ASSIGNS 18! Use if (age == 18) to COMPARE!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Wrong operator precedence",
+      "consequence": "age > 18 && hasTicket || isVIP is confusing! Use parentheses: (age > 18 && hasTicket) || isVIP",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting ! means 'not'",
+      "consequence": "!hasTicket is true when hasTicket is FALSE. It reads as 'if does NOT have ticket'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

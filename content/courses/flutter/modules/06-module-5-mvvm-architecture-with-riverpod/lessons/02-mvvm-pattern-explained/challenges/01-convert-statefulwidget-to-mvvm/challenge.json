@@ -1,0 +1,65 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.2-challenge-1",
+  "title": "Convert StatefulWidget to MVVM",
+  "description": "Take a messy StatefulWidget counter and refactor it into proper MVVM architecture using Riverpod.",
+  "instructions": "The starter code shows a StatefulWidget counter that mixes UI and logic. Your task is to refactor it into proper MVVM:\n\n1. Create a CounterState model class with count and lastModified fields\n2. Create a CounterViewModel using Notifier that handles increment, decrement, and reset\n3. Create a CounterScreen using ConsumerWidget that only handles UI\n4. Add validation: count cannot go below 0 or above 50\n5. Add a reset button that sets count back to 0\n\nRemember: The View should have NO logic, the ViewModel should have NO Flutter widgets, and the Model should be pure Dart.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-model",
+      "description": "CounterState model has count and lastModified fields",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-viewmodel",
+      "description": "CounterViewModel extends Notifier with increment, decrement, reset",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-view",
+      "description": "CounterScreen extends ConsumerWidget with no business logic",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with the Model. Create a simple class with count and lastModified fields, plus a copyWith method for immutable updates."
+    },
+    {
+      "level": 2,
+      "text": "For the ViewModel, extend Notifier<CounterState> and implement build() to return initial state. The increment/decrement methods should check bounds before updating."
+    },
+    {
+      "level": 3,
+      "text": "In the View, use ref.watch() to get current state for display, and ref.read().notifier to call methods. The View should never contain if statements for business rules."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting validation logic in the View",
+      "consequence": "Business logic is scattered across UI code",
+      "correction": "Move all if statements about count limits to the ViewModel"
+    },
+    {
+      "mistake": "Using ref.watch() when calling methods",
+      "consequence": "Unnecessary rebuilds and potential infinite loops",
+      "correction": "Use ref.read() inside callbacks/onPressed, use ref.watch() only in build method"
+    },
+    {
+      "mistake": "Mutating state directly instead of using copyWith",
+      "consequence": "State changes are not detected, UI does not update",
+      "correction": "Always use state = state.copyWith(...) to create new state instances"
+    },
+    {
+      "mistake": "Forgetting ProviderScope in main()",
+      "consequence": "Runtime error - Riverpod providers cannot be accessed",
+      "correction": "Wrap your app with ProviderScope: runApp(ProviderScope(child: MyApp()))"
+    }
+  ],
+  "difficulty": "intermediate"
+}

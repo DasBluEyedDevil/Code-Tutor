@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-2-mc-2",
+  "title": "Password Storage",
+  "description": "Understanding secure password practices",
+  "question": "Why is BCrypt preferred over SHA-256 for password hashing?",
+  "options": [
+    "BCrypt produces longer hashes",
+    "BCrypt is intentionally slow and includes salting",
+    "BCrypt is newer and therefore better",
+    "BCrypt uses symmetric encryption"
+  ],
+  "correctAnswer": 1,
+  "explanation": "BCrypt is designed for passwords: it's intentionally slow (configurable work factor) to resist brute force, and includes automatic salting to prevent rainbow table attacks. SHA-256 is fast (good for data integrity, bad for passwords) and requires manual salt management. Speed is a liability for password hashing.",
+  "difficulty": "intermediate"
+}

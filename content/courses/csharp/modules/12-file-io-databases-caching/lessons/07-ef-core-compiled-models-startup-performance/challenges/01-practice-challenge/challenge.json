@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-07-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Understand EF Core Compiled Models workflow.",
+  "instructions": "Demonstrate the Compiled Models workflow!\n\n1. Show the CLI command to generate compiled models (traditional)\n2. Show the EF Core 9 auto-compiled models approach (MSBuild task)\n3. Show how to configure DbContext to use compiled model\n4. Print performance comparison (60-80% faster startup)\n5. List when to use (and when NOT to use)\n6. Show limitations (Global Query Filters, lazy-loading)\n\nExplain why this matters for microservices and serverless!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output contains 'COMPILED MODELS'",
+      "expectedOutput": "COMPILED MODELS",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output contains 'dotnet ef'",
+      "expectedOutput": "dotnet ef",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output contains 'UseModel'",
+      "expectedOutput": "UseModel",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output contains 'PERFORMANCE'",
+      "expectedOutput": "PERFORMANCE",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output contains 'FASTER'",
+      "expectedOutput": "FASTER",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output contains 'Serverless'",
+      "expectedOutput": "Serverless",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CLI: 'dotnet ef dbcontext optimize --output-dir CompiledModels'. EF Core 9: Install Microsoft.EntityFrameworkCore.Tasks, set EFOptimizeContext=true. DbContext: options.UseModel(Model.Instance)."
+    },
+    {
+      "level": 2,
+      "text": "Performance gains are only significant for large models (100+ entities). Small apps won't see much difference."
+    },
+    {
+      "level": 3,
+      "text": "With traditional CLI, must regenerate after entity changes! EF Core 9's auto-compile handles this automatically on build."
+    },
+    {
+      "level": 4,
+      "text": "EF Core 9's auto-compiled models use MSBuild tasks - regenerates automatically when you build. No more forgetting!"
+    },
+    {
+      "level": 5,
+      "text": "Limitations: Global Query Filters not compatible, no lazy-loading proxies. Check if you use these before adopting."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using on small models",
+      "consequence": "Compiled models add complexity. For < 50 entities, startup is already fast. Overhead not worth it.",
+      "correction": "Only use for large models, microservices, or serverless where cold start matters."
+    },
+    {
+      "mistake": "Forgetting to regenerate",
+      "consequence": "After changing entities, old compiled model doesn't match! Runtime errors or missing data.",
+      "correction": "Use EF Core 9's auto-compiled models (Microsoft.EntityFrameworkCore.Tasks + EFOptimizeContext=true) to auto-regenerate on build."
+    },
+    {
+      "mistake": "Expecting query speedup",
+      "consequence": "Compiled models only speed up STARTUP, not queries. Queries still use same SQL generation.",
+      "correction": "For query performance, use indexes, compiled queries, or AsNoTracking()."
+    },
+    {
+      "mistake": "Using with lazy loading",
+      "consequence": "Compiled models don't support lazy-loading proxies. Proxies require runtime model building.",
+      "correction": "Use eager loading (.Include()) or explicit loading instead."
+    }
+  ],
+  "difficulty": "advanced"
+}

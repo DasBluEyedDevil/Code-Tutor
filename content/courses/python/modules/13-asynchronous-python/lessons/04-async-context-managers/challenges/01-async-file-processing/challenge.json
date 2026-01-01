@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-04-challenge-1",
+  "title": "Async File Processing",
+  "description": "Create an async function that processes multiple files concurrently.",
+  "instructions": "Complete the `process_files` function that reads multiple files concurrently and returns their contents. Use the provided AsyncFileReader class.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `async with AsyncFileReader(filename) as f:` to open files, then `await f.read()` to read content."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using regular 'with' instead of 'async with'",
+      "consequence": "TypeError or blocking behavior",
+      "correction": "Always use 'async with' for async context managers"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a TypeScript project setup by creating the necessary configuration:\n\n1. Create a simple TypeScript configuration object with these properties:\n   - `target`: 'ES2024'\n   - `strict`: true\n   - `outDir`: './dist'\n\n2. Create an interface `ProjectConfig` that matches this structure\n\n3. Create a function `validateConfig` that takes a ProjectConfig and returns true if strict is enabled\n\n4. Test your function with a config object\n\nLog the validation result.",
+  "instructions": "Simulate a TypeScript project setup by creating the necessary configuration:\n\n1. Create a simple TypeScript configuration object with these properties:\n   - `target`: 'ES2024'\n   - `strict`: true\n   - `outDir`: './dist'\n\n2. Create an interface `ProjectConfig` that matches this structure\n\n3. Create a function `validateConfig` that takes a ProjectConfig and returns true if strict is enabled\n\n4. Test your function with a config object\n\nLog the validation result.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should validate strict mode is enabled",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should detect when strict mode is disabled",
+      "expectedOutput": "false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add type annotations to the interface properties and function parameter."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common setup mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common setup mistakes:"
+    },
+    {
+      "mistake": "**Wrong tsconfig.json location**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong tsconfig.json location**:\n   - Must be in project root (not inside src/)\n   - Must be named exactly 'tsconfig.json' (case-sensitive)"
+    },
+    {
+      "mistake": "**JSON syntax errors**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**JSON syntax errors**:\n   ```json\n   {\n     \"target\": \"ES2024\",  // ERROR: No trailing comma on last item!\n   }\n   ```\n   Solution: Remove trailing commas in JSON files"
+    }
+  ],
+  "difficulty": "beginner"
+}

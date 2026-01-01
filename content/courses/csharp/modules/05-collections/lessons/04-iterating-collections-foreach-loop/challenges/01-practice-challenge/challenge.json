@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a grade book manager!\n\n1. Create a List<string> for student names\n2. Create a List<int> for their grades\n3. Add 5 students with their grades (use .Add)\n4. Display all students with their grades using foreach\n5. Calculate:\n   - Total of all grades\n   - Average grade\n   - Highest grade (find manually with foreach)\n   - Lowest grade (find manually with foreach)\n6. Count how many students passed (grade >= 60)\n7. Sort grades and display sorted list\n8. Check if a specific grade exists using .Contains\n\nExample output:\n=== GRADE BOOK ===\nAlice: 85\nBob: 72\nCharlie: 91\nDiana: 68\nEve: 95\n\nTotal: 411\nAverage: 82.2\nHighest: 95\nLowest: 68\nPassed: 5/5\n\nSorted grades: 68, 72, 85, 91, 95\nContains 90? False",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"GRADE BOOK\"",
+      "expectedOutput": "GRADE BOOK",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Total\"",
+      "expectedOutput": "Total",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Average\"",
+      "expectedOutput": "Average",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Highest\"",
+      "expectedOutput": "Highest",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"Lowest\"",
+      "expectedOutput": "Lowest",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use foreach to iterate and calculate. Track highest/lowest with if statements. Use .Sort() to sort list. Use .Contains() to check if value exists. Cast to double for average: (double)total / count."
+    },
+    {
+      "level": 2,
+      "text": "Modifying during foreach: Can't add/remove items while foreaching! foreach (var x in list) { list.Remove(x); } crashes! Use regular for loop to modify."
+    },
+    {
+      "level": 3,
+      "text": "No index in foreach: foreach doesn't give you position. If you need index, use for loop: for (int i = 0; i < list.Count; i++)."
+    },
+    {
+      "level": 4,
+      "text": "Count vs Length: Lists use .Count (no parentheses!). Arrays use .Length (no parentheses!). Both are properties, not methods."
+    },
+    {
+      "level": 5,
+      "text": "Array.Sort vs list.Sort: Arrays need Array.Sort(array). Lists use array.Sort(). Different syntax for same operation!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Modifying during foreach",
+      "consequence": "Can't add/remove items while foreaching! foreach (var x in list) { list.Remove(x); } crashes! Use regular for loop to modify.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "No index in foreach",
+      "consequence": "foreach doesn't give you position. If you need index, use for loop: for (int i = 0; i < list.Count; i++).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Count vs Length",
+      "consequence": "Lists use .Count (no parentheses!). Arrays use .Length (no parentheses!). Both are properties, not methods.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Array.Sort vs list.Sort",
+      "consequence": "Arrays need Array.Sort(array). Lists use array.Sort(). Different syntax for same operation!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

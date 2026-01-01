@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a counter component with state:\n\n1. Create a `Counter` object with:\n   - state: { count: 0 }\n   - setCount(newValue) method that updates count and logs it\n   - increment() method that calls setCount with count + 1\n   - decrement() method that calls setCount with count - 1\n   - reset() method that calls setCount with 0\n\n2. Test all methods and log the count after each operation",
+  "instructions": "Simulate a counter component with state:\n\n1. Create a `Counter` object with:\n   - state: { count: 0 }\n   - setCount(newValue) method that updates count and logs it\n   - increment() method that calls setCount with count + 1\n   - decrement() method that calls setCount with count - 1\n   - reset() method that calls setCount with 0\n\n2. Test all methods and log the count after each operation",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should increment count",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should decrement count",
+      "expectedOutput": "4",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use this.state.count to access current count, and this.setCount() to update it"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common useState mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common useState mistakes:"
+    },
+    {
+      "mistake": "**Mutating state directly**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Mutating state directly**:\n   ```jsx\n   // WRONG!\n   const [user, setUser] = useState({ name: 'Alice' });\n   user.name = 'Bob';     // Don't mutate!\n   setUser(user);         // React won't re-render\n   \n   // CORRECT!\n   setUser({ ...user, name: 'Bob' });  // New object\n   ```"
+    },
+    {
+      "mistake": "**Forgetting to use setter**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting to use setter**:\n   ```jsx\n   const [count, setCount] = useState(0);\n   \n   // WRONG!\n   count = count + 1;     // Won't work!\n   \n   // CORRECT!\n   setCount(count + 1);   // Use setter\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "19.3-challenge",
+  "title": "Build Script",
+  "description": "Create a build script using Bun Shell.",
+  "instructions": "Write a script that creates a dist folder, copies files, and shows the result.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Runs build script",
+      "expectedOutput": "Build complete!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use await $`command` for each shell operation"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to await shell commands",
+      "consequence": "Commands run in parallel, causing race conditions",
+      "correction": "Always await each $`...` call"
+    }
+  ],
+  "difficulty": "intermediate"
+}

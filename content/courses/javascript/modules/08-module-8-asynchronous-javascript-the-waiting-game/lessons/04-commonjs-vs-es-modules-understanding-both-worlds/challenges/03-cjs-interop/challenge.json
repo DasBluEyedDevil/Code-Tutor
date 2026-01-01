@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "cjs-esm-challenge-3",
+  "title": "CJS Interop",
+  "description": "Import a CommonJS package correctly in ES Module code and handle the default export pattern.",
+  "instructions": "You are in an ES Module file and need to import from a CommonJS package called 'legacy-utils'. The CJS package exports:\n```javascript\nmodule.exports = {\n  formatDate: function(date) { ... },\n  parseDate: function(str) { ... },\n  VERSION: '1.0.0'\n};\n```\n\nWrite code that:\n1. Imports the package correctly\n2. Extracts formatDate and VERSION\n3. Uses formatDate to format today's date\n4. Logs the VERSION",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses default import for CJS package",
+      "expectedOutput": "import",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Destructures the needed exports",
+      "expectedOutput": "formatDate",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "When a CJS module uses module.exports = {...}, the whole object becomes the default export in ESM"
+    },
+    {
+      "level": 2,
+      "text": "Import with: import pkg from 'package'; then destructure: const { fn } = pkg;"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to use named imports directly from CJS",
+      "consequence": "import { formatDate } from 'legacy-utils' may fail or return undefined",
+      "correction": "Use default import first, then destructure: import pkg from 'pkg'; const { fn } = pkg;"
+    },
+    {
+      "mistake": "Using require() in ES Module",
+      "consequence": "require is not defined in ES Modules",
+      "correction": "Use import syntax, or createRequire() from 'node:module' if require() is absolutely needed"
+    }
+  ],
+  "difficulty": "intermediate"
+}

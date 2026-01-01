@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.2-challenge",
+  "title": "Document the API Function",
+  "description": "Add complete JSDoc documentation to this API function.",
+  "instructions": "Add @param and @returns tags to document this function. The id should be a number, and the function returns a Promise that resolves to a user object with id and name properties.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Function is documented with JSDoc",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For async functions, the @returns type should be Promise<...>"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting Promise wrapper on async function returns",
+      "consequence": "The actual return type of async functions is always a Promise",
+      "correction": "@returns {Promise<{ id: number, name: string }>}"
+    }
+  ],
+  "difficulty": "beginner"
+}

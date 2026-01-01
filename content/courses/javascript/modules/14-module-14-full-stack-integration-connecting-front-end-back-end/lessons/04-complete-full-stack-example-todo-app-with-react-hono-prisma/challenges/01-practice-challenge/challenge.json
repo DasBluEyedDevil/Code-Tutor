@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Build a simplified full-stack blog:\n\n1. Create a `database` object with:\n   - posts array with sample posts (id, title, content)\n   - findAll() method\n   - create(data) method\n\n2. Create a `backend` object with:\n   - handleGetPosts() - returns all posts\n   - handleCreatePost(title, content) - creates post\n\n3. Create a `BlogApp` object with:\n   - state: posts, loading\n   - fetchPosts() - calls backend\n   - createPost(title, content) - calls backend and refreshes\n\n4. Test the flow",
+  "instructions": "Build a simplified full-stack blog:\n\n1. Create a `database` object with:\n   - posts array with sample posts (id, title, content)\n   - findAll() method\n   - create(data) method\n\n2. Create a `backend` object with:\n   - handleGetPosts() - returns all posts\n   - handleCreatePost(title, content) - creates post\n\n3. Create a `BlogApp` object with:\n   - state: posts, loading\n   - fetchPosts() - calls backend\n   - createPost(title, content) - calls backend and refreshes\n\n4. Test the flow",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should fetch posts",
+      "expectedOutput": "2",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Follow the pattern: Frontend → Backend → Database → Backend → Frontend"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common full-stack integration mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common full-stack integration mistakes:"
+    },
+    {
+      "mistake": "**Forgetting to enable CORS**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting to enable CORS**:\n   ```javascript\n   // Hono backend missing:\n   app.use('*', cors());  // Add this!\n   ```"
+    },
+    {
+      "mistake": "**Wrong API URL**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong API URL**:\n   ```jsx\n   // Wrong!\n   fetch('localhost:4000/api/todos')  // Missing http://\n   \n   // Correct!\n   fetch('http://localhost:4000/api/todos')\n   \n   // Best!\n   const API_URL = import.meta.env.VITE_API_URL;\n   fetch(`${API_URL}/api/todos`);\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.9-challenge-1",
+  "title": "State Machine with Literal Types",
+  "description": "Model a traffic light state machine using literal types. The light can only be 'red', 'yellow', or 'green', and transitions should be type-safe.",
+  "instructions": "Create a TrafficLight type using literal types. Then create a transition function that takes the current state and returns the next valid state. Red -> Green -> Yellow -> Red.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Traffic light cycles correctly",
+      "expectedOutput": "Current: red\\nNext: green\\nNext: yellow\\nNext: red",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the pipe operator to create a union of literal strings: 'a' | 'b' | 'c'"
+    },
+    {
+      "level": 2,
+      "text": "A switch statement with exhaustive cases is perfect for state machines"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using string type instead of literal union",
+      "consequence": "Allows any string value, defeating the purpose of type safety",
+      "correction": "Use 'red' | 'yellow' | 'green' instead of string"
+    }
+  ],
+  "difficulty": "intermediate"
+}

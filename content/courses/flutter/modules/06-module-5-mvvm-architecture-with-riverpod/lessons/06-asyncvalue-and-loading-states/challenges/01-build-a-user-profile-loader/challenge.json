@@ -1,0 +1,71 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.6-challenge-1",
+  "title": "Build a User Profile Loader",
+  "description": "Create a user profile screen that fetches data from an API, displays loading and error states properly, and includes a refresh button.",
+  "instructions": "Build a complete user profile loader with the following requirements:\n\n1. Create a User model with: id, name, email, and phone fields\n2. Create a FutureProvider called userProvider that:\n   - Simulates an API call using Future.delayed (2 seconds delay)\n   - Returns a mock User object\n   - Has a 20% chance of throwing an error (to test error handling)\n3. Create a UserProfileScreen that:\n   - Uses ref.watch() to get the AsyncValue<User>\n   - Shows a loading spinner with 'Loading profile...' text while loading\n   - Shows an error message with a Retry button when error occurs\n   - Shows a nice user card with all user details when data is loaded\n   - Has a Refresh button in the AppBar that calls ref.invalidate()\n4. The user card should display:\n   - A CircleAvatar with the user's initials\n   - Name in large bold text\n   - Email with an email icon\n   - Phone with a phone icon\n\nBonus: Add a 'last refreshed' timestamp that updates each time data loads successfully.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-loading",
+      "description": "Shows loading spinner while fetching",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-error",
+      "description": "Shows error message with retry button on failure",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-data",
+      "description": "Shows user card with all details on success",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-refresh",
+      "description": "Refresh button triggers new fetch",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Random().nextDouble() < 0.2 to create a 20% chance of error. If true, throw an Exception."
+    },
+    {
+      "level": 2,
+      "text": "The when() method takes three required callbacks: loading: () => Widget, error: (error, stack) => Widget, data: (value) => Widget"
+    },
+    {
+      "level": 3,
+      "text": "To refresh data, use ref.invalidate(userProvider) in the button's onPressed. This disposes the current state and triggers a new fetch."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using maybeWhen without handling error state",
+      "consequence": "Errors show as loading forever, users cannot retry",
+      "correction": "Use when() which requires all three state handlers, or explicitly handle error in maybeWhen"
+    },
+    {
+      "mistake": "Accessing .value directly without checking state",
+      "consequence": "Throws exception if data is not loaded yet",
+      "correction": "Use when() or check .hasValue before accessing .value, or use .valueOrNull for nullable access"
+    },
+    {
+      "mistake": "Forgetting to add retry button on error state",
+      "consequence": "Users are stuck on error with no way to retry",
+      "correction": "Add a button that calls ref.invalidate(userProvider) to retry the fetch"
+    },
+    {
+      "mistake": "Not showing any loading indicator",
+      "consequence": "Users do not know data is being fetched",
+      "correction": "Always provide a loading callback in when() that shows a CircularProgressIndicator or similar"
+    }
+  ],
+  "difficulty": "intermediate"
+}

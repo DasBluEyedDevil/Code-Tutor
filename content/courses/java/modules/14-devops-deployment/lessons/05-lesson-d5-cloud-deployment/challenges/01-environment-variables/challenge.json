@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-5-mc-1",
+  "title": "Environment Variables",
+  "description": "Understanding Spring Boot configuration",
+  "question": "How does Spring Boot read the environment variable DATABASE_URL?",
+  "options": [
+    "You must explicitly call System.getenv(\"DATABASE_URL\") in your code",
+    "Spring Boot automatically maps it to spring.datasource.url",
+    "You must define it in application.properties first",
+    "Railway automatically injects it into application.properties file"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Spring Boot has built-in support for environment variables. DATABASE_URL is a special case that Spring Boot's DataSource auto-configuration recognizes and uses for the database connection. For custom variables, Spring Boot converts them: MY_CUSTOM_VAR becomes my.custom.var in properties.",
+  "difficulty": "intermediate"
+}

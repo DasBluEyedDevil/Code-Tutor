@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-2-mc-1",
+  "title": "Multi-Stage Builds",
+  "description": "Understanding why multi-stage builds are used",
+  "question": "Why does the Dockerfile use two FROM statements (multi-stage build)?",
+  "options": [
+    "To run two applications in one container",
+    "To use JDK for building but only JRE for running, reducing image size",
+    "To support multiple Java versions",
+    "It's required for Spring Boot applications"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Multi-stage builds separate build-time dependencies from runtime. The first stage uses the full JDK (includes compiler) to build the JAR. The second stage uses only the JRE (no compiler needed at runtime), reducing the final image from ~300MB to ~180MB. Build tools, source code, and intermediate files are discarded.",
+  "difficulty": "intermediate"
+}

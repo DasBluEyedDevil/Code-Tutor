@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.2-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a simple API for a todo list using Hono patterns:\n\n1. Create a GET route `/api/todos` that returns an array of todo objects\n   - Each todo should have: id, task, completed\n   - Use c.json() to return the data\n\n2. Create a POST route `/api/todos` that:\n   - Simulates creating a new todo\n   - Returns status 201 and the new todo using c.json(data, 201)\n\n3. Create a GET route `/api/todos/completed` that:\n   - Returns only completed todos\n\nUse the HonoApp class from the example. Simulate requests to test your routes.",
+  "instructions": "Create a simple API for a todo list using Hono patterns:\n\n1. Create a GET route `/api/todos` that returns an array of todo objects\n   - Each todo should have: id, task, completed\n   - Use c.json() to return the data\n\n2. Create a POST route `/api/todos` that:\n   - Simulates creating a new todo\n   - Returns status 201 and the new todo using c.json(data, 201)\n\n3. Create a GET route `/api/todos/completed` that:\n   - Returns only completed todos\n\nUse the HonoApp class from the example. Simulate requests to test your routes.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should return all todos using c.json()",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should filter completed todos",
+      "expectedOutput": "1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In Hono, use (c) => { return c.json(data); } pattern. For status codes, pass as second argument: c.json(data, 201)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to return the response in Hono",
+      "consequence": "The route handler returns undefined and no response is sent.",
+      "correction": "Always return c.json(), c.text(), etc. Example: return c.json({ data });"
+    },
+    {
+      "mistake": "Using Express (req, res) pattern instead of Hono (c) pattern",
+      "consequence": "Code will not work correctly with Hono's context object.",
+      "correction": "Use (c) => { return c.json(data); } instead of (req, res) => { res.json(data); }"
+    },
+    {
+      "mistake": "Putting status code in wrong place",
+      "consequence": "Status code may not be set correctly.",
+      "correction": "In Hono, status is the second argument: c.json(data, 201)"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-03-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Build a Complete JWT Authentication System",
+  "description": "Create a JWT authentication service for the Finance Tracker that handles login, token refresh, and secure logout with token revocation.",
+  "instructions": "Complete the JWTAuthService class to:\n1. Generate access tokens (15 min expiry) with user_id, email, and role claims\n2. Generate refresh tokens (7 day expiry) with unique jti for revocation\n3. Verify tokens and extract user information\n4. Implement token refresh with rotation (revoke old, issue new)\n5. Implement logout that revokes the refresh token",
+  "startingCode": "import jwt\nimport secrets\nfrom datetime import datetime, timedelta, timezone\nfrom typing import Optional, Dict, Any\nfrom dataclasses import dataclass, field\n\nSECRET_KEY = \"finance-tracker-secret-key-256-bits-long!\"\nALGORITHM = \"HS256\"\n\n@dataclass\nclass RefreshTokenStore:\n    \"\"\"Simple in-memory store for refresh token tracking\"\"\"\n    tokens: Dict[str, Dict] = field(default_factory=dict)\n    \n    def save(self, jti: str, user_id: int):\n        self.tokens[jti] = {\"user_id\": user_id, \"revoked\": False}\n    \n    def is_valid(self, jti: str) -> bool:\n        return jti in self.tokens and not self.tokens[jti][\"revoked\"]\n    \n    def revoke(self, jti: str):\n        if jti in self.tokens:\n            self.tokens[jti][\"revoked\"] = True\n\nclass JWTAuthService:\n    def __init__(self):\n        self.store = RefreshTokenStore()\n    \n    def create_access_token(self, user_id: int, email: str, role: str = \"user\") -> str:\n        \"\"\"Create a 15-minute access token with user claims.\"\"\"\n        # TODO: Create payload with sub, email, role, type=\"access\", exp\n        # TODO: Encode and return the JWT\n        pass\n    \n    def create_refresh_token(self, user_id: int) -> str:\n        \"\"\"Create a 7-day refresh token with unique jti.\"\"\"\n        # TODO: Generate unique jti using secrets.token_hex(16)\n        # TODO: Create payload with sub, type=\"refresh\", jti, exp\n        # TODO: Save jti to store\n        # TODO: Encode and return the JWT\n        pass\n    \n    def login(self, user_id: int, email: str, role: str = \"user\") -> Dict[str, Any]:\n        \"\"\"Authenticate user and return both tokens.\"\"\"\n        # TODO: Create and return both tokens\n        pass\n    \n    def verify_access_token(self, token: str) -> Optional[Dict[str, Any]]:\n        \"\"\"Verify access token and return user info or None.\"\"\"\n        # TODO: Decode token, verify type is \"access\"\n        # TODO: Return user info dict or None on failure\n        pass\n    \n    def refresh_tokens(self, refresh_token: str) -> Optional[Dict[str, Any]]:\n        \"\"\"Use refresh token to get new token pair with rotation.\"\"\"\n        # TODO: Decode and verify refresh token\n        # TODO: Check if jti is valid (not revoked)\n        # TODO: Revoke old refresh token\n        # TODO: Create and return new token pair\n        pass\n    \n    def logout(self, refresh_token: str) -> bool:\n        \"\"\"Revoke refresh token on logout.\"\"\"\n        # TODO: Decode token, revoke the jti\n        pass\n\n# Test the authentication service\nauth = JWTAuthService()\n\nprint(\"JWT Authentication Service Test\")\nprint(\"=\" * 50)\n\n# Test login\nprint(\"\\n1. Login:\")\ntokens = auth.login(user_id=1, email=\"alice@financetracker.com\", role=\"user\")\nprint(f\"   Access token: {tokens['access_token'][:40]}...\")\nprint(f\"   Refresh token: {tokens['refresh_token'][:40]}...\")\n\n# Test access token verification\nprint(\"\\n2. Verify Access Token:\")\nuser_info = auth.verify_access_token(tokens[\"access_token\"])\nprint(f\"   User info: {user_info}\")\n\n# Test token refresh\nprint(\"\\n3. Refresh Tokens:\")\nnew_tokens = auth.refresh_tokens(tokens[\"refresh_token\"])\nif new_tokens:\n    print(f\"   New access token: {new_tokens['access_token'][:40]}...\")\n    print(\"   Old refresh token revoked, new one issued\")\n\n# Test old refresh token is revoked\nprint(\"\\n4. Try Old Refresh Token:\")\nold_refresh_result = auth.refresh_tokens(tokens[\"refresh_token\"])\nprint(f\"   Result: {'Blocked (correct!)' if old_refresh_result is None else 'Allowed (bug!)'}\")\n\n# Test logout\nprint(\"\\n5. Logout:\")\nif new_tokens:\n    logout_success = auth.logout(new_tokens[\"refresh_token\"])\n    print(f\"   Logout successful: {logout_success}\")\n\n# Verify logout worked\nprint(\"\\n6. Try Token After Logout:\")\nif new_tokens:\n    post_logout = auth.refresh_tokens(new_tokens[\"refresh_token\"])\n    print(f\"   Result: {'Blocked (correct!)' if post_logout is None else 'Allowed (bug!)'}\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "JWT auth service handles login, refresh, and logout correctly",
+      "expectedOutput": "Result: Blocked (correct!)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `datetime.now(timezone.utc) + timedelta(minutes=15)` for access token expiry. For refresh tokens, use `secrets.token_hex(16)` to generate a unique jti, and store it before encoding the token. Remember to check `payload.get(\"type\")` matches expected type."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to store the jti before returning the refresh token",
+      "consequence": "Token refresh always fails because jti is not found in store",
+      "correction": "Call self.store.save(jti, user_id) before jwt.encode()"
+    },
+    {
+      "mistake": "Not revoking old refresh token during rotation",
+      "consequence": "Old tokens remain valid, defeating token rotation security",
+      "correction": "Always call self.store.revoke(jti) before issuing new tokens"
+    }
+  ],
+  "difficulty": "advanced"
+}

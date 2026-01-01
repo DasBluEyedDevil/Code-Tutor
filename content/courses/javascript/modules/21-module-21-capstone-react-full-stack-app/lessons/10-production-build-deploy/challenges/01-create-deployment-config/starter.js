@@ -1,0 +1,5 @@
+// vercel.json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.2-challenge-1",
+  "title": "Create Media Attachment Model",
+  "description": "Design a reusable media attachment model for images, videos, and files across the app.",
+  "instructions": "Create a MediaAttachment protocol that:\n\n1. Can be attached to posts, messages, or comments (polymorphic)\n2. Stores: url, thumbnailUrl, mimeType, fileSize, width, height, duration (for video/audio)\n3. Tracks upload status: pending, processing, ready, failed\n4. Includes uploader reference and timestamps\n5. Has a MediaType enum: image, video, audio, document\n6. Supports ordering for multiple attachments",
+  "language": "yaml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For polymorphic relations, use optional foreign keys (postId?, messageId?, commentId?) where only one is set"
+    },
+    {
+      "level": 2,
+      "text": "Use 'sortOrder: int' to maintain attachment order when a post has multiple images"
+    },
+    {
+      "level": 3,
+      "text": "Include 'processingError: String?' to store error messages when upload/processing fails"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using optional relations for polymorphic attachments",
+      "consequence": "Database requires all parent fields to be set, breaking the polymorphic design",
+      "correction": "Mark polymorphic parent relations as optional with '?' and 'relation(parent=table, optional)'"
+    },
+    {
+      "mistake": "Storing dimensions as a single string like '1920x1080'",
+      "consequence": "Requires parsing to use values, can't query by dimension",
+      "correction": "Use separate width and height integer fields for easier querying and manipulation"
+    }
+  ],
+  "difficulty": "advanced"
+}

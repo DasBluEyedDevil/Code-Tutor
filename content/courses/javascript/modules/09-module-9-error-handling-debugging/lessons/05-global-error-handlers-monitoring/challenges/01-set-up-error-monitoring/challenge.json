@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.5-challenge",
+  "title": "Set Up Error Monitoring",
+  "description": "Create a complete error monitoring setup with:\n\n1. A `setupErrorHandlers()` function that registers global handlers\n2. An `errorLog` array to store all caught errors\n3. Handlers for both sync errors (window.onerror) and async errors (unhandledrejection)\n4. Each logged error should include: timestamp, type, message, and stack\n\nSimulate testing by calling the provided test functions.",
+  "instructions": "Create a browser-compatible error monitoring system that catches both synchronous and asynchronous errors globally, logging them to an array for later analysis or sending to a monitoring service.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Captures sync errors with window.onerror",
+      "expectedOutput": "[uncaught_exception] Sync test error",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Captures async errors with onunhandledrejection",
+      "expectedOutput": "[unhandled_rejection] Async test error",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Error entries include timestamp and stack",
+      "expectedOutput": "timestamp and stack properties exist",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "window.onerror receives (message, source, lineno, colno, error) parameters."
+    },
+    {
+      "level": 2,
+      "text": "window.onunhandledrejection receives an event with a 'reason' property containing the rejection value."
+    },
+    {
+      "level": 3,
+      "text": "Use new Date().toISOString() for the timestamp. Access error.stack for the stack trace."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using addEventListener instead of direct assignment",
+      "consequence": "Both work, but direct assignment (window.onerror =) is simpler for this exercise.",
+      "correction": "You can use either approach. addEventListener allows multiple handlers."
+    },
+    {
+      "mistake": "Forgetting to handle the case where reason is not an Error object",
+      "consequence": "If someone does Promise.reject('string'), accessing .message will return undefined.",
+      "correction": "Use: reason?.message || String(reason) to handle both Error objects and primitives."
+    }
+  ],
+  "difficulty": "intermediate"
+}

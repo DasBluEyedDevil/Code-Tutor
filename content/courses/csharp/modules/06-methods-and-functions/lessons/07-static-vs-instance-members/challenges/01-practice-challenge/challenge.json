@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-07-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a Vehicle counter system!\n\n1. Class 'Vehicle' with:\n   - STATIC field: int TotalVehicles = 0\n   - STATIC field: int MaxSpeed = 0\n   - INSTANCE fields: string Model, int Speed\n2. Constructor that increments TotalVehicles\n3. INSTANCE method Accelerate(int amount): increases Speed, updates static MaxSpeed if beaten\n4. STATIC method ShowStats(): displays TotalVehicles and MaxSpeed\n5. Create 3 vehicles, accelerate them, call ShowStats\n\nDemonstrate the difference between static (shared) and instance (individual)!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Total\"",
+      "expectedOutput": "Total",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Max Speed\"",
+      "expectedOutput": "Max Speed",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Static: use 'static' keyword, access via ClassName. Instance: no 'static', access via objectName. Static methods can't use 'this' or instance members!"
+    },
+    {
+      "level": 2,
+      "text": "Accessing static through instance: 'p1.TotalPlayers' might work but is WRONG! Always use ClassName.StaticMember for clarity: Player.TotalPlayers."
+    },
+    {
+      "level": 3,
+      "text": "Using instance members in static methods: Static methods can't access instance fields! 'public static void Method() { Console.WriteLine(Name); }' is ERROR if Name is instance field."
+    },
+    {
+      "level": 4,
+      "text": "Forgetting 'static' keyword: If you want a shared member, you MUST use 'static'. 'public int TotalPlayers' without 'static' means EACH object has its own TotalPlayers (not shared)!"
+    },
+    {
+      "level": 5,
+      "text": "When to use static: Use static for shared data (counters, constants) or utility methods (Math.Sqrt). Use instance for object-specific data (each player's score)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Accessing static through instance",
+      "consequence": "'p1.TotalPlayers' might work but is WRONG! Always use ClassName.StaticMember for clarity: Player.TotalPlayers.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using instance members in static methods",
+      "consequence": "Static methods can't access instance fields! 'public static void Method() { Console.WriteLine(Name); }' is ERROR if Name is instance field.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting 'static' keyword",
+      "consequence": "If you want a shared member, you MUST use 'static'. 'public int TotalPlayers' without 'static' means EACH object has its own TotalPlayers (not shared)!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "When to use static",
+      "consequence": "Use static for shared data (counters, constants) or utility methods (Math.Sqrt). Use instance for object-specific data (each player's score).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

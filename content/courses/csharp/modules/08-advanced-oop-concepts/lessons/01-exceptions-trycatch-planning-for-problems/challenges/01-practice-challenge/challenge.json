@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-08-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a safe calculator that handles errors!\n\n1. Prompt user for two numbers (use int.Parse)\n2. Prompt for operation (+, -, *, /)\n3. Wrap risky code in try/catch:\n   - Catch FormatException (invalid number input)\n   - Catch DivideByZeroException (division by zero)\n   - Catch general Exception (anything else)\n4. Display appropriate error messages\n5. If successful, show the result",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Result\"",
+      "expectedOutput": "Result",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Error\"",
+      "expectedOutput": "Error",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Wrap ALL risky code in the try block. Use specific exception types in catch blocks. Order matters: specific exceptions before generic ones!"
+    },
+    {
+      "level": 2,
+      "text": "Catching Exception first: If you put 'catch (Exception ex)' FIRST, it catches EVERYTHING! Specific catches after it never run. Always put specific exceptions before generic Exception."
+    },
+    {
+      "level": 3,
+      "text": "Empty catch blocks: 'catch { }' swallows errors silently! Always log or display error messages. Silent failures are impossible to debug."
+    },
+    {
+      "level": 4,
+      "text": "Try without catch: 'try { code }' alone is ERROR! Must have at least one catch block (or finally, next lesson). Try/catch are partners."
+    },
+    {
+      "level": 5,
+      "text": "Catching wrong exception type: If you catch FormatException but the error is IndexOutOfRangeException, your catch won't run! Use general Exception catch as fallback."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Catching Exception first",
+      "consequence": "If you put 'catch (Exception ex)' FIRST, it catches EVERYTHING! Specific catches after it never run. Always put specific exceptions before generic Exception.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Empty catch blocks",
+      "consequence": "'catch { }' swallows errors silently! Always log or display error messages. Silent failures are impossible to debug.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Try without catch",
+      "consequence": "'try { code }' alone is ERROR! Must have at least one catch block (or finally, next lesson). Try/catch are partners.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Catching wrong exception type",
+      "consequence": "If you catch FormatException but the error is IndexOutOfRangeException, your catch won't run! Use general Exception catch as fallback.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

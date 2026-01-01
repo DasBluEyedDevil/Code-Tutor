@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a media player system with interfaces!\n\n1. INTERFACE 'IPlayable':\n   - void Play()\n   - void Pause()\n   - void Stop()\n\n2. INTERFACE 'IRecordable':\n   - void Record()\n   - void SaveRecording()\n\n3. CLASS 'VideoPlayer' implements IPlayable\n4. CLASS 'AudioRecorder' implements IPlayable AND IRecordable\n5. Create objects, call methods polymorphically",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Playing\"",
+      "expectedOutput": "Playing",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Recording\"",
+      "expectedOutput": "Recording",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Interface: 'interface IName { void Method(); }'. Implement: 'class C : IName { public void Method() { } }'. Must implement ALL interface methods!"
+    },
+    {
+      "level": 2,
+      "text": "Adding implementation in interface: 'void Method() { code }' in interface is WRONG! Interfaces have NO implementation (except default interface methods in C# 8+, advanced topic)."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting 'public' in implementation: When implementing interface methods in class, you MUST make them 'public'! Interface members are implicitly public."
+    },
+    {
+      "level": 4,
+      "text": "Not implementing all methods: If interface has 3 methods, class MUST implement all 3! Missing even one = compiler error."
+    },
+    {
+      "level": 5,
+      "text": "Using 'new' instead of 'implements': C# uses ':' for BOTH inheritance and interfaces. 'class C : IDrawable' implements the interface (colon, not 'implements' keyword)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Adding implementation in interface",
+      "consequence": "'void Method() { code }' in interface is WRONG! Interfaces have NO implementation (except default interface methods in C# 8+, advanced topic).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting 'public' in implementation",
+      "consequence": "When implementing interface methods in class, you MUST make them 'public'! Interface members are implicitly public.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not implementing all methods",
+      "consequence": "If interface has 3 methods, class MUST implement all 3! Missing even one = compiler error.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using 'new' instead of 'implements'",
+      "consequence": "C# uses ':' for BOTH inheritance and interfaces. 'class C : IDrawable' implements the interface (colon, not 'implements' keyword).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

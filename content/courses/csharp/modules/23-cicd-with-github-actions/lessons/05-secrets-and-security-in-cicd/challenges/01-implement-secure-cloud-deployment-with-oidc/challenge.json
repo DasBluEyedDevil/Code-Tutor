@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-24-05-challenge-01",
+  "title": "Implement Secure Cloud Deployment with OIDC",
+  "description": "Configure a secure deployment workflow using OIDC authentication and proper secret management.",
+  "instructions": "Implement secure cloud deployment for ShopFlow!\n\n1. Configure OIDC authentication:\n   - Set id-token permission to write\n   - Use azure/login with OIDC (no client secret)\n\n2. Implement proper secret handling:\n   - Fetch secrets from Key Vault at runtime\n   - Use add-mask for dynamic secrets\n   - Never echo secrets to logs\n\n3. Add security scanning:\n   - Scan for vulnerable packages before deploy\n   - Fail the workflow if critical vulnerabilities found\n\n4. Create audit logging:\n   - Log who triggered the deployment\n   - Log what commit/image was deployed\n   - Log timestamp of deployment",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should set id-token permission for OIDC",
+      "expectedOutput": "id-token: write",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should use azure/login without client-secret",
+      "expectedOutput": "azure/login@v2",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should scan for vulnerabilities",
+      "expectedOutput": "--vulnerable",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should use add-mask for secrets",
+      "expectedOutput": "::add-mask::",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should fetch from Key Vault",
+      "expectedOutput": "az keyvault secret show",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should create audit log with actor",
+      "expectedOutput": "github.actor",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "OIDC requires 'id-token: write' in the permissions block at the workflow level."
+    },
+    {
+      "level": 2,
+      "text": "azure/login@v2 with OIDC only needs client-id, tenant-id, and subscription-id - no client-secret."
+    },
+    {
+      "level": 3,
+      "text": "Use 'dotnet list package --vulnerable' and grep for 'vulnerable packages' to detect issues."
+    },
+    {
+      "level": 4,
+      "text": "Always use 'echo \"::add-mask::$SECRET\"' BEFORE using the secret in any command."
+    },
+    {
+      "level": 5,
+      "text": "Use 'az keyvault secret show --query value -o tsv' to get just the secret value."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Including client-secret with OIDC login",
+      "consequence": "Defeats the purpose of OIDC by requiring a stored secret. OIDC should be secretless.",
+      "correction": "Remove client-secret parameter. OIDC uses the GitHub-issued token instead."
+    },
+    {
+      "mistake": "Not masking secrets fetched from Key Vault",
+      "consequence": "Secrets appear in plain text in workflow logs, potentially exposing them.",
+      "correction": "Always run 'echo \"::add-mask::$SECRET\"' immediately after fetching a secret."
+    },
+    {
+      "mistake": "Using write-all permissions",
+      "consequence": "Over-privileged workflow can cause more damage if compromised.",
+      "correction": "Explicitly list only required permissions: contents:read, packages:write, id-token:write."
+    },
+    {
+      "mistake": "Scanning after deployment",
+      "consequence": "Vulnerable code gets deployed before vulnerabilities are detected.",
+      "correction": "Run vulnerability scan before any deployment steps, and fail fast if issues found."
+    }
+  ],
+  "difficulty": "advanced"
+}

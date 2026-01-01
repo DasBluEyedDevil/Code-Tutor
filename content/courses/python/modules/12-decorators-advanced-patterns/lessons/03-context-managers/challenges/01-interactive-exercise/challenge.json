@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-12-lesson-03-challenge-4",
+  "title": "Interactive Exercise",
+  "description": "Create a ListModifier context manager that:\n- Accepts a list as input\n- Backs up the list on entry\n- Allows modifications in the context\n- Restores the original list if an exception occurs\n- Keeps modifications if no exception",
+  "instructions": "Create a ListModifier context manager that:\n- Accepts a list as input\n- Backs up the list on entry\n- Allows modifications in the context\n- Restores the original list if an exception occurs\n- Keeps modifications if no exception",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use list.copy() to backup. In the except block, restore the list using list[:] = backup to modify in-place."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

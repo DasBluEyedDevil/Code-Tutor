@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.2-challenge-0",
+  "title": "Pulsing Button with Glow Effect",
+  "description": "Create a button that continuously pulses with a glowing effect.",
+  "instructions": "Build a circular button that continuously scales between 1.0 and 1.15 with an elastic curve. Add a glow effect (BoxShadow) that intensifies as the button grows. The animation should loop forever using repeat(reverse: true).",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use SingleTickerProviderStateMixin and create the controller with vsync: this"
+    },
+    {
+      "level": 2,
+      "text": "Call _controller.repeat(reverse: true) to create a ping-pong loop"
+    },
+    {
+      "level": 3,
+      "text": "Use _controller.value (0.0 to 1.0) to interpolate the glow intensity"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to call _controller.dispose()",
+      "consequence": "Memory leak - the animation controller keeps running",
+      "correction": "Always dispose controllers in the dispose() method"
+    },
+    {
+      "mistake": "Creating new Animation objects in build()",
+      "consequence": "Poor performance and unexpected behavior",
+      "correction": "Create Animation objects once in initState()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

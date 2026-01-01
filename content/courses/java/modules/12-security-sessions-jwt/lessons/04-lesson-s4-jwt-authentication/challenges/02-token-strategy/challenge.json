@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-4-mc-2",
+  "title": "Token Strategy",
+  "description": "Understanding access and refresh tokens",
+  "question": "Why use short-lived access tokens (15 min) with long-lived refresh tokens (7 days) instead of just one long-lived access token?",
+  "options": [
+    "Short tokens are smaller and faster to transmit",
+    "Short access tokens limit damage if stolen; refresh tokens can be revoked server-side",
+    "Refresh tokens provide better encryption",
+    "Short tokens don't need signatures"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Access tokens are stateless - once issued, they can't be revoked until they expire. Short expiration limits the window of abuse if stolen. Refresh tokens are stored server-side and CAN be revoked (logout, password change, suspicious activity). This balances security (short access token lifetime) with UX (user doesn't re-login constantly).",
+  "difficulty": "advanced"
+}

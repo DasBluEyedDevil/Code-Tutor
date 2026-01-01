@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a secure User class using access modifiers!\n\n1. PRIVATE fields: string password, int loginAttempts\n2. PUBLIC properties: string Username { get; set; }\n3. PUBLIC constructor: User(string username, string password)\n4. PUBLIC method Login(string pwd): checks if pwd matches password\n   - If match: reset loginAttempts to 0, return true\n   - If wrong: increment loginAttempts, return false\n5. PRIVATE method IsLockedOut(): returns true if loginAttempts >= 3\n6. Test with correct and incorrect passwords",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Login\"",
+      "expectedOutput": "Login",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"password\"",
+      "expectedOutput": "password",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Make sensitive data (password, loginAttempts) private. Provide public methods to interact with them safely. Private methods are internal helpers."
+    },
+    {
+      "level": 2,
+      "text": "Making everything public: Don't expose internal data! Use private for fields, public for methods/properties only. 'public string password' is BAD - anyone can change it!"
+    },
+    {
+      "level": 3,
+      "text": "Accessing private from outside: You can't do 'account.balance = 1000' if balance is private! That's the point - use public methods instead."
+    },
+    {
+      "level": 4,
+      "text": "Forgetting to specify: If you don't write 'public' or 'private', C# defaults to PRIVATE. Always specify explicitly for clarity!"
+    },
+    {
+      "level": 5,
+      "text": "Using protected too early: You'll learn about protected with inheritance. For now, use private (internal) and public (external interface) only."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Making everything public",
+      "consequence": "Don't expose internal data! Use private for fields, public for methods/properties only. 'public string password' is BAD - anyone can change it!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Accessing private from outside",
+      "consequence": "You can't do 'account.balance = 1000' if balance is private! That's the point - use public methods instead.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to specify",
+      "consequence": "If you don't write 'public' or 'private', C# defaults to PRIVATE. Always specify explicitly for clarity!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using protected too early",
+      "consequence": "You'll learn about protected with inheritance. For now, use private (internal) and public (external interface) only.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "challenge-4a-3-1",
+  "title": "Multi-Stage Data Pipeline",
+  "description": "Build a data pipeline that downloads data (IO), processes it (CPU), and displays results (Main). Each stage should run on the appropriate dispatcher.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use withContext(Dispatchers.IO) for downloadData",
+    "Use withContext(Dispatchers.Default) for processData",
+    "The pipeline function just calls them in sequence"
+  ],
+  "testCases": [
+    {
+      "description": "Should download on IO thread",
+      "expectedBehavior": "Download prints thread containing 'DefaultDispatcher' or IO pool"
+    },
+    {
+      "description": "Should process on Default thread",
+      "expectedBehavior": "Processing prints thread containing 'DefaultDispatcher'"
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.9-challenge-1",
+  "title": "Build a Form with Flutter Hooks",
+  "description": "Create a signup form using Flutter Hooks for form management. Use useTextEditingController for input fields and useState for validation state.",
+  "instructions": "Build a signup form with the following requirements:\n\n1. **Three input fields using hooks:**\n   - Username (useTextEditingController)\n   - Email (useTextEditingController)\n   - Password (useTextEditingController)\n\n2. **Validation state using useState:**\n   - Track whether the form has been submitted\n   - Track individual field validity\n   - Show validation errors only after first submit attempt\n\n3. **Validation rules:**\n   - Username: at least 3 characters\n   - Email: must contain @ symbol\n   - Password: at least 8 characters\n\n4. **UI Requirements:**\n   - Show error messages below invalid fields\n   - Disable submit button while any field is empty\n   - Show success message when form is valid and submitted\n\n5. **Use hooks properly:**\n   - All hooks at top of build() method\n   - No hooks in conditions or loops\n   - Use useMemoized for computed validation state",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-hooks-usage",
+      "description": "Uses useTextEditingController for all three input fields",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-useState",
+      "description": "Uses useState for hasSubmitted and showSuccess state",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-hooks-at-top",
+      "description": "All hooks are called at the top of build() method",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-validation-rules",
+      "description": "Implements correct validation: username >= 3, email has @, password >= 8",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-error-display",
+      "description": "Shows errors only after first submit attempt",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by creating all three useTextEditingController hooks at the very top of your build method, before any other code."
+    },
+    {
+      "level": 2,
+      "text": "Use useState(false) for hasSubmitted. Set it to true in your handleSubmit function. Only show error messages when hasSubmitted.value is true."
+    },
+    {
+      "level": 3,
+      "text": "To make the button update when text changes, either use useListenable(controller) for each controller, or call useState with the text values to track changes."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Calling hooks inside conditionals or loops",
+      "consequence": "Hook state gets mixed up between rebuilds, causing unpredictable bugs",
+      "correction": "Always call all hooks at the top of build() in the same order every time"
+    },
+    {
+      "mistake": "Forgetting to make button state reactive to text changes",
+      "consequence": "Submit button stays disabled even when all fields are filled",
+      "correction": "Use useListenable(controller) or track controller.text in a way that triggers rebuilds"
+    },
+    {
+      "mistake": "Showing validation errors immediately before user submits",
+      "consequence": "Poor UX - user sees errors before they even start typing",
+      "correction": "Track hasSubmitted state and only show errors when hasSubmitted.value is true"
+    },
+    {
+      "mistake": "Creating TextEditingController manually without useTextEditingController",
+      "consequence": "Memory leak because controller is never disposed",
+      "correction": "Use useTextEditingController() which handles disposal automatically"
+    }
+  ],
+  "difficulty": "intermediate"
+}

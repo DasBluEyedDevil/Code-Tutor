@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-04-challenge-4",
+  "title": "Interactive Exercise",
+  "description": "Create a secure FastAPI user registration and login system:\n- POST /api/register - Create user with hashed password (use Pydantic for validation)\n- POST /token - OAuth2 login endpoint, return JWT token\n- GET /api/profile - Get user profile (requires OAuth2 token)\n- Use Pydantic EmailStr for email validation\n- Use Field() for password strength (min 8 chars)\n- Use OAuth2PasswordBearer for token extraction",
+  "instructions": "Create a secure FastAPI user registration and login system:\n- POST /api/register - Create user with hashed password\n- POST /token - OAuth2 login endpoint, return JWT token\n- GET /api/profile - Get user profile (requires OAuth2 token)\n- Use Pydantic for validation\n- Use FastAPI's OAuth2PasswordBearer",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use OAuth2PasswordBearer(tokenUrl='token') for token extraction. Use OAuth2PasswordRequestForm for login form data. Use Depends(get_current_user) for protected routes."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to use Depends() for OAuth2PasswordRequestForm",
+      "consequence": "Form data not parsed correctly",
+      "correction": "Use form_data: OAuth2PasswordRequestForm = Depends()"
+    },
+    {
+      "mistake": "Not raising HTTPException for auth errors",
+      "consequence": "Wrong status codes returned",
+      "correction": "Use raise HTTPException(status_code=401, ...)"
+    },
+    {
+      "mistake": "Missing WWW-Authenticate header in 401 responses",
+      "consequence": "Not OAuth2 compliant",
+      "correction": "Add headers={'WWW-Authenticate': 'Bearer'}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

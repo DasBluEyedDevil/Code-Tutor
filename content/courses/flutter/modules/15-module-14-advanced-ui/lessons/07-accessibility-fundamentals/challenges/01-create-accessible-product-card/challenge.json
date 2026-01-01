@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.7-challenge-0",
+  "title": "Create Accessible Product Card",
+  "description": "Build a product card that works perfectly with screen readers.",
+  "instructions": "Create an AccessibleProductCard widget that displays a product image, name, price, and rating. The card should: (1) Use MergeSemantics to combine all content into one announcement, (2) Exclude the decorative star icons but announce the rating value, (3) Be tappable with proper button semantics, (4) Have a minimum touch target of 48x48 dp.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Wrap the entire card in MergeSemantics to combine all child semantics into one announcement"
+    },
+    {
+      "level": 2,
+      "text": "Use Semantics with button: true and onTap to make the card properly accessible"
+    },
+    {
+      "level": 3,
+      "text": "For the stars, use Semantics with excludeSemantics: true and provide a label like 'Rating: 4.5 out of 5 stars'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to exclude decorative star icons from semantics",
+      "consequence": "Screen reader announces 'star, star, star, star, star' instead of the rating value",
+      "correction": "Wrap stars in Semantics with excludeSemantics: true and provide a meaningful label"
+    },
+    {
+      "mistake": "Not using MergeSemantics for the card",
+      "consequence": "Screen reader announces each element separately, making navigation cumbersome",
+      "correction": "Use MergeSemantics to combine all content into one cohesive announcement"
+    }
+  ],
+  "difficulty": "intermediate"
+}

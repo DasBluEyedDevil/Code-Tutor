@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.7-challenge-1",
+  "title": "Convert Manual Notifier to Generated Provider",
+  "description": "Take an existing manually-written TodoNotifier and convert it to use the @riverpod annotation and code generation pattern.",
+  "instructions": "You have a working TodoNotifier that was written manually with a separate provider declaration. Your task is to convert it to use Riverpod's code generation:\n\n1. Add the correct import for riverpod_annotation\n2. Add the part directive for the generated file\n3. Add the @riverpod annotation to the class\n4. Change the class to extend the generated base class (_$TodoList)\n5. Remove the manual provider declaration (the generator will create it)\n6. Keep all the existing functionality (addTodo, removeTodo, toggleTodo, clearCompleted)\n\nThe converted code should work exactly the same way when used in widgets. The only difference is that the provider is now generated automatically.\n\nRemember:\n- The generated provider name will be todoListProvider (from class name TodoList)\n- The part file should be named 'todo_list.g.dart' to match the source file 'todo_list.dart'\n- Run `dart run build_runner build` to generate the code (simulated in this environment)",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-import",
+      "description": "Uses riverpod_annotation import instead of flutter_riverpod",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-part",
+      "description": "Includes part directive for generated file",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-annotation",
+      "description": "Class has @riverpod annotation",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-extends",
+      "description": "Class extends generated base class (_$TodoList)",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-no-manual-provider",
+      "description": "Manual provider declaration is removed",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by changing the import from 'package:flutter_riverpod/flutter_riverpod.dart' to 'package:riverpod_annotation/riverpod_annotation.dart'"
+    },
+    {
+      "level": 2,
+      "text": "The part directive must match your file name. If the file is 'todo_list.dart', use: part 'todo_list.g.dart';"
+    },
+    {
+      "level": 3,
+      "text": "Change 'class TodoNotifier extends Notifier<List<Todo>>' to '@riverpod class TodoList extends _$TodoList'. The generator creates the base class for you."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Keeping the manual provider declaration",
+      "consequence": "You will have two providers (one manual, one generated) causing confusion",
+      "correction": "Delete the final todoNotifierProvider = NotifierProvider<...>(...) declaration entirely"
+    },
+    {
+      "mistake": "Forgetting the part directive",
+      "consequence": "Build error: class _$TodoList is not defined",
+      "correction": "Add part 'todo_list.g.dart'; after your imports"
+    },
+    {
+      "mistake": "Using the wrong base class name",
+      "consequence": "Build error because the base class name must match your class name",
+      "correction": "If your class is TodoList, extend _$TodoList. If your class is MyTodos, extend _$MyTodos"
+    },
+    {
+      "mistake": "Forgetting to run build_runner",
+      "consequence": "The .g.dart file is not created, so the base class does not exist",
+      "correction": "Run: dart run build_runner build (or watch for continuous generation)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

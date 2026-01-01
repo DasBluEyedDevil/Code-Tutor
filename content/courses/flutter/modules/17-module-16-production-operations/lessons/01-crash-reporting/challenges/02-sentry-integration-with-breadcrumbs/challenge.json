@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.1-challenge-1",
+  "title": "Sentry Integration with Breadcrumbs",
+  "description": "Set up Sentry for error tracking with navigation breadcrumbs.",
+  "instructions": "Create a main.dart that:\n\n1. Initializes Sentry with SentryFlutter.init()\n2. Reads the DSN from environment (SENTRY_DSN)\n3. Sets the environment from ENVIRONMENT variable\n4. Configures traces sample rate to 20%\n5. Creates a MaterialApp with SentryNavigatorObserver for automatic navigation breadcrumbs\n6. Includes a custom AppBreadcrumbs class with logUserAction() and logApiCall() methods",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "SentryFlutter.init() takes an options callback and an appRunner callback"
+    },
+    {
+      "level": 2,
+      "text": "SentryNavigatorObserver automatically logs navigation as breadcrumbs"
+    },
+    {
+      "level": 3,
+      "text": "Use Sentry.addBreadcrumb() with a Breadcrumb object containing message, category, and data"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to use appRunner parameter",
+      "consequence": "App starts before Sentry is initialized, missing early errors",
+      "correction": "Always use appRunner: () => runApp(MyApp()) in SentryFlutter.init()"
+    },
+    {
+      "mistake": "Not adding SentryNavigatorObserver",
+      "consequence": "Navigation breadcrumbs are not captured automatically",
+      "correction": "Add SentryNavigatorObserver() to MaterialApp's navigatorObservers list"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-09-lesson-07-challenge-1",
+  "title": "Practice: Finance Tracker File Manager with Pathlib",
+  "description": "Build a file manager for your Personal Finance Tracker that:\n\n1. Creates an organized directory structure for financial data\n2. Finds all transaction files (JSON, CSV)\n3. Reports file sizes and modification dates\n4. Backs up files to an archive folder\n5. Generates a directory summary report\n\n**Use pathlib features:**\n- Path() / operator for joining paths\n- .mkdir(parents=True, exist_ok=True) for directory creation\n- .glob() and .rglob() for finding files\n- .stat() for file metadata\n- .suffix and .stem for file name operations",
+  "instructions": "Build a file manager for your Personal Finance Tracker that:\n\n1. Creates an organized directory structure for financial data\n2. Finds all transaction files (JSON, CSV)\n3. Reports file sizes and modification dates\n4. Backs up files to an archive folder\n5. Generates a directory summary report\n\n**Use pathlib features:**\n- Path() / operator for joining paths\n- .mkdir(parents=True, exist_ok=True) for directory creation\n- .glob() and .rglob() for finding files\n- .stat() for file metadata\n- .suffix and .stem for file name operations",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use path.glob('**/*') for recursive file search. Use path.suffix for extension. Use path.stat().st_size for file size. Use path.mkdir(parents=True, exist_ok=True) to create directories safely."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to handle permission errors",
+      "consequence": "Program crashes on protected files",
+      "correction": "Wrap stat() calls in try/except"
+    },
+    {
+      "mistake": "Using os.path instead of pathlib",
+      "consequence": "Misses pathlib's cleaner syntax",
+      "correction": "Use Path() and its methods throughout"
+    }
+  ],
+  "difficulty": "intermediate"
+}

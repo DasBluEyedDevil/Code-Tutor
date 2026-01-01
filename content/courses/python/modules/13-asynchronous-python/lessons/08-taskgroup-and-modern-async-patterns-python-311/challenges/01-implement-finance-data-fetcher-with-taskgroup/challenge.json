@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-08-challenge-1",
+  "title": "Implement Finance Data Fetcher with TaskGroup",
+  "description": "Use TaskGroup to fetch multiple financial data endpoints concurrently with proper error handling.",
+  "instructions": "Complete the `fetch_all_finance_data` function using TaskGroup. It should fetch accounts, transactions, and budgets concurrently. If any fetch fails, the function should handle the ExceptionGroup gracefully and return partial results.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a TaskGroup and use create_task() for each fetch function. Wrap in try/except* to handle ExceptionGroup."
+    },
+    {
+      "level": 2,
+      "text": "Use except* ConnectionError as eg to catch all ConnectionError exceptions. Loop through eg.exceptions to process each one."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using regular except instead of except*",
+      "consequence": "ExceptionGroup not handled correctly",
+      "correction": "Use except* for catching exception groups in Python 3.11+"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a weekly temperature tracker!\n\n1. Create a double array 'temperatures' with 7 slots (for 7 days)\n2. Fill it with values: 72.5, 75.0, 68.3, 71.2, 74.8, 70.1, 69.5\n3. Use a for loop to display each day's temperature: 'Day [index]: [temp]°F'\n4. Calculate and display the average temperature\n\nHint: To calculate average, add all temps and divide by array.Length!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Day\"",
+      "expectedOutput": "Day",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Average\"",
+      "expectedOutput": "Average",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create: double[] temps = new double[7]; Access: temps[0] = value; Loop: for (int i = 0; i < temps.Length; i++)"
+    },
+    {
+      "level": 2,
+      "text": "Index out of range: array[5] when the array has 5 items (indexes 0-4) = CRASH! Always remember: indexes go from 0 to Length-1!"
+    },
+    {
+      "level": 3,
+      "text": "Forgetting 'new' keyword: int[] arr = int[5]; is WRONG! Must be: int[] arr = new int[5];"
+    },
+    {
+      "level": 4,
+      "text": "Wrong loop condition: for (i = 0; i <= arr.Length; i++) goes ONE TOO FAR! Use i < arr.Length (less than, not less-or-equal)!"
+    },
+    {
+      "level": 5,
+      "text": "Trying to resize: You CAN'T change array size after creation! array.Length = 10; doesn't work. Create a new array if you need different size."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Index out of range",
+      "consequence": "array[5] when the array has 5 items (indexes 0-4) = CRASH! Always remember: indexes go from 0 to Length-1!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting 'new' keyword",
+      "consequence": "int[] arr = int[5]; is WRONG! Must be: int[] arr = new int[5];",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Wrong loop condition",
+      "consequence": "for (i = 0; i <= arr.Length; i++) goes ONE TOO FAR! Use i < arr.Length (less than, not less-or-equal)!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Trying to resize",
+      "consequence": "You CAN'T change array size after creation! array.Length = 10; doesn't work. Create a new array if you need different size.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

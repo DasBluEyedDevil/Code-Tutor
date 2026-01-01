@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-11-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create your first ASP.NET Core API!\n\n1. Create web application builder and app\n\n2. Create these endpoints:\n   - GET / -> Return \"Welcome to my API!\"\n   - GET /api/time -> Return current DateTime as JSON\n   - GET /api/greet/{name} -> Return greeting with name\n   - GET /api/math/add?a=5&b=3 -> Return sum of two numbers\n   - GET /api/products -> Return array of 3 product objects (Id, Name, Price)\n\n3. Run the application with app.Run()\n\nNOTE: For the learning platform, simulate endpoint behavior by printing what each would return!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"API endpoints\"",
+      "expectedOutput": "API endpoints",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"available\"",
+      "expectedOutput": "available",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"/api/\"",
+      "expectedOutput": "/api/",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create builder and app. MapGet: app.MapGet(route, handler). Route params: /api/{param}. Query params: (int a, int b) from ?a=5&b=3. Return objects - auto-converted to JSON!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting app.Run(): Without app.Run() at the end, server doesn't start! It MUST be the last line in Program.cs. Server won't listen for requests without it."
+    },
+    {
+      "level": 3,
+      "text": "Route casing: Routes are case-INSENSITIVE by default! /API/Products and /api/products are the same. But parameters ARE case-sensitive in C# handler!"
+    },
+    {
+      "level": 4,
+      "text": "Missing using statements: Need 'using Microsoft.AspNetCore.Builder;' and others. If IDE shows red underlines, you're missing package references or usings!"
+    },
+    {
+      "level": 5,
+      "text": "Query parameter types: Query params auto-bind to handler parameters! ?a=5&b=3 with (int a, int b) works automatically. Wrong type (string when expecting int) = 400 Bad Request."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting app.Run()",
+      "consequence": "Without app.Run() at the end, server doesn't start! It MUST be the last line in Program.cs. Server won't listen for requests without it.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Route casing",
+      "consequence": "Routes are case-INSENSITIVE by default! /API/Products and /api/products are the same. But parameters ARE case-sensitive in C# handler!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Missing using statements",
+      "consequence": "Need 'using Microsoft.AspNetCore.Builder;' and others. If IDE shows red underlines, you're missing package references or usings!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Query parameter types",
+      "consequence": "Query params auto-bind to handler parameters! ?a=5&b=3 with (int a, int b) works automatically. Wrong type (string when expecting int) = 400 Bad Request.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

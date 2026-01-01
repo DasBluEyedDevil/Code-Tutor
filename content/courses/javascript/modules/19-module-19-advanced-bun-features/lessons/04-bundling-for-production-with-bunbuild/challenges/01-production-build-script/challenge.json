@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "19.4-challenge",
+  "title": "Production Build Script",
+  "description": "Create a production build configuration.",
+  "instructions": "Write a build script that minifies code, generates sourcemaps, and reports the output file sizes.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Builds successfully",
+      "expectedOutput": "Build successful!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Check result.success and iterate over result.outputs for file info"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking result.success",
+      "consequence": "Build errors go unnoticed, broken code gets deployed",
+      "correction": "Always check result.success and handle result.logs"
+    }
+  ],
+  "difficulty": "intermediate"
+}

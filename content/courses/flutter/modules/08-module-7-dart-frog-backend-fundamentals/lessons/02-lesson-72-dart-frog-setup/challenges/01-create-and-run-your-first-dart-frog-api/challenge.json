@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.2-challenge-1",
+  "title": "Create and Run Your First Dart Frog API",
+  "description": "Set up Dart Frog and verify your first API is running.",
+  "instructions": "Complete these steps to set up your first Dart Frog project:\n\n1. **Install Dart Frog CLI**:\n   ```bash\n   dart pub global activate dart_frog_cli\n   ```\n\n2. **Verify installation**:\n   ```bash\n   dart_frog --version\n   ```\n\n3. **Create a new project**:\n   ```bash\n   dart_frog create my_first_api\n   cd my_first_api\n   ```\n\n4. **Run the development server**:\n   ```bash\n   dart_frog dev\n   ```\n\n5. **Visit http://localhost:8080 in your browser**\n   You should see: \"Welcome to Dart Frog!\"\n\n6. **Modify the response**:\n   - Open `routes/index.dart`\n   - Change the response body to your custom message\n   - Save and refresh browser to see hot reload in action\n\nPaste the code from your modified `routes/index.dart` below.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code imports dart_frog package",
+      "expectedOutput": "dart_frog",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Code has onRequest function",
+      "expectedOutput": "onRequest",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Code returns a Response",
+      "expectedOutput": "Response",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "If 'dart_frog' command is not found, make sure the Dart pub cache bin directory is in your PATH."
+    },
+    {
+      "level": 2,
+      "text": "The onRequest function MUST be named exactly 'onRequest' - this is how Dart Frog recognizes route handlers."
+    },
+    {
+      "level": 3,
+      "text": "Make sure you're in the project directory (my_first_api) when running 'dart_frog dev'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Running dart_frog dev outside project directory",
+      "consequence": "Error: Could not find pubspec.yaml",
+      "correction": "cd into your project folder first: cd my_first_api"
+    },
+    {
+      "mistake": "Forgetting to save the file before refreshing",
+      "consequence": "Changes don't appear in browser",
+      "correction": "Press Ctrl+S (or Cmd+S on Mac) to save before refreshing"
+    },
+    {
+      "mistake": "Naming the function something other than onRequest",
+      "consequence": "Route returns 404 Not Found",
+      "correction": "The function must be named exactly 'onRequest'"
+    }
+  ],
+  "difficulty": "intermediate"
+}

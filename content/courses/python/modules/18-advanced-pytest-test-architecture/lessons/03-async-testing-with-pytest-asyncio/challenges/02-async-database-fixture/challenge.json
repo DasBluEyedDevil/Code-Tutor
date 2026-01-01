@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-18-lesson-03-challenge-2",
+  "title": "Async Database Fixture",
+  "description": "Create an async database fixture for testing the Finance Tracker with SQLAlchemy.",
+  "instructions": "Complete the database fixture to:\n1. Create an async engine with in-memory SQLite\n2. Create all tables\n3. Provide an async session\n4. Clean up properly",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Database fixtures set up correctly",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** In-memory SQLite uses `:memory:` as the database name. Use `create_all` to create tables, `dispose()` to cleanup engine, and `rollback()` to discard uncommitted changes."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using synchronous engine instead of async",
+      "consequence": "Will block the event loop and may cause test failures",
+      "correction": "Use create_async_engine with sqlite+aiosqlite:// driver"
+    },
+    {
+      "mistake": "Not disposing the engine after tests",
+      "consequence": "Connection pool resources may leak",
+      "correction": "Always await engine.dispose() in fixture cleanup"
+    }
+  ],
+  "difficulty": "advanced"
+}

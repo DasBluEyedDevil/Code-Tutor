@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.11-challenge-1",
+  "title": "Sync Conflict Resolution",
+  "description": "Implement a conflict resolution system that detects when the same post was edited offline on multiple devices, provides merge strategies, and allows user choice for conflicts.",
+  "instructions": "Build a sync conflict resolution system:\n\n1. Create ConflictDetector that compares local and server timestamps\n2. Detect conflicts when localModifiedAt differs from server updatedAt\n3. Implement three merge strategies: lastWriteWins, serverWins, clientWins\n4. Create a ConflictResolutionDialog that shows both versions\n5. Allow user to pick which version to keep or merge content\n6. For content merging, show a diff view highlighting changes\n7. Store conflict resolution preference (always ask, prefer local, prefer server)\n8. Log conflicts for debugging and analytics\n9. Handle cascading conflicts (e.g., deleted on server, edited locally)",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store a lastSyncedAt timestamp for each entity to detect if local changes happened after the last successful sync"
+    },
+    {
+      "level": 2,
+      "text": "For text diff visualization, split content by words and highlight added (green) and removed (red) words"
+    },
+    {
+      "level": 3,
+      "text": "Handle delete conflicts by checking if server returns 404 when trying to update a locally edited entity"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using device clock for conflict detection without considering clock skew",
+      "consequence": "Conflicts detected incorrectly due to different device times",
+      "correction": "Use server timestamps for all conflict comparisons, store server time offset locally"
+    },
+    {
+      "mistake": "Not handling the case where entity was deleted on server while being edited locally",
+      "consequence": "Local edits are silently lost or cause sync errors",
+      "correction": "Detect 404/410 responses and prompt user to recreate the post or discard changes"
+    }
+  ],
+  "difficulty": "advanced"
+}

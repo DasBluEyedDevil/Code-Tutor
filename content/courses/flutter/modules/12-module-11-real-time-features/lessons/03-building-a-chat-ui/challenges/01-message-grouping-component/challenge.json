@@ -1,0 +1,24 @@
+{
+  "id": "11.3-challenge-0",
+  "title": "Message Grouping Component",
+  "description": "Build a message grouping system that visually clusters consecutive messages from the same sender.",
+  "instructions": "Create a MessageGroup widget that groups consecutive messages from the same sender:\n\n1. Only show the sender's avatar on the first message of a group\n2. Only show the sender's name on the first message of a group\n3. Reduce spacing between messages in the same group\n4. Show the timestamp only on the last message of a group\n5. Apply different border radius to first, middle, and last messages in a group\n\nRequirements:\n- Create a method to determine message position in group (first, middle, last, only)\n- Apply appropriate styling based on position\n- Handle edge cases (single message groups, different senders)\n- Use proper padding/margins for visual grouping",
+  "type": "implementation",
+  "expectedOutput": "A complete message grouping system that creates visually connected message clusters with appropriate styling for each position in the group.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "A message is 'first' if the previous message is from a different sender or doesn't exist, and the next message is from the same sender."
+    },
+    {
+      "level": 2,
+      "text": "Use BorderRadius.only() to create different corner radii for each position. For sent messages, modify the bottom-right corner; for received, modify the bottom-left."
+    },
+    {
+      "level": 3,
+      "text": "The padding between grouped messages should be smaller (2-4px) than between separate groups (8-12px). Use position to determine the appropriate EdgeInsets."
+    }
+  ]
+}

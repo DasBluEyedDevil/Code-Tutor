@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-11-lesson-07-challenge-1",
+  "title": "Interactive Exercise",
+  "description": "Create a Budget dataclass system:\n- Budget with name, limit, and period\n- Expense with amount, category, and date\n- BudgetTracker that manages multiple budgets\n- Use slots=True and frozen=True appropriately",
+  "instructions": "Create a Budget dataclass system:\n- Budget with name, limit, and period (frozen)\n- Expense with amount, category, and date (frozen)\n- BudgetTracker that manages multiple budgets (mutable)\n- Use slots=True for memory efficiency",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use @dataclass(slots=True, frozen=True) for immutable data. Use field(default_factory=dict) for mutable container defaults."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using mutable default like expenses: list = []",
+      "consequence": "Shared state between instances",
+      "correction": "Use field(default_factory=list)"
+    },
+    {
+      "mistake": "Forgetting slots=True in parent class",
+      "consequence": "Child class still has __dict__",
+      "correction": "Use slots=True in all classes in hierarchy"
+    }
+  ],
+  "difficulty": "intermediate"
+}

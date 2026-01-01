@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-12-lesson-05-challenge-4",
+  "title": "Finance Tracker: Type-Safe Transactions",
+  "description": "Build a type-safe transaction system for the Personal Finance Tracker:\n\n1. Create a TransactionDict TypedDict with: id (int), amount (float), category (str), is_expense (bool)\n2. Add type hints to get_expenses() that filters only expense transactions\n3. Add type hints to total_by_category() that groups spending by category\n\nUse modern Python 3.10+ syntax (list[X], X | None, etc.)",
+  "instructions": "Build a type-safe transaction system for the Personal Finance Tracker:\n\n1. Create a TransactionDict TypedDict with: id (int), amount (float), category (str), is_expense (bool)\n2. Add type hints to get_expenses() that filters only expense transactions\n3. Add type hints to total_by_category() that groups spending by category\n\nUse modern Python 3.10+ syntax (list[X], X | None, etc.)",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For TypedDict: class TransactionDict(TypedDict): with fields. For functions: list[TransactionDict] for input, dict[str, float] for category totals."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using List instead of list",
+      "consequence": "Works but is legacy style",
+      "correction": "Use lowercase list[X] for Python 3.9+"
+    },
+    {
+      "mistake": "Using Optional instead of X | None",
+      "consequence": "Works but is legacy style",
+      "correction": "Use X | None for Python 3.10+"
+    },
+    {
+      "mistake": "Forgetting to import TypedDict",
+      "consequence": "NameError",
+      "correction": "Add: from typing import TypedDict"
+    }
+  ],
+  "difficulty": "intermediate"
+}

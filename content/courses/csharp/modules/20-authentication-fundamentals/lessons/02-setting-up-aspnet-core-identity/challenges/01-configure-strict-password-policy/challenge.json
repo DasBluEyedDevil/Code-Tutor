@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-20-02-challenge-01",
+  "title": "Configure Strict Password Policy",
+  "description": "Configure ASP.NET Core Identity with a security-focused password policy.",
+  "instructions": "Configure Identity for ShopFlow with strict security settings!\n\n1. Create an ApplicationUser class that extends IdentityUser with:\n   - FirstName (string)\n   - LastName (string)\n   - CreatedAt (DateTime, default to UtcNow)\n\n2. Configure Identity with these password requirements:\n   - Minimum 14 characters\n   - Require digit\n   - Require lowercase\n   - Require uppercase\n   - Require non-alphanumeric\n   - At least 6 unique characters\n\n3. Configure lockout settings:\n   - Lockout duration: 30 minutes\n   - Maximum 3 failed attempts\n   - Enable lockout for new users\n\n4. Configure user settings:\n   - Require unique email\n   - Require confirmed email for sign-in\n\n5. Use a class called ShopFlowDbContext that inherits from IdentityDbContext<ApplicationUser>",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure password length of 14",
+      "expectedOutput": "RequiredLength = 14",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should configure lockout duration of 30 minutes",
+      "expectedOutput": "FromMinutes(30)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should require unique email",
+      "expectedOutput": "RequireUniqueEmail = true",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should require confirmed email",
+      "expectedOutput": "RequireConfirmedEmail = true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with builder.Services.AddIdentity<ApplicationUser, IdentityRole>() and pass a configuration lambda."
+    },
+    {
+      "level": 2,
+      "text": "Access password options via options.Password.RequiredLength, options.Password.RequireDigit, etc."
+    },
+    {
+      "level": 3,
+      "text": "Lockout options are under options.Lockout. Use TimeSpan.FromMinutes(30) for the duration."
+    },
+    {
+      "level": 4,
+      "text": "User options are under options.User, and sign-in options under options.SignIn."
+    },
+    {
+      "level": 5,
+      "text": "Don't forget to chain .AddEntityFrameworkStores<ShopFlowDbContext>() and .AddDefaultTokenProviders() after configuring options."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using AddDefaultIdentity instead of AddIdentity",
+      "consequence": "AddDefaultIdentity adds UI pages and is meant for Razor Pages. For APIs, use AddIdentity with manual configuration.",
+      "correction": "Use builder.Services.AddIdentity<ApplicationUser, IdentityRole>() for API-based applications."
+    },
+    {
+      "mistake": "Forgetting AddEntityFrameworkStores",
+      "consequence": "Identity has no data store configured and will throw runtime errors when trying to create or find users.",
+      "correction": "Always chain .AddEntityFrameworkStores<YourDbContext>() after configuring Identity options."
+    },
+    {
+      "mistake": "Not calling base.OnModelCreating in DbContext",
+      "consequence": "Identity tables are not configured in the database, causing EF Core errors.",
+      "correction": "Always call base.OnModelCreating(builder) in IdentityDbContext subclasses."
+    },
+    {
+      "mistake": "Setting password length too low for convenience",
+      "consequence": "Short passwords are easily cracked. 8 characters can be broken in hours.",
+      "correction": "Use at least 12-14 characters minimum. Modern guidance recommends even longer passphrases."
+    }
+  ],
+  "difficulty": "intermediate"
+}

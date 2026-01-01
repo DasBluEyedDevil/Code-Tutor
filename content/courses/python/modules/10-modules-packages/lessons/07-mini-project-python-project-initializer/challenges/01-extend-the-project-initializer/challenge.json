@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-10-lesson-07-challenge-1",
+  "title": "Extend the Project Initializer",
+  "description": "Add a new project template to the initializer. Create a 'cli' template for command-line applications that includes argparse setup, a main entry point, and appropriate project structure.",
+  "instructions": "Create a new template module called cli_template.py that:\n1. Defines REQUIREMENTS with click or argparse\n2. Defines STRUCTURE with src/, tests/, and docs/ directories\n3. Defines MAIN_CODE with a CLI skeleton using argparse\n4. Implements get_template() to return the configuration\n5. Register your template in templates/__init__.py",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Template module runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Follow the pattern from web_template.py and data_template.py. Your get_template() function should return a dictionary with 'requirements', 'structure', 'main_code', and 'description' keys."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to return a dictionary from get_template()",
+      "consequence": "TypeError when the main application tries to access template keys",
+      "correction": "Return a dict with all required keys: requirements, structure, main_code, description"
+    }
+  ],
+  "difficulty": "intermediate"
+}

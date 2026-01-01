@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.3-challenge-0",
+  "title": "Test a Counter Widget",
+  "description": "Write widget tests for a simple counter screen.",
+  "instructions": "Test that the counter displays 0 initially, increments when + is tapped, and decrements when - is tapped.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses testWidgets function",
+      "expectedOutput": "testWidgets",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Wrap the widget in MaterialApp for testWidgets"
+    },
+    {
+      "level": 2,
+      "text": "Use await tester.pump() after taps to rebuild"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to await tester.pump()",
+      "consequence": "State changes not reflected in widget tree",
+      "correction": "Always pump after interactions"
+    }
+  ],
+  "difficulty": "intermediate"
+}

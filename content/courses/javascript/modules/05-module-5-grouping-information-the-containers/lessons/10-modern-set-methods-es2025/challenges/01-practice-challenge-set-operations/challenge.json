@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.10-challenge",
+  "title": "Practice Challenge: Set Operations",
+  "description": "You're building a team management system. Use Set methods to:\n\n1. Find developers who work on BOTH frontend AND backend (intersection)\n2. Find developers who ONLY work on frontend (difference)\n3. Combine all developers into one team (union)\n4. Check if the senior team is a subset of all developers",
+  "instructions": "Use the new Set methods: union(), intersection(), difference(), and isSubsetOf()",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Full-stack developers found correctly",
+      "expectedOutput": "Charlie",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Seniors are subset of all devs",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "intersection() finds items in BOTH sets"
+    },
+    {
+      "level": 2,
+      "text": "difference(other) finds items in the set but NOT in other"
+    },
+    {
+      "level": 3,
+      "text": "isSubsetOf() returns true if all items exist in the other set"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using filter instead of Set methods",
+      "consequence": "More verbose code",
+      "correction": "Use intersection(), difference(), union() for cleaner code"
+    },
+    {
+      "mistake": "Confusing difference order",
+      "consequence": "Wrong results",
+      "correction": "A.difference(B) gives items in A but not B"
+    }
+  ],
+  "difficulty": "intermediate"
+}

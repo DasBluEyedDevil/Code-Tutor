@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-22-04-challenge-01",
+  "title": "Implement Product Seller Authorization",
+  "description": "Create a resource-based authorization handler that ensures sellers can only manage their own products.",
+  "instructions": "Implement resource-based authorization for ShopFlow products!\n\n1. Create a Product class with properties:\n   - int Id\n   - string Name\n   - string SellerId (the user who created the product)\n   - ProductStatus Status (enum: Draft, Published, Archived)\n\n2. Create ProductOperations static class with OperationAuthorizationRequirement fields:\n   - View, Edit, Delete, Publish\n\n3. Create ProductAuthorizationHandler extending AuthorizationHandler<OperationAuthorizationRequirement, Product>:\n   - Override HandleRequirementAsync\n   - View: Allow if product is Published OR user is the seller OR user is Admin\n   - Edit: Allow only if user is the seller OR Admin\n   - Delete: Allow only if user is the seller AND product status is Draft, OR user is Admin\n   - Publish: Allow only if user is the seller AND product status is Draft, OR Admin\n   - Extract userId from ClaimTypes.NameIdentifier\n   - Check Admin role with IsInRole\n\n4. Register the handler with DI as a singleton",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create ProductStatus enum with Draft, Published, Archived",
+      "expectedOutput": "enum ProductStatus",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should define ProductOperations with View, Edit, Delete, Publish",
+      "expectedOutput": "OperationAuthorizationRequirement View",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should extend AuthorizationHandler with Product resource",
+      "expectedOutput": "AuthorizationHandler<OperationAuthorizationRequirement, Product>",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should check owner by comparing SellerId to user ID",
+      "expectedOutput": "SellerId == userId",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should check product status for Delete operation",
+      "expectedOutput": "Status == ProductStatus.Draft",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create ProductStatus as an enum with three values: Draft, Published, Archived."
+    },
+    {
+      "level": 2,
+      "text": "ProductOperations should have static readonly OperationAuthorizationRequirement fields initialized with new() { Name = nameof(...) }."
+    },
+    {
+      "level": 3,
+      "text": "Get the user ID with context.User.FindFirstValue(ClaimTypes.NameIdentifier) and compare to product.SellerId."
+    },
+    {
+      "level": 4,
+      "text": "Check Admin role first with IsInRole(\"Admin\") - if true, call context.Succeed and return early."
+    },
+    {
+      "level": 5,
+      "text": "Use a switch statement on requirement.Name to handle each operation type with different authorization rules."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to handle Admin users first",
+      "consequence": "Admin users get denied access when they should have full permissions.",
+      "correction": "Check IsInRole(\"Admin\") at the start and call context.Succeed immediately if true."
+    },
+    {
+      "mistake": "Using string comparison for operation names",
+      "consequence": "Typos cause authorization to fail silently with no match in the switch.",
+      "correction": "Use nameof(ProductOperations.View) instead of \"View\" for compile-time safety."
+    },
+    {
+      "mistake": "Not checking business state for Delete/Publish",
+      "consequence": "Users can delete published products or publish already-published products.",
+      "correction": "Add product.Status == ProductStatus.Draft check for Delete and Publish operations."
+    },
+    {
+      "mistake": "Comparing SellerId directly without getting current user ID",
+      "consequence": "NullReferenceException or always-false comparison.",
+      "correction": "Extract userId from claims first, then compare: product.SellerId == userId."
+    }
+  ],
+  "difficulty": "intermediate"
+}

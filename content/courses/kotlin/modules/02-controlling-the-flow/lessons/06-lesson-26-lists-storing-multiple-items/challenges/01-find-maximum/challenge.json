@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.6.1",
+  "title": "Find Maximum",
+  "description": "Find and print the maximum number in a list.",
+  "instructions": "Find and print the maximum number in a list.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Prints 9",
+      "expectedOutput": "9",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Maximum of [3,7,2,9,4] is 9",
+      "expectedOutput": "9",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use maxOrNull() function"
+    },
+    {
+      "level": 2,
+      "text": "List has built-in max function"
+    },
+    {
+      "level": 3,
+      "text": "Answer should be 9"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using max() instead of maxOrNull()",
+      "consequence": "max() is deprecated",
+      "correction": "Use maxOrNull() which handles empty lists safely"
+    },
+    {
+      "mistake": "Manual loop instead of built-in function",
+      "consequence": "More code than necessary",
+      "correction": "Kotlin has built-in maxOrNull() for this"
+    },
+    {
+      "mistake": "Sorting entire list for max",
+      "consequence": "O(n log n) instead of O(n)",
+      "correction": "maxOrNull() is more efficient"
+    }
+  ],
+  "difficulty": "intermediate"
+}

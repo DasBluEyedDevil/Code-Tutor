@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.1-challenge-0",
+  "title": "Animated Product Card",
+  "description": "Create an expandable product card that animates when tapped.",
+  "instructions": "Build a product card that expands when tapped to show more details. Use AnimatedContainer for the size change, AnimatedOpacity to fade in the description, and AnimatedRotation to spin the expand/collapse icon.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with AnimatedContainer and toggle height based on _isExpanded"
+    },
+    {
+      "level": 2,
+      "text": "AnimatedRotation uses 'turns' - 0.5 turns = 180 degrees"
+    },
+    {
+      "level": 3,
+      "text": "Wrap the description in AnimatedOpacity with opacity 1.0 or 0.0"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add duration to animated widgets",
+      "consequence": "Animation won't work - duration is required",
+      "correction": "Always specify duration: const Duration(milliseconds: 300)"
+    },
+    {
+      "mistake": "Using turns incorrectly in AnimatedRotation",
+      "consequence": "Icon rotates wrong amount",
+      "correction": "turns: 0.5 means half a rotation (180 degrees)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

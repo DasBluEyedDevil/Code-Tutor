@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-15-04-challenge-01",
+  "title": "TDD Practice: Password Validator",
+  "description": "Apply Test-Driven Development to build a password validator step by step.",
+  "instructions": "Build a PasswordValidator using TDD!\n\nRequirements (implement one at a time with TDD):\n1. Password must be at least 8 characters\n2. Password must contain at least one uppercase letter\n3. Password must contain at least one digit\n4. Password must contain at least one special character (!@#$%^&*)\n\nTDD Process:\n1. Write a failing test for requirement 1\n2. Implement minimum code to pass\n3. Refactor if needed\n4. Repeat for each requirement\n\nCreate:\n- PasswordValidator class with Validate(string password) method\n- Return a ValidationResult with IsValid and ErrorMessages\n- Write tests for valid passwords and each failure case",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm TDD implementation",
+      "expectedOutput": "TDD",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention password validation",
+      "expectedOutput": "Password",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with ONE requirement. Write a test that fails, then make it pass. Don't add all validations at once!"
+    },
+    {
+      "level": 2,
+      "text": "Use LINQ methods: password.Any(char.IsUpper), password.Any(char.IsDigit) for character checks."
+    },
+    {
+      "level": 3,
+      "text": "Return ALL error messages, not just the first. Users want to know everything wrong at once."
+    },
+    {
+      "level": 4,
+      "text": "Assert.Contains with a predicate: Assert.Contains(list, item => item.Contains('text')) checks if any item matches."
+    },
+    {
+      "level": 5,
+      "text": "After all tests pass, REFACTOR: extract validation rules into separate methods for cleaner code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Writing all tests before any implementation",
+      "consequence": "You lose the TDD feedback loop! 10 red tests don't give you design feedback like 1 red test at a time.",
+      "correction": "One test at a time: RED (one test fails) -> GREEN (pass it) -> REFACTOR -> repeat."
+    },
+    {
+      "mistake": "Not seeing the test fail first",
+      "consequence": "A test that never failed might not test what you think! It could be testing the wrong thing or always pass.",
+      "correction": "ALWAYS run the test before implementing. See it fail with the expected failure message."
+    },
+    {
+      "mistake": "Implementing more than the test requires",
+      "consequence": "You're guessing at requirements instead of letting tests drive them. Extra code means extra bugs.",
+      "correction": "GREEN means MINIMUM code. If test only checks length, only implement length check."
+    },
+    {
+      "mistake": "Returning on first error instead of collecting all",
+      "consequence": "User fixes one error, submits, gets another error. Frustrating! Collect all errors in one pass.",
+      "correction": "Check ALL validations, collect errors in a list, return complete ValidationResult."
+    }
+  ],
+  "difficulty": "intermediate"
+}

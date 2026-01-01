@@ -1,0 +1,72 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.5-challenge-1",
+  "title": "Create Logging Middleware",
+  "description": "Create middleware that logs request details and response status.",
+  "instructions": "Build a `_middleware.dart` file that:\n\n1. Logs the HTTP method and request path BEFORE the route handler runs\n2. Calls the route handler and captures the response\n3. Logs the response status code AFTER the handler completes\n4. Returns the response\n\nThe log format should be:\n- Before: `[REQUEST] GET /api/users`\n- After: `[RESPONSE] 200`",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Function returns a Handler",
+      "expectedOutput": "Handler middleware(Handler handler)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Logs request method and path",
+      "expectedOutput": "[REQUEST]",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Calls the handler to get response",
+      "expectedOutput": "await handler(context)",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Logs response status code",
+      "expectedOutput": "[RESPONSE]",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Returns the response",
+      "expectedOutput": "return response",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use context.request.method and context.request.uri.path to get request details."
+    },
+    {
+      "level": 2,
+      "text": "Store the response: 'final response = await handler(context);'"
+    },
+    {
+      "level": 3,
+      "text": "Access status with response.statusCode and use print() for logging."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to await the handler call",
+      "consequence": "Response is a Future, not the actual Response object",
+      "correction": "Use 'final response = await handler(context);'"
+    },
+    {
+      "mistake": "Not returning the response",
+      "consequence": "Route returns nothing to the client",
+      "correction": "Always 'return response;' at the end"
+    },
+    {
+      "mistake": "Calling handler multiple times",
+      "consequence": "Route handler executes multiple times",
+      "correction": "Call handler exactly once and store the result"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "QUIZ",
+  "id": "lesson-18-04-challenge-01",
+  "title": "DbContext Layer Placement",
+  "description": "Test your understanding of where Entity Framework Core components belong in Clean Architecture.",
+  "question": "You're building a Clean Architecture application with Entity Framework Core. Where should the AppDbContext class (which inherits from DbContext) be defined?",
+  "options": [
+    "Domain Layer - because it works with domain entities",
+    "Application Layer - because handlers need it to save data",
+    "Infrastructure Layer - because it's an external framework concern",
+    "Presentation Layer - because that's where Program.cs registers it"
+  ],
+  "correctAnswer": 2,
+  "explanation": "The AppDbContext class belongs in the Infrastructure Layer. Entity Framework Core is an external framework that handles data persistence - this is an infrastructure concern, not core business logic. The Domain layer should have no knowledge of how data is stored. The Application layer defines interfaces (like IProductRepository) but doesn't know about EF Core. The Presentation layer only configures dependency injection, it doesn't implement data access. By placing DbContext in Infrastructure, you maintain the dependency rule: Infrastructure depends on Application, not the other way around. If you ever need to switch from EF Core to Dapper or another ORM, only Infrastructure changes.",
+  "difficulty": "intermediate"
+}

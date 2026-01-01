@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Design a zoo system using all OOP concepts!\n\n1. INTERFACE 'IFeedable': void Feed()\n2. ABSTRACT CLASS 'Animal': string Name, int Age, abstract void MakeSound()\n3. DERIVED 'Lion' : Animal, IFeedable: override MakeSound() to 'Roar!', implement Feed()\n4. DERIVED 'Penguin' : Animal, IFeedable: override MakeSound() to 'Squawk!', implement Feed()\n5. Create array of Animals, call MakeSound() polymorphically\n6. Create array of IFeedable, call Feed() on all\n\nDemonstrate: inheritance, abstraction, interfaces, polymorphism!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Roar\"",
+      "expectedOutput": "Roar",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Squawk\"",
+      "expectedOutput": "Squawk",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Feeding\"",
+      "expectedOutput": "Feeding",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Combine concepts: abstract class for shared template, interface for behavior contract, override for polymorphism. Use base type arrays for polymorphic operations."
+    },
+    {
+      "level": 2,
+      "text": "Overusing inheritance: Don't create deep hierarchies (Animal → Mammal → Carnivore → Feline → Lion). Keep it simple! 2-3 levels max."
+    },
+    {
+      "level": 3,
+      "text": "Interface vs Abstract confusion: If NO shared implementation, use interface. If SOME shared code, use abstract class. Both? Use abstract class with interfaces!"
+    },
+    {
+      "level": 4,
+      "text": "Forgetting polymorphism benefit: The power is storing different types in same array (Animal[]) and calling methods. Each object responds differently!"
+    },
+    {
+      "level": 5,
+      "text": "Inheritance for code reuse only: Don't inherit just to reuse code! Use composition (has-a) or helper classes instead. Inherit when there's true IS-A relationship."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Overusing inheritance",
+      "consequence": "Don't create deep hierarchies (Animal → Mammal → Carnivore → Feline → Lion). Keep it simple! 2-3 levels max.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Interface vs Abstract confusion",
+      "consequence": "If NO shared implementation, use interface. If SOME shared code, use abstract class. Both? Use abstract class with interfaces!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting polymorphism benefit",
+      "consequence": "The power is storing different types in same array (Animal[]) and calling methods. Each object responds differently!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Inheritance for code reuse only",
+      "consequence": "Don't inherit just to reuse code! Use composition (has-a) or helper classes instead. Inherit when there's true IS-A relationship.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

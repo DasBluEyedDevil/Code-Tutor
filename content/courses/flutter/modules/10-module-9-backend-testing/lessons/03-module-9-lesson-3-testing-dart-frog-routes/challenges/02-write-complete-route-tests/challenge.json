@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.3-challenge-1",
+  "title": "Write Complete Route Tests",
+  "description": "Create a comprehensive test suite for a product endpoint.",
+  "instructions": "Write tests for a /products endpoint that handles GET, POST, PUT, and DELETE operations. Include tests for happy paths, validation errors, and not found scenarios.",
+  "solutionCode": "import 'dart:convert';\nimport 'package:dart_frog/dart_frog.dart';\nimport 'package:mocktail/mocktail.dart';\nimport 'package:test/test.dart';\n\nclass MockRequestContext extends Mock implements RequestContext {}\nclass MockRequest extends Mock implements Request {}\nclass MockUri extends Mock implements Uri {}\nclass MockProductRepository extends Mock implements ProductRepository {}\n\nvoid main() {\n  group('Product API Tests', () {\n    late MockRequestContext context;\n    late MockRequest request;\n    late MockUri uri;\n    late MockProductRepository repository;\n\n    setUp(() {\n      context = MockRequestContext();\n      request = MockRequest();\n      uri = MockUri();\n      repository = MockProductRepository();\n      \n      when(() => context.request).thenReturn(request);\n      when(() => request.uri).thenReturn(uri);\n      when(() => context.read<ProductRepository>()).thenReturn(repository);\n    });\n\n    group('GET /products', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.get);\n      });\n\n      test('returns paginated list of products', () async {\n        when(() => uri.queryParameters).thenReturn({'page': '1', 'limit': '10'});\n        when(() => repository.findAll(page: 1, limit: 10))\n            .thenAnswer((_) async => [\n              Product(id: '1', name: 'Widget', price: 9.99),\n            ]);\n        // Verify response\n      });\n\n      test('returns 400 when limit exceeds 100', () async {\n        when(() => uri.queryParameters).thenReturn({'limit': '500'});\n        // Verify 400 response\n      });\n    });\n\n    group('POST /products', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.post);\n      });\n\n      test('creates product with valid data', () async {\n        when(() => request.json()).thenAnswer((_) async => {\n          'name': 'New Product',\n          'price': 29.99,\n        });\n        when(() => repository.create(name: any(named: 'name'), price: any(named: 'price')))\n            .thenAnswer((_) async => Product(id: 'new', name: 'New Product', price: 29.99));\n        // Verify 201 response\n      });\n\n      test('returns 400 when name missing', () async {\n        when(() => request.json()).thenAnswer((_) async => {'price': 29.99});\n        // Verify 400 response\n      });\n    });\n\n    group('DELETE /products/:id', () {\n      setUp(() {\n        when(() => request.method).thenReturn(HttpMethod.delete);\n      });\n\n      test('deletes product and returns 204', () async {\n        when(() => repository.delete('123')).thenAnswer((_) async {});\n        // Verify 204 response\n      });\n\n      test('returns 404 when product not found', () async {\n        when(() => repository.delete('nonexistent'))\n            .thenThrow(Exception('Not found'));\n        // Verify 404 response\n      });\n    });\n  });\n}",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Tests cover all HTTP methods",
+      "expectedOutput": "All method groups defined",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Tests include error scenarios",
+      "expectedOutput": "Error tests present",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by setting up your mock objects in setUp(). Each test should have fresh mocks."
+    },
+    {
+      "level": 2,
+      "text": "For GET requests, mock uri.queryParameters. For POST, mock request.json() using thenAnswer with async."
+    },
+    {
+      "level": 3,
+      "text": "Use verify() to confirm repository methods are called with expected arguments."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using thenReturn instead of thenAnswer for async methods",
+      "consequence": "Tests fail with type errors",
+      "correction": "Always use thenAnswer((_) async => value) for methods returning Future"
+    },
+    {
+      "mistake": "Not mocking the full object chain",
+      "consequence": "NullPointerException when accessing nested properties",
+      "correction": "Mock RequestContext, Request, and Uri when accessing queryParameters"
+    }
+  ],
+  "difficulty": "intermediate"
+}

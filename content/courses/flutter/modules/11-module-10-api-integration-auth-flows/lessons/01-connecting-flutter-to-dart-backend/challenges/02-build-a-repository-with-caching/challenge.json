@@ -1,0 +1,23 @@
+{
+  "type": "CODE",
+  "id": "10.1-challenge-2",
+  "title": "Build a Repository with Caching",
+  "description": "Create a ProductRepository that fetches products from the server and caches them locally.",
+  "instructions": "Implement a ProductRepository that:\n1. Fetches products from the Serverpod client\n2. Caches products in memory with a configurable TTL (time-to-live)\n3. Returns cached data if available and not expired\n4. Provides a method to force refresh, bypassing the cache\n5. Handles errors gracefully and returns them in ApiResult",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a Map<int, Product> to store cached products by their ID. Track when the cache was last updated with a DateTime."
+    },
+    {
+      "level": 2,
+      "text": "Create a helper method or getter that checks if the cache is still valid by comparing current time with last fetch time plus the TTL duration."
+    },
+    {
+      "level": 3,
+      "text": "In getProducts(), first check if forceRefresh is false AND cache is valid. If so, return cached data. Otherwise, fetch from server and update the cache."
+    }
+  ]
+}

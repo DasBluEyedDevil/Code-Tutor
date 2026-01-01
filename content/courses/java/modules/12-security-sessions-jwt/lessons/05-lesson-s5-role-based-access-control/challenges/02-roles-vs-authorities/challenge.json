@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-5-mc-2",
+  "title": "Roles vs Authorities",
+  "description": "Understanding Spring Security's role and authority concepts",
+  "question": "In Spring Security, what is the relationship between hasRole('ADMIN') and hasAuthority('ROLE_ADMIN')?",
+  "options": [
+    "hasRole is for URL security, hasAuthority is for method security",
+    "They are equivalent - hasRole adds the ROLE_ prefix automatically",
+    "hasAuthority provides encryption, hasRole does not",
+    "hasRole checks database, hasAuthority checks JWT"
+  ],
+  "correctAnswer": 1,
+  "explanation": "hasRole('ADMIN') and hasAuthority('ROLE_ADMIN') are equivalent. Spring Security automatically prefixes 'ROLE_' when using hasRole(). This is a convention - roles use the prefix, while authorities (fine-grained permissions like 'user:read') typically don't. Use hasRole for job functions, hasAuthority for specific permissions.",
+  "difficulty": "advanced"
+}

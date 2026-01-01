@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.6-challenge-2",
+  "title": "Product API Validation",
+  "description": "Build validated endpoints for a product API:\n\n1. Create a `productSchema` with:\n   - `name`: 1-100 characters\n   - `price`: Positive number with max 2 decimal places\n   - `quantity`: Non-negative integer\n   - `categories`: Array of 1-5 category strings\n   - `metadata`: Optional object with any properties\n\n2. Create a `searchQuerySchema` for GET /products:\n   - `minPrice`: Optional positive number\n   - `maxPrice`: Optional positive number (must be >= minPrice if both provided)\n   - `category`: Optional string\n   - `inStock`: Optional boolean (coerced from string)\n\n3. Simulate validating a POST and GET request",
+  "instructions": "Build validated endpoints for a product API:\n\n1. Create a `productSchema` with:\n   - `name`: 1-100 characters\n   - `price`: Positive number with max 2 decimal places\n   - `quantity`: Non-negative integer\n   - `categories`: Array of 1-5 category strings\n   - `metadata`: Optional object with any properties\n\n2. Create a `searchQuerySchema` for GET /products:\n   - `minPrice`: Optional positive number\n   - `maxPrice`: Optional positive number (must be >= minPrice if both provided)\n   - `category`: Optional string\n   - `inStock`: Optional boolean (coerced from string)\n\n3. Simulate validating a POST and GET request",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid product passes validation",
+      "expectedOutput": "Product valid:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Query params are coerced to correct types",
+      "expectedOutput": "number",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use z.coerce.number() for query parameters since they come as strings from the URL."
+    },
+    {
+      "level": 2,
+      "text": "For the price range check, use .refine() and only validate when BOTH minPrice and maxPrice are provided."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using z.number() instead of z.coerce.number() for query params",
+      "consequence": "Validation fails because query params are strings, not numbers",
+      "correction": "Use z.coerce.number() to automatically convert string to number"
+    },
+    {
+      "mistake": "Validating price range when only one price is provided",
+      "consequence": "Error thrown when user only filters by minPrice or maxPrice",
+      "correction": "Check if both values exist before comparing: if (minPrice && maxPrice) return max >= min"
+    }
+  ],
+  "difficulty": "intermediate"
+}

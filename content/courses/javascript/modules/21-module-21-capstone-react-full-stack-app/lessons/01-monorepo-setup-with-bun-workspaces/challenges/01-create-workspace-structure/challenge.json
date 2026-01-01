@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.1-challenge",
+  "title": "Create Workspace Structure",
+  "description": "Complete the monorepo setup and verify all packages are properly configured.",
+  "instructions": "Create the complete directory structure for all three packages and verify that `bun workspaces list` shows all packages correctly configured.",
+  "language": "bash",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Root package.json has workspaces array",
+      "expectedOutput": "workspaces",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "All three packages listed in workspaces",
+      "expectedOutput": "packages/api|packages/web|packages/shared",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Each package has name field with @app scope",
+      "expectedOutput": "@app/",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The root package.json needs a workspaces array listing all three package directories"
+    },
+    {
+      "level": 2,
+      "text": "Each package should have a unique name field like @app/api, @app/web, @app/shared"
+    },
+    {
+      "level": 3,
+      "text": "All packages should have \"type\": \"module\" for ES modules support"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting workspaces array in root package.json",
+      "consequence": "Packages are isolated, can't use shared imports",
+      "correction": "Add workspaces array pointing to all package directories"
+    },
+    {
+      "mistake": "Using different module types (CommonJS vs ESM)",
+      "consequence": "Import/export errors between packages",
+      "correction": "Keep all packages as \"type\": \"module\""
+    }
+  ],
+  "difficulty": "intermediate"
+}

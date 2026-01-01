@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create your first Blazor component!\n\n1. Create a 'Greeting' component structure:\n   - Title: \"Welcome to Blazor!\"\n   - Display current year using @DateTime.Now.Year\n   - Input field for user's name\n   - Button \"Greet Me\"\n   - When clicked, display \"Hello, [name]! Welcome to Blazor!\"\n\n2. Component should have:\n   - HTML markup section\n   - @code block with:\n     - string name field\n     - string greeting field\n     - GreetUser() method that sets greeting\n\n3. Print the complete component structure\n\nThis demonstrates Blazor's syntax and interactivity!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"BLAZOR COMPONENT\"",
+      "expectedOutput": "BLAZOR COMPONENT",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Welcome to Blazor\"",
+      "expectedOutput": "Welcome to Blazor",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"@code\"",
+      "expectedOutput": "@code",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"GreetUser\"",
+      "expectedOutput": "GreetUser",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "@bind for two-way binding on input. @onclick for button click. Use string interpolation in C# method. @if for conditional rendering. All C# code goes in @code block!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting @ symbol: In markup, use @ to access C# variables! Just 'currentCount' won't work, need '@currentCount'. @ tells Blazor 'this is C#!'"
+    },
+    {
+      "level": 3,
+      "text": "JavaScript thinking: Don't add .js files or write JavaScript! Blazor uses C# for everything. @onclick calls C# methods, not JS functions."
+    },
+    {
+      "level": 4,
+      "text": "Quotes in @onclick: Use @onclick=\"MethodName\" (no parentheses unless passing parameters). For lambda: @onclick=\"() => count++\" with quotes around entire expression."
+    },
+    {
+      "level": 5,
+      "text": "Component naming: Component files must start with uppercase letter! Counter.razor (correct), counter.razor (wrong). This is C# convention."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting @ symbol",
+      "consequence": "In markup, use @ to access C# variables! Just 'currentCount' won't work, need '@currentCount'. @ tells Blazor 'this is C#!'",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "JavaScript thinking",
+      "consequence": "Don't add .js files or write JavaScript! Blazor uses C# for everything. @onclick calls C# methods, not JS functions.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Quotes in @onclick",
+      "consequence": "Use @onclick=\"MethodName\" (no parentheses unless passing parameters). For lambda: @onclick=\"() => count++\" with quotes around entire expression.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Component naming",
+      "consequence": "Component files must start with uppercase letter! Counter.razor (correct), counter.razor (wrong). This is C# convention.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

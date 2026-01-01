@@ -1,0 +1,22 @@
+{
+  "id": "challenge-6a-6-1",
+  "title": "Multi-Platform Database Factory",
+  "description": "Create a complete DatabaseDriverFactory implementation for all platforms with proper configuration.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Android needs Context in constructor",
+    "Use AndroidSqliteDriver.Callback for pragmas",
+    "iOS needs maxReaderConnections for thread safety",
+    "Desktop must check if database file exists before creating schema"
+  ],
+  "testCases": [
+    {
+      "description": "Each platform should create proper driver",
+      "expectedBehavior": "Driver creates and connects successfully"
+    },
+    {
+      "description": "Foreign keys should be enabled on Android",
+      "expectedBehavior": "PRAGMA foreign_keys returns 1"
+    }
+  ]
+}

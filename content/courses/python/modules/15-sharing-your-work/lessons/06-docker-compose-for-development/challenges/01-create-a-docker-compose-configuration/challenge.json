@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-06-challenge-1",
+  "title": "Create a Docker Compose Configuration",
+  "description": "Create a docker-compose.yml file that sets up:\n1. A FastAPI app service that builds from Dockerfile\n2. A PostgreSQL 16 database with healthcheck\n3. Proper service dependencies\n4. Volume mount for hot reload\n5. Named volume for database persistence\n\nFill in the missing parts.",
+  "instructions": "Complete the docker-compose.yml with proper service configuration, healthcheck, dependencies, and volumes.",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "App connects to db service",
+      "expectedOutput": "@db:5432",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses service_healthy condition",
+      "expectedOutput": "service_healthy",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Uses named volume for postgres data",
+      "expectedOutput": "postgres_data:/var/lib/postgresql/data",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The database hostname in Docker Compose is the service name: `db`"
+    },
+    {
+      "level": 2,
+      "text": "Use `service_healthy` as the condition to wait for the healthcheck"
+    },
+    {
+      "level": 3,
+      "text": "Mount `./src` to `/app/src` for hot reload"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using localhost instead of service name for database host",
+      "consequence": "App cannot connect to database",
+      "correction": "Use the service name 'db' as the hostname"
+    },
+    {
+      "mistake": "Forgetting the condition in depends_on",
+      "consequence": "App starts before database is ready",
+      "correction": "Use depends_on with condition: service_healthy"
+    },
+    {
+      "mistake": "Using bind mount for database data",
+      "consequence": "Permission issues and data corruption",
+      "correction": "Use named volumes for database persistence"
+    }
+  ],
+  "difficulty": "advanced"
+}

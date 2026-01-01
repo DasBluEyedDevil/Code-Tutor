@@ -1,0 +1,20 @@
+{
+  "type": "FREE_CODING",
+  "id": "capstone-16-4-refresh-token",
+  "title": "Implement Token Refresh Endpoint",
+  "description": "Add a token refresh endpoint that issues a new JWT when the current one is still valid.",
+  "instructions": "Implement a /api/auth/refresh endpoint in AuthController that:\n1. Accepts the current valid JWT in the Authorization header\n2. Verifies the token is still valid\n3. Issues a new token with a fresh expiration\n4. Returns the new token in AuthResponse format",
+  "language": "java",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Since this endpoint requires authentication, @AuthenticationPrincipal already gives you the validated user."
+    },
+    {
+      "level": 2,
+      "text": "You can inject JwtService into the controller or add a refreshToken method to AuthService."
+    }
+  ],
+  "difficulty": "intermediate"
+}

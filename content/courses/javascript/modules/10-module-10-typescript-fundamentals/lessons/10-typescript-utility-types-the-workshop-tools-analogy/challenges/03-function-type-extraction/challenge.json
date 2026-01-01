@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.11-challenge-3",
+  "title": "Function Type Extraction",
+  "description": "Use ReturnType, Parameters, and Awaited to work with external functions whose types you don't control. Create wrapper functions that preserve type information and build a type-safe cache around async operations.",
+  "instructions": "1. Given three 'external' async functions (fetchUser, fetchPosts, fetchComments)\n2. Extract the return types using ReturnType and Awaited\n3. Create a CacheEntry type that stores the resolved data\n4. Create a cached wrapper function using Parameters to preserve signatures\n5. Implement a type-safe cache that knows what each function returns\n6. Test caching and retrieval",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "User type correctly extracted",
+      "expectedOutput": "User has id, name, email properties",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Cache returns stored data on second call",
+      "expectedOutput": "Cache hit for user:1",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Cached function preserves parameter types",
+      "expectedOutput": "cachedFetchPosts(1, 2) compiles correctly",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "To get array element type, use ArrayType[number] - e.g., Post[] becomes Post via Posts[number]"
+    },
+    {
+      "level": 2,
+      "text": "The return type of createCached is a function with same params but Promise of unwrapped return"
+    },
+    {
+      "level": 3,
+      "text": "Use Date.now() - cached.cachedAt < cached.ttlMs to check if cache is still valid"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting Awaited when extracting async return types",
+      "consequence": "You get Promise<User> instead of User",
+      "correction": "Always wrap with Awaited: Awaited<ReturnType<typeof fn>>"
+    },
+    {
+      "mistake": "Not using [number] to get array element type",
+      "consequence": "Post[] is the full array type, not a single Post",
+      "correction": "Use Type[number] to extract element type from arrays"
+    }
+  ],
+  "difficulty": "advanced"
+}

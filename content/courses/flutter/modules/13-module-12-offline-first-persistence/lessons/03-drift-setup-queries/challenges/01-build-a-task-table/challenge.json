@@ -1,0 +1,27 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.3-challenge-1",
+  "title": "Build a Task Table",
+  "description": "Create a Drift table for tasks with proper column types.",
+  "instructions": "Define a Tasks table with: id (auto-increment), title (required, max 100 chars), description (optional), isCompleted (default false), dueDate (optional), priority (default 0), createdAt (default now).",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Has auto-increment id",
+      "expectedOutput": "autoIncrement",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Has nullable description",
+      "expectedOutput": "nullable",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    "Use integer().autoIncrement()() for the id column",
+    "Use text().nullable()() for optional text fields",
+    "Use withDefault(const Constant(value)) for default values"
+  ]
+}

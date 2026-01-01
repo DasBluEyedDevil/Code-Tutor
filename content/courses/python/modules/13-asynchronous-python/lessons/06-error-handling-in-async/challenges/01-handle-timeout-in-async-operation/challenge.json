@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-06-challenge-1",
+  "title": "Handle Timeout in Async Operation",
+  "description": "Use asyncio.wait_for to implement timeout handling for a slow operation.",
+  "instructions": "Complete the `fetch_with_timeout` function that attempts to fetch data but times out after a specified duration. Return None if timeout occurs.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use try/except asyncio.TimeoutError around asyncio.wait_for(coroutine, timeout=timeout)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Catching generic Exception instead of TimeoutError",
+      "consequence": "Hiding other errors",
+      "correction": "Specifically catch asyncio.TimeoutError"
+    }
+  ],
+  "difficulty": "intermediate"
+}

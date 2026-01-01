@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.9-challenge-2",
+  "title": "API Response with Union and Intersection",
+  "description": "Create types for API responses that can be either successful with data or failed with an error, using discriminated unions. Then add request metadata using intersection types.",
+  "instructions": "Create Success and Error response types with an 'ok' discriminant. Combine them into ApiResponse union. Then use intersection to add metadata (timestamp, requestId) to create TimestampedApiResponse.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Handles success response",
+      "expectedOutput": "Success:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Handles error response",
+      "expectedOutput": "Error 404:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The 'ok' property with literal true or false acts as a discriminant for type narrowing"
+    },
+    {
+      "level": 2,
+      "text": "Use & to combine ApiResponse<T> with Metadata"
+    },
+    {
+      "level": 3,
+      "text": "Inside the if (response.ok) block, TypeScript knows it's a Success type"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using boolean instead of literal true/false for ok property",
+      "consequence": "TypeScript can't narrow the type based on if (response.ok)",
+      "correction": "Use 'ok: true' in Success and 'ok: false' in ApiError for discriminated union"
+    }
+  ],
+  "difficulty": "intermediate"
+}

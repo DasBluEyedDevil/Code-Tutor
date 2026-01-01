@@ -1,0 +1,28 @@
+{
+  "type": "MULTI_CHOICE",
+  "id": "16.4-challenge-1",
+  "title": "Staged Rollout Decision",
+  "description": "Determine the appropriate action based on rollout metrics.",
+  "instructions": "You released a new version of your Flutter app with a 10% staged rollout. After 24 hours, you notice the crash-free users rate dropped from 99.5% to 96.2%, and several 1-star reviews mention the same crash occurring when saving data. What should you do?",
+  "options": [
+    {
+      "id": "a",
+      "text": "Increase rollout to 25% to gather more data on the issue"
+    },
+    {
+      "id": "b",
+      "text": "Halt the rollout, investigate the crash, and prepare a fix"
+    },
+    {
+      "id": "c",
+      "text": "Continue at 10% for another 24 hours to see if it stabilizes"
+    },
+    {
+      "id": "d",
+      "text": "Roll back to the previous version automatically"
+    }
+  ],
+  "correctAnswer": "b",
+  "explanation": "When crash-free users drops by more than 3% (from 99.5% to 96.2%), especially combined with user reviews confirming the same issue, you should halt the rollout immediately. This prevents more users from being affected while you investigate and fix the issue. Increasing the rollout or waiting would expose more users to the crash. Google Play doesn't support automatic rollback - you need to fix and upload a new version.",
+  "difficulty": "intermediate"
+}

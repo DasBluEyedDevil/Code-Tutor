@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "streams-lesson-2-mc-1",
+  "title": "Stream Characteristics",
+  "description": "Understanding how streams work",
+  "question": "What happens when you call filter() on a stream?",
+  "options": [
+    "It immediately filters the elements and returns a new list",
+    "It stores the filter condition and returns a new stream, executing only when a terminal operation is called",
+    "It modifies the original collection in place",
+    "It throws an exception if no elements match"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Stream operations are lazy - intermediate operations like filter() don't execute immediately. They build up a pipeline that only executes when a terminal operation (like collect(), count(), or forEach()) is called. This allows for optimizations like short-circuiting.",
+  "difficulty": "intermediate"
+}

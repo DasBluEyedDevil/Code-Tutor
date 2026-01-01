@@ -1,0 +1,69 @@
+{
+  "type": "QUIZ",
+  "id": "8.8-quiz-1",
+  "title": "File Storage Concepts Quiz",
+  "description": "Test your understanding of file storage concepts and Serverpod's file storage capabilities.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Why is using signed URLs for uploads better than proxying files through your server?",
+      "options": [
+        "Signed URLs are more secure",
+        "Files go directly to cloud storage, reducing server load and doubling effective speed",
+        "Signed URLs are easier to implement",
+        "Cloud storage requires signed URLs"
+      ],
+      "correctAnswer": 1,
+      "explanation": "With signed URLs, files travel directly from the client to cloud storage. With server proxying, files first go to your server, then to storage - doubling bandwidth usage and server load. Direct uploads are faster for users and scale better."
+    },
+    {
+      "id": "q2",
+      "text": "What is a bucket in cloud storage terminology?",
+      "options": [
+        "A type of database table",
+        "A container for files (objects) with a globally unique name",
+        "A CDN endpoint",
+        "A backup system"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A bucket is a top-level container for storing files (called objects) in cloud storage. Each bucket has a globally unique name and is region-specific. You can have multiple buckets for different purposes like public assets and private documents."
+    },
+    {
+      "id": "q3",
+      "text": "Why should you validate file types using magic bytes instead of just file extensions?",
+      "options": [
+        "Magic bytes are faster to check",
+        "File extensions can be easily faked, but magic bytes are the actual file content signature",
+        "Extensions are not supported on all platforms",
+        "Magic bytes allow larger files"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A malicious user can rename any file to have a different extension (e.g., rename malware.exe to image.jpg). Magic bytes are the actual byte sequence at the start of a file that identifies its true format, making them much more reliable for security validation."
+    },
+    {
+      "id": "q4",
+      "text": "What is the purpose of a signed URL with an expiration time?",
+      "options": [
+        "To make downloads faster",
+        "To grant temporary access to private files without exposing permanent credentials",
+        "To reduce storage costs",
+        "To compress files automatically"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Signed URLs allow temporary access to private files. They contain a cryptographic signature that proves authorization and an expiration time. This lets you share private files without making them public or sharing your cloud storage credentials."
+    },
+    {
+      "id": "q5",
+      "text": "Why should image processing (like thumbnail generation) be done in background jobs for high-traffic apps?",
+      "options": [
+        "Background jobs are more secure",
+        "It reduces memory spikes and keeps API responses fast, improving user experience",
+        "Thumbnails are only needed for mobile apps",
+        "Cloud storage requires background processing"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Image processing is CPU and memory intensive. Processing during API requests blocks the response, makes uploads feel slow, and can exhaust server memory with concurrent requests. Background jobs keep uploads responsive and allow processing at a controlled pace."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.7-challenge-2",
+  "title": "Add Service Layer",
+  "description": "Create a ProductService class that encapsulates all product-related business logic.\n\n1. Implement methods: getAllProducts, getProductById, createProduct, updateProduct, deleteProduct\n2. Add business rules: price cannot be negative, quantity cannot be negative, name is required\n3. Add a method to check if a product is in stock\n4. Add a method to apply a discount to a product\n\nThe service should be completely independent of HTTP concerns.",
+  "instructions": "Create a ProductService class with:\n\n1. getAllProducts() - returns all products\n2. getProductById(id) - returns product or null\n3. createProduct(data) - validates and creates product\n4. updateProduct(id, data) - validates and updates product\n5. deleteProduct(id) - removes product, returns success boolean\n6. isInStock(id) - checks if quantity > 0\n7. applyDiscount(id, percentage) - reduces price by percentage\n\nAll business rules should be enforced in the service layer.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Service should return all products",
+      "expectedOutput": "Laptop",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Service should validate product data",
+      "expectedOutput": "ValidationError",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Services should throw errors for invalid data, not return HTTP status codes. The calling handler decides how to format the error response."
+    },
+    {
+      "level": 2,
+      "text": "Return copies of objects (using spread operator) to prevent external code from mutating your database directly."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Returning HTTP status codes from services",
+      "consequence": "Services become coupled to HTTP, cannot be reused in CLI or other contexts",
+      "correction": "Throw errors or return null/false. Let handlers decide HTTP status codes."
+    },
+    {
+      "mistake": "Not validating input in service layer",
+      "consequence": "Invalid data can reach the database, causing corruption or crashes",
+      "correction": "Validate all input in the service layer before any database operations."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Understand the limitations of file-based storage!\n\n1. Create a 'Product' class (Id, Name, Price)\n\n2. Create a list of 5 products\n\n3. Simulate file storage:\n   - 'Save' products by printing each as CSV line\n   - Print: \\\"Saving to file: [Id],[Name],[Price]\\\"\n\n4. Simulate file search:\n   - To find product by ID, print \\\"Reading entire file...\\\"\n   - Loop through ALL products to find match\n   - Print how many products were checked\n\n5. Explain the problems:\n   - Print why this is slow for 1 million products\n   - Print why concurrent writes are dangerous\n   - Print what databases solve\n\nThis demonstrates WHY we need databases!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"SIMULATING\"",
+      "expectedOutput": "SIMULATING",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"SEARCHING\"",
+      "expectedOutput": "SEARCHING",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"WHY\"",
+      "expectedOutput": "WHY",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"BAD\"",
+      "expectedOutput": "BAD",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"SOLUTION\"",
+      "expectedOutput": "SOLUTION",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"DATABASE\"",
+      "expectedOutput": "DATABASE",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Loop through products to save. Loop through again to search (simulate reading file). Count how many checked. Print problems: speed, scale, corruption, relationships."
+    },
+    {
+      "level": 2,
+      "text": "Thinking files are fine: For simple config or logs, files are OK! But for application DATA (users, products, orders), files are terrible. Always use database for data!"
+    },
+    {
+      "level": 3,
+      "text": "Not understanding indexes: Files have no indexes - must read everything! Databases create indexes on columns (like book index). Find \\\"Smith\\\" in millions of names = instant!"
+    },
+    {
+      "level": 4,
+      "text": "Ignoring concurrency: Single-user app? Files might work. Multi-user? Files = disaster. Databases handle thousands of concurrent users safely with locking/transactions."
+    },
+    {
+      "level": 5,
+      "text": "Missing transactions: If app crashes mid-write to file, file is corrupted! Databases use transactions: changes are all-or-nothing (atomic). Crash? Database rolls back, stays consistent!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Thinking files are fine",
+      "consequence": "For simple config or logs, files are OK! But for application DATA (users, products, orders), files are terrible. Always use database for data!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not understanding indexes",
+      "consequence": "Files have no indexes - must read everything! Databases create indexes on columns (like book index). Find \\\"Smith\\\" in millions of names = instant!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Ignoring concurrency",
+      "consequence": "Single-user app? Files might work. Multi-user? Files = disaster. Databases handle thousands of concurrent users safely with locking/transactions.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Missing transactions",
+      "consequence": "If app crashes mid-write to file, file is corrupted! Databases use transactions: changes are all-or-nothing (atomic). Crash? Database rolls back, stays consistent!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

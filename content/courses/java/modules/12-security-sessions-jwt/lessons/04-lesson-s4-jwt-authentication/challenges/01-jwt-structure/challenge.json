@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-4-mc-1",
+  "title": "JWT Structure",
+  "description": "Understanding JWT components",
+  "question": "Which JWT component prevents an attacker from modifying the payload (e.g., changing roles from USER to ADMIN)?",
+  "options": [
+    "Header - specifies the encryption algorithm",
+    "Payload - contains the user claims",
+    "Signature - cryptographic proof of integrity",
+    "Base64 encoding - obscures the content"
+  ],
+  "correctAnswer": 2,
+  "explanation": "The signature is created by hashing (header + payload) with a secret key. If an attacker modifies the payload, they can't create a valid signature without the secret. When the server validates, it recalculates the signature and compares - modified tokens fail validation. Base64 is encoding, not security.",
+  "difficulty": "advanced"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.3-challenge-1",
+  "title": "Custom Page Route with Multiple Transitions",
+  "description": "Create a reusable custom page route that supports multiple transition types.",
+  "instructions": "Build a CustomPageRoute class that accepts a TransitionType enum (fade, slideUp, slideRight, scale) and applies the appropriate transition. Then demonstrate using it with Navigator.push() for different screens.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a switch statement on the TransitionType enum in transitionsBuilder"
+    },
+    {
+      "level": 2,
+      "text": "For slideUp, use Offset(0, 1) as the begin value (1 = 100% of screen height)"
+    },
+    {
+      "level": 3,
+      "text": "Combine ScaleTransition with FadeTransition for the scale effect"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not applying a curve to the animation",
+      "consequence": "Linear animations feel robotic and unnatural",
+      "correction": "Use CurvedAnimation with Curves.easeOutCubic for natural deceleration"
+    },
+    {
+      "mistake": "Making transitions too long",
+      "consequence": "App feels sluggish and unresponsive",
+      "correction": "Keep transitions between 200-400ms for responsiveness"
+    }
+  ],
+  "difficulty": "intermediate"
+}

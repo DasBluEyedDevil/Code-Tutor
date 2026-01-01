@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-0-lesson-5-switch-yield",
+  "title": "Switch Expression with yield",
+  "description": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.\n\nTest: getGrade(95) should print \"Excellent!\" and return \"A\"",
+  "instructions": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-0-lesson-5-switch-yield-test-1",
+      "description": "Should print 'Excellent!' then 'A'",
+      "expectedOutput": "Excellent!\nA",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Divide score by 10 to get a single digit for the switch"
+    },
+    {
+      "level": 2,
+      "text": "Use { } block with yield for multiple statements: case 9 -> { print(); yield \"A\"; }"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using return instead of yield in switch expression block",
+      "consequence": "Compilation error",
+      "correction": "Use yield to return a value from a switch expression block"
+    }
+  ],
+  "difficulty": "intermediate"
+}

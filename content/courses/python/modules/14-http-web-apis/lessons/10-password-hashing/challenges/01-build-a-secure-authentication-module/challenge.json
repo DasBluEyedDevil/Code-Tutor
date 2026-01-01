@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-password-hashing-challenge",
+  "title": "Build a Secure Authentication Module",
+  "description": "Create a complete authentication module with password hashing that can be used in a FastAPI application.",
+  "instructions": "Create an authentication module that:\n\n1. Sets up passlib with bcrypt for password hashing\n2. Implements `hash_password()` function\n3. Implements `verify_password()` function\n4. Creates a Pydantic model for user registration with email validation\n5. Creates a Pydantic model for user response (without password)\n6. Implements a mock `register_user()` function that:\n   - Validates the email isn't already taken\n   - Hashes the password before storing\n   - Returns the user without password info\n7. Implements a mock `authenticate_user()` function that:\n   - Looks up user by email\n   - Verifies password against stored hash\n   - Returns None if authentication fails",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Password hashing produces valid bcrypt hash",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Password verification works correctly",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Registration returns user without password",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Authentication succeeds with correct password",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Authentication fails with wrong password",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\") to set up password hashing."
+    },
+    {
+      "level": 2,
+      "text": "For registration, always hash the password with pwd_context.hash() before storing. Never store the plain password."
+    },
+    {
+      "level": 3,
+      "text": "For authentication, use pwd_context.verify(plain_password, stored_hash) to check if the password matches."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Storing plain text password instead of hash",
+      "consequence": "Major security vulnerability - all passwords exposed if database is breached",
+      "correction": "Always use pwd_context.hash(password) before storing"
+    },
+    {
+      "mistake": "Including password or hashed_password in UserResponse",
+      "consequence": "Exposes sensitive data in API responses",
+      "correction": "UserResponse should only contain id and email"
+    },
+    {
+      "mistake": "Comparing hashes directly with == instead of verify()",
+      "consequence": "Vulnerable to timing attacks",
+      "correction": "Use pwd_context.verify() which uses timing-safe comparison"
+    },
+    {
+      "mistake": "Different error messages for 'user not found' vs 'wrong password'",
+      "consequence": "Allows attackers to enumerate valid emails",
+      "correction": "Return the same error/None for both cases"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a TypeScript interface called `Book` with the following properties:\n1. `title` (string, required)\n2. `author` (string, required)\n3. `pages` (number, required)\n4. `isbn` (string, optional)\n5. `isRead` (boolean, required)\n\nThen create two book objects using this interface:\n- A book you've read (with all properties including isbn)\n- A book you haven't read yet (without isbn)\n\nLog both books to verify they work.",
+  "instructions": "Create a TypeScript interface called `Book` with the following properties:\n1. `title` (string, required)\n2. `author` (string, required)\n3. `pages` (number, required)\n4. `isbn` (string, optional)\n5. `isRead` (boolean, required)\n\nThen create two book objects using this interface:\n- A book you've read (with all properties including isbn)\n- A book you haven't read yet (without isbn)\n\nLog both books to verify they work.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create book objects with interface",
+      "expectedOutput": "Test",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should handle optional isbn",
+      "expectedOutput": "200",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `?` to make isbn optional. The syntax is: `propertyName?: type`"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes with interfaces:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes with interfaces:"
+    },
+    {
+      "mistake": "**Forgetting required properties**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting required properties**:\n   ```typescript\n   let user: User = { id: 1 }; // ERROR: Missing username, email, isActive\n   ```\n   Solution: Include ALL required properties"
+    },
+    {
+      "mistake": "**Wrong property names**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong property names**:\n   ```typescript\n   let user: User = { \n     id: 1, \n     userName: 'alice' // ERROR: Should be 'username' not 'userName'\n   };\n   ```\n   Solution: Match property names exactly (case-sensitive!)"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-15-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create unit tests for a StringHelper class!\n\n1. Create a StringHelper class with methods:\n   - Reverse(string s) - Reverses a string\n   - IsPalindrome(string s) - True if string reads same forwards/backwards\n   - CountWords(string s) - Counts words separated by spaces\n\n2. Write tests for each method:\n   - Test Reverse with normal string\n   - Test IsPalindrome with 'racecar' (true) and 'hello' (false)\n   - Test CountWords with 'hello world' (2 words)\n   - Test edge case: empty string\n\nUse [Fact] for single tests, [Theory] for multiple inputs!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain test definition",
+      "expectedOutput": "Test",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should show Reverse test",
+      "expectedOutput": "Reverse",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "AAA Pattern: Arrange (setup), Act (call method), Assert (verify). Every test follows this structure!"
+    },
+    {
+      "level": 2,
+      "text": "[Fact] for single test cases. [Theory] with [InlineData] for multiple inputs testing same logic."
+    },
+    {
+      "level": 3,
+      "text": "Assert.Equal(expected, actual): EXPECTED FIRST! Common mistake is reversing the order."
+    },
+    {
+      "level": 4,
+      "text": "Edge cases matter! Test empty strings, nulls, single characters. These often reveal bugs."
+    },
+    {
+      "level": 5,
+      "text": "Test naming: Method_Scenario_Expected. Example: 'CountWords_EmptyString_ReturnsZero'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong Assert.Equal order",
+      "consequence": "Assert.Equal(actual, expected) produces confusing failure messages! 'Expected: [your result], Actual: [what you expected]'. Always put expected FIRST.",
+      "correction": "Use Assert.Equal(expected, actual). Think: 'I expect THIS, and the actual result is THAT'."
+    },
+    {
+      "mistake": "Not testing edge cases",
+      "consequence": "Code works for 'hello' but crashes on empty string or null! Real apps receive unexpected inputs. Edge cases reveal bugs.",
+      "correction": "Always test: empty string, null, single element, very large inputs, negative numbers, boundary values."
+    },
+    {
+      "mistake": "Testing implementation instead of behavior",
+      "consequence": "Tests break when you refactor! If you test 'list has 3 items after calling private method X', refactoring X breaks tests. Test PUBLIC behavior.",
+      "correction": "Test WHAT code does, not HOW it does it. Test inputs and outputs, not internal implementation details."
+    },
+    {
+      "mistake": "Multiple asserts per test (without good reason)",
+      "consequence": "First failure stops the test! Other assertions never run. Hard to know full scope of failure.",
+      "correction": "Prefer one logical assertion per test. Multiple asserts OK if testing one cohesive thing (like all properties of returned object)."
+    }
+  ],
+  "difficulty": "intermediate"
+}

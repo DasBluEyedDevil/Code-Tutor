@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-4-mc-1",
+  "title": "Workflow Triggers",
+  "description": "Understanding when workflows run",
+  "question": "Given this trigger configuration, when does the workflow run?\non:\n  push:\n    branches: [main]\n  pull_request:\n    branches: [main]",
+  "options": [
+    "Only when pushing directly to main",
+    "Only when a pull request targets main",
+    "When pushing to main OR when a PR targets main",
+    "On every push and every pull request to any branch"
+  ],
+  "correctAnswer": 2,
+  "explanation": "The 'on' section defines trigger events. Multiple events are OR-ed together. This workflow runs when: (1) Code is pushed directly to main, OR (2) A pull request is opened/updated that targets main. It does NOT run for pushes to other branches or PRs targeting other branches.",
+  "difficulty": "intermediate"
+}

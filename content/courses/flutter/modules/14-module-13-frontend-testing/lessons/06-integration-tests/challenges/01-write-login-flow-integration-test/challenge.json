@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.6-challenge-0",
+  "title": "Write Login Flow Integration Test",
+  "description": "Create an integration test for a complete login flow.",
+  "instructions": "Test the login flow: enter email, enter password, tap login, verify navigation to home.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses IntegrationTestWidgetsFlutterBinding",
+      "expectedOutput": "IntegrationTestWidgetsFlutterBinding",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Call IntegrationTestWidgetsFlutterBinding.ensureInitialized() first"
+    },
+    {
+      "level": 2,
+      "text": "Use pumpAndSettle() after navigation to wait for animations"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using pump() instead of pumpAndSettle()",
+      "consequence": "Test fails because navigation animation not complete",
+      "correction": "Use pumpAndSettle() for integration tests with navigation"
+    }
+  ],
+  "difficulty": "intermediate"
+}

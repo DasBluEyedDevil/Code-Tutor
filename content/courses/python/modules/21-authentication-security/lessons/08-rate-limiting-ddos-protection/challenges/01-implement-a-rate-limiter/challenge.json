@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-08-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Implement a Rate Limiter",
+  "description": "Build a rate limiter that protects the Finance Tracker API from abuse using the sliding window algorithm.",
+  "instructions": "Complete the RateLimiter class to:\n1. Track requests per identifier (IP or user ID)\n2. Implement sliding window rate limiting\n3. Return appropriate rate limit headers\n4. Handle the retry-after calculation when blocked",
+  "startingCode": "from dataclasses import dataclass\nfrom typing import Dict, List, Optional\nimport time\n\n@dataclass\nclass RateLimitResponse:\n    allowed: bool\n    limit: int\n    remaining: int\n    reset_timestamp: int\n    retry_after: Optional[int] = None\n\nclass SlidingWindowRateLimiter:\n    \"\"\"\n    Sliding window rate limiter for API protection.\n    Uses in-memory storage (use Redis in production).\n    \"\"\"\n    \n    def __init__(self):\n        # Storage: {identifier: [(timestamp, count), ...]}\n        self.windows: Dict[str, Dict[int, int]] = {}\n    \n    def _cleanup_old_windows(self, identifier: str, current_window: int, keep_windows: int = 2):\n        \"\"\"Remove windows older than needed.\"\"\"\n        if identifier not in self.windows:\n            return\n        old_windows = [w for w in self.windows[identifier] if w < current_window - keep_windows]\n        for w in old_windows:\n            del self.windows[identifier][w]\n    \n    def check_rate_limit(\n        self,\n        identifier: str,\n        max_requests: int,\n        window_seconds: int\n    ) -> RateLimitResponse:\n        \"\"\"\n        Check if request is allowed using sliding window algorithm.\n        \n        Args:\n            identifier: Unique client identifier (IP, user_id, API key)\n            max_requests: Maximum requests allowed per window\n            window_seconds: Window size in seconds\n        \n        Returns:\n            RateLimitResponse with allow/deny and rate limit info\n        \"\"\"\n        now = time.time()\n        current_window = int(now // window_seconds)\n        previous_window = current_window - 1\n        \n        # Initialize storage for identifier if needed\n        if identifier not in self.windows:\n            self.windows[identifier] = {}\n        \n        # TODO: Get count from previous window (0 if not exists)\n        previous_count = 0\n        \n        # TODO: Get count from current window (0 if not exists)\n        current_count = 0\n        \n        # TODO: Calculate weight for previous window\n        # (how much of the sliding window overlaps with previous window)\n        elapsed_in_current = now - (current_window * window_seconds)\n        weight = 0  # Calculate: 1 - (elapsed / window_seconds)\n        \n        # TODO: Calculate weighted count\n        weighted_count = 0\n        \n        # TODO: Determine if request is allowed\n        allowed = True\n        \n        # TODO: If allowed, increment current window count\n        if allowed:\n            pass  # Increment count\n        \n        # TODO: Calculate remaining requests\n        remaining = 0\n        \n        # TODO: Calculate reset timestamp\n        reset_timestamp = 0\n        \n        # TODO: Calculate retry_after if blocked\n        retry_after = None\n        \n        # Cleanup old windows\n        self._cleanup_old_windows(identifier, current_window)\n        \n        return RateLimitResponse(\n            allowed=allowed,\n            limit=max_requests,\n            remaining=remaining,\n            reset_timestamp=reset_timestamp,\n            retry_after=retry_after\n        )\n    \n    def get_headers(self, response: RateLimitResponse) -> Dict[str, str]:\n        \"\"\"Generate standard rate limit headers.\"\"\"\n        headers = {\n            \"X-RateLimit-Limit\": str(response.limit),\n            \"X-RateLimit-Remaining\": str(response.remaining),\n            \"X-RateLimit-Reset\": str(response.reset_timestamp)\n        }\n        if response.retry_after:\n            headers[\"Retry-After\"] = str(response.retry_after)\n        return headers\n\n\n# Test the rate limiter\nprint(\"Sliding Window Rate Limiter Test\")\nprint(\"=\" * 50)\n\nlimiter = SlidingWindowRateLimiter()\n\n# Simulate requests\nprint(\"\\nSimulating 12 requests (limit: 10 per 60 seconds)\")\nfor i in range(12):\n    result = limiter.check_rate_limit(\n        identifier=\"192.168.1.100\",\n        max_requests=10,\n        window_seconds=60\n    )\n    status = \"ALLOWED\" if result.allowed else \"BLOCKED\"\n    headers = limiter.get_headers(result)\n    print(f\"Request {i+1:2d}: {status} | Remaining: {result.remaining} | Reset: {result.reset_timestamp}\")\n    if result.retry_after:\n        print(f\"           Retry-After: {result.retry_after} seconds\")\n\n# Test different identifier\nprint(\"\\nDifferent user (should have fresh limit):\")\nresult = limiter.check_rate_limit(\"192.168.1.200\", 10, 60)\nprint(f\"New user request: {'ALLOWED' if result.allowed else 'BLOCKED'} | Remaining: {result.remaining}\")\n\nprint(\"\\nRate limiter implementation complete!\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Rate limiter correctly blocks after limit exceeded and allows different users",
+      "expectedOutput": "Rate limiter implementation complete!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** The weight for the previous window is `1 - (elapsed_in_current / window_seconds)`. This represents how much of the sliding window still overlaps with the previous fixed window. Weighted count = (previous_count * weight) + current_count."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not incrementing count before calculating remaining",
+      "consequence": "Off-by-one error in remaining count",
+      "correction": "Increment the count first if allowed, then calculate remaining based on new weighted_count"
+    },
+    {
+      "mistake": "Using integer division for weight calculation",
+      "consequence": "Weight becomes 0 or 1 instead of a fraction",
+      "correction": "Use float division: elapsed_in_current / window_seconds (not //)"
+    }
+  ],
+  "difficulty": "advanced"
+}

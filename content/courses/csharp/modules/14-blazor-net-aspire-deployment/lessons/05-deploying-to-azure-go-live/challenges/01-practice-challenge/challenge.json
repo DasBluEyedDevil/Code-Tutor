@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-14-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Azure deployment simulation!\n\nPrint complete deployment workflow:\n\n1. Prepare app for production:\n   - Update connection strings to use environment variables\n   - Add health check endpoint\n   - Configure logging\n\n2. Azure CLI commands:\n   - Create resource group\n   - Create App Service plan\n   - Create web app\n   - Deploy code\n\n3. Post-deployment:\n   - Configure connection strings in Azure\n   - Set environment variables\n   - Enable HTTPS only\n   - Configure custom domain (optional)\n\n4. Monitoring:\n   - Check application logs\n   - Set up alerts\n   - Monitor performance\n\nPrint step-by-step guide!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Azure\"",
+      "expectedOutput": "Azure",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"deployment\"",
+      "expectedOutput": "deployment",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"App Service\"",
+      "expectedOutput": "App Service",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Configuration\"",
+      "expectedOutput": "Configuration",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"Monitoring\"",
+      "expectedOutput": "Monitoring",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Azure CLI: az login, az group create, az appservice plan create, az webapp create. Configure in Portal: Connection strings, App settings, HTTPS. Monitor: Logs, alerts, Application Insights."
+    },
+    {
+      "level": 2,
+      "text": "Connection string in code: NEVER commit connection strings! Use Azure Configuration or Key Vault. Access via Environment.GetEnvironmentVariable(). Secrets in config, not code!"
+    },
+    {
+      "level": 3,
+      "text": "CORS not configured: Blazor WebAssembly needs CORS! Add in API: app.UseCors(policy => policy.AllowAnyOrigin()). Without it, browser blocks requests."
+    },
+    {
+      "level": 4,
+      "text": "Not using HTTPS: Always enable 'HTTPS Only' in Azure! HTTP is insecure. SSL certificate automatic with Azure. No excuse for HTTP in production!"
+    },
+    {
+      "level": 5,
+      "text": "Ignoring costs: Azure costs money! Start with B1 or F1 (free). Monitor costs in Cost Management. Scale down when not needed. Don't leave expensive resources running!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Connection string in code",
+      "consequence": "NEVER commit connection strings! Use Azure Configuration or Key Vault. Access via Environment.GetEnvironmentVariable(). Secrets in config, not code!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "CORS not configured",
+      "consequence": "Blazor WebAssembly needs CORS! Add in API: app.UseCors(policy => policy.AllowAnyOrigin()). Without it, browser blocks requests.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not using HTTPS",
+      "consequence": "Always enable 'HTTPS Only' in Azure! HTTP is insecure. SSL certificate automatic with Azure. No excuse for HTTP in production!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Ignoring costs",
+      "consequence": "Azure costs money! Start with B1 or F1 (free). Monitor costs in Cost Management. Scale down when not needed. Don't leave expensive resources running!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

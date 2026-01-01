@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-11-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a complete CRUD API for Tasks!\n\n1. Create 'TaskItem' class:\n   - int Id\n   - string Title\n   - string Description\n   - bool IsCompleted\n\n2. Create in-memory list with 2 initial tasks\n\n3. Implement ALL CRUD operations:\n   - GET /api/tasks - Return all tasks\n   - GET /api/tasks/{id} - Return single task\n   - POST /api/tasks - Create new task (auto-assign ID)\n   - PUT /api/tasks/{id} - Update task\n   - DELETE /api/tasks/{id} - Delete task\n\n4. For POST: use nextId counter for auto-incrementing IDs\n\n5. Print available endpoints when API starts",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Task API\"",
+      "expectedOutput": "Task API",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"CRUD Endpoints\"",
+      "expectedOutput": "CRUD Endpoints",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"POST\"",
+      "expectedOutput": "POST",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"PUT\"",
+      "expectedOutput": "PUT",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"DELETE\"",
+      "expectedOutput": "DELETE",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "MapPost: 'app.MapPost(route, (Object obj) => ...)'. Assign ID before adding! MapPut: update properties one by one. MapDelete: .Remove() from list. Return proper Results: Created, Ok, NoContent, NotFound."
+    },
+    {
+      "level": 2,
+      "text": "Not assigning ID in POST: Client shouldn't provide ID for new items! Server assigns it: 'task.Id = nextId++'. Then add to list. ID assignment is server's job!"
+    },
+    {
+      "level": 3,
+      "text": "Modifying wrong object in PUT: Don't modify 'updatedTask' parameter! Find existing item in list, then update ITS properties. Otherwise changes aren't persisted."
+    },
+    {
+      "level": 4,
+      "text": "Forgetting to remove in DELETE: Must call 'list.Remove(item)'! Just returning NoContent() doesn't delete it. Actually remove from collection!"
+    },
+    {
+      "level": 5,
+      "text": "Using same route for different methods: Same route with different methods is FINE! GET /api/tasks and POST /api/tasks are different endpoints. Method matters, not just URL!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not assigning ID in POST",
+      "consequence": "Client shouldn't provide ID for new items! Server assigns it: 'task.Id = nextId++'. Then add to list. ID assignment is server's job!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Modifying wrong object in PUT",
+      "consequence": "Don't modify 'updatedTask' parameter! Find existing item in list, then update ITS properties. Otherwise changes aren't persisted.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to remove in DELETE",
+      "consequence": "Must call 'list.Remove(item)'! Just returning NoContent() doesn't delete it. Actually remove from collection!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using same route for different methods",
+      "consequence": "Same route with different methods is FINE! GET /api/tasks and POST /api/tasks are different endpoints. Method matters, not just URL!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

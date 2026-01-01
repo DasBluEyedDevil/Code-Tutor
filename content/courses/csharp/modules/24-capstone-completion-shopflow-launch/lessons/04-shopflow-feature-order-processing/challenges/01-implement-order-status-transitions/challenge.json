@@ -1,0 +1,86 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-26-04-challenge-01",
+  "title": "Implement Order Status Transitions",
+  "description": "Implement a command handler that processes order status transitions with proper validation and event publishing.",
+  "instructions": "Build the UpdateOrderStatusHandler that:\n\n1. Validates the user has permission to update the order (admin or order owner for cancellation)\n2. Retrieves the order by ID\n3. Applies the appropriate status transition method based on the new status:\n   - Confirmed -> Processing: call StartProcessing()\n   - Processing -> Shipped: call Ship(trackingNumber) - requires tracking number\n   - Shipped -> Delivered: call MarkDelivered()\n   - Any allowed state -> Cancelled: call Cancel(reason) - requires reason\n4. Saves changes and publishes domain events\n5. Returns the updated order status\n\nHandle edge cases:\n- Order not found\n- Invalid status transition (let domain exception propagate as error)\n- Missing required fields (tracking number for shipping, reason for cancellation)",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should retrieve order by ID",
+      "expectedOutput": "GetByIdAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should check user permissions",
+      "expectedOutput": "IsAdmin",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should call StartProcessing for Processing status",
+      "expectedOutput": "StartProcessing",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should call Ship with tracking number",
+      "expectedOutput": "Ship(command.TrackingNumber)",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should publish domain events",
+      "expectedOutput": "PublishAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should handle DomainException",
+      "expectedOutput": "catch (DomainException",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a switch statement on command.NewStatus to call the appropriate Order method."
+    },
+    {
+      "level": 2,
+      "text": "Check if the user is the order owner or an admin before allowing the operation."
+    },
+    {
+      "level": 3,
+      "text": "Validate that TrackingNumber is provided before calling Ship(), and Reason before calling Cancel()."
+    },
+    {
+      "level": 4,
+      "text": "Wrap the transition calls in try-catch to handle DomainException and return a Result.Failure."
+    },
+    {
+      "level": 5,
+      "text": "Remember to iterate over order.DomainEvents and publish each one after saving changes."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not validating required fields before calling domain methods",
+      "consequence": "DomainException thrown for missing tracking number instead of returning a clean error.",
+      "correction": "Check for required fields and return Result.Failure before calling the domain method."
+    },
+    {
+      "mistake": "Publishing events before saving changes",
+      "consequence": "Events published for changes that might not persist if SaveChanges fails.",
+      "correction": "Always SaveChangesAsync first, then publish domain events."
+    },
+    {
+      "mistake": "Not clearing domain events after publishing",
+      "consequence": "Events could be published multiple times if the order is saved again.",
+      "correction": "Call order.ClearDomainEvents() after publishing all events."
+    }
+  ],
+  "difficulty": "advanced"
+}

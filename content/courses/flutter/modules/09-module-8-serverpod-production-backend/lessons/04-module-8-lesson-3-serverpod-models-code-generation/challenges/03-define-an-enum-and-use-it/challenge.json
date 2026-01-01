@@ -1,0 +1,27 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.3-challenge-3",
+  "title": "Define an Enum and Use It",
+  "description": "Create an OrderStatus enum and an Order model that uses it.",
+  "instructions": "Create:\n\n1. An OrderStatus enum with values: pending, processing, shipped, delivered, cancelled\n\n2. An Order model with:\n   - orderId (String)\n   - customerId (int)\n   - status (OrderStatus with default pending)\n   - totalAmount (double)\n   - createdAt (DateTime)\n   - shippedAt (DateTime, optional)\n\nWrite both YAML definitions.",
+  "language": "yaml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Enum values are listed under 'values:' with each value on a new line starting with -"
+    },
+    {
+      "level": 2,
+      "text": "To use enum as default: status: OrderStatus, default='OrderStatus.pending'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using string value for enum default instead of enum syntax",
+      "consequence": "Type mismatch and compilation errors",
+      "correction": "Use default='OrderStatus.pending' not default='pending'"
+    }
+  ],
+  "difficulty": "intermediate"
+}

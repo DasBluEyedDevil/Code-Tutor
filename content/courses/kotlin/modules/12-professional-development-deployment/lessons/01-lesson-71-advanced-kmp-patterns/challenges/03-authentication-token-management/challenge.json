@@ -1,0 +1,70 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.1.3",
+  "title": "Authentication Token Management",
+  "description": "Create a simple session manager that generates tokens and validates them.",
+  "instructions": "Create a simple session manager that generates tokens and validates them.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create token",
+      "expectedOutput": "Token created:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should validate token and return user ID",
+      "expectedOutput": "User ID: 1",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should return null for invalid token",
+      "expectedOutput": "Invalid token: null",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should invalidate after logout",
+      "expectedOutput": "After logout: null",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use UUID.randomUUID().toString() to generate unique token"
+    },
+    {
+      "level": 2,
+      "text": "Store sessions in Map with token as key"
+    },
+    {
+      "level": 3,
+      "text": "Use safe call ?. to handle missing sessions"
+    },
+    {
+      "level": 4,
+      "text": "remove() deletes from map"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

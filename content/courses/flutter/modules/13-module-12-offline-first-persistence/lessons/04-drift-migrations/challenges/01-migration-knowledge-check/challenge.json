@@ -1,0 +1,31 @@
+{
+  "type": "QUIZ",
+  "id": "12.4-quiz-1",
+  "title": "Migration Knowledge Check",
+  "description": "Test your understanding of database migrations.",
+  "questions": [
+    {
+      "question": "When should you increment the schemaVersion?",
+      "options": [
+        "Every time you run the app",
+        "When you add, remove, or modify table structure",
+        "Only when adding new tables",
+        "Only when the app version changes"
+      ],
+      "correctAnswer": 1,
+      "explanation": "You should increment schemaVersion whenever you change the database schema - adding columns, removing columns, adding tables, changing constraints, etc."
+    },
+    {
+      "question": "In SQLite with Drift, how do you change a column's type?",
+      "options": [
+        "Use ALTER COLUMN statement",
+        "Use m.alterColumn() method",
+        "Recreate the table with the new schema",
+        "It's not possible"
+      ],
+      "correctAnswer": 2,
+      "explanation": "SQLite doesn't support ALTER COLUMN. To change a column type, you must create a new table, copy the data, drop the old table, and rename the new one."
+    }
+  ],
+  "difficulty": "intermediate"
+}

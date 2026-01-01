@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-09-lesson-08-challenge-1",
+  "title": "Practice: Async Transaction File Processor",
+  "description": "Build an async file processor for your Personal Finance Tracker that:\n\n1. Reads multiple monthly transaction files concurrently\n2. Aggregates transaction totals by category\n3. Writes a summary report asynchronously\n4. Compares performance with sequential reading\n\n**Use aiofiles features:**\n- `async with aiofiles.open()` for file operations\n- `asyncio.gather()` for concurrent processing\n- `await` for all async operations",
+  "instructions": "Build an async file processor for your Personal Finance Tracker that reads multiple monthly transaction files concurrently and generates a summary report.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `async with aiofiles.open(path, 'r') as f:` and `await f.read()` to read files. Use `asyncio.gather(*tasks)` to run multiple reads concurrently."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to await async operations",
+      "consequence": "Gets coroutine object instead of actual content",
+      "correction": "Always use await: content = await f.read()"
+    },
+    {
+      "mistake": "Reading files sequentially in a loop",
+      "consequence": "No performance benefit from async",
+      "correction": "Use asyncio.gather() to read concurrently"
+    }
+  ],
+  "difficulty": "intermediate"
+}

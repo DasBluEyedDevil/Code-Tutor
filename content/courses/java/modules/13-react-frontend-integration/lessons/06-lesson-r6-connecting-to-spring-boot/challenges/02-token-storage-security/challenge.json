@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-6-mc-2",
+  "title": "Token Storage Security",
+  "description": "Understanding security implications of token storage",
+  "question": "Why are HttpOnly cookies more secure than localStorage for storing JWT tokens?",
+  "options": [
+    "HttpOnly cookies are encrypted, localStorage is not",
+    "HttpOnly cookies cannot be accessed by JavaScript, preventing XSS attacks from stealing the token",
+    "HttpOnly cookies automatically expire, localStorage tokens don't",
+    "HttpOnly cookies work with CORS, localStorage doesn't"
+  ],
+  "correctAnswer": 1,
+  "explanation": "HttpOnly cookies cannot be accessed via JavaScript (document.cookie won't show them). This means even if an attacker injects malicious JavaScript (XSS attack), they cannot steal the token. localStorage is accessible via JavaScript, so any XSS vulnerability could expose the token. HttpOnly cookies still require CSRF protection.",
+  "difficulty": "advanced"
+}

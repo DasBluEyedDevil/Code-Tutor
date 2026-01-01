@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-02-challenge-1",
+  "title": "Build a Budget Tracker API",
+  "description": "Create a FastAPI application for tracking budget categories with:\n- GET /categories/ - List all budget categories\n- GET /categories/{category_id} - Get a specific category\n- POST /categories/ - Create a new category with name and budget limit\n- GET /categories/{category_id}/remaining - Calculate remaining budget\n\nUse Pydantic models for validation and include proper error handling.",
+  "instructions": "Create a FastAPI application for tracking budget categories with:\n- GET /categories/ - List all budget categories\n- GET /categories/{category_id} - Get a specific category\n- POST /categories/ - Create a new category with name and budget limit\n- GET /categories/{category_id}/remaining - Calculate remaining budget\n\nUse Pydantic models for validation and include proper error handling.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Field(..., gt=0) for required positive numbers. Use HTTPException(status_code=404, detail='message') for not found errors."
+    },
+    {
+      "level": 2,
+      "text": "For remaining budget, calculate: budget_limit - spent. Return a dict or create a RemainingBudget Pydantic model."
+    },
+    {
+      "level": 3,
+      "text": "Check if category_id in categories_db before accessing. Use global next_id and increment after creating each category."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to raise HTTPException for missing resources",
+      "consequence": "KeyError or None returned instead of proper 404",
+      "correction": "Always check if resource exists and raise HTTPException(status_code=404, detail='...')"
+    },
+    {
+      "mistake": "Not using Field() for validation constraints",
+      "consequence": "Invalid data like negative amounts accepted",
+      "correction": "Use Field(..., gt=0) for positive numbers, Field(default=0, ge=0) for non-negative"
+    },
+    {
+      "mistake": "Forgetting to increment next_id after creating",
+      "consequence": "Duplicate IDs, data overwritten",
+      "correction": "Always increment next_id after successful creation: next_id += 1"
+    }
+  ],
+  "difficulty": "intermediate"
+}

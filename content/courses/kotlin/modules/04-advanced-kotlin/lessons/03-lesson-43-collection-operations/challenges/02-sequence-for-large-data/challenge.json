@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.3.2",
+  "title": "Sequence for Large Data",
+  "description": "Create a sequence that generates the first 10 squares of numbers, but only compute when needed.",
+  "instructions": "Create a sequence that generates the first 10 squares of numbers, but only compute when needed.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should generate first 5 squares",
+      "expectedOutput": "[1, 4, 9, 16, 25]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use generateSequence to create infinite sequence"
+    },
+    {
+      "level": 2,
+      "text": "First parameter is the initial value"
+    },
+    {
+      "level": 3,
+      "text": "Second parameter is lambda that generates next value"
+    },
+    {
+      "level": 4,
+      "text": "Use map to compute squares"
+    },
+    {
+      "level": 5,
+      "text": "Use take() to limit results"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

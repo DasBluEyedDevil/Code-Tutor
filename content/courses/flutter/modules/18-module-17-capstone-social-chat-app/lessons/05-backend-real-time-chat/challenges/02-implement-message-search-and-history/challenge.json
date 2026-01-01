@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.5-challenge-1",
+  "title": "Implement Message Search and History",
+  "description": "Create a full-text search system for messages with conversation filtering and result highlighting.",
+  "instructions": "Implement a message search system that:\n\n1. Performs full-text search across user's messages\n2. Supports filtering by conversation\n3. Highlights matched text in results\n4. Returns messages with context (conversation info, sender)\n5. Uses efficient database indexing\n6. Supports pagination for large result sets\n\nCreate the search endpoint with proper indexing strategy.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use PostgreSQL's full-text search with to_tsvector and plainto_tsquery for efficient text matching"
+    },
+    {
+      "level": 2,
+      "text": "Create a GIN index on to_tsvector('english', content) for fast full-text search"
+    },
+    {
+      "level": 3,
+      "text": "Combine full-text search with ILIKE for partial matches that FTS might miss"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using LIKE '%query%' without full-text indexing",
+      "consequence": "Extremely slow searches on large message tables",
+      "correction": "Use PostgreSQL's GIN-indexed full-text search with ts_vector and ts_query"
+    },
+    {
+      "mistake": "Not filtering by user's conversations first",
+      "consequence": "Users can search messages in conversations they're not part of",
+      "correction": "Always get user's conversation IDs first and include in WHERE clause"
+    }
+  ],
+  "difficulty": "advanced"
+}

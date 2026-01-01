@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-19-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a versioned User API with two versions!\n\n1. Configure API versioning with:\n   - Default version: 1.0\n   - Support URL segment, query string, and header\n   - Report versions in response headers\n\n2. Version 1 endpoints (UserV1: Id, Name, Email):\n   - GET /api/v1/users - List users\n   - GET /api/v1/users/{id} - Get user by ID\n\n3. Version 2 endpoints (UserV2: Id, Name, Email, Role, CreatedAt):\n   - GET /api/v2/users - List users (enhanced)\n   - GET /api/v2/users/{id} - Get user by ID\n   - GET /api/v2/users/admins - NEW: Get only admin users\n\n4. Print available API versions and how to access them",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure API versioning",
+      "expectedOutput": "AddApiVersioning",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should create versioned endpoint groups",
+      "expectedOutput": "NewVersionedApi",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add 'using Asp.Versioning;' and 'using Asp.Versioning.Builder;' for versioning extensions."
+    },
+    {
+      "level": 2,
+      "text": "ApiVersionReader.Combine() accepts multiple readers to support different versioning schemes."
+    },
+    {
+      "level": 3,
+      "text": "app.NewVersionedApi().MapGroup(...).HasApiVersion(...) creates a versioned endpoint group."
+    },
+    {
+      "level": 4,
+      "text": "Use {version:apiVersion} in the route template to capture version from URL."
+    },
+    {
+      "level": 5,
+      "text": "V2-only endpoints can simply be added to the v2 group - they won't exist in V1."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to install Asp.Versioning.Http package",
+      "consequence": "AddApiVersioning and related types won't be available.",
+      "correction": "Run: dotnet add package Asp.Versioning.Http"
+    },
+    {
+      "mistake": "Using same route without version differentiation",
+      "consequence": "Ambiguous route matching. Requests fail with 500 error.",
+      "correction": "Use HasApiVersion() on groups or MapToApiVersion() on individual endpoints."
+    },
+    {
+      "mistake": "Not adding .AddApiExplorer() for OpenAPI support",
+      "consequence": "Versioned endpoints won't appear correctly in Swagger/Scalar documentation.",
+      "correction": "Chain .AddApiExplorer() after AddApiVersioning() for proper OpenAPI integration."
+    },
+    {
+      "mistake": "Breaking changes without version bump",
+      "consequence": "Existing clients break. Mobile apps crash. Partners angry.",
+      "correction": "Always create new version for breaking changes. Keep old version for migration period."
+    }
+  ],
+  "difficulty": "advanced"
+}

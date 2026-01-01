@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Demonstrate migrations and bulk operations!\n\n1. Create 'Employee' entity:\n   - int Id\n   - string Name\n   - decimal Salary\n   - string Department\n\n2. Create 'CompanyDbContext'\n\n3. Show migration workflow (print commands):\n   - Print: dotnet ef migrations add InitialCreate\n   - Print: dotnet ef database update\n   - Print: (Add new property 'bool IsActive')\n   - Print: dotnet ef migrations add AddIsActive\n   - Print: dotnet ef database update\n\n4. Simulate bulk operations:\n   - BULK UPDATE: Give 10% raise to 'Engineering' department\n   - Print SQL that would execute\n   - BULK DELETE: Remove employees with salary < 30000\n   - Print SQL that would execute\n\n5. Compare with traditional approach:\n   - Show foreach loop version (slow)\n   - Show bulk version (fast)\n   - Explain performance difference",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"MIGRATIONS\"",
+      "expectedOutput": "MIGRATIONS",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"BULK OPERATIONS\"",
+      "expectedOutput": "BULK OPERATIONS",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"ExecuteUpdate\"",
+      "expectedOutput": "ExecuteUpdate",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"ExecuteDelete\"",
+      "expectedOutput": "ExecuteDelete",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"dotnet ef\"",
+      "expectedOutput": "dotnet ef",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"FASTER\"",
+      "expectedOutput": "FASTER",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Migrations: dotnet ef migrations add Name, dotnet ef database update. Bulk: .ExecuteUpdate(s => s.SetProperty()), .ExecuteDelete(). Bulk = single SQL, traditional = N SQL statements!"
+    },
+    {
+      "level": 2,
+      "text": "Migrations without EF tools: Must install 'dotnet ef' CLI tool! Run 'dotnet tool install --global dotnet-ef'. Also need Microsoft.EntityFrameworkCore.Design package!"
+    },
+    {
+      "level": 3,
+      "text": "Production migration: Don't use EnsureCreated() in production! Use migrations. EnsureCreated() can't update schema. Migrations = professional approach."
+    },
+    {
+      "level": 4,
+      "text": "Bulk operations and tracking: ExecuteUpdate/Delete DON'T update change tracker! If entities loaded, they're now stale. Either reload or don't mix bulk with tracking."
+    },
+    {
+      "level": 5,
+      "text": "ExecuteUpdate syntax: SetProperty takes TWO lambdas: property selector AND value expression. 's => s.SetProperty(e => e.Price, e => e.Price * 1.1)'. Easy to forget second lambda!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Migrations without EF tools",
+      "consequence": "Must install 'dotnet ef' CLI tool! Run 'dotnet tool install --global dotnet-ef'. Also need Microsoft.EntityFrameworkCore.Design package!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "EnsureCreated() in Production (Career-Ending Mistake!)",
+      "consequence": "Using EnsureCreated() in production is a TRAP! It works initially, but when you need to add a column or fix a relationship, you'll discover you can't update the schema without destroying all data. Teams have lost weeks of work to this mistake!",
+      "correction": "Production apps MUST use Migrations: 'dotnet ef migrations add [Name]' → 'dotnet ef database update'. Migrations provide: version-controlled schema history, rollback capability, team collaboration, CI/CD integration. EnsureCreated() has NONE of these. Treat EnsureCreated() like 'Console.WriteLine debugging' - fine for learning, never for production."
+    },
+    {
+      "mistake": "Bulk operations and tracking",
+      "consequence": "ExecuteUpdate/Delete DON'T update change tracker! If entities loaded, they're now stale. Either reload or don't mix bulk with tracking.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "ExecuteUpdate syntax",
+      "consequence": "SetProperty takes TWO lambdas: property selector AND value expression. 's => s.SetProperty(e => e.Price, e => e.Price * 1.1)'. Easy to forget second lambda!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

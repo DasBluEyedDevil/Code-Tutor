@@ -1,0 +1,27 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.3-challenge-2",
+  "title": "Create Related Models",
+  "description": "Define two related models: Category and Product with a one-to-many relationship.",
+  "instructions": "Create two models with a relationship:\n\n1. Category model:\n   - Fields: name (String), description (String?), isActive (bool)\n   - Table: categories\n\n2. Product model:\n   - Fields: name (String), price (double), categoryId (int)\n   - A relation field that links to Category\n   - Table: products\n\nShow both YAML files.",
+  "language": "yaml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The relation field syntax is: category: Category?, relation=categoryId"
+    },
+    {
+      "level": 2,
+      "text": "You need both categoryId (the int foreign key) and category (the relation)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Only defining the relation without the foreign key field",
+      "consequence": "No actual database column to store the relationship",
+      "correction": "Always include both: categoryId: int AND category: Category?, relation=categoryId"
+    }
+  ],
+  "difficulty": "intermediate"
+}

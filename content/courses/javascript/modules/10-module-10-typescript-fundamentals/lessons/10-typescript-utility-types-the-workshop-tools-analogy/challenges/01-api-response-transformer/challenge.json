@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.10-challenge-1",
+  "title": "API Response Transformer",
+  "description": "Use Pick, Omit, and Partial to create different views of a User type for various API endpoints. Create types for public profiles, update operations, and admin views while keeping sensitive data protected.",
+  "instructions": "1. Start with the full User interface (id, name, email, passwordHash, role, createdAt, lastLogin, preferences)\n2. Create PublicUser using Pick (only id, name, role)\n3. Create UpdateUserInput using Partial and Omit (no id, passwordHash, createdAt)\n4. Create AdminUserView using Omit (hide only passwordHash)\n5. Create a function that transforms a full User to PublicUser\n6. Test with sample user data",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "PublicUser has only id, name, role",
+      "expectedOutput": "id: 1, name: 'Alice Johnson', role: 'admin'",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "UpdateUserInput allows partial updates",
+      "expectedOutput": "name and preferences updated",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "AdminUserView excludes passwordHash",
+      "expectedOutput": "no passwordHash in admin view",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Pick syntax: Pick<Type, 'prop1' | 'prop2'> creates a type with only those properties"
+    },
+    {
+      "level": 2,
+      "text": "You can combine utilities: Partial<Omit<User, 'id'>> first removes id, then makes remaining optional"
+    },
+    {
+      "level": 3,
+      "text": "The order matters: Omit removes properties, Partial makes remaining ones optional"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Pick when Omit is more efficient",
+      "consequence": "When you want most properties except a few, Omit is cleaner than Pick",
+      "correction": "Use Pick for 'I want only these few', Omit for 'I want all except these few'"
+    },
+    {
+      "mistake": "Forgetting to combine Partial with Omit for update types",
+      "consequence": "Update inputs require all fields, but updates are usually partial",
+      "correction": "Wrap with Partial: Partial<Omit<User, 'id'>>"
+    }
+  ],
+  "difficulty": "intermediate"
+}

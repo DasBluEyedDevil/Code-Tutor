@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-10-challenge-1",
+  "title": "Create a Fly.io Configuration",
+  "description": "Create a fly.toml file for a FastAPI application that:\n1. Uses 'ord' (Chicago) as the primary region\n2. Builds from Dockerfile\n3. Runs on internal port 8000 with HTTPS forced\n4. Has a health check at /health with 30s grace period\n5. Uses shared-cpu-1x with 512mb memory\n6. Keeps at least 1 machine running",
+  "instructions": "Complete the fly.toml configuration with proper HTTP service and VM settings.",
+  "language": "toml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Primary region is ord",
+      "expectedOutput": "ord",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Internal port is 8000",
+      "expectedOutput": "8000",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Health check path is /health",
+      "expectedOutput": "/health",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Min machines running is 1",
+      "expectedOutput": "1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Primary region codes are lowercase airport codes: ord = Chicago, lhr = London"
+    },
+    {
+      "level": 2,
+      "text": "Memory is specified with unit: 256mb, 512mb, 1gb"
+    },
+    {
+      "level": 3,
+      "text": "Grace period needs time unit suffix: 30s for 30 seconds"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting time units in grace_period (30 instead of 30s)",
+      "consequence": "Invalid configuration that won't deploy",
+      "correction": "Always include time units: 30s, 1m, etc."
+    },
+    {
+      "mistake": "Setting min_machines_running = 0 on free tier",
+      "consequence": "Cold starts on every request when machines stop",
+      "correction": "Set min_machines_running = 1 for faster response times"
+    },
+    {
+      "mistake": "Mismatched internal_port with Dockerfile EXPOSE",
+      "consequence": "Health checks fail, app unreachable",
+      "correction": "Ensure fly.toml internal_port matches your app's listening port"
+    }
+  ],
+  "difficulty": "advanced"
+}

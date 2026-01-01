@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-19-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Demonstrate Kiota client usage patterns!\n\n1. Show the Kiota CLI command to generate a client:\n   - Language: CSharp\n   - Output: ./BookstoreClient\n   - Document: https://api.bookstore.com/openapi.json\n   - Client name: BookstoreApiClient\n   - Namespace: Bookstore.Client\n\n2. Write code that demonstrates using a generated client:\n   - Set up authentication provider and adapter\n   - Create the API client\n   - GET all books\n   - GET single book by ISBN\n   - POST create new book\n   - Search books with query parameters\n   - Handle 404 error gracefully\n\n3. Print the benefits of using Kiota over manual HttpClient",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should show Kiota generate command",
+      "expectedOutput": "kiota generate",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should demonstrate typed client usage",
+      "expectedOutput": "GetAsync",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Kiota CLI: kiota generate -l CSharp -o <output> -d <spec> -c <classname> -n <namespace>"
+    },
+    {
+      "level": 2,
+      "text": "AnonymousAuthenticationProvider is for public APIs without authentication."
+    },
+    {
+      "level": 3,
+      "text": "HttpClientRequestAdapter takes auth provider and needs BaseUrl set."
+    },
+    {
+      "level": 4,
+      "text": "Path parameters use indexer: client.Books[isbn] not client.Books(isbn)."
+    },
+    {
+      "level": 5,
+      "text": "Query params: GetAsync(config => { config.QueryParameters.Prop = value; })"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not installing required Kiota packages",
+      "consequence": "Missing types like HttpClientRequestAdapter, AnonymousAuthenticationProvider.",
+      "correction": "Install: Microsoft.Kiota.Abstractions, Microsoft.Kiota.Http.HttpClientLibrary, Microsoft.Kiota.Serialization.Json"
+    },
+    {
+      "mistake": "Forgetting to set BaseUrl on adapter",
+      "consequence": "Requests go to wrong URL or fail completely.",
+      "correction": "Always set adapter.BaseUrl = \"https://your-api.com\";"
+    },
+    {
+      "mistake": "Using () instead of [] for path parameters",
+      "consequence": "Compile error. Kiota uses indexer syntax for path params.",
+      "correction": "Use client.Books[id] not client.Books(id) for path parameters."
+    },
+    {
+      "mistake": "Not regenerating client after API changes",
+      "consequence": "Client is out of sync with API. Runtime errors or missing endpoints.",
+      "correction": "Run 'kiota update -o ./Client' after API changes or add to CI/CD pipeline."
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-04-lesson-05-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Student Grade Manager** that combines all loop concepts into one complete program.\n\n**Program Requirements:**\n\n- **Main Menu (while True loop)**:\n<li>1. Enter grades\n- 2. View statistics\n- 3. View grade distribution\n- 4. Find highest/lowest\n- 5. Exit\n\n</li>- **Enter Grades (for loop + validation)**:\n<li>Ask how many students\n- Collect grade for each (0-100)\n- Validate all input\n- Store in a list\n\n</li>- **Statistics (accumulators)**:\n<li>Calculate average\n- Count passing (>=60)\n- Count failing (<60)\n- Show percentages\n\n</li>- **Distribution (nested loops)**:\n<li>Group by letter grade (A, B, C, D, F)\n- Display visual bar chart\n\n</li>- **High/Low (tracking)**:\n<li>Find highest grade and student number\n- Find lowest grade and student number\n\n</li>\n**Example Session:**\n\n<pre>=== Student Grade Manager ===\n\n1. Enter grades\n2. View statistics\n3. View distribution\n4. Find high/low\n5. Exit\n\nChoice: 1\n\nHow many students? 3\n\nGrade for student 1: 85\nGrade for student 2: 92\nGrade for student 3: 78\n\n✅ 3 grades entered!\n\nChoice: 2\n\n=== Statistics ===\nTotal students: 3\nAverage: 85.0\nPassing: 3 (100%)\nFailing: 0 (0%)\n\nChoice: 4\n\n=== High/Low ===\nHighest: 92.0 (Student 2)\nLowest: 78.0 (Student 3)\n\nChoice: 5\n\nGoodbye!\n</pre>**Hints:**\n\n- Use a list to store grades: grades = []\n- Use grades.append(grade) to add grades\n- Check if list is empty before calculations: if len(grades) > 0\n- Use enumerate() to track student numbers: for i, grade in enumerate(grades, start=1)",
+  "instructions": "Build a **Student Grade Manager** that combines all loop concepts into one complete program.\n\n**Program Requirements:**\n\n- **Main Menu (while True loop)**:\n<li>1. Enter grades\n- 2. View statistics\n- 3. View grade distribution\n- 4. Find highest/lowest\n- 5. Exit\n\n</li>- **Enter Grades (for loop + validation)**:\n<li>Ask how many students\n- Collect grade for each (0-100)\n- Validate all input\n- Store in a list\n\n</li>- **Statistics (accumulators)**:\n<li>Calculate average\n- Count passing (>=60)\n- Count failing (<60)\n- Show percentages\n\n</li>- **Distribution (nested loops)**:\n<li>Group by letter grade (A, B, C, D, F)\n- Display visual bar chart\n\n</li>- **High/Low (tracking)**:\n<li>Find highest grade and student number\n- Find lowest grade and student number\n\n</li>\n**Example Session:**\n\n<pre>=== Student Grade Manager ===\n\n1. Enter grades\n2. View statistics\n3. View distribution\n4. Find high/low\n5. Exit\n\nChoice: 1\n\nHow many students? 3\n\nGrade for student 1: 85\nGrade for student 2: 92\nGrade for student 3: 78\n\n✅ 3 grades entered!\n\nChoice: 2\n\n=== Statistics ===\nTotal students: 3\nAverage: 85.0\nPassing: 3 (100%)\nFailing: 0 (0%)\n\nChoice: 4\n\n=== High/Low ===\nHighest: 92.0 (Student 2)\nLowest: 78.0 (Student 3)\n\nChoice: 5\n\nGoodbye!\n</pre>**Hints:**\n\n- Use a list to store grades: grades = []\n- Use grades.append(grade) to add grades\n- Check if list is empty before calculations: if len(grades) > 0\n- Use enumerate() to track student numbers: for i, grade in enumerate(grades, start=1)",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For validation, use 'if 0 <= grade <= 100'. For appending, use 'grades.append(grade)'. For average, divide total by len(grades). For tracking max/min, update both the value AND the student number when you find a new high/low. The enumerate(grades, start=1) gives you both index (starting at 1) and value!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

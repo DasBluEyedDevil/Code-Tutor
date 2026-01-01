@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a player inventory system!\n\n1. Create a List<string> called 'inventory'\n2. Add these items: 'Sword', 'Shield', 'Potion'\n3. Display the count of items\n4. Check if inventory Contains 'Potion' - if yes, display 'Potion ready!'\n5. Remove 'Potion' (it was used!)\n6. Add 'Gold Coin'\n7. Use a foreach loop to display all remaining items\n\nRemember: using System.Collections.Generic; at the top!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"inventory\"",
+      "expectedOutput": "inventory",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Item\"",
+      "expectedOutput": "Item",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create: List<string> list = new List<string>(); Add: list.Add(\"item\"); Remove: list.Remove(\"item\"); Check: list.Contains(\"item\")"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting using statement: List needs 'using System.Collections.Generic;' at the top! Without it, C# doesn't know what List is."
+    },
+    {
+      "level": 3,
+      "text": "Using .Length instead of .Count: Arrays use .Length, Lists use .Count! list.Length doesn't exist!"
+    },
+    {
+      "level": 4,
+      "text": "Forgetting <T>: Just 'List' is wrong! Must specify type: List<int>, List<string>, etc. The angle brackets are REQUIRED!"
+    },
+    {
+      "level": 5,
+      "text": "Index out of range on dynamic lists: If you remove items, the Count changes! Always loop with i < list.Count, not a hardcoded number."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting using statement",
+      "consequence": "List needs 'using System.Collections.Generic;' at the top! Without it, C# doesn't know what List is.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using .Length instead of .Count",
+      "consequence": "Arrays use .Length, Lists use .Count! list.Length doesn't exist!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting <T>",
+      "consequence": "Just 'List' is wrong! Must specify type: List<int>, List<string>, etc. The angle brackets are REQUIRED!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Index out of range on dynamic lists",
+      "consequence": "If you remove items, the Count changes! Always loop with i < list.Count, not a hardcoded number.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

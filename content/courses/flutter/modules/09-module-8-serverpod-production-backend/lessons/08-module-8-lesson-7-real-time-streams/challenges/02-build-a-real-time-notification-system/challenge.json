@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.7-challenge-1",
+  "title": "Build a Real-Time Notification System",
+  "description": "Create a complete notification system with server-side broadcasting and client-side handling.",
+  "instructions": "Implement a notification system with these requirements:\n\n1. Define a Notification model with fields: id, userId, type, title, body, isRead, createdAt\n2. Create a NotificationManager class that tracks connected user sessions\n3. Implement methods to:\n   - Add/remove user sessions on connect/disconnect\n   - Send notification to a specific user\n   - Broadcast notification to all connected users\n   - Check if a user is currently online\n4. Handle the case where a user has multiple devices connected\n5. Include proper error handling for disconnected sessions",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Correctly counts online users",
+      "expectedOutput": "Online users: 2",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Correctly counts total sessions",
+      "expectedOutput": "Total sessions: 3",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Correctly identifies online user",
+      "expectedOutput": "User 1 online: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Correctly identifies offline user",
+      "expectedOutput": "User 3 online: false",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Session count decreases after disconnect",
+      "expectedOutput": "Total sessions: 2",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a Map<int, Set<StreamingSession>> to track sessions. The key is userId, the value is a Set of all that user's connected sessions."
+    },
+    {
+      "level": 2,
+      "text": "In addSession, use the ??= operator to create the Set if it doesn't exist: _userSessions[userId] ??= {};"
+    },
+    {
+      "level": 3,
+      "text": "In removeSession, remember to clean up empty Sets to prevent memory leaks: if (sessions.isEmpty) _userSessions.remove(userId);"
+    },
+    {
+      "level": 4,
+      "text": "When iterating and potentially modifying a collection (like in sendToUser), use .toList() to avoid concurrent modification errors."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Map<int, StreamingSession> instead of Map<int, Set<StreamingSession>>",
+      "consequence": "Only one device per user can receive notifications - multiple devices are not supported",
+      "correction": "Use a Set for each user to support multiple simultaneous device connections"
+    },
+    {
+      "mistake": "Not cleaning up empty Sets in removeSession",
+      "consequence": "Memory leak - empty Sets accumulate for users who have disconnected",
+      "correction": "Check if the Set is empty after removal and delete the entry: if (sessions.isEmpty) _userSessions.remove(userId);"
+    },
+    {
+      "mistake": "Modifying collection while iterating in sendToUser",
+      "consequence": "ConcurrentModificationException when a send fails and you try to remove the session",
+      "correction": "Convert to list before iterating: for (final session in sessions.toList())"
+    },
+    {
+      "mistake": "Not handling send errors in sendToUser",
+      "consequence": "One failed send stops all remaining sends; stale sessions accumulate",
+      "correction": "Wrap each send in try-catch and remove failed sessions"
+    }
+  ],
+  "difficulty": "intermediate"
+}

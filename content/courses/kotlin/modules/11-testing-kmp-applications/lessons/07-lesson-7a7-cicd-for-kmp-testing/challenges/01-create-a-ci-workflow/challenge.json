@@ -1,0 +1,18 @@
+{
+  "id": "challenge-7a-7-1",
+  "title": "Create a CI Workflow",
+  "description": "Create a GitHub Actions workflow that runs tests efficiently for a KMP project.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use 'if: github.event_name == 'pull_request'' to limit expensive jobs",
+    "The 'gradle/gradle-build-action' handles caching automatically",
+    "Use 'if: always()' on upload-artifact to capture failure logs",
+    "The 'dorny/test-reporter' action creates nice summaries"
+  ],
+  "testCases": [
+    {
+      "description": "Workflow file is valid YAML",
+      "expectedBehavior": "No syntax errors when workflow runs"
+    }
+  ]
+}

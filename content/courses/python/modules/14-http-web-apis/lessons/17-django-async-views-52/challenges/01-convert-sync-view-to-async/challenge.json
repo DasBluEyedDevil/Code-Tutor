@@ -1,0 +1,52 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-django-async-challenge",
+  "title": "Convert Sync View to Async",
+  "description": "Convert a synchronous Django view to an async view using Django 5.2 async ORM methods. The view fetches user transactions and calculates statistics.",
+  "instructions": "Convert this sync view to async:\n\n1. Change the function to async def\n2. Replace .filter().order_by()[:10] iteration with async iteration\n3. Replace .count() with .acount()\n4. Replace the aggregate query with sync_to_async wrapper\n5. Ensure all database operations are properly awaited\n\nThe view should return the same data structure but execute asynchronously.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by changing 'def' to 'async def' for the function definition."
+    },
+    {
+      "level": 2,
+      "text": "For iteration over querysets, use 'async for tx in queryset:' instead of a regular for loop."
+    },
+    {
+      "level": 3,
+      "text": "Replace .count() with .acount() and add 'await' before it."
+    },
+    {
+      "level": 4,
+      "text": "For aggregate(), create a helper function and decorate it with @sync_to_async, then await the call."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using list() to convert queryset to list in async view",
+      "consequence": "Raises SynchronousOnlyOperation error",
+      "correction": "Use 'async for' loop or list comprehension with 'async for'"
+    },
+    {
+      "mistake": "Forgetting to await async ORM methods",
+      "consequence": "Returns coroutine object instead of actual data",
+      "correction": "Always use 'await' before acount(), afirst(), etc."
+    },
+    {
+      "mistake": "Using aggregate() directly without sync_to_async",
+      "consequence": "Raises SynchronousOnlyOperation in async context",
+      "correction": "Wrap aggregate queries with @sync_to_async decorator"
+    }
+  ],
+  "difficulty": "advanced"
+}

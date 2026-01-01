@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "15.2-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a Hono server ready for multi-platform deployment:\n\n1. Create a `honoApp` object that:\n   - Has routes for /, /health, and /api/users\n   - Shows which platform it's running on\n   - Demonstrates Hono's response helpers (c.text, c.json)\n\n2. Simulate deploying to different platforms (Bun, Workers, Deno)",
+  "instructions": "Simulate a Hono server ready for multi-platform deployment:\n\n1. Create a `honoApp` object that:\n   - Has routes for /, /health, and /api/users\n   - Shows which platform it's running on\n   - Demonstrates Hono's response helpers (c.text, c.json)\n\n2. Simulate deploying to different platforms (Bun, Workers, Deno)",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should handle requests on multiple platforms",
+      "expectedOutput": "Hello from Hono!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Hono uses c.text(), c.json(), c.html() for responses - the same API works everywhere!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting export default",
+      "consequence": "Bun and Cloudflare Workers need export default app to serve the application.",
+      "correction": "Always add: export default app"
+    },
+    {
+      "mistake": "Using Bun.env in Workers",
+      "consequence": "Bun.env only exists in Bun runtime, causing errors on Cloudflare Workers.",
+      "correction": "Use process.env which works everywhere, or check the runtime first."
+    },
+    {
+      "mistake": "Wrong import for Deno",
+      "consequence": "import { Hono } from 'hono' won't work in Deno without npm: prefix.",
+      "correction": "Use: import { Hono } from 'npm:hono'"
+    }
+  ],
+  "difficulty": "beginner"
+}

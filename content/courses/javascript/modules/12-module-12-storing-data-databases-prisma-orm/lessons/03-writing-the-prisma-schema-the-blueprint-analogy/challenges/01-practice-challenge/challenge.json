@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a Prisma schema structure in JavaScript:\n\n1. Create an object called `schema` with a `models` property\n2. Add a 'Product' model with these fields:\n   - id (integer, auto-increment)\n   - name (string, required)\n   - price (number, required)\n   - inStock (boolean, default true)\n   - description (string, optional)\n   - createdAt (date, default now)\n\n3. Create a function `generateModelSQL(model)` that simulates generating SQL\n4. Display the schema structure\n\nYou're simulating what Prisma does internally!",
+  "instructions": "Simulate a Prisma schema structure in JavaScript:\n\n1. Create an object called `schema` with a `models` property\n2. Add a 'Product' model with these fields:\n   - id (integer, auto-increment)\n   - name (string, required)\n   - price (number, required)\n   - inStock (boolean, default true)\n   - description (string, optional)\n   - createdAt (date, default now)\n\n3. Create a function `generateModelSQL(model)` that simulates generating SQL\n4. Display the schema structure\n\nYou're simulating what Prisma does internally!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Schema has Product model",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Product has required name field",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create nested objects: schema → models → Product → fields → {id, name, price...}"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common Prisma schema mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common Prisma schema mistakes:"
+    },
+    {
+      "mistake": "**Forgetting semicolons or using wrong syntax**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting semicolons or using wrong syntax**:\n   ```prisma\n   // Wrong! Prisma doesn't use semicolons\n   model User {\n     id Int @id;\n   }\n   \n   // Correct!\n   model User {\n     id Int @id\n   }\n   ```"
+    },
+    {
+      "mistake": "**Wrong field type capitalization**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong field type capitalization**:\n   ```prisma\n   // Wrong!\n   name string  // lowercase\n   \n   // Correct!\n   name String  // Pascal case\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

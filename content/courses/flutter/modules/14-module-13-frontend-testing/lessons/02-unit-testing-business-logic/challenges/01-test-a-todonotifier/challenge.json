@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.2-challenge-0",
+  "title": "Test a TodoNotifier",
+  "description": "Write unit tests for a TodoNotifier with add, toggle, and remove methods.",
+  "instructions": "Complete the test file to cover all TodoNotifier methods.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses ProviderContainer for testing",
+      "expectedOutput": "ProviderContainer",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use ProviderContainer to create an isolated test environment"
+    },
+    {
+      "level": 2,
+      "text": "Always call container.dispose() in tearDown"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not disposing the container",
+      "consequence": "Memory leaks in tests",
+      "correction": "Use tearDown(() => container.dispose())"
+    }
+  ],
+  "difficulty": "intermediate"
+}

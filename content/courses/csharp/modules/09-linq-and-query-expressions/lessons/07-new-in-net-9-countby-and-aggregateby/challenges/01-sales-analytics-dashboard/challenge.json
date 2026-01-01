@@ -1,0 +1,75 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-07-challenge-01",
+  "title": "Sales Analytics Dashboard",
+  "description": "Use CountBy and AggregateBy to analyze sales data.",
+  "instructions": "Given a list of sales records with Region and Amount:\n1. Use CountBy to find number of sales per region\n2. Use AggregateBy to find total sales amount per region\n3. Print both results with descriptive labels\n\nExpected output format:\n- Sales count per region: Region: X sales\n- Total sales per region: Region: $XXX",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-countby",
+      "description": "CountBy returns correct counts per region",
+      "expectedOutput": "North: 2",
+      "isVisible": true
+    },
+    {
+      "id": "test-aggregateby",
+      "description": "AggregateBy returns correct totals per region",
+      "expectedOutput": "North: $700",
+      "isVisible": true
+    },
+    {
+      "id": "test-south-count",
+      "description": "South region has correct count",
+      "expectedOutput": "South: 2",
+      "isVisible": true
+    },
+    {
+      "id": "test-south-total",
+      "description": "South region has correct total",
+      "expectedOutput": "South: $900",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CountBy syntax: 'collection.CountBy(item => item.KeyProperty)'. Returns KeyValuePair<TKey, int> that you can destructure: 'foreach (var (key, count) in results)'."
+    },
+    {
+      "level": 2,
+      "text": "AggregateBy needs three arguments: key selector (s => s.Region), seed value (0m for decimal sum), and accumulator function ((sum, item) => sum + item.Amount)."
+    },
+    {
+      "level": 3,
+      "text": "The seed value type determines the result type. Use 0m for decimal sums, 0 for int sums, \"\" for string concatenation."
+    },
+    {
+      "level": 4,
+      "text": "Both methods return IEnumerable<KeyValuePair<TKey, TValue>>. Use tuple deconstruction: 'foreach (var (region, value) in results)' for clean iteration."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using GroupBy + Count instead of CountBy",
+      "consequence": "CountBy is a single-method replacement that's more efficient and readable. Instead of .GroupBy(x => x.Key).Select(g => new { g.Key, g.Count() }), just use .CountBy(x => x.Key).",
+      "correction": "Replace the GroupBy chain with: sales.CountBy(s => s.Region)"
+    },
+    {
+      "mistake": "Forgetting the seed value in AggregateBy",
+      "consequence": "AggregateBy requires a seed value as the second argument. Without it, you'll get a compiler error.",
+      "correction": "Always provide a seed: sales.AggregateBy(key, 0m, (sum, item) => sum + item.Amount) where 0m is the seed for decimal sum."
+    },
+    {
+      "mistake": "Wrong seed type for aggregation",
+      "consequence": "The seed type determines the accumulator type. Using 0 (int) when summing decimals will cause type mismatch errors.",
+      "correction": "Match seed type to your values: 0m for decimal, 0 for int, 0.0 for double, \"\" for strings."
+    },
+    {
+      "mistake": "Trying to use CountBy/AggregateBy on .NET 8 or earlier",
+      "consequence": "These methods are new in .NET 9. Using them on earlier versions will result in 'method not found' errors.",
+      "correction": "Ensure your project targets .NET 9 or later in your .csproj file: <TargetFramework>net9.0</TargetFramework>"
+    }
+  ],
+  "difficulty": "intermediate"
+}

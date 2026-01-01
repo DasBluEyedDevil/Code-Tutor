@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.9-challenge-1",
+  "title": "Practice Challenge: Safe Array Operations",
+  "description": "You're building a leaderboard. Use modern array methods to sort and display scores WITHOUT modifying the original data.\n\n1. Display the top 3 scores (highest first) using toSorted()\n2. Get the last place score using at()\n3. Remove the player at index 2 using toSpliced() and show the new list",
+  "instructions": "Use toSorted(), at(), and toSpliced() to work with the data safely.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Top 3 are correctly sorted",
+      "expectedOutput": "Diana",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Original array is unchanged",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For descending sort: toSorted((a, b) => b.score - a.score)"
+    },
+    {
+      "level": 2,
+      "text": "Chain .slice(0, 3) after toSorted() to get top 3"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using sort() instead of toSorted()",
+      "consequence": "Original array gets mutated",
+      "correction": "Always use toSorted() when you need to preserve the original"
+    }
+  ],
+  "difficulty": "intermediate"
+}

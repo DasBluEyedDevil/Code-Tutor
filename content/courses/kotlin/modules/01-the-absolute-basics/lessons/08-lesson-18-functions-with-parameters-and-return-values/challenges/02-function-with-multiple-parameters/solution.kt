@@ -1,0 +1,7 @@
+fun multiply(a: Int, b: Int): Int {
+    return a * b
+}
+
+fun main() {
+    println(multiply(6, 7))
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-18-lesson-03-challenge-1",
+  "title": "Test Finance Tracker API",
+  "description": "Write async tests for a FastAPI endpoint that creates transactions for the Personal Finance Tracker.",
+  "instructions": "Complete the async test to:\n1. Create an AsyncClient with proper transport\n2. POST a transaction to the API\n3. Verify the response",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "AsyncClient configured correctly with ASGITransport",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `ASGITransport` to wrap the app. The HTTP method for creating resources is `post`. The endpoint path should be `/transactions`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using TestClient instead of AsyncClient",
+      "consequence": "TestClient runs synchronously and won't properly test async dependencies",
+      "correction": "Use AsyncClient with ASGITransport for true async testing"
+    },
+    {
+      "mistake": "Forgetting to await the client request",
+      "consequence": "Test compares coroutine object instead of response",
+      "correction": "Always await: response = await async_client.post(...)"
+    }
+  ],
+  "difficulty": "advanced"
+}

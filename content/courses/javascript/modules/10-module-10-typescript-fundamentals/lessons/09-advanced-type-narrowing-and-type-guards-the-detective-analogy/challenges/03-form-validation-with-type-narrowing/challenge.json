@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.10-challenge-3",
+  "title": "Form Validation with Type Narrowing",
+  "description": "Build a type-safe form validation system using multiple narrowing techniques. Handle different input types, validate data, and return typed results.",
+  "instructions": "1. Create FormField union type for text, email, and number fields\n2. Create ValidationResult discriminated union (valid/invalid)\n3. Implement validateField function using typeof, in operator, and custom logic\n4. Implement validateForm that processes an array of fields\n5. Test with various valid and invalid inputs",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Detects invalid form",
+      "expectedOutput": "Form valid: false",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Finds text length error",
+      "expectedOutput": "at least 10 characters",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Finds email format error",
+      "expectedOutput": "valid email address",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use switch (field.type) to narrow the field type automatically"
+    },
+    {
+      "level": 2,
+      "text": "Check optional properties with !== undefined before using them"
+    },
+    {
+      "level": 3,
+      "text": "Use !result.valid to narrow to InvalidResult and access result.error"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Checking field.minLength without undefined check",
+      "consequence": "Comparing undefined < number gives false, but 0 is a valid minLength",
+      "correction": "Use field.minLength !== undefined before the comparison"
+    },
+    {
+      "mistake": "Not using block scope {} in switch cases",
+      "consequence": "Variable declarations can conflict between cases",
+      "correction": "Wrap each case in braces: case 'text': { ... }"
+    }
+  ],
+  "difficulty": "intermediate"
+}

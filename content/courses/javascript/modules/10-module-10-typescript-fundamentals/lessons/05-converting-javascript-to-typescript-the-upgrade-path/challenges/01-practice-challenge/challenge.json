@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Convert this JavaScript code to TypeScript:\n\nYou have a function `getFullName` that takes a user object with firstName and lastName properties and returns the full name.\n\nTasks:\n1. Create a `User` interface with firstName and lastName (both strings)\n2. Add type annotations to the function parameter and return type\n3. Create a typed user object\n4. Test the function\n\nOriginal JavaScript:\n```javascript\nfunction getFullName(user) {\n  return user.firstName + ' ' + user.lastName;\n}\n\nlet user = {\n  firstName: 'Jane',\n  lastName: 'Doe'\n};\n```",
+  "instructions": "Convert this JavaScript code to TypeScript:\n\nYou have a function `getFullName` that takes a user object with firstName and lastName properties and returns the full name.\n\nTasks:\n1. Create a `User` interface with firstName and lastName (both strings)\n2. Add type annotations to the function parameter and return type\n3. Create a typed user object\n4. Test the function\n\nOriginal JavaScript:\n```javascript\nfunction getFullName(user) {\n  return user.firstName + ' ' + user.lastName;\n}\n\nlet user = {\n  firstName: 'Jane',\n  lastName: 'Doe'\n};\n```",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should return full name",
+      "expectedOutput": "Jane Doe",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should work with different names",
+      "expectedOutput": "John Smith",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add `: string` to both interface properties, `: User` to the function parameter, and `: string` for the return type."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common migration mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common migration mistakes:"
+    },
+    {
+      "mistake": "**Trying to convert everything at once**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Trying to convert everything at once**:\n   - This is overwhelming and error-prone\n   - Convert one file or module at a time\n   - Start with core utilities, then work outward"
+    },
+    {
+      "mistake": "**Using 'any' everywhere**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Using 'any' everywhere**:\n   ```typescript\n   function process(data: any): any {  // Bad!\n     // ...\n   }\n   ```\n   - This defeats the purpose of TypeScript\n   - Take time to figure out the correct types\n   - Use 'any' only as a temporary placeholder"
+    }
+  ],
+  "difficulty": "beginner"
+}

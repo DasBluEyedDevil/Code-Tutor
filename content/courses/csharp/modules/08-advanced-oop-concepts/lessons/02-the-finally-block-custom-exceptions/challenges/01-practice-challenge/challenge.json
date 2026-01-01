@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-08-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a banking system with custom exception and finally!\n\n1. CUSTOM EXCEPTION 'InsufficientFundsException':\n   - Inherits from Exception\n   - Constructor accepts message\n\n2. CLASS 'BankAccount':\n   - Property: decimal Balance\n   - Method Withdraw(amount):\n     - If amount > Balance, throw InsufficientFundsException\n     - Otherwise, subtract amount\n\n3. In main code:\n   - Create account with balance $100\n   - Try to withdraw $150 (will throw exception)\n   - Catch InsufficientFundsException\n   - Finally: Display \"Transaction complete\"",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Balance\"",
+      "expectedOutput": "Balance",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Error\"",
+      "expectedOutput": "Error",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Transaction complete\"",
+      "expectedOutput": "Transaction complete",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Custom exception: 'class MyException : Exception'. Constructor: ': base(message)'. Throw: 'throw new MyException(\"message\")'. Finally always runs after try/catch!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting base constructor: 'class MyEx : Exception { }' without constructor works, but you can't pass custom messages! Always add constructor with ': base(message)'."
+    },
+    {
+      "level": 3,
+      "text": "Finally for logic: Finally is for CLEANUP, not business logic! Don't put critical app logic in finally - use it for closing files, releasing locks, etc."
+    },
+    {
+      "level": 4,
+      "text": "Return in finally: 'return' in finally block overrides return in try/catch! Avoid returning values from finally - it's confusing and error-prone."
+    },
+    {
+      "level": 5,
+      "text": "Not throwing custom exception: Creating 'new InvalidAgeException()' without 'throw' does nothing! Must use 'throw new InvalidAgeException()' to actually throw it."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting base constructor",
+      "consequence": "'class MyEx : Exception { }' without constructor works, but you can't pass custom messages! Always add constructor with ': base(message)'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Finally for logic",
+      "consequence": "Finally is for CLEANUP, not business logic! Don't put critical app logic in finally - use it for closing files, releasing locks, etc.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Return in finally",
+      "consequence": "'return' in finally block overrides return in try/catch! Avoid returning values from finally - it's confusing and error-prone.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not throwing custom exception",
+      "consequence": "Creating 'new InvalidAgeException()' without 'throw' does nothing! Must use 'throw new InvalidAgeException()' to actually throw it.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

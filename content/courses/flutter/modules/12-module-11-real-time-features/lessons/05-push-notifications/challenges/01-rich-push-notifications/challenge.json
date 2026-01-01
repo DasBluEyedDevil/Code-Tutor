@@ -1,0 +1,24 @@
+{
+  "id": "11.5-challenge-0",
+  "title": "Rich Push Notifications",
+  "description": "Implement rich push notifications with images, action buttons, and notification channels.",
+  "instructions": "Extend the basic push notification system with advanced features:\n\n1. **Rich Media**: Display images in notifications\n2. **Action Buttons**: Add 'Reply' and 'Mark as Read' buttons to chat notifications\n3. **Notification Channels** (Android): Create separate channels for:\n   - Chat messages (high priority, sound)\n   - Order updates (default priority)\n   - Promotions (low priority, no sound)\n4. **Grouping**: Group multiple notifications from the same conversation\n\nRequirements:\n- Use flutter_local_notifications for advanced features\n- Create AndroidNotificationChannel for each category\n- Implement notification actions that work when app is backgrounded\n- Handle action button taps appropriately\n- Support inline reply for chat notifications",
+  "type": "implementation",
+  "expectedOutput": "A complete rich notification system with images, action buttons, proper channels, and notification grouping.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use AndroidNotificationChannel with different Importance levels: Importance.high for chat, Importance.defaultImportance for orders, Importance.low for promos."
+    },
+    {
+      "level": 2,
+      "text": "For action buttons, use AndroidNotificationAction with 'reply' and 'mark_read' action IDs. The reply action needs showsUserInterface: false and inputs for inline reply."
+    },
+    {
+      "level": 3,
+      "text": "Group notifications using the 'groupKey' parameter in AndroidNotificationDetails. Create a summary notification with setAsGroupSummary: true for each group."
+    }
+  ]
+}

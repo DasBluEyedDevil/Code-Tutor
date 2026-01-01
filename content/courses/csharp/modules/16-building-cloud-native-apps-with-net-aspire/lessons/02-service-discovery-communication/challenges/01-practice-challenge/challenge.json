@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-16-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a typed HTTP client for an inventory service!\n\n1. Define InventoryItem record:\n   - Id (int), Sku (string), Quantity (int), WarehouseId (string)\n\n2. Create InventoryApiClient class:\n   - Constructor takes HttpClient\n   - GetAllItemsAsync() - GET /api/inventory\n   - GetItemBySkuAsync(sku) - GET /api/inventory/{sku}\n   - UpdateQuantityAsync(sku, quantity) - PUT /api/inventory/{sku}/quantity\n   - CheckStockAsync(sku, required) - GET /api/inventory/{sku}/check?required={required}\n\n3. Use service discovery URL: http://inventory-api\n\nRemember: Use GetFromJsonAsync, PostAsJsonAsync, etc.!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm implementation",
+      "expectedOutput": "InventoryApiClient",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should show service discovery URL",
+      "expectedOutput": "inventory-api",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "GetFromJsonAsync<T>(url) does GET + deserialize in one call. Returns T? so handle nulls."
+    },
+    {
+      "level": 2,
+      "text": "PutAsJsonAsync(url, object) serializes object to JSON and sends PUT. Returns HttpResponseMessage."
+    },
+    {
+      "level": 3,
+      "text": "Query strings: $\"/api/endpoint?param={value}\" - string interpolation works in URLs!"
+    },
+    {
+      "level": 4,
+      "text": "Handle 404s gracefully! GetFromJsonAsync throws on non-success. Catch HttpRequestException and check StatusCode."
+    },
+    {
+      "level": 5,
+      "text": "Anonymous types for simple bodies: new { quantity } creates { \"quantity\": value } JSON."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Hardcoding full URLs",
+      "consequence": "http://localhost:5001/api/inventory works locally but fails in production! Defeats service discovery.",
+      "correction": "Use relative paths (/api/inventory) with BaseAddress set to service name (http://inventory-api)."
+    },
+    {
+      "mistake": "Not handling HTTP errors",
+      "consequence": "GetFromJsonAsync throws on 404, 500, etc. Unhandled exception crashes your app!",
+      "correction": "Wrap in try-catch, check response.IsSuccessStatusCode, or use HttpResponseMessage directly."
+    },
+    {
+      "mistake": "Creating HttpClient manually",
+      "consequence": "new HttpClient() in each method = socket exhaustion! HttpClient should be reused.",
+      "correction": "Inject HttpClient via constructor. Let DI manage lifecycle. AddHttpClient<T> handles pooling."
+    },
+    {
+      "mistake": "Forgetting AddServiceDefaults()",
+      "consequence": "Service discovery won't work! http://service-name fails to resolve.",
+      "correction": "Always call builder.AddServiceDefaults() in each service's Program.cs. It enables service discovery."
+    }
+  ],
+  "difficulty": "advanced"
+}

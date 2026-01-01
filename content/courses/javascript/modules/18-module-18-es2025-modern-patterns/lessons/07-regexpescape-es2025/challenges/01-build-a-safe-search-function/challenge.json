@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.7-challenge",
+  "title": "Build a Safe Search Function",
+  "description": "Create a search function that safely handles any user input including special regex characters.",
+  "instructions": "Create a function called `safeSearch` that takes a text string and a search term, and returns all positions (indices) where the search term appears. The search should be case-insensitive and handle special characters safely.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Finds all occurrences with special characters",
+      "expectedOutput": "[13, 26, 41]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Works with dots",
+      "input": "safeSearch('file.txt is not fileXtxt', 'file.txt')",
+      "expectedOutput": "[0]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use RegExp.escape() to handle special characters in the search term"
+    },
+    {
+      "level": 2,
+      "text": "Use regex.exec() in a while loop to find all matches and collect their .index properties"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using string.indexOf() in a loop",
+      "consequence": "Works but doesn't demonstrate RegExp.escape usage",
+      "correction": "Use new RegExp(RegExp.escape(searchTerm), 'gi') with exec()"
+    },
+    {
+      "mistake": "Forgetting the 'g' flag",
+      "consequence": "exec() returns the same match infinitely in the while loop",
+      "correction": "Always use 'g' flag when using exec() in a loop"
+    }
+  ],
+  "difficulty": "beginner"
+}

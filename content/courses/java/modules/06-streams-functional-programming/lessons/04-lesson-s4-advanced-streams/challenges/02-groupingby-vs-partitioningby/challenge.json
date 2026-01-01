@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "streams-lesson-4-mc-2",
+  "title": "groupingBy vs partitioningBy",
+  "description": "Choosing the right grouping operation",
+  "question": "What is the key difference between groupingBy and partitioningBy?",
+  "options": [
+    "partitioningBy is faster than groupingBy",
+    "groupingBy can only group by String keys",
+    "partitioningBy always returns exactly two groups (true/false), groupingBy can return any number of groups",
+    "partitioningBy modifies the original collection"
+  ],
+  "correctAnswer": 2,
+  "explanation": "partitioningBy uses a Predicate and always returns a Map with exactly two keys: true and false. groupingBy uses a classifier function and can return any number of groups based on the key values. Use partitioningBy for binary splits, groupingBy for multi-category grouping.",
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,53 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-10-lesson-04-challenge-1",
+  "title": "Challenge 1: Create a FastAPI Project",
+  "description": "Create a pyproject.toml for a FastAPI web API project. The project should include FastAPI, Pydantic (for data validation), Uvicorn (ASGI server), and development dependencies for testing and linting.\n\n**Requirements:**\n- Project name: \"my-api\"\n- Python 3.13 or higher\n- Production dependencies: fastapi, pydantic, uvicorn\n- Dev dependencies: pytest, httpx (for testing async), ruff",
+  "instructions": "Create a complete pyproject.toml file that follows modern Python standards with uv.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "pyproject.toml has required project section",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with [project] section containing name, version, requires-python, and dependencies list."
+    },
+    {
+      "level": 2,
+      "text": "Use [project.optional-dependencies] with a 'dev' key for development dependencies."
+    },
+    {
+      "level": 3,
+      "text": "Add [build-system] with hatchling, and [tool.ruff] for linter configuration."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Missing quotes around dependency strings",
+      "consequence": "TOML parsing error",
+      "correction": "Each dependency must be a quoted string: \"fastapi>=0.115.0\""
+    },
+    {
+      "mistake": "Using requirements.txt format",
+      "consequence": "Invalid TOML - wrong format",
+      "correction": "Use TOML list format with brackets and quoted strings"
+    },
+    {
+      "mistake": "Forgetting requires-python",
+      "consequence": "May run on incompatible Python versions",
+      "correction": "Always specify requires-python = \">=3.13\" or your minimum version"
+    },
+    {
+      "mistake": "Putting dev deps in main dependencies",
+      "consequence": "Production installs unnecessary packages",
+      "correction": "Use [project.optional-dependencies] dev = [...] for dev-only packages"
+    }
+  ],
+  "difficulty": "intermediate"
+}

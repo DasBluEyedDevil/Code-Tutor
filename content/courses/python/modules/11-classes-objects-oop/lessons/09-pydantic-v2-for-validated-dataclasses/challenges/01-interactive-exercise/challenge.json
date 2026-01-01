@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-11-lesson-09-challenge-1",
+  "title": "Interactive Exercise",
+  "description": "Create a validated Invoice system using Pydantic-style patterns:\n- InvoiceItem with name, quantity, unit_price (all validated)\n- Invoice with items list, computed subtotal, tax, and total\n- Validate quantity > 0, unit_price >= 0\n- Tax rate configurable, defaults to 8%",
+  "instructions": "Create a validated Invoice system using Pydantic-style patterns:\n- InvoiceItem with name, quantity (int > 0), unit_price (float >= 0)\n- Invoice with customer, items list, tax_rate (default 0.08)\n- Computed fields: subtotal, tax_amount, total\n- All validation in __post_init__ or property",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use __post_init__ for validation. For frozen dataclasses, use object.__setattr__ to modify values in __post_init__. Use @property for computed fields."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Modifying self.field in __post_init__ of frozen dataclass",
+      "consequence": "FrozenInstanceError",
+      "correction": "Use object.__setattr__(self, 'field', value)"
+    },
+    {
+      "mistake": "Not rounding currency values",
+      "consequence": "Floating point precision issues",
+      "correction": "Use round(value, 2) for currency"
+    }
+  ],
+  "difficulty": "intermediate"
+}

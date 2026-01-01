@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-3-mc-2",
+  "title": "ExecutorService Shutdown",
+  "description": "Understanding proper executor lifecycle",
+  "question": "What happens if you never call shutdown() on an ExecutorService?",
+  "options": [
+    "The executor automatically shuts down when all tasks complete",
+    "The JVM never exits because executor threads are still alive",
+    "A memory leak occurs but the program can still exit",
+    "An exception is thrown after 60 seconds"
+  ],
+  "correctAnswer": 1,
+  "explanation": "ExecutorService threads are non-daemon by default. The JVM won't exit while non-daemon threads are alive. Your program will hang indefinitely until you call shutdown(). Always shutdown executors in a finally block or use try-with-resources (Java 19+).",
+  "difficulty": "intermediate"
+}

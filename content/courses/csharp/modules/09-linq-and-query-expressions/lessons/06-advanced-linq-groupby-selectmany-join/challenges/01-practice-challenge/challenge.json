@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Practice advanced LINQ operations!\n\n1. Create a list of students with properties: Name, Grade (A/B/C), Score\n   - At least 6 students across different grades\n\n2. Use GroupBy to:\n   - Group students by Grade\n   - For each group, print the grade and all student names\n\n3. Use GroupBy with aggregation to find:\n   - Average score per grade\n   - Print: 'Grade A: Average = 92.5' etc.\n\n4. Create a list of Courses with: CourseId, Name, StudentNames (string[])\n   Use SelectMany to get all unique student names across all courses.\n\nDemonstrate GroupBy, aggregation, and SelectMany!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Grade\"",
+      "expectedOutput": "Grade",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Average\"",
+      "expectedOutput": "Average",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"SelectMany\" or list all students",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "GroupBy syntax: 'collection.GroupBy(x => x.Property)'. Each group has .Key (the property value) and contains all matching items."
+    },
+    {
+      "level": 2,
+      "text": "GroupBy with aggregation: '.GroupBy(x => x.Prop).Select(g => new { g.Key, Avg = g.Average(x => x.Value) })'. Use .Average(), .Sum(), .Count() on each group."
+    },
+    {
+      "level": 3,
+      "text": "SelectMany flattens: If you have List<Course> where each Course has string[] Students, 'courses.SelectMany(c => c.Students)' gives you one flat list of all student names."
+    },
+    {
+      "level": 4,
+      "text": "Distinct removes duplicates: 'collection.SelectMany(...).Distinct()' returns only unique values."
+    },
+    {
+      "level": 5,
+      "text": "Join requires 4 arguments: outer.Join(inner, outerKey, innerKey, resultSelector). Keys must match types exactly!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting IGrouping is enumerable",
+      "consequence": "GroupBy returns groups, not items! Each group IS an IEnumerable. Iterate with 'foreach (var item in group)' or use LINQ methods on the group itself.",
+      "correction": "Access items: 'foreach (var group in grouped) { foreach (var item in group) { ... } }'. Or aggregate: 'group.Sum(x => x.Value)'."
+    },
+    {
+      "mistake": "SelectMany vs Select confusion",
+      "consequence": "Select returns nested collections: IEnumerable<string[]>. SelectMany flattens: IEnumerable<string>. Use SelectMany when you want one flat list from nested data!",
+      "correction": "If you're getting IEnumerable<IEnumerable<T>> and want IEnumerable<T>, switch from Select to SelectMany."
+    },
+    {
+      "mistake": "Join key type mismatch",
+      "consequence": "Join keys must be the same type! Joining on 'order.ProductId (int)' and 'product.Id (string)' will return ZERO results with no error!",
+      "correction": "Ensure key types match exactly. Convert if needed: 'order => order.ProductId.ToString()' to match string keys."
+    },
+    {
+      "mistake": "Expecting LEFT JOIN behavior from Join",
+      "consequence": "LINQ .Join() is an INNER JOIN - only items with matching keys appear! Items without matches are silently excluded.",
+      "correction": "For LEFT JOIN behavior (keep all left items even without matches), use .GroupJoin() with .DefaultIfEmpty()."
+    }
+  ],
+  "difficulty": "advanced"
+}

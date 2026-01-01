@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.3-challenge",
+  "title": "Implement Auth Hooks",
+  "description": "Create custom hooks for authentication using React Query.",
+  "instructions": "Create packages/web/src/hooks/use-auth.ts with useLogin, useRegister, and useLogout hooks that use the API client and React Query.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "useLogin returns mutation with correct shape",
+      "expectedOutput": "mutate|mutateAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "useRegister invalidates auth queries on success",
+      "expectedOutput": "setQueryData",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "useLogout clears auth and tasks from cache",
+      "expectedOutput": "removeQueries",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use useMutation for login and register since they modify state"
+    },
+    {
+      "level": 2,
+      "text": "Use queryClient.setQueryData to cache the user after successful login"
+    },
+    {
+      "level": 3,
+      "text": "On logout, remove all cached queries to prevent stale data"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not caching user after login",
+      "consequence": "App makes redundant API call to get current user",
+      "correction": "Use queryClient.setQueryData in onSuccess"
+    }
+  ],
+  "difficulty": "intermediate"
+}

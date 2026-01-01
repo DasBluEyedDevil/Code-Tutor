@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.12-challenge-1",
+  "title": "Launch Day Runbook",
+  "description": "Create a comprehensive operational runbook with monitoring dashboards, rollback procedures, communication templates, and escalation paths for launch day.",
+  "instructions": "Build a complete launch day operations system:\n\n1. Create a LaunchDayDashboard widget showing real-time metrics:\n   - Active users (with geographic distribution)\n   - Error rate and top errors\n   - API response times\n   - App store ratings and reviews\n\n2. Implement RollbackManager class with:\n   - Staged rollback (reduce rollout percentage)\n   - Full rollback to previous version\n   - Feature flag kill switches\n   - Database migration rollback\n\n3. Create CommunicationTemplates for:\n   - Status page updates\n   - User notification messages\n   - Team Slack alerts\n   - Executive summary emails\n\n4. Build EscalationManager with:\n   - Severity level definitions (P1-P4)\n   - On-call rotation lookup\n   - Automatic escalation timers\n   - PagerDuty/Opsgenie integration\n\n5. Implement IncidentTracker for:\n   - Incident creation and timeline\n   - Action items assignment\n   - Post-mortem generation\n   - Metrics impact calculation",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For real-time metrics, use StreamProvider with WebSocket or Server-Sent Events connection to your monitoring backend"
+    },
+    {
+      "level": 2,
+      "text": "Store escalation SLAs as constants: P1=15min, P2=30min, P3=2hr, P4=24hr and use Timer to check for breaches"
+    },
+    {
+      "level": 3,
+      "text": "For Slack Block Kit messages, use sections with mrkdwn type for formatted text and actions array for interactive buttons"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not testing rollback procedures before launch",
+      "consequence": "Rollback fails during actual incident, extending downtime",
+      "correction": "Run rollback drills in staging environment before every major release"
+    },
+    {
+      "mistake": "Having only one escalation path (e.g., only Slack)",
+      "consequence": "Critical alerts missed if primary channel is down or person is unavailable",
+      "correction": "Implement redundant alerting through multiple channels: Slack + PagerDuty + SMS"
+    }
+  ],
+  "difficulty": "advanced"
+}

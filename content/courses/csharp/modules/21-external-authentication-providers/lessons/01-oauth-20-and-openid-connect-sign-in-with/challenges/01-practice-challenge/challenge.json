@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-21-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Configure Google OAuth authentication for a web application.",
+  "instructions": "Set up Google authentication for the ShopFlow application!\n\n1. Configure authentication with:\n   - Default scheme: Cookies\n   - Challenge scheme: Google\n\n2. Add Cookie authentication with:\n   - LoginPath: /login\n   - HttpOnly cookies\n   - 7-day expiration\n\n3. Add Google authentication with:\n   - ClientId and ClientSecret from configuration\n   - Add 'email' and 'profile' scopes\n   - SaveTokens = true\n\n4. Create endpoints:\n   - GET /login - Challenge with Google\n   - GET /profile - Return user's name and email (protected)\n\n5. Add proper middleware order!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure Google authentication",
+      "expectedOutput": "AddGoogle",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should add email scope",
+      "expectedOutput": "email",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should use cookie authentication",
+      "expectedOutput": "AddCookie",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should save tokens",
+      "expectedOutput": "SaveTokens",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with builder.Services.AddAuthentication() and set both DefaultScheme and DefaultChallengeScheme."
+    },
+    {
+      "level": 2,
+      "text": "Chain .AddCookie() and .AddGoogle() to the AddAuthentication call."
+    },
+    {
+      "level": 3,
+      "text": "For Google, use options.Scope.Add() to request additional scopes."
+    },
+    {
+      "level": 4,
+      "text": "The /login endpoint should return Results.Challenge() with GoogleDefaults.AuthenticationScheme."
+    },
+    {
+      "level": 5,
+      "text": "Access claims using ctx.User.FindFirst(ClaimTypes.Name)?.Value for the profile endpoint."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Hardcoding ClientId and ClientSecret",
+      "consequence": "Secrets get committed to source control and exposed publicly.",
+      "correction": "Always load secrets from configuration, user secrets, or a vault service."
+    },
+    {
+      "mistake": "Forgetting to add the email scope",
+      "consequence": "The email claim will be null because you didn't request permission to access it.",
+      "correction": "Add options.Scope.Add(\"email\") to request the email scope from Google."
+    },
+    {
+      "mistake": "Not setting SaveTokens = true when needed",
+      "consequence": "You cannot call Google APIs on behalf of the user because you don't have their access token.",
+      "correction": "Set SaveTokens = true if you plan to call provider APIs after authentication."
+    },
+    {
+      "mistake": "Using wrong claim types",
+      "consequence": "Claims return null because you're looking for the wrong claim type string.",
+      "correction": "Use ClaimTypes.Name, ClaimTypes.Email, or check the actual claim types in the user's claims collection."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.2.2",
+  "title": "Simple In-Memory Database",
+  "description": "Create a simple in-memory user database using a mutableListOf. Add methods to add and find users.",
+  "instructions": "Create a simple in-memory user database using a mutableListOf. Add methods to add and find users.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should find existing user",
+      "expectedOutput": "User(id=1, name=Alice, email=alice@example.com)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should return null for non-existent user",
+      "expectedOutput": "null",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use mutableListOf to store users"
+    },
+    {
+      "level": 2,
+      "text": "add() method adds to list"
+    },
+    {
+      "level": 3,
+      "text": "find() method searches list with predicate"
+    },
+    {
+      "level": 4,
+      "text": "Return null if not found"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

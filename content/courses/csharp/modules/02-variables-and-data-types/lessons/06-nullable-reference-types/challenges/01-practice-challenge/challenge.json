@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-02-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a user profile system with nullable handling!\n\n1. Create a non-nullable string 'username' (required)\n2. Create a nullable string 'bio' (optional)\n3. Create a nullable string 'website' (optional)\n4. Display username (always safe)\n5. Display bio using ?? to show 'No bio provided' if null\n6. Display website using ?. and ?? to safely get Length or show 'No website'",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain 'Username'",
+      "expectedOutput": "Username",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain 'Bio'",
+      "expectedOutput": "Bio",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain 'No bio provided' or similar",
+      "expectedOutput": "No bio",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use ?? to provide fallback values: bio ?? 'No bio'. Use ?. for safe member access: website?.Length."
+    },
+    {
+      "level": 2,
+      "text": "Remember: string is non-nullable (must have value), string? is nullable (can be null). The ? makes the difference!"
+    },
+    {
+      "level": 3,
+      "text": "You can chain operators: website?.Length ?? 0 - gets length if website exists, otherwise 0."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Ignoring nullable warnings",
+      "consequence": "Compiler warnings about possible null references help prevent NullReferenceException at runtime. Don't suppress them without good reason!",
+      "correction": "Always handle nullable values with ?., ??, if-checks, or pattern matching."
+    },
+    {
+      "mistake": "Overusing the ! operator",
+      "consequence": "The null-forgiving operator (!) bypasses safety checks. If you're wrong, you'll get a NullReferenceException anyway!",
+      "correction": "Only use ! when you KNOW for certain a value isn't null and the compiler just can't prove it."
+    },
+    {
+      "mistake": "Forgetting ? on nullable types",
+      "consequence": "Without ?, the compiler assumes the variable should never be null. You'll get warnings if you assign null to it.",
+      "correction": "Add ? to types that might legitimately be null: string? optionalName = null;"
+    }
+  ],
+  "difficulty": "intermediate"
+}

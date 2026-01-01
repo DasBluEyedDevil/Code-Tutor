@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.3.1",
+  "title": "Day of Week",
+  "description": "Use 'when' to print if a day number (1-7) is a weekday or weekend.",
+  "instructions": "Use 'when' to print if a day number (1-7) is a weekday or weekend.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "For day 6, prints 'Weekend'",
+      "expectedOutput": "Weekend",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Saturday (day 6) is a weekend day",
+      "expectedOutput": "Weekend",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'when (day) { }'"
+    },
+    {
+      "level": 2,
+      "text": "Use 'in 1..5' for range"
+    },
+    {
+      "level": 3,
+      "text": "Day 6 is Weekend"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting else branch",
+      "consequence": "Invalid days not handled",
+      "correction": "Include else for values outside 1-7"
+    },
+    {
+      "mistake": "Using 0..4 instead of 1..5",
+      "consequence": "Wrong weekday range",
+      "correction": "Days 1-5 are weekdays, 6-7 are weekend"
+    },
+    {
+      "mistake": "Using if-else instead of when",
+      "consequence": "Less readable code",
+      "correction": "When is more elegant for multiple branches"
+    }
+  ],
+  "difficulty": "intermediate"
+}

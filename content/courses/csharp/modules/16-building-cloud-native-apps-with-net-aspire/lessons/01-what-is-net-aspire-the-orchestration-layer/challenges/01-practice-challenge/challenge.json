@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-16-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an AppHost configuration for an e-commerce system!\n\n1. Define the infrastructure:\n   - Redis cache named 'productcache'\n   - Postgres database named 'orderdb'\n   - RabbitMQ message broker named 'messaging'\n\n2. Define three services:\n   - ProductApi: references Redis cache\n   - OrderApi: references Postgres and RabbitMQ\n   - WebStore: references both APIs\n\n3. Add comments explaining what each section does\n\nThink about the dependency chain: Web -> APIs -> Infrastructure",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm e-commerce configuration",
+      "expectedOutput": "E-Commerce",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention infrastructure components",
+      "expectedOutput": "Redis",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "AddRedis, AddPostgres, AddRabbitMQ create infrastructure. Chain .AddDatabase() for Postgres databases."
+    },
+    {
+      "level": 2,
+      "text": "AddProject<Projects.ProjectName>('servicename') adds a .NET project. The name is used for service discovery."
+    },
+    {
+      "level": 3,
+      "text": ".WithReference(resource) creates a dependency. The service receives connection info automatically."
+    },
+    {
+      "level": 4,
+      "text": "Order matters for dependencies! Define infrastructure first, then services that use them."
+    },
+    {
+      "level": 5,
+      "text": "Multiple .WithReference() calls chain: .WithReference(db).WithReference(cache) connects to both."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to store infrastructure reference",
+      "consequence": "builder.AddRedis('cache'); then later .WithReference(???) - you need the variable! var cache = builder.AddRedis('cache');",
+      "correction": "Always store infrastructure in variables: var cache = builder.AddRedis('cache'); then .WithReference(cache)"
+    },
+    {
+      "mistake": "Wrong project reference syntax",
+      "consequence": "AddProject('MyApi') doesn't work! Aspire needs the compile-time project reference with generic syntax.",
+      "correction": "Use AddProject<Projects.MyApi>('myapi') - Projects.MyApi is auto-generated from your solution."
+    },
+    {
+      "mistake": "Circular dependencies",
+      "consequence": "ServiceA.WithReference(serviceB) and ServiceB.WithReference(serviceA) creates a deadlock at startup!",
+      "correction": "Design clear dependency hierarchy. Usually: Web -> APIs -> Infrastructure. Use messaging for bidirectional communication."
+    },
+    {
+      "mistake": "Not understanding local vs production",
+      "consequence": "Aspire uses containers locally but you might deploy to managed services. Connection strings differ!",
+      "correction": "Aspire abstracts this! Same code works locally (containers) and in production (Azure services). Configuration handles the difference."
+    }
+  ],
+  "difficulty": "advanced"
+}

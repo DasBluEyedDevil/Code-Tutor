@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-20-03-challenge-01",
+  "title": "Implement Logout Endpoint",
+  "description": "Create a secure logout endpoint that properly terminates the user session.",
+  "instructions": "Implement a logout endpoint for ShopFlow!\n\n1. Create a LogoutHandler that:\n   - Uses SignInManager to sign out the user\n   - Logs the logout event with user ID and timestamp\n   - Returns a success result\n\n2. Create the logout API endpoint:\n   - Route: POST /api/auth/logout\n   - Require authentication (user must be logged in to log out)\n   - Return 200 OK with a success message\n\n3. Important considerations:\n   - Use SignInManager<ApplicationUser>.SignOutAsync()\n   - Get the current user ID from HttpContext.User\n   - Log the logout event for security auditing\n\nHint: The logout endpoint should be a POST, not GET, to prevent CSRF attacks via image tags or links.",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should call SignOutAsync",
+      "expectedOutput": "SignOutAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should log the logout event",
+      "expectedOutput": "LogInformation",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should require authorization",
+      "expectedOutput": "RequireAuthorization",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should use POST method",
+      "expectedOutput": "MapPost",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a simple LogoutCommand record that takes the user's ID as a parameter."
+    },
+    {
+      "level": 2,
+      "text": "Inject SignInManager<ApplicationUser> into your handler and call SignOutAsync()."
+    },
+    {
+      "level": 3,
+      "text": "Get the user ID from HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)."
+    },
+    {
+      "level": 4,
+      "text": "Use MapPost for the logout endpoint and chain .RequireAuthorization() to ensure only authenticated users can log out."
+    },
+    {
+      "level": 5,
+      "text": "Use ILogger.LogInformation to log the logout event with the user ID and timestamp."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using GET instead of POST for logout",
+      "consequence": "Attackers can log users out by embedding <img src='/api/auth/logout'> in a page. This is a CSRF vulnerability.",
+      "correction": "Always use POST for logout endpoints. This requires an intentional form submission or JavaScript fetch call."
+    },
+    {
+      "mistake": "Not requiring authentication for logout",
+      "consequence": "Anonymous users can hit the logout endpoint, which might cause errors or unexpected behavior.",
+      "correction": "Add .RequireAuthorization() to ensure only authenticated users can access the logout endpoint."
+    },
+    {
+      "mistake": "Forgetting to await SignOutAsync",
+      "consequence": "The sign-out may not complete before the response is sent, potentially leaving the user still logged in.",
+      "correction": "Always await SignOutAsync() to ensure the sign-out completes before returning a response."
+    },
+    {
+      "mistake": "Not logging the logout event",
+      "consequence": "You lose security audit trail. Cannot track suspicious logout patterns or investigate incidents.",
+      "correction": "Log all authentication events including logouts with user ID, timestamp, and IP address."
+    }
+  ],
+  "difficulty": "intermediate"
+}

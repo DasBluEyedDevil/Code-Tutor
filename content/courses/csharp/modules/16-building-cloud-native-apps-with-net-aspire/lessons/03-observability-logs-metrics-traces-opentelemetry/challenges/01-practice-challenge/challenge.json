@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-16-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Add observability to a shopping cart service!\n\n1. Create CartMetrics class with:\n   - Counter: items_added (with product_category tag)\n   - Counter: items_removed\n   - Histogram: cart_value (track cart totals)\n   - UpDownCounter: active_carts\n\n2. Create CartService with structured logging:\n   - Log when items are added (include CartId, ProductId, Quantity)\n   - Log warnings when cart exceeds $1000\n   - Log errors with exception details\n\n3. Add tracing with ActivitySource:\n   - Span for AddToCart operation\n   - Include cart_id and product_id as tags\n\nUse IMeterFactory and ILogger<T>!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm observability implementation",
+      "expectedOutput": "CartService",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention metrics",
+      "expectedOutput": "Metrics",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CreateCounter, CreateHistogram, CreateUpDownCounter from Meter. Pass name and optional description."
+    },
+    {
+      "level": 2,
+      "text": "Counter.Add(1, tag) - second parameter is KeyValuePair for tags. Tags enable filtering in dashboards."
+    },
+    {
+      "level": 3,
+      "text": "Structured logging: LogInformation(\"Message {Prop}\", value) - curly braces are placeholders, not string interpolation!"
+    },
+    {
+      "level": 4,
+      "text": "ActivitySource.StartActivity returns Activity?. Use null-conditional: activity?.SetTag(...)"
+    },
+    {
+      "level": 5,
+      "text": "Wrap activity in 'using' statement - it auto-completes the span when disposed."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "String interpolation in log messages",
+      "consequence": "_logger.LogInformation($\"Order {orderId}\") - string is evaluated BEFORE logging! Loses structured logging benefits.",
+      "correction": "Use placeholders: _logger.LogInformation(\"Order {OrderId}\", orderId). Properties are indexed separately."
+    },
+    {
+      "mistake": "Forgetting to dispose activities",
+      "consequence": "Activity without 'using' stays open forever. Span never ends, traces are incomplete.",
+      "correction": "Always use 'using var activity = ...' or manually call activity.Dispose()."
+    },
+    {
+      "mistake": "Too many metrics/tags",
+      "consequence": "High cardinality (unique combinations) explodes storage. user_id as tag = millions of time series!",
+      "correction": "Use low-cardinality tags: region, status, category. Put high-cardinality data in logs/traces instead."
+    },
+    {
+      "mistake": "Not checking activity for null",
+      "consequence": "StartActivity returns null if no listener! activity.SetTag() throws NullReferenceException.",
+      "correction": "Use null-conditional: activity?.SetTag(...). Or check if (activity != null) first."
+    }
+  ],
+  "difficulty": "advanced"
+}

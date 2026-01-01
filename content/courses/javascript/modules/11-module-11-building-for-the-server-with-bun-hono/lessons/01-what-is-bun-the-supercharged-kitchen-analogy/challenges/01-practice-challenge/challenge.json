@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.1-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a simple Bun utility module:\n\n1. Create a function `getSystemInfo()` that returns an object with:\n   - `runtime`: 'bun'\n   - `bunVersion`: '1.2.0'\n   - `uptime`: any number (simulate uptime)\n\n2. Create a function `readConfig(filename)` that:\n   - Takes a filename as a parameter\n   - Returns a Promise that resolves with simulated file content\n   - Use setTimeout to simulate async file reading\n\n3. Test both functions and log the results",
+  "instructions": "Create a simple Bun utility module:\n\n1. Create a function `getSystemInfo()` that returns an object with:\n   - `runtime`: 'bun'\n   - `bunVersion`: '1.2.0'\n   - `uptime`: any number (simulate uptime)\n\n2. Create a function `readConfig(filename)` that:\n   - Takes a filename as a parameter\n   - Returns a Promise that resolves with simulated file content\n   - Use setTimeout to simulate async file reading\n\n3. Test both functions and log the results",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should return system info with bun runtime",
+      "expectedOutput": "bun",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should read config asynchronously",
+      "expectedOutput": "Config from test.config",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use new Promise((resolve, reject) => {...}) and setTimeout to simulate async operations."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Node.js-specific APIs when Bun has simpler alternatives",
+      "consequence": "Code works but misses Bun's simpler patterns.",
+      "correction": "Use Bun.file() for file reading instead of fs.readFile(). Use import.meta.dir instead of __dirname workarounds."
+    },
+    {
+      "mistake": "Trying to use browser APIs in Bun",
+      "consequence": "ReferenceError: document/window is not defined",
+      "correction": "Bun runs on the server. Use server-side APIs like Bun.file(), Bun.serve(), and fetch()."
+    },
+    {
+      "mistake": "Installing TypeScript separately",
+      "consequence": "Unnecessary dependency and complexity.",
+      "correction": "Bun runs .ts files directly! Just use: bun run app.ts"
+    }
+  ],
+  "difficulty": "beginner"
+}

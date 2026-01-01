@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an abstract Employee system!\n\n1. ABSTRACT CLASS 'Employee':\n   - Properties: string Name, int ID\n   - ABSTRACT method CalculateSalary() returns decimal\n   - Regular method Display(): prints employee info and salary\n\n2. DERIVED 'HourlyEmployee':\n   - Properties: decimal HourlyRate, int HoursWorked\n   - Override CalculateSalary(): return HourlyRate * HoursWorked\n\n3. DERIVED 'SalariedEmployee':\n   - Property: decimal AnnualSalary\n   - Override CalculateSalary(): return AnnualSalary / 12 (monthly)\n\n4. Create both types, call Display()",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Salary\"",
+      "expectedOutput": "Salary",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"ID\"",
+      "expectedOutput": "ID",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Abstract class: 'abstract class Name'. Abstract method: 'public abstract ReturnType Method();' (no body!). Derived MUST override abstract methods."
+    },
+    {
+      "level": 2,
+      "text": "Trying to instantiate abstract class: 'Employee e = new Employee();' is ERROR! Abstract classes can't be created directly - use derived classes."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting to override abstract methods: If you inherit from abstract class, you MUST override all abstract methods! Compiler will complain if you don't."
+    },
+    {
+      "level": 4,
+      "text": "Adding body to abstract method: 'public abstract void Method() { }' is WRONG! Abstract methods don't have bodies - just the declaration with semicolon."
+    },
+    {
+      "level": 5,
+      "text": "When to use abstract vs interface: Use abstract class when you have SOME shared implementation. Use interface (next lesson) when you have NO implementation, just a contract."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to instantiate abstract class",
+      "consequence": "'Employee e = new Employee();' is ERROR! Abstract classes can't be created directly - use derived classes.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to override abstract methods",
+      "consequence": "If you inherit from abstract class, you MUST override all abstract methods! Compiler will complain if you don't.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Adding body to abstract method",
+      "consequence": "'public abstract void Method() { }' is WRONG! Abstract methods don't have bodies - just the declaration with semicolon.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "When to use abstract vs interface",
+      "consequence": "Use abstract class when you have SOME shared implementation. Use interface (next lesson) when you have NO implementation, just a contract.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

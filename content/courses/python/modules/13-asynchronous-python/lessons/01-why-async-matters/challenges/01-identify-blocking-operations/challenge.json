@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-01-challenge-1",
+  "title": "Identify Blocking Operations",
+  "description": "Look at the code below and identify which operations are blocking (would benefit from async).",
+  "instructions": "Add comments to identify which operations are blocking I/O operations that would benefit from async, and which are CPU-bound operations that would not.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "I/O operations involve waiting for external resources (files, network, database). CPU operations are pure computation."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Thinking async speeds up all code",
+      "consequence": "No performance improvement for CPU-bound tasks",
+      "correction": "Async only helps when waiting for I/O operations"
+    }
+  ],
+  "difficulty": "beginner"
+}

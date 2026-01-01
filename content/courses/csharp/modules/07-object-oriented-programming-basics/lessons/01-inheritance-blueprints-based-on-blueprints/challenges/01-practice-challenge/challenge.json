@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an animal hierarchy!\n\n1. BASE CLASS 'Animal':\n   - Properties: string Name, int Age\n   - Method Eat(): prints '[Name] is eating'\n   - Method Sleep(): prints '[Name] is sleeping'\n\n2. DERIVED CLASS 'Dog' inherits Animal:\n   - Add property: string Breed\n   - Add method Bark(): prints 'Woof!'\n\n3. DERIVED CLASS 'Cat' inherits Animal:\n   - Add property: string Color\n   - Add method Meow(): prints 'Meow!'\n\n4. Create a Dog and a Cat, set their properties, call all methods (inherited and own)",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"eating\"",
+      "expectedOutput": "eating",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Woof\"",
+      "expectedOutput": "Woof",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Meow\"",
+      "expectedOutput": "Meow",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'class Derived : Base' syntax. Derived class automatically gets all Base members. Add new members in the derived class body."
+    },
+    {
+      "level": 2,
+      "text": "Forgetting the colon: 'class Dog Animal' is WRONG! Must be 'class Dog : Animal' with the colon to inherit."
+    },
+    {
+      "level": 3,
+      "text": "Trying to inherit from multiple classes: C# doesn't support multiple inheritance! 'class Dog : Animal, Pet' is ERROR. Can only inherit from ONE class."
+    },
+    {
+      "level": 4,
+      "text": "Redefining inherited members: If Dog has 'public string Name;' and Animal already has it, Dog gets TWO Name fields (confusing!). Don't redefine - just use the inherited one!"
+    },
+    {
+      "level": 5,
+      "text": "Access modifiers: Derived class can't access PRIVATE members of base class! Use protected or public in base class if derived class needs access."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon",
+      "consequence": "'class Dog Animal' is WRONG! Must be 'class Dog : Animal' with the colon to inherit.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Trying to inherit from multiple classes",
+      "consequence": "C# doesn't support multiple inheritance! 'class Dog : Animal, Pet' is ERROR. Can only inherit from ONE class.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Redefining inherited members",
+      "consequence": "If Dog has 'public string Name;' and Animal already has it, Dog gets TWO Name fields (confusing!). Don't redefine - just use the inherited one!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Access modifiers",
+      "consequence": "Derived class can't access PRIVATE members of base class! Use protected or public in base class if derived class needs access.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

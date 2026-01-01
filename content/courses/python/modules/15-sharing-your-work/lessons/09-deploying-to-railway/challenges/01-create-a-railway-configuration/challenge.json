@@ -1,0 +1,51 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-09-challenge-1",
+  "title": "Create a Railway Configuration",
+  "description": "Create a railway.toml file that:\n1. Uses Dockerfile for builds\n2. Sets health check to /api/health with 300 second timeout\n3. Uses on_failure restart policy with max 5 retries\n4. Configures 2 replicas for high availability",
+  "instructions": "Complete the railway.toml configuration file.",
+  "language": "toml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses dockerfile builder",
+      "expectedOutput": "dockerfile",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Health check path is /api/health",
+      "expectedOutput": "/api/health",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Uses on_failure restart policy",
+      "expectedOutput": "on_failure",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Builder should be 'dockerfile' (lowercase) when using a Dockerfile"
+    },
+    {
+      "level": 2,
+      "text": "restartPolicyType uses underscores: 'on_failure', not 'on-failure'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using 'docker' instead of 'dockerfile' for builder",
+      "consequence": "Railway won't recognize the build configuration",
+      "correction": "Use builder = \"dockerfile\" for Dockerfile-based builds"
+    },
+    {
+      "mistake": "Using dashes in restartPolicyType (on-failure)",
+      "consequence": "Invalid configuration format",
+      "correction": "Use underscores: on_failure"
+    }
+  ],
+  "difficulty": "advanced"
+}

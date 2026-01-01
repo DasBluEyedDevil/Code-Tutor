@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.6-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Build a social media post layout: 1. Top row: profile photo + name 2. Middle: post text 3. Bottom row: like button + comment button + share button Use Column for vertical arrangement, Row for horizontal. ---",
+  "instructions": "Build a social media post layout: 1. Top row: profile photo + name 2. Middle: post text 3. Bottom row: like button + comment button + share button Use Column for vertical arrangement, Row for horizontal. ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Top row contains profile photo and name",
+      "expectedOutput": "Row with CircleAvatar and Text for name visible",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Bottom row contains action buttons",
+      "expectedOutput": "Like, Comment, Share buttons in Row with spaceAround alignment",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Column arranges sections vertically",
+      "expectedOutput": "Main Column contains profile Row, post Text, and buttons Row",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Row for horizontal layouts, Column for vertical"
+    },
+    {
+      "level": 3,
+      "text": "mainAxisAlignment: MainAxisAlignment.spaceAround distributes buttons evenly"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Nesting Row inside Row instead of Column",
+      "consequence": "Elements stacked horizontally instead of vertically",
+      "correction": "Use Column as the outer container for vertical sections"
+    },
+    {
+      "mistake": "Case sensitivity in Dart",
+      "consequence": "Names don't match",
+      "correction": "Use exact case: main not Main, print not Print"
+    },
+    {
+      "mistake": "Missing curly braces",
+      "consequence": "Syntax error or incorrect scope",
+      "correction": "Ensure every { has a matching }"
+    }
+  ],
+  "difficulty": "beginner"
+}

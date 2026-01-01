@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-3-mc-1",
+  "title": "State Updates",
+  "description": "Understanding how state updates work",
+  "question": "What's wrong with this code?\nconst [user, setUser] = useState({ name: 'Alice', age: 25 });\nuser.age = 26;\nsetUser(user);",
+  "options": [
+    "Nothing - this correctly updates the age",
+    "setUser should be called with user.age instead",
+    "Mutating state directly won't trigger re-render; should spread: setUser({...user, age: 26})",
+    "useState can't hold objects, only primitives"
+  ],
+  "correctAnswer": 2,
+  "explanation": "This mutates the existing object then passes the same reference to setUser. React compares references for objects - since the reference is the same, React thinks nothing changed and won't re-render. Always create new objects/arrays: setUser({...user, age: 26}) creates a new object with the updated value.",
+  "difficulty": "intermediate"
+}

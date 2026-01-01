@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.6.2",
+  "title": "Filter Even Numbers",
+  "description": "Filter and print only even numbers from a list.",
+  "instructions": "Filter and print only even numbers from a list.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Prints list of even numbers",
+      "expectedOutput": "[2, 4, 6, 8, 10]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Even numbers from 1-10",
+      "expectedOutput": "[2, 4, 6, 8, 10]",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use filter { }"
+    },
+    {
+      "level": 2,
+      "text": "Check it % 2 == 0"
+    },
+    {
+      "level": 3,
+      "text": "Result: [2, 4, 6, 8, 10]"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using wrong modulo condition",
+      "consequence": "Filters odd numbers instead of even",
+      "correction": "Even check: it % 2 == 0"
+    },
+    {
+      "mistake": "Forgetting 'it' in lambda",
+      "consequence": "Reference to wrong variable",
+      "correction": "Use it % 2 == 0 in single-param lambda"
+    },
+    {
+      "mistake": "Manual loop instead of filter",
+      "consequence": "More verbose code",
+      "correction": "Kotlin filter is more idiomatic"
+    }
+  ],
+  "difficulty": "intermediate"
+}

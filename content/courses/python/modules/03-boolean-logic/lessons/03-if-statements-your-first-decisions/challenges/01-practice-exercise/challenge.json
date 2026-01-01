@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-03-lesson-03-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Password Strength Checker** that validates a password against multiple security criteria.\n\n**Password Requirements:**\n\n- Length must be at least 8 characters\n- Must contain at least one number\n- Must not be a common password (check against \"password\", \"12345678\", \"qwerty\")\n\n**Your task:**\n\n- Ask the user to enter a password\n- Check each requirement using separate if statements\n- Give specific feedback for each check\n- Count how many requirements were met\n\n**Example output:**\n\n<pre>=== Password Strength Checker ===\n\nEnter your password: MyP@ss2024\n\nChecking password strength...\n✓ Password length is sufficient (10 characters)\n✓ Password contains at least one number\n✓ Password is not commonly used\n\nPassword strength: 3/3 requirements met\nYour password is strong!\n</pre>**Hints:**\n\n- Use `len(password)` to check length\n- Use `password.isalnum()` or check if `any(char.isdigit() for char in password)`\n- Use `!=` or `not in` to check against common passwords",
+  "instructions": "Build a **Password Strength Checker** that validates a password against multiple security criteria.\n\n**Password Requirements:**\n\n- Length must be at least 8 characters\n- Must contain at least one number\n- Must not be a common password (check against \"password\", \"12345678\", \"qwerty\")\n\n**Your task:**\n\n- Ask the user to enter a password\n- Check each requirement using separate if statements\n- Give specific feedback for each check\n- Count how many requirements were met\n\n**Example output:**\n\n<pre>=== Password Strength Checker ===\n\nEnter your password: MyP@ss2024\n\nChecking password strength...\n✓ Password length is sufficient (10 characters)\n✓ Password contains at least one number\n✓ Password is not commonly used\n\nPassword strength: 3/3 requirements met\nYour password is strong!\n</pre>**Hints:**\n\n- Use `len(password)` to check length\n- Use `password.isalnum()` or check if `any(char.isdigit() for char in password)`\n- Use `!=` or `not in` to check against common passwords",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Password Strength Checker title displayed",
+      "expectedOutput": "Password Strength Checker",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Checking message is shown",
+      "expectedOutput": "Checking password strength",
+      "isVisible": false
+    },
+    {
+      "id": "test-4",
+      "description": "Requirements count is displayed",
+      "expectedOutput": "requirements met",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For Check 1, use len(password) >= 8. For Check 2, the variable has_number is already set up - just check if has_number is True (or just write 'if has_number:'). For Check 3, use 'password not in common_passwords' or check each one separately."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

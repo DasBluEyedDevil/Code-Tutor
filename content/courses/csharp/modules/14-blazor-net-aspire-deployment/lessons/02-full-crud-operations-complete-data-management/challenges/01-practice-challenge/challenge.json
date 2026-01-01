@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-14-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build complete CRUD for a Book Library!\n\n1. Book model (Id, Title, Author, Year, ISBN)\n\n2. API with all CRUD endpoints:\n   - GET /api/books (list all)\n   - GET /api/books/{id} (single)\n   - POST /api/books (create)\n   - PUT /api/books/{id} (update)\n   - DELETE /api/books/{id} (delete)\n\n3. Blazor component:\n   - List books in table\n   - Add button → shows form\n   - Edit button for each book → populates form\n   - Delete button with confirmation\n   - Form with all fields\n   - Save/Cancel buttons\n   - Reload after operations\n\n4. Print complete API and Blazor code!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"CRUD\"",
+      "expectedOutput": "CRUD",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"CREATE\"",
+      "expectedOutput": "CREATE",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"READ\"",
+      "expectedOutput": "READ",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"UPDATE\"",
+      "expectedOutput": "UPDATE",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"DELETE\"",
+      "expectedOutput": "DELETE",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"EditForm\"",
+      "expectedOutput": "EditForm",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "API: MapPost (Create), MapGet (Read), MapPut (Update), MapDelete (Delete). Blazor: EditForm for input, HttpClient for requests, reload after changes. Track isEditing for Create vs Update."
+    },
+    {
+      "level": 2,
+      "text": "Modifying original object: When editing, create NEW object copy! Otherwise, changes appear immediately in UI before save. Clone object: 'new Book { Id = book.Id, ... }'."
+    },
+    {
+      "level": 3,
+      "text": "Not reloading data: After Create/Update/Delete, UI shows stale data! Always reload: 'await LoadBooks();' after operations. Otherwise, database and UI out of sync."
+    },
+    {
+      "level": 4,
+      "text": "Missing confirmation: DELETE without confirmation is dangerous! Users accidentally click. Add: 'if (confirm(\"Delete?\"))' or modal dialog before delete."
+    },
+    {
+      "level": 5,
+      "text": "Form validation: EditForm needs validation! Add DataAnnotations: [Required], [StringLength], etc. Or use OnInvalidSubmit to handle errors. Validate before API call!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Modifying original object",
+      "consequence": "When editing, create NEW object copy! Otherwise, changes appear immediately in UI before save. Clone object: 'new Book { Id = book.Id, ... }'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not reloading data",
+      "consequence": "After Create/Update/Delete, UI shows stale data! Always reload: 'await LoadBooks();' after operations. Otherwise, database and UI out of sync.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Missing confirmation",
+      "consequence": "DELETE without confirmation is dangerous! Users accidentally click. Add: 'if (confirm(\"Delete?\"))' or modal dialog before delete.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Form validation",
+      "consequence": "EditForm needs validation! Add DataAnnotations: [Required], [StringLength], etc. Or use OnInvalidSubmit to handle errors. Validate before API call!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

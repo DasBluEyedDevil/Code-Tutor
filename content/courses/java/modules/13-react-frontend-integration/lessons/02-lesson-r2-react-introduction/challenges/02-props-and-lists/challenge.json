@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-2-mc-2",
+  "title": "Props and Lists",
+  "description": "Understanding the key prop in lists",
+  "question": "When rendering a list with .map(), why is the key prop required?",
+  "options": [
+    "It's optional - just a best practice suggestion",
+    "React uses it to identify which items changed, added, or removed for efficient updates",
+    "It determines the order of elements in the list",
+    "It's required for CSS styling to work properly"
+  ],
+  "correctAnswer": 1,
+  "explanation": "React uses the key prop to identify list items during reconciliation (comparing old and new virtual DOM). Without keys, React re-renders all items when the list changes. With stable unique keys, React knows exactly which items changed and only updates those. Keys must be unique among siblings and stable across re-renders (don't use array index if list order can change).",
+  "difficulty": "beginner"
+}

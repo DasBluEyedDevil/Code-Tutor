@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.6-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create: 1. Horizontal scrolling category chips (Wrap or Row) 2. Vertical product list 3. Pull-to-refresh functionality ---",
+  "instructions": "Create: 1. Horizontal scrolling category chips (Wrap or Row) 2. Vertical product list 3. Pull-to-refresh functionality ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Widget builds without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Horizontal ListView needs SizedBox with height, add scrollDirection: Axis.horizontal"
+    },
+    {
+      "level": 3,
+      "text": "RefreshIndicator wraps ListView - onRefresh must return Future<void>"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Horizontal ListView without height constraint",
+      "consequence": "Unbounded height error - ListView doesn't know how tall to be",
+      "correction": "Wrap in SizedBox(height: 50) or similar"
+    },
+    {
+      "mistake": "onRefresh not returning Future",
+      "consequence": "RefreshIndicator never stops spinning",
+      "correction": "Use async function: Future<void> _handleRefresh() async { ... }"
+    },
+    {
+      "mistake": "Forgetting to wrap ListView in Expanded inside Column",
+      "consequence": "Unbounded height error",
+      "correction": "Wrap ListView in Expanded when inside Column"
+    }
+  ],
+  "difficulty": "beginner"
+}

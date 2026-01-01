@@ -1,0 +1,24 @@
+{
+  "id": "11.2-challenge-0",
+  "title": "Streaming Connection Manager",
+  "description": "Build a connection manager that handles the complete streaming lifecycle.",
+  "instructions": "Create a StreamingConnectionManager class that:\n\n1. Opens and maintains a streaming connection\n2. Tracks connection state (disconnected, connecting, connected, reconnecting)\n3. Implements automatic reconnection with exponential backoff\n4. Exposes a stream of connection state changes\n5. Properly disposes all resources\n\nRequirements:\n- Maximum 5 reconnection attempts\n- Backoff delays: 1s, 2s, 4s, 8s, 16s\n- Expose connectionState as a Stream\n- Include a manual reconnect() method\n- Cancel all timers and subscriptions in dispose()",
+  "type": "implementation",
+  "expectedOutput": "A fully functional StreamingConnectionManager that handles connection lifecycle with automatic reconnection using exponential backoff.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a StreamController<ConnectionState> to expose the connection state as a stream."
+    },
+    {
+      "level": 2,
+      "text": "Calculate exponential backoff delay with: Duration(seconds: 1 << (attempts - 1)) where attempts starts at 1."
+    },
+    {
+      "level": 3,
+      "text": "Store the Timer reference so you can cancel it in dispose() and when a new reconnection is scheduled."
+    }
+  ]
+}

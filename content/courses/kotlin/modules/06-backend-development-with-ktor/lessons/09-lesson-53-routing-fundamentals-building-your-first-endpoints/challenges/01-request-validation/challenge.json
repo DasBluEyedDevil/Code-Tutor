@@ -1,0 +1,62 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.3.1",
+  "title": "Request Validation",
+  "description": "Create a function that validates a registration request. Check that username is at least 3 characters and email contains '@'.",
+  "instructions": "Create a function that validates a registration request. Check that username is at least 3 characters and email contains '@'.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should return errors for invalid data",
+      "expectedOutput": "Errors:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should return empty list for valid data",
+      "expectedOutput": "Valid: true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a mutableListOf<String> for errors"
+    },
+    {
+      "level": 2,
+      "text": "Check username.length >= 3"
+    },
+    {
+      "level": 3,
+      "text": "Check email.contains(\"@\")"
+    },
+    {
+      "level": 4,
+      "text": "Check password.length >= 8"
+    },
+    {
+      "level": 5,
+      "text": "Add error message for each failed check"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

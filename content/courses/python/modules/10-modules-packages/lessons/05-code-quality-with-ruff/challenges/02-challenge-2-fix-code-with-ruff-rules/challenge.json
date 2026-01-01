@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-10-lesson-05-challenge-2",
+  "title": "Challenge 2: Fix Code with Ruff Rules",
+  "description": "Given a Python file with multiple code quality issues, identify what Ruff would flag and manually fix each issue. This exercise helps you understand what each rule category catches.\n\n**Rules to apply:**\n- F401: Remove unused imports\n- F841: Remove unused variables  \n- E225: Add whitespace around operators\n- UP006: Use modern type hints (list instead of List)\n- SIM103: Return condition directly\n- I001: Sort imports correctly",
+  "instructions": "Fix all the code quality issues in the given code snippet.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Fixed code removes unused imports",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by removing unused imports (os, sys, Optional). Keep only json since it might be used."
+    },
+    {
+      "level": 2,
+      "text": "For SIM103, if you're returning True/False based on a condition, just return the condition itself."
+    },
+    {
+      "level": 3,
+      "text": "UP006: In Python 3.9+, use list[str] instead of List[str] from typing."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Keeping Optional import",
+      "consequence": "F401 unused import warning",
+      "correction": "Remove Optional if not used in type hints"
+    },
+    {
+      "mistake": "Not simplifying boolean returns",
+      "consequence": "SIM103 warning remains",
+      "correction": "Replace if/else True/False with return condition"
+    },
+    {
+      "mistake": "Using typing.List in Python 3.9+",
+      "consequence": "UP006 warning for outdated syntax",
+      "correction": "Use built-in list[str] instead of List[str]"
+    }
+  ],
+  "difficulty": "intermediate"
+}

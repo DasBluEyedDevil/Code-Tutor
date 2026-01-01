@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-08-challenge-1",
+  "title": "Implement Soft Delete Repository",
+  "description": "Create a repository class that implements soft delete pattern for the Finance Tracker transactions.",
+  "instructions": "Complete the repository to:\n1. Implement soft delete (set deleted_at)\n2. Implement restore (clear deleted_at)\n3. Query only active records by default\n4. Provide method to view deleted records",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Soft delete repository works correctly",
+      "expectedOutput": "transactions:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** For active records, use `deleted_at IS NULL`. For soft delete, set `deleted_at = CURRENT_TIMESTAMP`. For restore, set `deleted_at = NULL`. For deleted records, use `deleted_at IS NOT NULL`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using = NULL instead of IS NULL",
+      "consequence": "NULL comparisons with = always return false",
+      "correction": "Use IS NULL and IS NOT NULL for NULL comparisons"
+    },
+    {
+      "mistake": "Forgetting to update updated_at when soft deleting",
+      "consequence": "Audit trail incomplete",
+      "correction": "Always update updated_at alongside deleted_at"
+    }
+  ],
+  "difficulty": "advanced"
+}

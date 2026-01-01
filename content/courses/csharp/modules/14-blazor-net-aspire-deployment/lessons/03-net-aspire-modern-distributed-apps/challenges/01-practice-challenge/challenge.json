@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-14-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Create an Aspire-orchestrated application architecture.",
+  "instructions": "Design a .NET Aspire application!\n\nPrint the code structure for:\n\n1. AppHost (orchestrator):\n   - Add Redis cache\n   - Add SQL Server database\n   - Add 'catalog-api' project with references\n   - Add 'web-store' frontend with API reference\n\n2. Catalog API service:\n   - AddServiceDefaults()\n   - AddSqlServerDbContext for products\n   - MapDefaultEndpoints()\n   - GET /products endpoint\n\n3. Explain the benefits:\n   - No hardcoded connection strings\n   - Automatic service discovery\n   - Dashboard observability\n   - One-click debugging\n\nShow how Aspire replaces docker-compose!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output contains 'ASPIRE'",
+      "expectedOutput": "ASPIRE",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output contains 'APPHOST'",
+      "expectedOutput": "APPHOST",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output contains 'AddRedis'",
+      "expectedOutput": "AddRedis",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output contains 'WithReference'",
+      "expectedOutput": "WithReference",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output contains 'ServiceDefaults'",
+      "expectedOutput": "ServiceDefaults",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output contains 'BENEFITS'",
+      "expectedOutput": "BENEFITS",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "AppHost: DistributedApplication.CreateBuilder(), AddRedis(), AddSqlServer().AddDatabase(), AddProject<T>().WithReference(). APIs: AddServiceDefaults(), AddSqlServerDbContext()."
+    },
+    {
+      "level": 2,
+      "text": "Service discovery: Use service names as hostnames! 'http://catalog-api' works because Aspire handles DNS."
+    },
+    {
+      "level": 3,
+      "text": "No connection strings: Aspire injects them via .WithReference(). Your code never hardcodes 'Server=localhost;Database=...'"
+    },
+    {
+      "level": 4,
+      "text": "Dashboard: Run AppHost, visit http://localhost:15888. See all services, logs, traces in one place!"
+    },
+    {
+      "level": 5,
+      "text": "Production: Replace AddRedis() with AddAzureRedis() or similar. Same code, different infrastructure."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Still using docker-compose",
+      "consequence": "Docker-compose is manual, error-prone, no observability. Aspire does everything automatically with a dashboard.",
+      "correction": "Use Aspire for local dev. Docker-compose only for legacy or non-.NET services."
+    },
+    {
+      "mistake": "Hardcoding connection strings",
+      "consequence": "Aspire injects connections via .WithReference(). Hardcoding defeats the purpose and breaks service discovery.",
+      "correction": "Let Aspire manage connections. Use AddSqlServerDbContext('name') not AddDbContext with connection string."
+    },
+    {
+      "mistake": "Forgetting AddServiceDefaults()",
+      "consequence": "Lose OpenTelemetry, health checks, and service discovery. Dashboard won't show full telemetry.",
+      "correction": "Every Aspire service needs AddServiceDefaults() and MapDefaultEndpoints()."
+    },
+    {
+      "mistake": "Not using service discovery",
+      "consequence": "Using localhost:5001 instead of 'catalog-api' breaks when deploying. Service discovery works everywhere.",
+      "correction": "Use service names from AppHost as hostnames. Aspire resolves them automatically."
+    }
+  ],
+  "difficulty": "advanced"
+}

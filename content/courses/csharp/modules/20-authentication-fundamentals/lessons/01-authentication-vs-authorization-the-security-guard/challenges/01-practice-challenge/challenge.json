@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-20-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Configure authentication and authorization for a web application.",
+  "instructions": "Set up a complete authentication and authorization system!\n\n1. Configure cookie authentication with:\n   - Login path: /login\n   - Access denied path: /forbidden\n   - 4-hour expiration\n   - HttpOnly and Secure cookies\n\n2. Configure JWT Bearer authentication with:\n   - Issuer: 'ShopFlow'\n   - Audience: 'ShopFlowAPI'\n   - Validate all token properties\n\n3. Set up authorization policies:\n   - 'AdminOnly' - requires Admin role\n   - 'CanManageProducts' - requires 'Products.Manage' permission claim\n\n4. Create endpoints:\n   - GET / - public welcome message\n   - GET /dashboard - requires authentication\n   - DELETE /products/{id} - requires AdminOnly policy\n\n5. Ensure middleware is in correct order!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure authentication with cookies",
+      "expectedOutput": "AddCookie",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should configure JWT Bearer authentication",
+      "expectedOutput": "AddJwtBearer",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should add authorization policies",
+      "expectedOutput": "AddPolicy",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should use authentication middleware before authorization",
+      "expectedOutput": "UseAuthentication",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with builder.Services.AddAuthentication() and chain .AddCookie() and .AddJwtBearer()."
+    },
+    {
+      "level": 2,
+      "text": "Cookie options include LoginPath, AccessDeniedPath, ExpireTimeSpan, and Cookie.HttpOnly."
+    },
+    {
+      "level": 3,
+      "text": "JWT TokenValidationParameters needs ValidateIssuer, ValidateAudience, ValidIssuer, ValidAudience, and IssuerSigningKey."
+    },
+    {
+      "level": 4,
+      "text": "Authorization policies: options.AddPolicy(\"Name\", policy => policy.RequireRole(\"Role\"));"
+    },
+    {
+      "level": 5,
+      "text": "Middleware order: app.UseAuthentication(); then app.UseAuthorization(); - authentication MUST come first!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting UseAuthorization before UseAuthentication",
+      "consequence": "Authorization cannot check user identity because authentication hasn't run yet. All protected endpoints fail.",
+      "correction": "Always call app.UseAuthentication() before app.UseAuthorization()."
+    },
+    {
+      "mistake": "Forgetting HttpOnly on cookies",
+      "consequence": "JavaScript can access the authentication cookie, making XSS attacks able to steal user sessions.",
+      "correction": "Always set options.Cookie.HttpOnly = true for authentication cookies."
+    },
+    {
+      "mistake": "Using a weak or short JWT signing key",
+      "consequence": "Attackers can brute-force the key and forge valid tokens.",
+      "correction": "Use at least 256 bits (32 characters) for symmetric keys. Store in configuration, not code."
+    },
+    {
+      "mistake": "Not setting ValidateLifetime for JWT",
+      "consequence": "Expired tokens are still accepted, allowing old stolen tokens to work forever.",
+      "correction": "Set ValidateLifetime = true and consider ClockSkew = TimeSpan.Zero for strict validation."
+    }
+  ],
+  "difficulty": "intermediate"
+}

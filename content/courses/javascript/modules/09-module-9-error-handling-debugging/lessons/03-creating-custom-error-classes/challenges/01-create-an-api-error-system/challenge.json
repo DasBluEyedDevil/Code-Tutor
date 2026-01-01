@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.3-challenge",
+  "title": "Create an API Error System",
+  "description": "Build a complete API error system with these classes:\n\n1. `APIError` (base class) - has message, statusCode, and errorCode\n2. `BadRequestError` (extends APIError) - statusCode 400\n3. `UnauthorizedError` (extends APIError) - statusCode 401\n4. `NotFoundError` (extends APIError) - statusCode 404\n\nEach should have a toResponse() method that returns { status, body } for API responses.",
+  "instructions": "Create a hierarchy of API error classes. The base APIError should accept message, statusCode, and errorCode. Each specific error type should have a default statusCode. All classes should have a toResponse() method for generating API responses.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "BadRequestError returns correct status 400",
+      "expectedOutput": "{ status: 400, body: { error: 'INVALID_INPUT', message: 'Invalid input' } }",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "UnauthorizedError returns correct status 401",
+      "expectedOutput": "{ status: 401, body: { error: 'TOKEN_EXPIRED', message: 'Token expired' } }",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "All errors are instanceof APIError",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with APIError: constructor takes message, statusCode, errorCode. Call super(message) first, then set properties."
+    },
+    {
+      "level": 2,
+      "text": "For subclasses, call super(message, statusCode, errorCode) with the correct default statusCode for that error type."
+    },
+    {
+      "level": 3,
+      "text": "toResponse() should return { status: this.statusCode, body: { error: this.errorCode, message: this.message } }."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not calling super() in subclass constructors",
+      "consequence": "JavaScript requires super() to be called before accessing 'this' in derived classes.",
+      "correction": "Always call super() first in the constructor: super(message, 400, errorCode)"
+    },
+    {
+      "mistake": "Defining toResponse() separately in each subclass",
+      "consequence": "Code duplication. The base class method is inherited automatically.",
+      "correction": "Define toResponse() only in APIError. Subclasses inherit it automatically."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,14 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "lesson-11-3-jpa-methods",
+  "title": "Repository Query Methods",
+  "description": "What method does Spring Data JPA generate for 'findByEmailAndActiveTrue'?",
+  "options": [
+    "SELECT * FROM users",
+    "SELECT * FROM users WHERE email = ? AND active = true",
+    "SELECT email FROM users WHERE active = 1",
+    "SELECT * FROM users WHERE email LIKE ?"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Spring Data parses method names into queries. 'findByEmailAndActiveTrue' becomes WHERE email = ? AND active = true."
+}

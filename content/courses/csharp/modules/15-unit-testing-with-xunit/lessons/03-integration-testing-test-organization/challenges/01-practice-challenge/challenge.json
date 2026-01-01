@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-15-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create integration tests for a ProductRepository!\n\n1. Create Product class: Id, Name, Price, InStock (bool)\n\n2. Create ProductRepository class:\n   - Constructor takes DbContext\n   - AddProduct(Product) - adds to database\n   - GetInStock() - returns products where InStock = true\n   - GetByPriceRange(min, max) - returns products in price range\n\n3. Write integration tests using in-memory database:\n   - Test AddProduct persists correctly\n   - Test GetInStock returns only in-stock products\n   - Test GetByPriceRange filters correctly\n   - Implement IDisposable for cleanup\n\nUse UseInMemoryDatabase and seed test data!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain integration tests",
+      "expectedOutput": "Integration",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention products",
+      "expectedOutput": "Product",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "UseInMemoryDatabase with unique name: 'databaseName: Guid.NewGuid().ToString()' ensures test isolation."
+    },
+    {
+      "level": 2,
+      "text": "Implement IDisposable and call _context.Dispose() to clean up after tests."
+    },
+    {
+      "level": 3,
+      "text": "Seed test data in tests, not constructor. Each test should set up its own data for isolation."
+    },
+    {
+      "level": 4,
+      "text": "Assert.All() checks all items in collection: 'Assert.All(list, item => Assert.True(item.Property))'."
+    },
+    {
+      "level": 5,
+      "text": "Use [Trait] to categorize: '[Trait(\"Category\", \"Integration\")]' then filter with 'dotnet test --filter Category=Integration'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Same database name for all tests",
+      "consequence": "Tests share data and affect each other! Test A adds user, Test B expects empty database but finds user. Flaky, order-dependent tests.",
+      "correction": "Use Guid.NewGuid().ToString() for database name. Each test gets isolated database."
+    },
+    {
+      "mistake": "Not disposing DbContext",
+      "consequence": "Memory leaks, connection exhaustion. In-memory OK but bad habit for real databases.",
+      "correction": "Implement IDisposable, call _context.Dispose() in Dispose() method."
+    },
+    {
+      "mistake": "Testing EF Core instead of your code",
+      "consequence": "Tests verify LINQ works, not your business logic. 'Assert.Equal(1, context.Users.Count())' tests EF, not your service.",
+      "correction": "Test YOUR code's behavior. Mock DbContext in unit tests, use in-memory only for integration tests of actual database interactions."
+    },
+    {
+      "mistake": "Too many integration tests",
+      "consequence": "Slow test suite! Integration tests with DB are 10-100x slower than unit tests. Test pyramid inverted.",
+      "correction": "Integration tests for critical paths and DB-specific logic. Unit tests with mocks for business logic."
+    }
+  ],
+  "difficulty": "advanced"
+}

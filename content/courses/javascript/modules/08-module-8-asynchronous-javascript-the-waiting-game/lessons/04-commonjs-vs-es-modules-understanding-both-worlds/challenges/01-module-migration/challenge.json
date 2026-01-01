@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.4-challenge-1",
+  "title": "Module Migration",
+  "description": "Convert this CommonJS module to ES Module syntax. The module exports a Calculator class with add and subtract methods.",
+  "instructions": "Convert the following CommonJS module to ES Module syntax:\n\n```javascript\n// calculator.cjs (CommonJS)\nclass Calculator {\n  add(a, b) {\n    return a + b;\n  }\n  \n  subtract(a, b) {\n    return a - b;\n  }\n}\n\nfunction multiply(a, b) {\n  return a * b;\n}\n\nmodule.exports = Calculator;\nmodule.exports.multiply = multiply;\n```\n\nRewrite this as an ES Module with Calculator as the default export and multiply as a named export.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Has default export for Calculator class",
+      "expectedOutput": "export default Calculator",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Has named export for multiply function",
+      "expectedOutput": "export function multiply",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'export default ClassName' for the main export and 'export function name()' for named exports"
+    },
+    {
+      "level": 2,
+      "text": "You can either add 'export' before the function definition or use 'export { multiply }' at the end"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using module.exports in ES Modules",
+      "consequence": "ES Modules use export/export default syntax, not module.exports",
+      "correction": "Replace 'module.exports = X' with 'export default X' and 'module.exports.y = y' with 'export { y }'"
+    },
+    {
+      "mistake": "Forgetting to add 'export' keyword",
+      "consequence": "Functions and classes are not accessible outside the module",
+      "correction": "Add 'export' before function/class or use 'export { name }' at the end"
+    }
+  ],
+  "difficulty": "intermediate"
+}

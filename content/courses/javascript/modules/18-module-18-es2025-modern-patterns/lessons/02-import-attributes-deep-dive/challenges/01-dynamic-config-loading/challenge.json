@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.2-challenge",
+  "title": "Dynamic Config Loading",
+  "description": "Load config dynamically based on environment.",
+  "instructions": "Create a loadConfig function that dynamically imports a JSON config file based on the environment (development or production). Use import attributes.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Loads correct config",
+      "expectedOutput": "http://localhost:3000",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Dynamic import returns a module object - the JSON data is in .default"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting .default on dynamic JSON imports",
+      "consequence": "You get the module wrapper, not the JSON data",
+      "correction": "const data = (await import('./file.json', { with: { type: 'json' } })).default;"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,39 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.6-challenge",
+  "title": "Build a Data Pipeline",
+  "description": "Use iterator helpers to process a stream of user data efficiently.",
+  "instructions": "Create a function that takes a generator of user objects and returns the emails of the first 5 active premium users, uppercased.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Returns exactly 5 uppercase emails",
+      "expectedOutput": "5 uppercase emails",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Chain the methods: .filter().filter().map().take().toArray()"
+    },
+    {
+      "level": 2,
+      "text": "Use .toUpperCase() on the email string in the map callback"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to use array methods on the generator directly",
+      "consequence": "Generators don't have filter/map methods - but their Iterator prototype does!",
+      "correction": "Generators already have iterator helper methods in ES2025"
+    },
+    {
+      "mistake": "Forgetting .toArray() at the end",
+      "consequence": "Returns an iterator instead of an array",
+      "correction": "Add .toArray() to collect results into an array"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-sqlalchemy-challenge",
+  "title": "Build a Task Manager API with Async SQLAlchemy",
+  "description": "Create a FastAPI application with async SQLAlchemy 2.0 that manages tasks organized by projects.",
+  "instructions": "Build a task management API with the following requirements:\n\n1. Create two models:\n   - `Project`: id, name (str), description (optional str), created_at\n   - `Task`: id, title (str), completed (bool, default False), project_id (FK), created_at\n\n2. Set up async engine and session for SQLite\n\n3. Create endpoints:\n   - POST /projects/ - Create a new project\n   - GET /projects/{id} - Get project with all its tasks (eager loaded)\n   - POST /projects/{id}/tasks/ - Add task to project\n   - PUT /tasks/{id}/complete - Mark task as completed\n   - GET /projects/ - List all projects with task count\n\n4. Use proper Pydantic schemas for requests and responses",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Project and Task models are properly defined with Mapped types",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "GET /projects/{id} uses selectinload for eager loading",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `Mapped[str | None]` for optional fields and `mapped_column(nullable=True)`."
+    },
+    {
+      "level": 2,
+      "text": "For the list endpoint with task counts, you can either use selectinload and count in Python, or use a SQL COUNT subquery."
+    },
+    {
+      "level": 3,
+      "text": "Remember to call `await db.refresh(obj)` after commit to reload generated values like id."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to use selectinload when fetching projects with tasks",
+      "consequence": "Causes N+1 query problem or lazy loading errors in async",
+      "correction": "Always use .options(selectinload(Project.tasks)) when you need related data"
+    },
+    {
+      "mistake": "Not checking if project exists before adding task",
+      "consequence": "Foreign key error or confusing error message",
+      "correction": "Query for project first and return 404 if not found"
+    },
+    {
+      "mistake": "Missing from_attributes = True in Pydantic Config",
+      "consequence": "Pydantic cannot convert SQLAlchemy models to response",
+      "correction": "Add class Config with from_attributes = True in all response schemas"
+    }
+  ],
+  "difficulty": "advanced"
+}

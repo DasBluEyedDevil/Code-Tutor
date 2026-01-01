@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "streams-lesson-3-mc-2",
+  "title": "toMap() Duplicate Keys",
+  "description": "Understanding toMap() behavior with duplicates",
+  "question": "What happens when you use Collectors.toMap() and the stream contains elements that map to the same key?",
+  "options": [
+    "The last value wins and overwrites previous values",
+    "The first value wins and later values are ignored",
+    "An IllegalStateException is thrown",
+    "Both values are stored in a list"
+  ],
+  "correctAnswer": 2,
+  "explanation": "By default, Collectors.toMap() throws an IllegalStateException when it encounters duplicate keys. To handle duplicates, you must provide a merge function as the third argument, like (existing, newVal) -> existing to keep the first value.",
+  "difficulty": "intermediate"
+}

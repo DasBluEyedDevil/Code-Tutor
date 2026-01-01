@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Build a complete data fetching flow:\n\n1. Create a `fetchUsers()` function that:\n   - Returns a Promise\n   - Simulates 1 second delay\n   - Resolves with array of mock users\n\n2. Create a `UserListComponent` object that:\n   - Has `state` with: users (array), loading (boolean), error (string|null)\n   - Has `mount()` method that simulates useEffect running\n   - In mount: sets loading true, calls fetchUsers, updates state\n\n3. Test by calling mount() and logging state changes",
+  "instructions": "Build a complete data fetching flow:\n\n1. Create a `fetchUsers()` function that:\n   - Returns a Promise\n   - Simulates 1 second delay\n   - Resolves with array of mock users\n\n2. Create a `UserListComponent` object that:\n   - Has `state` with: users (array), loading (boolean), error (string|null)\n   - Has `mount()` method that simulates useEffect running\n   - In mount: sets loading true, calls fetchUsers, updates state\n\n3. Test by calling mount() and logging state changes",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should fetch and return users",
+      "expectedOutput": "Array of 3 users",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use async/await and try/catch/finally for clean error handling"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common useEffect + fetch mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common useEffect + fetch mistakes:"
+    },
+    {
+      "mistake": "**Forgetting dependency array**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting dependency array**:\n   ```jsx\n   // WRONG! Infinite loop!\n   useEffect(() => {\n     fetch('/api/users')\n       .then(res => res.json())\n       .then(data => setUsers(data)); // State update triggers re-render\n   }); // No dependency array → runs every render → infinite loop!\n   \n   // CORRECT!\n   useEffect(() => {\n     fetch('/api/users')\n       .then(res => res.json())\n       .then(data => setUsers(data));\n   }, []); // Empty array → run once\n   ```"
+    },
+    {
+      "mistake": "**Using async directly in useEffect**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Using async directly in useEffect**:\n   ```jsx\n   // WRONG!\n   useEffect(async () => {  // ← Can't do this!\n     const res = await fetch('/api/users');\n   }, []);\n   \n   // CORRECT!\n   useEffect(() => {\n     async function fetchData() {  // Define async function inside\n       const res = await fetch('/api/users');\n     }\n     fetchData();  // Call it\n   }, []);\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

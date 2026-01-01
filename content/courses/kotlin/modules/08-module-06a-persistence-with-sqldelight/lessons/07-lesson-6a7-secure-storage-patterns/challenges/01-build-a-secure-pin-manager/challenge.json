@@ -1,0 +1,22 @@
+{
+  "id": "challenge-6a-7-1",
+  "title": "Build a Secure PIN Manager",
+  "description": "Create a secure PIN storage system with hashing and attempt limiting.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Hash the PIN before storing - never store plain text",
+    "Track attempts in secure storage (persists across app restarts)",
+    "Check lockout timestamp before allowing verification",
+    "Reset attempts after successful verification"
+  ],
+  "testCases": [
+    {
+      "description": "Should hash PIN before storage",
+      "expectedBehavior": "Stored value is not the plain PIN"
+    },
+    {
+      "description": "Should lock out after max attempts",
+      "expectedBehavior": "Throws error after 5 failed attempts"
+    }
+  ]
+}

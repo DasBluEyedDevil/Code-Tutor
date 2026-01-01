@@ -1,0 +1,21 @@
+{
+  "id": "challenge-4a-2-1",
+  "title": "Dashboard Loader with Error Handling",
+  "description": "Create a dashboard loader that fetches three independent data sources. If one fails, the others should still succeed and display their data.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use supervisorScope so one failure doesn't cancel others",
+    "Wrap each async in runCatching to safely handle exceptions",
+    "Use getOrNull() and exceptionOrNull() to extract results and errors"
+  ],
+  "testCases": [
+    {
+      "description": "Weather and stocks should succeed",
+      "expectedBehavior": "weather and stocks are non-null"
+    },
+    {
+      "description": "News should fail gracefully",
+      "expectedBehavior": "news is null, errors contains the news error"
+    }
+  ]
+}

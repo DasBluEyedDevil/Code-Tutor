@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a blog API with Hono routing patterns:\n\n1. GET `/api/posts/:postId` - Get a specific post by ID\n   - Use c.req.param('postId') to get the ID\n   - Return object with: postId, title, content\n\n2. GET `/api/authors/:authorId/posts` - Get all posts by an author\n   - Use c.req.param('authorId')\n   - Return array of posts with authorId in each\n\n3. GET `/api/posts` with query parameters - Search posts\n   - Use c.req.query() for: search, category, limit\n   - Return search parameters and mock results\n\nUse the HonoApp class. Remember to use return c.json()!",
+  "instructions": "Create a blog API with Hono routing patterns:\n\n1. GET `/api/posts/:postId` - Get a specific post by ID\n   - Use c.req.param('postId') to get the ID\n   - Return object with: postId, title, content\n\n2. GET `/api/authors/:authorId/posts` - Get all posts by an author\n   - Use c.req.param('authorId')\n   - Return array of posts with authorId in each\n\n3. GET `/api/posts` with query parameters - Search posts\n   - Use c.req.query() for: search, category, limit\n   - Return search parameters and mock results\n\nUse the HonoApp class. Remember to use return c.json()!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should extract post ID using c.req.param()",
+      "expectedOutput": "123",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should parse query parameters using c.req.query()",
+      "expectedOutput": "10",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In Hono, use c.req.param('postId') for URL parameters and c.req.query('search') for query strings. Always return c.json()!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Express req.params.id instead of Hono c.req.param('id')",
+      "consequence": "Returns undefined because Hono uses method calls, not object properties.",
+      "correction": "Use c.req.param('id') for URL parameters and c.req.query('key') for query strings."
+    },
+    {
+      "mistake": "Forgetting to return the response in route handlers",
+      "consequence": "No response is sent to the client.",
+      "correction": "Always use return c.json(...) or return c.text(...)"
+    },
+    {
+      "mistake": "Route order conflicts with dynamic segments",
+      "consequence": "Specific routes like /users/active get matched by /users/:id first.",
+      "correction": "Place specific routes before parameterized routes: /users/active before /users/:id"
+    }
+  ],
+  "difficulty": "beginner"
+}

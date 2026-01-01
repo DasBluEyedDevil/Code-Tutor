@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-2-mc-1",
+  "title": "Filter Chain Order",
+  "description": "Understanding security rule evaluation",
+  "question": "Given this configuration:\n.requestMatchers(\"/api/**\").authenticated()\n.requestMatchers(\"/api/public\").permitAll()\nWhat happens when an unauthenticated user accesses /api/public?",
+  "options": [
+    "Access granted - permitAll() applies",
+    "Access denied - /api/** rule matches first",
+    "Error - conflicting rules",
+    "Redirected to login - needs authentication"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Authorization rules are evaluated top-to-bottom, first match wins. '/api/**' matches '/api/public' before the specific rule is reached. The request requires authentication. To allow public access, put the specific rule FIRST: .requestMatchers(\"/api/public\").permitAll() then .requestMatchers(\"/api/**\").authenticated()",
+  "difficulty": "intermediate"
+}

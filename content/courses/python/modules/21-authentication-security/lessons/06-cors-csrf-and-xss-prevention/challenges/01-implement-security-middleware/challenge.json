@@ -1,0 +1,41 @@
+{
+  "id": "module-21-lesson-06-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Implement Security Middleware",
+  "description": "Create a comprehensive security middleware for the Finance Tracker that adds security headers, implements CSRF protection, and sanitizes output.",
+  "instructions": "Complete the SecurityMiddleware class to:\n1. Add security headers (X-Frame-Options, X-Content-Type-Options, CSP)\n2. Generate and validate CSRF tokens for state-changing requests\n3. Provide an output sanitization utility for user content\n4. Implement the middleware __call__ method",
+  "startingCode": "import secrets\nimport html\nfrom typing import Dict, Optional, Callable\nfrom dataclasses import dataclass\n\n@dataclass\nclass Request:\n    method: str\n    path: str\n    headers: Dict[str, str]\n    session: Dict[str, str]\n    body: Optional[Dict] = None\n\n@dataclass\nclass Response:\n    status_code: int\n    body: str\n    headers: Dict[str, str]\n\nclass SecurityMiddleware:\n    def __init__(self, app: Callable):\n        self.app = app\n        self.csrf_exempt_paths = [\"/api/health\", \"/api/public\"]\n    \n    def add_security_headers(self, response: Response) -> None:\n        \"\"\"Add security headers to response.\"\"\"\n        # TODO: Add X-Frame-Options: DENY\n        # TODO: Add X-Content-Type-Options: nosniff\n        # TODO: Add basic CSP header\n        pass\n    \n    def generate_csrf_token(self, request: Request) -> str:\n        \"\"\"Generate and store CSRF token in session.\"\"\"\n        # TODO: Generate secure token\n        # TODO: Store in request.session\n        # TODO: Return token\n        pass\n    \n    def validate_csrf_token(self, request: Request) -> bool:\n        \"\"\"Validate CSRF token for state-changing requests.\"\"\"\n        # TODO: Skip validation for safe methods (GET, HEAD, OPTIONS)\n        # TODO: Skip for exempt paths\n        # TODO: Compare session token with header/body token\n        # TODO: Use constant-time comparison!\n        pass\n    \n    @staticmethod\n    def sanitize_output(content: str) -> str:\n        \"\"\"Sanitize user content for safe HTML output.\"\"\"\n        # TODO: Escape HTML entities\n        pass\n    \n    def __call__(self, request: Request) -> Response:\n        \"\"\"Process request through security middleware.\"\"\"\n        # TODO: Validate CSRF for unsafe methods\n        # TODO: Call self.app(request) to get response\n        # TODO: Add security headers to response\n        # TODO: Return response\n        pass\n\n# Simple app for testing\ndef sample_app(request: Request) -> Response:\n    if request.path == \"/api/transfer\":\n        return Response(200, '{\"status\": \"transferred\"}', {})\n    return Response(200, '{\"status\": \"ok\"}', {})\n\n# Tests\nprint(\"Security Middleware Tests\")\nprint(\"=\" * 40)\n\nmiddleware = SecurityMiddleware(sample_app)\n\n# Test 1: Security headers added\nreq = Request(\"GET\", \"/api/data\", {}, {})\nresp = middleware(req)\nprint(f\"X-Frame-Options: {resp.headers.get('X-Frame-Options')}\")\nprint(f\"X-Content-Type-Options: {resp.headers.get('X-Content-Type-Options')}\")\nassert resp.headers.get(\"X-Frame-Options\") == \"DENY\"\nassert resp.headers.get(\"X-Content-Type-Options\") == \"nosniff\"\nprint(\"Headers added correctly\")\n\n# Test 2: CSRF token generation\nreq = Request(\"GET\", \"/form\", {}, {})\ntoken = middleware.generate_csrf_token(req)\nprint(f\"\\nGenerated CSRF token: {token[:20]}...\")\nassert len(token) > 20\nassert req.session.get(\"csrf_token\") == token\nprint(\"CSRF token generated and stored\")\n\n# Test 3: CSRF validation passes with valid token\nreq = Request(\"POST\", \"/api/transfer\", {\"X-CSRF-Token\": token}, {\"csrf_token\": token})\nassert middleware.validate_csrf_token(req) == True\nprint(\"\\nValid CSRF token accepted\")\n\n# Test 4: CSRF validation fails with invalid token\nreq = Request(\"POST\", \"/api/transfer\", {\"X-CSRF-Token\": \"wrong\"}, {\"csrf_token\": token})\nassert middleware.validate_csrf_token(req) == False\nprint(\"Invalid CSRF token rejected\")\n\n# Test 5: CSRF skipped for GET\nreq = Request(\"GET\", \"/api/data\", {}, {})\nassert middleware.validate_csrf_token(req) == True\nprint(\"GET requests skip CSRF validation\")\n\n# Test 6: Output sanitization\ndangerous = '<script>alert(\"xss\")</script>'\nsafe = SecurityMiddleware.sanitize_output(dangerous)\nassert \"<script>\" not in safe\nassert \"&lt;script&gt;\" in safe\nprint(f\"\\nSanitized: {safe}\")\n\nprint(\"\\nAll security tests passed!\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Security middleware adds headers, validates CSRF, and sanitizes output correctly",
+      "expectedOutput": "All security tests passed!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `secrets.token_urlsafe(32)` for CSRF tokens and `secrets.compare_digest()` for constant-time comparison. Use `html.escape()` for output sanitization. Remember to skip CSRF validation for GET, HEAD, and OPTIONS methods."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using == instead of secrets.compare_digest() for token comparison",
+      "consequence": "Timing attack vulnerability allowing token guessing",
+      "correction": "Always use secrets.compare_digest() for security-sensitive string comparisons"
+    },
+    {
+      "mistake": "Forgetting to escape HTML in different contexts",
+      "consequence": "XSS vulnerabilities in attribute or JavaScript contexts",
+      "correction": "Use context-appropriate encoding: HTML entities for content, quote escaping for attributes, JSON encoding for JavaScript"
+    },
+    {
+      "mistake": "Setting overly permissive CORS with allow_origin='*' and credentials",
+      "consequence": "Cross-origin attacks can steal user data",
+      "correction": "Specify exact allowed origins when using credentials"
+    }
+  ],
+  "difficulty": "advanced"
+}

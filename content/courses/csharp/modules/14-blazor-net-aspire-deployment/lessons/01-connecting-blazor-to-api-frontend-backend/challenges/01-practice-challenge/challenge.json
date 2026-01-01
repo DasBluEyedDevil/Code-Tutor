@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-14-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a full-stack Todo app!\n\n1. API (backend):\n   - Todo model (Id, Title, IsCompleted)\n   - GET /api/todos (list all)\n   - POST /api/todos (create)\n   - PUT /api/todos/{id} (update)\n   - DELETE /api/todos/{id} (delete)\n   - Use in-memory list\n\n2. Blazor component (frontend):\n   - Inject HttpClient\n   - OnInitializedAsync: load todos\n   - Display list with checkboxes\n   - Input to add new todo\n   - Delete button for each\n   - Handle loading and errors\n\n3. Print both API and Blazor code!\n\nThis is your first full-stack app!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"API\"",
+      "expectedOutput": "API",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"BACKEND\"",
+      "expectedOutput": "BACKEND",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Blazor\"",
+      "expectedOutput": "Blazor",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"FRONTEND\"",
+      "expectedOutput": "FRONTEND",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"HttpClient\"",
+      "expectedOutput": "HttpClient",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"FULL-STACK\"",
+      "expectedOutput": "FULL-STACK",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "API: MapGet/Post/Put/Delete endpoints. Blazor: @inject HttpClient, GetFromJsonAsync<T>, PostAsJsonAsync, PutAsJsonAsync, DeleteAsync. Handle loading state and errors!"
+    },
+    {
+      "level": 2,
+      "text": "CORS errors: Blazor WebAssembly needs CORS enabled on API! Use app.UseCors() with AllowAnyOrigin(). Browser console shows 'CORS policy' error if missing."
+    },
+    {
+      "level": 3,
+      "text": "Base address: Configure HttpClient.BaseAddress in Program.cs! Otherwise, use full URLs in every request. BaseAddress = \"https://localhost:5001/\" lets you use relative URLs."
+    },
+    {
+      "level": 4,
+      "text": "Null reference: GetFromJsonAsync returns null if API not running! Always check: 'todos = await Http.Get...() ?? new();' or handle null explicitly."
+    },
+    {
+      "level": 5,
+      "text": "Forgetting await: HttpClient methods are async! Must use 'await'. Forgetting await = code continues before response arrives (race condition!). Always await HTTP calls!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "CORS errors",
+      "consequence": "Blazor WebAssembly needs CORS enabled on API! Use app.UseCors() with AllowAnyOrigin(). Browser console shows 'CORS policy' error if missing.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Base address",
+      "consequence": "Configure HttpClient.BaseAddress in Program.cs! Otherwise, use full URLs in every request. BaseAddress = \"https://localhost:5001/\" lets you use relative URLs.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Null reference",
+      "consequence": "GetFromJsonAsync returns null if API not running! Always check: 'todos = await Http.Get...() ?? new();' or handle null explicitly.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting await",
+      "consequence": "HttpClient methods are async! Must use 'await'. Forgetting await = code continues before response arrives (race condition!). Always await HTTP calls!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

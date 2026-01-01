@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-6-mc-1",
+  "title": "JWT in Headers",
+  "description": "Understanding how to send JWT to the backend",
+  "question": "What is the correct format for sending a JWT token in an HTTP request?",
+  "options": [
+    "Headers: { 'Token': 'eyJhbG...' }",
+    "Headers: { 'Authorization': 'eyJhbG...' }",
+    "Headers: { 'Authorization': 'Bearer eyJhbG...' }",
+    "Query parameter: ?jwt=eyJhbG..."
+  ],
+  "correctAnswer": 2,
+  "explanation": "The standard format is 'Authorization: Bearer <token>'. The 'Bearer' scheme indicates token-based authentication per RFC 6750. Spring Security's JwtAuthenticationFilter expects this format. Never put tokens in URLs (logged, cached, visible in history).",
+  "difficulty": "intermediate"
+}

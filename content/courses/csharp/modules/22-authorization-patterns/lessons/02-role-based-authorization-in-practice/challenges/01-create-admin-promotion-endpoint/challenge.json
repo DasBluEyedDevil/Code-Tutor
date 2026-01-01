@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-22-02-challenge-01",
+  "title": "Create Admin Promotion Endpoint",
+  "description": "Implement a secure endpoint that allows administrators to promote users to the Seller role.",
+  "instructions": "Create an Admin promotion system for ShopFlow!\n\n1. Define a static class ShopFlowRoles with constants:\n   - Admin = \"Admin\"\n   - Seller = \"Seller\"\n   - Customer = \"Customer\"\n\n2. Create an AdminController with [Authorize(Roles = ShopFlowRoles.Admin)] at the class level\n\n3. Implement POST /api/admin/users/{userId}/promote-to-seller endpoint that:\n   - Takes userId as a route parameter\n   - Uses UserManager<ApplicationUser> to find the user\n   - Returns NotFound() if user does not exist\n   - Checks if user already has Seller role using IsInRoleAsync\n   - If already a seller, returns Ok(\"User is already a seller\")\n   - Otherwise, adds the Seller role and returns Ok(\"User promoted to seller\")\n   - Returns BadRequest with errors if role assignment fails\n\n4. Include proper dependency injection for UserManager",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should define ShopFlowRoles.Admin constant",
+      "expectedOutput": "const string Admin",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should apply Admin role authorization to controller",
+      "expectedOutput": "Authorize(Roles = ShopFlowRoles.Admin)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should use IsInRoleAsync to check existing role",
+      "expectedOutput": "IsInRoleAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should use AddToRoleAsync to assign role",
+      "expectedOutput": "AddToRoleAsync",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define ShopFlowRoles as a static class with public const string fields for each role."
+    },
+    {
+      "level": 2,
+      "text": "Apply [Authorize(Roles = ShopFlowRoles.Admin)] at the class level to protect all endpoints in the controller."
+    },
+    {
+      "level": 3,
+      "text": "Use _userManager.FindByIdAsync(userId) to retrieve the user, and return NotFound() if null."
+    },
+    {
+      "level": 4,
+      "text": "Check if user already has the role with _userManager.IsInRoleAsync(user, ShopFlowRoles.Seller)."
+    },
+    {
+      "level": 5,
+      "text": "Use _userManager.AddToRoleAsync(user, ShopFlowRoles.Seller) and check result.Succeeded to handle errors."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using magic strings instead of role constants",
+      "consequence": "Typos like 'Adimn' or 'seller' cause authorization to silently fail at runtime.",
+      "correction": "Define role names as constants in a static class and reference them everywhere."
+    },
+    {
+      "mistake": "Not checking if user already has the role",
+      "consequence": "AddToRoleAsync may fail or create duplicate role assignments depending on the identity provider.",
+      "correction": "Always check IsInRoleAsync before attempting to add a role."
+    },
+    {
+      "mistake": "Not handling AddToRoleAsync failure",
+      "consequence": "Errors like database constraint violations or role not existing are silently ignored.",
+      "correction": "Check result.Succeeded and return BadRequest with result.Errors if it fails."
+    },
+    {
+      "mistake": "Forgetting to inject UserManager",
+      "consequence": "NullReferenceException when trying to use user management methods.",
+      "correction": "Add UserManager<ApplicationUser> as a constructor parameter and store it in a field."
+    }
+  ],
+  "difficulty": "intermediate"
+}

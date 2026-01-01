@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-5-mc-2",
+  "title": "Virtual Thread Pinning",
+  "description": "Understanding pinning and how to avoid it",
+  "question": "What causes a virtual thread to get 'pinned' to its carrier thread, reducing the benefit of virtual threads?",
+  "options": [
+    "Using too many virtual threads",
+    "Calling Thread.sleep()",
+    "Blocking inside a synchronized block",
+    "Using Executors.newVirtualThreadPerTaskExecutor()"
+  ],
+  "correctAnswer": 2,
+  "explanation": "Pinning occurs when a virtual thread blocks inside synchronized blocks/methods or during native method calls. The JVM cannot unmount the virtual thread, so it holds the carrier thread. Use ReentrantLock instead of synchronized for code that may block. Thread.sleep() does NOT cause pinning.",
+  "difficulty": "advanced"
+}

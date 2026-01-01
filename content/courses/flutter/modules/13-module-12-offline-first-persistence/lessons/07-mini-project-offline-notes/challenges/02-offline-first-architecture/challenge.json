@@ -1,0 +1,31 @@
+{
+  "type": "QUIZ",
+  "id": "12.7-quiz-1",
+  "title": "Offline-First Architecture",
+  "description": "Final assessment of offline-first concepts.",
+  "questions": [
+    {
+      "question": "What should happen when a user creates a note while offline?",
+      "options": [
+        "Show an error and prevent creation",
+        "Save locally and queue for sync when online",
+        "Wait until online to save",
+        "Save to a temporary cache only"
+      ],
+      "correctAnswer": 1,
+      "explanation": "In offline-first architecture, the note should be saved to the local database immediately and a sync operation queued. When connectivity is restored, the sync queue processes and pushes changes to the server."
+    },
+    {
+      "question": "Why do we use UUIDs instead of auto-increment IDs in offline-first apps?",
+      "options": [
+        "UUIDs are faster to generate",
+        "Auto-increment requires server roundtrip to get the ID",
+        "UUIDs are more secure",
+        "The database requires UUIDs"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Auto-increment IDs require the server to assign the ID, which is not possible offline. UUIDs can be generated client-side without any server communication, making them ideal for offline-first apps."
+    }
+  ],
+  "difficulty": "advanced"
+}

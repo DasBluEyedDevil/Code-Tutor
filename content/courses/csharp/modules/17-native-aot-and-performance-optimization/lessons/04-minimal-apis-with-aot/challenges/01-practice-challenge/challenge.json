@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-17-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an AOT-ready Todo API with Minimal APIs!\n\n1. Create models:\n   - TodoItem: Id (int), Title (string), IsComplete (bool), DueDate (DateTime?)\n   - CreateTodoRequest: Title (string), DueDate (DateTime?)\n   - TodoList: Items (List<TodoItem>), TotalCount (int)\n\n2. Create JSON source generator context for all types\n\n3. Implement endpoints:\n   - GET /todos - returns TodoList\n   - GET /todos/{id} - returns single TodoItem or 404\n   - POST /todos - accepts CreateTodoRequest, returns created TodoItem\n   - PUT /todos/{id}/complete - marks item complete, returns updated item\n   - DELETE /todos/{id} - removes item\n\n4. Use in-memory list for storage (simulated database)\n\n5. Configure JSON options to use the source generator",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should list endpoints",
+      "expectedOutput": "GET",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention Todo API",
+      "expectedOutput": "Todo API",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CreateSlimBuilder for lighter AOT builds. ConfigureHttpJsonOptions to register your JSON context."
+    },
+    {
+      "level": 2,
+      "text": "Results.Ok(), Results.NotFound(), Results.Created(), Results.NoContent() for HTTP responses."
+    },
+    {
+      "level": 3,
+      "text": "Record 'with' expression for immutable updates: updated = original with { Property = newValue };"
+    },
+    {
+      "level": 4,
+      "text": "FirstOrDefault returns null if not found. Use is null pattern for cleaner checks."
+    },
+    {
+      "level": 5,
+      "text": "[JsonSerializable] for every type that gets serialized - including List<T> variations!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to register JSON context",
+      "consequence": "Serialization falls back to reflection, which fails in AOT! Runtime exception on first request.",
+      "correction": "Always ConfigureHttpJsonOptions and Insert your context into TypeInfoResolverChain."
+    },
+    {
+      "mistake": "Using CreateBuilder instead of CreateSlimBuilder",
+      "consequence": "Works, but includes unnecessary features. Larger binary, slower startup.",
+      "correction": "Use CreateSlimBuilder for AOT APIs. It's optimized for minimal footprint."
+    },
+    {
+      "mistake": "Not registering List<T> in JSON context",
+      "consequence": "Single item works, but endpoints returning lists fail!",
+      "correction": "[JsonSerializable(typeof(List<TodoItem>))] - explicit List<T> registration needed."
+    },
+    {
+      "mistake": "Modifying records directly",
+      "consequence": "Records are immutable! todo.IsComplete = true doesn't compile.",
+      "correction": "Use 'with' expression: var updated = todo with { IsComplete = true };"
+    }
+  ],
+  "difficulty": "advanced"
+}

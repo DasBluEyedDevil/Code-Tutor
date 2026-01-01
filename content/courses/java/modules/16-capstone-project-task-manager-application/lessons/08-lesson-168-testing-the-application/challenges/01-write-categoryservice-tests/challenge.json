@@ -1,0 +1,20 @@
+{
+  "type": "FREE_CODING",
+  "id": "capstone-16-8-service-test",
+  "title": "Write CategoryService Tests",
+  "description": "Create unit tests for the CategoryService class.",
+  "instructions": "Write tests for CategoryService that cover:\n1. Creating a category successfully\n2. Throwing exception when category name already exists for user\n3. Getting all categories for a user\n4. Deleting a category (and verifying tasks are not deleted, just unlinked)",
+  "language": "java",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use when().thenReturn() to set up mock behavior before calling the service method."
+    },
+    {
+      "level": 2,
+      "text": "For the delete test, verify that taskRepository.unlinkCategory() is called before categoryRepository.delete()."
+    }
+  ],
+  "difficulty": "intermediate"
+}

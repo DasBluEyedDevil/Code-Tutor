@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.3-challenge-0",
+  "title": "Photo Gallery with Hero Transitions",
+  "description": "Build a photo gallery with smooth Hero transitions.",
+  "instructions": "Create a grid of photos that expands to full-screen when tapped. Use Hero widgets to animate the selected photo from its grid position to the center of the screen. Include a custom flightShuttleBuilder that adds a shadow effect during the transition.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use unique hero tags like 'photo-$index' for each image"
+    },
+    {
+      "level": 2,
+      "text": "The flightShuttleBuilder receives an animation parameter you can use to animate properties"
+    },
+    {
+      "level": 3,
+      "text": "Use AnimatedBuilder inside flightShuttleBuilder to rebuild on animation changes"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using the same hero tag for multiple images",
+      "consequence": "Hero animation breaks with duplicate tag error",
+      "correction": "Use unique tags like 'photo-$index' or 'photo-${photo.id}'"
+    },
+    {
+      "mistake": "Mismatched hero tags between screens",
+      "consequence": "No hero animation occurs",
+      "correction": "Ensure the tag string is exactly the same on both screens"
+    }
+  ],
+  "difficulty": "intermediate"
+}

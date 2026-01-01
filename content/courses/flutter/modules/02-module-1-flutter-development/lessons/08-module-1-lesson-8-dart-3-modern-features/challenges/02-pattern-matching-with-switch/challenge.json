@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.8-challenge-1",
+  "title": "Pattern Matching with Switch",
+  "description": "Create a function that uses pattern matching to describe different data types.",
+  "instructions": "1. Create a function `describe(Object value)` that returns a String\n2. Use switch expression with patterns to handle: integers (positive/negative/zero), strings (empty/short/long), lists (empty/single/multiple), and a default case\n3. Test with various inputs",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Correctly identifies positive integers",
+      "expectedOutput": "positive: 42",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Correctly identifies negative integers",
+      "expectedOutput": "negative: -5",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Correctly handles list patterns",
+      "expectedOutput": "list starting with: 1",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'when' for guard conditions in patterns"
+    },
+    {
+      "level": 2,
+      "text": "Order matters - put specific cases before general ones"
+    },
+    {
+      "level": 3,
+      "text": "Use '...' for rest patterns in lists"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting general patterns before specific ones",
+      "consequence": "Specific patterns never match",
+      "correction": "Put 'int n when n < 0' before 'int n'"
+    },
+    {
+      "mistake": "Forgetting the => in switch expressions",
+      "consequence": "Syntax error",
+      "correction": "Use => for expression bodies in switch expressions"
+    }
+  ],
+  "difficulty": "intermediate"
+}

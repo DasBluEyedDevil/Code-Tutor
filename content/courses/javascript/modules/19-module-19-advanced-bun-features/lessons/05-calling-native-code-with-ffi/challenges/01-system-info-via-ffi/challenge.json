@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "19.5-challenge",
+  "title": "System Info via FFI",
+  "description": "Use FFI to get system information.",
+  "instructions": "Use FFI to call getpid() from libc and print the process ID.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Gets process ID",
+      "expectedOutput": "Process ID:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "getpid() takes no arguments and returns an i32"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong library suffix on different OS",
+      "consequence": "Library fails to load on macOS/Linux/Windows",
+      "correction": "Use suffix from bun:ffi - it's 'dylib' on macOS, 'so' on Linux, 'dll' on Windows"
+    }
+  ],
+  "difficulty": "advanced"
+}

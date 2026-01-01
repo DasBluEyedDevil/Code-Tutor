@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.8-challenge-1",
+  "title": "Refactor to Use Dependency Injection",
+  "description": "Take a ViewModel with hard-coded dependencies and refactor it to use proper dependency injection through Riverpod providers.",
+  "instructions": "The starter code shows a WeatherViewModel that creates its dependencies directly, making it impossible to test. Your task is to refactor it to use proper dependency injection:\n\n1. Create a provider for WeatherApiClient (should be keepAlive since it is used app-wide)\n2. Create a provider for WeatherRepository that gets WeatherApiClient from Riverpod\n3. Refactor WeatherViewModel to get WeatherRepository from Riverpod instead of creating it\n4. Ensure the dependency chain is: WeatherViewModel -> WeatherRepository -> WeatherApiClient\n5. All dependencies should be obtained via ref.watch() or ref.read(), never created directly\n\nAfter refactoring:\n- The widget usage should remain the same (just watching weatherViewModelProvider)\n- Each layer should be independently testable\n- You should be able to override any provider for testing\n\nBonus: Add comments showing how you would override these providers in a test.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-api-client-provider",
+      "description": "weatherApiClientProvider is created with keepAlive: true",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-repository-provider",
+      "description": "weatherRepositoryProvider gets WeatherApiClient via ref.watch()",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-viewmodel-di",
+      "description": "WeatherViewModel gets repository via ref instead of creating it",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-no-hardcoded",
+      "description": "No hard-coded dependency creation in ViewModel",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-abstract-repo",
+      "description": "WeatherRepository is an abstract class for mockability",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start from the bottom layer: create a provider for WeatherApiClient. Use @Riverpod(keepAlive: true) since the API client should live for the app's lifetime."
+    },
+    {
+      "level": 2,
+      "text": "For the repository provider, use ref.watch(weatherApiClientProvider) to get the API client, then return a new ApiWeatherRepository with that client injected."
+    },
+    {
+      "level": 3,
+      "text": "In WeatherViewModel, remove the _client and _repository fields entirely. In loadWeather(), use ref.read(weatherRepositoryProvider) to get the repository when you need it."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using ref.watch() inside an action method like loadWeather()",
+      "consequence": "Creates a subscription that might cause unnecessary rebuilds or lifecycle issues",
+      "correction": "Use ref.read() inside action methods. Only use ref.watch() in build() to establish reactive dependencies."
+    },
+    {
+      "mistake": "Forgetting to make WeatherRepository abstract",
+      "consequence": "Cannot easily mock the repository in tests",
+      "correction": "Create an abstract WeatherRepository class and have ApiWeatherRepository implement it. This allows for easy mocking."
+    },
+    {
+      "mistake": "Using keepAlive on all providers",
+      "consequence": "Memory leaks and stale data since providers never dispose",
+      "correction": "Only use keepAlive for truly global, singleton services like API clients. ViewModels and feature-specific providers should auto-dispose."
+    },
+    {
+      "mistake": "Creating repository inside the ViewModel's build() method",
+      "consequence": "Creates a new repository instance on every rebuild instead of using the shared one",
+      "correction": "Get the repository via ref.watch(weatherRepositoryProvider) or ref.read() depending on context - Riverpod manages the instance lifecycle."
+    }
+  ],
+  "difficulty": "intermediate"
+}

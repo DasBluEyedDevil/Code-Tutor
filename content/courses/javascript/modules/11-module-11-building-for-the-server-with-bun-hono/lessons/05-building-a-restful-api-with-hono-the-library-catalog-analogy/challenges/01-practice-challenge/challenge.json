@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Build a RESTful API for managing tasks using Hono patterns:\n\n1. Create an array to store tasks (each has: id, title, completed)\n2. Implement these endpoints using Hono's (c) context:\n   - GET /api/tasks - Return all tasks using c.json()\n   - GET /api/tasks/:id - Return one task (404 if not found)\n   - POST /api/tasks - Create new task (validate title exists)\n   - PUT /api/tasks/:id - Update task completely\n   - DELETE /api/tasks/:id - Delete task\n\n3. Use proper status codes with c.json(data, status):\n   - 200 for successful GET/PUT\n   - 201 for successful POST\n   - 404 for not found\n   - 400 for validation errors\n\n4. Remember: return c.json() and use async for POST/PUT body parsing!",
+  "instructions": "Build a RESTful API for managing tasks using Hono patterns:\n\n1. Create an array to store tasks (each has: id, title, completed)\n2. Implement these endpoints using Hono's (c) context:\n   - GET /api/tasks - Return all tasks using c.json()\n   - GET /api/tasks/:id - Return one task (404 if not found)\n   - POST /api/tasks - Create new task (validate title exists)\n   - PUT /api/tasks/:id - Update task completely\n   - DELETE /api/tasks/:id - Delete task\n\n3. Use proper status codes with c.json(data, status):\n   - 200 for successful GET/PUT\n   - 201 for successful POST\n   - 404 for not found\n   - 400 for validation errors\n\n4. Remember: return c.json() and use async for POST/PUT body parsing!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should find task by id using Hono patterns",
+      "expectedOutput": "Test",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should validate task has title",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use c.req.param('id') to get the ID. For POST/PUT, use async and await c.req.json() to parse body. Always return c.json()!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to return c.json() in Hono route handlers",
+      "consequence": "No response is sent to the client.",
+      "correction": "Always use return c.json(data) or return c.json(data, statusCode)."
+    },
+    {
+      "mistake": "Not using async/await for c.req.json() in POST/PUT handlers",
+      "consequence": "You get a Promise object instead of the parsed body.",
+      "correction": "Use async (c) => { const body = await c.req.json(); ... }"
+    },
+    {
+      "mistake": "Using Express syntax res.status(404).json() instead of Hono's c.json(data, 404)",
+      "consequence": "Code will not work with Hono's API.",
+      "correction": "In Hono, pass status as second argument: return c.json({ error: 'Not found' }, 404)"
+    }
+  ],
+  "difficulty": "beginner"
+}

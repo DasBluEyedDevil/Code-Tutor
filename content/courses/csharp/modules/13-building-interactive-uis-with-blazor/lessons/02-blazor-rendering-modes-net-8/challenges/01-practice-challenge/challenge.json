@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Understand Blazor rendering modes!\n\n1. Create examples showing when to use each mode:\n\n   STATIC SSR:\n   - Product catalog page\n   - Blog posts\n   - Why: Fast, SEO, no interactivity needed\n\n   INTERACTIVE SERVER:\n   - Admin dashboard\n   - Form with validation\n   - Why: Complex logic on server, small payload\n\n   INTERACTIVE WEBASSEMBLY:\n   - Image editor\n   - Game\n   - Why: Works offline, no server calls\n\n   INTERACTIVE AUTO:\n   - E-commerce site\n   - Social media feed\n   - Why: Fast start, then offline capability\n\n2. Print comparison table\n3. Show .NET 8 configuration code\n4. Explain trade-offs",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"STATIC SSR\"",
+      "expectedOutput": "STATIC SSR",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"INTERACTIVE SERVER\"",
+      "expectedOutput": "INTERACTIVE SERVER",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"WEBASSEMBLY\"",
+      "expectedOutput": "WEBASSEMBLY",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"AUTO\"",
+      "expectedOutput": "AUTO",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"COMPARISON\"",
+      "expectedOutput": "COMPARISON",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \".NET 8\"",
+      "expectedOutput": ".NET 8",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Static = no interactivity. Server = C# on server. WASM = C# in browser. Auto = starts Server, becomes WASM. Choose based on: speed, interactivity, offline needs."
+    },
+    {
+      "level": 2,
+      "text": "Using wrong mode: Static SSR for interactive app = no @onclick works! Must use Interactive* modes for interactivity. Static is like traditional HTML."
+    },
+    {
+      "level": 3,
+      "text": "WASM download size: WebAssembly downloads .NET runtime + your app (5-10MB!). First load is slow. Use Auto mode to start fast, switch to WASM later."
+    },
+    {
+      "level": 4,
+      "text": "Server scalability: InteractiveServer creates SignalR connection per user. 10,000 users = 10,000 connections! WASM scales better (runs in browser)."
+    },
+    {
+      "level": 5,
+      "text": "Mixing modes: Can use different modes for different components! Product list (Static), shopping cart (Server), image editor (WASM). Mix and match!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using wrong mode",
+      "consequence": "Static SSR for interactive app = no @onclick works! Must use Interactive* modes for interactivity. Static is like traditional HTML.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "WASM download size",
+      "consequence": "WebAssembly downloads .NET runtime + your app (5-10MB!). First load is slow. Use Auto mode to start fast, switch to WASM later.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Server scalability",
+      "consequence": "InteractiveServer creates SignalR connection per user. 10,000 users = 10,000 connections! WASM scales better (runs in browser).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Mixing modes",
+      "consequence": "Can use different modes for different components! Product list (Static), shopping cart (Server), image editor (WASM). Mix and match!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

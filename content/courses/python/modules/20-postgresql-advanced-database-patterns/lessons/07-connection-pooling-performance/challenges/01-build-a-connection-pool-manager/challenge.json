@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-07-challenge-1",
+  "title": "Build a Connection Pool Manager",
+  "description": "Create a connection pool manager with health checking and performance monitoring for the Finance Tracker.",
+  "instructions": "Complete the pool manager to:\n1. Initialize a connection pool with proper settings\n2. Implement a health check method\n3. Add a method to get pool statistics\n4. Create a context manager for acquiring connections",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Pool manager creates and manages connections",
+      "expectedOutput": "Pool created:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `asyncpg.create_pool()` to create the pool. The `acquire()` method borrows a connection. Health check should return `1` from `SELECT 1`. Use `get_idle_size()` for idle connections."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using connect() instead of create_pool()",
+      "consequence": "Creates a single connection, not a pool",
+      "correction": "Use asyncpg.create_pool() for connection pooling"
+    },
+    {
+      "mistake": "Forgetting to close the pool",
+      "consequence": "Connections remain open, resource leak",
+      "correction": "Always call pool.close() in cleanup or use async context manager"
+    }
+  ],
+  "difficulty": "advanced"
+}

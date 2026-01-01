@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.1.2",
+  "title": "Grade Calculator",
+  "description": "Given a score, print the letter grade (A: 90+, B: 80+, C: 70+, D: 60+, F: below 60).",
+  "instructions": "Given a score, print the letter grade (A: 90+, B: 80+, C: 70+, D: 60+, F: below 60).",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "For score 85, prints 'B'",
+      "expectedOutput": "B",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Score 85 falls in B range (80-89)",
+      "expectedOutput": "B",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use else if for multiple conditions"
+    },
+    {
+      "level": 2,
+      "text": "Check from highest to lowest"
+    },
+    {
+      "level": 3,
+      "text": "Score 85 should print 'B'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Checking conditions in wrong order",
+      "consequence": "Lower grades match before higher ones",
+      "correction": "Check from highest (90+) to lowest"
+    },
+    {
+      "mistake": "Using wrong comparison operators",
+      "consequence": "Boundary scores get wrong grades",
+      "correction": "Use >= for inclusive boundaries"
+    },
+    {
+      "mistake": "Missing else branch for F grade",
+      "consequence": "No output for scores below 60",
+      "correction": "Include else for scores below 60"
+    }
+  ],
+  "difficulty": "intermediate"
+}

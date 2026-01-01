@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-2-mc-2",
+  "title": "Docker Layer Caching",
+  "description": "Understanding layer caching for faster builds",
+  "question": "You changed one line in your Java source code. With proper Dockerfile ordering, which layers need to rebuild?",
+  "options": [
+    "All layers - Docker rebuilds everything on any change",
+    "Only the layers after COPY src/ and the final build step",
+    "Only the base image layer",
+    "No layers - Docker uses cached results for source changes"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Docker caches layers and only rebuilds from the point where changes occur. With proper ordering (dependencies before source), changing source code only invalidates layers after COPY src/. The base image and dependency download layers remain cached, making rebuilds much faster.",
+  "difficulty": "intermediate"
+}

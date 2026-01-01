@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a student grade analysis system!\n\n1. Create a 'Student' class:\n   - string Name\n   - int Grade (0-100)\n   - string Subject\n\n2. Create a List with 8+ students across 2-3 subjects\n\n3. Perform these operations:\n   - Sort students by grade (descending)\n   - Count how many students there are\n   - Calculate average grade\n   - Find highest and lowest grades\n   - Get sum of all grades\n   - Find students in \"Math\" subject, sorted by name\n   - Calculate average grade for \"Math\" students only\n\n4. Display all results with labels",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Total students\"",
+      "expectedOutput": "Total students",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Average grade\"",
+      "expectedOutput": "Average grade",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Highest\"",
+      "expectedOutput": "Highest",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Math average\"",
+      "expectedOutput": "Math average",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "OrderBy: '.OrderBy(x => x.Property)'. Aggregates: '.Count()', '.Sum(x => x.Prop)', '.Average(x => x.Prop)', '.Min()/.Max()'. Chain with .Where() for filtered aggregates!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting selector in aggregate: '.Sum()' on objects doesn't work! Must specify what to sum: '.Sum(p => p.Price)'. Only works without selector on collections of numbers."
+    },
+    {
+      "level": 3,
+      "text": "OrderBy doesn't modify original: Like all LINQ, .OrderBy() returns NEW sequence! Original list is unchanged. Assign result: 'var sorted = list.OrderBy(...)'."
+    },
+    {
+      "level": 4,
+      "text": "Using .Count property vs .Count() method: IEnumerable has .Count() METHOD. List has .Count PROPERTY. Both work, but property is faster on List!"
+    },
+    {
+      "level": 5,
+      "text": "Average on empty collection: '.Average()' on empty collection throws exception! Check '.Any()' first, or use default: 'list.Any() ? list.Average() : 0'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting selector in aggregate",
+      "consequence": "'.Sum()' on objects doesn't work! Must specify what to sum: '.Sum(p => p.Price)'. Only works without selector on collections of numbers.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "OrderBy doesn't modify original",
+      "consequence": "Like all LINQ, .OrderBy() returns NEW sequence! Original list is unchanged. Assign result: 'var sorted = list.OrderBy(...)'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using .Count property vs .Count() method",
+      "consequence": "IEnumerable has .Count() METHOD. List has .Count PROPERTY. Both work, but property is faster on List!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Average on empty collection",
+      "consequence": "'.Average()' on empty collection throws exception! Check '.Any()' first, or use default: 'list.Any() ? list.Average() : 0'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

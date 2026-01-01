@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.6-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
+  "instructions": "Create a function that:\n1. Fetches a random user from: https://randomuser.me/api/\n2. Extracts the name (results[0].name.first)\n3. Returns the name\n4. Handles errors appropriately\n\nHint: The API returns { results: [{name: {first: 'John', last: 'Doe'}}] }",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Fetches and parses data",
+      "expectedOutput": "John",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "let response = await fetch(url); let data = await response.json(); return data.results[0].name.first;"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Not awaiting response.json():",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Not awaiting response.json():\n   let response = await fetch(url);\n   let data = response.json();  // WRONG - data is a Promise!\n   \n   Must await:\n   let data = await response.json();"
+    },
+    {
+      "mistake": "Forgetting to check response.ok:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting to check response.ok:\n   let response = await fetch(url);\n   let data = await response.json();  // Might fail!\n   \n   Always check:\n   if (!response.ok) {\n     throw new Error('HTTP error');\n   }"
+    }
+  ],
+  "difficulty": "beginner"
+}

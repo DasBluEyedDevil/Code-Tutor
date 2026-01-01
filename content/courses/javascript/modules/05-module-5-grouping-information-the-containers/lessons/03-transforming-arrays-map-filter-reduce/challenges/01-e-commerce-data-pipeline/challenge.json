@@ -1,0 +1,65 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.3-challenge",
+  "title": "E-Commerce Data Pipeline",
+  "description": "You are building an e-commerce dashboard. Given an array of products, use map, filter, and reduce to transform the data for display. This challenge tests your ability to chain all three transformation methods together to solve a real-world problem.",
+  "instructions": "Given an array of products with name, price, category, and inStock properties:\n\n1. Filter to only 'electronics' category products that are in stock\n2. Map to add a 10% tax to each price (multiply by 1.10), rounded to 2 decimal places\n3. Reduce to get the total price of all filtered products\n4. Finally, chain all three operations into a single elegant pipeline\n\nExpected behavior:\n- Start with products array\n- Filter: electronics + inStock = Laptop ($1000), Mouse ($25), Keyboard ($75)\n- Map with tax: $1100.00, $27.50, $82.50\n- Reduce total: $1210.00",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Filters to correct products",
+      "expectedOutput": "3",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Applies tax correctly",
+      "expectedOutput": "1100",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Calculates total correctly",
+      "expectedOutput": "1210",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For filter: check both category === 'electronics' AND inStock === true"
+    },
+    {
+      "level": 2,
+      "text": "For map with tax: price * (1 + TAX_RATE) or price * 1.10"
+    },
+    {
+      "level": 3,
+      "text": "For reduce: start with 0 and add each price: (sum, price) => sum + price, 0"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting inStock check in filter",
+      "consequence": "Includes out-of-stock items in the calculation",
+      "correction": "Use: product.category === 'electronics' && product.inStock"
+    },
+    {
+      "mistake": "Not providing initial value for reduce",
+      "consequence": "Error on empty array, or wrong result type",
+      "correction": "Always use: .reduce((sum, price) => sum + price, 0)"
+    },
+    {
+      "mistake": "Mutating original products array",
+      "consequence": "Original data is corrupted for other uses",
+      "correction": "map/filter/reduce create new arrays - never modify original"
+    },
+    {
+      "mistake": "Forgetting to round tax calculation",
+      "consequence": "Results like 27.500000000000004 due to floating point",
+      "correction": "Use Math.round(price * 1.10 * 100) / 100 for 2 decimal places"
+    }
+  ],
+  "difficulty": "intermediate"
+}

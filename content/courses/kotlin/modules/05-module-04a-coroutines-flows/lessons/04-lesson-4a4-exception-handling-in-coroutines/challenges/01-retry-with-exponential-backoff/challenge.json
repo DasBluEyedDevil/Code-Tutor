@@ -1,0 +1,22 @@
+{
+  "id": "challenge-4a-4-1",
+  "title": "Retry with Exponential Backoff",
+  "description": "Implement a retry mechanism that attempts an operation multiple times with exponential backoff between attempts.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use repeat() to try multiple times",
+    "Catch exceptions inside the loop, not outside",
+    "Remember to rethrow CancellationException",
+    "Double the delay after each failed attempt"
+  ],
+  "testCases": [
+    {
+      "description": "Should succeed after retries",
+      "expectedBehavior": "Returns 'Success on attempt 3'"
+    },
+    {
+      "description": "Should use exponential backoff",
+      "expectedBehavior": "Delays increase: 100ms, 200ms, 400ms..."
+    }
+  ]
+}

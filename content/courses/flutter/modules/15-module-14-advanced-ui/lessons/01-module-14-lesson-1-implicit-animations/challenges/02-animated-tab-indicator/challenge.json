@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.1-challenge-1",
+  "title": "Animated Tab Indicator",
+  "description": "Create a custom animated tab bar with a sliding indicator.",
+  "instructions": "Build a horizontal tab bar with 3 tabs. When a tab is selected, animate an underline indicator to slide to that tab's position. Use TweenAnimationBuilder to animate the indicator position and AnimatedOpacity to highlight the selected tab text.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use LayoutBuilder to get the available width and calculate tab positions"
+    },
+    {
+      "level": 2,
+      "text": "TweenAnimationBuilder<double> can animate the left position of the indicator"
+    },
+    {
+      "level": 3,
+      "text": "AnimatedDefaultTextStyle is great for animating text weight and color"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Hard-coding tab widths",
+      "consequence": "Tab bar doesn't adapt to screen size",
+      "correction": "Use LayoutBuilder to calculate widths dynamically"
+    },
+    {
+      "mistake": "Not using Expanded for tabs in Row",
+      "consequence": "Tabs don't distribute evenly",
+      "correction": "Wrap each tab in Expanded widget"
+    }
+  ],
+  "difficulty": "intermediate"
+}

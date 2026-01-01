@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-24-04-challenge-01",
+  "title": "Add Staging Environment to Workflow",
+  "description": "Configure a staging environment with protection rules and deployment workflow.",
+  "instructions": "Add a staging environment to the ShopFlow deployment workflow!\n\n1. Create a staging deployment job that:\n   - Uses the 'staging' environment with protection rules\n   - Deploys after the build job succeeds\n   - Only runs on the main branch\n   - Includes a URL for the environment\n\n2. Add a smoke test step after deployment:\n   - Wait for deployment to stabilize\n   - Check health endpoint\n   - Verify API returns data\n\n3. Make production deployment depend on staging:\n   - Production should only run after staging succeeds\n   - Production should require manual approval (configured in GitHub UI)",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should have staging environment",
+      "expectedOutput": "name: staging",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should depend on build job",
+      "expectedOutput": "needs: build",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should only run on main branch",
+      "expectedOutput": "github.ref == 'refs/heads/main'",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should include smoke tests",
+      "expectedOutput": "smoke tests",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Production should depend on staging",
+      "expectedOutput": "deploy-staging",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The 'environment:' key accepts both 'name:' and 'url:' properties."
+    },
+    {
+      "level": 2,
+      "text": "Use 'needs: build' to make staging wait for the build job to complete."
+    },
+    {
+      "level": 3,
+      "text": "The condition 'if: github.ref == 'refs/heads/main'' restricts to main branch."
+    },
+    {
+      "level": 4,
+      "text": "Production needs should be an array: 'needs: [build, deploy-staging]'."
+    },
+    {
+      "level": 5,
+      "text": "Use curl -f to fail on HTTP errors and jq to parse JSON responses."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking branch in if condition",
+      "consequence": "Staging deploys on all branches, not just main, causing unexpected deployments.",
+      "correction": "Add 'if: github.ref == 'refs/heads/main'' to restrict to main branch."
+    },
+    {
+      "mistake": "Missing needs dependency on staging for production",
+      "consequence": "Production can deploy before staging is verified, defeating the purpose of staging.",
+      "correction": "Add 'deploy-staging' to the production job's 'needs' array."
+    },
+    {
+      "mistake": "No smoke tests after staging deployment",
+      "consequence": "Broken deployments proceed to production without validation.",
+      "correction": "Add curl commands to verify health endpoints and basic API functionality."
+    },
+    {
+      "mistake": "Using curl without -f flag",
+      "consequence": "HTTP errors (500, 502) don't fail the workflow because curl returns success by default.",
+      "correction": "Use 'curl -f' to fail on server errors, or check HTTP status code explicitly."
+    }
+  ],
+  "difficulty": "intermediate"
+}

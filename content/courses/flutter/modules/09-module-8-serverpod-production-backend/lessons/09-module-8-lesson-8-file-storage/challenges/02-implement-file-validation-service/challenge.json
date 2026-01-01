@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.8-challenge-1",
+  "title": "Implement File Validation Service",
+  "description": "Create a file validation service that checks file types, sizes, and content before allowing uploads.",
+  "instructions": "Implement a FileValidationService class that:\n\n1. Validates file extensions against an allowed list\n2. Checks file size against maximum limits\n3. Verifies file content type matches the claimed type using magic bytes\n4. Sanitizes file names to remove dangerous characters\n5. Generates safe storage paths\n\nThe service should support different validation rules for different file categories (images, documents, media).",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid JPEG passes validation",
+      "expectedOutput": "Valid: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Oversized file is rejected",
+      "expectedOutput": "Valid: false",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Dangerous characters are sanitized",
+      "expectedOutput": "Sanitized: etc_passwd.jpg",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Storage path includes user ID and category",
+      "expectedOutput": "Path: avatar/",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Unknown category is rejected",
+      "expectedOutput": "Unknown file category",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with validateFile. Get the config first, then validate each field in order: extension, size, content type."
+    },
+    {
+      "level": 2,
+      "text": "For detectContentType, iterate through _magicBytes and compare each signature's bytes against the header bytes one by one."
+    },
+    {
+      "level": 3,
+      "text": "For sanitizeFileName, use RegExp to replace unwanted characters. The pattern [^a-zA-Z0-9._-] matches anything NOT in the allowed set."
+    },
+    {
+      "level": 4,
+      "text": "For getExtension, use lastIndexOf('.') to find the extension. Return null if there's no dot, or if the dot is at the start or end of the name."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using indexOf instead of lastIndexOf for extension",
+      "consequence": "Files like 'archive.tar.gz' return 'tar' instead of 'gz'",
+      "correction": "Always use lastIndexOf('.') to get the final extension"
+    },
+    {
+      "mistake": "Not checking if header is long enough for magic bytes comparison",
+      "consequence": "Index out of bounds error for very short files",
+      "correction": "Check header.length >= signature.length before comparing"
+    },
+    {
+      "mistake": "Only sanitizing obvious characters like /",
+      "consequence": "Other dangerous characters like :, *, ?, <, > can still cause issues",
+      "correction": "Use a whitelist approach: only allow known safe characters"
+    },
+    {
+      "mistake": "Not handling empty or null-ish file names after sanitization",
+      "consequence": "Empty file names cause storage errors",
+      "correction": "Check if sanitized name is empty and provide a default"
+    }
+  ],
+  "difficulty": "intermediate"
+}

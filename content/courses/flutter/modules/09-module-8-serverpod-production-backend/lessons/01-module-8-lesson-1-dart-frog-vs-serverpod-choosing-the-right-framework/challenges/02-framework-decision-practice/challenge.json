@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.1-challenge-1",
+  "title": "Framework Decision Practice",
+  "description": "Analyze a project scenario and justify your framework choice.",
+  "instructions": "Read the project requirements in the starter code comments. Then implement a function that returns your framework recommendation with a detailed justification. Consider all the factors we discussed: complexity, features needed, team size, timeline, and infrastructure.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Recommends Serverpod for this complex project",
+      "expectedOutput": "Recommended Framework: Serverpod",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Mentions authentication as a key feature",
+      "expectedOutput": "Authentication",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Mentions real-time as a key feature",
+      "expectedOutput": "Real-time",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Count the features that require backend infrastructure: auth, real-time, file storage, complex data. Which framework provides these built-in?"
+    },
+    {
+      "level": 2,
+      "text": "The team has no backend experience and only 3 months. Building auth, real-time sync, and file uploads from scratch with Dart Frog would consume most of that time."
+    },
+    {
+      "level": 3,
+      "text": "Serverpod is the clear choice here. It provides auth (email + OAuth), real-time streaming, file storage, and ORM - exactly what this project needs. The learning curve is worth it given the features required."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Choosing Dart Frog because it is simpler",
+      "consequence": "You would spend months building what Serverpod provides for free",
+      "correction": "Simpler framework does not mean simpler project. Serverpod makes this complex project simpler to build."
+    },
+    {
+      "mistake": "Not considering the real-time requirement",
+      "consequence": "Smartwatch sync needs WebSockets - building this from scratch is complex",
+      "correction": "Real-time features are a strong signal to use Serverpod's built-in streaming"
+    },
+    {
+      "mistake": "Ignoring the team's experience level",
+      "consequence": "Inexperienced team building custom auth is a security risk",
+      "correction": "Serverpod's battle-tested auth is safer than rolling your own"
+    }
+  ],
+  "difficulty": "intermediate"
+}

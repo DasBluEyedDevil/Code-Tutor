@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-02-challenge-1",
+  "title": "Build a Category Spending Report",
+  "description": "Create a query that shows spending by category with running totals using CTEs and window functions.",
+  "instructions": "Complete the query to:\n1. Use a CTE to calculate monthly spending per category\n2. Add a running total using a window function\n3. Include month-over-month change",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Query executes and shows running totals",
+      "expectedOutput": "Running:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** The GROUP BY should match the DATE_TRUNC expression. For window frame, use `ROWS` to define the frame scope."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using column alias in GROUP BY",
+      "consequence": "PostgreSQL requires the actual expression or column position",
+      "correction": "Repeat the DATE_TRUNC expression or use column position (1)"
+    },
+    {
+      "mistake": "Forgetting ROWS in window frame",
+      "consequence": "Window frame specification incomplete",
+      "correction": "Use ROWS UNBOUNDED PRECEDING for running totals"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-09-lesson-09-challenge-1",
+  "title": "Practice: Compressed Finance Data Archive",
+  "description": "Build a compressed archive system for your Personal Finance Tracker that:\n\n1. Compresses monthly transaction files with zstd\n2. Creates a compressed archive of multiple months\n3. Calculates and reports compression statistics\n4. Implements extract functionality\n5. Compares compression levels\n\n**Use compression.zstd features:**\n- `zstd.compress()` for compression\n- `zstd.decompress()` for decompression\n- Different compression levels for comparison",
+  "instructions": "Build a compressed archive system for your Personal Finance Tracker that compresses transaction data and reports statistics.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `json.dumps(data).encode('utf-8')` to convert to bytes before compressing. Use `Path(path).write_bytes(compressed)` to save. Use `zstd.decompress()` and `json.loads()` to restore."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to encode strings to bytes",
+      "consequence": "TypeError when compressing",
+      "correction": "Use data.encode('utf-8') before zstd.compress()"
+    },
+    {
+      "mistake": "Using high compression levels for all data",
+      "consequence": "Very slow compression with minimal benefit",
+      "correction": "Use level 3 (default) for most cases, higher only for archival"
+    }
+  ],
+  "difficulty": "intermediate"
+}

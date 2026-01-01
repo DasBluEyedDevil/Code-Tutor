@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.8-challenge-1",
+  "title": "Practice Challenge: Safe Data Access",
+  "description": "You're building a user profile display. The API sometimes returns incomplete data. Use optional chaining and nullish coalescing to safely access properties and provide defaults.\n\n1. Get the user's city (default: 'Unknown')\n2. Get the user's email (default: 'No email provided')\n3. Get the user's age (default: 'Age not specified') - careful with 0!\n4. Get the first hobby (default: 'No hobbies listed')",
+  "instructions": "Use optional chaining (?.) and nullish coalescing (??) to safely extract data with defaults.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "City defaults to 'Unknown'",
+      "expectedOutput": "Unknown",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Age preserves 0 (doesn't use default)",
+      "expectedOutput": "0",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For city: userData?.address?.city ?? 'Unknown'"
+    },
+    {
+      "level": 2,
+      "text": "Remember: ?? only triggers on null/undefined, so age of 0 won't trigger the default!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using || instead of ?? for age",
+      "consequence": "Age of 0 would be replaced with the default string",
+      "correction": "Use ?? to preserve falsy values like 0: userData?.age ?? 'default'"
+    },
+    {
+      "mistake": "Not using ?. before array access",
+      "consequence": "Would crash if hobbies array is null/undefined",
+      "correction": "Use userData?.hobbies?.[0] to safely access array elements"
+    }
+  ],
+  "difficulty": "intermediate"
+}

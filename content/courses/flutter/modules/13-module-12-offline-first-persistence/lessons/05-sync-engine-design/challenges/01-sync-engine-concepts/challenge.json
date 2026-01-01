@@ -1,0 +1,31 @@
+{
+  "type": "QUIZ",
+  "id": "12.5-quiz-1",
+  "title": "Sync Engine Concepts",
+  "description": "Test your understanding of sync engine design.",
+  "questions": [
+    {
+      "question": "In a local-first architecture, when should you write to the local database?",
+      "options": [
+        "After the server confirms the write",
+        "Immediately when the user takes action",
+        "Only when online",
+        "After conflict resolution"
+      ],
+      "correctAnswer": 1,
+      "explanation": "In local-first, you write to the local database immediately when the user takes action. This provides instant feedback and works offline. Sync to server happens in the background."
+    },
+    {
+      "question": "What should happen when a sync operation fails due to a network error?",
+      "options": [
+        "Delete the operation from the queue",
+        "Show an error to the user immediately",
+        "Keep in queue and retry with exponential backoff",
+        "Revert the local change"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Network errors are transient. The operation should stay in the queue and be retried with exponential backoff. The local data remains intact."
+    }
+  ],
+  "difficulty": "advanced"
+}

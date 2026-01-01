@@ -1,0 +1,14 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "lesson-15-4-errors",
+  "title": "Error Handling Flow",
+  "description": "When a database constraint fails, how should the error reach the user?",
+  "options": [
+    "Show the SQL error message directly",
+    "Return 500 Internal Server Error with no details",
+    "Catch exception, return structured error response, display user-friendly message",
+    "Let the frontend handle the raw exception"
+  ],
+  "correctAnswer": 2,
+  "explanation": "Backend catches DB exceptions, maps to Problem Details (RFC 7807), returns appropriate status. Frontend shows user-friendly message."
+}

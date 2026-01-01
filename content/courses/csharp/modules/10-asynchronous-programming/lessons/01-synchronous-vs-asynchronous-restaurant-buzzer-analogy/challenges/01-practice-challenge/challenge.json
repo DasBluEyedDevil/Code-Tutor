@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-10-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Simulate a coffee shop with async operations!\n\n1. Create async method 'BrewCoffeeAsync(string type)':\n   - Print 'Brewing [type] coffee...'\n   - await Task.Delay(2000) to simulate brewing\n   - Print '[type] coffee ready!'\n   - Return Task\n\n2. Create async method 'ToastBreadAsync()':\n   - Print 'Toasting bread...'\n   - await Task.Delay(1000)\n   - Print 'Toast ready!'\n   - Return Task\n\n3. In Main (or top-level):\n   - Start brewing coffee (don't await yet!)\n   - Start toasting bread (don't await yet!)\n   - Print 'Doing other tasks...'\n   - await BOTH tasks\n   - Print 'Breakfast ready!'\n\nBoth should run SIMULTANEOUSLY!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Brewing\"",
+      "expectedOutput": "Brewing",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Toasting\"",
+      "expectedOutput": "Toasting",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Doing other tasks\"",
+      "expectedOutput": "Doing other tasks",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"ready\"",
+      "expectedOutput": "ready",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Async method: 'async Task MethodName()'. Inside: 'await Task.Delay(milliseconds)'. Start without await: 'Task t = MethodAsync()'. Wait for multiple: 'await Task.WhenAll(t1, t2)'."
+    },
+    {
+      "level": 2,
+      "text": "Forgetting 'await': If you call 'MethodAsync()' without 'await', it starts but you don't wait for it! The method continues immediately. Use 'await' when you need the result."
+    },
+    {
+      "level": 3,
+      "text": "Using Thread.Sleep() in async: NEVER use Thread.Sleep() in async methods! It blocks the thread. Always use 'await Task.Delay()' instead."
+    },
+    {
+      "level": 4,
+      "text": "Async void: Only use 'async void' for event handlers! For regular methods, use 'async Task'. 'async void' can't be awaited and swallows exceptions."
+    },
+    {
+      "level": 5,
+      "text": "Not understanding concurrency: Async doesn't mean parallel! In single-threaded context, it's about not blocking. Tasks run concurrently (interleaved), but might not be truly parallel."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'await'",
+      "consequence": "If you call 'MethodAsync()' without 'await', it starts but you don't wait for it! The method continues immediately. Use 'await' when you need the result.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using Thread.Sleep() in async",
+      "consequence": "NEVER use Thread.Sleep() in async methods! It blocks the thread. Always use 'await Task.Delay()' instead.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Async void",
+      "consequence": "Only use 'async void' for event handlers! For regular methods, use 'async Task'. 'async void' can't be awaited and swallows exceptions.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not understanding concurrency",
+      "consequence": "Async doesn't mean parallel! In single-threaded context, it's about not blocking. Tasks run concurrently (interleaved), but might not be truly parallel.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}
