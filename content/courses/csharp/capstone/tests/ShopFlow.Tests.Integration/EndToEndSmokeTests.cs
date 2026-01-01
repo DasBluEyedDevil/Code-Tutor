@@ -132,39 +132,6 @@ public class EndToEndSmokeTests : IClassFixture<EndToEndSmokeTestFactory>, IDisp
     }
 
     /// <summary>
-    /// Note: Full shopping journey with products, cart, and orders is covered by:
-    /// - ProductApiTests (product CRUD operations)
-    /// - CartApiTests (shopping cart management)
-    /// - OrderApiTests (order creation and workflow)
-    /// These tests verify each component works with proper test isolation.
-    /// </summary>
-    [Fact]
-    public void ShoppingJourney_IsCoveredByComponentTests()
-    {
-        // The full e-commerce journey is tested across multiple test classes:
-        // - ProductApiTests: 17 tests for product CRUD
-        // - CartApiTests: 17 tests for cart management
-        // - OrderApiTests: 20 tests for order workflow
-        // - AuthApiTests: 20 tests for authentication
-        Assert.True(true, "Shopping journey components are tested individually with proper isolation");
-    }
-
-    /// <summary>
-    /// Verifies that order cancellation and stock management work correctly.
-    /// Note: Full order workflow tests are covered in OrderApiTests.cs
-    /// </summary>
-    [Fact]
-    public void OrderWorkflow_IsCoveredByOrderApiTests()
-    {
-        // Order cancellation and stock restoration are thoroughly tested in:
-        // - OrderApiTests.CancelOrder_RestoresProductStock
-        // - OrderApiTests.CancelOrder_PendingOrder_CancelsSuccessfully
-        // - OrderApiTests.CancelOrder_ConfirmedOrder_CancelsSuccessfully
-        // This smoke test verifies the test suite is comprehensive
-        Assert.True(true, "Order workflow tests exist in OrderApiTests.cs");
-    }
-
-    /// <summary>
     /// Verifies that unauthenticated requests to protected endpoints are rejected.
     /// </summary>
     [Fact]
@@ -210,16 +177,4 @@ public class EndToEndSmokeTests : IClassFixture<EndToEndSmokeTestFactory>, IDisp
         Assert.Equal(HttpStatusCode.BadRequest, secondResponse.StatusCode);
     }
 
-    /// <summary>
-    /// Verifies insufficient stock handling is covered by existing tests.
-    /// Note: Stock validation tests are in CartApiTests and OrderApiTests.
-    /// </summary>
-    [Fact]
-    public void StockValidation_IsCoveredByExistingTests()
-    {
-        // Stock validation is thoroughly tested in:
-        // - CartApiTests.AddToCart_InsufficientStock_ReturnsBadRequest
-        // - OrderApiTests.CreateOrder_InsufficientStock_ReturnsBadRequest
-        Assert.True(true, "Stock validation tests exist in CartApiTests.cs and OrderApiTests.cs");
-    }
 }
