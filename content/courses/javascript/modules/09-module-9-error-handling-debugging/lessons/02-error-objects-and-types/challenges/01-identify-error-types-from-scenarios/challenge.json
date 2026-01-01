@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.2-challenge",
+  "title": "Identify Error Types from Scenarios",
+  "description": "Create a function called `diagnoseError` that takes an error object and returns a diagnosis object with:\n- `type`: The error name (TypeError, ReferenceError, etc.)\n- `severity`: 'critical' for ReferenceError/SyntaxError, 'warning' for others\n- `suggestion`: A helpful suggestion based on the error type\n\nTest it with different error types.",
+  "instructions": "Create a function that examines an error object and provides a diagnosis including the error type, severity level, and a helpful suggestion for fixing it based on the error type.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Correctly identifies TypeError",
+      "expectedOutput": "{ type: 'TypeError', severity: 'warning', suggestion: 'Check that the value is the correct type' }",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Correctly identifies ReferenceError as critical",
+      "expectedOutput": "{ type: 'ReferenceError', severity: 'critical', suggestion: 'Check that the variable is declared' }",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Correctly identifies RangeError",
+      "expectedOutput": "{ type: 'RangeError', severity: 'warning', suggestion: 'Check that values are within valid ranges' }",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use error.name to get the error type (TypeError, ReferenceError, etc.)."
+    },
+    {
+      "level": 2,
+      "text": "Create an object mapping error names to suggestions, then look up the suggestion."
+    },
+    {
+      "level": 3,
+      "text": "Use Array.includes() to check if the error type is in the critical errors list."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using error.message instead of error.name to determine error type",
+      "consequence": "The message is a description, not the error type. Types are consistent; messages vary.",
+      "correction": "Use error.name to get the error type (e.g., 'TypeError', 'ReferenceError')."
+    },
+    {
+      "mistake": "Using string comparison instead of checking the name property",
+      "consequence": "Comparing the whole error object to a string won't work.",
+      "correction": "Compare error.name to type strings like 'TypeError'."
+    }
+  ],
+  "difficulty": "intermediate"
+}

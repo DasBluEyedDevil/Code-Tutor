@@ -1,0 +1,64 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.1.1",
+  "title": "API Request/Response Models",
+  "description": "Create data classes for a task management API: Task, CreateTaskRequest, and UpdateTaskRequest.",
+  "instructions": "Create data classes for a task management API: Task, CreateTaskRequest, and UpdateTaskRequest.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create task model",
+      "expectedOutput": "Task(id=1, title=Learn Kotlin",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should create request models",
+      "expectedOutput": "CreateTaskRequest(title=New Task",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should handle nullable updates",
+      "expectedOutput": "UpdateTaskRequest(title=null, description=null, completed=true)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use data class for all models"
+    },
+    {
+      "level": 2,
+      "text": "Task has all required fields"
+    },
+    {
+      "level": 3,
+      "text": "CreateTaskRequest doesn't include id (server generates it)"
+    },
+    {
+      "level": 4,
+      "text": "UpdateTaskRequest has nullable fields (only update what's provided)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

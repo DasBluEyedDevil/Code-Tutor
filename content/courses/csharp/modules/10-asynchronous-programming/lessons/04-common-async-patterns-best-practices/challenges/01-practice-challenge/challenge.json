@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-10-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a robust file processor with cancellation and progress!\n\n1. Create 'async Task ProcessFilesAsync(int fileCount, CancellationToken cancellationToken, IProgress<int> progress)':\n   - Loop from 0 to fileCount\n   - For each file:\n     - Check cancellation: cancellationToken.ThrowIfCancellationRequested()\n     - Print 'Processing file [i]...'\n     - await Task.Delay(500, cancellationToken)\n     - Report progress: progress?.Report((i + 1) * 100 / fileCount)\n   - Print 'All files processed!'\n\n2. In main code:\n   - Create CancellationTokenSource\n   - Create Progress<int> that prints progress percentage\n   - Start processing 10 files\n   - Cancel after 3 seconds with cts.CancelAfter(3000)\n   - Wrap in try/catch to handle OperationCanceledException\n   - Print appropriate message if cancelled or completed",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Processing file\"",
+      "expectedOutput": "Processing file",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Progress\"",
+      "expectedOutput": "Progress",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"cancelled\"",
+      "expectedOutput": "cancelled",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CancellationToken: check with 'token.ThrowIfCancellationRequested()'. Progress: 'progress?.Report(value)'. Cancel: 'cts.CancelAfter(ms)'. Catch OperationCanceledException!"
+    },
+    {
+      "level": 2,
+      "text": "Not checking cancellation token: If you accept CancellationToken but never check it, cancellation won't work! Call ThrowIfCancellationRequested() regularly, especially in loops."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting to dispose CancellationTokenSource: CTS implements IDisposable. Always dispose: 'cts.Dispose()' or use 'using'. Leaking these can cause memory issues."
+    },
+    {
+      "level": 4,
+      "text": "Progress deadlocks in UI: Progress<T> marshals to original context (usually UI thread). If UI thread is blocked, progress updates queue up. Always await, never block!"
+    },
+    {
+      "level": 5,
+      "text": "Swallowing OperationCanceledException: Don't catch and ignore this! It's expected behavior. Catch it only to clean up or log, then let it propagate (or handle gracefully)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking cancellation token",
+      "consequence": "If you accept CancellationToken but never check it, cancellation won't work! Call ThrowIfCancellationRequested() regularly, especially in loops.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to dispose CancellationTokenSource",
+      "consequence": "CTS implements IDisposable. Always dispose: 'cts.Dispose()' or use 'using'. Leaking these can cause memory issues.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Progress deadlocks in UI",
+      "consequence": "Progress<T> marshals to original context (usually UI thread). If UI thread is blocked, progress updates queue up. Always await, never block!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Swallowing OperationCanceledException",
+      "consequence": "Don't catch and ignore this! It's expected behavior. Catch it only to clean up or log, then let it propagate (or handle gracefully).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "16.2-challenge-1",
+  "title": "Create ProGuard Rules",
+  "description": "Write ProGuard rules for a Flutter app using Firebase and Retrofit.",
+  "instructions": "Create a proguard-rules.pro file that: 1) Keeps all Flutter framework classes, 2) Keeps Firebase and Google Play Services classes, 3) Keeps model classes in com.example.myapp.models package, 4) Preserves attributes needed for Retrofit/Gson JSON parsing.",
+  "language": "proguard",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use -keep class package.** { *; } to keep all classes in a package and its subpackages"
+    },
+    {
+      "level": 2,
+      "text": "Use -keepattributes to preserve metadata needed for reflection"
+    },
+    {
+      "level": 3,
+      "text": "Use -dontwarn to suppress warnings for known-safe missing classes"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using single * instead of double **",
+      "consequence": "Only matches classes in that exact package, not subpackages",
+      "correction": "Use -keep class io.flutter.** { *; } with double asterisks"
+    },
+    {
+      "mistake": "Forgetting to keep model fields",
+      "consequence": "JSON parsing fails because field names are obfuscated",
+      "correction": "Keep the entire class with { *; } or use -keepclassmembers for fields"
+    }
+  ],
+  "difficulty": "intermediate"
+}

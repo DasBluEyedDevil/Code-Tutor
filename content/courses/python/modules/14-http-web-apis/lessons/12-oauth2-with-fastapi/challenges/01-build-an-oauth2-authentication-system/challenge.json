@@ -1,0 +1,72 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-oauth2-challenge",
+  "title": "Build an OAuth2 Authentication System",
+  "description": "Create a complete OAuth2 authentication system with scopes and refresh tokens.",
+  "instructions": "Create an OAuth2 authentication module that:\n\n1. Implements `create_access_token(data, scopes)` with scope support\n2. Implements `create_refresh_token(data)` for token refresh\n3. Implements `verify_token_scopes(token, required_scopes)` that:\n   - Decodes the token\n   - Checks if all required scopes are present\n   - Returns user info or raises an error\n4. Implements `refresh_access_token(refresh_token)` that:\n   - Validates the refresh token type\n   - Returns a new access token\n5. Demonstrates the complete flow with different user roles",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-oauth2-1",
+      "description": "create_access_token produces valid JWT with scopes",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-oauth2-2",
+      "description": "create_refresh_token produces valid refresh token",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-oauth2-3",
+      "description": "verify_token_scopes succeeds for valid scopes",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-oauth2-4",
+      "description": "verify_token_scopes fails for missing scopes",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-oauth2-5",
+      "description": "refresh_access_token returns new access token",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Include 'type' field in tokens to distinguish access from refresh tokens. Use 'scopes' as a list in the payload."
+    },
+    {
+      "level": 2,
+      "text": "In verify_token_scopes, iterate through required_scopes and check each one is in token_scopes."
+    },
+    {
+      "level": 3,
+      "text": "In refresh_access_token, first check payload.get('type') == 'refresh' before creating a new access token."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not distinguishing token types",
+      "consequence": "Access tokens could be used as refresh tokens",
+      "correction": "Add 'type': 'access' or 'type': 'refresh' to token payload"
+    },
+    {
+      "mistake": "Not validating scopes on every request",
+      "consequence": "Users can access routes without proper permissions",
+      "correction": "Always check required scopes against token scopes"
+    },
+    {
+      "mistake": "Storing refresh tokens client-side insecurely",
+      "consequence": "Tokens can be stolen via XSS attacks",
+      "correction": "Use httpOnly cookies or secure storage for refresh tokens"
+    }
+  ],
+  "difficulty": "advanced"
+}

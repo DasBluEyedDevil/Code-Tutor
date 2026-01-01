@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-3-mc-2",
+  "title": "Data Persistence",
+  "description": "Understanding Docker volumes",
+  "question": "You run 'docker compose down' and then 'docker compose up'. What happens to your PostgreSQL data?",
+  "options": [
+    "Data is always lost - containers are ephemeral",
+    "Data is preserved if you used a named volume, lost if you didn't",
+    "Data is automatically backed up to Docker Hub",
+    "Data is preserved in the container's filesystem"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Named volumes (postgres_data:/var/lib/postgresql/data) persist data outside the container lifecycle. 'docker compose down' removes containers but not named volumes. 'docker compose down -v' removes volumes too. Without volumes, container data is lost when the container is removed.",
+  "difficulty": "intermediate"
+}

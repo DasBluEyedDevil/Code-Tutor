@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-08-challenge-1",
+  "title": "Create a Render Blueprint",
+  "description": "Create a render.yaml file for a Flask application that:\n1. Uses Docker runtime\n2. Connects to a PostgreSQL database named 'myapp-db'\n3. Generates a SECRET_KEY automatically\n4. Has a health check at /api/health\n5. Auto-deploys from the main branch",
+  "instructions": "Complete the render.yaml blueprint with proper service and database configuration.",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Has web service type",
+      "expectedOutput": "type: web",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses docker runtime",
+      "expectedOutput": "runtime: docker",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Database name matches in both sections",
+      "expectedOutput": "myapp-db",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Web services use type: web and runtime: docker for Dockerfile-based builds"
+    },
+    {
+      "level": 2,
+      "text": "The database name in fromDatabase must match the name in the databases section"
+    },
+    {
+      "level": 3,
+      "text": "Use generateValue: true for SECRET_KEY to auto-generate a secure value"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Mismatched database names between fromDatabase and databases section",
+      "consequence": "Render can't link the service to the database",
+      "correction": "Ensure the name in fromDatabase.name matches databases[].name exactly"
+    },
+    {
+      "mistake": "Forgetting healthCheckPath",
+      "consequence": "Render can't verify if your app is running correctly",
+      "correction": "Add healthCheckPath with your health check endpoint"
+    }
+  ],
+  "difficulty": "advanced"
+}

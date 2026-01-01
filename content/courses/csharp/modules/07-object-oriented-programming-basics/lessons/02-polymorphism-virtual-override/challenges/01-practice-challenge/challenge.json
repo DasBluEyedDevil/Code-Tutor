@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a shape hierarchy with polymorphic Area calculation!\n\n1. BASE CLASS 'Shape':\n   - virtual method CalculateArea() returns double, returns 0\n   - virtual method Display() prints shape info\n\n2. DERIVED 'Circle' : Shape\n   - Property: double Radius\n   - Override CalculateArea(): return Math.PI * Radius * Radius\n   - Override Display(): print 'Circle with radius [r]'\n\n3. DERIVED 'Rectangle' : Shape\n   - Properties: double Width, double Height\n   - Override CalculateArea(): return Width * Height\n   - Override Display(): print 'Rectangle [w]x[h]'\n\n4. Create array of Shape, store Circle and Rectangle, call methods polymorphically",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Circle\"",
+      "expectedOutput": "Circle",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Rectangle\"",
+      "expectedOutput": "Rectangle",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Area\"",
+      "expectedOutput": "Area",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Base class: mark methods 'virtual'. Derived: mark 'override' with same signature. Store derived objects in base type variable for polymorphism."
+    },
+    {
+      "level": 2,
+      "text": "Forgetting 'virtual' in base: If base method isn't 'virtual', you can't 'override' it! You get a compiler error: 'cannot override inherited member because it is not marked virtual'."
+    },
+    {
+      "level": 3,
+      "text": "Signature mismatch: Override MUST match exactly! 'public override int Method()' can't override 'public virtual void Method()'. Return type, name, parameters must be identical."
+    },
+    {
+      "level": 4,
+      "text": "Using 'new' instead of 'override': 'public new void Method()' HIDES the base method, doesn't override! This breaks polymorphism. Always use 'override' for polymorphic behavior."
+    },
+    {
+      "level": 5,
+      "text": "Not storing in base type: If you do 'Dog dog = new Dog()', polymorphism works but isn't as useful. Store in base type: 'Animal animal = new Dog()' to leverage polymorphism fully."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'virtual' in base",
+      "consequence": "If base method isn't 'virtual', you can't 'override' it! You get a compiler error: 'cannot override inherited member because it is not marked virtual'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Signature mismatch",
+      "consequence": "Override MUST match exactly! 'public override int Method()' can't override 'public virtual void Method()'. Return type, name, parameters must be identical.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using 'new' instead of 'override'",
+      "consequence": "'public new void Method()' HIDES the base method, doesn't override! This breaks polymorphism. Always use 'override' for polymorphic behavior.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not storing in base type",
+      "consequence": "If you do 'Dog dog = new Dog()', polymorphism works but isn't as useful. Store in base type: 'Animal animal = new Dog()' to leverage polymorphism fully.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

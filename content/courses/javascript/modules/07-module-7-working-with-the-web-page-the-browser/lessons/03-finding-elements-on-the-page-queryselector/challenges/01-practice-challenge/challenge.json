@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.3-challenge",
+  "title": "Practice Challenge",
+  "description": "Given this HTML:\n<nav>\n  <ul class=\"menu\">\n    <li class=\"item\">Home</li>\n    <li class=\"item active\">About</li>\n    <li class=\"item\">Contact</li>\n  </ul>\n</nav>\n<div class=\"content\">\n  <button class=\"primary\">Save</button>\n  <button class=\"secondary\">Cancel</button>\n</div>\n\nWrite JavaScript using querySelector to:\n1. Find the active menu item\n2. Find all menu items\n3. Find the primary button\n4. Find all buttons\n5. Log the text of the active item",
+  "instructions": "Given this HTML:\n<nav>\n  <ul class=\"menu\">\n    <li class=\"item\">Home</li>\n    <li class=\"item active\">About</li>\n    <li class=\"item\">Contact</li>\n  </ul>\n</nav>\n<div class=\"content\">\n  <button class=\"primary\">Save</button>\n  <button class=\"secondary\">Cancel</button>\n</div>\n\nWrite JavaScript using querySelector to:\n1. Find the active menu item\n2. Find all menu items\n3. Find the primary button\n4. Find all buttons\n5. Log the text of the active item",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Finds active item correctly",
+      "expectedOutput": "About",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use '.item.active' for active item, '.item' for all items, '.primary' for primary button, 'button' for all buttons"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Forgetting the . or # prefix:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting the . or # prefix:\n   document.querySelector('myClass')  // WRONG - looks for <myClass> tag\n   document.querySelector('.myClass')  // CORRECT - looks for class"
+    },
+    {
+      "mistake": "Expecting querySelectorAll to be an array:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Expecting querySelectorAll to be an array:\n   let items = document.querySelectorAll('.item');\n   items.map(...)  // ERROR - NodeList doesn't have map\n   \n   Convert first:\n   Array.from(items).map(...)\n   // Or use forEach (works on NodeList):\n   items.forEach(...)"
+    }
+  ],
+  "difficulty": "beginner"
+}

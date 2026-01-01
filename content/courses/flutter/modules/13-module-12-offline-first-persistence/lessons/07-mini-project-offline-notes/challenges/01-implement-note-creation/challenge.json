@@ -1,0 +1,28 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.7-challenge-1",
+  "title": "Implement Note Creation",
+  "description": "Create the core note creation logic with sync queue integration.",
+  "instructions": "Implement a createNote method that: 1) Generates a UUID for the note, 2) Inserts into local database with pending status, 3) Queues a sync operation, 4) Returns the created note.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Generates UUID for note",
+      "expectedOutput": "Uuid().v4()",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Sets syncStatus to pending",
+      "expectedOutput": "SyncStatus.pending",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    "Use const Uuid().v4() to generate a unique ID",
+    "Create a NotesCompanion for database insertion",
+    "Queue the sync operation after local insert",
+    "Return the note from the database to get all fields"
+  ]
+}

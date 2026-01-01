@@ -1,0 +1,38 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.4-challenge",
+  "title": "Add Filtering and Search to TaskList",
+  "description": "Extend the TaskList component with search, status filtering, and sorting capabilities.",
+  "instructions": "Create a FilteredTaskList component that:\n1. Adds a search input that filters tasks by title or description (case-insensitive)\n2. Adds status filter buttons: 'All', 'Active', 'Completed'\n3. Adds sort options: newest first, oldest first, or by completion status\n4. Uses useState hooks to manage all filter state\n5. Implements filtering logic in separate pure functions",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Search filters tasks by title or description case-insensitively",
+      "expectedOutput": "filterBySearch returns matching tasks",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Status filter correctly shows all, active, or completed tasks",
+      "expectedOutput": "filterByStatus returns correct subset",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Sort function orders tasks by date or status",
+      "expectedOutput": "sortTasks returns properly ordered array",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    "Use toLowerCase() on both the search term and task text for case-insensitive matching",
+    "The useMemo hook helps avoid recalculating filters on every render",
+    "When sorting by date, convert createdAt strings to Date objects with new Date()"
+  ],
+  "commonMistakes": [
+    "Forgetting to spread the array before sorting (sort mutates the original array)",
+    "Not handling empty search terms which should return all tasks"
+  ],
+  "difficulty": "intermediate"
+}

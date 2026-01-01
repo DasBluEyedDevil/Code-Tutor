@@ -1,0 +1,24 @@
+{
+  "id": "11.3-challenge-1",
+  "title": "Typing Indicator Component",
+  "description": "Build an animated typing indicator that shows when other users are typing.",
+  "instructions": "Create a TypingIndicator widget that displays animated dots when someone is typing:\n\n1. Show three animated dots that bounce in sequence\n2. Display the typing user's avatar and name\n3. Handle multiple users typing simultaneously\n4. Animate in/out when typing starts/stops\n5. Integrate with the chat stream to show/hide automatically\n\nRequirements:\n- Create smooth dot bouncing animation using AnimationController\n- Stagger the animations so dots bounce in sequence\n- Support showing 'User is typing...' or 'User1, User2 are typing...'\n- Animate the indicator's appearance with a fade and slide\n- Auto-hide after a timeout if no updates received",
+  "type": "implementation",
+  "expectedOutput": "A polished typing indicator with smooth dot animations and proper text formatting for multiple users.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use three AnimationControllers with Tween<double>(begin: 0, end: -8) for the bounce effect. Stagger their start times by 150-200ms."
+    },
+    {
+      "level": 2,
+      "text": "Wrap the entire indicator in an AnimatedOpacity or AnimatedSlide widget to smoothly show/hide when typingUsers changes."
+    },
+    {
+      "level": 3,
+      "text": "For the dot animation, use AnimatedBuilder with Transform.translate to move each dot vertically based on its animation value."
+    }
+  ]
+}

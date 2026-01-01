@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.9-challenge-2",
+  "title": "Practice Challenge: Grouping Data",
+  "description": "You have a list of orders. Use Object.groupBy() to organize them by status, then calculate the total value for each status group.",
+  "instructions": "Group orders by status and calculate totals for each group.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Groups orders correctly",
+      "expectedOutput": "3",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Calculates total correctly",
+      "expectedOutput": "1155",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Object.groupBy(orders, order => order.status)"
+    },
+    {
+      "level": 2,
+      "text": "Use reduce() on byStatus.completed to sum prices"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling potentially undefined groups",
+      "consequence": "Error if a status doesn't exist",
+      "correction": "Use optional chaining: byStatus.completed?.length ?? 0"
+    }
+  ],
+  "difficulty": "intermediate"
+}

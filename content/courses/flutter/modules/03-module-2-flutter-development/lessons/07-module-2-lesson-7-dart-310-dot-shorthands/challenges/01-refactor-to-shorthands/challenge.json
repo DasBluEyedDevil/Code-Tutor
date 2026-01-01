@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.7-challenge-0",
+  "title": "Refactor to Shorthands",
+  "description": "Take the verbose Flutter code and refactor it to use modern Dart 3.10 dot shorthands where applicable. Remember: Colors.amber should NOT be shortened - it's a static constant, not an enum!",
+  "instructions": "Convert the verbose enum syntax to modern dot shorthand syntax. Be careful: only enums can use shorthands, not static constants like Colors.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "MainAxisAlignment and CrossAxisAlignment use dot shorthands",
+      "expectedOutput": "mainAxisAlignment: .center, crossAxisAlignment: .start",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "TextAlign, FontWeight, FontStyle use dot shorthands",
+      "expectedOutput": "textAlign: .left, fontWeight: .bold, fontStyle: .italic",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "BoxFit and Alignment use dot shorthands",
+      "expectedOutput": "fit: .cover, alignment: .center, alignment: .centerLeft",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Colors.amber remains unchanged (not an enum)",
+      "expectedOutput": "color: Colors.amber (verbose form preserved)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Look for places where the type is obvious from the parameter name, like mainAxisAlignment expects MainAxisAlignment."
+    },
+    {
+      "level": 2,
+      "text": "Remember: Colors is a class with static constants, NOT an enum. Colors.amber cannot become .amber."
+    },
+    {
+      "level": 3,
+      "text": "Replace EnumName.value with just .value when the parameter type makes the enum clear."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to shorten Colors.blue to .blue",
+      "consequence": "Compilation error - Colors is not an enum",
+      "correction": "Keep Colors.blue as is - only enums support dot shorthands"
+    },
+    {
+      "mistake": "Using shorthands in older Dart versions",
+      "consequence": "Syntax error on Dart < 3.10",
+      "correction": "Check your Dart SDK version in pubspec.yaml"
+    },
+    {
+      "mistake": "Forgetting context matters",
+      "consequence": "Ambiguous shorthand",
+      "correction": "Shorthands only work when the type is clear from context"
+    }
+  ],
+  "difficulty": "beginner"
+}

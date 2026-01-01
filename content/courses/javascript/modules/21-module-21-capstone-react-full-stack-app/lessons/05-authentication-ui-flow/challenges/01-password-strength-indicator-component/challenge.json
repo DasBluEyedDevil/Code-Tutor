@@ -1,0 +1,38 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.5-challenge",
+  "title": "Password Strength Indicator Component",
+  "description": "Create a PasswordStrengthMeter component that provides real-time visual feedback on password strength.",
+  "instructions": "Build a PasswordStrengthMeter component that:\n1. Displays a visual strength bar that changes color (red/yellow/green)\n2. Shows a checklist of password requirements with checkmarks\n3. Calculates strength based on: length, uppercase, lowercase, numbers, special chars\n4. Updates in real-time as the user types\n5. Exports a boolean indicating if password meets minimum requirements",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Returns strength 0 for empty or very weak passwords",
+      "expectedOutput": "calculateStrength('abc') returns 0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Returns strength 4 for passwords meeting all requirements",
+      "expectedOutput": "calculateStrength('SecureP@ss1') returns 4",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Requirements checklist shows correct met/unmet status",
+      "expectedOutput": "Each requirement correctly reflects password content",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    "Use regular expressions to test for character types: /[a-z]/, /[A-Z]/, /\\d/, /[!@#$%^&*]/",
+    "The useMemo hook prevents recalculating strength on every render",
+    "Use useEffect to notify parent component when strength changes"
+  ],
+  "commonMistakes": [
+    "Not escaping special characters in regex patterns",
+    "Forgetting to handle the empty password case in the UI"
+  ],
+  "difficulty": "intermediate"
+}

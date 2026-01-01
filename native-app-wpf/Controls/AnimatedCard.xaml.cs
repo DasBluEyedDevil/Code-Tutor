@@ -36,6 +36,64 @@ public partial class AnimatedCard : UserControl
             GlowEffect.Opacity = 0;
             GlowBorder.Opacity = 0;
         }
+
+        SizeChanged += OnSizeChanged;
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        UpdateMeshAspectRatio();
+    }
+
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        UpdateMeshAspectRatio();
+    }
+
+    private void UpdateMeshAspectRatio()
+    {
+        if (ActualWidth <= 0 || ActualHeight <= 0)
+            return;
+
+        // Calculate aspect ratio and adjust mesh positions
+        // The mesh is centered at origin, so we use half-width and half-height
+        var aspectRatio = ActualWidth / ActualHeight;
+
+        // Keep width at 1.0 (from -0.5 to 0.5), adjust height based on aspect ratio
+        var halfWidth = 0.5;
+        var halfHeight = 0.5 / aspectRatio;
+
+        // Update mesh positions: bottom-left, bottom-right, top-right, top-left
+        CardMesh.Positions = new Point3DCollection
+        {
+            new Point3D(-halfWidth, -halfHeight, 0),  // bottom-left
+            new Point3D(halfWidth, -halfHeight, 0),   // bottom-right
+            new Point3D(halfWidth, halfHeight, 0),    // top-right
+            new Point3D(-halfWidth, halfHeight, 0)    // top-left
+        };
+
+        // The 2D visual inside Viewport2DVisual3D needs explicit dimensions
+        CardBorder.Width = ActualWidth;
+        CardBorder.Height = ActualHeight;
+
+        // Calculate camera distance so mesh fills viewport
+        // For perspective: visible_size = 2 * distance * tan(fov/2)
+        // We want the mesh to fill the viewport, so calculate distance for both dimensions
+        var fovRadians = CardCamera.FieldOfView * Math.PI / 180.0;
+        var tanHalfFov = Math.Tan(fovRadians / 2.0);
+
+        // Camera distance needed for width to fill viewport
+        var distanceForWidth = halfWidth / tanHalfFov;
+
+        // Camera distance needed for height to fill viewport (accounting for viewport aspect ratio)
+        // The vertical FOV is effectively: 2 * atan(tan(fov/2) / aspectRatio)
+        var distanceForHeight = halfHeight / (tanHalfFov / aspectRatio);
+
+        // Use the larger distance so the entire mesh is visible
+        var cameraDistance = Math.Max(distanceForWidth, distanceForHeight);
+
+        CardCamera.Position = new Point3D(0, 0, cameraDistance);
     }
 
     private void OnMouseEnter(object sender, MouseEventArgs e)

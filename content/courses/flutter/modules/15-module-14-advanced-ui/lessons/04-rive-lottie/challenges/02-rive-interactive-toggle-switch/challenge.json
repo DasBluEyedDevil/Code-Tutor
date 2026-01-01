@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.4-challenge-1",
+  "title": "Rive Interactive Toggle Switch",
+  "description": "Create an animated toggle switch using Rive state machines.",
+  "instructions": "Build a RiveToggle widget that uses a Rive animation with a state machine. The toggle should have an 'isOn' boolean input in its state machine. When tapped, toggle the state and update the Rive input. The widget should accept an initial value and notify parent of changes via callback. Handle the onInit to find and store the SMIBool input reference.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use StateMachineController.fromArtboard() to get the controller"
+    },
+    {
+      "level": 2,
+      "text": "Cast the result of findInput<bool>() to SMIBool"
+    },
+    {
+      "level": 3,
+      "text": "Set _isOn?.value in both _onRiveInit (initial) and _toggle (updates)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add controller to artboard",
+      "consequence": "State machine doesn't run and animation doesn't respond",
+      "correction": "Call artboard.addController(controller) after creating the StateMachineController"
+    },
+    {
+      "mistake": "Not handling null controller",
+      "consequence": "App crashes if state machine name doesn't match",
+      "correction": "Check if controller is not null before using it"
+    }
+  ],
+  "difficulty": "intermediate"
+}

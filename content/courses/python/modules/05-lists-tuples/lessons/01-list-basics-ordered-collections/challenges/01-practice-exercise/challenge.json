@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-05-lesson-01-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Music Playlist Manager** that works with a list of songs.\n\n**Requirements:**\n\n- Create a playlist with at least 5 song names\n- Display the total number of songs\n- Show the first song in the playlist\n- Show the last song in the playlist\n- Show the middle song (use integer division for the index)\n- Print all songs with their position numbers (1-based: \"1. Song Name\")\n- Ask the user for a position number and display that song (handle invalid input)\n- Calculate and display the average song title length\n\n**Example Output:**\n\n<pre>=== My Playlist ===\nTotal songs: 5\nNow playing: Bohemian Rhapsody\nFinal song: Sweet Child O' Mine\nMiddle song: Hotel California\n\nFull Playlist:\n1. Bohemian Rhapsody\n2. Stairway to Heaven\n3. Hotel California\n4. Imagine\n5. Sweet Child O' Mine\n\nEnter song position (1-5): 3\nPlaying: Hotel California\n\nAverage title length: 16.2 characters\n</pre>",
+  "instructions": "Build a **Music Playlist Manager** that works with a list of songs.\n\n**Requirements:**\n\n- Create a playlist with at least 5 song names\n- Display the total number of songs\n- Show the first song in the playlist\n- Show the last song in the playlist\n- Show the middle song (use integer division for the index)\n- Print all songs with their position numbers (1-based: \"1. Song Name\")\n- Ask the user for a position number and display that song (handle invalid input)\n- Calculate and display the average song title length\n\n**Example Output:**\n\n<pre>=== My Playlist ===\nTotal songs: 5\nNow playing: Bohemian Rhapsody\nFinal song: Sweet Child O' Mine\nMiddle song: Hotel California\n\nFull Playlist:\n1. Bohemian Rhapsody\n2. Stairway to Heaven\n3. Hotel California\n4. Imagine\n5. Sweet Child O' Mine\n\nEnter song position (1-5): 3\nPlaying: Hotel California\n\nAverage title length: 16.2 characters\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For the playlist, use square brackets: playlist = ['Song1', 'Song2', ...]. First song is playlist[0], last is playlist[-1]. For enumerate, use: for position, song in enumerate(playlist, start=1). To convert 1-based position to 0-based index, subtract 1: index = position - 1. Valid index range is 0 to len(playlist)-1. For string length, use len(song)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

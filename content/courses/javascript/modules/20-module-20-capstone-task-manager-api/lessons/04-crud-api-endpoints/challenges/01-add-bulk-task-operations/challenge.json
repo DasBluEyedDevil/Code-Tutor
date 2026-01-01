@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.4-challenge",
+  "title": "Add Bulk Task Operations",
+  "description": "Implement endpoints for bulk task operations.",
+  "instructions": "Create two new endpoints: POST /api/tasks/bulk to create multiple tasks at once, and PUT /api/tasks/bulk/status to update the status of multiple tasks by their IDs.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Bulk create validates categories belong to user",
+      "expectedOutput": "prisma.category.findMany",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Bulk status update includes userId in where clause",
+      "expectedOutput": "userId",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Uses updateMany for efficiency",
+      "expectedOutput": "updateMany",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For bulk create, first collect all unique categoryIds and verify them in one query"
+    },
+    {
+      "level": 2,
+      "text": "Use prisma.task.createMany for efficient bulk insert"
+    },
+    {
+      "level": 3,
+      "text": "For bulk status update, use updateMany with { in: taskIds } and always include userId in where"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not verifying category ownership for bulk create",
+      "consequence": "Users could assign tasks to other users' categories",
+      "correction": "Verify all categoryIds belong to the user before creating"
+    },
+    {
+      "mistake": "Updating tasks without userId filter",
+      "consequence": "Users could update other users' tasks",
+      "correction": "Always include userId in the where clause"
+    },
+    {
+      "mistake": "Making individual queries for each task",
+      "consequence": "Poor performance with many tasks",
+      "correction": "Use createMany and updateMany for bulk operations"
+    }
+  ],
+  "difficulty": "intermediate"
+}

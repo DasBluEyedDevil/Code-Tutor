@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.7-challenge-1",
+  "title": "Refactor Monolith",
+  "description": "You have been given a single-file API that handles users and posts. Your task is to refactor it into a proper project structure.\n\n1. Identify the different concerns in the monolith code\n2. Create route, handler, and service layers\n3. Separate user operations from post operations\n4. Move shared utilities to a utils module\n\nStart by analyzing the monolith and then create the separated structure.",
+  "instructions": "Refactor the monolith code into proper layers:\n\n1. Create a UsersHandler object with methods: list, getById, create\n2. Create a PostsHandler object with methods: list, getByUserId, create\n3. Create a UserService class with business logic\n4. Create a PostService class with business logic\n5. Create utility functions for common operations\n\nThe goal is separation of concerns - routes should be thin, handlers handle HTTP, services contain logic.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "UserService should return all users",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "PostService should filter posts by user",
+      "expectedOutput": "Hello World",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by creating service classes with methods like getAllUsers(), getUserById(), createUser(). These handle business logic without knowing about HTTP."
+    },
+    {
+      "level": 2,
+      "text": "Handlers should create response objects using c.json(). They call service methods and format the results for HTTP responses."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting database queries directly in handlers",
+      "consequence": "Handlers become tightly coupled to data layer, making testing difficult",
+      "correction": "Create a service layer that handlers call. Services contain the queries and business logic."
+    },
+    {
+      "mistake": "Having services know about HTTP concepts like status codes",
+      "consequence": "Services become coupled to HTTP transport, can't be reused for CLI or other interfaces",
+      "correction": "Services should return data or throw errors. Handlers decide how to format HTTP responses."
+    }
+  ],
+  "difficulty": "intermediate"
+}

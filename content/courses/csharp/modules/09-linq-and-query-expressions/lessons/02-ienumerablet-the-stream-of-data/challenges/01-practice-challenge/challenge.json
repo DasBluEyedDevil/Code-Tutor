@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Work with IEnumerable<T> and understand deferred execution!\n\n1. Create a List of strings: \"apple\", \"banana\", \"apricot\", \"blueberry\", \"avocado\"\n\n2. Use LINQ to create an IEnumerable<string> of fruits starting with 'a'\n   - DON'T use .ToList() yet!\n   - Print \"Query created\"\n\n3. Add \"cherry\" to the original list AFTER creating the query\n\n4. Now iterate the query result with foreach\n   - What do you notice? Does it include \"cherry\"?\n\n5. Create a second query for fruits longer than 6 characters\n   - Convert this one to a List with .ToList()\n   - Display the count and items",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Query created\"",
+      "expectedOutput": "Query created",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"cherry\"",
+      "expectedOutput": "cherry",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Long fruits\"",
+      "expectedOutput": "Long fruits",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "IEnumerable<T> queries execute when iterated! .Where() returns IEnumerable. .ToList() forces immediate execution. Use .StartsWith() for string prefix check."
+    },
+    {
+      "level": 2,
+      "text": "Iterating IEnumerable multiple times: Each iteration re-executes the query! If you need to iterate multiple times, use .ToList() once. Otherwise, expensive operations run repeatedly."
+    },
+    {
+      "level": 3,
+      "text": "Modifying collection during iteration: Don't change the source collection while iterating IEnumerable! You'll get 'Collection was modified' exception. Materialize with .ToList() first if you need to modify."
+    },
+    {
+      "level": 4,
+      "text": "Expecting snapshot behavior: IEnumerable is LIVE! If you create query, then modify source list, the query sees the changes when executed. For snapshot, use .ToList() immediately."
+    },
+    {
+      "level": 5,
+      "text": ".Count vs .Count(): IEnumerable<T> has .Count() METHOD (executes query!). List<T> has .Count PROPERTY (instant). Using .Count() on large IEnumerable can be slow!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Iterating IEnumerable multiple times",
+      "consequence": "Each iteration re-executes the query! If you need to iterate multiple times, use .ToList() once. Otherwise, expensive operations run repeatedly.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Modifying collection during iteration",
+      "consequence": "Don't change the source collection while iterating IEnumerable! You'll get 'Collection was modified' exception. Materialize with .ToList() first if you need to modify.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Expecting snapshot behavior",
+      "consequence": "IEnumerable is LIVE! If you create query, then modify source list, the query sees the changes when executed. For snapshot, use .ToList() immediately.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": ".Count vs .Count()",
+      "consequence": "IEnumerable<T> has .Count() METHOD (executes query!). List<T> has .Count PROPERTY (instant). Using .Count() on large IEnumerable can be slow!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

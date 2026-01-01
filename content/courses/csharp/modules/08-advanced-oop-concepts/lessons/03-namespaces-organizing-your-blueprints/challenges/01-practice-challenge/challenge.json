@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-08-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a multi-namespace project structure!\n\n1. NAMESPACE 'MyStore.Models':\n   - Class Product: string Name, decimal Price\n\n2. NAMESPACE 'MyStore.Services':\n   - Class ShoppingCart:\n     - List<Product> Items\n     - Method AddItem(Product p): adds to Items, prints confirmation\n     - Method GetTotal(): returns sum of all item prices\n\n3. NAMESPACE 'MyStore':\n   - Import both namespaces with 'using'\n   - Create products\n   - Create cart, add products\n   - Display total",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Added\"",
+      "expectedOutput": "Added",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Total\"",
+      "expectedOutput": "Total",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define namespaces: 'namespace Name { class C { } }'. Import: 'using Name;' at top of file. Nested namespaces use dots: Company.Product.Feature."
+    },
+    {
+      "level": 2,
+      "text": "Circular using statements: If namespace A uses B, and B uses A, you can get confusing errors! Organize code so dependencies flow one direction (Models → Services → UI)."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting using in nested namespaces: If MyStore.Services needs Product from MyStore.Models, you must add 'using MyStore.Models;' INSIDE the Services namespace block!"
+    },
+    {
+      "level": 4,
+      "text": "Namespace doesn't match folder: By convention, namespace should match folder structure! File at 'MyApp/Models/Customer.cs' should have 'namespace MyApp.Models'. Not required, but strong convention."
+    },
+    {
+      "level": 5,
+      "text": "Using vs namespace: 'using System;' IMPORTS a namespace (at top of file). 'namespace MyApp { }' DEFINES a namespace (wraps your code). Don't confuse them!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Circular using statements",
+      "consequence": "If namespace A uses B, and B uses A, you can get confusing errors! Organize code so dependencies flow one direction (Models → Services → UI).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting using in nested namespaces",
+      "consequence": "If MyStore.Services needs Product from MyStore.Models, you must add 'using MyStore.Models;' INSIDE the Services namespace block!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Namespace doesn't match folder",
+      "consequence": "By convention, namespace should match folder structure! File at 'MyApp/Models/Customer.cs' should have 'namespace MyApp.Models'. Not required, but strong convention.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using vs namespace",
+      "consequence": "'using System;' IMPORTS a namespace (at top of file). 'namespace MyApp { }' DEFINES a namespace (wraps your code). Don't confuse them!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

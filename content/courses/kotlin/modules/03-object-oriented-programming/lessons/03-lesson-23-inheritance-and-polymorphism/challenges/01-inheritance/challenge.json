@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.3.1",
+  "title": "Inheritance",
+  "description": "Create an open class `Animal` with a property `name` and an open method `makeSound()`. Create a subclass `Dog` that overrides `makeSound()` to print 'Woof!'.",
+  "instructions": "Create an open class `Animal` with a property `name` and an open method `makeSound()`. Create a subclass `Dog` that overrides `makeSound()` to print 'Woof!'.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Dog should have name property",
+      "expectedOutput": "Name: Buddy",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Dog should override makeSound",
+      "expectedOutput": "Woof!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'open' keyword to allow inheritance"
+    },
+    {
+      "level": 2,
+      "text": "Use : to extend a class"
+    },
+    {
+      "level": 3,
+      "text": "Use 'override' keyword for overriding methods"
+    },
+    {
+      "level": 4,
+      "text": "Call parent constructor with : ParentClass(args)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

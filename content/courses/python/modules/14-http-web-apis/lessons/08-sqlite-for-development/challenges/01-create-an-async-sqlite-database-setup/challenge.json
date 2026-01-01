@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-sqlite-challenge",
+  "title": "Create an Async SQLite Database Setup",
+  "description": "Create a complete async database configuration for a FastAPI development environment using SQLite and aiosqlite.",
+  "instructions": "Create a database.py module that:\n\n1. Defines DATABASE_URL for SQLite with aiosqlite\n2. Creates an async engine with proper SQLite settings\n3. Creates an async session factory\n4. Implements an async init_db() function\n5. Implements an async get_db() dependency for FastAPI\n\nThe setup should be suitable for local development with proper error handling.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "DATABASE_URL uses sqlite+aiosqlite driver",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Engine includes check_same_thread=False",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "get_db handles commit and rollback properly",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The DATABASE_URL format is 'sqlite+aiosqlite:///./filename.db' for a file in the current directory."
+    },
+    {
+      "level": 2,
+      "text": "SQLite requires connect_args={'check_same_thread': False} to work with async code."
+    },
+    {
+      "level": 3,
+      "text": "Use 'async with engine.begin() as conn:' in init_db, then 'await conn.run_sync(Base.metadata.create_all)'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using 'sqlite:///' without 'aiosqlite' in the URL",
+      "consequence": "Synchronous driver used, breaks async FastAPI",
+      "correction": "Use 'sqlite+aiosqlite:///' for async support"
+    },
+    {
+      "mistake": "Forgetting check_same_thread=False",
+      "consequence": "SQLite raises threading errors in async context",
+      "correction": "Add connect_args={'check_same_thread': False} to create_async_engine"
+    },
+    {
+      "mistake": "Not handling rollback in get_db",
+      "consequence": "Failed transactions may leave database in inconsistent state",
+      "correction": "Use try/except with await session.rollback() in the except block"
+    }
+  ],
+  "difficulty": "advanced"
+}

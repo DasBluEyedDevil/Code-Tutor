@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-05-lesson-03-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Data Analyzer** that processes a list of monthly sales figures using slicing.\n\n**Requirements:**\n\n- Create a list of 12 monthly sales values (Jan-Dec)\n- Extract and analyze:\n<li>Q1 (first 3 months)\n- Q2 (months 3-6)\n- Q3 (months 6-9)\n- Q4 (last 3 months)\n- First half (Jan-Jun)\n- Second half (Jul-Dec)\n\n</li>- Calculate average for each quarter\n- Find which quarter had highest average\n- Get alternating months (Jan, Mar, May, etc.)\n- Reverse the year's data\n- Show top 3 and bottom 3 months\n\n**Example Output:**\n\n<pre>=== Sales Data Analyzer ===\n\nMonthly Sales: [45000, 48000, 52000, 55000, 58000, 61000, 59000, 57000, 54000, 56000, 60000, 65000]\n\nQuarterly Analysis:\nQ1 (Jan-Mar): [45000, 48000, 52000]\n  Average: $48,333.33\n\nQ2 (Apr-Jun): [55000, 58000, 61000]\n  Average: $58,000.00\n\nQ3 (Jul-Sep): [59000, 57000, 54000]\n  Average: $56,666.67\n\nQ4 (Oct-Dec): [56000, 60000, 65000]\n  Average: $60,333.33\n\nBest Quarter: Q4 with average of $60,333.33\n\nHalf-Year Analysis:\nFirst Half (Jan-Jun): Average $53,166.67\nSecond Half (Jul-Dec): Average $58,500.00\n\nAlternating Months: [45000, 52000, 58000, 59000, 54000, 60000]\n\nReversed Data: [65000, 60000, 56000, 54000, 57000, 59000, 61000, 58000, 55000, 52000, 48000, 45000]\n\nTop 3 Months: [65000, 61000, 60000]\nBottom 3 Months: [45000, 48000, 52000]\n</pre>",
+  "instructions": "Build a **Data Analyzer** that processes a list of monthly sales figures using slicing.\n\n**Requirements:**\n\n- Create a list of 12 monthly sales values (Jan-Dec)\n- Extract and analyze:\n<li>Q1 (first 3 months)\n- Q2 (months 3-6)\n- Q3 (months 6-9)\n- Q4 (last 3 months)\n- First half (Jan-Jun)\n- Second half (Jul-Dec)\n\n</li>- Calculate average for each quarter\n- Find which quarter had highest average\n- Get alternating months (Jan, Mar, May, etc.)\n- Reverse the year's data\n- Show top 3 and bottom 3 months\n\n**Example Output:**\n\n<pre>=== Sales Data Analyzer ===\n\nMonthly Sales: [45000, 48000, 52000, 55000, 58000, 61000, 59000, 57000, 54000, 56000, 60000, 65000]\n\nQuarterly Analysis:\nQ1 (Jan-Mar): [45000, 48000, 52000]\n  Average: $48,333.33\n\nQ2 (Apr-Jun): [55000, 58000, 61000]\n  Average: $58,000.00\n\nQ3 (Jul-Sep): [59000, 57000, 54000]\n  Average: $56,666.67\n\nQ4 (Oct-Dec): [56000, 60000, 65000]\n  Average: $60,333.33\n\nBest Quarter: Q4 with average of $60,333.33\n\nHalf-Year Analysis:\nFirst Half (Jan-Jun): Average $53,166.67\nSecond Half (Jul-Dec): Average $58,500.00\n\nAlternating Months: [45000, 52000, 58000, 59000, 54000, 60000]\n\nReversed Data: [65000, 60000, 56000, 54000, 57000, 59000, 61000, 58000, 55000, 52000, 48000, 45000]\n\nTop 3 Months: [65000, 61000, 60000]\nBottom 3 Months: [45000, 48000, 52000]\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For Q1 use [:3], Q2 use [3:6], Q3 use [6:9], Q4 use [-3:] or [9:]. First half is [:6], second half is [6:] or [-6:]. Alternating is [::2]. Reverse is [::-1]. Top 3 from sorted: [-3:], bottom 3: [:3]. Remember: stop index is NOT included!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

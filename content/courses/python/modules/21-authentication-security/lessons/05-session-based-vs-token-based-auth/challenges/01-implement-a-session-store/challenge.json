@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-05-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Implement a Session Store",
+  "description": "Create a session store for the Finance Tracker that supports creation, retrieval, refresh, and destruction of sessions.",
+  "instructions": "Complete the SessionStore class to:\n1. Create sessions with unique IDs and store user data\n2. Retrieve sessions and update last_accessed time\n3. Destroy sessions on logout\n4. List all active sessions for a user (for 'logout all devices')",
+  "startingCode": "import secrets\nfrom datetime import datetime\nfrom typing import Optional, Dict, Any, List\n\nclass SessionStore:\n    def __init__(self):\n        self.sessions: Dict[str, Dict[str, Any]] = {}\n    \n    def create(self, user_id: int, metadata: Dict[str, Any]) -> str:\n        \"\"\"Create session, return session_id.\"\"\"\n        # TODO: Generate secure session ID\n        # TODO: Store session with user_id, metadata, timestamps\n        # TODO: Return session_id\n        pass\n    \n    def get(self, session_id: str) -> Optional[Dict[str, Any]]:\n        \"\"\"Get session and update last_accessed.\"\"\"\n        # TODO: Return None if not found\n        # TODO: Update last_accessed timestamp\n        # TODO: Return session data\n        pass\n    \n    def destroy(self, session_id: str) -> bool:\n        \"\"\"Delete session. Return True if existed.\"\"\"\n        # TODO: Remove session if exists\n        # TODO: Return whether it existed\n        pass\n    \n    def get_user_sessions(self, user_id: int) -> List[str]:\n        \"\"\"Get all session IDs for a user.\"\"\"\n        # TODO: Find all sessions for user_id\n        # TODO: Return list of session_ids\n        pass\n    \n    def destroy_all_user_sessions(self, user_id: int) -> int:\n        \"\"\"Logout from all devices. Return count destroyed.\"\"\"\n        # TODO: Find and destroy all sessions for user\n        # TODO: Return count of destroyed sessions\n        pass\n\n# Test\nstore = SessionStore()\n\nprint(\"Session Store Tests\")\nprint(\"=\" * 40)\n\n# Create sessions\ns1 = store.create(1, {\"device\": \"Chrome\"})\ns2 = store.create(1, {\"device\": \"Mobile\"})\ns3 = store.create(2, {\"device\": \"Firefox\"})\n\nprint(f\"Created 3 sessions\")\nprint(f\"User 1 sessions: {len(store.get_user_sessions(1))}\")\nprint(f\"User 2 sessions: {len(store.get_user_sessions(2))}\")\n\n# Retrieve\nsession = store.get(s1)\nprint(f\"\\nSession data: user_id={session['user_id']}, device={session['metadata']['device']}\")\n\n# Destroy one\nstore.destroy(s2)\nprint(f\"\\nAfter destroying s2, User 1 sessions: {len(store.get_user_sessions(1))}\")\n\n# Destroy all for user\ncount = store.destroy_all_user_sessions(1)\nprint(f\"Destroyed {count} remaining sessions for User 1\")\nprint(f\"User 1 sessions now: {len(store.get_user_sessions(1))}\")\n\nprint(\"\\nAll tests passed!\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Session store handles creation, retrieval, and destruction correctly",
+      "expectedOutput": "All tests passed!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `secrets.token_urlsafe(32)` for session IDs. Store sessions as dicts with user_id, metadata, created_at, last_accessed. For `get_user_sessions`, use a list comprehension to filter by user_id."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using predictable session IDs",
+      "consequence": "Session hijacking vulnerability",
+      "correction": "Use secrets.token_urlsafe() for cryptographically secure IDs"
+    },
+    {
+      "mistake": "Not updating last_accessed on retrieval",
+      "consequence": "Cannot implement sliding session expiry",
+      "correction": "Always update last_accessed in the get() method"
+    }
+  ],
+  "difficulty": "advanced"
+}

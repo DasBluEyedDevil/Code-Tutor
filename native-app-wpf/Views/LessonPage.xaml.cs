@@ -54,7 +54,7 @@ public partial class LessonPage : UserControl
         }
     }
 
-    private void LoadLesson()
+    private async void LoadLesson()
     {
         LessonTitle.Text = _lesson.Title;
         LessonTime.Text = $"{_lesson.EstimatedMinutes} min";
@@ -70,10 +70,18 @@ public partial class LessonPage : UserControl
         BreadcrumbCourseText.Text = _course.Title;
         BreadcrumbModuleText.Text = currentModule?.Title ?? "";
 
+        // Trigger lazy loading of content sections and challenges
+        var moduleId = currentModule?.Id ?? _lesson.ModuleId;
+        var loadedLesson = await _courseService.GetLessonAsync(_course.Id, moduleId, _lesson.Id);
+
+        // Use the loaded lesson's content (in case it's a different reference)
+        var contentSections = loadedLesson?.ContentSections ?? _lesson.ContentSections;
+        var challenges = loadedLesson?.Challenges ?? _lesson.Challenges;
+
         // Add content sections dynamically
         ContentPanel.Children.Clear();
 
-        foreach (var section in _lesson.ContentSections)
+        foreach (var section in contentSections)
         {
             var sectionControl = CreateSectionControl(section);
             if (sectionControl != null)
@@ -83,7 +91,7 @@ public partial class LessonPage : UserControl
         }
 
         // Add challenges
-        foreach (var challenge in _lesson.Challenges)
+        foreach (var challenge in challenges)
         {
             var challengeControl = new Controls.CodingChallenge(challenge);
             challengeControl.ChallengeCompleted += OnChallengeCompleted;
@@ -305,4 +313,5 @@ public partial class LessonPage : UserControl
 
         _tutorChat.UpdateContext(context);
     }
+
 }

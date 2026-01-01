@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-22-03-challenge-01",
+  "title": "Implement Permission-Based Authorization",
+  "description": "Create a permission-based authorization system using claims and custom requirements.",
+  "instructions": "Build a permission-based authorization system for ShopFlow!\n\n1. Create a static class called Permissions with these permission constants:\n   - ProductsRead = \"Products.Read\"\n   - ProductsEdit = \"Products.Edit\"\n   - ProductsDelete = \"Products.Delete\"\n   - OrdersRefund = \"Orders.Refund\"\n\n2. Create a PermissionRequirement class implementing IAuthorizationRequirement:\n   - Has a Permission property (string)\n   - Constructor accepts the permission string\n\n3. Create a PermissionHandler class that extends AuthorizationHandler<PermissionRequirement>:\n   - Override HandleRequirementAsync\n   - Check if user has claim type \"permission\" with value matching requirement.Permission\n   - If user is in \"Admin\" role, always succeed\n   - Call context.Succeed(requirement) when authorized\n\n4. Register the handler and create policies:\n   - Register PermissionHandler as singleton IAuthorizationHandler\n   - Create \"CanEditProducts\" policy requiring ProductsEdit permission\n   - Create \"CanDeleteProducts\" policy requiring ProductsDelete permission\n   - Create \"CanRefundOrders\" policy requiring OrdersRefund permission",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should define Permissions class with ProductsEdit constant",
+      "expectedOutput": "ProductsEdit = \"Products.Edit\"",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should create PermissionRequirement implementing IAuthorizationRequirement",
+      "expectedOutput": "IAuthorizationRequirement",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should extend AuthorizationHandler<PermissionRequirement>",
+      "expectedOutput": "AuthorizationHandler<PermissionRequirement>",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should check for permission claim using HasClaim",
+      "expectedOutput": "HasClaim(\"permission\"",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should allow Admin role to bypass permission check",
+      "expectedOutput": "IsInRole(\"Admin\")",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define Permissions as a static class with public const string fields for each permission."
+    },
+    {
+      "level": 2,
+      "text": "PermissionRequirement needs to implement IAuthorizationRequirement and store the permission string in a property."
+    },
+    {
+      "level": 3,
+      "text": "PermissionHandler should extend AuthorizationHandler<PermissionRequirement> and override HandleRequirementAsync."
+    },
+    {
+      "level": 4,
+      "text": "Use context.User.HasClaim(\"permission\", requirement.Permission) to check for the permission claim."
+    },
+    {
+      "level": 5,
+      "text": "Add policies using options.AddPolicy(name, policy => policy.Requirements.Add(new PermissionRequirement(...)))."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Calling context.Fail() when permission is missing",
+      "consequence": "Prevents other handlers from succeeding, breaking handler composition.",
+      "correction": "Never call Fail() - simply don't call Succeed(). The framework treats no success as failure."
+    },
+    {
+      "mistake": "Forgetting to register the handler with DI",
+      "consequence": "The handler never runs and all permission checks fail silently.",
+      "correction": "Add builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>() before AddAuthorization."
+    },
+    {
+      "mistake": "Using the wrong claim type",
+      "consequence": "HasClaim(\"permissions\", ...) won't find claims stored as \"permission\".",
+      "correction": "Use consistent claim type names throughout - define as a constant if needed."
+    },
+    {
+      "mistake": "Not returning Task.CompletedTask from handler",
+      "consequence": "Compiler error or potential async issues.",
+      "correction": "Always return Task.CompletedTask for synchronous handler implementations."
+    }
+  ],
+  "difficulty": "intermediate"
+}

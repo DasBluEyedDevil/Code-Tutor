@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-26-01-challenge-01",
+  "title": "Capstone Completion Challenge",
+  "description": "Configure the production health check and monitoring setup for ShopFlow.",
+  "instructions": "Complete the production readiness configuration for ShopFlow!\n\n1. Configure health checks for:\n   - PostgreSQL database\n   - Redis cache\n   - External payment API\n\n2. Set up two health check endpoints:\n   - /healthz/live - Basic liveness (just confirms app is running)\n   - /healthz/ready - Readiness check (verifies all dependencies)\n\n3. Add Application Insights telemetry\n\n4. Configure the health check UI for monitoring dashboard",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure health checks",
+      "expectedOutput": "AddHealthChecks",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should add PostgreSQL health check",
+      "expectedOutput": "AddNpgSql",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should add Redis health check",
+      "expectedOutput": "AddRedis",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should configure Application Insights",
+      "expectedOutput": "AddApplicationInsightsTelemetry",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should map liveness endpoint",
+      "expectedOutput": "/healthz/live",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should map readiness endpoint",
+      "expectedOutput": "/healthz/ready",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with builder.Services.AddHealthChecks() and chain the database, cache, and URL checks."
+    },
+    {
+      "level": 2,
+      "text": "Use .AddNpgSql() for PostgreSQL, .AddRedis() for Redis cache, and .AddUrlGroup() for external APIs."
+    },
+    {
+      "level": 3,
+      "text": "Add tags: new[] { \"ready\" } to each health check to filter them for the readiness probe."
+    },
+    {
+      "level": 4,
+      "text": "For liveness, use Predicate = _ => false to skip all checks. For readiness, use Predicate = check => check.Tags.Contains(\"ready\")."
+    },
+    {
+      "level": 5,
+      "text": "Application Insights uses builder.Services.AddApplicationInsightsTelemetry() with a ConnectionString option."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not tagging health checks for filtering",
+      "consequence": "Cannot differentiate between liveness and readiness probes, causing all checks to run for both endpoints.",
+      "correction": "Add tags: new[] { \"ready\" } to dependency health checks and filter with Predicate in HealthCheckOptions."
+    },
+    {
+      "mistake": "Running all health checks for liveness probe",
+      "consequence": "A database outage causes the container to restart even though the app itself is healthy, potentially worsening the situation.",
+      "correction": "Use Predicate = _ => false for liveness to skip all checks. Liveness should only verify the app process is running."
+    },
+    {
+      "mistake": "Hardcoding connection strings in health check configuration",
+      "consequence": "Secrets exposed in code, different values needed for different environments.",
+      "correction": "Always read connection strings from configuration using builder.Configuration.GetConnectionString()."
+    },
+    {
+      "mistake": "Missing null-forgiving operator on connection strings",
+      "consequence": "Compiler warnings about possible null reference if connection string is not configured.",
+      "correction": "Use ! operator after GetConnectionString() or add null checks with appropriate error messages."
+    }
+  ],
+  "difficulty": "advanced"
+}

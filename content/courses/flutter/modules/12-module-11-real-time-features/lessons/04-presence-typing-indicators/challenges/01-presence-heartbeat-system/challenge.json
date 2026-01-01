@@ -1,0 +1,24 @@
+{
+  "id": "11.4-challenge-0",
+  "title": "Presence Heartbeat System",
+  "description": "Implement a heartbeat system that detects and handles stale connections.",
+  "instructions": "Create a heartbeat system that maintains accurate presence status:\n\n1. Server sends periodic ping messages to connected clients\n2. Clients respond with pong within a timeout period\n3. If a client misses 3 consecutive pings, mark them as offline\n4. Handle reconnection gracefully, restoring presence state\n5. Implement exponential backoff for reconnection attempts\n\nRequirements:\n- HeartbeatManager class on the server side\n- HeartbeatService class on the client side\n- Configure ping interval (default: 30 seconds)\n- Configure pong timeout (default: 5 seconds)\n- Track missed pings per session\n- Clean up resources when connection is lost",
+  "type": "implementation",
+  "expectedOutput": "A complete heartbeat system that reliably detects disconnections and handles reconnection with exponential backoff.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Timer.periodic for the ping interval. For each ping, create a one-shot Timer for the pong timeout."
+    },
+    {
+      "level": 2,
+      "text": "Exponential backoff formula: delay = min(maxDelay, baseDelay * pow(2, attempts)). Reset attempts on successful reconnection."
+    },
+    {
+      "level": 3,
+      "text": "Store the pong timeout Timer in a map by sessionId so you can cancel it when pong arrives. Remember to dispose all timers when the manager is destroyed."
+    }
+  ]
+}

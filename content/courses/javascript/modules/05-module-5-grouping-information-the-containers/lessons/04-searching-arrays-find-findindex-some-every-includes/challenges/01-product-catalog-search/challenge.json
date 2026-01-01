@@ -1,0 +1,83 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.4-challenge",
+  "title": "Product Catalog Search",
+  "description": "You're building an e-commerce product search system. Use the array search methods to implement various product lookup features.\n\nYour product catalog:\n- Find a specific product by ID\n- Check if any products are on sale\n- Verify all products have valid prices\n- Check if 'Electronics' category exists\n- Get the last added product (most recent)\n- Find position of the first out-of-stock item",
+  "instructions": "Complete each search operation using the appropriate array method:\n1. Use find() to get the product with id: 3\n2. Use some() to check if any product has onSale: true\n3. Use every() to verify all products have price > 0\n4. Use includes() to check if 'Electronics' is in categories array\n5. Use at(-1) to get the last product\n6. Use findIndex() to find position of first product with stock: 0",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Finds product with id 3",
+      "expectedOutput": "Keyboard",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Detects sale items with some()",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Verifies all prices with every()",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Checks category with includes()",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Gets last product with at(-1)",
+      "expectedOutput": "Headphones",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Finds out-of-stock index",
+      "expectedOutput": "2",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For find(), use: products.find(p => p.id === 3)"
+    },
+    {
+      "level": 2,
+      "text": "For some(), check the onSale property: products.some(p => p.onSale)"
+    },
+    {
+      "level": 3,
+      "text": "For every(), check prices: products.every(p => p.price > 0). For includes(): categories.includes('Electronics')"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using filter() instead of find() for single item lookup",
+      "consequence": "Returns an array with one item instead of the item itself",
+      "correction": "Use find() to get a single element: products.find(p => p.id === 3)"
+    },
+    {
+      "mistake": "Using indexOf() to search objects",
+      "consequence": "indexOf uses reference equality, so it won't find objects by their properties",
+      "correction": "Use find() or findIndex() with a callback to search objects: products.findIndex(p => p.stock === 0)"
+    },
+    {
+      "mistake": "Forgetting to handle undefined from find()",
+      "consequence": "Accessing properties on undefined causes TypeError",
+      "correction": "Use optional chaining (product?.name) or check if the result exists before accessing properties"
+    },
+    {
+      "mistake": "Using arr[arr.length - 1] instead of at(-1)",
+      "consequence": "More verbose and error-prone code",
+      "correction": "Use at(-1) for cleaner access to the last element"
+    }
+  ],
+  "difficulty": "beginner"
+}

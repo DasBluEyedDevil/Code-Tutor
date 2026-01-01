@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-21-04-challenge-01",
+  "title": "Implement Unlink Provider Endpoint",
+  "description": "Create a secure endpoint that allows users to remove linked external login providers from their account.",
+  "instructions": "Implement a secure endpoint to unlink external authentication providers!\n\nRequirements:\n\n1. Create DELETE /api/account/external-logins/{provider} endpoint\n\n2. Security checks:\n   - User must be authenticated\n   - Verify user actually has this provider linked\n   - CRITICAL: Prevent unlinking if it's the user's ONLY login method\n   - User must have either another external login OR a password set\n\n3. On successful unlink:\n   - Remove the ExternalLogin record from database\n   - Log the action\n   - Return success message\n\n4. Error cases to handle:\n   - Provider not found for this user -> 404\n   - Would leave user with no login method -> 400 with clear error message\n   - Database errors -> 500\n\n5. Use the provided User and ExternalLogin entity models\n\nBonus: Consider what additional security you might add (re-authentication, email notification).",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should define DELETE endpoint",
+      "expectedOutput": "MapDelete",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should check for remaining login methods",
+      "expectedOutput": "PasswordHash",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should prevent removing last login method",
+      "expectedOutput": "Cannot unlink your only login method",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should remove external login from database",
+      "expectedOutput": "ExternalLogins.Remove",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should require authorization",
+      "expectedOutput": "RequireAuthorization",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with app.MapDelete(\"/api/account/external-logins/{provider}\", ...).RequireAuthorization()"
+    },
+    {
+      "level": 2,
+      "text": "Use FirstOrDefaultAsync to find the external login by userId and provider."
+    },
+    {
+      "level": 3,
+      "text": "Include the ExternalLogins collection when loading the user to count remaining logins."
+    },
+    {
+      "level": 4,
+      "text": "Check both hasPassword and otherLoginsCount > 0 before allowing unlink."
+    },
+    {
+      "level": 5,
+      "text": "Return BadRequest with a clear message explaining why unlink was blocked and what the user should do."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Only checking ExternalLogins count without considering password",
+      "consequence": "A user with a password and one external login cannot unlink the provider, even though they still have password access.",
+      "correction": "Check if user has password OR other external logins before blocking the unlink."
+    },
+    {
+      "mistake": "Using case-sensitive provider comparison",
+      "consequence": "Request for 'google' fails when stored as 'Google', frustrating users.",
+      "correction": "Use ToLower() or StringComparer.OrdinalIgnoreCase for provider matching."
+    },
+    {
+      "mistake": "Not including ExternalLogins when loading user",
+      "consequence": "The Count of ExternalLogins is always 0 because the collection wasn't loaded.",
+      "correction": "Use .Include(u => u.ExternalLogins) when querying the user."
+    },
+    {
+      "mistake": "Forgetting to call SaveChangesAsync after Remove",
+      "consequence": "The external login appears removed but persists in the database.",
+      "correction": "Always await db.SaveChangesAsync() after modifying entities."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.4-challenge",
+  "title": "Parse Config Lines",
+  "description": "Create a regex that matches config keys case-insensitively but preserves value case.",
+  "instructions": "Write a regex that matches 'PORT=3000' where 'PORT' is case-insensitive but the value after = is captured exactly.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Captures value with exact case",
+      "expectedOutput": "MyValue",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use (?i:...) to make only the key part case-insensitive"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using global 'i' flag",
+      "consequence": "Makes the entire pattern case-insensitive, including capture groups",
+      "correction": "Use inline (?i:...) only around the parts you want case-insensitive"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a product summary report using .Select()!\n\n1. Create a 'Product' class:\n   - string Name\n   - decimal Price\n   - string Category\n   - int Stock\n\n2. Create a List with 5+ products\n\n3. Use .Select() to create:\n   - List of just product names\n   - List of prices with 10% discount applied\n   - List of anonymous objects with:\n     - Name\n     - Category\n     - TotalValue (Price * Stock)\n     - InStock (Stock > 0)\n\n4. Use .Where().Select() to get names of products under $100\n\n5. Display all results",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Product names\"",
+      "expectedOutput": "Product names",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Discounted prices\"",
+      "expectedOutput": "Discounted prices",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Affordable products\"",
+      "expectedOutput": "Affordable products",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Select syntax: '.Select(item => newValue)'. Extract property: 'p => p.Name'. Calculate: 'p => p.Price * 0.9m'. Anonymous object: 'new { Prop = value }'."
+    },
+    {
+      "level": 2,
+      "text": "Confusing .Where() and .Select(): Where FILTERS (fewer items). Select TRANSFORMS (same number, but changed). Don't use Select for filtering!"
+    },
+    {
+      "level": 3,
+      "text": "Forgetting to capture result: '.Select()' doesn't modify original! 'list.Select(x => x * 2)' does nothing. Must assign: 'var result = list.Select(x => x * 2)'."
+    },
+    {
+      "level": 4,
+      "text": "Anonymous object outside method: Anonymous objects can't be returned from methods or stored in fields! Only use locally. For return values, create a proper class."
+    },
+    {
+      "level": 5,
+      "text": "Decimal precision: When doing math with prices, use 'm' suffix: '0.9m' not '0.9'. Otherwise you get double (less precise for money!)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Confusing .Where() and .Select()",
+      "consequence": "Where FILTERS (fewer items). Select TRANSFORMS (same number, but changed). Don't use Select for filtering!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to capture result",
+      "consequence": "'.Select()' doesn't modify original! 'list.Select(x => x * 2)' does nothing. Must assign: 'var result = list.Select(x => x * 2)'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Anonymous object outside method",
+      "consequence": "Anonymous objects can't be returned from methods or stored in fields! Only use locally. For return values, create a proper class.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Decimal precision",
+      "consequence": "When doing math with prices, use 'm' suffix: '0.9m' not '0.9'. Otherwise you get double (less precise for money!).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

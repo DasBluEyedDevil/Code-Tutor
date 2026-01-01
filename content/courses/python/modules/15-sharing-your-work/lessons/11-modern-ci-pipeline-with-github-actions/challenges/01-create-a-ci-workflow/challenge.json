@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-15-lesson-11-challenge-1",
+  "title": "Create a CI Workflow",
+  "description": "Create a GitHub Actions workflow that:\n1. Triggers on push to main and all pull requests\n2. Uses Python 3.13 with uv\n3. Runs ruff check and ruff format --check\n4. Runs pytest with coverage\n5. Includes a PostgreSQL service container",
+  "instructions": "Complete the CI workflow YAML file with proper triggers, Python setup, linting, and testing steps.",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses push and pull_request triggers",
+      "expectedOutput": "push pull_request",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses astral-sh/setup-uv@v4 action",
+      "expectedOutput": "astral-sh/setup-uv@v4",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Installs Python 3.13",
+      "expectedOutput": "3.13",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Runs ruff check and format",
+      "expectedOutput": "ruff check ruff format",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The trigger events are 'push' and 'pull_request' - these go under the 'on:' key"
+    },
+    {
+      "level": 2,
+      "text": "The uv setup action is 'astral-sh/setup-uv@v4' - this is the official action from Astral"
+    },
+    {
+      "level": 3,
+      "text": "Use 'uv sync --all-extras --dev' to install all dependencies including dev deps"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'uv run' prefix for commands",
+      "consequence": "Commands fail because tools aren't in PATH",
+      "correction": "Always use 'uv run ruff check .' not just 'ruff check .'"
+    },
+    {
+      "mistake": "Using postgres:// instead of postgresql+asyncpg://",
+      "consequence": "SQLAlchemy asyncpg driver fails to connect",
+      "correction": "Use postgresql+asyncpg:// for async database connections"
+    },
+    {
+      "mistake": "Missing health check options for PostgreSQL",
+      "consequence": "Tests may start before database is ready",
+      "correction": "Always include --health-cmd pg_isready in service options"
+    }
+  ],
+  "difficulty": "advanced"
+}

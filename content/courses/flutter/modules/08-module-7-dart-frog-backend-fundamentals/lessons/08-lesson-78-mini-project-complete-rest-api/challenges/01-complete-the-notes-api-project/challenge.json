@@ -1,0 +1,95 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.8-challenge-1",
+  "title": "Complete the Notes API Project",
+  "description": "Build the complete Notes API with authentication and all CRUD operations. Test all endpoints with curl or Postman.",
+  "instructions": "Build a complete Notes REST API with these requirements:\n\n**1. Auth Endpoints (public)**\n- `POST /auth/register` - Register new user (email, password)\n- `POST /auth/login` - Login and return JWT token\n\n**2. Notes Endpoints (protected)**\n- `GET /notes` - List user's notes\n- `POST /notes` - Create note (title required, content optional)\n- `GET /notes/:id` - Get specific note\n- `PUT /notes/:id` - Update note\n- `DELETE /notes/:id` - Delete note\n\n**3. Requirements**\n- Hash passwords with bcrypt\n- Generate unique IDs for users and notes\n- Users can only access their own notes\n- Return appropriate status codes\n\n**Test your API:**\n```bash\n# 1. Register\ncurl -X POST http://localhost:8080/auth/register \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"test@example.com\",\"password\":\"secret123\"}'\n\n# 2. Login (save the token)\ncurl -X POST http://localhost:8080/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"test@example.com\",\"password\":\"secret123\"}'\n\n# 3. Create note\ncurl -X POST http://localhost:8080/notes \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"title\":\"My Note\",\"content\":\"Hello world!\"}'\n\n# 4. List notes\ncurl http://localhost:8080/notes \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\"\n\n# 5. Update note\ncurl -X PUT http://localhost:8080/notes/<NOTE_ID> \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"title\":\"Updated Title\"}'\n\n# 6. Delete note\ncurl -X DELETE http://localhost:8080/notes/<NOTE_ID> \\\n  -H \"Authorization: Bearer <YOUR_TOKEN>\"\n```",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "User model has toJson method",
+      "expectedOutput": "toJson()",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Note model has copyWith method",
+      "expectedOutput": "copyWith",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "AuthService hashes passwords with bcrypt",
+      "expectedOutput": "BCrypt.hashpw",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "AuthService verifies passwords with bcrypt",
+      "expectedOutput": "BCrypt.checkpw",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "NoteService filters notes by userId",
+      "expectedOutput": "userId",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Notes middleware validates JWT",
+      "expectedOutput": "verifyToken",
+      "isVisible": true
+    },
+    {
+      "id": "test-7",
+      "description": "Notes routes read user from context",
+      "expectedOutput": "context.read<Map<String, dynamic>>()",
+      "isVisible": true
+    },
+    {
+      "id": "test-8",
+      "description": "Register returns 201 for new user",
+      "expectedOutput": "statusCode: 201",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with models, then services, then routes. Each layer depends on the previous one."
+    },
+    {
+      "level": 2,
+      "text": "Use UUID package to generate unique IDs: final id = 'usr_' + Uuid().v4().substring(0, 8)"
+    },
+    {
+      "level": 3,
+      "text": "In getNoteById, always check both note existence AND userId ownership before returning."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking ownership before update/delete",
+      "consequence": "Users can modify/delete other users' notes",
+      "correction": "Always verify note.userId == userId before any modification"
+    },
+    {
+      "mistake": "Storing plain text passwords",
+      "consequence": "Major security vulnerability if database is breached",
+      "correction": "Always hash passwords with BCrypt.hashpw() before storing"
+    },
+    {
+      "mistake": "Creating new service instances in routes",
+      "consequence": "Each route gets empty storage, data doesn't persist",
+      "correction": "Use global service instances or dependency injection"
+    },
+    {
+      "mistake": "Forgetting to update the updatedAt timestamp",
+      "consequence": "Can't properly sort notes by modification time",
+      "correction": "Set updatedAt: DateTime.now() in the update method"
+    }
+  ],
+  "difficulty": "intermediate"
+}

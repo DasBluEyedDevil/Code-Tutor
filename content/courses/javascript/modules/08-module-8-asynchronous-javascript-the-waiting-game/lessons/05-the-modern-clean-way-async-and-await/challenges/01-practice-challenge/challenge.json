@@ -1,0 +1,52 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
+  "instructions": "Convert this Promise code to async/await:\n\nfunction loadUserData() {\n  return fetchUser(1)\n    .then(user => {\n      console.log('User:', user.name);\n      return fetchPosts(user.id);\n    })\n    .then(posts => {\n      console.log('Posts:', posts.length);\n      return posts;\n    })\n    .catch(error => {\n      console.log('Error:', error);\n    });\n}\n\nRewrite as async/await with try/catch.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Displays the user name from fetchUser",
+      "expectedOutput": "User:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Displays the posts count from fetchPosts",
+      "expectedOutput": "Posts:",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Uses try/catch for error handling",
+      "expectedOutput": "Error:",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "async function with try/catch, await fetchUser, await fetchPosts"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Forgetting 'async' keyword:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting 'async' keyword:\n   function getData() {\n     let result = await fetch();  // ERROR!\n   }\n   \n   Must be:\n   async function getData() {\n     let result = await fetch();\n   }"
+    },
+    {
+      "mistake": "Not awaiting Promises:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Not awaiting Promises:\n   async function getData() {\n     let data = fetchData();  // data is a Promise!\n     console.log(data.name);  // undefined!\n   }\n   \n   Must await:\n   async function getData() {\n     let data = await fetchData();\n     console.log(data.name);  // Works!\n   }"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,51 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.1.5-challenge-0",
+  "title": "Supabase Todo App",
+  "description": "Build a complete todo app with Supabase backend:\n\n1. Set up Supabase project and Flutter integration\n2. Create 'todos' table with RLS policies\n3. Implement authentication (sign up, sign in, sign out)\n4. Implement CRUD operations for todos\n5. Add real-time sync so changes appear instantly",
+  "instructions": "Build a complete todo app with Supabase:\n\n1. Create Supabase project at supabase.com\n2. Add supabase_flutter package\n3. Initialize in main.dart\n4. Create auth service with sign up/in/out\n5. Create todos table with user_id foreign key\n6. Enable RLS with user-specific policies\n7. Implement TodoService with CRUD\n8. Subscribe to real-time changes",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Supabase initialized correctly",
+      "expectedOutput": "Supabase client available",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "CRUD operations work",
+      "expectedOutput": "Create, read, update, delete todos",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Real-time subscription active",
+      "expectedOutput": "Changes sync automatically",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Remember to enable RLS on your todos table in Supabase dashboard"
+    },
+    {
+      "level": 2,
+      "text": "Use .eq() for WHERE clauses, .order() for sorting"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to enable RLS",
+      "consequence": "Data exposed to all users",
+      "correction": "Enable RLS and add policies in Supabase dashboard"
+    },
+    {
+      "mistake": "Not unsubscribing from channels",
+      "consequence": "Memory leaks",
+      "correction": "Call channel.unsubscribe() in dispose()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

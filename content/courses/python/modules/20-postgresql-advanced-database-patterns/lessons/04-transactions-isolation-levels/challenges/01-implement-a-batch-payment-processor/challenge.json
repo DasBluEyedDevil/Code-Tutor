@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-04-challenge-1",
+  "title": "Implement a Batch Payment Processor",
+  "description": "Create a function that processes multiple payments in a single transaction, using savepoints to handle individual failures.",
+  "instructions": "Complete the batch payment processor to:\n1. Wrap all payments in a single transaction\n2. Use savepoints to handle individual payment failures\n3. Continue processing after failures\n4. Return a summary of processed and failed payments",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Batch processes with proper savepoint handling",
+      "expectedOutput": "Processed: 2, Failed: 1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `conn.transaction()` to start a transaction. Create savepoints with `conn.savepoint()`. Roll back a savepoint with `sp.rollback()`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Rolling back the entire transaction instead of the savepoint",
+      "consequence": "All previous successful payments are also undone",
+      "correction": "Use `await sp.rollback()` to rollback only to the savepoint"
+    },
+    {
+      "mistake": "Not creating a new savepoint for each payment",
+      "consequence": "Rolling back affects multiple payments",
+      "correction": "Create a fresh savepoint before each payment attempt"
+    }
+  ],
+  "difficulty": "advanced"
+}

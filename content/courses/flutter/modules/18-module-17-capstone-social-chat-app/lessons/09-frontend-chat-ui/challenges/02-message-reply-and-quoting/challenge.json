@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.9-challenge-1",
+  "title": "Message Reply and Quoting",
+  "description": "Implement a swipe-to-reply gesture with quoted message preview and reply thread indicator for contextual conversations.",
+  "instructions": "Build a complete reply system for chat messages:\n\n1. Implement swipe-right gesture on messages to trigger reply mode\n2. Show reply preview bar above the input with quoted message content\n3. Display replied-to message reference in sent messages\n4. Tap on reply reference to scroll to original message\n5. Show reply thread indicator for messages with replies\n6. Support canceling reply mode\n7. Handle replies to deleted messages gracefully",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Transform.translate with a GestureDetector for the swipe gesture rather than Dismissible, as you want to snap back rather than dismiss"
+    },
+    {
+      "level": 2,
+      "text": "Store replyingTo message state in the ChatScreen and pass it to MessageInputBar for display and inclusion in sent messages"
+    },
+    {
+      "level": 3,
+      "text": "For scrolling to a message, maintain a Map<String, GlobalKey> for messages and use Scrollable.ensureVisible()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Reply preview disappears when keyboard opens/closes",
+      "consequence": "User loses context of what they were replying to",
+      "correction": "Keep reply state in a parent widget that persists through keyboard changes, not in the input field"
+    },
+    {
+      "mistake": "Not clearing reply state after sending message",
+      "consequence": "Next message also gets sent as a reply unintentionally",
+      "correction": "Clear replyingTo state in the sendMessage function after successful send"
+    }
+  ],
+  "difficulty": "advanced"
+}

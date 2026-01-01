@@ -1,0 +1,39 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-7-record-basic",
+  "title": "Create a Simple Record",
+  "description": "Create a record named 'Book' with:\n- String title\n- String author\n- int pages\n\nIn main, create a Book with title \"1984\", author \"Orwell\", pages 328.\nPrint the book's title using the accessor method.\n\nExpected output: 1984",
+  "instructions": "Create a record named 'Book' with:\n- String title\n- String author\n- int pages\n\nIn main, create a Book with title \"1984\", author \"Orwell\", pages 328.\nPrint the book's title using the accessor method.\n\nExpected output: 1984",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-7-record-basic-test-1",
+      "description": "Should print '1984'",
+      "expectedOutput": "1984",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Records are declared with the syntax: record Name(Type field1, Type field2) {}"
+    },
+    {
+      "level": 2,
+      "text": "Record accessor methods don't use 'get' prefix - just use book.title() not book.getTitle()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using getTitle() instead of title()",
+      "consequence": "Method not found error",
+      "correction": "Records use component name as accessor: title() not getTitle()"
+    },
+    {
+      "mistake": "Trying to modify record fields",
+      "consequence": "Compilation error",
+      "correction": "Records are immutable - create a new record instead"
+    }
+  ],
+  "difficulty": "beginner"
+}

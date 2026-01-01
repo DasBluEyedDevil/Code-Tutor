@@ -1,0 +1,75 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.7-challenge",
+  "title": "Add Redis for Rate Limiting",
+  "description": "Extend docker-compose to include Redis and implement distributed rate limiting.",
+  "instructions": "Add a Redis service to docker-compose.yml that the API can connect to. Then implement a Redis-backed rate limiting middleware that works across multiple API instances. The middleware should track requests per user ID and enforce a 100-request-per-15-minute limit.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Redis service is configured in docker-compose.yml",
+      "expectedOutput": "redis:7-alpine",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Rate limit key is formatted as ratelimit:{userId}",
+      "expectedOutput": "ratelimit:",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Sets Retry-After header when limit exceeded",
+      "expectedOutput": "Retry-After",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Includes X-RateLimit-* headers in response",
+      "expectedOutput": "X-RateLimit-",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add a Redis service with port 6379 and a data volume in docker-compose.yml"
+    },
+    {
+      "level": 2,
+      "text": "Use INCR command to atomically increment the request counter"
+    },
+    {
+      "level": 3,
+      "text": "Set the key expiration on first request of the window using EXPIRE"
+    },
+    {
+      "level": 4,
+      "text": "Return X-RateLimit-Limit and X-RateLimit-Remaining headers for client feedback"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not setting expiration on Redis keys",
+      "consequence": "Rate limit counters grow indefinitely, memory leak",
+      "correction": "Use EXPIRE to clear keys after the window duration"
+    },
+    {
+      "mistake": "Using GET + SET instead of INCR",
+      "consequence": "Race condition with concurrent requests, inaccurate limits",
+      "correction": "Use atomic INCR command which is inherently thread-safe"
+    },
+    {
+      "mistake": "Hardcoding Redis connection details",
+      "consequence": "Can't work in different environments (dev, prod)",
+      "correction": "Use environment variables for host, port, password"
+    },
+    {
+      "mistake": "Not including rate limit info in response headers",
+      "consequence": "Clients can't know how close they are to limits",
+      "correction": "Add X-RateLimit-Limit and X-RateLimit-Remaining headers"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.2.2",
+  "title": "Extension Function on List",
+  "description": "Create an extension function on List<Int> called `secondLargest()` that returns the second largest number or null if list has fewer than 2 elements.",
+  "instructions": "Create an extension function on List<Int> called `secondLargest()` that returns the second largest number or null if list has fewer than 2 elements.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should find second largest",
+      "expectedOutput": "8",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should return null for small lists",
+      "expectedOutput": "null",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Check list size first"
+    },
+    {
+      "level": 2,
+      "text": "Use sortedDescending() to sort in descending order"
+    },
+    {
+      "level": 3,
+      "text": "Second largest is at index 1 after sorting"
+    },
+    {
+      "level": 4,
+      "text": "Return null for lists with < 2 elements"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "advanced"
+}

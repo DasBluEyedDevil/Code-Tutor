@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.10-challenge-2",
+  "title": "API Response Validator with Custom Type Guards",
+  "description": "Create custom type guards to validate unknown API response data. Build reusable validation functions that safely narrow types and provide type safety for API responses.",
+  "instructions": "1. Create a User interface (id: number, name: string, email: string, role: 'admin' | 'user')\n2. Create an ApiResponse type with success and error variants\n3. Write isUser type guard that validates unknown data\n4. Write isApiResponse type guard that validates the full response\n5. Process mock API data safely with proper narrowing",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Processes valid success response",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Processes valid error response",
+      "expectedOutput": "Error 404",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Rejects invalid data",
+      "expectedOutput": "Invalid API response",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start type guards by checking typeof value === 'object' && value !== null"
+    },
+    {
+      "level": 2,
+      "text": "Use (value as Record<string, unknown>) to access properties safely during validation"
+    },
+    {
+      "level": 3,
+      "text": "For role validation, check obj.role === 'admin' || obj.role === 'user'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking for null when typeof returns 'object'",
+      "consequence": "typeof null === 'object', so null passes the object check",
+      "correction": "Always check: typeof value === 'object' && value !== null"
+    },
+    {
+      "mistake": "Type guard returns true without validating all properties",
+      "consequence": "Lies to TypeScript - code crashes when accessing missing properties",
+      "correction": "Validate EVERY required property exists and has the correct type"
+    }
+  ],
+  "difficulty": "intermediate"
+}

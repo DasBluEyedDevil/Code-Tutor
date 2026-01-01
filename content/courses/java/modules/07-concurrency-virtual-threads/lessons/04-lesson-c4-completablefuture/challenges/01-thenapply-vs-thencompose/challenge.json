@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-4-mc-1",
+  "title": "thenApply vs thenCompose",
+  "description": "Understanding when to use thenApply vs thenCompose",
+  "question": "You have fetchUser(id) that returns CompletableFuture<User>. To chain it after getting a userId, which method should you use?",
+  "options": [
+    "thenApply - for all transformations",
+    "thenAccept - because we're consuming the user",
+    "thenCompose - because fetchUser returns a CompletableFuture",
+    "thenRun - to run the fetch operation"
+  ],
+  "correctAnswer": 2,
+  "explanation": "Use thenCompose when your transformation function returns a CompletableFuture (like flatMap). thenApply would give you CompletableFuture<CompletableFuture<User>> - a nested future. thenCompose 'flattens' it to CompletableFuture<User>.",
+  "difficulty": "advanced"
+}

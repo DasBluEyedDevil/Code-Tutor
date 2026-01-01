@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-24-02-challenge-01",
+  "title": "Add Code Coverage to Workflow",
+  "description": "Enhance a CI workflow with code coverage collection and reporting.",
+  "instructions": "Add code coverage to the ShopFlow CI workflow!\n\n1. Configure the test step to collect code coverage using Coverlet\n2. Add a step to upload coverage results to Codecov\n3. Add a step to generate a coverage badge\n4. Ensure coverage data is collected even if some tests fail\n\nThe workflow already has a working test job. You need to:\n- Add coverage collection to the dotnet test command\n- Add the Codecov upload action\n- Set appropriate thresholds for coverage",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should use XPlat Code Coverage collector",
+      "expectedOutput": "XPlat Code Coverage",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should use Codecov action",
+      "expectedOutput": "codecov/codecov-action",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should upload even on failure",
+      "expectedOutput": "if: always()",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should check coverage threshold",
+      "expectedOutput": "70",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add --collect:\"XPlat Code Coverage\" to the dotnet test command for Coverlet collection."
+    },
+    {
+      "level": 2,
+      "text": "Use --results-directory ./coverage to organize coverage output files."
+    },
+    {
+      "level": 3,
+      "text": "The codecov/codecov-action@v4 uploads coverage reports. Use the 'files' parameter to specify coverage file paths."
+    },
+    {
+      "level": 4,
+      "text": "Use 'if: always()' on the upload step to upload coverage even when tests fail."
+    },
+    {
+      "level": 5,
+      "text": "Use reportgenerator to parse coverage and extract the percentage for threshold checking."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not specifying coverage output format",
+      "consequence": "Coverage files may be in wrong format for Codecov upload, causing upload failures.",
+      "correction": "Add the format parameter: -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura"
+    },
+    {
+      "mistake": "Only uploading coverage on success",
+      "consequence": "Failing tests prevent coverage upload, losing visibility into what code was tested.",
+      "correction": "Use 'if: always()' to upload coverage regardless of test results."
+    },
+    {
+      "mistake": "Hardcoding Codecov token in workflow",
+      "consequence": "Token exposed in repository, allowing anyone to upload fake coverage data.",
+      "correction": "Store token in GitHub Secrets and reference with ${{ secrets.CODECOV_TOKEN }}."
+    },
+    {
+      "mistake": "Using fail_ci_if_error: true for Codecov upload",
+      "consequence": "Temporary Codecov outages fail your entire CI pipeline unnecessarily.",
+      "correction": "Set fail_ci_if_error: false for resilience against external service issues."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-12-challenge-1",
+  "title": "Extend the Blog API",
+  "description": "Extend the FastAPI Blog API with these features:\n\n1. Add a 'likes' system:\n   - POST /api/posts/{id}/like - Like a post (authenticated)\n   - Each user can only like a post once\n   - GET /api/posts/{id} should include like_count\n\n2. Add user profiles:\n   - GET /api/users/{username} - Get user's public profile\n   - Include: username, bio, post_count, joined date\n\n3. Add search:\n   - GET /api/posts?search=keyword - Filter posts by title/content",
+  "instructions": "Extend the FastAPI Blog API with these features:\n\n1. Add a 'likes' system:\n   - POST /api/posts/{id}/like - Like a post (authenticated)\n   - Each user can only like a post once\n   - GET /api/posts/{id} should include like_count\n\n2. Add user profiles:\n   - GET /api/users/{username} - Get user's public profile\n   - Include: username, bio, post_count, joined date\n\n3. Add search:\n   - GET /api/posts?search=keyword - Filter posts by title/content",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Depends(get_current_user) for auth. Use Query(None) for optional search parameter. Use HTTPException for errors. Store likes as {'post_id': id, 'username': user}."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Allowing users to like the same post multiple times",
+      "consequence": "Inflated like counts",
+      "correction": "Check if user already liked before adding new like"
+    },
+    {
+      "mistake": "Not handling case-insensitive search",
+      "consequence": "Users may not find posts with different capitalization",
+      "correction": "Use .lower() on both search term and post content"
+    }
+  ],
+  "difficulty": "intermediate"
+}

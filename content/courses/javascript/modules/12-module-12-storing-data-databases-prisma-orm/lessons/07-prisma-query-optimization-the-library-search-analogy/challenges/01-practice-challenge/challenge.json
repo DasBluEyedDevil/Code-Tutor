@@ -1,0 +1,41 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.7-challenge",
+  "title": "Practice Challenge",
+  "description": "Build a query optimization simulator:\n\n1. Create a MockDatabase with 100 users (id, name, department, salary)\n\n2. Implement these optimized query methods:\n   - findMany(options) with select, skip, take, where, orderBy\n   - count(where) - count matching records\n   - aggregate({ _sum, _avg, _min, _max }) - calculate stats\n   - groupBy({ by, _count, _avg }) - group statistics\n\n3. Demonstrate the difference between:\n   - Fetching all fields vs. selecting specific fields\n   - Getting count via length vs. count()\n   - Calculating average in JS vs. using aggregate\n\n4. Show pagination working (page 1, 2, 3)\n\n5. Group users by department and show average salary per department",
+  "instructions": "Build a query optimization simulator:\n\n1. Create a MockDatabase with 100 users (id, name, department, salary)\n\n2. Implement these optimized query methods:\n   - findMany(options) with select, skip, take, where, orderBy\n   - count(where) - count matching records\n   - aggregate({ _sum, _avg, _min, _max }) - calculate stats\n   - groupBy({ by, _count, _avg }) - group statistics\n\n3. Demonstrate the difference between:\n   - Fetching all fields vs. selecting specific fields\n   - Getting count via length vs. count()\n   - Calculating average in JS vs. using aggregate\n\n4. Show pagination working (page 1, 2, 3)\n\n5. Group users by department and show average salary per department",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Select returns only specified fields",
+      "expectedOutput": "2",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Pagination returns correct pages",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For select, filter the object keys to only include those marked as true. For groupBy, use an object with department names as keys to collect items."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Fetching all data when only a count is needed",
+      "consequence": "Wastes memory and bandwidth, slows down the application significantly for large datasets.",
+      "correction": "Use count() method instead of findMany().length"
+    },
+    {
+      "mistake": "Calculating aggregates in JavaScript instead of database",
+      "consequence": "Fetches all data just to calculate sum/average, very inefficient.",
+      "correction": "Use aggregate() with _sum, _avg, etc. to let the database do the calculation."
+    }
+  ],
+  "difficulty": "intermediate"
+}

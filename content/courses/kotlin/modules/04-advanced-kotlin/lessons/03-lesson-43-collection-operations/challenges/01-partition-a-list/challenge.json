@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.3.1",
+  "title": "Partition a List",
+  "description": "Use the partition function to split a list of numbers into even and odd numbers.",
+  "instructions": "Use the partition function to split a list of numbers into even and odd numbers.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Even numbers should be extracted",
+      "expectedOutput": "Even: [2, 4, 6, 8, 10]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Odd numbers should be extracted",
+      "expectedOutput": "Odd: [1, 3, 5, 7, 9]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "partition returns a Pair of two lists"
+    },
+    {
+      "level": 2,
+      "text": "Use destructuring: val (first, second) = pair"
+    },
+    {
+      "level": 3,
+      "text": "Predicate for even: it % 2 == 0"
+    },
+    {
+      "level": 4,
+      "text": "True values go to first list, false to second"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

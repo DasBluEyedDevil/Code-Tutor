@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-3-lesson-6-lambda-basic",
+  "title": "Basic Lambda Expression",
+  "description": "Create a list of names and sort it by length (shortest first) using a lambda.\n\nList: [\"Charlie\", \"Bob\", \"Alice\", \"Dan\"]\n\nPrint the first name after sorting.\n\nExpected output: Bob",
+  "instructions": "Create a list of names and sort it by length (shortest first) using a lambda.\n\nList: [\"Charlie\", \"Bob\", \"Alice\", \"Dan\"]\n\nPrint the first name after sorting.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-3-lesson-6-lambda-basic-test-1",
+      "description": "Should print 'Bob'",
+      "expectedOutput": "Bob",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use list.sort((a, b) -> comparison) with a lambda"
+    },
+    {
+      "level": 2,
+      "text": "Compare lengths: a.length() - b.length() for ascending order"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Arrays.asList() which returns fixed-size list",
+      "consequence": "UnsupportedOperationException when sorting",
+      "correction": "Wrap with new ArrayList<>() to make it mutable"
+    }
+  ],
+  "difficulty": "beginner"
+}

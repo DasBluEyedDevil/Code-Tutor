@@ -1,0 +1,16 @@
+{
+  "type": "QUIZ",
+  "id": "lesson-18-02-challenge-01",
+  "title": "Interface Placement in Clean Architecture",
+  "description": "Test your understanding of where interfaces belong in Clean Architecture layers.",
+  "question": "In a Clean Architecture project, you need to define an IProductRepository interface that will be implemented by a class using Entity Framework Core. Which layer should contain the IProductRepository interface definition?",
+  "options": [
+    "Domain Layer - because Product is a domain entity",
+    "Application Layer - because it defines what the application needs without knowing how it's implemented",
+    "Infrastructure Layer - because that's where Entity Framework Core lives",
+    "Presentation Layer - because that's where dependency injection is configured"
+  ],
+  "correctAnswer": 1,
+  "explanation": "The IProductRepository interface belongs in the Application Layer. This is a key principle of Clean Architecture and Dependency Inversion. The Application layer defines WHAT it needs (the interface contract) without knowing HOW it will be implemented. Infrastructure then implements this interface using Entity Framework Core or any other data access technology. This allows you to swap implementations without changing the Application layer. If the interface were in Infrastructure, Application would need to reference Infrastructure, violating the dependency rule.",
+  "difficulty": "intermediate"
+}

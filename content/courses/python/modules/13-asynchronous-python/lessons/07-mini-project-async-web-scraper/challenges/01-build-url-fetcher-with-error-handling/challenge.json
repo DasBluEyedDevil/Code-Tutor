@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-07-challenge-1",
+  "title": "Build URL Fetcher with Error Handling",
+  "description": "Create an async URL fetcher that handles errors gracefully and reports results.",
+  "instructions": "Complete the `URLFetcher` class that fetches multiple URLs concurrently, handles errors gracefully, and returns both successful and failed results.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `async with self.semaphore:` to limit concurrency. Wrap the fetch logic in try/except to catch errors."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using the semaphore",
+      "consequence": "No rate limiting, may overwhelm server",
+      "correction": "Always wrap fetch logic in async with self.semaphore:"
+    }
+  ],
+  "difficulty": "intermediate"
+}

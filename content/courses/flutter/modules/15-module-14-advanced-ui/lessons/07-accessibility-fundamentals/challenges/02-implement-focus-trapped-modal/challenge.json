@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.7-challenge-1",
+  "title": "Implement Focus-Trapped Modal",
+  "description": "Create a modal dialog that properly traps keyboard focus.",
+  "instructions": "Build an AccessibleModal widget that: (1) Traps focus within the modal when open, (2) Has a visible focus indicator on interactive elements, (3) Closes when Escape key is pressed, (4) Auto-focuses the first interactive element when opened, (5) Includes proper heading semantics for the title.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use FocusScope with autofocus: true to trap and auto-focus within the modal"
+    },
+    {
+      "level": 2,
+      "text": "Use KeyboardListener to detect Escape key presses"
+    },
+    {
+      "level": 3,
+      "text": "Add autofocus: true to the primary action button, and use Semantics with header: true for the title"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not trapping focus within the modal",
+      "consequence": "Keyboard users can Tab outside the modal to elements behind it",
+      "correction": "Use FocusScope to create a focus boundary that keeps Tab navigation within the modal"
+    },
+    {
+      "mistake": "Forgetting to handle Escape key",
+      "consequence": "Users expect Escape to close dialogs, but nothing happens",
+      "correction": "Use KeyboardListener to detect Escape key and call the close callback"
+    }
+  ],
+  "difficulty": "intermediate"
+}

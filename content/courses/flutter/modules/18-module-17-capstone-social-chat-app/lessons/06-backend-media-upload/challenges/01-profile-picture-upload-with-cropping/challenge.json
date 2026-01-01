@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.6-challenge-0",
+  "title": "Profile Picture Upload with Cropping",
+  "description": "Implement a profile picture upload system with client-side crop coordinates and server-side processing.",
+  "instructions": "Create a profile picture upload endpoint that:\n\n1. Accepts an image with optional crop coordinates (x, y, width, height)\n2. Validates the image type and size\n3. Applies server-side cropping if coordinates provided\n4. Generates square profile picture sizes (64, 128, 256, 512)\n5. Replaces and deletes the user's old profile picture\n6. Updates the user profile with new avatar URLs\n7. Returns the updated user profile with all avatar sizes",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the image package's copyResizeCropSquare for consistent square profile pictures"
+    },
+    {
+      "level": 2,
+      "text": "Always strip EXIF data from profile pictures to protect user privacy"
+    },
+    {
+      "level": 3,
+      "text": "Store the old media file ID before updating, then delete after successful update"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Deleting old profile picture before confirming new one is uploaded",
+      "consequence": "User left without profile picture if new upload fails",
+      "correction": "Only delete old picture after successfully uploading and linking new one"
+    },
+    {
+      "mistake": "Not validating crop coordinates against actual image dimensions",
+      "consequence": "Server crashes or produces corrupted images",
+      "correction": "Validate that crop region is within image bounds before processing"
+    }
+  ],
+  "difficulty": "intermediate"
+}

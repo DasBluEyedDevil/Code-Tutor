@@ -1,0 +1,59 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-pydantic-v2-challenge",
+  "title": "Build a User Profile Validator",
+  "description": "Create a complete user profile validation system using Pydantic v2 patterns including field validators, model validators, and proper error handling.",
+  "instructions": "Create a UserProfile model with:\n- username: 3-20 alphanumeric characters, lowercase only\n- email: valid email format (use EmailStr or validate manually)\n- age: optional, must be 13-120 if provided\n- bio: optional, max 500 characters\n- website: optional, must start with https:// if provided\n\nAdd a model validator to ensure: if age < 18, bio cannot contain certain keywords.\n\nTest with valid and invalid data.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid user profile creates successfully",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Invalid username is rejected",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use @field_validator with @classmethod decorator. Return the modified value. Raise ValueError for validation failures."
+    },
+    {
+      "level": 2,
+      "text": "For username: use v.isalnum() to check alphanumeric. For email: split by '@' and check parts. Use v.lower() to normalize."
+    },
+    {
+      "level": 3,
+      "text": "For model_validator: use mode='after', return Self type hint. Check if self.age is not None and self.age < 18, then check self.bio for restricted words."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting @classmethod decorator after @field_validator",
+      "consequence": "TypeError: validator takes wrong number of arguments",
+      "correction": "Always add @classmethod below @field_validator"
+    },
+    {
+      "mistake": "Not returning the value from field validator",
+      "consequence": "Field becomes None unexpectedly",
+      "correction": "Always return v (or modified v) from field validators"
+    },
+    {
+      "mistake": "Using @validator instead of @field_validator",
+      "consequence": "DeprecationWarning in Pydantic v2",
+      "correction": "Use @field_validator for v2 compatibility"
+    },
+    {
+      "mistake": "Forgetting to return self from model_validator",
+      "consequence": "Model becomes None after validation",
+      "correction": "Always return self at the end of model_validator"
+    }
+  ],
+  "difficulty": "advanced"
+}

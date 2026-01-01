@@ -1,0 +1,83 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.5-challenge-1",
+  "title": "Build a Shopping Cart ViewModel",
+  "description": "Create a complete shopping cart system using Notifier. The cart should support adding items, removing items, clearing all items, and calculating the total price.",
+  "instructions": "Build a shopping cart ViewModel with the following requirements:\n\n1. Create a CartItem class with: id (String), name (String), price (double), quantity (int)\n2. Create a CartNotifier that extends Notifier<List<CartItem>>\n3. Implement these methods:\n   - addItem(CartItem item): Adds item to cart. If item with same id exists, increase quantity instead\n   - removeItem(String id): Removes item from cart by id\n   - updateQuantity(String id, int quantity): Updates quantity. If quantity is 0 or less, remove the item\n   - clear(): Removes all items from cart\n4. Add these getters:\n   - totalItems: Total number of items (sum of all quantities)\n   - totalPrice: Total price (sum of price * quantity for all items)\n5. Create the cartProvider using NotifierProvider\n6. Build a simple UI that displays cart items and total, with buttons to add sample items and clear the cart",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-add-item",
+      "description": "addItem adds new items to cart",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-add-existing",
+      "description": "addItem increases quantity for existing items",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-remove-item",
+      "description": "removeItem removes item from cart",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-update-quantity",
+      "description": "updateQuantity changes item quantity",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-clear",
+      "description": "clear removes all items",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-totals",
+      "description": "totalItems and totalPrice calculate correctly",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For addItem, use indexWhere to check if an item with the same id already exists. If index is >= 0, the item exists and you should increase its quantity."
+    },
+    {
+      "level": 2,
+      "text": "Use list comprehension with 'for' and 'if' for conditional updates: state = [for (int i = 0; i < state.length; i++) if (condition) modifiedItem else state[i]]"
+    },
+    {
+      "level": 3,
+      "text": "For totalItems, use fold: state.fold(0, (sum, item) => sum + item.quantity). For totalPrice: state.fold(0.0, (sum, item) => sum + item.price * item.quantity)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Mutating state directly with state.add() or state[index].quantity++",
+      "consequence": "State changes but widgets do not rebuild because Riverpod did not detect the change",
+      "correction": "Always create new lists/objects: state = [...state, newItem] or state = state.map(...).toList()"
+    },
+    {
+      "mistake": "Using ref.watch() in onPressed callbacks",
+      "consequence": "Creates unnecessary subscriptions and potential bugs",
+      "correction": "Use ref.read() in callbacks: ref.read(cartProvider.notifier).addItem(item)"
+    },
+    {
+      "mistake": "Forgetting to handle the case where item already exists in addItem",
+      "consequence": "Duplicate items appear in cart instead of increasing quantity",
+      "correction": "Check if item exists with indexWhere before adding. If exists, update quantity instead."
+    },
+    {
+      "mistake": "Not handling quantity <= 0 in updateQuantity",
+      "consequence": "Items with zero or negative quantity remain in cart",
+      "correction": "Add a check: if (quantity <= 0) { removeItem(id); return; }"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-11-challenge-1",
+  "title": "Interactive Exercise: Write API Tests",
+  "description": "Write pytest tests for a User API with the following endpoints:\n- GET /api/users - Returns list of users\n- GET /api/users/<id> - Returns single user or 404\n- POST /api/users - Creates user (requires name and email)\n- DELETE /api/users/<id> - Deletes user\n\nWrite tests for: success cases, 404 errors, and validation errors.",
+  "instructions": "Write pytest tests for a User API with the following endpoints:\n- GET /api/users - Returns list of users\n- GET /api/users/<id> - Returns single user or 404\n- POST /api/users - Creates user (requires name and email)\n- DELETE /api/users/<id> - Deletes user\n\nWrite tests for: success cases, 404 errors, and validation errors.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use app.test_client() in the fixture. Check response.status_code and response.get_json() in assertions."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using app.config['TESTING'] = True",
+      "consequence": "Tests may behave differently than expected",
+      "correction": "Set TESTING config to True in fixture"
+    },
+    {
+      "mistake": "Forgetting to use json= for POST data",
+      "consequence": "Request body not sent correctly",
+      "correction": "Use client.post('/path', json={'key': 'value'})"
+    }
+  ],
+  "difficulty": "intermediate"
+}

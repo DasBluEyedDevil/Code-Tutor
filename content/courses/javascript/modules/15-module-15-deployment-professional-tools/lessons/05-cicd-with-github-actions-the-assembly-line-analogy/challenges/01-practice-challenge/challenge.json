@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "15.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a CI/CD pipeline:\n\n1. Create a `CIPipeline` class that:\n   - Runs steps in order (checkout, install, test, build, deploy)\n   - Stops if any step fails\n   - Shows timing for each step\n   - Only deploys if on 'main' branch\n\n2. Simulate running the pipeline with both passing and failing tests",
+  "instructions": "Simulate a CI/CD pipeline:\n\n1. Create a `CIPipeline` class that:\n   - Runs steps in order (checkout, install, test, build, deploy)\n   - Stops if any step fails\n   - Shows timing for each step\n   - Only deploys if on 'main' branch\n\n2. Simulate running the pipeline with both passing and failing tests",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should stop pipeline on failed tests",
+      "expectedOutput": "Pipeline FAILED",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a 'failed' flag to skip remaining steps when a step fails"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Deploying without checking test results",
+      "consequence": "Broken code gets deployed to production.",
+      "correction": "Add 'needs: test' to the deploy job so it only runs after tests pass."
+    },
+    {
+      "mistake": "Using npm instead of bun in CI",
+      "consequence": "CI runs 10x slower, wasting time and money.",
+      "correction": "Use oven-sh/setup-bun@v2 and bun commands for faster builds."
+    },
+    {
+      "mistake": "Hardcoding secrets in workflow files",
+      "consequence": "Secrets are exposed in your public repository.",
+      "correction": "Use ${{ secrets.SECRET_NAME }} and add secrets in GitHub Settings."
+    }
+  ],
+  "difficulty": "beginner"
+}

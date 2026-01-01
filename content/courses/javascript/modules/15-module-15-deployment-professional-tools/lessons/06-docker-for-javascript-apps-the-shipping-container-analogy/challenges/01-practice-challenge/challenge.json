@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "15.6-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a simulation of Docker concepts:\n\n1. Create a DockerImage class that:\n   - Has layers array (each instruction adds a layer)\n   - Has addLayer(instruction, size) method\n   - Has build() method that shows total size\n\n2. Create a DockerContainer class that:\n   - Takes an image to run\n   - Has start(), stop(), and status() methods\n   - Tracks environment variables\n\n3. Demonstrate multi-stage build concept by creating:\n   - A 'build' image with dev dependencies\n   - A 'production' image with only runtime files",
+  "instructions": "Create a simulation of Docker concepts:\n\n1. Create a DockerImage class that:\n   - Has layers array (each instruction adds a layer)\n   - Has addLayer(instruction, size) method\n   - Has build() method that shows total size\n\n2. Create a DockerContainer class that:\n   - Takes an image to run\n   - Has start(), stop(), and status() methods\n   - Tracks environment variables\n\n3. Demonstrate multi-stage build concept by creating:\n   - A 'build' image with dev dependencies\n   - A 'production' image with only runtime files",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should build Docker image",
+      "expectedOutput": "Built",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use array to track layers, reduce() to calculate total size."
+    },
+    {
+      "level": 2,
+      "text": "Multi-stage builds copy specific files from builder stage to production stage."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using multi-stage builds",
+      "consequence": "Images are unnecessarily large with development dependencies",
+      "correction": "Use separate stages for building and production runtime"
+    }
+  ],
+  "difficulty": "intermediate"
+}

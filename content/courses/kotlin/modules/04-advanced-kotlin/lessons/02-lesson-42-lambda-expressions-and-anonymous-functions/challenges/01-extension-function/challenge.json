@@ -1,0 +1,64 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.2.1",
+  "title": "Extension Function",
+  "description": "Create an extension function on String called `isPalindrome()` that returns true if the string reads the same forwards and backwards.",
+  "instructions": "Create an extension function on String called `isPalindrome()` that returns true if the string reads the same forwards and backwards.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "racecar should be palindrome",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "hello should not be palindrome",
+      "expectedOutput": "false",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "madam should be palindrome",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Extension function syntax: fun Type.functionName()"
+    },
+    {
+      "level": 2,
+      "text": "Use 'this' to refer to the receiver object"
+    },
+    {
+      "level": 3,
+      "text": "Use reversed() method on String"
+    },
+    {
+      "level": 4,
+      "text": "Compare original with reversed using =="
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

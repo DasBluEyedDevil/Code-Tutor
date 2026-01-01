@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an Employee class that uses 'this' properly!\n\n1. Private fields: string name, decimal salary\n2. Constructor taking string name, decimal salary - use 'this' to assign\n3. Method 'GiveRaise(decimal amount)' - increases this.salary by amount\n4. Method 'CompareSalary(Employee other)' - returns true if this.salary > other.salary\n5. Method 'Display()' - prints this employee's info\n6. Create two employees, give one a raise, compare salaries",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Alice\"",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Bob\"",
+      "expectedOutput": "Bob",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"salary\"",
+      "expectedOutput": "salary",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In constructor: this.fieldName = parameterName; In methods: use this.fieldName to access the object's data. Compare 'this' with 'other' parameter."
+    },
+    {
+      "level": 2,
+      "text": "Forgetting 'this' in constructors: If parameter and field have same name, you MUST use this.field = parameter; Without 'this', you're assigning parameter to itself!"
+    },
+    {
+      "level": 3,
+      "text": "Using 'this' outside instance methods: You can't use 'this' in static methods! 'this' refers to the current instance, static methods don't belong to an instance."
+    },
+    {
+      "level": 4,
+      "text": "Overusing 'this': While clear, using this.field everywhere can be verbose. Use it when needed (disambiguation) or for clarity, but it's optional when no conflict."
+    },
+    {
+      "level": 5,
+      "text": "'this' in static context: 'public static void Method() { this.field = 5; }' is ERROR! Static methods are class-level, no 'this' instance exists!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'this' in constructors",
+      "consequence": "If parameter and field have same name, you MUST use this.field = parameter; Without 'this', you're assigning parameter to itself!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using 'this' outside instance methods",
+      "consequence": "You can't use 'this' in static methods! 'this' refers to the current instance, static methods don't belong to an instance.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Overusing 'this'",
+      "consequence": "While clear, using this.field everywhere can be verbose. Use it when needed (disambiguation) or for clarity, but it's optional when no conflict.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "'this' in static context",
+      "consequence": "'public static void Method() { this.field = 5; }' is ERROR! Static methods are class-level, no 'this' instance exists!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,83 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.6-challenge-1",
+  "title": "Build a Todos API with In-Memory Storage",
+  "description": "Create a /api/todos endpoint that handles GET (list all) and POST (create new) using in-memory storage.",
+  "instructions": "Build a `/api/todos` endpoint that:\n\n1. **GET /api/todos** - Returns all todos as a JSON array\n2. **POST /api/todos** - Creates a new todo from JSON body with 'title' field\n   - Generate an ID using the current timestamp\n   - Set 'completed' to false by default\n   - Return the created todo with 201 status\n3. Returns 405 for other HTTP methods\n\nUse an in-memory list to store todos (no database needed for this exercise).\n\nExpected JSON format:\n```json\n{\n  \"id\": \"1234567890\",\n  \"title\": \"Buy groceries\",\n  \"completed\": false\n}\n```",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Has in-memory todos list",
+      "expectedOutput": "List<Map<String, dynamic>> todos",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "GET returns todos in JSON response",
+      "expectedOutput": "Response.json",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "POST reads JSON body with await",
+      "expectedOutput": "await context.request.json()",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "POST creates todo with id, title, and completed fields",
+      "expectedOutput": "'completed': false",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "POST returns 201 status code",
+      "expectedOutput": "statusCode: 201",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Returns 405 for other methods",
+      "expectedOutput": "405",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For GET, use Response.json(body: {'todos': todos}) to return the list."
+    },
+    {
+      "level": 2,
+      "text": "For POST, use DateTime.now().millisecondsSinceEpoch.toString() to generate a unique ID."
+    },
+    {
+      "level": 3,
+      "text": "Don't forget to add the new todo to the list with todos.add(newTodo) before returning."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add the new todo to the list",
+      "consequence": "Todo is created but not persisted, GET returns empty list",
+      "correction": "Call todos.add(newTodo) before returning the response"
+    },
+    {
+      "mistake": "Using 200 instead of 201 for created resources",
+      "consequence": "Non-standard REST API behavior",
+      "correction": "Use statusCode: 201 for successful POST operations"
+    },
+    {
+      "mistake": "Not handling the default case for other HTTP methods",
+      "consequence": "PUT, DELETE, etc. may behave unexpectedly",
+      "correction": "Add a default case returning 405 Method Not Allowed"
+    },
+    {
+      "mistake": "Returning the list directly instead of wrapping in an object",
+      "consequence": "Inconsistent API response format",
+      "correction": "Wrap in an object: {'todos': todos} for easier future expansion"
+    }
+  ],
+  "difficulty": "intermediate"
+}

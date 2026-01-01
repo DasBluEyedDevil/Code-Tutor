@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.3-challenge-0",
+  "title": "Build a Performance Monitoring Service",
+  "description": "Create a comprehensive performance monitoring service that wraps Firebase Performance with convenient methods for common operations.",
+  "instructions": "Create a PerformanceMonitor class that:\n\n1. Uses the singleton pattern with FirebasePerformance.instance\n2. Has a startTrace(name) method that starts a named trace and stores it internally\n3. Has a stopTrace(name) method that stops and removes the trace\n4. Has a setTraceAttribute(traceName, key, value) method to add attributes to active traces\n5. Has a measureAsync<T>(name, operation) method that wraps an async operation with timing\n6. Has a trackNetworkRequest(url, method, statusCode, responseSize, durationMs) method that creates and logs an HTTP metric",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a Map<String, Trace> to store active traces by name"
+    },
+    {
+      "level": 2,
+      "text": "For measureAsync, use try/finally to ensure the trace is stopped even if the operation throws"
+    },
+    {
+      "level": 3,
+      "text": "For HTTP metrics, use _performance.newHttpMetric(url, method) and set httpResponseCode and responsePayloadSize"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling the case where a trace is started twice",
+      "consequence": "Previous trace is lost and cannot be stopped",
+      "correction": "Check if trace already exists in map before creating a new one"
+    },
+    {
+      "mistake": "Not using try/finally in measureAsync",
+      "consequence": "Trace never stops if operation throws an exception",
+      "correction": "Always wrap trace stop in finally block to ensure cleanup"
+    }
+  ],
+  "difficulty": "intermediate"
+}

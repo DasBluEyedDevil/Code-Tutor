@@ -1,0 +1,89 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.7-challenge-1",
+  "title": "Build Login and Protected Profile Endpoints",
+  "description": "Create a /login endpoint that returns a JWT, and a protected /profile endpoint that requires authentication.",
+  "instructions": "Build two endpoints:\n\n**1. POST /auth/login**\n- Accept JSON body with `email` and `password`\n- If email is 'user@test.com' and password is 'password123', return a JWT token\n- Otherwise return 401 with error message\n\n**2. GET /api/profile**\n- Protected by auth middleware (require Bearer token)\n- Return the user info from the JWT payload\n\nYou'll need to:\n1. Create the JWT helper functions\n2. Create the login route\n3. Create the auth middleware\n4. Create the profile route\n\nTest with:\n```bash\n# Login\ncurl -X POST http://localhost:8080/auth/login \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"email\":\"user@test.com\",\"password\":\"password123\"}'\n\n# Access profile (use token from login)\ncurl http://localhost:8080/api/profile \\\n  -H \"Authorization: Bearer <your-token>\"\n```",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "createToken function creates JWT with userId and email",
+      "expectedOutput": "jwt.sign",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "verifyToken returns payload for valid token",
+      "expectedOutput": "JWT.verify",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Login returns token for valid credentials",
+      "expectedOutput": "'token':",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Login returns 401 for invalid credentials",
+      "expectedOutput": "statusCode: 401",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Middleware checks Authorization header",
+      "expectedOutput": "Authorization",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Middleware provides user payload to context",
+      "expectedOutput": "context.provide",
+      "isVisible": true
+    },
+    {
+      "id": "test-7",
+      "description": "Profile route reads user from context",
+      "expectedOutput": "context.read<Map<String, dynamic>>()",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In createToken, use JWT({'userId': userId, 'email': email, 'exp': ...}) and then jwt.sign(SecretKey(jwtSecretKey))."
+    },
+    {
+      "level": 2,
+      "text": "In middleware, use authHeader.substring(7) to remove 'Bearer ' prefix (7 characters)."
+    },
+    {
+      "level": 3,
+      "text": "Use context.provide<Map<String, dynamic>>(() => payload) to inject user data, and context.read<Map<String, dynamic>>() to retrieve it."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add 'Bearer ' prefix check",
+      "consequence": "Token parsing fails when header format is incorrect",
+      "correction": "Always check authHeader.startsWith('Bearer ') before extracting token"
+    },
+    {
+      "mistake": "Not handling null/missing Authorization header",
+      "consequence": "App crashes with null pointer exception",
+      "correction": "Check if authHeader is null before processing"
+    },
+    {
+      "mistake": "Using string interpolation instead of substring for token extraction",
+      "consequence": "Token includes 'Bearer ' prefix, verification fails",
+      "correction": "Use authHeader.substring(7) to get only the token part"
+    },
+    {
+      "mistake": "Forgetting try-catch in verifyToken",
+      "consequence": "Invalid tokens crash the server instead of returning null",
+      "correction": "Wrap JWT.verify in try-catch and return null on any exception"
+    }
+  ],
+  "difficulty": "intermediate"
+}

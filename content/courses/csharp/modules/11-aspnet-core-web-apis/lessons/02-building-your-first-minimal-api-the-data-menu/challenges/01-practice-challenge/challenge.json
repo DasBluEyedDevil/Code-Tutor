@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-11-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a Book Library API!\n\n1. Create a 'Book' class:\n   - int Id\n   - string Title\n   - string Author\n   - int Year\n   - bool IsAvailable\n\n2. Create in-memory List with 4-5 books\n\n3. Create these endpoints:\n   - GET /api/books -> Return all books\n   - GET /api/books/{id} -> Return single book (use Results.Ok or Results.NotFound)\n   - GET /api/books/available -> Return only available books\n   - GET /api/books/author/{author} -> Return books by specific author\n   - GET /api/books/stats -> Return statistics (total books, available, unavailable)\n\n4. Print endpoint list when API starts",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Book Library\"",
+      "expectedOutput": "Book Library",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Ready\"",
+      "expectedOutput": "Ready",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Endpoints\"",
+      "expectedOutput": "Endpoints",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Class inside Program.cs: 'class Book { properties }'. List: 'new List<Book> { new Book { ... } }'. Find: '.FirstOrDefault()'. Filter: '.Where()'. Return: 'Results.Ok()' or 'Results.NotFound()'."
+    },
+    {
+      "level": 2,
+      "text": "Route order matters: /api/books/available MUST come BEFORE /api/books/{id}! Otherwise {id} matches \\\"available\\\" as ID. Specific routes before parameterized ones!"
+    },
+    {
+      "level": 3,
+      "text": "Case sensitivity in string compare: author == \\\"Orwell\\\" won't match \\\"orwell\\\"! Use .Equals(author, StringComparison.OrdinalIgnoreCase) for case-insensitive matching."
+    },
+    {
+      "level": 4,
+      "text": "Null reference on FirstOrDefault: Always check 'is not null' before using! FirstOrDefault returns null if not found. Accessing properties on null = NullReferenceException."
+    },
+    {
+      "level": 5,
+      "text": "Forgetting to return Results: Just returning 'null' gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. HTTP status codes matter for API consumers!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Route order matters",
+      "consequence": "/api/books/available MUST come BEFORE /api/books/{id}! Otherwise {id} matches \\\"available\\\" as ID. Specific routes before parameterized ones!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Case sensitivity in string compare",
+      "consequence": "author == \\\"Orwell\\\" won't match \\\"orwell\\\"! Use .Equals(author, StringComparison.OrdinalIgnoreCase) for case-insensitive matching.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Null reference on FirstOrDefault",
+      "consequence": "Always check 'is not null' before using! FirstOrDefault returns null if not found. Accessing properties on null = NullReferenceException.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting to return Results",
+      "consequence": "Just returning 'null' gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. HTTP status codes matter for API consumers!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

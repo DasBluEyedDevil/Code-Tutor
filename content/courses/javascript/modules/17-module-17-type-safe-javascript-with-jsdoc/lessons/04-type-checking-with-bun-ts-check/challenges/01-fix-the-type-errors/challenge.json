@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.4-challenge",
+  "title": "Fix the Type Errors",
+  "description": "Enable type checking and fix the errors in this code.",
+  "instructions": "Add // @ts-check, then fix the type errors. The function should accept a number and return a string.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Formats price correctly",
+      "expectedOutput": "$19.99",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The function expects a number but is being called with a string. Fix the call site."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Converting number to string inside function",
+      "consequence": "The function signature says it takes a number, so callers should pass numbers",
+      "correction": "Change formatPrice('19.99') to formatPrice(19.99)"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-3-mc-1",
+  "title": "CSRF Protection",
+  "description": "Understanding CSRF attacks and defenses",
+  "question": "Why doesn't CSRF protection help against an attacker who has XSS (cross-site scripting) on your site?",
+  "options": [
+    "XSS can read the CSRF token from the page and include it in requests",
+    "CSRF tokens expire too quickly for XSS to use",
+    "XSS only works on static pages, not dynamic content",
+    "CSRF protection encrypts tokens that XSS cannot decrypt"
+  ],
+  "correctAnswer": 0,
+  "explanation": "XSS allows attackers to run JavaScript in your site's context. This JavaScript can read the CSRF token from the page (it's in the DOM) and include it in malicious requests. XSS completely bypasses CSRF protection - this is why preventing XSS is critical. Never trust user input in rendered HTML.",
+  "difficulty": "intermediate"
+}

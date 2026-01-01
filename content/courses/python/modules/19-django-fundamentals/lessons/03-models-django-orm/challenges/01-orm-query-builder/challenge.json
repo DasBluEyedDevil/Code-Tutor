@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-03-challenge-1",
+  "title": "ORM Query Builder",
+  "description": "Create a query builder that simulates Django ORM operations to understand how they translate to SQL.",
+  "instructions": "Build a QueryBuilder class that chains methods like Django's ORM and outputs equivalent SQL.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Query includes correct clauses",
+      "expectedOutput": "SELECT id, amount, description, date",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Split the key on '__' to separate field name from lookup type. Use a dictionary or if/elif to map lookups (gt, contains, etc.) to SQL operators (>, LIKE, etc.)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to escape string values in SQL",
+      "consequence": "SQL injection vulnerabilities",
+      "correction": "Django ORM handles this with parameterized queries - never build raw SQL with f-strings in production"
+    }
+  ],
+  "difficulty": "advanced"
+}

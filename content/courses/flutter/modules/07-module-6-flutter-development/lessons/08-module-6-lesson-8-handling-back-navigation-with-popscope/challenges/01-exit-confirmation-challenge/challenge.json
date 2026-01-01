@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.8-challenge-0",
+  "title": "Exit Confirmation Challenge",
+  "description": "Create a note-taking screen that asks for confirmation before discarding unsaved changes.",
+  "instructions": "1. Use PopScope to intercept back navigation\\n2. Track if notes have been modified\\n3. Show an AlertDialog when user tries to leave with unsaved changes",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses PopScope widget",
+      "expectedOutput": "PopScope",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Tracks unsaved changes state",
+      "expectedOutput": "_hasUnsavedChanges",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a boolean state variable to track if the TextField has been modified"
+    },
+    {
+      "level": 2,
+      "text": "Set canPop to the opposite of your unsaved changes flag"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using WillPopScope instead of PopScope",
+      "consequence": "Deprecated warning, won't work in future Flutter versions",
+      "correction": "Replace WillPopScope with PopScope"
+    }
+  ],
+  "difficulty": "intermediate"
+}

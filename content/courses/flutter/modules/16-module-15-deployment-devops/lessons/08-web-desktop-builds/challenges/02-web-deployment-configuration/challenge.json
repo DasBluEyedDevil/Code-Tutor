@@ -1,0 +1,16 @@
+{
+  "type": "CODE",
+  "id": "16.8-challenge-1",
+  "title": "Web Deployment Configuration",
+  "description": "Configure a Flutter web app for production deployment with Firebase Hosting.",
+  "instructions": "Complete the Firebase hosting configuration for a Flutter web app:\n\n1. Set the public directory to Flutter's web build output\n2. Configure as a single-page application (SPA) with rewrites\n3. Add caching headers for JavaScript and CSS files (1 year max-age)\n4. Ignore common non-deployment files\n5. Add security headers for X-Content-Type-Options and X-Frame-Options",
+  "language": "json",
+  "difficulty": "intermediate",
+  "hints": [
+    "Flutter builds web output to 'build/web' directory",
+    "SPA rewrites redirect all routes to index.html for client-side routing",
+    "31536000 seconds equals 1 year for cache max-age",
+    "X-Content-Type-Options prevents MIME-type sniffing attacks",
+    "X-Frame-Options SAMEORIGIN prevents clickjacking"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "FREE_CODING",
+  "id": "capstone-16-5-custom-validator",
+  "title": "Create Cross-Field Validator",
+  "description": "Create a class-level validator that ensures description is required when priority is URGENT.",
+  "instructions": "Create a custom validator @RequireDescriptionForUrgent that:\n1. Applies at the class level (not field level)\n2. Checks if priority is URGENT\n3. If URGENT, validates that description is not blank\n4. Returns appropriate error message",
+  "language": "java",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use @Target({ElementType.TYPE}) to make the annotation apply to classes instead of fields."
+    },
+    {
+      "level": 2,
+      "text": "The validator receives the entire TaskRequest object, allowing you to check multiple fields."
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-11-lesson-08-challenge-1",
+  "title": "Interactive Exercise",
+  "description": "Create a notification system for the Finance Tracker using Protocols:\n- Notifier protocol with send(message: str) method\n- EmailNotifier, SMSNotifier, PushNotifier implementations\n- AlertService that accepts any Notifier\n- Trigger alerts when budget exceeds threshold",
+  "instructions": "Create a notification system for the Finance Tracker using Protocols:\n- Notifier protocol with send(message: str) method\n- EmailNotifier, SMSNotifier, PushNotifier implementations\n- AlertService that accepts any Notifier\n- Trigger alerts when budget exceeds threshold",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use @runtime_checkable for Protocol. Each notifier needs send(message: str) -> bool. AlertService loops through notifiers."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Inheriting from Protocol in implementations",
+      "consequence": "Not needed - Protocol uses structural typing",
+      "correction": "Just implement the required methods, no inheritance"
+    },
+    {
+      "mistake": "Forgetting @runtime_checkable",
+      "consequence": "isinstance() checks will fail",
+      "correction": "Add @runtime_checkable decorator to Protocol"
+    }
+  ],
+  "difficulty": "intermediate"
+}

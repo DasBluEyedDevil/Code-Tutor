@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-19-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Set up Scalar documentation for a Movie API!\n\n1. Add OpenAPI and Scalar services\n2. Configure Scalar with:\n   - Title: 'Movie Database API'\n   - Theme: DeepSpace (dark theme)\n   - Dark mode enabled\n   - Default client: Python\n\n3. Create these documented endpoints:\n   - GET /movies - List all movies\n   - GET /movies/{id} - Get movie by ID\n   - GET /movies/search?genre=&year= - Search movies\n   - POST /movies - Add new movie\n\n4. Each endpoint needs WithName, WithSummary, WithDescription, WithTags\n\n5. Create Movie record: Id, Title, Genre, Year, Rating\n\n6. Print the Scalar UI URL when app starts",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure Scalar with title",
+      "expectedOutput": "Movie Database API",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should use DeepSpace theme",
+      "expectedOutput": "DeepSpace",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add 'using Scalar.AspNetCore;' at the top for Scalar extensions."
+    },
+    {
+      "level": 2,
+      "text": "Chain Scalar options: options.WithTitle(...).WithTheme(...).WithDarkMode(...)"
+    },
+    {
+      "level": 3,
+      "text": "For Python default: .WithDefaultHttpClient(ScalarTarget.Python, ScalarClient.Requests)"
+    },
+    {
+      "level": 4,
+      "text": "WithSummary is short (shown in list), WithDescription is longer (shown when expanded)."
+    },
+    {
+      "level": 5,
+      "text": "Scalar UI is at /scalar/v1 by default. Print this URL for easy access."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to call MapOpenApi before MapScalarApiReference",
+      "consequence": "Scalar needs the OpenAPI spec! Without MapOpenApi(), Scalar has no documentation to display.",
+      "correction": "Always call app.MapOpenApi() before app.MapScalarApiReference()."
+    },
+    {
+      "mistake": "Missing the using statement for Scalar.AspNetCore",
+      "consequence": "Extension methods like WithTitle, WithTheme won't be available.",
+      "correction": "Add 'using Scalar.AspNetCore;' at the top of your file."
+    },
+    {
+      "mistake": "Confusing WithSummary and WithDescription",
+      "consequence": "Summary appears in endpoint list, Description appears in expanded view. Wrong placement = poor UX.",
+      "correction": "Summary: 3-5 words (like a headline). Description: Full explanation of endpoint behavior."
+    },
+    {
+      "mistake": "Not installing the Scalar.AspNetCore NuGet package",
+      "consequence": "MapScalarApiReference method won't exist. Compile error.",
+      "correction": "Run: dotnet add package Scalar.AspNetCore"
+    }
+  ],
+  "difficulty": "advanced"
+}

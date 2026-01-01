@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.2.1",
+  "title": "User Model with Validation",
+  "description": "Create a User data class with name and email. Add a method `isValid()` that checks if email contains '@'.",
+  "instructions": "Create a User data class with name and email. Add a method `isValid()` that checks if email contains '@'.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid user should return true",
+      "expectedOutput": "User1 valid: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Invalid email should return false",
+      "expectedOutput": "User2 valid: false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Add method inside data class"
+    },
+    {
+      "level": 2,
+      "text": "Check if email contains @ using contains()"
+    },
+    {
+      "level": 3,
+      "text": "Also check if name is not blank"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

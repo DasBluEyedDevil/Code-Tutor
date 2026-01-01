@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.1-challenge",
+  "title": "Verify Project Setup",
+  "description": "Complete the project setup and verify everything works.",
+  "instructions": "Create the Prisma client helper and verify your server starts correctly. The lib/db.ts file should export a singleton Prisma client instance.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Exports a prisma instance",
+      "expectedOutput": "PrismaClient",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses singleton pattern",
+      "expectedOutput": "globalForPrisma",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use globalThis to store the client instance, preventing multiple connections during hot reload"
+    },
+    {
+      "level": 2,
+      "text": "Check if prisma already exists on globalThis before creating a new instance"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Creating a new PrismaClient on every import",
+      "consequence": "Causes 'too many connections' errors during development with hot reload",
+      "correction": "Store the client in globalThis and reuse it"
+    },
+    {
+      "mistake": "Not configuring logging based on environment",
+      "consequence": "Either missing debug info in development or noisy logs in production",
+      "correction": "Use the log option with environment-based configuration"
+    }
+  ],
+  "difficulty": "intermediate"
+}

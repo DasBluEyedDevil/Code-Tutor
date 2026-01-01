@@ -1,0 +1,64 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.1.2",
+  "title": "Class with Methods",
+  "description": "Create a `BankAccount` class with properties for accountNumber (String) and balance (Double). Add a method `deposit(amount: Double)` and `withdraw(amount: Double)` that modify the balance.",
+  "instructions": "Create a `BankAccount` class with properties for accountNumber (String) and balance (Double). Add a method `deposit(amount: Double)` and `withdraw(amount: Double)` that modify the balance.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Initial balance should be 1000.0",
+      "expectedOutput": "Initial balance: 1000.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "After deposit should be 1500.0",
+      "expectedOutput": "After deposit: 1500.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "After withdrawal should be 1300.0",
+      "expectedOutput": "After withdrawal: 1300.0",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Methods are defined inside the class body"
+    },
+    {
+      "level": 2,
+      "text": "Use 'fun' keyword to define methods"
+    },
+    {
+      "level": 3,
+      "text": "balance must be 'var' to be modifiable"
+    },
+    {
+      "level": 4,
+      "text": "Use += to add to balance, -= to subtract"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

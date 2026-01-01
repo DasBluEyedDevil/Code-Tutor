@@ -1,0 +1,72 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-11-06-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a protected API with JWT authentication!\n\n1. Set up JWT authentication in Program.cs:\n   - Add authentication services\n   - Configure token validation parameters\n   - Add authorization services\n\n2. Create endpoints:\n   - POST /login - Issues JWT token for valid credentials\n   - GET /api/public - Accessible to everyone\n   - GET /api/protected - Requires authentication\n   - GET /api/admin - Requires 'Admin' role\n\n3. In the login endpoint:\n   - Validate credentials (use hardcoded for demo)\n   - Create claims (Name, Role, custom claims)\n   - Generate and return JWT token\n\n4. Access user info in protected endpoints:\n   - Read claims from ClaimsPrincipal\n   - Return personalized response\n\nRemember: UseAuthentication() BEFORE UseAuthorization()!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should show auth configuration",
+      "expectedOutput": "Auth",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention endpoints",
+      "expectedOutput": "/login",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Authentication setup: 'builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => { ... });'"
+    },
+    {
+      "level": 2,
+      "text": "Middleware order is CRITICAL: UseAuthentication() MUST come BEFORE UseAuthorization(). Wrong order = authorization always fails!"
+    },
+    {
+      "level": 3,
+      "text": "JWT key must be 32+ characters for HmacSha256! Shorter keys cause 'key too small' error."
+    },
+    {
+      "level": 4,
+      "text": "Add claims to token: 'new Claim(ClaimTypes.Role, \"Admin\")'. Access in endpoints: 'user.FindFirst(ClaimTypes.Role)?.Value'."
+    },
+    {
+      "level": 5,
+      "text": "Protect endpoints: '.RequireAuthorization()' for any auth user, '.RequireAuthorization(p => p.RequireRole(\"Admin\"))' for specific role."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong middleware order",
+      "consequence": "UseAuthorization() before UseAuthentication() = every request unauthorized! Authentication populates User, Authorization checks it.",
+      "correction": "Always: UseAuthentication() THEN UseAuthorization(). Think: 'Who are you?' BEFORE 'What can you do?'"
+    },
+    {
+      "mistake": "JWT key too short",
+      "consequence": "Key under 32 characters throws 'IDX10653: The encryption key is too small'. HmacSha256 requires 256 bits = 32 bytes minimum.",
+      "correction": "Use 32+ character key: 'SuperSecretKey12345678901234567890'. In production, use configuration or secrets manager!"
+    },
+    {
+      "mistake": "Storing JWT in localStorage (XSS vulnerability!)",
+      "consequence": "JavaScript can read localStorage! XSS attack = stolen tokens. Attacker impersonates users.",
+      "correction": "Store tokens in httpOnly cookies (server sets, JS can't read). Or use short-lived tokens with refresh tokens."
+    },
+    {
+      "mistake": "Not validating token claims properly",
+      "consequence": "Trusting all claims without verification! Attacker modifies token claims (if not validating signature properly).",
+      "correction": "Always set ValidateIssuer, ValidateAudience, ValidateIssuerSigningKey to true. Never skip signature validation!"
+    },
+    {
+      "mistake": "Hardcoding credentials and secrets",
+      "consequence": "Secrets in source code = compromised when code is shared. Anyone with repo access has your keys!",
+      "correction": "Use Configuration (appsettings.json), Environment Variables, or Azure Key Vault / AWS Secrets Manager for production secrets."
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-22-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Implement role-based and policy-based authorization for a product management system.",
+  "instructions": "Set up authorization for ShopFlow's product management!\n\n1. Configure authorization with these policies:\n   - 'RequireAdmin': Require Admin role\n   - 'CanViewProducts': Allow any authenticated user\n   - 'CanEditProducts': Allow Admin OR Manager roles\n   - 'CanDeleteProducts': Require Admin role AND a claim 'can_delete' = 'true'\n\n2. Create these endpoints with proper authorization:\n   - GET /products - Requires 'CanViewProducts' policy\n   - PUT /products/{id} - Requires 'CanEditProducts' policy\n   - DELETE /products/{id} - Requires 'CanDeleteProducts' policy\n   - GET /admin/settings - Requires 'RequireAdmin' policy\n\n3. Add authentication and authorization middleware in correct order!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should define RequireAdmin policy",
+      "expectedOutput": "RequireAdmin",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should define CanEditProducts policy with roles",
+      "expectedOutput": "CanEditProducts",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should require can_delete claim for delete policy",
+      "expectedOutput": "can_delete",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should use RequireAuthenticatedUser for view policy",
+      "expectedOutput": "RequireAuthenticatedUser",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with builder.Services.AddAuthorization() and use options.AddPolicy() for each policy."
+    },
+    {
+      "level": 2,
+      "text": "For CanViewProducts, use policy.RequireAuthenticatedUser() instead of requiring a specific role."
+    },
+    {
+      "level": 3,
+      "text": "RequireRole(\"Admin\", \"Manager\") means Admin OR Manager - it's an OR condition, not AND."
+    },
+    {
+      "level": 4,
+      "text": "Chain RequireRole() and RequireClaim() for AND logic in CanDeleteProducts policy."
+    },
+    {
+      "level": 5,
+      "text": "Use .RequireAuthorization(\"PolicyName\") on each endpoint to apply the policy."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using RequireRole with multiple calls instead of multiple arguments",
+      "consequence": "Multiple RequireRole calls create AND logic, but you want OR logic for 'Admin or Manager'.",
+      "correction": "Use RequireRole(\"Admin\", \"Manager\") for OR logic, not two separate RequireRole calls."
+    },
+    {
+      "mistake": "Forgetting RequireAuthenticatedUser for policies that just need login",
+      "consequence": "Without this, even unauthenticated users might pass if no other requirements are set.",
+      "correction": "Always start with RequireAuthenticatedUser() if login is required."
+    },
+    {
+      "mistake": "Putting UseAuthorization before UseAuthentication",
+      "consequence": "Authorization cannot work without knowing who the user is first.",
+      "correction": "Always call UseAuthentication() before UseAuthorization()."
+    },
+    {
+      "mistake": "Using [Authorize] attribute on minimal API without proper syntax",
+      "consequence": "Compilation errors or authorization not applied.",
+      "correction": "For minimal APIs, use .RequireAuthorization(\"PolicyName\") instead of [Authorize] attributes."
+    }
+  ],
+  "difficulty": "intermediate"
+}

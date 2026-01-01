@@ -1,0 +1,71 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.4-challenge-1",
+  "title": "Build a Name Greeter with Riverpod",
+  "description": "Create a simple app where users type their name in a TextField and see 'Hello, {name}!' update in real-time using Riverpod state management.",
+  "instructions": "Complete the following tasks:\n\n1. Create a StateProvider<String> called nameProvider with an empty string as the initial value\n2. Wrap the app in ProviderScope\n3. Create a ConsumerWidget called GreeterScreen\n4. Add a TextField that updates nameProvider when the user types\n5. Display 'Hello, {name}!' that updates in real-time as the user types\n6. If the name is empty, display 'Hello, stranger!'\n\nRemember:\n- Use ref.watch() in the build method to get the name for display\n- Use ref.read() in the onChanged callback to update the provider\n- The TextField needs a TextEditingController for proper behavior",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-provider",
+      "description": "nameProvider is defined as StateProvider<String>",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-scope",
+      "description": "App is wrapped in ProviderScope",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-consumer",
+      "description": "GreeterScreen extends ConsumerWidget",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-greeting",
+      "description": "Greeting shows 'stranger' when empty, name when filled",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "StateProvider is created like this: final nameProvider = StateProvider<String>((ref) => ''); The (ref) => '' part returns the initial value (empty string)."
+    },
+    {
+      "level": 2,
+      "text": "To update a StateProvider, use ref.read(nameProvider.notifier).state = newValue. The .notifier gives you access to the state setter."
+    },
+    {
+      "level": 3,
+      "text": "ConsumerWidget's build method has TWO parameters: (BuildContext context, WidgetRef ref). The ref is what you use to watch and read providers."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using ref.read() instead of ref.watch() in build method",
+      "consequence": "UI does not update when the name changes",
+      "correction": "Use ref.watch(nameProvider) in the build method. watch() subscribes to changes, read() does not."
+    },
+    {
+      "mistake": "Using ref.watch() in onChanged callback",
+      "consequence": "Creates unnecessary subscriptions and potential performance issues",
+      "correction": "Use ref.read(nameProvider.notifier).state = value in callbacks. read() is for one-time access."
+    },
+    {
+      "mistake": "Forgetting to wrap app in ProviderScope",
+      "consequence": "Runtime error: Bad state: No ProviderScope found",
+      "correction": "In main(), wrap your app: runApp(ProviderScope(child: MyApp()))"
+    },
+    {
+      "mistake": "Extending StatelessWidget instead of ConsumerWidget",
+      "consequence": "No ref parameter available, cannot access providers",
+      "correction": "Change 'extends StatelessWidget' to 'extends ConsumerWidget' and add WidgetRef ref parameter"
+    }
+  ],
+  "difficulty": "beginner"
+}

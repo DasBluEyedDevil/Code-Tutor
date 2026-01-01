@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "15.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Create an environment configuration system:\n\n1. Create a `Config` class that:\n   - Loads variables from process.env\n   - Validates required variables\n   - Provides get() method with fallbacks\n   - Masks secrets when displaying\n\n2. Test with sample environment variables",
+  "instructions": "Create an environment configuration system:\n\n1. Create a `Config` class that:\n   - Loads variables from process.env\n   - Validates required variables\n   - Provides get() method with fallbacks\n   - Masks secrets when displaying\n\n2. Test with sample environment variables",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should detect missing required variables",
+      "expectedOutput": "false (missing JWT_SECRET)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use process.env to access environment variables"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common environment variable mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common environment variable mistakes:"
+    },
+    {
+      "mistake": "**Committing .env to Git** (MAJOR security issue!):",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Committing .env to Git** (MAJOR security issue!):\n   ```bash\n   # Check if .env is tracked:\n   git ls-files | grep .env\n   \n   # If it returns .env, you've committed secrets!\n   # Fix immediately:\n   git rm --cached .env\n   echo \".env\" >> .gitignore\n   git commit -m \"Remove .env from git\"\n   \n   # If already pushed to GitHub:\n   # 1. Rotate all secrets immediately!\n   # 2. Consider the secrets compromised\n   ```"
+    },
+    {
+      "mistake": "**Forgot to load dotenv**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgot to load dotenv**:\n   ```javascript\n   // Error: process.env.DATABASE_URL is undefined\n   \n   // Fix: Load dotenv at the very top\n   import 'dotenv/config';  // Must be first!\n   import express from 'express';\n   \n   // or\n   require('dotenv').config();  // Must be first!\n   const express = require('express');\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-11-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a Product API with proper status codes and validation!\n\n1. Create 'Product' class (Id, Name, Price, Stock)\n\n2. Create endpoints with PROPER status codes:\n\n   GET /api/products -> 200 OK with all products\n   \n   GET /api/products/{id} -> 200 OK if found, 404 if not\n   \n   POST /api/products -> Validate:\n     - Name required (400 if missing)\n     - Price must be > 0 (400 if not)\n     - Stock must be >= 0 (400 if negative)\n     - If valid: 201 Created with location\n   \n   PUT /api/products/{id} -> Validate same as POST:\n     - 404 if product not found\n     - 400 if validation fails\n     - 200 OK with updated product if success\n   \n   DELETE /api/products/{id} -> 404 if not found, 204 if deleted\n\n3. Return helpful error messages for 400 responses!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Product API\"",
+      "expectedOutput": "Product API",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"status codes\"",
+      "expectedOutput": "status codes",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"200\"",
+      "expectedOutput": "200",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"201\"",
+      "expectedOutput": "201",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"400\"",
+      "expectedOutput": "400",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"404\"",
+      "expectedOutput": "404",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Validation: check conditions, return Results.BadRequest(\"message\") if invalid. Not found: Results.NotFound(). Success: Results.Ok(data) or Results.Created(uri, data) or Results.NoContent()."
+    },
+    {
+      "level": 2,
+      "text": "Returning wrong status for errors: Don't return 200 OK for errors! Validation failure = 400 Bad Request. Resource not found = 404. Use correct codes!"
+    },
+    {
+      "level": 3,
+      "text": "Not including error messages: Results.BadRequest() with no message is unhelpful! Always include message: Results.BadRequest(\\\"Name is required!\\\"). Help the client fix the issue!"
+    },
+    {
+      "level": 4,
+      "text": "Using 200 for POST: POST should return 201 Created, not 200! Use Results.Created() with location URI. It's the HTTP standard for resource creation."
+    },
+    {
+      "level": 5,
+      "text": "Returning null instead of 404: Don't 'return null' - it gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. Status codes communicate meaning!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Returning wrong status for errors",
+      "consequence": "Don't return 200 OK for errors! Validation failure = 400 Bad Request. Resource not found = 404. Use correct codes!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not including error messages",
+      "consequence": "Results.BadRequest() with no message is unhelpful! Always include message: Results.BadRequest(\\\"Name is required!\\\"). Help the client fix the issue!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using 200 for POST",
+      "consequence": "POST should return 201 Created, not 200! Use Results.Created() with location URI. It's the HTTP standard for resource creation.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Returning null instead of 404",
+      "consequence": "Don't 'return null' - it gives 204 No Content! Use 'Results.NotFound()' for proper 404 status. Status codes communicate meaning!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

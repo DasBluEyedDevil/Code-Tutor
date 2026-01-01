@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.10-challenge-1",
+  "title": "Extend the Chat Backend with Message Reactions",
+  "description": "Add emoji reaction support to messages, allowing users to react with emoji and see aggregated reaction counts.",
+  "instructions": "Implement a message reaction system with these requirements:\n\n1. Create a MessageReaction model with fields: id, messageId, userId, emoji, createdAt\n2. Create a ReactionEndpoint with methods:\n   - addReaction(messageId, emoji): Add a reaction to a message\n   - removeReaction(messageId, emoji): Remove your reaction\n   - getReactions(messageId): Get all reactions for a message\n3. Implement reaction broadcasting through the stream endpoint\n4. Ensure users can only have one reaction with the same emoji per message\n5. Validate that emoji is a valid emoji character\n\nThe starter code provides the model definition and basic structure. Complete the implementation.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Can add a reaction to a message",
+      "expectedOutput": "Added reaction: 👍 to message 1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Adding same reaction is idempotent",
+      "expectedOutput": "Returned existing reaction: 👍",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Can get aggregated reactions",
+      "expectedOutput": "👍: 1 (you: true)",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Invalid emoji is rejected",
+      "expectedOutput": "Correctly rejected",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Can remove a reaction",
+      "expectedOutput": "Removed: true",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with addReaction: First validate the emoji, then check if the message exists, then verify room membership, then check for existing reaction."
+    },
+    {
+      "level": 2,
+      "text": "For idempotency in addReaction: If the user already has the same reaction on the message, just return the existing one instead of throwing an error."
+    },
+    {
+      "level": 3,
+      "text": "For getReactions: Use a Map<String, List<MessageReaction>> to group reactions by emoji, then convert each group to a ReactionSummary."
+    },
+    {
+      "level": 4,
+      "text": "For emoji validation: Check that the string is not empty, not too long (emoji with modifiers can be up to 8 chars), and matches Unicode emoji ranges."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling idempotency for addReaction",
+      "consequence": "Duplicate reactions in database or errors when user taps reaction button multiple times",
+      "correction": "Check if reaction already exists and return it instead of creating a duplicate"
+    },
+    {
+      "mistake": "Not verifying room membership before allowing reactions",
+      "consequence": "Users could react to messages in rooms they are not members of",
+      "correction": "Get the message, then verify the user is a member of that message's room"
+    },
+    {
+      "mistake": "Not including currentUserReacted in ReactionSummary",
+      "consequence": "UI cannot show which reactions the current user has already added",
+      "correction": "Check if userId is in the userIds list for each reaction group"
+    },
+    {
+      "mistake": "Overly strict emoji validation",
+      "consequence": "Some valid emoji (especially with skin tone modifiers) are rejected",
+      "correction": "Allow emoji up to 8 characters and test with various emoji including those with modifiers"
+    }
+  ],
+  "difficulty": "intermediate"
+}

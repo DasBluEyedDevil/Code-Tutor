@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-2-mc-2",
+  "title": "Thread States",
+  "description": "Understanding thread lifecycle states",
+  "question": "A thread calls Thread.sleep(5000). What state is it in during those 5 seconds?",
+  "options": [
+    "RUNNABLE",
+    "BLOCKED",
+    "WAITING",
+    "TIMED_WAITING"
+  ],
+  "correctAnswer": 3,
+  "explanation": "Thread.sleep() with a timeout puts the thread in TIMED_WAITING state. WAITING is for indefinite waits (like join() without timeout). BLOCKED is for waiting to acquire a lock. RUNNABLE means the thread is ready to execute (or executing).",
+  "difficulty": "intermediate"
+}

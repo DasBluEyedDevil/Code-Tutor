@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.1-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create a todo list with: 1. At least 5 todos 2. Use ListView.builder 3. Each todo has a checkbox icon 4. Bonus: Add dividers ---",
+  "instructions": "Create a todo list with: 1. At least 5 todos 2. Use ListView.builder 3. Each todo has a checkbox icon 4. Bonus: Add dividers ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "ListView.builder used with itemCount",
+      "expectedOutput": "ListView.builder creates items dynamically with itemCount: 6",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Checkbox icons toggle with completion",
+      "expectedOutput": "Icons.check_box for completed, Icons.check_box_outline_blank for pending",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Dividers separate todo items",
+      "expectedOutput": "Divider widget rendered between each ListTile",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Use ListView.builder with itemCount and itemBuilder parameters"
+    },
+    {
+      "level": 3,
+      "text": "ListTile has leading (icon), title (text) properties - perfect for todo items"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting itemCount in ListView.builder",
+      "consequence": "Infinite loop creating items forever",
+      "correction": "Always specify itemCount: todos.length"
+    },
+    {
+      "mistake": "Not returning a widget from itemBuilder",
+      "consequence": "Null error - 'return Text(...)' is required",
+      "correction": "Use exact case: main not Main, print not Print"
+    },
+    {
+      "mistake": "Missing curly braces",
+      "consequence": "Syntax error or incorrect scope",
+      "correction": "Ensure every { has a matching }"
+    }
+  ],
+  "difficulty": "beginner"
+}

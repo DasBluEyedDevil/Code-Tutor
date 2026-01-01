@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-5-mc-1",
+  "title": "URL Parameters",
+  "description": "Understanding dynamic route parameters",
+  "question": "Given the route <Route path=\"/users/:userId/posts/:postId\" element={<PostDetail />} />, how do you access both parameters in PostDetail?",
+  "options": [
+    "const { userId, postId } = useParams();",
+    "const params = useLocation().params;",
+    "const [userId, postId] = useSearchParams();",
+    "props.match.params.userId and props.match.params.postId"
+  ],
+  "correctAnswer": 0,
+  "explanation": "useParams() returns an object with all URL parameters. For the route /users/:userId/posts/:postId visiting /users/123/posts/456, useParams() returns { userId: '123', postId: '456' }. You can destructure them directly. Note: parameters are always strings.",
+  "difficulty": "intermediate"
+}

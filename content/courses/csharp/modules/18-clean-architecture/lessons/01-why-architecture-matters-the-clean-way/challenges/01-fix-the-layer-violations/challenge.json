@@ -1,0 +1,59 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-18-01-challenge-01",
+  "title": "Fix the Layer Violations",
+  "description": "Identify and fix Clean Architecture violations in the given code.",
+  "instructions": "The following code has several Clean Architecture violations. Your task is to:\n\n1. Identify which layer each class belongs to\n2. Fix the dependency violations\n3. Add the correct interfaces where needed\n\nRemember: Dependencies should only point inward (Presentation -> Infrastructure -> Application -> Domain).",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Domain entity has no infrastructure dependencies",
+      "expectedOutput": "No SqlConnection in Product class",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Application layer uses interface",
+      "expectedOutput": "IProductRepository interface",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Infrastructure implements interface",
+      "expectedOutput": "SqlProductRepository : IProductRepository",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Domain entities should never contain database connections or know how they are stored."
+    },
+    {
+      "level": 2,
+      "text": "Create an IProductRepository interface in the Application layer that defines what operations are needed."
+    },
+    {
+      "level": 3,
+      "text": "The ProductService should depend on IProductRepository (interface), not SqlProductRepository (concrete)."
+    },
+    {
+      "level": 4,
+      "text": "Move the actual database code to an Infrastructure class that implements the interface."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting interfaces in Infrastructure layer",
+      "consequence": "Application layer would depend on Infrastructure, violating the dependency rule",
+      "correction": "Define interfaces in Application layer, implementations in Infrastructure"
+    },
+    {
+      "mistake": "Having domain entities call repositories directly",
+      "consequence": "Domain becomes coupled to data access, harder to test and change",
+      "correction": "Use Application Services to orchestrate between Domain and Infrastructure"
+    }
+  ],
+  "difficulty": "intermediate"
+}

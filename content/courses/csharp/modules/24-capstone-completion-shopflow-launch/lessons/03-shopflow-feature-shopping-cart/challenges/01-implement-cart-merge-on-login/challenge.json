@@ -1,0 +1,86 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-26-03-challenge-01",
+  "title": "Implement Cart Merge on Login",
+  "description": "Implement the cart merge functionality that combines an anonymous user's cart with their authenticated cart when they log in.",
+  "instructions": "Build the MergeCartCommand handler that:\n\n1. Retrieves the user's authenticated cart (or creates one if it doesn't exist)\n2. Retrieves the anonymous cart by session ID\n3. Merges items from the anonymous cart into the authenticated cart:\n   - If item exists in both, keep the higher quantity (max 99)\n   - If item only exists in anonymous cart, add it (up to 50 items max)\n4. Deletes the anonymous cart after successful merge\n5. Returns the merged cart as CartDto\n\nHandle edge cases:\n- No anonymous cart exists (just return authenticated cart)\n- Empty anonymous cart (just return authenticated cart)\n- Cart limits exceeded (skip items that would exceed limits)",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should get or create authenticated cart",
+      "expectedOutput": "GetByUserIdAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should get anonymous cart by session",
+      "expectedOutput": "GetBySessionIdAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should call MergeFrom on authenticated cart",
+      "expectedOutput": "MergeFrom",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should delete anonymous cart after merge",
+      "expectedOutput": "DeleteAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should save changes after merge",
+      "expectedOutput": "SaveChangesAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should return CartDto",
+      "expectedOutput": "MapToDto",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by getting the authenticated cart. If it doesn't exist, create one using Cart.CreateForUser()."
+    },
+    {
+      "level": 2,
+      "text": "Use GetBySessionIdAsync to retrieve the anonymous cart. Remember it might be null."
+    },
+    {
+      "level": 3,
+      "text": "Check if the anonymous cart exists AND has items before attempting to merge."
+    },
+    {
+      "level": 4,
+      "text": "The Cart.MergeFrom() method already handles the merge logic including quantity limits. Just call it."
+    },
+    {
+      "level": 5,
+      "text": "Don't forget to delete the anonymous cart after merging to prevent duplicate data."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking if anonymous cart exists before merging",
+      "consequence": "NullReferenceException when user logs in without having added items to cart.",
+      "correction": "Always check if anonymousCart is not null before calling MergeFrom."
+    },
+    {
+      "mistake": "Forgetting to delete the anonymous cart after merge",
+      "consequence": "Orphaned cart records accumulate in database, and items could be merged again on next login.",
+      "correction": "Call DeleteAsync on the anonymous cart after successful merge."
+    },
+    {
+      "mistake": "Not creating authenticated cart if it doesn't exist",
+      "consequence": "New users who log in for the first time will get an error instead of an empty cart.",
+      "correction": "Check if authenticated cart is null and create one using Cart.CreateForUser()."
+    }
+  ],
+  "difficulty": "advanced"
+}

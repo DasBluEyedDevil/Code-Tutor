@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-05-challenge-1",
+  "title": "Fetch Multiple URLs Concurrently",
+  "description": "Create an async function to fetch multiple URLs and return their responses.",
+  "instructions": "Complete the `fetch_urls` function that takes a list of URLs and fetches them all concurrently. Return a list of response data.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create coroutines with [client.get(url) for url in urls], then use await asyncio.gather(*coroutines)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using async with for the client",
+      "consequence": "Connection pool not properly managed",
+      "correction": "Always use async with httpx.AsyncClient() as client:"
+    }
+  ],
+  "difficulty": "intermediate"
+}

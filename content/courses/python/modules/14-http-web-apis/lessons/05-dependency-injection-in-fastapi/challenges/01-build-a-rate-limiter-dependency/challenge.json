@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-di-challenge",
+  "title": "Build a Rate Limiter Dependency",
+  "description": "Create a rate limiting dependency that tracks requests per user and blocks if they exceed the limit.",
+  "instructions": "Build a FastAPI application with a rate limiting dependency:\n\n1. Create a RateLimiter class that:\n   - Tracks request counts per user (use a dictionary)\n   - Has configurable max_requests and time_window\n   - Raises HTTPException(429) if limit exceeded\n\n2. Create a get_current_user dependency that returns a user dict\n\n3. Create a rate_limit dependency that:\n   - Depends on get_current_user\n   - Uses the RateLimiter to check/update request count\n   - Returns the user if allowed, raises 429 if not\n\n4. Create endpoints:\n   - GET /public - No rate limiting\n   - GET /api/data - Rate limited endpoint\n   - GET /api/status - Shows current request count",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "RateLimiter allows requests within limit",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "RateLimiter blocks requests over limit",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store request timestamps in a list per user. Clean out timestamps older than time_window."
+    },
+    {
+      "level": 2,
+      "text": "Use datetime.now() and timedelta(seconds=time_window) to check if requests are within the window."
+    },
+    {
+      "level": 3,
+      "text": "The rate_limit dependency should call rate_limiter.check_rate_limit(user['user_id']) and raise HTTPException(status_code=429) if it returns False."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not cleaning old requests from the tracking dict",
+      "consequence": "Users stay rate-limited forever",
+      "correction": "Filter out requests older than time_window before checking count"
+    },
+    {
+      "mistake": "Forgetting to record successful requests",
+      "consequence": "Rate limit never triggers",
+      "correction": "Append datetime.now() to user's request list when allowed"
+    },
+    {
+      "mistake": "Using return instead of raise for HTTPException",
+      "consequence": "429 status not sent properly",
+      "correction": "Use 'raise HTTPException(status_code=429, detail=...)'"
+    }
+  ],
+  "difficulty": "advanced"
+}

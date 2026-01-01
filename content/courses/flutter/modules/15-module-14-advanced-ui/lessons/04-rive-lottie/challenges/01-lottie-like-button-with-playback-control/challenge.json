@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.4-challenge-0",
+  "title": "Lottie Like Button with Playback Control",
+  "description": "Build an animated like button using Lottie with controlled playback.",
+  "instructions": "Create a LikeButton widget that displays a heart Lottie animation. When tapped, it should play the animation forward (filling the heart). When tapped again, it should play in reverse (unfilling). Track the liked state and expose it via callback. The animation should only play on user interaction, not automatically.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use controller.value = 1.0 to set initial state to 'liked' without playing the animation"
+    },
+    {
+      "level": 2,
+      "text": "Use controller.forward() to play and controller.reverse() to unplay"
+    },
+    {
+      "level": 3,
+      "text": "Set the duration in onLoaded callback using composition.duration"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Playing the animation on init when initiallyLiked is true",
+      "consequence": "Heart animates filling when widget first appears",
+      "correction": "Set controller.value = 1.0 instead of calling forward()"
+    },
+    {
+      "mistake": "Forgetting to dispose the AnimationController",
+      "consequence": "Memory leak and potential errors after widget disposal",
+      "correction": "Always call _controller.dispose() in the dispose() method"
+    }
+  ],
+  "difficulty": "intermediate"
+}

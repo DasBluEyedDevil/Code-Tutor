@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-02-challenge-1",
+  "title": "Settings Validator",
+  "description": "Create a settings validator that checks Django configuration for common security issues and best practices.",
+  "instructions": "Implement a class that validates Django settings and reports issues.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Detects production readiness issues",
+      "expectedOutput": "Production Ready: NO",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `self.settings.get('KEY', default)` to safely access settings. Check each setting against the rules and append a SettingsIssue to self.issues when a problem is found."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Hardcoding secret keys in settings.py",
+      "consequence": "Secrets exposed in version control",
+      "correction": "Use environment variables: os.environ.get('SECRET_KEY')"
+    }
+  ],
+  "difficulty": "advanced"
+}

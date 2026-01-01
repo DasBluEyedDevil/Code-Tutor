@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-16-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Prepare an AppHost for Azure deployment!\n\n1. Configure the following services:\n   - Redis cache named 'appcache'\n   - PostgreSQL database named 'appdb'\n   - Background worker service (internal only)\n   - Public API service (external endpoints)\n   - Public web frontend (external endpoints)\n\n2. Set up dependencies:\n   - Worker needs cache and database\n   - API needs cache and database\n   - Web needs to call API\n\n3. Add comments explaining:\n   - Which services are public vs internal\n   - What Azure resources each maps to\n\n4. Print deployment instructions",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should confirm Azure configuration",
+      "expectedOutput": "Azure",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention deployment commands",
+      "expectedOutput": "azd",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": ".WithExternalHttpEndpoints() marks a service as internet-facing. Without it, service is internal only."
+    },
+    {
+      "level": 2,
+      "text": "Background workers typically don't need external endpoints - they process internal jobs."
+    },
+    {
+      "level": 3,
+      "text": "Store infrastructure in variables (var cache = ...) to pass to .WithReference() calls."
+    },
+    {
+      "level": 4,
+      "text": "Order of AddProject doesn't matter for dependencies - just use .WithReference() correctly."
+    },
+    {
+      "level": 5,
+      "text": "Comments help others (and future you) understand the deployment architecture!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Making everything external",
+      "consequence": "All services get public URLs! Security risk - internal services exposed to internet.",
+      "correction": "Only add .WithExternalHttpEndpoints() to services that need public access (web, public API)."
+    },
+    {
+      "mistake": "Forgetting database reference for workers",
+      "consequence": "Worker can't connect to database! Connection string not injected.",
+      "correction": "Use .WithReference(db) for every service that needs database access."
+    },
+    {
+      "mistake": "Not understanding azd down",
+      "consequence": "'azd down' deletes EVERYTHING including databases! Data loss in production!",
+      "correction": "Use azd down for dev/test only. Production cleanup should be manual and careful."
+    },
+    {
+      "mistake": "Hardcoding production URLs",
+      "consequence": "new Uri('https://myapp.azurecontainerapps.io') breaks in other environments!",
+      "correction": "Use service discovery (http://service-name). Aspire + Azure handles the real URLs."
+    }
+  ],
+  "difficulty": "advanced"
+}

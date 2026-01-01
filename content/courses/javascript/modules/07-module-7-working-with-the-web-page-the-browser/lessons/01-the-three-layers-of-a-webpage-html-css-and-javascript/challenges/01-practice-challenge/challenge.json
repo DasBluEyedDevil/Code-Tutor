@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.1-challenge",
+  "title": "Practice Challenge",
+  "description": "You'll work with this HTML structure:\n\n<h1 id=\"heading\">Welcome</h1>\n<button id=\"changeButton\">Change Text</button>\n\nWrite JavaScript that:\n1. Finds the heading element (use document.getElementById)\n2. Finds the button element\n3. When button is clicked, change heading text to 'Hello, JavaScript!'",
+  "instructions": "You'll work with this HTML structure:\n\n<h1 id=\"heading\">Welcome</h1>\n<button id=\"changeButton\">Change Text</button>\n\nWrite JavaScript that:\n1. Finds the heading element (use document.getElementById)\n2. Finds the button element\n3. When button is clicked, change heading text to 'Hello, JavaScript!'",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Changes heading text on click",
+      "expectedOutput": "Hello, JavaScript!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Inside the click function, use: heading.textContent = 'Hello, JavaScript!';"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Forgetting quotes around IDs:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting quotes around IDs:\n   document.getElementById(heading)  // WRONG - thinks heading is a variable\n   document.getElementById('heading')  // CORRECT - string literal"
+    },
+    {
+      "mistake": "Running JavaScript before HTML loads:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Running JavaScript before HTML loads:\n   <script>document.getElementById('myButton')</script>\n   <button id=\"myButton\">Click</button>\n   The script runs before button exists! Put scripts at end of <body>"
+    }
+  ],
+  "difficulty": "beginner"
+}

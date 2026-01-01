@@ -1,0 +1,51 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.4-challenge-2",
+  "title": "Dual Package Setup",
+  "description": "Create a package.json with conditional exports that supports both ESM and CommonJS consumers.",
+  "instructions": "Create a package.json for a library called 'my-utils' that:\n1. Has type: 'module' (ESM by default)\n2. Uses the exports field with conditional exports\n3. Points ESM consumers (import) to './dist/index.mjs'\n4. Points CJS consumers (require) to './dist/index.cjs'\n5. Points TypeScript (types) to './dist/index.d.ts'\n6. Also exports a './helpers' subpath with the same pattern",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Has type: module",
+      "expectedOutput": "\"type\": \"module\"",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Has exports field with import condition",
+      "expectedOutput": "\"import\":",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Has exports field with require condition",
+      "expectedOutput": "\"require\":",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The exports field uses \".\" for the main entry and \"./subpath\" for subpaths"
+    },
+    {
+      "level": 2,
+      "text": "Each export should have 'types', 'import', and 'require' conditions in that order"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong condition order in exports",
+      "consequence": "TypeScript types may not be found or wrong module format used",
+      "correction": "Order should be: types, import, require (or types first, then more specific to less specific)"
+    },
+    {
+      "mistake": "Missing the dot in main export path",
+      "consequence": "Main entry point not properly defined",
+      "correction": "Use \".\" for the main entry, not \"\" or \"index\""
+    }
+  ],
+  "difficulty": "intermediate"
+}

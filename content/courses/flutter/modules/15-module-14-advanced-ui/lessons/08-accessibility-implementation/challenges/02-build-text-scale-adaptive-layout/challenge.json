@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.8-challenge-1",
+  "title": "Build Text-Scale-Adaptive Layout",
+  "description": "Create a profile header that adapts gracefully to large text sizes.",
+  "instructions": "Build a ProfileHeader widget that displays a user avatar, name, title, and action buttons. At normal text sizes, show horizontal layout. At large text sizes (>1.5x), switch to a vertical layout that stacks elements. Requirements: (1) Check text scale factor using MediaQuery, (2) Horizontal layout at normal sizes with avatar, text, and buttons in a row, (3) Vertical layout at large sizes stacking avatar on top, then text, then buttons, (4) Icons should scale with text size, (5) Ensure minimum touch targets of 48x48.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use MediaQuery.textScalerOf(context).scale(1.0) to get the current scale factor"
+    },
+    {
+      "level": 2,
+      "text": "Create separate methods for horizontal and vertical layouts and switch between them based on scale factor"
+    },
+    {
+      "level": 3,
+      "text": "Use .clamp() to limit how much icons scale, and wrap IconButtons in ConstrainedBox to ensure minimum 48x48 touch targets"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using fixed widths that cause overflow at large text sizes",
+      "consequence": "Text gets clipped or causes layout overflow errors",
+      "correction": "Use Flexible/Expanded and softWrap: true to allow text to flow naturally"
+    },
+    {
+      "mistake": "Not scaling icons with text",
+      "consequence": "Icons become visually too small relative to large text",
+      "correction": "Scale icon sizes with textScaler but clamp them to reasonable limits"
+    }
+  ],
+  "difficulty": "intermediate"
+}

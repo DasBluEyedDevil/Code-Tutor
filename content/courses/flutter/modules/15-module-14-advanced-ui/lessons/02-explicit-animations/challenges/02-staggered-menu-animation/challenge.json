@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.2-challenge-1",
+  "title": "Staggered Menu Animation",
+  "description": "Create a menu with items that animate in sequence.",
+  "instructions": "Build a vertical menu with 4 items that slide in from the left with a staggered delay. Each item should start animating 100ms after the previous one. Use Interval to create the stagger effect. Items should fade in while sliding.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Interval to define when each item's animation starts and ends"
+    },
+    {
+      "level": 2,
+      "text": "Calculate stagger: item i starts at (i * 0.15) and ends at ((i * 0.15) + 0.4).clamp(0, 1)"
+    },
+    {
+      "level": 3,
+      "text": "Store animations in lists created in initState(), then use them by index in build()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Creating animations with intervals that exceed 1.0",
+      "consequence": "Animation values become unpredictable",
+      "correction": "Always clamp end values: (startPercent + 0.4).clamp(0.0, 1.0)"
+    },
+    {
+      "mistake": "Not using the child parameter in AnimatedBuilder",
+      "consequence": "Static content rebuilds every frame, hurting performance",
+      "correction": "Pass static widgets as child parameter"
+    }
+  ],
+  "difficulty": "intermediate"
+}

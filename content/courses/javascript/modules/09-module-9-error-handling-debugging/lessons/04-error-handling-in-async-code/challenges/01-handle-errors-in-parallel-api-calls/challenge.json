@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.4-challenge",
+  "title": "Handle Errors in Parallel API Calls",
+  "description": "Create a function `fetchMultipleUsers` that:\n\n1. Takes an array of user IDs\n2. Fetches each user in parallel (use Promise.allSettled)\n3. Returns an object with:\n   - `users`: array of successfully fetched users\n   - `errors`: array of { id, message } for failed fetches\n\nSimulate fetching with the provided `mockFetchUser` function.",
+  "instructions": "Create a function that fetches multiple users in parallel, handles individual failures gracefully, and returns both successful results and error information.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Returns users array with successful fetches",
+      "expectedOutput": "[{ id: 2, name: 'User 2' }, { id: 4, name: 'User 4' }]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Returns errors array with failed fetches",
+      "expectedOutput": "[{ id: 1, message: 'User 1 not found' }, { id: 3, message: 'User 3 not found' }, { id: 5, message: 'User 5 not found' }]",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Handles all successful fetches",
+      "expectedOutput": "{ users: [{ id: 2 }, { id: 4 }], errors: [] }",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Promise.allSettled(userIds.map(id => mockFetchUser(id))) to fetch all users in parallel."
+    },
+    {
+      "level": 2,
+      "text": "Each result from allSettled has { status: 'fulfilled', value } or { status: 'rejected', reason }."
+    },
+    {
+      "level": 3,
+      "text": "Use forEach with the index parameter to match results back to their original userIds."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Promise.all instead of Promise.allSettled",
+      "consequence": "Promise.all fails fast - if any user fetch fails, you lose all successful results.",
+      "correction": "Use Promise.allSettled to get results for all promises, even if some reject."
+    },
+    {
+      "mistake": "Forgetting to use async/await",
+      "consequence": "The function returns before the promises resolve, giving incorrect results.",
+      "correction": "Mark the function as async and await Promise.allSettled."
+    }
+  ],
+  "difficulty": "intermediate"
+}

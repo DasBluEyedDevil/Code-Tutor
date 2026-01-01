@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-20-05-challenge-01",
+  "title": "Implement Revoke Token Endpoint",
+  "description": "Create an endpoint to revoke refresh tokens, allowing users to terminate sessions.",
+  "instructions": "Implement a token revocation endpoint for ShopFlow!\n\n1. Create a RevokeTokenCommand that takes:\n   - Token (string) - the refresh token to revoke\n   - Reason (string, optional) - why the token is being revoked\n\n2. Create a RevokeTokenHandler that:\n   - Finds the token by its hash in the database\n   - Validates the token belongs to the current user\n   - Revokes the entire token family (for security)\n   - Returns success/failure result\n\n3. Create the API endpoint:\n   - Route: POST /api/auth/revoke\n   - Require authentication\n   - Accept the token in the request body\n   - Return 200 OK on success, 400 if token not found\n\n4. Security considerations:\n   - Users can only revoke their own tokens\n   - Revoking a token revokes the entire family\n   - Log the revocation for security auditing",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should revoke all tokens in the family",
+      "expectedOutput": "FamilyId",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should verify token belongs to current user",
+      "expectedOutput": "CurrentUserId",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should hash the token before lookup",
+      "expectedOutput": "HashToken",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should require authorization",
+      "expectedOutput": "RequireAuthorization",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a RevokeTokenCommand record with Token, Reason, and CurrentUserId properties."
+    },
+    {
+      "level": 2,
+      "text": "Hash the provided token using SHA256 before looking it up in the database."
+    },
+    {
+      "level": 3,
+      "text": "Always check that token.UserId matches the CurrentUserId before revoking - users can only revoke their own tokens."
+    },
+    {
+      "level": 4,
+      "text": "Use Where(t => t.FamilyId == token.FamilyId) to find all tokens in the family for revocation."
+    },
+    {
+      "level": 5,
+      "text": "Get the current user ID from HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) in the endpoint."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Only revoking the single token, not the entire family",
+      "consequence": "Other tokens in the rotation chain remain valid. An attacker who stole an older token could still use it.",
+      "correction": "Always revoke the entire token family when any token is revoked. This ensures complete session termination."
+    },
+    {
+      "mistake": "Not verifying token ownership",
+      "consequence": "Malicious users could revoke other users' tokens, causing denial of service.",
+      "correction": "Always check that the token's UserId matches the current user making the request."
+    },
+    {
+      "mistake": "Storing or looking up plaintext tokens",
+      "consequence": "If the database is compromised, all refresh tokens are exposed in plaintext.",
+      "correction": "Always hash tokens before storage and lookup. Use SHA256 or stronger hashing."
+    },
+    {
+      "mistake": "Returning different errors for 'not found' vs 'not your token'",
+      "consequence": "Attackers can probe which tokens exist in the system.",
+      "correction": "Return the same 'Token not found' message for both cases to prevent information disclosure."
+    }
+  ],
+  "difficulty": "intermediate"
+}

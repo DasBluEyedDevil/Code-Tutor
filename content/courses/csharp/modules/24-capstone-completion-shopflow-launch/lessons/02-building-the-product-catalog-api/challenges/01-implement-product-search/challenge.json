@@ -1,0 +1,86 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-26-02-challenge-01",
+  "title": "Implement Product Search",
+  "description": "Implement a product search feature that supports full-text search across name and description, with category filtering and pagination.",
+  "instructions": "Build a complete product search implementation:\n\n1. Create a SearchProductsQuery with:\n   - SearchTerm (string)\n   - Category (optional string)\n   - PageNumber (int, default 1)\n   - PageSize (int, default 20)\n\n2. Implement SearchProductsHandler that:\n   - Searches both Name and Description fields\n   - Applies category filter if provided\n   - Returns PagedResult<ProductDto>\n   - Uses efficient LINQ that translates to proper SQL\n\n3. Add proper null/empty string handling for search term",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should define SearchProductsQuery with required properties",
+      "expectedOutput": "SearchProductsQuery",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should search in Name field",
+      "expectedOutput": "Name.ToLower().Contains",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should search in Description field",
+      "expectedOutput": "Description",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should filter by category",
+      "expectedOutput": "Category.Name",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should implement pagination with Skip/Take",
+      "expectedOutput": "Skip",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should return PagedResult",
+      "expectedOutput": "PagedResult<ProductDto>",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start by defining the SearchProductsQuery record with SearchTerm, Category, PageNumber, and PageSize properties."
+    },
+    {
+      "level": 2,
+      "text": "Use string.IsNullOrWhiteSpace() to check if filters should be applied."
+    },
+    {
+      "level": 3,
+      "text": "For case-insensitive search, use ToLower() on both the search term and the fields being searched."
+    },
+    {
+      "level": 4,
+      "text": "Remember to handle null Description fields to avoid null reference exceptions."
+    },
+    {
+      "level": 5,
+      "text": "Calculate Skip as (PageNumber - 1) * PageSize to get the correct offset."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling null Description in search",
+      "consequence": "NullReferenceException when searching products without descriptions.",
+      "correction": "Add null check: (p.Description != null && p.Description.ToLower().Contains(searchTerm))"
+    },
+    {
+      "mistake": "Applying ToList() before Skip/Take",
+      "consequence": "Loads all matching products into memory before pagination, causing performance issues.",
+      "correction": "Ensure Skip() and Take() are called on the IQueryable before ToListAsync()."
+    },
+    {
+      "mistake": "Not using AsNoTracking for read-only queries",
+      "consequence": "Unnecessary memory overhead from change tracking on entities that will not be modified.",
+      "correction": "Add .AsNoTracking() at the start of read-only queries."
+    }
+  ],
+  "difficulty": "advanced"
+}

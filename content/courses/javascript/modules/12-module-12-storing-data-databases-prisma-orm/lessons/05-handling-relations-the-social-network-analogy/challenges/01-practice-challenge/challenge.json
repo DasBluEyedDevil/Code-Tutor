@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate Prisma relations:\n\n1. Create a schema object with three models:\n   - Author (id, name, books array)\n   - Book (id, title, authorId, author)\n   - Category (id, name, books array)\n2. Set up a one-to-many relation: Author → Books\n3. Set up a many-to-many relation: Books ↔ Categories\n4. Create sample data showing:\n   - One author with multiple books\n   - Books connected to multiple categories\n5. Create a function `getAuthorWithBooks(authorId)` that returns author with their books\n6. Display the relational data\n\nYou're simulating Prisma's relation system!",
+  "instructions": "Simulate Prisma relations:\n\n1. Create a schema object with three models:\n   - Author (id, name, books array)\n   - Book (id, title, authorId, author)\n   - Category (id, name, books array)\n2. Set up a one-to-many relation: Author → Books\n3. Set up a many-to-many relation: Books ↔ Categories\n4. Create sample data showing:\n   - One author with multiple books\n   - Books connected to multiple categories\n5. Create a function `getAuthorWithBooks(authorId)` that returns author with their books\n6. Display the relational data\n\nYou're simulating Prisma's relation system!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Author has multiple books",
+      "expectedOutput": "2",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Many-to-many with arrays",
+      "expectedOutput": "2",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use filter() for one-to-many, arrays for many-to-many relationships"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common relation mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common relation mistakes:"
+    },
+    {
+      "mistake": "**Forgetting foreign key field**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting foreign key field**:\n   ```prisma\n   // WRONG! Missing authorId\n   model Post {\n     id     Int  @id\n     author User @relation(fields: [authorId], references: [id])\n   }\n   \n   // CORRECT!\n   model Post {\n     id       Int  @id\n     authorId Int  // Foreign key field\n     author   User @relation(fields: [authorId], references: [id])\n   }\n   ```"
+    },
+    {
+      "mistake": "**Wrong array syntax**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong array syntax**:\n   ```prisma\n   // WRONG!\n   model User {\n     posts Post  // Missing brackets!\n   }\n   \n   // CORRECT!\n   model User {\n     posts Post[]  // Array of posts\n   }\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-03-challenge-1",
+  "title": "Run Coroutines Concurrently",
+  "description": "Use asyncio.gather() to run multiple fetch operations concurrently.",
+  "instructions": "Complete the `fetch_all_users` function to fetch all user IDs concurrently using `asyncio.gather()`. The function should return a list of all user data.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a list of coroutines with list comprehension, then use `await asyncio.gather(*coroutines)` to run them all."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the * in gather(*coroutines)",
+      "consequence": "TypeError: gather() takes no positional arguments",
+      "correction": "Use * to unpack the list: asyncio.gather(*coroutines)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

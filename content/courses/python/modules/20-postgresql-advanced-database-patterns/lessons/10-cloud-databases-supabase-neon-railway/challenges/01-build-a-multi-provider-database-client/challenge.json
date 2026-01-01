@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-10-challenge-1",
+  "title": "Build a Multi-Provider Database Client",
+  "description": "Create a database client that automatically configures itself for different cloud providers.",
+  "instructions": "Complete the database client to:\n1. Detect the cloud provider from the database URL\n2. Configure SSL appropriately for each provider\n3. Set optimal pool sizes for each provider\n4. Include a health check method",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Universal client detects provider and connects",
+      "expectedOutput": "Connected to",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** For Supabase detection, return 'supabase'. Local SSL should be 'prefer'. Neon serverless works best with `min_size=1`. Use `pool.acquire()` to get a connection."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using ssl='disable' for cloud providers",
+      "consequence": "Connection refused - cloud databases require SSL",
+      "correction": "Use ssl='require' for all cloud providers"
+    },
+    {
+      "mistake": "Using large min_size for Neon",
+      "consequence": "Prevents scale-to-zero, higher costs",
+      "correction": "Use min_size=1 for serverless providers like Neon"
+    }
+  ],
+  "difficulty": "advanced"
+}

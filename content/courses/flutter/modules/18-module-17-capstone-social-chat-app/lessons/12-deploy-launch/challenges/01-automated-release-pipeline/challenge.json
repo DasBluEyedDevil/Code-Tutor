@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.12-challenge-0",
+  "title": "Automated Release Pipeline",
+  "description": "Build a complete GitHub Actions workflow that automates the entire release process from version tagging to store deployment with quality gates.",
+  "instructions": "Create a comprehensive automated release pipeline:\n\n1. Set up GitHub Actions workflow triggered by version tags (v*.*.*)\n2. Implement version extraction from tag and validation\n3. Run full test suite as quality gate before building\n4. Generate changelog from conventional commits since last tag\n5. Build Android App Bundle and iOS IPA in parallel\n6. Upload debug symbols to Crashlytics automatically\n7. Deploy Android to Play Store Internal track\n8. Deploy iOS to TestFlight\n9. Create GitHub Release with changelog and artifacts\n10. Send Slack notification with release summary\n11. Add manual approval step before production promotion\n12. Implement rollback workflow for failed releases\n\nReference the deployment patterns from Module 16 for CI/CD best practices.",
+  "language": "yaml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use GITHUB_REF_NAME to get the tag name, then strip the 'v' prefix with ${GITHUB_REF_NAME#v}"
+    },
+    {
+      "level": 2,
+      "text": "For changelog generation, use git log --pretty=format:'%s' $PREVIOUS_TAG..HEAD and filter with grep -E '^(feat|fix|perf)'"
+    },
+    {
+      "level": 3,
+      "text": "Use the 'environment: production' key with branch protection rules to require manual approval before promoting to production"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not caching Flutter SDK and dependencies between jobs",
+      "consequence": "Each job downloads Flutter from scratch, wasting 2-3 minutes per job",
+      "correction": "Use actions/cache to cache ~/.pub-cache and the Flutter SDK directory"
+    },
+    {
+      "mistake": "Hardcoding version numbers in the workflow instead of extracting from tag",
+      "consequence": "Version mismatch between tag and built artifacts",
+      "correction": "Extract version from tag and pass as output to subsequent jobs"
+    }
+  ],
+  "difficulty": "advanced"
+}

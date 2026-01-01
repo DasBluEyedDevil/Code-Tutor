@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.2-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create a product grid with: 1. At least 9 items 2. 3 columns 3. Each item shows image and name 4. Add spacing between items ---",
+  "instructions": "Create a product grid with: 1. At least 9 items 2. 3 columns 3. Each item shows image and name 4. Add spacing between items ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "GridView displays 3 columns",
+      "expectedOutput": "crossAxisCount: 3 creates 3-column grid layout",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Grid items show product images and names",
+      "expectedOutput": "Image.network and Text widget in each ProductCard",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Spacing applied between grid items",
+      "expectedOutput": "crossAxisSpacing: 8 and mainAxisSpacing: 8 configured",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "GridView.builder needs a gridDelegate to define the layout"
+    },
+    {
+      "level": 3,
+      "text": "SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3) creates 3 columns"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Missing gridDelegate in GridView.builder",
+      "consequence": "Error - GridView.builder requires a gridDelegate",
+      "correction": "Add gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(...)"
+    },
+    {
+      "mistake": "Forgetting itemCount in GridView.builder",
+      "consequence": "Infinite grid items",
+      "correction": "Always specify itemCount: products.length"
+    },
+    {
+      "mistake": "Missing curly braces",
+      "consequence": "Syntax error or incorrect scope",
+      "correction": "Ensure every { has a matching }"
+    }
+  ],
+  "difficulty": "beginner"
+}

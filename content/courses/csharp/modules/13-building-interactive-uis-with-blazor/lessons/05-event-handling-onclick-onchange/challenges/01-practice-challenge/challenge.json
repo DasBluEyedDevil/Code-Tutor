@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an interactive task manager with events!\n\n1. TaskManager component:\n   - Input for task name (@oninput updates as you type)\n   - Button \"Add Task\" (@onclick)\n   - List of tasks\n   - Each task has:\n     - Checkbox (@onchange to mark complete)\n     - Delete button (@onclick)\n   - Show count of total and completed tasks\n\n2. Events to handle:\n   - Input change (live preview)\n   - Add task (button click)\n   - Toggle complete (checkbox change)\n   - Delete task (button click)\n\n3. Print component structure!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"TaskManager\"",
+      "expectedOutput": "TaskManager",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"@onclick\"",
+      "expectedOutput": "@onclick",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"@onchange\"",
+      "expectedOutput": "@onchange",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"@bind\"",
+      "expectedOutput": "@bind",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"ToggleTask\"",
+      "expectedOutput": "ToggleTask",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"DeleteTask\"",
+      "expectedOutput": "DeleteTask",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "@onclick for buttons. @onchange for checkbox. @bind for two-way input binding. @onkeydown to detect Enter key. Use lambdas to pass parameters: () => Method(id)."
+    },
+    {
+      "level": 2,
+      "text": "Event propagation: @onclick on parent and child? Both fire! Use @onclick:stopPropagation to prevent bubbling. Or handle in only one place."
+    },
+    {
+      "level": 3,
+      "text": "Async event handlers: Can use async methods! '@onclick=\"HandleClickAsync\"' with 'private async Task HandleClickAsync()'. Blazor awaits automatically."
+    },
+    {
+      "level": 4,
+      "text": "Event args: Different events have different args! ChangeEventArgs for input/select, MouseEventArgs for mouse, KeyboardEventArgs for keyboard. Check e.Key, e.Button, etc."
+    },
+    {
+      "level": 5,
+      "text": "Lambda scope: Variables in lambda must be in scope! '@onclick=\"() => Delete(item.Id)\"' in foreach works. Outside foreach, 'item' not available!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Event propagation",
+      "consequence": "@onclick on parent and child? Both fire! Use @onclick:stopPropagation to prevent bubbling. Or handle in only one place.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Async event handlers",
+      "consequence": "Can use async methods! '@onclick=\"HandleClickAsync\"' with 'private async Task HandleClickAsync()'. Blazor awaits automatically.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Event args",
+      "consequence": "Different events have different args! ChangeEventArgs for input/select, MouseEventArgs for mouse, KeyboardEventArgs for keyboard. Check e.Key, e.Button, etc.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Lambda scope",
+      "consequence": "Variables in lambda must be in scope! '@onclick=\"() => Delete(item.Id)\"' in foreach works. Outside foreach, 'item' not available!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

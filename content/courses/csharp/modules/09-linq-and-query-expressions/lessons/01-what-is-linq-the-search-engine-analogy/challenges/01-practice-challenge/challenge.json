@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Practice basic LINQ queries!\n\n1. Create a List of integers: 10, 25, 5, 30, 15, 40, 20, 35\n\n2. Use LINQ to:\n   - Find all numbers greater than 20\n   - Find all numbers divisible by 5 (n % 5 == 0)\n   - Sort numbers in descending order\n   - Get the first 3 numbers (after sorting)\n\n3. Display each result with descriptive labels\n\nUSE .Where(), .OrderByDescending(), and .Take()!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Greater than 20\"",
+      "expectedOutput": "Greater than 20",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Divisible by 5\"",
+      "expectedOutput": "Divisible by 5",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Top 3\"",
+      "expectedOutput": "Top 3",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Where: 'list.Where(x => condition)'. OrderByDescending: 'list.OrderByDescending(x => x)'. Take: 'list.Take(n)'. Don't forget 'using System.Linq;'!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting 'using System.Linq': Without this, you get 'Where does not exist' errors! LINQ methods are EXTENSION methods from System.Linq namespace."
+    },
+    {
+      "level": 3,
+      "text": "Expecting immediate execution: 'var result = list.Where(...)' doesn't run yet! It creates a query. Execution happens on iteration (.ToList(), foreach, etc.). This is called DEFERRED EXECUTION."
+    },
+    {
+      "level": 4,
+      "text": "Lambda syntax confusion: 'x => x > 5' is shorthand for a function! Read it as: 'for each x, return whether x > 5'. The '=>' is the lambda operator."
+    },
+    {
+      "level": 5,
+      "text": "Modifying original collection: LINQ doesn't modify the original! 'list.Where(...)' returns a NEW sequence. Original list is unchanged. Use .ToList() to get a new list."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'using System.Linq'",
+      "consequence": "Without this, you get 'Where does not exist' errors! LINQ methods are EXTENSION methods from System.Linq namespace.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Expecting immediate execution",
+      "consequence": "'var result = list.Where(...)' doesn't run yet! It creates a query. Execution happens on iteration (.ToList(), foreach, etc.). This is called DEFERRED EXECUTION.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Lambda syntax confusion",
+      "consequence": "'x => x > 5' is shorthand for a function! Read it as: 'for each x, return whether x > 5'. The '=>' is the lambda operator.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Modifying original collection",
+      "consequence": "LINQ doesn't modify the original! 'list.Where(...)' returns a NEW sequence. Original list is unchanged. Use .ToList() to get a new list.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

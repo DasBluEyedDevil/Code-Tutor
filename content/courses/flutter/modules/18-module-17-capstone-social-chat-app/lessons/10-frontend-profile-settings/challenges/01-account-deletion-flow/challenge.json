@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.10-challenge-0",
+  "title": "Account Deletion Flow",
+  "description": "Implement a secure account deletion flow with confirmation dialogs, optional data export, and re-authentication before final deletion.",
+  "instructions": "Build a complete account deletion system:\n\n1. Create a DeleteAccountScreen accessible from settings\n2. Show clear warning about what will be deleted (posts, messages, followers, etc.)\n3. Offer optional data export before deletion with progress indicator\n4. Require password re-entry for security verification\n5. Implement a multi-step confirmation (type 'DELETE' to confirm)\n6. Show a countdown or cooling-off period option\n7. Handle the deletion API call with proper error handling\n8. Navigate to login screen and clear all local data on success",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a Stepper widget or PageView for the multi-step flow to guide users through each stage"
+    },
+    {
+      "level": 2,
+      "text": "Validate the password re-entry by making an API call to verify credentials before proceeding"
+    },
+    {
+      "level": 3,
+      "text": "After successful deletion, use ref.invalidate on auth providers and clear SharedPreferences before navigating to login"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not clearing cached data and tokens after account deletion",
+      "consequence": "Stale data remains on device, potential security issue if device is shared",
+      "correction": "Clear SharedPreferences, secure storage, and image cache before navigating away"
+    },
+    {
+      "mistake": "Allowing form submission while API calls are in progress",
+      "consequence": "Multiple deletion requests or confusing user experience",
+      "correction": "Disable all buttons and show loading state during async operations"
+    }
+  ],
+  "difficulty": "advanced"
+}

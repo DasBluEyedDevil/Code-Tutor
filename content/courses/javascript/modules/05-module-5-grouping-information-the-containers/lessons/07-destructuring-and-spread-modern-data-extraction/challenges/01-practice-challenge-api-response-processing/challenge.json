@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.7-challenge-1",
+  "title": "Practice Challenge: API Response Processing",
+  "description": "You receive a complex API response with user data. Use destructuring and spread to extract and transform the data efficiently.\n\n1. Extract the user's firstName, lastName, and email from the nested response\n2. Extract the first two skills from the skills array\n3. Create a 'publicProfile' object that contains name, email, and skills, but NOT the password or ssn fields\n4. Merge the user's preferences with default preferences (user prefs should override defaults)",
+  "instructions": "Use destructuring for extraction and spread for object manipulation. Focus on clean, readable code.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Extracts firstName correctly",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Creates publicProfile without password",
+      "expectedOutput": "undefined",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Merges preferences correctly",
+      "expectedOutput": "dark",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For nested destructuring: let { outer: { inner: { value } } } = obj;"
+    },
+    {
+      "level": 2,
+      "text": "To exclude properties: let { excluded1, excluded2, ...rest } = obj;"
+    },
+    {
+      "level": 3,
+      "text": "For merging with overrides: { ...defaults, ...overrides } - later values win"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to access password after destructuring it out",
+      "consequence": "The variable exists but you want to exclude it from the result",
+      "correction": "Use rest pattern: let { password, ssn, ...safeData } = credentials;"
+    },
+    {
+      "mistake": "Wrong order when merging preferences",
+      "consequence": "Default values override user preferences",
+      "correction": "Spread defaults FIRST, then user prefs: { ...defaults, ...userPrefs }"
+    }
+  ],
+  "difficulty": "intermediate"
+}

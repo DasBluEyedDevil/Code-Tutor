@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-05-lesson-06-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Movie Rating Analyzer** that processes movie data and generates insights.\n\n**Requirements:**\n\n- **Data Structure**: Each movie is a tuple: (id, title, year, [ratings])\n<li>ratings is a list of user ratings (1-10)\n\n</li>- **Create sample data** for at least 6 movies\n- **Calculate statistics**:\n<li>Average rating per movie\n- Overall average across all movies\n- Highest and lowest rated movies\n\n</li>- **Filter movies**:\n<li>Highly rated (avg >= 8.0)\n- Poorly rated (avg < 6.0)\n- Recent movies (year >= 2020)\n\n</li>- **Analyze ratings**:\n<li>Movies with most ratings (participation)\n- Movies with most consistent ratings (low variance)\n- Distribution by decade\n\n</li>- **Generate reports**:\n<li>Top 5 movies\n- Recommendations (highly rated recent movies)\n- Rating distribution chart\n\n</li>\n**Example Output:**\n\n<pre>=== Movie Rating Analyzer ===\n\nLoaded 6 movies\n\nTop Rated Movies:\n1. The Shawshank Redemption (1994) - 9.3 ⭐⭐⭐⭐⭐\n2. The Dark Knight (2008) - 9.0 ⭐⭐⭐⭐⭐\n3. Inception (2010) - 8.8 ⭐⭐⭐⭐⭐\n\nRecommendations (Recent + Highly Rated):\n- Dune (2021) - 8.5\n- Everything Everywhere (2022) - 8.9\n\nRating Distribution:\n9-10: ██████ 3 movies\n7-8:  ████ 2 movies\n5-6:  ██ 1 movie\n</pre>",
+  "instructions": "Build a **Movie Rating Analyzer** that processes movie data and generates insights.\n\n**Requirements:**\n\n- **Data Structure**: Each movie is a tuple: (id, title, year, [ratings])\n<li>ratings is a list of user ratings (1-10)\n\n</li>- **Create sample data** for at least 6 movies\n- **Calculate statistics**:\n<li>Average rating per movie\n- Overall average across all movies\n- Highest and lowest rated movies\n\n</li>- **Filter movies**:\n<li>Highly rated (avg >= 8.0)\n- Poorly rated (avg < 6.0)\n- Recent movies (year >= 2020)\n\n</li>- **Analyze ratings**:\n<li>Movies with most ratings (participation)\n- Movies with most consistent ratings (low variance)\n- Distribution by decade\n\n</li>- **Generate reports**:\n<li>Top 5 movies\n- Recommendations (highly rated recent movies)\n- Rating distribution chart\n\n</li>\n**Example Output:**\n\n<pre>=== Movie Rating Analyzer ===\n\nLoaded 6 movies\n\nTop Rated Movies:\n1. The Shawshank Redemption (1994) - 9.3 ⭐⭐⭐⭐⭐\n2. The Dark Knight (2008) - 9.0 ⭐⭐⭐⭐⭐\n3. Inception (2010) - 8.8 ⭐⭐⭐⭐⭐\n\nRecommendations (Recent + Highly Rated):\n- Dune (2021) - 8.5\n- Everything Everywhere (2022) - 8.9\n\nRating Distribution:\n9-10: ██████ 3 movies\n7-8:  ████ 2 movies\n5-6:  ██ 1 movie\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For average: sum(ratings)/len(ratings). For comprehension: [(title, sum(ratings)/len(ratings)) for (id, title, year, ratings) in movies]. For filtering: [... for ... in movies if condition]. For AND conditions: if cond1 and cond2. For sorting: list.sort(key=lambda x: x[1], reverse=True). For slicing top N: list[:N]."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

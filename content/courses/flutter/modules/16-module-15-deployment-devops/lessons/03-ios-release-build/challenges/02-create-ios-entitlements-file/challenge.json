@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "16.3-challenge-1",
+  "title": "Create iOS Entitlements File",
+  "description": "Configure entitlements for an app using Push Notifications and Sign in with Apple.",
+  "instructions": "Create a Runner.entitlements file that enables: 1) Push notifications in production environment, 2) Sign in with Apple capability, 3) Associated domains for universal links to 'myapp.example.com'. Use the correct entitlement keys and value formats.",
+  "language": "xml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Push notifications use 'aps-environment' key with 'production' or 'development' value"
+    },
+    {
+      "level": 2,
+      "text": "Sign in with Apple uses an array containing 'Default' string"
+    },
+    {
+      "level": 3,
+      "text": "Associated domains entries start with 'applinks:' prefix followed by the domain"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using 'development' instead of 'production' for aps-environment in release builds",
+      "consequence": "Push notifications won't work in production App Store builds",
+      "correction": "Use 'production' for release/App Store builds, 'development' only for debug builds"
+    },
+    {
+      "mistake": "Forgetting the 'applinks:' prefix for associated domains",
+      "consequence": "Universal links won't work because iOS won't recognize the domain association",
+      "correction": "Always prefix domain with 'applinks:' (e.g., 'applinks:example.com')"
+    }
+  ],
+  "difficulty": "intermediate"
+}

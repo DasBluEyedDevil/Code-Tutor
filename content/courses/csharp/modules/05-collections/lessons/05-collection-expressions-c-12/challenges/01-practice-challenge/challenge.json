@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a playlist manager using collection expressions!\n\n1. Create a string[] 'rockSongs' with 3 rock songs using [ ]\n2. Create a string[] 'popSongs' with 3 pop songs using [ ]\n3. Create a combined 'allSongs' using spread operator to merge both\n4. Add 'Bonus Track' at the end of allSongs\n5. Create an empty List<string> 'favorites' using [ ]\n6. Display all songs using foreach",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain 'All Songs'",
+      "expectedOutput": "All Songs",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain 'Bonus Track'",
+      "expectedOutput": "Bonus Track",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain 'Total'",
+      "expectedOutput": "Total",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use square brackets for collections: string[] songs = [\"Song1\", \"Song2\"]. Use .. for spreading: [..array1, ..array2]."
+    },
+    {
+      "level": 2,
+      "text": "Empty collections use []: List<string> empty = []. The type is determined by what you assign to!"
+    },
+    {
+      "level": 3,
+      "text": "You can mix spread and values: [..existing, \"New Item\"] adds to the end of the spread collection."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using { } instead of [ ]",
+      "consequence": "Collection expressions use SQUARE brackets [ ], not curly braces { }. This is a new syntax in C# 12!",
+      "correction": "int[] nums = [1, 2, 3]; NOT int[] nums = {1, 2, 3};"
+    },
+    {
+      "mistake": "Forgetting .. in spread operator",
+      "consequence": "To spread a collection, you need two dots: [..array]. Single dot or no dot treats it as a single element.",
+      "correction": "[..first, ..second] to combine collections"
+    },
+    {
+      "mistake": "Using spread without target type",
+      "consequence": "Collection expressions need a target type. 'var x = [1,2,3]' may not compile - use explicit type like 'int[] x = [1,2,3]'.",
+      "correction": "Always specify the collection type or use in context where type is clear."
+    }
+  ],
+  "difficulty": "beginner"
+}

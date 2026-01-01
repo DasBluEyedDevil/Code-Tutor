@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a reusable ProductCard component!\n\n1. ProductCard.razor component:\n   - Parameters: string Name, decimal Price, string ImageUrl, bool InStock\n   - Display product in card layout\n   - Show \"In Stock\" or \"Out of Stock\" badge\n   - Button \"Add to Cart\" (only enabled if InStock)\n   - OnAddToCart event callback\n\n2. Create ProductList component that uses ProductCard:\n   - Display 3 ProductCard components\n   - Handle AddToCart event\n   - Show count of items in cart\n\n3. Print both component structures\n\nThis demonstrates component reusability!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"ProductCard\"",
+      "expectedOutput": "ProductCard",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"ProductList\"",
+      "expectedOutput": "ProductList",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"[Parameter]\"",
+      "expectedOutput": "[Parameter]",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"EventCallback\"",
+      "expectedOutput": "EventCallback",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"InStock\"",
+      "expectedOutput": "InStock",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "[Parameter] for inputs. EventCallback<T> for events. @if for conditional rendering. Pass parameters as attributes. await callback.InvokeAsync() to trigger parent method."
+    },
+    {
+      "level": 2,
+      "text": "Parameter must be public: [Parameter] on private property doesn't work! Must be 'public string Name { get; set; }'. Public + [Parameter] attribute required."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting @: In markup, '@Name' accesses parameter. Just 'Name' without @ is treated as literal text! Always use @ for C# variables/properties."
+    },
+    {
+      "level": 4,
+      "text": "EventCallback type: EventCallback (no data) or EventCallback<T> (with data). Use InvokeAsync() to trigger: 'await OnClick.InvokeAsync(value);'."
+    },
+    {
+      "level": 5,
+      "text": "Component filename mismatch: Alert.razor must contain component named Alert. Filename and component name MUST match exactly (case-sensitive!)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Parameter must be public",
+      "consequence": "[Parameter] on private property doesn't work! Must be 'public string Name { get; set; }'. Public + [Parameter] attribute required.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting @",
+      "consequence": "In markup, '@Name' accesses parameter. Just 'Name' without @ is treated as literal text! Always use @ for C# variables/properties.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "EventCallback type",
+      "consequence": "EventCallback (no data) or EventCallback<T> (with data). Use InvokeAsync() to trigger: 'await OnClick.InvokeAsync(value);'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Component filename mismatch",
+      "consequence": "Alert.razor must contain component named Alert. Filename and component name MUST match exactly (case-sensitive!).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

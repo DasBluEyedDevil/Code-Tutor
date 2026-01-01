@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-6-shape",
+  "title": "Abstract Shape Class",
+  "description": "Create:\n1. Abstract class Shape with: String color field, constructor, abstract method getArea()\n2. Circle class extending Shape with: double radius, constructor, getArea() implementation\n   (area = π * r²)",
+  "instructions": "Create:\n1. Abstract class Shape with: String color field, constructor, abstract method getArea()\n2. Circle class extending Shape with: double radius, constructor, getArea() implementation\n   (area = π * r²)",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-6-shape-test-1",
+      "description": "Circle c = new Circle(\"red\", 5.0);\nreturn c.color;",
+      "expectedOutput": "red",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-6-shape-test-2",
+      "description": "Circle c = new Circle(\"blue\", 10.0);\nreturn Math.abs(c.getArea() - 314.159) < 1.0;",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-6-shape-test-3",
+      "description": "Circle c = new Circle(\"green\", 3.0);\nreturn c.getArea() > 28.0 && c.getArea() < 29.0;",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Define a function using the java syntax. Don't forget the return statement if needed."
+    },
+    {
+      "level": 3,
+      "text": "If stuck, try writing out the solution in plain English first, then convert to java code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting semicolons",
+      "consequence": "Compilation error",
+      "correction": "Add ; at end of statements"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for primitives, .equals() for objects"
+    },
+    {
+      "mistake": "Incorrect capitalization (Java is case-sensitive)",
+      "consequence": "Cannot find symbol error",
+      "correction": "Match exact capitalization"
+    }
+  ],
+  "difficulty": "beginner"
+}

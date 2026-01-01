@@ -1,0 +1,23 @@
+{
+  "type": "CODE",
+  "id": "10.7-challenge-2",
+  "title": "Add Route Transition Animations",
+  "description": "Enhance the navigation experience with custom page transitions for different route types.",
+  "instructions": "Create a custom page builder that applies different animations based on route type:\n\n1. Fade transition for auth screens (login, register)\n2. Slide from right for forward navigation within the app\n3. Slide from bottom for modal-style screens (settings, profile edit)\n4. No animation for redirect navigations\n\nUse GoRouter's pageBuilder to apply these transitions.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "CustomTransitionPage accepts a transitionsBuilder that provides animation objects."
+    },
+    {
+      "level": 2,
+      "text": "Use SlideTransition with Tween<Offset> to animate position. Offset(1, 0) is right edge, Offset(0, 1) is bottom."
+    },
+    {
+      "level": 3,
+      "text": "Apply CurvedAnimation to make transitions feel more natural with easing curves like easeOutCubic."
+    }
+  ]
+}

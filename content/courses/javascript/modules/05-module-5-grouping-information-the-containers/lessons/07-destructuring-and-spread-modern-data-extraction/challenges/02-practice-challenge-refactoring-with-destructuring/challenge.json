@@ -1,0 +1,61 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.7-challenge-2",
+  "title": "Practice Challenge: Refactoring with Destructuring",
+  "description": "Refactor the following verbose code to use modern destructuring and spread patterns. The functionality should remain exactly the same, but the code should be much cleaner.",
+  "instructions": "Convert the old-style code to use:\n- Object destructuring for extracting properties\n- Array destructuring for extracting elements\n- Spread operator for copying and merging\n- Function parameter destructuring",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "User properties extracted correctly",
+      "expectedOutput": "Bob",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Array destructuring with rest works",
+      "expectedOutput": "10",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Objects merged correctly",
+      "expectedOutput": "75",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Swap works correctly",
+      "expectedOutput": "200",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For object destructuring with rename: let { oldName: newName } = obj;"
+    },
+    {
+      "level": 2,
+      "text": "For array rest: let [first, ...rest] = array;"
+    },
+    {
+      "level": 3,
+      "text": "For function parameter defaults: function fn({ prop = defaultValue }) {}"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to rename destructured properties",
+      "consequence": "Variable name conflicts with existing code",
+      "correction": "Use { name: userName } syntax when needed"
+    },
+    {
+      "mistake": "Missing default value in function parameter",
+      "consequence": "TypeError when property is undefined",
+      "correction": "Use { prop = default } in the parameter destructuring"
+    }
+  ],
+  "difficulty": "intermediate"
+}

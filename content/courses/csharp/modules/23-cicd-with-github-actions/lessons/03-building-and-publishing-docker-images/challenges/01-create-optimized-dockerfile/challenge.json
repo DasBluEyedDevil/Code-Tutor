@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-24-03-challenge-01",
+  "title": "Create Optimized Dockerfile",
+  "description": "Build an optimized multi-stage Dockerfile for a .NET API application.",
+  "instructions": "Create an optimized Dockerfile for ShopFlow API!\n\n1. Use multi-stage builds with three stages:\n   - Build stage: Use SDK image to compile the application\n   - Test stage: Run unit tests before publishing\n   - Runtime stage: Use minimal ASP.NET runtime image\n\n2. Optimize for layer caching:\n   - Copy .csproj files first, then restore\n   - Copy source code after restore\n\n3. Apply security best practices:\n   - Run as non-root user in production\n   - Use Alpine-based image for smaller size\n\n4. Configure health check and expose port 8080",
+  "language": "dockerfile",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should use SDK image for build",
+      "expectedOutput": "dotnet/sdk:9.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should use Alpine runtime image",
+      "expectedOutput": "aspnet:9.0-alpine",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should copy csproj files before restore",
+      "expectedOutput": ".csproj",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should create non-root user",
+      "expectedOutput": "adduser",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should include health check",
+      "expectedOutput": "HEALTHCHECK",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should expose port 8080",
+      "expectedOutput": "8080",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start each stage with FROM and give it a name using AS (e.g., FROM sdk:9.0 AS build)."
+    },
+    {
+      "level": 2,
+      "text": "Copy .csproj files first with COPY, then RUN dotnet restore, then copy the rest of the source."
+    },
+    {
+      "level": 3,
+      "text": "Use COPY --from=build to copy files from the build stage to the runtime stage."
+    },
+    {
+      "level": 4,
+      "text": "Alpine images use addgroup -S and adduser -S syntax for creating system users."
+    },
+    {
+      "level": 5,
+      "text": "Alpine doesn't have curl by default; use wget for health checks instead."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using SDK image for runtime",
+      "consequence": "Final image is 600MB+ larger than necessary, increasing attack surface and deployment time.",
+      "correction": "Use mcr.microsoft.com/dotnet/aspnet image for runtime, not sdk."
+    },
+    {
+      "mistake": "Copying all files before restore",
+      "consequence": "Any source code change invalidates the restore cache, making builds much slower.",
+      "correction": "Copy only .csproj files first, run restore, then copy source code."
+    },
+    {
+      "mistake": "Running as root in production",
+      "consequence": "Container compromise gives attacker root access to the container filesystem.",
+      "correction": "Create a non-root user and switch with USER directive before ENTRYPOINT."
+    },
+    {
+      "mistake": "Using curl in Alpine without installing it",
+      "consequence": "Health check fails because curl is not available in Alpine images.",
+      "correction": "Use wget which is available by default, or install curl with apk add."
+    }
+  ],
+  "difficulty": "intermediate"
+}

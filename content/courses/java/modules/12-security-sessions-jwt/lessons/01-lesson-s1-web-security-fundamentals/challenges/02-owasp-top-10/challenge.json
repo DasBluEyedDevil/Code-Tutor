@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-1-mc-2",
+  "title": "OWASP Top 10",
+  "description": "Identifying common security vulnerabilities",
+  "question": "A developer writes: String query = \"SELECT * FROM products WHERE id = \" + productId; where productId comes from a URL parameter. What OWASP category does this vulnerability belong to?",
+  "options": [
+    "A01 - Broken Access Control",
+    "A02 - Cryptographic Failures",
+    "A03 - Injection",
+    "A07 - Authentication Failures"
+  ],
+  "correctAnswer": 2,
+  "explanation": "This is SQL Injection (A03 - Injection). User input is directly concatenated into a SQL query without sanitization. An attacker could input '1 OR 1=1' to bypass filters or '1; DROP TABLE products;--' to delete data. The fix is parameterized queries: PreparedStatement with '?' placeholders.",
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,42 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-07-challenge-1",
+  "title": "Form Validation Framework",
+  "description": "Build a complete form validation framework with field types, custom validators, and cross-field validation similar to Django Forms.",
+  "instructions": "Implement a Form class that supports multiple field types, custom validation methods, and displays errors properly.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid form data passes validation",
+      "expectedOutput": "Valid!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Missing required field shows error",
+      "expectedOutput": "This field is required.",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Negative amount rejected",
+      "expectedOutput": "Must be at least",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** In `is_valid()`, first call `to_python()` to convert the value, then call `validate()` to check constraints. Use `getattr(self, f'clean_{name}', None)` to find custom clean methods. Wrap everything in try/except to catch ValidationError."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Only validating on client-side",
+      "consequence": "Attackers bypass validation by disabling JavaScript",
+      "correction": "Always validate on the server side - client-side validation is for UX only"
+    }
+  ],
+  "difficulty": "advanced"
+}

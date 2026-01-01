@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.6-challenge-2",
+  "title": "Create a Protected Endpoint",
+  "description": "Build a Serverpod endpoint that requires authentication and only allows users to access their own data.",
+  "instructions": "Create a NotesEndpoint class with the following methods:\n\n1. getMyNotes - Returns all notes belonging to the current user. Requires authentication.\n2. createNote - Creates a new note for the current user. Requires authentication. Takes title and content parameters.\n3. deleteNote - Deletes a note. Requires authentication AND the note must belong to the current user (authorization check).\n\nEach method should:\n- Check if the user is authenticated (throw an exception if not)\n- For deleteNote, verify the user owns the note before deleting\n- Use the Session parameter to get the current user's ID",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "getMyNotes checks authentication",
+      "expectedOutput": "You must be signed in",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "createNote sets authorId to current user",
+      "expectedOutput": "authorId",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "deleteNote checks both authentication and authorization",
+      "expectedOutput": "Authorization",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'await session.authenticatedUserId' to get the current user's ID. If it returns null, the user is not authenticated."
+    },
+    {
+      "level": 2,
+      "text": "For createNote, set the authorId field to the current user's ID when creating the Note object."
+    },
+    {
+      "level": 3,
+      "text": "For deleteNote, first fetch the note by ID, then compare note.authorId with the current userId. Only delete if they match."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking authentication before performing actions",
+      "consequence": "Unauthenticated users can access or modify data",
+      "correction": "Always check if authenticatedUserId is null at the start of protected methods"
+    },
+    {
+      "mistake": "Trusting client-provided authorId in createNote",
+      "consequence": "Users could create notes as other users",
+      "correction": "Always set authorId from the session, never from client input"
+    },
+    {
+      "mistake": "Deleting notes without checking ownership",
+      "consequence": "Users can delete any note, not just their own",
+      "correction": "Fetch the note first, verify note.authorId equals the current userId, then delete"
+    }
+  ],
+  "difficulty": "intermediate"
+}

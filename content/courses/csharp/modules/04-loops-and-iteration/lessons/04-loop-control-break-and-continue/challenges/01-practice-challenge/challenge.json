@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-04-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a number analyzer!\n\n1. Use a for loop from 1 to 20\n2. Use CONTINUE to skip all even numbers (if i % 2 == 0, continue)\n3. If you hit the number 15, use BREAK to exit the loop entirely\n4. Display all odd numbers before 15\n\nExpected output: 1, 3, 5, 7, 9, 11, 13, then stops!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should display odd numbers starting with 1",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should include 13 (last odd number before 15)",
+      "expectedOutput": "13",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Code should use continue to skip even numbers",
+      "expectedOutput": "continue",
+      "isVisible": false
+    },
+    {
+      "id": "test-4",
+      "description": "Code should use break to exit at 15",
+      "expectedOutput": "break",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use if (i % 2 == 0) continue; to skip evens. Use if (i == 15) break; to exit at 15. Put the Console.WriteLine at the end!"
+    },
+    {
+      "level": 2,
+      "text": "Confusing break and continue: break EXITS the loop. continue SKIPS to next iteration. Very different behaviors!"
+    },
+    {
+      "level": 3,
+      "text": "Using outside loops: break and continue ONLY work inside loops! Using them outside a loop causes a compile error."
+    },
+    {
+      "level": 4,
+      "text": "Unreachable code after break: Code after break in the same block never runs! if (x) { break; Console.WriteLine('hi'); } - 'hi' is unreachable!"
+    },
+    {
+      "level": 5,
+      "text": "Continue logic errors: Putting continue before important code means that code gets skipped! Place your continue checks carefully."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Confusing break and continue",
+      "consequence": "break EXITS the loop. continue SKIPS to next iteration. Very different behaviors!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using outside loops",
+      "consequence": "break and continue ONLY work inside loops! Using them outside a loop causes a compile error.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Unreachable code after break",
+      "consequence": "Code after break in the same block never runs! if (x) { break; Console.WriteLine('hi'); } - 'hi' is unreachable!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Continue logic errors",
+      "consequence": "Putting continue before important code means that code gets skipped! Place your continue checks carefully.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

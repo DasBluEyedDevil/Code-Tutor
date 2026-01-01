@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.5-challenge",
+  "title": "Create a Timing Decorator",
+  "description": "Create a decorator that logs how long a method takes.",
+  "instructions": "Create a @timed decorator that logs 'methodName took Xms' after each call.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Logs timing information",
+      "expectedOutput": "processData took",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use performance.now() before and after calling the original function"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to return the wrapped function",
+      "consequence": "Decorator doesn't work, original function is replaced with undefined",
+      "correction": "Always return a function from your decorator"
+    }
+  ],
+  "difficulty": "advanced"
+}

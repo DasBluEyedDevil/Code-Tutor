@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.8-challenge-0",
+  "title": "Records Practice",
+  "description": "Create a function that returns a person's full details as a named record and destructure it.",
+  "instructions": "1. Create a function `getPersonDetails()` that returns a named record with name, age, and email fields\n2. Call the function and destructure the result\n3. Print each field on a separate line",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Function returns a named record with correct fields",
+      "expectedOutput": "Name: Alice Johnson",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Age field is correctly destructured",
+      "expectedOutput": "Age: 28",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Email field is correctly destructured",
+      "expectedOutput": "Email: alice@example.com",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use ({Type field1, Type field2}) syntax for named record types."
+    },
+    {
+      "level": 2,
+      "text": "Destructure named records with var (:field1, :field2) = record;"
+    },
+    {
+      "level": 3,
+      "text": "Return the record as (field1: value1, field2: value2)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using $1, $2 with named records",
+      "consequence": "Compilation error - named fields use their names",
+      "correction": "Access named fields by name: record.name, not record.$1"
+    },
+    {
+      "mistake": "Forgetting the colon in destructuring",
+      "consequence": "Creates new variables instead of matching fields",
+      "correction": "Use (:name, :age) not (name, age) for named records"
+    }
+  ],
+  "difficulty": "intermediate"
+}

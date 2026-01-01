@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-08-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Implement HybridCache patterns.",
+  "instructions": "Demonstrate HybridCache usage!\n\n1. Show Program.cs setup with Redis backend\n2. Show GetOrCreateAsync usage in a service\n3. Demonstrate tagging for cache invalidation\n4. Explain stampede protection\n5. Compare to IMemoryCache and IDistributedCache\n6. Show when to use each caching approach\n\nThis is the modern way to cache in .NET!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output contains 'HYBRIDCACHE'",
+      "expectedOutput": "HYBRIDCACHE",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output contains 'GetOrCreateAsync'",
+      "expectedOutput": "GetOrCreateAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output contains 'TAGGING'",
+      "expectedOutput": "TAGGING",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output contains 'STAMPEDE'",
+      "expectedOutput": "STAMPEDE",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output contains 'RemoveByTagAsync'",
+      "expectedOutput": "RemoveByTagAsync",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output contains 'L1'",
+      "expectedOutput": "L1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Setup: AddHybridCache() + AddStackExchangeRedisCache(). Usage: cache.GetOrCreateAsync(key, factory, options). Tagging: tags parameter + RemoveByTagAsync()."
+    },
+    {
+      "level": 2,
+      "text": "HybridCache checks L1 (memory) first, then L2 (Redis), then runs factory. Stores in both levels automatically."
+    },
+    {
+      "level": 3,
+      "text": "Stampede protection: Multiple callers for same key = one factory call. Others await the result. Built-in, no code needed!"
+    },
+    {
+      "level": 4,
+      "text": "LocalCacheExpiration vs Expiration: LocalCacheExpiration is L1 TTL (shorter), Expiration is total TTL. L1 expires faster for freshness."
+    },
+    {
+      "level": 5,
+      "text": "Use tagging for related data: tag all user data with 'user:{id}', then RemoveByTagAsync('user:{id}') on user update."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not configuring distributed cache",
+      "consequence": "HybridCache works without L2, but you lose shared caching and survive-restart benefits.",
+      "correction": "Add AddStackExchangeRedisCache() or similar for L2 distributed cache."
+    },
+    {
+      "mistake": "Short expiration everywhere",
+      "consequence": "Cache hits drop, database load stays high. Defeats purpose of caching.",
+      "correction": "Use appropriate TTLs. Products: minutes-hours. User sessions: shorter. Static content: longer."
+    },
+    {
+      "mistake": "Not using tags",
+      "consequence": "Must invalidate keys one by one. Hard to invalidate related data together.",
+      "correction": "Use tags for related data groups. RemoveByTagAsync() invalidates all at once."
+    },
+    {
+      "mistake": "Caching user-specific data globally",
+      "consequence": "User A sees User B's data! Security and privacy violation.",
+      "correction": "Include user ID in cache key: 'user:{userId}:profile' not just 'profile'."
+    }
+  ],
+  "difficulty": "advanced"
+}

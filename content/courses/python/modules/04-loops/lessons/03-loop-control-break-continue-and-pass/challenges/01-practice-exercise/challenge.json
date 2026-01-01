@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-04-lesson-03-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Number Search and Statistics Program** that processes a list of numbers with the following features:\n\n- Search for a specific number and stop when found (break)\n- Skip negative numbers when calculating average (continue)\n- Use loop else to report if number wasn't found\n\n**Requirements:**\n\n- Ask user for a number to search for\n- Loop through the list: [23, -5, 42, 17, -3, 8, 56, 12, -9, 34]\n- If the number is found, print its position and stop searching\n- While searching, skip negative numbers when calculating the average\n- If not found, print a \"not found\" message\n- Display the average of positive numbers\n\n**Example output (searching for 42):**\n\n<pre>=== Number Search and Statistics ===\n\nEnter a number to search for: 42\n\nSearching...\nSkipping negative: -5\nFound 42 at position 2!\n\nAverage of positive numbers encountered: 32.5\n(Processed: 23, 42)\n</pre>**Example output (searching for 99):**\n\n<pre>Enter a number to search for: 99\n\nSearching...\nSkipping negative: -5\nSkipping negative: -3\nSkipping negative: -9\n99 not found in the list.\n\nAverage of positive numbers: 27.42\n(Processed all: 23, 42, 17, 8, 56, 12, 34)\n</pre>",
+  "instructions": "Build a **Number Search and Statistics Program** that processes a list of numbers with the following features:\n\n- Search for a specific number and stop when found (break)\n- Skip negative numbers when calculating average (continue)\n- Use loop else to report if number wasn't found\n\n**Requirements:**\n\n- Ask user for a number to search for\n- Loop through the list: [23, -5, 42, 17, -3, 8, 56, 12, -9, 34]\n- If the number is found, print its position and stop searching\n- While searching, skip negative numbers when calculating the average\n- If not found, print a \"not found\" message\n- Display the average of positive numbers\n\n**Example output (searching for 42):**\n\n<pre>=== Number Search and Statistics ===\n\nEnter a number to search for: 42\n\nSearching...\nSkipping negative: -5\nFound 42 at position 2!\n\nAverage of positive numbers encountered: 32.5\n(Processed: 23, 42)\n</pre>**Example output (searching for 99):**\n\n<pre>Enter a number to search for: 99\n\nSearching...\nSkipping negative: -5\nSkipping negative: -3\nSkipping negative: -9\n99 not found in the list.\n\nAverage of positive numbers: 27.42\n(Processed all: 23, 42, 17, 8, 56, 12, 34)\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For skipping negatives, check if num < 0 and use continue. For finding the target, check if num == target and use break. The else clause after the for loop will automatically run only if break was never executed. Use enumerate(numbers) to get both position and value."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

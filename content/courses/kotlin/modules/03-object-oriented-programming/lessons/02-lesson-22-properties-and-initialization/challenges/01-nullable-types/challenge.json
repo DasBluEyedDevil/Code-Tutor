@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.2.1",
+  "title": "Nullable Types",
+  "description": "Create a function `findUserById` that takes an Int ID and returns a nullable String (username). Return null if ID is not found (ID < 1 or ID > 5).",
+  "instructions": "Create a function `findUserById` that takes an Int ID and returns a nullable String (username). Return null if ID is not found (ID < 1 or ID > 5).",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid ID should return username",
+      "expectedOutput": "Charlie",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Invalid ID should return null",
+      "expectedOutput": "null",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use String? to indicate a nullable type"
+    },
+    {
+      "level": 2,
+      "text": "Use when expression to match IDs"
+    },
+    {
+      "level": 3,
+      "text": "Return null in the else branch"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

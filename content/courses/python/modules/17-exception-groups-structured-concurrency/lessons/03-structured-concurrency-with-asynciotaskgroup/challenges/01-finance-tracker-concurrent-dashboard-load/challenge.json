@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-17-lesson-03-challenge-1",
+  "title": "Finance Tracker: Concurrent Dashboard Load",
+  "description": "Build the `load_dashboard()` function for the Finance Tracker that fetches accounts, transactions, and budgets concurrently using TaskGroup.\n\n**Requirements:**\n- Use `asyncio.TaskGroup` to run all fetches in parallel\n- Return a dictionary with all three data sources\n- Handle errors with `except*` for both ValueError and ConnectionError",
+  "instructions": "Complete the Finance Tracker dashboard loader using TaskGroup.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses TaskGroup and create_task correctly",
+      "expectedOutput": "Loaded 1 accounts",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `asyncio.TaskGroup()`, `tg.create_task()` to start each fetch, and `.result()` to get the return values after the context exits."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Calling .result() inside the async with block",
+      "consequence": "InvalidStateError - task not complete yet",
+      "correction": "Access .result() after the async with block exits"
+    },
+    {
+      "mistake": "Using regular except instead of except*",
+      "consequence": "Won't catch individual errors from the ExceptionGroup",
+      "correction": "Use except* ValueError and except* ConnectionError"
+    }
+  ],
+  "difficulty": "advanced"
+}

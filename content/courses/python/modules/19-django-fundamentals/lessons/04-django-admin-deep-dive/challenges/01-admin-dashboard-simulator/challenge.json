@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-04-challenge-1",
+  "title": "Admin Dashboard Simulator",
+  "description": "Build a dashboard data generator that simulates what Django admin would display for our finance tracker.",
+  "instructions": "Create classes that generate realistic admin dashboard data including list views, aggregations, and recent activity.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Dashboard displays transaction list",
+      "expectedOutput": "Transaction Admin",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `random.choice()` to pick categories and accounts. Use `datetime.now() - timedelta(days=N)` for random dates. Store category type with each transaction to calculate income vs expense totals."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not paginating admin list views",
+      "consequence": "Loading thousands of records crashes the browser",
+      "correction": "Always set list_per_page and use pagination in admin"
+    }
+  ],
+  "difficulty": "advanced"
+}

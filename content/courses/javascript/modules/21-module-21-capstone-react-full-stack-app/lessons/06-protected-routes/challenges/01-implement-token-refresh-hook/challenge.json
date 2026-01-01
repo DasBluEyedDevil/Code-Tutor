@@ -1,0 +1,39 @@
+{
+  "type": "FREE_CODING",
+  "id": "21.6-challenge",
+  "title": "Implement Token Refresh Hook",
+  "description": "Create a useTokenRefresh hook that automatically refreshes JWT tokens before they expire.",
+  "instructions": "Build a useTokenRefresh hook that:\n1. Decodes the JWT to get expiration time\n2. Checks if token expires within 5 minutes\n3. Automatically calls refresh endpoint before expiration\n4. Updates token in localStorage and auth context\n5. Handles refresh failures by logging out the user",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "decodeToken correctly parses JWT payload",
+      "expectedOutput": "Returns object with exp, iat, sub properties",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "isTokenExpiringSoon returns true for tokens expiring within threshold",
+      "expectedOutput": "Returns true when expiration < threshold",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Hook prevents multiple simultaneous refresh attempts",
+      "expectedOutput": "isRefreshing ref prevents race conditions",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    "JWT tokens are three base64-encoded parts separated by dots - use split('.') and atob() to decode",
+    "The exp claim is in seconds since epoch, multiply by 1000 for JavaScript milliseconds",
+    "Use useRef for isRefreshing to prevent re-renders and race conditions"
+  ],
+  "commonMistakes": [
+    "Not handling base64url encoding (replace - with + and _ with /)",
+    "Forgetting to multiply exp by 1000 when comparing to Date.now()",
+    "Not cleaning up the interval in useEffect return function"
+  ],
+  "difficulty": "intermediate"
+}

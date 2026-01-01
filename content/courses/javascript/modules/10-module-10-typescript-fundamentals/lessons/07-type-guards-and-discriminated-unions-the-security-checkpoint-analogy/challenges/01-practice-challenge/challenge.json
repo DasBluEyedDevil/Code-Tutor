@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.7-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
+  "instructions": "Create a payment processing system using discriminated unions:\n\n1. Create three interfaces for payment methods:\n   - `CreditCard` with: kind: 'credit', cardNumber: string, cvv: string\n   - `PayPal` with: kind: 'paypal', email: string\n   - `BankTransfer` with: kind: 'bank', accountNumber: string, routingNumber: string\n\n2. Create a union type `PaymentMethod` that includes all three\n\n3. Create a function `processPayment` that:\n   - Takes a PaymentMethod and amount: number\n   - Uses a switch statement on the 'kind' property\n   - Logs a different message for each payment type\n   - For credit: 'Processing credit card ending in XXXX'\n   - For PayPal: 'Processing PayPal payment for EMAIL'\n   - For bank: 'Processing bank transfer from account XXXX'\n\n4. Test with all three payment types",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should process credit card payment",
+      "expectedOutput": "credit card ending in",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should process PayPal payment",
+      "expectedOutput": "PayPal payment for",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should process bank transfer",
+      "expectedOutput": "bank transfer from account",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each interface needs a 'kind' property with a literal type (in quotes): kind: 'credit', kind: 'paypal', kind: 'bank'"
+    },
+    {
+      "level": 2,
+      "text": "In the switch statement, after 'case \"credit\":', TypeScript knows payment is CreditCard, so you can access payment.cardNumber safely."
+    },
+    {
+      "level": 3,
+      "text": "Use payment.cardNumber.slice(-4) to get the last 4 digits of the card number for display."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using string type instead of literal types for 'kind'",
+      "consequence": "TypeScript can't narrow the type in switch cases - 'kind: string' could be anything.",
+      "correction": "Use literal types: kind: 'credit' (with quotes), not kind: string."
+    },
+    {
+      "mistake": "Forgetting to handle all cases in the switch",
+      "consequence": "Some payment types won't be processed correctly.",
+      "correction": "Add a case for each payment kind: 'credit', 'paypal', and 'bank'."
+    },
+    {
+      "mistake": "Trying to access payment.cardNumber before narrowing",
+      "consequence": "TypeScript error - not all PaymentMethods have cardNumber.",
+      "correction": "Access type-specific properties only inside the appropriate case block."
+    }
+  ],
+  "difficulty": "intermediate"
+}

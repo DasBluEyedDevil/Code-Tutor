@@ -1,0 +1,68 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.1.4",
+  "title": "Full-Stack Integration Simulation",
+  "description": "Simulate a complete flow: create user, login, create task, fetch tasks. This ties together authentication and task management.",
+  "instructions": "Simulate a complete flow: create user, login, create task, fetch tasks. This ties together authentication and task management.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should register user",
+      "expectedOutput": "User registered: User(id=1, username=alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should login",
+      "expectedOutput": "Logged in with token",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should fetch tasks",
+      "expectedOutput": "Tasks: [Task(id=1, title=Learn Kotlin",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store users in Map by ID"
+    },
+    {
+      "level": 2,
+      "text": "Store tasks in List"
+    },
+    {
+      "level": 3,
+      "text": "Sessions map token to userId"
+    },
+    {
+      "level": 4,
+      "text": "Validate token by checking if it exists in sessions"
+    },
+    {
+      "level": 5,
+      "text": "Filter tasks by userId"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "advanced"
+}

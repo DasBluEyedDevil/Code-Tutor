@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Understand ORM translation!\n\n1. Create a 'Book' class:\n   - int Id\n   - string Title\n   - string Author\n   - decimal Price\n   - int Year\n\n2. Create sample LINQ queries and show what SQL they would generate:\n\n   Query 1: Find all books by \\\"Orwell\\\"\n   - C# LINQ: books.Where(b => b.Author == \\\"Orwell\\\")\n   - Print equivalent SQL\n\n   Query 2: Find books over $20, sorted by price\n   - C# LINQ: books.Where(b => b.Price > 20).OrderBy(b => b.Price)\n   - Print equivalent SQL\n\n   Query 3: Get titles of books from 2020+\n   - C# LINQ: books.Where(b => b.Year >= 2020).Select(b => b.Title)\n   - Print equivalent SQL\n\n3. Show benefits of ORM:\n   - Print why type safety matters\n   - Print why LINQ is better than SQL strings\n   - Print relationship navigation benefit",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"ORM TRANSLATION\"",
+      "expectedOutput": "ORM TRANSLATION",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"C# LINQ\"",
+      "expectedOutput": "C# LINQ",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"SQL\"",
+      "expectedOutput": "SQL",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"WHY\"",
+      "expectedOutput": "WHY",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"BETTER\"",
+      "expectedOutput": "BETTER",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"Type Safety\"",
+      "expectedOutput": "Type Safety",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Show LINQ query, then equivalent SQL. LINQ: .Where(condition).OrderBy(field).Select(field). SQL: SELECT field FROM table WHERE condition ORDER BY field."
+    },
+    {
+      "level": 2,
+      "text": "Thinking ORM is slower: Yes, hand-optimized SQL CAN be faster. But for 95% of queries, ORM is fast enough! And developer productivity matters more than microseconds."
+    },
+    {
+      "level": 3,
+      "text": "Using ORM for everything: Complex reports with 10 joins? Sometimes raw SQL is clearer! ORMs excel at CRUD operations. Use SQL for complex analytics."
+    },
+    {
+      "level": 4,
+      "text": "Not understanding SQL: ORM doesn't mean 'never learn SQL!' You should understand what SQL is generated. Use logging to see queries. Debug performance issues!"
+    },
+    {
+      "level": 5,
+      "text": "Lazy loading traps: ORM can cause N+1 query problem! Loading 100 customers, then customer.Orders for each = 101 queries! Use .Include() to eager load (next lessons)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Thinking ORM is slower",
+      "consequence": "Yes, hand-optimized SQL CAN be faster. But for 95% of queries, ORM is fast enough! And developer productivity matters more than microseconds.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using ORM for everything",
+      "consequence": "Complex reports with 10 joins? Sometimes raw SQL is clearer! ORMs excel at CRUD operations. Use SQL for complex analytics.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not understanding SQL",
+      "consequence": "ORM doesn't mean 'never learn SQL!' You should understand what SQL is generated. Use logging to see queries. Debug performance issues!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Lazy loading traps",
+      "consequence": "ORM can cause N+1 query problem! Loading 100 customers, then customer.Orders for each = 101 queries! Use .Include() to eager load (next lessons).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

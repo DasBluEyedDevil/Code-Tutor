@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.5-challenge-0",
+  "title": "Implement Message Reactions System",
+  "description": "Add emoji reactions to messages with real-time broadcasting and aggregation.",
+  "instructions": "Implement a message reactions system that:\n\n1. Allows users to add emoji reactions to messages\n2. Supports multiple reaction types (emoji)\n3. Tracks who reacted with what emoji\n4. Aggregates reaction counts per emoji type\n5. Broadcasts reaction changes in real-time\n6. Allows toggling reactions (add/remove)\n\nCreate the MessageReaction model and ReactionEndpoint with full implementation.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a unique constraint on (messageId, userId, emoji) to prevent duplicate reactions"
+    },
+    {
+      "level": 2,
+      "text": "Toggle logic: check if reaction exists, delete if yes, insert if no"
+    },
+    {
+      "level": 3,
+      "text": "Aggregate counts by grouping reactions by emoji and counting each group"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not verifying conversation membership before allowing reactions",
+      "consequence": "Users could react to messages in conversations they're not part of",
+      "correction": "Always verify the user is an active participant in the message's conversation"
+    },
+    {
+      "mistake": "Not broadcasting reaction changes in real-time",
+      "consequence": "Other users don't see reactions until they refresh",
+      "correction": "Broadcast reaction updates to all connected conversation participants"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.3-challenge",
+  "title": "Import Configuration Safely",
+  "description": "Import the config.json file using Import Attributes and log the app name.",
+  "instructions": "Import the config.json file using Import Attributes and log the app name.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses import with type attribute",
+      "expectedOutput": "MyApp",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the 'with' keyword after the import path: with { type: 'json' }"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using require() instead of import",
+      "consequence": "require() is CommonJS and doesn't support Import Attributes",
+      "correction": "import config from './config.json' with { type: 'json' };"
+    }
+  ],
+  "difficulty": "beginner"
+}

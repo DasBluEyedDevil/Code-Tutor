@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.8-challenge-2",
+  "title": "Sealed Classes for Weather States",
+  "description": "Create a sealed class hierarchy for weather conditions and a function to get weather advice.",
+  "instructions": "1. Create a sealed class `Weather` with subclasses: Sunny (temperature), Rainy (intensity), Snowy (inches)\n2. Create a function `getAdvice(Weather weather)` using exhaustive switch\n3. Return appropriate advice for each weather type",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Sunny weather returns temperature-based advice",
+      "expectedOutput": "Nice day (85 F)! Perfect for outdoor activities.",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Heavy rain returns umbrella advice",
+      "expectedOutput": "Heavy rain! Stay indoors or bring an umbrella.",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Heavy snow returns driving warning",
+      "expectedOutput": "Heavy snow (12 inches)! Roads may be dangerous.",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'sealed class' to define the base class"
+    },
+    {
+      "level": 2,
+      "text": "Subclasses use 'extends' just like regular inheritance"
+    },
+    {
+      "level": 3,
+      "text": "Destructure properties in switch cases: Sunny(temperature: var temp)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Adding a default case to sealed class switch",
+      "consequence": "Defeats the purpose of exhaustive checking",
+      "correction": "Handle all subclasses explicitly instead"
+    },
+    {
+      "mistake": "Forgetting to handle all cases",
+      "consequence": "Compiler error due to non-exhaustive switch",
+      "correction": "Add cases for all subclasses of the sealed class"
+    }
+  ],
+  "difficulty": "intermediate"
+}

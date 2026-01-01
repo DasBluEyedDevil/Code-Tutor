@@ -1,0 +1,24 @@
+{
+  "id": "11.6-challenge-0",
+  "title": "Add Voice Messages",
+  "description": "Extend the chat with voice message support: record audio, upload to storage, and play in chat.",
+  "instructions": "Add voice message functionality to the live chat:\n\n1. **Recording**: Hold-to-record button that captures audio\n2. **Upload**: Upload recorded audio to Firebase Storage or your backend\n3. **Playback**: Audio player widget in message bubbles\n4. **Waveform**: Show audio waveform visualization\n5. **Duration**: Display message duration before sending\n\nRequirements:\n- Use record package for audio recording\n- Use just_audio for playback\n- Show recording duration while holding button\n- Cancel recording by sliding away\n- Compress audio before upload (consider using AAC format)\n- Show loading state during upload\n- Play/pause toggle with progress indicator\n- Handle playback errors gracefully",
+  "type": "implementation",
+  "expectedOutput": "A complete voice messaging feature with recording, uploading, and playback functionality, including proper UI feedback and error handling.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use GestureDetector with onLongPressStart, onLongPressEnd, and onLongPressMoveUpdate for the hold-to-record and slide-to-cancel functionality."
+    },
+    {
+      "level": 2,
+      "text": "For the waveform visualization, sample the audio amplitude at regular intervals during recording. Store as List<double> normalized between 0 and 1."
+    },
+    {
+      "level": 3,
+      "text": "Use AudioPlayer.positionStream to update the progress bar. Calculate percentage as position.inMilliseconds / duration.inMilliseconds."
+    }
+  ]
+}

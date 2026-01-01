@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.6-challenge-3",
+  "title": "Custom Error Messages",
+  "description": "Implement user-friendly error formatting:\n\n1. Create a `formatZodErrors` function that:\n   - Takes a Zod error object\n   - Returns a clean object mapping field names to error messages\n   - Handles nested paths (e.g., 'address.city')\n   - Only shows first error per field\n\n2. Create an `ApiErrorResponse` class that:\n   - Has fields: success, error.type, error.message, error.details\n   - Has a static `fromZodError(error)` factory method\n   - Formats errors for clean API responses\n\n3. Test with a complex schema that has nested objects",
+  "instructions": "Implement user-friendly error formatting:\n\n1. Create a `formatZodErrors` function that:\n   - Takes a Zod error object\n   - Returns a clean object mapping field names to error messages\n   - Handles nested paths (e.g., 'address.city')\n   - Only shows first error per field\n\n2. Create an `ApiErrorResponse` class that:\n   - Has fields: success, error.type, error.message, error.details\n   - Has a static `fromZodError(error)` factory method\n   - Formats errors for clean API responses\n\n3. Test with a complex schema that has nested objects",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "formatZodErrors returns first error per field",
+      "expectedOutput": "Name is required",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Handles nested paths correctly",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use error.path.join('.') to convert ['address', 'city'] to 'address.city'"
+    },
+    {
+      "level": 2,
+      "text": "To keep only the first error per field, check if the path already exists in your result object before adding it."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Including all errors for each field instead of just the first",
+      "consequence": "API response becomes bloated with redundant error messages",
+      "correction": "Check if field path already exists in output before adding: if (!formatted[path]) { formatted[path] = message; }"
+    },
+    {
+      "mistake": "Forgetting to handle array indices in paths",
+      "consequence": "Path ['tags', 0] becomes 'tags0' instead of 'tags.0'",
+      "correction": "Use path.join('.') which correctly handles both string and number elements"
+    }
+  ],
+  "difficulty": "intermediate"
+}

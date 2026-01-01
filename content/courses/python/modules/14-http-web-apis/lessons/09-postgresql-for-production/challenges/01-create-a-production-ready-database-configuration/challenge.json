@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-postgresql-challenge",
+  "title": "Create a Production-Ready Database Configuration",
+  "description": "Create a database configuration module that works with both SQLite (development) and PostgreSQL (production) based on environment variables.",
+  "instructions": "Create a database.py module that:\n\n1. Uses Pydantic Settings to load DATABASE_URL from environment\n2. Defaults to SQLite for development\n3. Configures appropriate engine settings based on database type:\n   - SQLite: check_same_thread=False\n   - PostgreSQL: pool_size, max_overflow, pool_timeout\n4. Creates an async engine and session factory\n5. Works seamlessly with both databases",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Settings class has database_url with SQLite default",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "get_engine_kwargs returns check_same_thread for SQLite",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "get_engine_kwargs returns pool settings for PostgreSQL",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'sqlite' in settings.database_url to check the database type."
+    },
+    {
+      "level": 2,
+      "text": "For PostgreSQL, include pool_size, max_overflow, and pool_timeout in the kwargs."
+    },
+    {
+      "level": 3,
+      "text": "Use **get_engine_kwargs() to spread the dictionary when creating the engine."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Hardcoding database URL instead of using environment variables",
+      "consequence": "Secrets exposed in source code, inflexible configuration",
+      "correction": "Use Pydantic Settings with env_file support"
+    },
+    {
+      "mistake": "Using same engine kwargs for SQLite and PostgreSQL",
+      "consequence": "SQLite errors with pool settings, PostgreSQL misses optimization",
+      "correction": "Check database type and return appropriate settings"
+    },
+    {
+      "mistake": "Forgetting pool_timeout for PostgreSQL",
+      "consequence": "Requests hang indefinitely when pool is exhausted",
+      "correction": "Always set pool_timeout to a reasonable value like 30 seconds"
+    }
+  ],
+  "difficulty": "advanced"
+}

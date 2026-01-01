@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.2.1",
+  "title": "Form State Management",
+  "description": "Create a FormState data class with name and email fields, and a copy method to update individual fields.",
+  "instructions": "Create a FormState data class with name and email fields, and a copy method to update individual fields.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Initial state should be empty",
+      "expectedOutput": "Initial: FormState(name=, email=)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Name should update",
+      "expectedOutput": "After name update: FormState(name=Alice, email=)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Email should update",
+      "expectedOutput": "After email update: FormState(name=Alice, email=alice@example.com)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Data classes automatically have copy() method"
+    },
+    {
+      "level": 2,
+      "text": "copy() creates new instance with specified changes"
+    },
+    {
+      "level": 3,
+      "text": "Use default parameter values for optional fields"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.4.1",
+  "title": "Data Classes",
+  "description": "Create a data class `Person` with properties name, age, and email. Create two instances with the same data and compare them using ==.",
+  "instructions": "Create a data class `Person` with properties name, age, and email. Create two instances with the same data and compare them using ==.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Data classes with same values should be equal",
+      "expectedOutput": "Are they equal? true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "toString should show all properties",
+      "expectedOutput": "Person(name=Alice, age=30, email=alice@example.com)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'data class' instead of 'class'"
+    },
+    {
+      "level": 2,
+      "text": "Data classes automatically generate equals(), hashCode(), toString()"
+    },
+    {
+      "level": 3,
+      "text": "Two data classes with same property values are equal"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

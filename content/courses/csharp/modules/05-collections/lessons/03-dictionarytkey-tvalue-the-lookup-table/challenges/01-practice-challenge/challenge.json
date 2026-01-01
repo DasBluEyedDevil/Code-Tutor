@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-05-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a simple English-Spanish translator!\n\n1. Create Dictionary<string, string> called 'translator'\n2. Add translations: 'hello' → 'hola', 'goodbye' → 'adiós', 'friend' → 'amigo'\n3. Look up and display the translation for 'hello'\n4. Check if 'goodbye' exists, then display its translation\n5. Add a new translation: 'water' → 'agua'\n6. Use foreach to display all translations in format: 'English: Spanish'",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"hello\"",
+      "expectedOutput": "hello",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"hola\"",
+      "expectedOutput": "hola",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create: Dictionary<string, string> dict = new Dictionary<string, string>(); Add: dict.Add(key, value); Access: dict[key]; Check: ContainsKey(key)"
+    },
+    {
+      "level": 2,
+      "text": "Duplicate keys: Adding the same key twice throws an error! Use ContainsKey to check first, or use dict[key] = value which updates if exists."
+    },
+    {
+      "level": 3,
+      "text": "Accessing non-existent key: dict['xyz'] when 'xyz' doesn't exist = CRASH! Always use ContainsKey first!"
+    },
+    {
+      "level": 4,
+      "text": "Wrong foreach syntax: foreach (string x in dict) is wrong! Use foreach (var pair in dict) then access pair.Key and pair.Value."
+    },
+    {
+      "level": 5,
+      "text": "Forgetting two types: Dictionary<string> is WRONG! Need TWO types: Dictionary<TKey, TValue> like Dictionary<string, int>."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Duplicate keys",
+      "consequence": "Adding the same key twice throws an error! Use ContainsKey to check first, or use dict[key] = value which updates if exists.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Accessing non-existent key",
+      "consequence": "dict['xyz'] when 'xyz' doesn't exist = CRASH! Always use ContainsKey first!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Wrong foreach syntax",
+      "consequence": "foreach (string x in dict) is wrong! Use foreach (var pair in dict) then access pair.Key and pair.Value.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting two types",
+      "consequence": "Dictionary<string> is WRONG! Need TWO types: Dictionary<TKey, TValue> like Dictionary<string, int>.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "beginner"
+}

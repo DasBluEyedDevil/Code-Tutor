@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-05-lesson-05-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Data Processor** that uses list comprehensions to transform and filter various datasets.\n\n**Requirements:**\n\n- Given a list of temperatures in Celsius, convert to Fahrenheit (formula: F = C * 9/5 + 32)\n- From a list of prices, apply 20% discount to items over $50\n- Clean a list of email addresses (strip whitespace, lowercase)\n- From student scores, extract passing grades (>=60) and calculate letter grades\n- Generate a multiplication table (5x5) using nested comprehension\n- From a sentence, get words longer than 4 characters, uppercased\n- Create list of tuples: (number, square, cube) for numbers 1-10\n\n**Example Output:**\n\n<pre>=== Data Processor ===\"\n\n1. Temperature Conversion:\n   Celsius: [0, 10, 20, 30, 40]\n   Fahrenheit: [32.0, 50.0, 68.0, 86.0, 104.0]\n\n2. Price Discounts:\n   Original: [45.00, 60.00, 25.00, 80.00, 55.00]\n   Discounted: [45.00, 48.00, 25.00, 64.00, 44.00]\n\n3. Email Cleaning:\n   Raw: [' Alice@EXAMPLE.com ', 'BOB@test.COM', '  charlie@mail.org']\n   Clean: ['alice@example.com', 'bob@test.com', 'charlie@mail.org']\n\n4. Grade Processing:\n   Scores: [85, 92, 55, 78, 95, 45, 88]\n   Passing: [85, 92, 78, 95, 88]\n   Letters: ['B', 'A', 'C', 'A', 'B']\n\n5. Multiplication Table (5x5):\n   [1, 2, 3, 4, 5]\n   [2, 4, 6, 8, 10]\n   [3, 6, 9, 12, 15]\n   [4, 8, 12, 16, 20]\n   [5, 10, 15, 20, 25]\n\n6. Long Words:\n   Sentence: \"The quick brown fox jumps over the lazy dog\"\n   Long words (>4): ['QUICK', 'BROWN', 'JUMPS']\n\n7. Number Data:\n   [(1, 1, 1), (2, 4, 8), (3, 9, 27), (4, 16, 64), (5, 25, 125), ...]\n</pre>",
+  "instructions": "Build a **Data Processor** that uses list comprehensions to transform and filter various datasets.\n\n**Requirements:**\n\n- Given a list of temperatures in Celsius, convert to Fahrenheit (formula: F = C * 9/5 + 32)\n- From a list of prices, apply 20% discount to items over $50\n- Clean a list of email addresses (strip whitespace, lowercase)\n- From student scores, extract passing grades (>=60) and calculate letter grades\n- Generate a multiplication table (5x5) using nested comprehension\n- From a sentence, get words longer than 4 characters, uppercased\n- Create list of tuples: (number, square, cube) for numbers 1-10\n\n**Example Output:**\n\n<pre>=== Data Processor ===\"\n\n1. Temperature Conversion:\n   Celsius: [0, 10, 20, 30, 40]\n   Fahrenheit: [32.0, 50.0, 68.0, 86.0, 104.0]\n\n2. Price Discounts:\n   Original: [45.00, 60.00, 25.00, 80.00, 55.00]\n   Discounted: [45.00, 48.00, 25.00, 64.00, 44.00]\n\n3. Email Cleaning:\n   Raw: [' Alice@EXAMPLE.com ', 'BOB@test.COM', '  charlie@mail.org']\n   Clean: ['alice@example.com', 'bob@test.com', 'charlie@mail.org']\n\n4. Grade Processing:\n   Scores: [85, 92, 55, 78, 95, 45, 88]\n   Passing: [85, 92, 78, 95, 88]\n   Letters: ['B', 'A', 'C', 'A', 'B']\n\n5. Multiplication Table (5x5):\n   [1, 2, 3, 4, 5]\n   [2, 4, 6, 8, 10]\n   [3, 6, 9, 12, 15]\n   [4, 8, 12, 16, 20]\n   [5, 10, 15, 20, 25]\n\n6. Long Words:\n   Sentence: \"The quick brown fox jumps over the lazy dog\"\n   Long words (>4): ['QUICK', 'BROWN', 'JUMPS']\n\n7. Number Data:\n   [(1, 1, 1), (2, 4, 8), (3, 9, 27), (4, 16, 64), (5, 25, 125), ...]\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For Fahrenheit: [(c * 9/5) + 32 for c in celsius]. For discounts: [p * 0.8 if p > 50 else p for p in prices]. For emails: [e.strip().lower() for e in emails_raw]. For passing: [s for s in scores if s >= 60]. For letters: ['A' if s >= 90 else 'B' if s >= 80 else 'C' if s >= 70 else 'D' for s in passing]. For table: [[r*c for c in range(1,6)] for r in range(1,6)]. For long words: [w.upper() for w in words if len(w) > 4]. For tuples: [(n, n**2, n**3) for n in range(1, 11)]."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

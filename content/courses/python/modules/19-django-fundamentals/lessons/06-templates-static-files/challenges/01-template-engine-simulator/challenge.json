@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-06-challenge-1",
+  "title": "Template Engine Simulator",
+  "description": "Build a mini template engine that supports variable interpolation, conditionals, loops, and inheritance to understand how Django templates work.",
+  "instructions": "Create a TemplateEngine class that parses and renders templates with Django-like syntax.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Template renders title correctly",
+      "expectedOutput": "<h1>FINANCE DASHBOARD</h1>",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Template shows transactions",
+      "expectedOutput": "Groceries: $85.5",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `re.sub()` with a callback function to process each pattern. For loops, create a new context that includes the loop variable. Process for loops before if statements, and both before variable interpolation."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not processing nested templates in correct order",
+      "consequence": "Variables inside loops don't get rendered",
+      "correction": "Process for loops first, then if statements, then variables - or call variable rendering recursively inside loops"
+    }
+  ],
+  "difficulty": "advanced"
+}

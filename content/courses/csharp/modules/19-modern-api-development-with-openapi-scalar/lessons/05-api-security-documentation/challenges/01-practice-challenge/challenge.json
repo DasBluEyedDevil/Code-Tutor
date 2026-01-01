@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-19-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a fully documented API with security!\n\n1. Configure OpenAPI with these security schemes:\n   - Bearer (JWT token)\n   - ApiKey (header: X-API-Key)\n\n2. Create these endpoints with proper security documentation:\n   \n   PUBLIC (AllowAnonymous):\n   - GET /health - Health check\n   - POST /auth/login - Get JWT token\n   \n   PROTECTED (RequireAuthorization):\n   - GET /orders - List user's orders\n   - POST /orders - Create new order\n   \n   ADMIN (RequireAuthorization with policy):\n   - GET /admin/orders - List ALL orders\n   - DELETE /admin/orders/{id} - Delete any order\n\n3. Each endpoint needs proper tags, descriptions, and response types\n\n4. Print a summary of the security configuration",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure security schemes",
+      "expectedOutput": "SecuritySchemes",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should have protected endpoints",
+      "expectedOutput": "RequireAuthorization",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use AddDocumentTransformer to add security schemes to the OpenAPI document."
+    },
+    {
+      "level": 2,
+      "text": "document.Components.SecuritySchemes is a Dictionary<string, OpenApiSecurityScheme>."
+    },
+    {
+      "level": 3,
+      "text": ".AllowAnonymous() makes endpoint public, .RequireAuthorization() makes it protected."
+    },
+    {
+      "level": 4,
+      "text": ".RequireAuthorization(\"Admin\") requires the 'Admin' policy defined in AddAuthorization."
+    },
+    {
+      "level": 5,
+      "text": "Document 401 Unauthorized and 403 Forbidden responses for protected endpoints."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting UseAuthentication() and UseAuthorization() middleware",
+      "consequence": "RequireAuthorization has no effect. All endpoints are accessible.",
+      "correction": "Add app.UseAuthentication(); app.UseAuthorization(); before mapping endpoints."
+    },
+    {
+      "mistake": "Not documenting 401/403 response codes",
+      "consequence": "API consumers don't know authentication is required until they get errors.",
+      "correction": "Add .Produces(StatusCodes.Status401Unauthorized) and 403 for admin endpoints."
+    },
+    {
+      "mistake": "Using AllowAnonymous on sensitive endpoints",
+      "consequence": "Security bypass! Anyone can access protected resources.",
+      "correction": "Only use AllowAnonymous on truly public endpoints like health checks and login."
+    },
+    {
+      "mistake": "Hardcoding secrets in source code",
+      "consequence": "Secrets exposed in version control. Security breach risk.",
+      "correction": "Use configuration, environment variables, or secret managers for JWT keys."
+    }
+  ],
+  "difficulty": "advanced"
+}

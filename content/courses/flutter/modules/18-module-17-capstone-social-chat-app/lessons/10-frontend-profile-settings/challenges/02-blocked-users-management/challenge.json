@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.10-challenge-1",
+  "title": "Blocked Users Management",
+  "description": "Implement a blocked users management screen with list display, unblock functionality, and ability to block users from their profile.",
+  "instructions": "Build a blocked users management system:\n\n1. Create BlockedUsersScreen showing list of blocked users\n2. Display user avatar, name, and block date for each entry\n3. Add unblock button with confirmation dialog\n4. Handle empty state when no users are blocked\n5. Implement pull-to-refresh for the list\n6. Add search/filter capability for users with many blocked accounts\n7. Show loading and error states appropriately\n8. Update the list optimistically when unblocking",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use AsyncNotifier for the blocked users list to handle loading, error, and data states automatically"
+    },
+    {
+      "level": 2,
+      "text": "For optimistic unblocking, save the current state, update UI immediately, then revert if the API call fails"
+    },
+    {
+      "level": 3,
+      "text": "Format the blockedAt date using intl package's DateFormat for user-friendly display like 'Blocked 3 days ago'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not refreshing related providers after unblocking a user",
+      "consequence": "User might still appear blocked in other parts of the app",
+      "correction": "Invalidate userProfileProvider for the unblocked user to refresh their profile state"
+    },
+    {
+      "mistake": "Showing confusing UI when list is loading vs empty",
+      "consequence": "Users cannot distinguish between 'loading' and 'no blocked users'",
+      "correction": "Use distinct loading shimmer and empty state widgets with clear messaging"
+    }
+  ],
+  "difficulty": "advanced"
+}

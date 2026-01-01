@@ -1,0 +1,31 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.4-challenge-1",
+  "title": "Create a Task Endpoint",
+  "description": "Create an endpoint for managing todo tasks with CRUD operations.",
+  "instructions": "Create a TaskEndpoint with the following methods:\n\n1. getTasks(Session session) - Returns all tasks\n2. getTask(Session session, int taskId) - Returns a single task or null\n3. createTask(Session session, Task task) - Creates and returns a new task\n4. updateTask(Session session, Task task) - Updates and returns the task\n5. deleteTask(Session session, int taskId) - Deletes and returns success boolean\n\nAssume a Task model exists with: id, title, isCompleted, createdAt fields.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each method needs Session as the first parameter"
+    },
+    {
+      "level": 2,
+      "text": "Use Task.db.find(), findById(), insertRow(), updateRow(), deleteRow()"
+    },
+    {
+      "level": 3,
+      "text": "Return types should match: List<Task>, Task?, Task, Task, bool"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to check if task exists before update/delete",
+      "consequence": "Null reference errors or confusing behavior",
+      "correction": "Always check with findById() before updateRow() or deleteRow()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

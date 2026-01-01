@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a Game character class with action methods!\n\n1. Class 'Character' with fields: string Name, int Health = 100, int Mana = 50\n2. Method 'Attack' (returns int): returns random damage 10-20\n3. Method 'Heal' (void, takes int amount): adds amount to Health (max 100)\n4. Method 'CastSpell' (returns bool): if Mana >= 20, reduce Mana by 20 and return true, else return false\n5. Create a character and call all methods, display results",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"attacks\"",
+      "expectedOutput": "attacks",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"healed\"",
+      "expectedOutput": "healed",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"spell\"",
+      "expectedOutput": "spell",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Method structure: public ReturnType MethodName(parameters) { code; return value; }. Use void for no return. Methods can access and modify the object's fields!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting 'return': If method returns a value (not void), you MUST return something! 'public int Add(int a, int b) { a + b; }' is WRONG - needs 'return a + b;'"
+    },
+    {
+      "level": 3,
+      "text": "Calling methods without parentheses: player.Attack is WRONG! Must be player.Attack() - parentheses are REQUIRED even with no parameters!"
+    },
+    {
+      "level": 4,
+      "text": "Wrong return type: If method returns int, you can't return a string! The return value type MUST match the method signature."
+    },
+    {
+      "level": 5,
+      "text": "Not storing return values: int result = calc.Add(5, 3); stores the result. calc.Add(5, 3); without storing throws away the return value!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'return'",
+      "consequence": "If method returns a value (not void), you MUST return something! 'public int Add(int a, int b) { a + b; }' is WRONG - needs 'return a + b;'",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Calling methods without parentheses",
+      "consequence": "player.Attack is WRONG! Must be player.Attack() - parentheses are REQUIRED even with no parameters!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Wrong return type",
+      "consequence": "If method returns int, you can't return a string! The return value type MUST match the method signature.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not storing return values",
+      "consequence": "int result = calc.Add(5, 3); stores the result. calc.Add(5, 3); without storing throws away the return value!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

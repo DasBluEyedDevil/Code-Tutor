@@ -1,0 +1,38 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.8-challenge",
+  "title": "Practice Challenge: Type a React Component",
+  "description": "Create a typed ProductCard component:\n\n1. Define a Product interface with:\n   - id: number\n   - name: string\n   - price: number\n   - inStock: boolean\n\n2. Define ProductCardProps interface with:\n   - product: Product\n   - onAddToCart: (id: number) => void\n\n3. Create a simulated ProductCard that uses these types\n\n4. Show how TypeScript catches errors",
+  "instructions": "Define TypeScript interfaces and simulate a typed React component. Show error cases that TypeScript would catch.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Correctly typed components work",
+      "expectedOutput": "Cart",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define Product interface with all required properties"
+    },
+    {
+      "level": 2,
+      "text": "ProductCardProps needs product: Product and onAddToCart: (id: number) => void"
+    },
+    {
+      "level": 3,
+      "text": "Use optional properties (?) for non-required props"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using 'any' type to bypass errors",
+      "consequence": "Loses all type safety benefits",
+      "correction": "Define proper interfaces for all data structures"
+    }
+  ],
+  "difficulty": "intermediate"
+}

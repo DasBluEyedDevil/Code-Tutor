@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.6-challenge-1",
+  "title": "Build a Complete Authentication Flow",
+  "description": "Create an AuthService class that handles user registration, login, logout, and session management using Serverpod's auth module.",
+  "instructions": "Implement the AuthService class with the following methods:\n\n1. isSignedIn - Property that returns true if user is currently signed in\n2. currentUser - Property that returns the current UserInfo or null\n3. signUp - Creates a new account with email, password, and username. Returns the UserInfo if successful.\n4. signIn - Signs in with email and password. Returns the UserInfo if successful.\n5. signOut - Signs out the current user and clears the session.\n\nHandle errors appropriately and use try-catch where needed. The starter code includes the necessary class structure.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "AuthService has isSignedIn property",
+      "expectedOutput": "isSignedIn",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "AuthService has signUp method with validation",
+      "expectedOutput": "signUp",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "AuthService has signIn method with error handling",
+      "expectedOutput": "signIn",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "The SessionManager provides isSignedIn and signedInUser properties that you can use directly for the first two properties."
+    },
+    {
+      "level": 2,
+      "text": "For signUp and signIn, use EmailAccountController.createAccount() and EmailAccountController.signIn() respectively. Pass the client and credentials."
+    },
+    {
+      "level": 3,
+      "text": "For signOut, call sessionManager.signOut(). Remember to validate inputs before making API calls."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not validating input before calling auth methods",
+      "consequence": "Server errors or unclear error messages for users",
+      "correction": "Validate email format and password length before making API calls"
+    },
+    {
+      "mistake": "Revealing whether email exists in error messages",
+      "consequence": "Security vulnerability - attackers can enumerate valid emails",
+      "correction": "Use generic error messages like 'Invalid email or password'"
+    },
+    {
+      "mistake": "Not handling the case where sign-in returns null",
+      "consequence": "App crashes or shows confusing state",
+      "correction": "Check if the returned UserInfo is null and handle accordingly"
+    }
+  ],
+  "difficulty": "intermediate"
+}

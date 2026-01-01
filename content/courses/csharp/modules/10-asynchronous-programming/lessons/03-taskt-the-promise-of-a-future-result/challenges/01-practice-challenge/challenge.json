@@ -1,0 +1,78 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-10-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a download manager with Task<T>!\n\n1. Create 'async Task<int> DownloadFileAsync(string filename, int sizeKB)':\n   - Print 'Downloading [filename] ([sizeKB]KB)...'\n   - await Task.Delay(sizeKB * 10) to simulate download (bigger = slower)\n   - Print '[filename] complete!'\n   - Return sizeKB\n\n2. In main code:\n   - Start 4 downloads simultaneously (different sizes: 50KB, 150KB, 100KB, 200KB)\n   - Store in List<Task<int>>\n   - Use Task.WhenAll to wait for ALL downloads\n   - Sum the results to get total KB downloaded\n   - Calculate and display total MB (KB / 1024.0)\n\n3. BONUS: Use Task.WhenAny to detect which file finishes FIRST",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Downloading\"",
+      "expectedOutput": "Downloading",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"complete\"",
+      "expectedOutput": "complete",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Total downloaded\"",
+      "expectedOutput": "Total downloaded",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Return Task<int>: 'async Task<int> Method()'. Store tasks: 'List<Task<int>> list'. Wait for all: 'int[] results = await Task.WhenAll(list)'. Sum array: 'results.Sum()'."
+    },
+    {
+      "level": 2,
+      "text": "Awaiting in loop: 'foreach (var t in tasks) await t' is SEQUENTIAL! Use 'await Task.WhenAll(tasks)' for parallel. Awaiting one-by-one defeats the purpose of async."
+    },
+    {
+      "level": 3,
+      "text": "Not storing task before await: 'await Method1(); await Method2();' is sequential. Start both first: 'var t1 = Method1(); var t2 = Method2(); await Task.WhenAll(t1, t2);' for parallel!"
+    },
+    {
+      "level": 4,
+      "text": "Using .Result: 'task.Result' BLOCKS the thread! Use 'await task' instead. '.Result' can cause deadlocks in UI/ASP.NET apps."
+    },
+    {
+      "level": 5,
+      "text": "Task.WhenAny result: WhenAny returns the TASK, not the result! Must await again: 'Task<int> firstTask = await Task.WhenAny(t1, t2); int result = await firstTask;'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Awaiting in loop",
+      "consequence": "'foreach (var t in tasks) await t' is SEQUENTIAL! Use 'await Task.WhenAll(tasks)' for parallel. Awaiting one-by-one defeats the purpose of async.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not storing task before await",
+      "consequence": "'await Method1(); await Method2();' is sequential. Start both first: 'var t1 = Method1(); var t2 = Method2(); await Task.WhenAll(t1, t2);' for parallel!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using .Result",
+      "consequence": "'task.Result' BLOCKS the thread! Use 'await task' instead. '.Result' can cause deadlocks in UI/ASP.NET apps.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Task.WhenAny result",
+      "consequence": "WhenAny returns the TASK, not the result! Must await again: 'Task<int> firstTask = await Task.WhenAny(t1, t2); int result = await firstTask;'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Task.WhenAll Exception Aggregation (CRITICAL!)",
+      "consequence": "When multiple tasks fail, Task.WhenAll throws ONLY THE FIRST exception! Other exceptions are SILENTLY LOST unless you check Task.Exception.InnerExceptions. Example: if 3 of 5 API calls fail, you only see the first error!",
+      "correction": "To see ALL exceptions: wrap in try/catch, then check 'task.Exception?.InnerExceptions' or handle the AggregateException. Pattern: 'try { await Task.WhenAll(tasks); } catch { foreach (var t in tasks.Where(t => t.IsFaulted)) { Log(t.Exception); } }'. Or use 'Task.WhenAll(tasks).ContinueWith(t => t.Exception?.Flatten())' to aggregate all failures."
+    }
+  ],
+  "difficulty": "intermediate"
+}

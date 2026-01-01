@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-19-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a well-documented Minimal API for a bookstore!\n\n1. Add OpenAPI services and map the OpenAPI endpoint\n\n2. Create these endpoints with full documentation:\n   - GET /books - Returns all books\n   - GET /books/{isbn} - Returns a book by ISBN\n   - POST /books - Creates a new book\n   - DELETE /books/{isbn} - Deletes a book\n\n3. Each endpoint needs:\n   - WithName (operation ID)\n   - WithDescription (what it does)\n   - WithTags (\"Books\")\n   - Appropriate Produces declarations\n\n4. Create Book record with: Isbn, Title, Author, Price\n\n5. Create CreateBookRequest with: Title, Author, Price",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should add OpenAPI services",
+      "expectedOutput": "AddOpenApi",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should map OpenAPI endpoint",
+      "expectedOutput": "MapOpenApi",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "builder.Services.AddOpenApi() registers the OpenAPI services - no external packages needed in .NET 9!"
+    },
+    {
+      "level": 2,
+      "text": "app.MapOpenApi() exposes the spec at /openapi/v1.json - call this before your endpoints."
+    },
+    {
+      "level": 3,
+      "text": "Chain methods: app.MapGet(...).WithName(...).WithDescription(...).WithTags(...).Produces(...);"
+    },
+    {
+      "level": 4,
+      "text": "For NotFound results, use: return Results.NotFound(message); and declare .Produces(StatusCodes.Status404NotFound)"
+    },
+    {
+      "level": 5,
+      "text": "POST should return Results.Created(uri, object) with .Produces<Book>(StatusCodes.Status201Created)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using Swashbuckle packages in .NET 9",
+      "consequence": "Swashbuckle is no longer needed! .NET 9 has built-in OpenAPI support that's lighter and faster.",
+      "correction": "Use builder.Services.AddOpenApi() and app.MapOpenApi() - no NuGet packages required."
+    },
+    {
+      "mistake": "Forgetting to declare all possible response types",
+      "consequence": "Documentation is incomplete. Clients don't know about error responses.",
+      "correction": "Add .Produces(StatusCodes.Status404NotFound) for endpoints that can return 404, etc."
+    },
+    {
+      "mistake": "Using magic numbers for status codes",
+      "consequence": "Less readable code. Easy to use wrong status code.",
+      "correction": "Use StatusCodes.Status200OK, Status201Created, Status404NotFound instead of 200, 201, 404."
+    },
+    {
+      "mistake": "Not providing meaningful operation names",
+      "consequence": "Generated clients have poor method names. Documentation is less clear.",
+      "correction": "Use descriptive WithName() values like 'GetBookByIsbn', 'CreateBook', 'DeleteBook'."
+    }
+  ],
+  "difficulty": "advanced"
+}

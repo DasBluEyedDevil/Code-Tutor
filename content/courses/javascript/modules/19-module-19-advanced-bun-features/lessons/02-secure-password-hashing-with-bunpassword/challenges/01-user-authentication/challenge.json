@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "19.2-challenge",
+  "title": "User Authentication",
+  "description": "Build a simple auth system with signup and login.",
+  "instructions": "Create signup and login functions using Bun.password. The signup should hash the password, and login should verify it.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Authenticates correctly",
+      "expectedOutput": "true\\nfalse",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Bun.password.hash() for signup and Bun.password.verify() for login"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Comparing hashes directly",
+      "consequence": "Hashes include random salt, so same password produces different hashes",
+      "correction": "Always use Bun.password.verify() to compare"
+    }
+  ],
+  "difficulty": "intermediate"
+}

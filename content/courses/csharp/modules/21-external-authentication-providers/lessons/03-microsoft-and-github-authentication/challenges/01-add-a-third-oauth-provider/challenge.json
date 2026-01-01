@@ -1,0 +1,74 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-21-03-challenge-01",
+  "title": "Add a Third OAuth Provider",
+  "description": "Extend the authentication system to support Twitter (X) OAuth authentication.",
+  "instructions": "Add Twitter (X) as a third OAuth provider to ShopFlow!\n\nYour implementation should:\n\n1. Install the appropriate NuGet package:\n   - Use AspNet.Security.OAuth.Twitter\n\n2. Configure Twitter authentication with:\n   - ClientId and ClientSecret from configuration\n   - Request 'users.read' and 'tweet.read' scopes\n   - Map claims for Twitter username and profile image\n   - SaveTokens = true\n\n3. Add appropriate claim mappings:\n   - Map 'username' to 'urn:twitter:username'\n   - Map 'profile_image_url' to 'urn:twitter:avatar'\n\n4. Create login endpoint:\n   - GET /auth/login/twitter that initiates Twitter OAuth\n\n5. Handle the OnCreatingTicket event:\n   - Log the Twitter username\n   - Add the provider name as a claim\n\nRemember: Twitter uses OAuth 2.0 with PKCE for public clients, but the ASP.NET Core package handles this.",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should add Twitter authentication",
+      "expectedOutput": "AddTwitter",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should request users.read scope",
+      "expectedOutput": "users.read",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should map username claim",
+      "expectedOutput": "urn:twitter:username",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should create login endpoint",
+      "expectedOutput": "/auth/login/twitter",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Import the Twitter authentication namespace: using AspNet.Security.OAuth.Twitter;"
+    },
+    {
+      "level": 2,
+      "text": "Use .AddTwitter(TwitterAuthenticationDefaults.AuthenticationScheme, options => { ... }) to configure Twitter."
+    },
+    {
+      "level": 3,
+      "text": "Add scopes with options.Scope.Add(\"users.read\") and options.Scope.Add(\"tweet.read\")."
+    },
+    {
+      "level": 4,
+      "text": "Map claims with options.ClaimActions.MapJsonKey(\"urn:twitter:username\", \"username\")."
+    },
+    {
+      "level": 5,
+      "text": "In OnCreatingTicket, cast context.Principal?.Identity to ClaimsIdentity to add custom claims."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using the wrong authentication scheme constant",
+      "consequence": "The challenge will fail because the scheme name doesn't match the configured authentication.",
+      "correction": "Use TwitterAuthenticationDefaults.AuthenticationScheme to ensure consistency."
+    },
+    {
+      "mistake": "Forgetting to add the using statement for the Twitter namespace",
+      "consequence": "Compiler errors for unrecognized types like TwitterAuthenticationDefaults.",
+      "correction": "Add 'using AspNet.Security.OAuth.Twitter;' at the top of the file."
+    },
+    {
+      "mistake": "Not handling null configuration values",
+      "consequence": "Runtime NullReferenceException when configuration is missing.",
+      "correction": "Use null-coalescing with throw: Configuration[\"key\"] ?? throw new InvalidOperationException(\"...\")."
+    }
+  ],
+  "difficulty": "intermediate"
+}

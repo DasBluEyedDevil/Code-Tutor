@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-06-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a BankAccount class with controlled properties!\n\n1. Private field: decimal _balance (starts at 0)\n2. Property 'Balance' with:\n   - get: returns _balance\n   - set: only allows positive values, otherwise print error\n3. Auto-property: string AccountHolder { get; set; }\n4. Read-only property: bool IsOverdrawn (returns true if balance < 0)\n5. Create an account, try to set negative balance, display status",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Balance\"",
+      "expectedOutput": "Balance",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Alice\"",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Property structure: public Type PropertyName { get { return field; } set { if (valid) field = value; } }. Use => for read-only calculated properties."
+    },
+    {
+      "level": 2,
+      "text": "Forgetting private backing field: If you use get/set with logic, you need a private field like _age to store the actual value!"
+    },
+    {
+      "level": 3,
+      "text": "Naming confusion: Convention is _camelCase for private fields, PascalCase for properties. _age (field) and Age (property)."
+    },
+    {
+      "level": 4,
+      "text": "Auto-property when you need validation: { get; set; } doesn't let you add validation! Use full get/set syntax when you need to check values."
+    },
+    {
+      "level": 5,
+      "text": "Using 'this.value' in set: The parameter is just 'value', not 'this.value'. It's a special keyword in the set accessor."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting private backing field",
+      "consequence": "If you use get/set with logic, you need a private field like _age to store the actual value!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Naming confusion",
+      "consequence": "Convention is _camelCase for private fields, PascalCase for properties. _age (field) and Age (property).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Auto-property when you need validation",
+      "consequence": "{ get; set; } doesn't let you add validation! Use full get/set syntax when you need to check values.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using 'this.value' in set",
+      "consequence": "The parameter is just 'value', not 'this.value'. It's a special keyword in the set accessor.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

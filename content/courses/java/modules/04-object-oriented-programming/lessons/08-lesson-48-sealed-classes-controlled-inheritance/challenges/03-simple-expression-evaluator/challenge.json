@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-8-sealed-expression",
+  "title": "Simple Expression Evaluator",
+  "description": "Create a sealed expression hierarchy:\n- record Num(int value)\n- record Add(Expr left, Expr right)\n\nWrite an evaluate method using pattern matching.\nTest: evaluate(Add(Num(3), Num(4))) should return 7\n\nExpected output: 7",
+  "instructions": "Create a sealed expression hierarchy:\n- record Num(int value)\n- record Add(Expr left, Expr right)\n\nWrite an evaluate method using pattern matching.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-8-sealed-expression-test-1",
+      "description": "Should print '7'",
+      "expectedOutput": "7",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "sealed interface Expr permits Num, Add {}"
+    },
+    {
+      "level": 2,
+      "text": "Add has two Expr children - use recursion to evaluate them"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to recursively evaluate nested expressions",
+      "consequence": "Cannot handle nested Add expressions",
+      "correction": "Call evaluate recursively: evaluate(l) + evaluate(r)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

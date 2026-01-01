@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-06-challenge-1",
+  "title": "Build a Transaction Search Feature",
+  "description": "Implement a complete search function that queries transactions with ranking and highlighting.",
+  "instructions": "Complete the search implementation to:\n1. Create a search_vector column combining description and category\n2. Create a GIN index for fast searching\n3. Implement a search function with ranking\n4. Add result highlighting",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Search returns ranked results",
+      "expectedOutput": "Search setup complete!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** The second column to include is 'category'. Use 'GIN' for the index type. The match operator is '@@'. Order by rank 'DESC' to show best matches first."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using BTREE instead of GIN for tsvector index",
+      "consequence": "Index won't work for full-text queries",
+      "correction": "Always use GIN or GiST for tsvector columns"
+    },
+    {
+      "mistake": "Ordering by rank ASC instead of DESC",
+      "consequence": "Worst matches appear first",
+      "correction": "Use ORDER BY rank DESC for best matches first"
+    }
+  ],
+  "difficulty": "advanced"
+}

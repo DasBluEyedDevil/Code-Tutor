@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-03-challenge-1",
+  "title": "Optimize the Finance Tracker Schema",
+  "description": "Add appropriate constraints and indexes to the transactions table based on common query patterns.",
+  "instructions": "Complete the schema by:\n1. Add a CHECK constraint to ensure amount is not zero\n2. Add a foreign key constraint with ON DELETE CASCADE\n3. Create a composite index for user_id and transaction_date\n4. Create a partial index for large transactions",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Constraints and indexes created successfully",
+      "expectedOutput": "Schema optimization complete!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** For CHECK constraint, use `!=` to ensure not equal to zero. For CASCADE, the keyword is literally `CASCADE`. The composite index should have `user_id` first. For absolute value, use `ABS()`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using <> instead of != for not equal",
+      "consequence": "Both work, but != is more common in modern SQL",
+      "correction": "Either works: CHECK (amount != 0) or CHECK (amount <> 0)"
+    },
+    {
+      "mistake": "Wrong column order in composite index",
+      "consequence": "Index won't be used efficiently for user-specific queries",
+      "correction": "Put the most selective/filtered column first (user_id)"
+    }
+  ],
+  "difficulty": "advanced"
+}

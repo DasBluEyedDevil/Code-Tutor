@@ -1,0 +1,68 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.1.2",
+  "title": "Task Repository Pattern",
+  "description": "Create a TaskRepository class with in-memory storage for CRUD operations on tasks.",
+  "instructions": "Create a TaskRepository class with in-memory storage for CRUD operations on tasks.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create and find all tasks",
+      "expectedOutput": "All tasks: [Task(id=1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should update task",
+      "expectedOutput": "completed=true",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should delete task",
+      "expectedOutput": "After delete: 1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use mutableListOf for storage"
+    },
+    {
+      "level": 2,
+      "text": "Auto-increment nextId for new tasks"
+    },
+    {
+      "level": 3,
+      "text": "filter() returns tasks matching userId"
+    },
+    {
+      "level": 4,
+      "text": "Use Elvis operator ?: to keep existing values on update"
+    },
+    {
+      "level": 5,
+      "text": "removeIf() returns true if element was removed"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "advanced"
+}

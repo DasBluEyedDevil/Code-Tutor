@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-10-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build an async data processing pipeline!\n\n1. Create 'async Task<int> LoadDataAsync()':\n   - Print 'Loading data...'\n   - await Task.Delay(1000)\n   - Print 'Data loaded!'\n   - Return 42\n\n2. Create 'async Task<int> ProcessDataAsync(int input)':\n   - Print 'Processing data...'\n   - await Task.Delay(1500)\n   - Print 'Processing complete!'\n   - Return input * 2\n\n3. Create 'async Task<string> SaveResultAsync(int result)':\n   - Print 'Saving result...'\n   - await Task.Delay(800)\n   - Print 'Result saved!'\n   - Return 'Saved: ' + result\n\n4. Create 'async Task RunPipelineAsync()':\n   - Call all three methods in sequence (await each)\n   - Print final message from SaveResultAsync\n\n5. Call RunPipelineAsync() and await it",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"Loading\"",
+      "expectedOutput": "Loading",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Processing\"",
+      "expectedOutput": "Processing",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Saving\"",
+      "expectedOutput": "Saving",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Pipeline result\"",
+      "expectedOutput": "Pipeline result",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Async method: 'async Task<T> MethodName()'. Return value: 'return T' (not Task<T>!). Call: 'T result = await MethodAsync()'. Chain: await each step in sequence."
+    },
+    {
+      "level": 2,
+      "text": "Returning Task<T> instead of T: In 'async Task<int> GetNumber()', return 'return 42;' NOT 'return Task.FromResult(42);'! The async keyword handles Task wrapping."
+    },
+    {
+      "level": 3,
+      "text": "Async void instead of async Task: Only use 'async void' for event handlers! Regular methods should be 'async Task'. 'async void' can't be awaited and exceptions are hard to catch."
+    },
+    {
+      "level": 4,
+      "text": "Not awaiting async methods: 'DoWorkAsync();' without await starts the method but doesn't wait! The calling method continues immediately. Always await unless you want fire-and-forget."
+    },
+    {
+      "level": 5,
+      "text": "Deadlocks with .Result or .Wait(): In UI/ASP.NET apps, using '.Result' or '.Wait()' on Task can cause DEADLOCK! Always use 'await'. Blocking on async code is dangerous."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Returning Task<T> instead of T",
+      "consequence": "In 'async Task<int> GetNumber()', return 'return 42;' NOT 'return Task.FromResult(42);'! The async keyword handles Task wrapping.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Async void instead of async Task",
+      "consequence": "Only use 'async void' for event handlers! Regular methods should be 'async Task'. 'async void' can't be awaited and exceptions are hard to catch.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not awaiting async methods",
+      "consequence": "'DoWorkAsync();' without await starts the method but doesn't wait! The calling method continues immediately. Always await unless you want fire-and-forget.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Deadlocks with .Result or .Wait()",
+      "consequence": "In UI/ASP.NET apps, using '.Result' or '.Wait()' on Task can cause DEADLOCK! Always use 'await'. Blocking on async code is dangerous.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

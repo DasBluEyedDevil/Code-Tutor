@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "streams-lesson-4-mc-1",
+  "title": "flatMap Usage",
+  "description": "Understanding when to use flatMap",
+  "question": "You have a List<String> of sentences and want to get a stream of individual words. Which approach is correct?",
+  "options": [
+    "sentences.stream().map(s -> s.split(\" \"))",
+    "sentences.stream().flatMap(s -> Arrays.stream(s.split(\" \")))",
+    "sentences.stream().filter(s -> s.split(\" \"))",
+    "sentences.stream().reduce(s -> s.split(\" \"))"
+  ],
+  "correctAnswer": 1,
+  "explanation": "flatMap is used when you want to transform each element into multiple elements and flatten the result. map(s -> s.split(\" \")) would give you Stream<String[]>, but flatMap with Arrays.stream gives you Stream<String> - all words in a single flat stream.",
+  "difficulty": "intermediate"
+}

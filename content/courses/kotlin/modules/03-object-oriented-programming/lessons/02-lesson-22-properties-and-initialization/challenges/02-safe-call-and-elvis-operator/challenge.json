@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.2.2",
+  "title": "Safe Call and Elvis Operator",
+  "description": "Given a nullable string, safely get its length. If null, return 0 using the Elvis operator.",
+  "instructions": "Given a nullable string, safely get its length. If null, return 0 using the Elvis operator.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Non-null string should return its length",
+      "expectedOutput": "5",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Null string should return 0",
+      "expectedOutput": "0",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use ?. for safe call on nullable types"
+    },
+    {
+      "level": 2,
+      "text": "Use ?: (Elvis operator) to provide default value"
+    },
+    {
+      "level": 3,
+      "text": "Combine them: text?.length ?: 0"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

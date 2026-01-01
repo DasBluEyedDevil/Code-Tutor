@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "react-lesson-5-mc-2",
+  "title": "Protected Routes",
+  "description": "Understanding route protection patterns",
+  "question": "In a protected route pattern, what does <Navigate to=\"/login\" state={{ from: location }} /> do?",
+  "options": [
+    "Renders the login page inline without changing URL",
+    "Redirects to login and saves the attempted URL so user can return after login",
+    "Permanently redirects to login, user cannot go back",
+    "Shows a login modal overlay on the current page"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Navigate performs a redirect to /login. The state prop passes the current location to the login page. After successful login, you can use this to redirect users back to where they originally tried to go (location.state?.from?.pathname). The replace prop would prevent adding to browser history.",
+  "difficulty": "intermediate"
+}

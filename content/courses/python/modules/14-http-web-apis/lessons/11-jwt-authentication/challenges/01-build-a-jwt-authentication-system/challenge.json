@@ -1,0 +1,77 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-jwt-challenge",
+  "title": "Build a JWT Authentication System",
+  "description": "Create a complete JWT authentication system with token creation, validation, and protected routes.",
+  "instructions": "Create a JWT authentication module that:\n\n1. Implements `create_access_token(data, expires_delta)` function\n2. Implements `decode_token(token)` function with error handling\n3. Creates a mock `get_current_user(token)` function that:\n   - Decodes the token\n   - Handles ExpiredSignatureError\n   - Handles InvalidTokenError\n   - Returns user data from token payload\n4. Demonstrates the complete flow:\n   - Create a token for a user\n   - Decode and validate it\n   - Handle an expired token\n   - Handle an invalid token",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-jwt-1",
+      "description": "create_access_token produces valid JWT",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-jwt-2",
+      "description": "decode_token extracts correct payload",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-jwt-3",
+      "description": "get_current_user returns user for valid token",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-jwt-4",
+      "description": "get_current_user returns None for expired token",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-jwt-5",
+      "description": "get_current_user returns None for invalid token",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use jwt.encode() with SECRET_KEY and algorithm to create tokens. Include an 'exp' claim for expiration."
+    },
+    {
+      "level": 2,
+      "text": "Use jwt.decode() with algorithms as a list [ALGORITHM]. Wrap in try/except to handle errors."
+    },
+    {
+      "level": 3,
+      "text": "Catch jwt.ExpiredSignatureError for expired tokens and jwt.InvalidTokenError for malformed tokens."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using python-jose instead of pyjwt",
+      "consequence": "python-jose is deprecated and may have security issues",
+      "correction": "Use pyjwt: 'uv add pyjwt' and 'import jwt'"
+    },
+    {
+      "mistake": "Storing SECRET_KEY in code",
+      "consequence": "Secret exposed in version control",
+      "correction": "Load from environment: os.getenv('SECRET_KEY')"
+    },
+    {
+      "mistake": "Not setting token expiration",
+      "consequence": "Tokens valid forever if stolen",
+      "correction": "Always include 'exp' claim with reasonable timeout"
+    },
+    {
+      "mistake": "Using algorithm as string in decode instead of list",
+      "consequence": "Can cause algorithm confusion attacks",
+      "correction": "Use algorithms=[ALGORITHM] (list) in jwt.decode()"
+    }
+  ],
+  "difficulty": "advanced"
+}

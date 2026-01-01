@@ -1,0 +1,21 @@
+{
+  "id": "challenge-6c-3-1",
+  "title": "KMP Module Organization",
+  "description": "Organize a set of dependencies into proper commonMain and platform modules.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Shared code with no platform deps goes in commonModule",
+    "Database drivers are platform-specific - they go in platformModule",
+    "The commonModule can depend on types provided by platformModule"
+  ],
+  "testCases": [
+    {
+      "description": "Common module should not have any platform imports",
+      "expectedBehavior": "NetworkClient, Repository, ViewModel in commonModule"
+    },
+    {
+      "description": "Platform modules provide database drivers",
+      "expectedBehavior": "AndroidSqliteDriver in android, NativeSqliteDriver in ios"
+    }
+  ]
+}

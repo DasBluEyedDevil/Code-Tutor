@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.9-challenge-3",
+  "title": "Type vs Interface Decision Making",
+  "description": "Practice choosing between type aliases and interfaces. Create a config system where interfaces are used for extendable objects and types for unions and utility types.",
+  "instructions": "Create: 1) DatabaseConfig interface (host, port, database), 2) Extend it to PostgresConfig and MySQLConfig interfaces, 3) Create ConnectionString type alias for string, 4) Create ConfigSource literal union type for 'env' | 'file' | 'remote', 5) Create a final Config type that combines a database config with source metadata.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Config structure is correct",
+      "expectedOutput": "Connecting to localhost:5432",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Extended properties work",
+      "expectedOutput": "SSL enabled: true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use interface with extends for the database configs since they form an inheritance hierarchy"
+    },
+    {
+      "level": 2,
+      "text": "Use type for ConfigSource since it's a literal union"
+    },
+    {
+      "level": 3,
+      "text": "The Config<T> type uses a generic constraint: T extends DatabaseConfig"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using type alias with & instead of interface extends",
+      "consequence": "Works but doesn't follow the convention: interfaces for object extension hierarchies",
+      "correction": "Use 'interface PostgresConfig extends DatabaseConfig' for clear inheritance"
+    }
+  ],
+  "difficulty": "intermediate"
+}

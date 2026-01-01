@@ -1,0 +1,65 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.2-challenge-1",
+  "title": "Create and Verify Your Serverpod Project",
+  "description": "Set up a complete Serverpod development environment and create a custom endpoint.",
+  "instructions": "Follow the setup steps from this lesson, then create a custom endpoint that performs a simple calculation. Document each step you completed and any issues you encountered.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Sum function returns correct total",
+      "expectedOutput": "15",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Average function handles division correctly",
+      "expectedOutput": "20.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Prime check correctly identifies 17 as prime",
+      "expectedOutput": "true",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For the sum function, you can use a for loop to add each number, or use the fold method: numbers.fold(0, (sum, n) => sum + n)"
+    },
+    {
+      "level": 2,
+      "text": "For the average function, first calculate the sum, then divide by numbers.length. Remember to handle the empty list case to avoid division by zero."
+    },
+    {
+      "level": 3,
+      "text": "For isPrime, check if the number is less than 2 (not prime), then check for divisors. You only need to check up to the square root of the number for efficiency."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling empty list in average",
+      "consequence": "Division by zero error crashes the endpoint",
+      "correction": "Always check if (numbers.isEmpty) return 0.0; before dividing"
+    },
+    {
+      "mistake": "Forgetting to run serverpod generate",
+      "consequence": "Client code not updated, endpoint not accessible",
+      "correction": "Always run serverpod generate after adding or modifying endpoints"
+    },
+    {
+      "mistake": "Checking all numbers up to n for prime",
+      "consequence": "Very slow for large numbers",
+      "correction": "Only check up to sqrt(n) - if no divisor found by then, number is prime"
+    },
+    {
+      "mistake": "Not starting Docker before the server",
+      "consequence": "Server fails to connect to database",
+      "correction": "Always run docker compose up -d before starting the Serverpod server"
+    }
+  ],
+  "difficulty": "intermediate"
+}

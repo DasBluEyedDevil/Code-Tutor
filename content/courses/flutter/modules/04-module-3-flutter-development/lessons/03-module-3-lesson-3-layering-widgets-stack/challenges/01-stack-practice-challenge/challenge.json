@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.3-challenge-0",
+  "title": "Stack Practice Challenge",
+  "description": "Create a profile header with: 1. Background image 2. Profile photo overlaid 3. Name overlay at bottom ---",
+  "instructions": "Create a profile header with: 1. Background image 2. Profile photo overlaid 3. Name overlay at bottom ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Widget builds without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Stack places widgets on top of each other - first child is bottom layer"
+    },
+    {
+      "level": 3,
+      "text": "Use Positioned.fill for background, Positioned(bottom:) for overlay text"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to give Stack a height",
+      "consequence": "Stack collapses or has zero height",
+      "correction": "Wrap Stack in SizedBox with explicit height"
+    },
+    {
+      "mistake": "Children clipped when overflowing Stack bounds",
+      "consequence": "Profile photo cut off at container edge",
+      "correction": "Add clipBehavior: Clip.none to Stack"
+    },
+    {
+      "mistake": "Missing Positioned widget for placement",
+      "consequence": "Widgets pile up at top-left corner",
+      "correction": "Use Positioned(top/bottom/left/right:)"
+    }
+  ],
+  "difficulty": "beginner"
+}

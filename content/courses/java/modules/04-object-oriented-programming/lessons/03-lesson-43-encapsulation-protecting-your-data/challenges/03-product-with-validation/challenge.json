@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-3-product",
+  "title": "Product with Validation",
+  "description": "Create a Product class with:\n- private fields: name (String), price (double)\n- constructor\n- getName() and getPrice() methods\n- setPrice(double p) that only accepts prices > 0",
+  "instructions": "Create a Product class with:\n- private fields: name (String), price (double)\n- constructor\n- getName() and getPrice() methods\n- setPrice(double p) that only accepts prices > 0",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-3-product-test-1",
+      "description": "Product p = new Product(\"Laptop\", 999.99);\nreturn p.getName() + \"-\" + p.getPrice();",
+      "expectedOutput": "Laptop-999.99",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-product-test-2",
+      "description": "Product p = new Product(\"Mouse\", 25.0);\np.setPrice(30.0);\nreturn p.getPrice();",
+      "expectedOutput": "30.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-product-test-3",
+      "description": "Product p = new Product(\"Keyboard\", 50.0);\np.setPrice(-10.0);\nreturn p.getPrice();",
+      "expectedOutput": "50.0",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Define a function using the java syntax. Don't forget the return statement if needed."
+    },
+    {
+      "level": 3,
+      "text": "If stuck, try writing out the solution in plain English first, then convert to java code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting semicolons",
+      "consequence": "Compilation error",
+      "correction": "Add ; at end of statements"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for primitives, .equals() for objects"
+    },
+    {
+      "mistake": "Incorrect capitalization (Java is case-sensitive)",
+      "consequence": "Cannot find symbol error",
+      "correction": "Match exact capitalization"
+    }
+  ],
+  "difficulty": "beginner"
+}

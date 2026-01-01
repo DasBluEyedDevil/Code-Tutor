@@ -1,0 +1,58 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-03-lesson-02-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Ride Safety Checker** for an amusement park that determines if someone can ride different attractions.\n\n**Ride Requirements:**\n\n- **Roller Coaster**: Height >= 48 inches AND not pregnant\n- **Bumper Cars**: Age >= 5 OR (age >= 3 AND with adult)\n- **Ferris Wheel**: No restrictions (everyone can ride)\n\n**Your task:**\n\n- Ask for height (inches), age, pregnancy status, and if accompanied by adult\n- Use logical operators to check eligibility for each ride\n- Display which rides they can access\n\n**Example output:**\n\n<pre>=== Amusement Park Ride Checker ===\n\nEnter your height (inches): 50\nEnter your age: 7\nAre you pregnant? (yes/no): no\nAre you with an adult? (yes/no): no\n\nRide Access:\n✓ Roller Coaster: True\n✓ Bumper Cars: True  \n✓ Ferris Wheel: True\n\nYou can ride 3 out of 3 attractions!\n</pre>",
+  "instructions": "Build a **Ride Safety Checker** for an amusement park that determines if someone can ride different attractions.\n\n**Ride Requirements:**\n\n- **Roller Coaster**: Height >= 48 inches AND not pregnant\n- **Bumper Cars**: Age >= 5 OR (age >= 3 AND with adult)\n- **Ferris Wheel**: No restrictions (everyone can ride)\n\n**Your task:**\n\n- Ask for height (inches), age, pregnancy status, and if accompanied by adult\n- Use logical operators to check eligibility for each ride\n- Display which rides they can access\n\n**Example output:**\n\n<pre>=== Amusement Park Ride Checker ===\n\nEnter your height (inches): 50\nEnter your age: 7\nAre you pregnant? (yes/no): no\nAre you with an adult? (yes/no): no\n\nRide Access:\n✓ Roller Coaster: True\n✓ Bumper Cars: True  \n✓ Ferris Wheel: True\n\nYou can ride 3 out of 3 attractions!\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Title is displayed",
+      "expectedOutput": "Amusement Park Ride Checker",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Ride Access section is shown",
+      "expectedOutput": "Ride Access:",
+      "isVisible": false
+    },
+    {
+      "id": "test-4",
+      "description": "Total count is displayed",
+      "expectedOutput": "out of 3 attractions",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For the roller coaster, use: height >= 48 and not is_pregnant. For bumper cars, use parentheses to group the age check with adult: age >= 5 or (age >= 3 and with_adult). Remember that 'and' requires ALL conditions to be True, while 'or' needs at least ONE to be True."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

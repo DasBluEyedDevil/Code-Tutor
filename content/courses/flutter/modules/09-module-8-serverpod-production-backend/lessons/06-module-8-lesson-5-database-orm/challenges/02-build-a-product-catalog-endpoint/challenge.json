@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.5-challenge-1",
+  "title": "Build a Product Catalog Endpoint",
+  "description": "Create a complete CRUD endpoint for managing products with search and filtering capabilities.",
+  "instructions": "Create a ProductEndpoint class with these methods:\n\n1. getProduct(Session session, int productId) - Returns a single product or null\n2. listProducts(Session session, {int limit, int offset, String? category, double? minPrice, double? maxPrice}) - Returns filtered product list\n3. createProduct(Session session, Product product) - Creates and returns the new product\n4. updateProduct(Session session, Product product) - Updates and returns the product\n5. deleteProduct(Session session, int productId) - Deletes and returns success boolean\n6. searchProducts(Session session, String query) - Searches products by name (case-insensitive)\n\nAssume a Product model exists with: id, name, description, price, category, stockQuantity, isAvailable, createdAt",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "getProduct returns a product by ID",
+      "expectedOutput": "Product",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "listProducts supports filtering by category and price",
+      "expectedOutput": "List<Product>",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "createProduct validates input and sets createdAt",
+      "expectedOutput": "Product with createdAt",
+      "isVisible": false
+    },
+    {
+      "id": "test-4",
+      "description": "searchProducts uses case-insensitive matching",
+      "expectedOutput": "Uses ilike for search",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For listProducts, build up the where condition by checking if each optional parameter is provided. Start with a base condition and use & to add more filters."
+    },
+    {
+      "level": 2,
+      "text": "For searchProducts, use the ilike() method which performs case-insensitive matching. The % wildcard matches any characters, so '%query%' finds the query anywhere in the name."
+    },
+    {
+      "level": 3,
+      "text": "Remember to validate input before database operations. Check for empty names, negative prices, and null IDs on update. Use copyWith() to add server-controlled fields like createdAt."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling null cases in optional filters",
+      "consequence": "Query fails or returns wrong results when parameters are missing",
+      "correction": "Check if each optional parameter is non-null before adding it to the where condition"
+    },
+    {
+      "mistake": "Using like() instead of ilike() for search",
+      "consequence": "Search is case-sensitive - 'apple' won't find 'Apple'",
+      "correction": "Use ilike() for case-insensitive matching in user-facing searches"
+    },
+    {
+      "mistake": "Forgetting to verify product exists before update/delete",
+      "consequence": "Confusing errors or silent failures",
+      "correction": "Always findById first and handle the null case before updateRow or deleteRow"
+    }
+  ],
+  "difficulty": "intermediate"
+}

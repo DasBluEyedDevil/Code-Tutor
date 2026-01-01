@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Debug this code - it has scope issues:\n\nfunction calculateTotal() {\n  let price = 100;\n  let tax = 0.08;\n  \n  if (price > 50) {\n    let discount = 10;\n  }\n  \n  let total = price - discount + (price * tax);\n  return total;\n}\n\nFix it so discount is accessible. Then calculate the total correctly.",
+  "instructions": "Debug this code - it has scope issues:\n\nfunction calculateTotal() {\n  let price = 100;\n  let tax = 0.08;\n  \n  if (price > 50) {\n    let discount = 10;\n  }\n  \n  let total = price - discount + (price * tax);\n  return total;\n}\n\nFix it so discount is accessible. Then calculate the total correctly.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Calculates total correctly",
+      "expectedOutput": "98",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Declare discount outside the if block, or move the calculation inside"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Using variables outside their scope:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Using variables outside their scope:\n   function test() {\n     let x = 5;\n   }\n   console.log(x);  // ERROR - x only exists inside test()"
+    },
+    {
+      "mistake": "Forgetting var escapes block scope:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting var escapes block scope:\n   if (true) {\n     var x = 5;  // Function scoped, not block scoped!\n   }\n   console.log(x);  // 5 - var leaks out\n   \n   Always use let/const, never var!"
+    }
+  ],
+  "difficulty": "beginner"
+}

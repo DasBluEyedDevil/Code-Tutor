@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.4-challenge-0",
+  "title": "Test a Product List Screen",
+  "description": "Write widget tests for a product list that uses Riverpod.",
+  "instructions": "Test loading state, successful data display, and error handling.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses ProviderScope with overrides",
+      "expectedOutput": "overrides",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use ProviderScope with overrides to mock the provider"
+    },
+    {
+      "level": 2,
+      "text": "For loading state, use pump() not pumpAndSettle()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using pumpAndSettle for loading state test",
+      "consequence": "Loading state never captured - it settles to final state",
+      "correction": "Use pump() to capture intermediate states"
+    }
+  ],
+  "difficulty": "intermediate"
+}

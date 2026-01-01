@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-13-lesson-02-challenge-1",
+  "title": "Convert Sync to Async",
+  "description": "Convert the synchronous function to an async function.",
+  "instructions": "Convert the `fetch_weather` function to be async. Use `await asyncio.sleep()` instead of `time.sleep()`, and properly run it with `asyncio.run()`.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Replace `def` with `async def`, `time.sleep()` with `await asyncio.sleep()`, and use `asyncio.run()` to execute."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to import asyncio",
+      "consequence": "NameError: name 'asyncio' is not defined",
+      "correction": "Add `import asyncio` at the top"
+    },
+    {
+      "mistake": "Calling async function without await",
+      "consequence": "Returns coroutine object instead of result",
+      "correction": "Use `await` or `asyncio.run()`"
+    }
+  ],
+  "difficulty": "beginner"
+}

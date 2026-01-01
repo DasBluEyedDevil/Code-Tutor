@@ -1,0 +1,6 @@
+for (let i = 1; i <= 50; i++) {
+  if (i % 7 === 0) {
+    console.log('First number divisible by 7: ' + i);
+    break;
+  }
+}

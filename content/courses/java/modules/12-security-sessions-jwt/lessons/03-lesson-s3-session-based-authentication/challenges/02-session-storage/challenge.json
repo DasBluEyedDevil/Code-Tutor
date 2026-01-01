@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "security-lesson-3-mc-2",
+  "title": "Session Storage",
+  "description": "Understanding session scalability",
+  "question": "Your application runs on 4 servers behind a load balancer. Users report being randomly logged out. What's the most likely cause and best solution?",
+  "options": [
+    "Session timeout too short - increase timeout",
+    "Sessions stored in server memory - use Redis for shared storage",
+    "CSRF tokens expiring - disable CSRF protection",
+    "Cookies blocked by browser - use URL session IDs"
+  ],
+  "correctAnswer": 1,
+  "explanation": "With in-memory sessions and multiple servers, users get logged out when the load balancer routes them to a different server than the one holding their session. The solution is centralized session storage (Redis, database) that all servers can access. Sticky sessions are a workaround but don't handle server failures.",
+  "difficulty": "intermediate"
+}

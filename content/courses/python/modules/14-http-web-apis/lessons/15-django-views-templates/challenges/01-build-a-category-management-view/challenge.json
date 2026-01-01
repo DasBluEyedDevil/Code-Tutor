@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-django-views-challenge",
+  "title": "Build a Category Management View",
+  "description": "Create class-based views for managing expense categories in the Finance Tracker. Implement list, create, update, and delete views with proper templates.",
+  "instructions": "Build category management views:\n\n1. Create CategoryListView that:\n   - Shows all categories for the current user\n   - Displays category name and transaction count\n   - Links to create/edit/delete\n\n2. Create CategoryCreateView that:\n   - Has fields for name and description\n   - Sets the user automatically\n   - Redirects to list on success\n\n3. Create a template (category_list.html) that:\n   - Extends base.html\n   - Lists categories with edit/delete links\n   - Shows 'No categories' if empty\n\n4. Set up URL patterns for all views",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use LoginRequiredMixin as the first parent class. Set model, template_name, and context_object_name for ListView."
+    },
+    {
+      "level": 2,
+      "text": "Override get_queryset() to filter by user. Use annotate(transaction_count=Count('transaction')) to include counts."
+    },
+    {
+      "level": 3,
+      "text": "In CreateView, override form_valid() to set form.instance.user = self.request.user before calling super()."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not filtering queryset by user in Update/Delete views",
+      "consequence": "Users can modify or delete other users' categories",
+      "correction": "Override get_queryset() to filter by self.request.user"
+    },
+    {
+      "mistake": "Using reverse() instead of reverse_lazy() for success_url",
+      "consequence": "ImproperlyConfigured error at class definition time",
+      "correction": "Use reverse_lazy('view-name') for class attributes"
+    },
+    {
+      "mistake": "Forgetting to set user in CreateView.form_valid()",
+      "consequence": "IntegrityError: user_id cannot be null",
+      "correction": "Set form.instance.user = self.request.user before super().form_valid()"
+    }
+  ],
+  "difficulty": "advanced"
+}

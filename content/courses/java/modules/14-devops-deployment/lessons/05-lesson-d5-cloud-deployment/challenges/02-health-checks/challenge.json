@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-5-mc-2",
+  "title": "Health Checks",
+  "description": "Understanding production health monitoring",
+  "question": "Your app starts successfully but the /actuator/health endpoint returns 503. What does Railway do?",
+  "options": [
+    "Nothing - the app started successfully",
+    "Waits indefinitely for health check to pass",
+    "Marks deployment as failed and rolls back to the previous version",
+    "Sends a warning but keeps the new version running"
+  ],
+  "correctAnswer": 2,
+  "explanation": "Railway uses health checks to verify deployments succeed. A 503 (Service Unavailable) means the app isn't healthy. Railway will mark the deployment as failed and automatically roll back to the previous working version. This prevents broken code from reaching users.",
+  "difficulty": "intermediate"
+}

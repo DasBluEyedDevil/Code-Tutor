@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.7-challenge-2",
+  "title": "Implement Chat with Typing Indicators",
+  "description": "Create a chat system that shows when users are typing, with proper debouncing and auto-timeout.",
+  "instructions": "Build a chat service that includes typing indicators:\n\n1. Create a TypingIndicatorManager that tracks who is typing in each channel\n2. Implement startTyping(channelId, userId) that marks a user as typing\n3. Implement stopTyping(channelId, userId) that marks a user as not typing\n4. Add auto-timeout: if no typing activity for 3 seconds, automatically stop\n5. Implement getTypingUsers(channelId) to get list of currently typing users\n6. Use debouncing: repeated startTyping calls should reset the timeout, not create duplicates",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Basic typing detection works",
+      "expectedOutput": "User 1 typing: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Multiple users tracked correctly",
+      "expectedOutput": "Typing users in general: [1, 2, 3]",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Explicit stop removes user",
+      "expectedOutput": "Typing users in general: [1, 3]",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Auto timeout after 3 seconds",
+      "expectedOutput": "User 3 typing after timeout: false",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Debouncing keeps user typing when active",
+      "expectedOutput": "User 5 still typing (timer reset): true",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a nested Map structure: Map<String, Map<int, Timer>> where outer key is channelId and inner key is userId."
+    },
+    {
+      "level": 2,
+      "text": "In startTyping, check if the user is already in the map BEFORE canceling their timer - this tells you if it's a new typing session or a continuation."
+    },
+    {
+      "level": 3,
+      "text": "Use Timer(typingTimeout, callback) to create the timeout. The callback should call _removeTyping or stopTyping."
+    },
+    {
+      "level": 4,
+      "text": "Don't forget to cancel the old timer before creating a new one in startTyping - this is what enables debouncing."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Sending typing started notification on every startTyping call",
+      "consequence": "Clients receive spam of 'user started typing' events when user is continuously typing",
+      "correction": "Only notify when user was NOT already typing. Check containsKey before adding."
+    },
+    {
+      "mistake": "Not canceling old timer before creating new one",
+      "consequence": "Multiple timers accumulate, causing premature or multiple stop notifications",
+      "correction": "Always cancel existing timer before creating a new one: existingTimer?.cancel()"
+    },
+    {
+      "mistake": "Using a Set instead of Map for tracking typing users",
+      "consequence": "Cannot store the Timer associated with each user for cleanup",
+      "correction": "Use Map<int, Timer> so you can cancel specific user's timer"
+    },
+    {
+      "mistake": "Not cleaning up empty channel maps",
+      "consequence": "Memory leak - empty maps accumulate for inactive channels",
+      "correction": "After removing a user, check if channel map is empty and remove it"
+    }
+  ],
+  "difficulty": "intermediate"
+}

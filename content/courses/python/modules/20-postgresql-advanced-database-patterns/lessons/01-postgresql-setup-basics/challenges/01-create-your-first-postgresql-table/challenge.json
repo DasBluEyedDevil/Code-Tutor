@@ -1,0 +1,35 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-20-lesson-01-challenge-1",
+  "title": "Create Your First PostgreSQL Table",
+  "description": "Create a `users` table for the Finance Tracker with proper data types and insert a test user.",
+  "instructions": "Complete the code to:\n1. Create a users table with id (SERIAL PRIMARY KEY), email (VARCHAR UNIQUE NOT NULL), name (VARCHAR NOT NULL), and created_at (TIMESTAMP with default)\n2. Insert a test user\n3. Query and display the user",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Users table created with correct columns",
+      "expectedOutput": "User created:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** The primary key column is typically named `id`. For unique constraint, use the `UNIQUE` keyword. For default timestamp, use `CURRENT_TIMESTAMP`. The second parameter placeholder is `$2`."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using ? or %s for parameters instead of $1, $2",
+      "consequence": "asyncpg uses PostgreSQL's native parameter syntax",
+      "correction": "Use $1, $2, $3 for parameter placeholders"
+    },
+    {
+      "mistake": "Forgetting UNIQUE constraint on email",
+      "consequence": "Duplicate emails could be inserted",
+      "correction": "Add UNIQUE keyword: email VARCHAR(255) UNIQUE NOT NULL"
+    }
+  ],
+  "difficulty": "advanced"
+}

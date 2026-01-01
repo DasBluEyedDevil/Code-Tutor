@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.1-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a simple database system:\n\n1. Create an array called `database` to store user objects\n2. Create a function `insertUser(name, email)` that:\n   - Generates a unique ID\n   - Adds user to database\n   - Returns the new user\n3. Create a function `findUserByEmail(email)` that:\n   - Searches the database\n   - Returns the user or null\n4. Create a function `updateUserEmail(id, newEmail)` that:\n   - Finds user by ID\n   - Updates their email\n   - Returns true/false for success\n\nTest all functions.",
+  "instructions": "Simulate a simple database system:\n\n1. Create an array called `database` to store user objects\n2. Create a function `insertUser(name, email)` that:\n   - Generates a unique ID\n   - Adds user to database\n   - Returns the new user\n3. Create a function `findUserByEmail(email)` that:\n   - Searches the database\n   - Returns the user or null\n4. Create a function `updateUserEmail(id, newEmail)` that:\n   - Finds user by ID\n   - Updates their email\n   - Returns true/false for success\n\nTest all functions.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should insert user with ID",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should find user by email",
+      "expectedOutput": "Alice",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use array methods: push() to add, find() to search, and direct property assignment to update."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common database misconceptions:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common database misconceptions:"
+    },
+    {
+      "mistake": "**\"Databases are too complex for beginners\"**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**\"Databases are too complex for beginners\"**:\n   - Start simple with SQLite or Prisma\n   - You don't need to be a DBA to use databases\n   - ORMs (like Prisma) make it much easier"
+    },
+    {
+      "mistake": "**\"I can just use variables/files instead\"**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**\"I can just use variables/files instead\"**:\n   ```javascript\n   // This seems easier but...\n   let users = [];  // Lost on restart!\n   \n   // Or\n   fs.writeFileSync('users.json', JSON.stringify(users));\n   // File corruption? Race conditions? Concurrent access?\n   ```\n   Databases solve these problems professionally"
+    }
+  ],
+  "difficulty": "beginner"
+}

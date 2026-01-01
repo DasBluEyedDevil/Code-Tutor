@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.2-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate Prisma-style database operations:\n\n1. Create a mock Prisma client class with a `book` property\n2. Implement these methods on the `book` object:\n   - `create(data)` - Returns new book with generated ID\n   - `findMany()` - Returns all books array\n   - `findUnique(where)` - Finds book by ID\n   - `update(where, data)` - Updates book and returns it\n\n3. Create a books array to store data\n4. Test all CRUD operations\n\nMake it feel like Prisma's API!",
+  "instructions": "Simulate Prisma-style database operations:\n\n1. Create a mock Prisma client class with a `book` property\n2. Implement these methods on the `book` object:\n   - `create(data)` - Returns new book with generated ID\n   - `findMany()` - Returns all books array\n   - `findUnique(where)` - Finds book by ID\n   - `update(where, data)` - Updates book and returns it\n\n3. Create a books array to store data\n4. Test all CRUD operations\n\nMake it feel like Prisma's API!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should create book with generated ID",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should find book by id",
+      "expectedOutput": "Test",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use async functions and make methods return promises. Store books in an array."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common Prisma mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common Prisma mistakes:"
+    },
+    {
+      "mistake": "**Forgetting async/await**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting async/await**:\n   ```typescript\n   // Wrong!\n   let user = prisma.user.findUnique({ where: { id: 1 } });\n   console.log(user.name); // ERROR: user is a Promise!\n   \n   // Correct!\n   let user = await prisma.user.findUnique({ where: { id: 1 } });\n   console.log(user.name); // Works!\n   ```"
+    },
+    {
+      "mistake": "**Not running migrations**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Not running migrations**:\n   - After changing schema.prisma, run: `npx prisma migrate dev`\n   - Then: `npx prisma generate` to update TypeScript types\n   - Without this, your code won't match the database!"
+    }
+  ],
+  "difficulty": "beginner"
+}

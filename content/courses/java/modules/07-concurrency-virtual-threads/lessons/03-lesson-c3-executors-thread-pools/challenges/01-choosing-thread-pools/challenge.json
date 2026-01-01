@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-3-mc-1",
+  "title": "Choosing Thread Pools",
+  "description": "Understanding which thread pool to use",
+  "question": "You're building a web server that needs to handle HTTP requests. Each request involves I/O (database, external APIs) and you expect up to 1000 concurrent requests. Which pool type is MOST appropriate?",
+  "options": [
+    "Executors.newCachedThreadPool() - creates threads as needed",
+    "Executors.newSingleThreadExecutor() - sequential processing",
+    "Executors.newFixedThreadPool(n) - bounded pool",
+    "No pool needed - create new Thread for each request"
+  ],
+  "correctAnswer": 2,
+  "explanation": "For I/O-bound workloads with high concurrency, use a fixed thread pool. CachedThreadPool could create 1000+ threads, exhausting memory. SingleThread would be too slow. Raw threads have no reuse. A fixed pool with appropriately sized thread count (or virtual threads in Java 21+) is ideal.",
+  "difficulty": "intermediate"
+}

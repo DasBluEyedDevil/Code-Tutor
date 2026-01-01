@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.8-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Test on different device sizes and adjust spacing. ---",
+  "instructions": "Test on different device sizes and adjust spacing. ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "App uses MediaQuery for responsive sizing",
+      "expectedOutput": "MediaQuery.sizeOf(context) used to determine screen dimensions",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Layout adapts to different screen sizes",
+      "expectedOutput": "Different padding and spacing for mobile vs tablet/desktop",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Wrap widget creates responsive grid",
+      "expectedOutput": "Cards rearrange from 2 to 3 columns based on screen width",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Use MediaQuery.sizeOf(context).width to get screen width"
+    },
+    {
+      "level": 3,
+      "text": "Create a breakpoint: final isSmallScreen = screenWidth < 600"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using MediaQuery.of(context).size instead of MediaQuery.sizeOf(context)",
+      "consequence": "Unnecessary widget rebuilds on any MediaQuery change",
+      "correction": "Use MediaQuery.sizeOf(context) for better performance"
+    },
+    {
+      "mistake": "Hardcoding pixel values instead of using percentages",
+      "consequence": "Layout breaks on different screen sizes",
+      "correction": "Use screenWidth * 0.05 for percentage-based values"
+    },
+    {
+      "mistake": "Missing curly braces",
+      "consequence": "Syntax error or incorrect scope",
+      "correction": "Ensure every { has a matching }"
+    }
+  ],
+  "difficulty": "beginner"
+}

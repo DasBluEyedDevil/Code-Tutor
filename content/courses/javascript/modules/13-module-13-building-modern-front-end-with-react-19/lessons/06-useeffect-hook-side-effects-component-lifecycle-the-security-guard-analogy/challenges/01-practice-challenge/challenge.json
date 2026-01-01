@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.6-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a clock component with useEffect:\n\n1. Create a `ClockComponent` object with:\n   - state: { time: current time string }\n   - mount() - simulates component mounting\n   - unmount() - simulates component unmounting\n   - Use effect to update time every second\n   - Cleanup timer on unmount\n\n2. Test by mounting, waiting 3 seconds, then unmounting",
+  "instructions": "Create a clock component with useEffect:\n\n1. Create a `ClockComponent` object with:\n   - state: { time: current time string }\n   - mount() - simulates component mounting\n   - unmount() - simulates component unmounting\n   - Use effect to update time every second\n   - Cleanup timer on unmount\n\n2. Test by mounting, waiting 3 seconds, then unmounting",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should set up interval",
+      "expectedOutput": "number",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should clean up interval",
+      "expectedOutput": "cleaned",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use setInterval in mount(), clearInterval in unmount()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common useEffect mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common useEffect mistakes:"
+    },
+    {
+      "mistake": "**Forgetting dependency array**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgetting dependency array**:\n   ```jsx\n   // WRONG! Runs after EVERY render\n   useEffect(() => {\n     fetchData();  // Infinite loop if it updates state!\n   });\n   \n   // CORRECT!\n   useEffect(() => {\n     fetchData();\n   }, []);  // Run once on mount\n   ```"
+    },
+    {
+      "mistake": "**Using async directly in useEffect**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Using async directly in useEffect**:\n   ```jsx\n   // WRONG!\n   useEffect(async () => {  // Can't make effect async!\n     const data = await fetch('/api/users');\n   }, []);\n   \n   // CORRECT!\n   useEffect(() => {\n     async function fetchData() {\n       const data = await fetch('/api/users');\n     }\n     fetchData();\n   }, []);\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

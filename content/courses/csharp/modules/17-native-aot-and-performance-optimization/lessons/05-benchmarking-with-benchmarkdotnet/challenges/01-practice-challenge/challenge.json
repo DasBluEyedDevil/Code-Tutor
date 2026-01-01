@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-17-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a comprehensive benchmark comparing different approaches!\n\n1. Create 'SearchBenchmarks' class with [MemoryDiagnoser]\n\n2. Setup data:\n   - Array of 10,000 Person records (Id, Name, Age)\n   - Dictionary<int, Person> for O(1) lookup\n   - Target ID to search for (5000)\n\n3. Benchmark these search approaches:\n   - LINQ FirstOrDefault (baseline)\n   - For loop search\n   - Array.Find\n   - Dictionary lookup (expected fastest)\n\n4. Add [Params(100, 1000, 10000)] to test different sizes\n\n5. Print expected results analysis\n\nFocus on demonstrating how data structures affect performance!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should explain search performance",
+      "expectedOutput": "O(1)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should mention Dictionary advantage",
+      "expectedOutput": "Dictionary",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "[GlobalSetup] runs once before benchmarks. Use for data initialization that shouldn't be measured."
+    },
+    {
+      "level": 2,
+      "text": "[Params(100, 1000, 10000)] creates three benchmark runs with different Size values."
+    },
+    {
+      "level": 3,
+      "text": "Dictionary.TryGetValue is O(1) - single hash lookup regardless of size."
+    },
+    {
+      "level": 4,
+      "text": "Search for middle element to demonstrate worst-case linear search (n/2 iterations)."
+    },
+    {
+      "level": 5,
+      "text": "[Benchmark(Baseline = true)] marks the reference. Other methods shown as ratio (2x faster, 0.5x = half speed)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Running benchmarks in Debug mode",
+      "consequence": "Debug builds include extra checks, no optimizations. Results are meaningless!",
+      "correction": "Always: dotnet run -c Release. Debug performance can be 10-100x slower."
+    },
+    {
+      "mistake": "Not returning values from benchmark methods",
+      "consequence": "Compiler might optimize away unused computations. Benchmark measures nothing!",
+      "correction": "Always return the result. BenchmarkDotNet uses it to prevent dead code elimination."
+    },
+    {
+      "mistake": "Including setup in benchmark method",
+      "consequence": "Measuring data creation instead of the actual operation. Misleading results!",
+      "correction": "Use [GlobalSetup] for initialization. Benchmark method should only measure the target operation."
+    },
+    {
+      "mistake": "Benchmarking tiny operations without warmup",
+      "consequence": "JIT compilation included in first runs. Inconsistent, inflated times.",
+      "correction": "BenchmarkDotNet handles warmup automatically. Trust its warmup iterations."
+    }
+  ],
+  "difficulty": "advanced"
+}

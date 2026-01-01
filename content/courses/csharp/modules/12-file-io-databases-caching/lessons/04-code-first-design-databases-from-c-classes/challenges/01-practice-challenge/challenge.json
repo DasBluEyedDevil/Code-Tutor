@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-04-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a Blog database with Code-First!\n\n1. Create 'BlogPost' entity:\n   - int Id\n   - string Title ([Required], [MaxLength(200)])\n   - string Content ([Required])\n   - DateTime PublishedDate\n   - int AuthorId (foreign key)\n   - Author Author (navigation property)\n\n2. Create 'Author' entity:\n   - int Id\n   - string Name ([Required], [MaxLength(100)])\n   - string Email ([Required])\n   - List<BlogPost> BlogPosts (navigation property)\n\n3. Create 'BlogDbContext':\n   - DbSet<BlogPost> BlogPosts\n   - DbSet<Author> Authors\n   - Configure relationship in OnModelCreating:\n     - Author has many BlogPosts\n     - BlogPost has one Author\n   - Seed one author\n\n4. Print the schema that would be created:\n   - Table names\n   - Column names and types\n   - Relationships\n\nThis shows Code-First design!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"CODE-FIRST\"",
+      "expectedOutput": "CODE-FIRST",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Authors\"",
+      "expectedOutput": "Authors",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"BlogPosts\"",
+      "expectedOutput": "BlogPosts",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Relationship\"",
+      "expectedOutput": "Relationship",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"BENEFITS\"",
+      "expectedOutput": "BENEFITS",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Attributes: [Required], [MaxLength(n)]. Navigation: List<T> for many, single property for one. OnModelCreating: HasMany().WithOne().HasForeignKey(). HasData() seeds initial data."
+    },
+    {
+      "level": 2,
+      "text": "Missing null-forgiving operator: Navigation properties like 'public Author Author' need '= null!' in modern C#. Otherwise nullable warnings. Or make nullable: 'Author?'."
+    },
+    {
+      "level": 3,
+      "text": "Forgetting inverse navigation: Define BOTH sides of relationship! Customer has List<Order>, Order has Customer. EF uses both to create proper foreign key."
+    },
+    {
+      "level": 4,
+      "text": "Attributes vs Fluent API: Simple configs = attributes. Complex = Fluent API. Can mix both! Fluent API overrides attributes if both used."
+    },
+    {
+      "level": 5,
+      "text": "EnsureCreated limitations: Can't modify schema after creation! Use Migrations in real apps. EnsureCreated() is learning/testing only. No schema updates possible!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Missing null-forgiving operator",
+      "consequence": "Navigation properties like 'public Author Author' need '= null!' in modern C#. Otherwise nullable warnings. Or make nullable: 'Author?'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting inverse navigation",
+      "consequence": "Define BOTH sides of relationship! Customer has List<Order>, Order has Customer. EF uses both to create proper foreign key.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Attributes vs Fluent API",
+      "consequence": "Simple configs = attributes. Complex = Fluent API. Can mix both! Fluent API overrides attributes if both used.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "EnsureCreated() is a Schema Dead End",
+      "consequence": "Once you use EnsureCreated(), you're LOCKED to that schema! Adding new properties, changing types, or modifying relationships will be IGNORED. Your code and database will drift apart silently, causing runtime errors when properties don't match columns!",
+      "correction": "Use EF Core Migrations from day one in any project beyond tutorials: 'dotnet ef migrations add [Name]' creates versioned schema changes. Migrations can be applied, rolled back, and version-controlled. EnsureCreated() should only appear in learning exercises or unit test setup."
+    }
+  ],
+  "difficulty": "advanced"
+}

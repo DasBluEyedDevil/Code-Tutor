@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.3-challenge-0",
+  "title": "Implement Rate Limiting for Login",
+  "description": "Create a rate limiting system to protect the login endpoint from brute force attacks.",
+  "instructions": "Implement a rate limiting service that:\n\n1. Tracks failed login attempts per email address\n2. Stores attempts with timestamps\n3. Blocks login after 5 failed attempts within 15 minutes\n4. Automatically resets after the cooldown period\n5. Returns remaining attempts and lockout time when blocked\n\nYou'll need to:\n- Create a LoginAttempt protocol model\n- Implement the RateLimiter class\n- Integrate with the login endpoint",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use DateTime.now().subtract(cooldownPeriod) to get the cutoff time for recent attempts"
+    },
+    {
+      "level": 2,
+      "text": "Query with a compound where clause: email.equals() & attemptedAt.greaterThan() & wasSuccessful.equals(false)"
+    },
+    {
+      "level": 3,
+      "text": "To calculate blockedUntil, add cooldownPeriod to the oldest failed attempt's timestamp"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not lowercasing email before comparison",
+      "consequence": "User@example.com and user@example.com are treated as different",
+      "correction": "Always normalize email to lowercase: email.toLowerCase()"
+    },
+    {
+      "mistake": "Using count() instead of limiting the window",
+      "consequence": "Historical failed attempts from days ago could block login",
+      "correction": "Always filter by attemptedAt within the cooldown period"
+    }
+  ],
+  "difficulty": "intermediate"
+}

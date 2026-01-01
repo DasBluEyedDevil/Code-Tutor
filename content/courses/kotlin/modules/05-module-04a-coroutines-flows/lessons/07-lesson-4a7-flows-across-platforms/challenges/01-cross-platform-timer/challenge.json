@@ -1,0 +1,22 @@
+{
+  "id": "challenge-4a-7-1",
+  "title": "Cross-Platform Timer",
+  "description": "Create a countdown timer that works on all platforms using Flow, with start, pause, and reset functionality.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Store the timer job so you can cancel it on pause",
+    "Use _state.update { } for thread-safe updates",
+    "Check isActive in the loop to respect cancellation",
+    "Set isFinished = true when remainingSeconds reaches 0"
+  ],
+  "testCases": [
+    {
+      "description": "Should count down each second",
+      "expectedBehavior": "remainingSeconds decreases every second"
+    },
+    {
+      "description": "Should pause and resume correctly",
+      "expectedBehavior": "Pausing stops countdown, resuming continues from where it left off"
+    }
+  ]
+}

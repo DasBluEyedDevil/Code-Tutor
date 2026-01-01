@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-2-mc-1",
+  "title": "start() vs run()",
+  "description": "Understanding the difference between start() and run()",
+  "question": "What happens when you call thread.run() instead of thread.start()?",
+  "options": [
+    "The thread runs faster because there's no setup overhead",
+    "The run() method executes on the CURRENT thread, not a new thread",
+    "An IllegalThreadStateException is thrown",
+    "The thread runs in the background"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Calling run() directly just invokes the method on the current thread like any normal method call. No new thread is created. You must call start() to create a new thread that then invokes run(). This is a common beginner mistake.",
+  "difficulty": "intermediate"
+}

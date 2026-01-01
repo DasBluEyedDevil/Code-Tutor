@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-10-lesson-04-challenge-2",
+  "title": "Challenge 2: uv Workflow Simulation",
+  "description": "Create a Python script that simulates the uv workflow by generating the correct terminal commands for different scenarios. This helps reinforce the uv command patterns.\n\n**Scenarios to handle:**\n1. Starting a new project from scratch\n2. Cloning and setting up an existing project\n3. Adding new dependencies to a project\n4. Updating all dependencies",
+  "instructions": "Implement functions that return the correct uv commands for each workflow scenario.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "All workflow functions return valid command lists",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each function should return a list of strings, where each string is a terminal command."
+    },
+    {
+      "level": 2,
+      "text": "For new projects: uv python install, uv init, cd, uv add --dev, uv run"
+    },
+    {
+      "level": 3,
+      "text": "For adding packages with --dev flag, use string formatting: f\"uv add {'--dev ' if dev else ''}{packages}\""
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to cd into project directory",
+      "consequence": "Commands run in wrong directory",
+      "correction": "Include 'cd project_name' after init or clone"
+    },
+    {
+      "mistake": "Not running uv sync after cloning",
+      "consequence": "Dependencies not installed",
+      "correction": "Always run 'uv sync' after cloning a uv project"
+    },
+    {
+      "mistake": "Using pip install instead of uv add",
+      "consequence": "Dependencies not tracked in pyproject.toml",
+      "correction": "Always use 'uv add' to add dependencies"
+    }
+  ],
+  "difficulty": "intermediate"
+}

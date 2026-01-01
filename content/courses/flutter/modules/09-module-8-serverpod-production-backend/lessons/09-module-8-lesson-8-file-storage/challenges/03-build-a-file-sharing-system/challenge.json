@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.8-challenge-2",
+  "title": "Build a File Sharing System",
+  "description": "Implement a file sharing system that supports both user-based and link-based sharing with expiration and access tracking.",
+  "instructions": "Create a ShareManager class that:\n\n1. Shares files with specific users with permission levels (view/download)\n2. Creates shareable links with optional expiration and access limits\n3. Checks if a user has access to a file (owner, shared user, or valid link)\n4. Tracks access counts for shared links\n5. Revokes shares and links\n\nImplement proper access control and expiration checking.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Owner can share files",
+      "expectedOutput": "Share created: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shared user can access file",
+      "expectedOutput": "Has access: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Share link creation works",
+      "expectedOutput": "Link created: true",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Non-owner cannot share",
+      "expectedOutput": "Share created: false",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Unshared users are denied",
+      "expectedOutput": "Has access: false",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with shareWithUser. First validate: file exists, requester is owner, not sharing with self. Then check for existing share before adding."
+    },
+    {
+      "level": 2,
+      "text": "For checkAccess, check in order: file exists, user is owner, token-based access, user share. Return early when access is granted."
+    },
+    {
+      "level": 3,
+      "text": "Use firstWhere with an orElse that returns a dummy object with invalid fileId (-1) to check if the share/link was found."
+    },
+    {
+      "level": 4,
+      "text": "For useShareLink, find the link, check isExpired and isExhausted, then increment accessCount. The ShareLink class needs accessCount to be mutable."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking if the file exists before sharing",
+      "consequence": "Users can create shares for non-existent files",
+      "correction": "Always verify _files[fileId] != null at the start"
+    },
+    {
+      "mistake": "Allowing owner to share with themselves",
+      "consequence": "Confusing data in the shares list",
+      "correction": "Check targetUserId != requestingUserId"
+    },
+    {
+      "mistake": "Not checking expiration before granting access",
+      "consequence": "Expired shares still grant access",
+      "correction": "Check isExpired before returning success"
+    },
+    {
+      "mistake": "Creating duplicate shares instead of updating existing ones",
+      "consequence": "Multiple share records for the same user/file pair",
+      "correction": "Search for existing share first, update if found"
+    }
+  ],
+  "difficulty": "intermediate"
+}

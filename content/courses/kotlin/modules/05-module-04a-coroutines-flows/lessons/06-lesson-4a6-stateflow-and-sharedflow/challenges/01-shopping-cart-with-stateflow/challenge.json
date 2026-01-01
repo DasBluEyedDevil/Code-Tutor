@@ -1,0 +1,22 @@
+{
+  "id": "challenge-4a-6-1",
+  "title": "Shopping Cart with StateFlow",
+  "description": "Build a shopping cart system using StateFlow for state and SharedFlow for events like 'item added' notifications.",
+  "difficulty": "intermediate",
+  "hints": [
+    "Use MutableStateFlow for _state and expose as StateFlow",
+    "Use MutableSharedFlow for _events",
+    "Use _state.update { } for atomic state updates",
+    "Launch a coroutine to emit events"
+  ],
+  "testCases": [
+    {
+      "description": "Should track items and total",
+      "expectedBehavior": "State updates with correct items and total"
+    },
+    {
+      "description": "Should emit events for each action",
+      "expectedBehavior": "Events emitted for add, remove, and clear"
+    }
+  ]
+}

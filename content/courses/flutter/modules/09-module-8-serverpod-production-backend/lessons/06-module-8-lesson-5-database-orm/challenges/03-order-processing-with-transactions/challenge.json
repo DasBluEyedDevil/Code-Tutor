@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.5-challenge-2",
+  "title": "Order Processing with Transactions",
+  "description": "Build an order processing endpoint that uses transactions to ensure data consistency.",
+  "instructions": "Create an OrderEndpoint with a placeOrder method that:\n\n1. Accepts a session, customerId, and list of OrderItem objects (each has productId and quantity)\n2. Uses a transaction to ensure all operations succeed or fail together\n3. Inside the transaction:\n   - Verifies the customer exists\n   - For each item: verifies the product exists and has sufficient stock\n   - Creates the Order record with total amount\n   - Creates all OrderItem records linked to the order\n   - Decrements the stock quantity for each product\n4. Returns the created Order\n5. Throws appropriate exceptions if validation fails\n\nAssume these models exist:\n- Customer: id, name, email\n- Product: id, name, price, stockQuantity\n- Order: id, customerId, totalAmount, createdAt\n- OrderItem: id, orderId, productId, quantity, priceAtPurchase",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Uses transaction for atomic operation",
+      "expectedOutput": "session.db.transaction",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Validates customer exists before processing",
+      "expectedOutput": "Customer not found",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Checks stock availability for each item",
+      "expectedOutput": "Insufficient stock",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Decrements product stock after order creation",
+      "expectedOutput": "stockQuantity - item.quantity",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Wrap all database operations inside session.db.transaction((transaction) async { ... }). If any operation throws an exception, all changes are automatically rolled back."
+    },
+    {
+      "level": 2,
+      "text": "Process items in two passes: first validate all items and calculate totals, then perform the actual database operations. This catches errors early before partially modifying data."
+    },
+    {
+      "level": 3,
+      "text": "Remember to capture the price at time of purchase in the OrderItem. Product prices can change later, but the customer should be charged what they saw when ordering."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using a transaction",
+      "consequence": "Order could be created but items fail, or stock decremented but order fails - leaving database inconsistent",
+      "correction": "Always wrap related database operations in session.db.transaction() to ensure atomicity"
+    },
+    {
+      "mistake": "Checking stock but not reserving it atomically",
+      "consequence": "Two concurrent orders could both pass stock check but only enough stock for one",
+      "correction": "The transaction locks the rows being modified, preventing race conditions"
+    },
+    {
+      "mistake": "Modifying products before creating the order",
+      "consequence": "If order creation fails, stock is already decremented",
+      "correction": "Create the order first, then the items, then update stock - all in one transaction"
+    }
+  ],
+  "difficulty": "intermediate"
+}

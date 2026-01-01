@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-04-lesson-04-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **Pattern Generator Program** that creates three different visual patterns based on user input.\n\n**Patterns to create:**\n\n- **Diamond Pattern** (combines growing and shrinking triangles)\n- **Checkerboard** (alternating characters)\n- **Multiplication Table** (user-specified size)\n\n**Example output:**\n\n<pre>=== Pattern Generator ===\"\n\nEnter size: 5\n\nPattern 1 - Diamond:\n    *\n   ***\n  *****\n   ***\n    *\n\nPattern 2 - Checkerboard:\n* - * - *\n- * - * -\n* - * - *\n- * - * -\n* - * - *\n\nPattern 3 - Times Table (5x5):\n  1  2  3  4  5\n  2  4  6  8 10\n  3  6  9 12 15\n  4  8 12 16 20\n  5 10 15 20 25\n</pre>**Hints:**\n\n- Diamond: Create top half (growing pyramid), then bottom half (shrinking)\n- Checkerboard: Use (row + col) % 2 to alternate\n- Times Table: Multiply row × column",
+  "instructions": "Build a **Pattern Generator Program** that creates three different visual patterns based on user input.\n\n**Patterns to create:**\n\n- **Diamond Pattern** (combines growing and shrinking triangles)\n- **Checkerboard** (alternating characters)\n- **Multiplication Table** (user-specified size)\n\n**Example output:**\n\n<pre>=== Pattern Generator ===\"\n\nEnter size: 5\n\nPattern 1 - Diamond:\n    *\n   ***\n  *****\n   ***\n    *\n\nPattern 2 - Checkerboard:\n* - * - *\n- * - * -\n* - * - *\n- * - * -\n* - * - *\n\nPattern 3 - Times Table (5x5):\n  1  2  3  4  5\n  2  4  6  8 10\n  3  6  9 12 15\n  4  8 12 16 20\n  5 10 15 20 25\n</pre>**Hints:**\n\n- Diamond: Create top half (growing pyramid), then bottom half (shrinking)\n- Checkerboard: Use (row + col) % 2 to alternate\n- Times Table: Multiply row × column",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For the diamond bottom half, use range(size-1, 0, -1) and same logic as top but with decreasing rows. For checkerboard, (row + col) % 2 == 0 means even position. For times table, multiply row * col. Remember to print() after inner loops to create newlines!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

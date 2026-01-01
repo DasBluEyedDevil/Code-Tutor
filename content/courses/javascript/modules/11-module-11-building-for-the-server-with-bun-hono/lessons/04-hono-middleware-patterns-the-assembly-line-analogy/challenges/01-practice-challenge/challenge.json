@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.4-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a middleware system for a blog API using Hono patterns:\n\n1. Create a logging middleware that logs the method and path\n2. Create a validation middleware that:\n   - For POST requests, parses the body and checks for 'title'\n   - If missing, return 400 error using c.json(error, 400)\n   - If present, store body using c.set('body', body) and await next()\n3. Create a route POST `/api/posts` that:\n   - Gets the body using c.get('body')\n   - Returns the post data with a generated ID\n4. Test with valid and invalid requests\n\nUse the HonoApp class. Remember: async (c, next) and await next()!",
+  "instructions": "Create a middleware system for a blog API using Hono patterns:\n\n1. Create a logging middleware that logs the method and path\n2. Create a validation middleware that:\n   - For POST requests, parses the body and checks for 'title'\n   - If missing, return 400 error using c.json(error, 400)\n   - If present, store body using c.set('body', body) and await next()\n3. Create a route POST `/api/posts` that:\n   - Gets the body using c.get('body')\n   - Returns the post data with a generated ID\n4. Test with valid and invalid requests\n\nUse the HonoApp class. Remember: async (c, next) and await next()!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should validate title exists using Hono patterns",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should detect missing title and return 400",
+      "expectedOutput": "false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In Hono middleware, use async (c, next) => { await next(); }. Store data with c.set('key', value) and access with c.get('key')."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to await next() in Hono middleware",
+      "consequence": "Middleware continues before the route handler completes, causing timing issues.",
+      "correction": "Always use: await next(); The await is essential in Hono's async middleware pattern."
+    },
+    {
+      "mistake": "Using Express (req, res, next) pattern instead of Hono (c, next)",
+      "consequence": "Code will not work with Hono's unified context object.",
+      "correction": "Use async (c, next) => { ... await next(); } pattern. Access request via c.req and respond via c.json()."
+    },
+    {
+      "mistake": "Mutating context like Express mutates req",
+      "consequence": "Data may be lost or cause unexpected behavior.",
+      "correction": "Use c.set('key', value) to store data and c.get('key') to retrieve it in route handlers."
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,39 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-0-lesson-5-switch-basic",
+  "title": "Basic Switch Expression",
+  "description": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.\n\nTest: getSeason(7) should return \"Summer\"",
+  "instructions": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-0-lesson-5-switch-basic-test-1",
+      "description": "Should return 'Summer'",
+      "expectedOutput": "Summer",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the syntax: return switch (month) { case 1, 2 -> \"value\"; };"
+    },
+    {
+      "level": 2,
+      "text": "Multiple cases can share one arrow: case 12, 1, 2 -> \"Winter\""
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting semicolon after the switch expression",
+      "consequence": "Compilation error",
+      "correction": "Switch expressions need ; at the end when used in a statement"
+    },
+    {
+      "mistake": "Using break with arrow syntax",
+      "consequence": "Compilation error",
+      "correction": "Arrow syntax doesn't use break - the arrow implies no fall-through"
+    }
+  ],
+  "difficulty": "beginner"
+}

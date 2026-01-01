@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "16.3-challenge-0",
+  "title": "Configure ExportOptions.plist for App Store",
+  "description": "Create an ExportOptions.plist file for automated App Store submissions.",
+  "instructions": "Write an ExportOptions.plist that configures: 1) app-store distribution method, 2) Team ID 'ABC123XYZ', 3) Upload symbols enabled, 4) Destination set to upload, 5) Provisioning profile mapping for bundle ID 'com.example.flutterapp' using profile 'Flutter App Store Profile'.",
+  "language": "xml",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use <key>name</key> followed by <string>value</string> for string values"
+    },
+    {
+      "level": 2,
+      "text": "Boolean values use <true/> or <false/> (self-closing tags)"
+    },
+    {
+      "level": 3,
+      "text": "The provisioningProfiles is a nested dict with bundle ID as key and profile name as value"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using wrong method value (e.g., 'appstore' instead of 'app-store')",
+      "consequence": "Export fails with invalid method error",
+      "correction": "Use exactly 'app-store' with hyphen for App Store distribution"
+    },
+    {
+      "mistake": "Forgetting to include the provisioningProfiles dict",
+      "consequence": "Xcode may select wrong profile or fail to find matching profile",
+      "correction": "Always specify explicit profile mapping with bundle ID as key"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create your first Entity Framework Core application!\n\n1. Define a 'Student' entity:\n   - int Id (primary key)\n   - string Name\n   - int Age\n   - string Major\n\n2. Create 'SchoolDbContext' inheriting DbContext:\n   - DbSet<Student> Students property\n   - OnConfiguring: use SQLite (\\\"Data Source=school.db\\\")\n\n3. Simulate EF Core operations (print SQL commands that would execute):\n   - Create context\n   - Add 3 students\n   - Print: \\\"SQL: INSERT INTO Students...\\\"\n   - Query students over age 20\n   - Print: \\\"SQL: SELECT * FROM Students WHERE Age > 20\\\"\n   - Update first student's major\n   - Print: \\\"SQL: UPDATE Students SET Major = ...\\\"\n   - Delete a student\n   - Print: \\\"SQL: DELETE FROM Students WHERE Id = ...\\\"\n\nThis shows EF Core's CRUD operations!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"ENTITY FRAMEWORK\"",
+      "expectedOutput": "ENTITY FRAMEWORK",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"CREATE\"",
+      "expectedOutput": "CREATE",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"READ\"",
+      "expectedOutput": "READ",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"UPDATE\"",
+      "expectedOutput": "UPDATE",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"DELETE\"",
+      "expectedOutput": "DELETE",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"SQL\"",
+      "expectedOutput": "SQL",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "DbContext: inherit from DbContext. DbSet<T>: represents table. OnConfiguring: setup connection. CRUD: Add(), Where(), modify object, Remove(). SaveChanges() executes SQL!"
+    },
+    {
+      "level": 2,
+      "text": "Forgetting SaveChanges(): Add/Remove/modify objects doesn't touch database! Must call context.SaveChanges() to persist. No SaveChanges() = no database changes!"
+    },
+    {
+      "level": 3,
+      "text": "Not disposing context: DbContext implements IDisposable! Always use 'using' statement or call Dispose(). Otherwise connection leaks!"
+    },
+    {
+      "level": 4,
+      "text": "Id property confusion: By convention, 'Id' or '[ClassName]Id' is primary key. EF auto-increments it on Insert. Don't set Id yourself when inserting!"
+    },
+    {
+      "level": 5,
+      "text": "EnsureCreated vs Migrations: EnsureCreated() creates DB but CAN'T update schema! Use Migrations in real apps. EnsureCreated() is only for learning/testing!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting SaveChanges()",
+      "consequence": "Add/Remove/modify objects doesn't touch database! Must call context.SaveChanges() to persist. No SaveChanges() = no database changes!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Not disposing context",
+      "consequence": "DbContext implements IDisposable! Always use 'using' statement or call Dispose(). Otherwise connection leaks!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Id property confusion",
+      "consequence": "By convention, 'Id' or '[ClassName]Id' is primary key. EF auto-increments it on Insert. Don't set Id yourself when inserting!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Using EnsureCreated() in Real Projects (NEVER DO THIS!)",
+      "consequence": "EnsureCreated() is a DEAD END for real applications! It creates the DB once but CANNOT update schema - ever! If you add a column, change a relationship, or modify any entity, EnsureCreated() will NOT apply those changes. Your only options become: (1) Delete entire database and lose all data, or (2) Manual SQL alterations. Neither is acceptable in production!",
+      "correction": "ALWAYS use Migrations in any project that will go to production or needs schema updates: 'dotnet ef migrations add InitialCreate' then 'dotnet ef database update'. EnsureCreated() is ONLY acceptable for: (1) Learning tutorials like this one, (2) Throwaway prototypes, (3) Unit tests with in-memory databases. The moment you think 'this might be real', switch to migrations immediately!"
+    }
+  ],
+  "difficulty": "advanced"
+}

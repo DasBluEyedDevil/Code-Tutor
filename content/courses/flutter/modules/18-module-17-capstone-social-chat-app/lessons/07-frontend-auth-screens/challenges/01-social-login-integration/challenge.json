@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.7-challenge-0",
+  "title": "Social Login Integration",
+  "description": "Add Google and Apple sign-in buttons to the login screen with OAuth flow handling and account linking.",
+  "instructions": "Implement social login functionality:\n\n1. Add Google Sign-In button with proper branding\n2. Add Apple Sign-In button (iOS only, or web)\n3. Implement OAuth flow for each provider\n4. Handle account linking when email already exists\n5. Store social auth tokens securely\n6. Update auth state after successful social login\n7. Handle cancellation and errors gracefully",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use google_sign_in and sign_in_with_apple packages for OAuth flows"
+    },
+    {
+      "level": 2,
+      "text": "Apple Sign-In requires configuration in Xcode and Apple Developer Portal"
+    },
+    {
+      "level": 3,
+      "text": "Handle account linking by first verifying the email/password, then linking the social provider"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling the case where user cancels social sign-in",
+      "consequence": "App shows error instead of gracefully returning to login",
+      "correction": "Check for null return from Google Sign-In and AuthorizationErrorCode.canceled from Apple"
+    },
+    {
+      "mistake": "Storing social tokens in regular SharedPreferences",
+      "consequence": "Tokens could be extracted from device, compromising security",
+      "correction": "Always use flutter_secure_storage for any authentication tokens"
+    }
+  ],
+  "difficulty": "advanced"
+}

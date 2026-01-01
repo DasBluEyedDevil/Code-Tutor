@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "8.1-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a countdown timer that:\n1. Starts at 3\n2. Logs the number every second\n3. Logs 'Liftoff!' after 0\n\nExpected output (over 4 seconds):\n3\n2\n1\n0\nLiftoff!",
+  "instructions": "Create a countdown timer that:\n1. Starts at 3\n2. Logs the number every second\n3. Logs 'Liftoff!' after 0\n\nExpected output (over 4 seconds):\n3\n2\n1\n0\nLiftoff!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Countdown works correctly",
+      "expectedOutput": "3\n2\n1\n0\nLiftoff!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Log count, then count--, then if (count < 0) clearInterval and log Liftoff"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Expecting async code to run in order:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Expecting async code to run in order:\n   setTimeout(() => console.log('A'), 1000);\n   console.log('B');\n   // Output: B, (wait), A  (not A, B!)"
+    },
+    {
+      "mistake": "Not storing interval ID to clear it:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Not storing interval ID to clear it:\n   setInterval(() => console.log('Hi'), 1000);\n   // Can't stop it now!\n   \n   Correct:\n   let id = setInterval(() => console.log('Hi'), 1000);\n   clearInterval(id);  // Can stop it"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.8-challenge-1",
+  "title": "Image Carousel in Posts",
+  "description": "Implement multi-image posts with a PageView carousel, dots indicator, and pinch-to-zoom functionality for a polished image viewing experience.",
+  "instructions": "Implement an image carousel for posts:\n\n1. Replace grid layout with PageView for 2+ images\n2. Add dots indicator showing current position\n3. Implement smooth page transitions\n4. Add pinch-to-zoom on individual images\n5. Support swipe gestures for navigation\n6. Show image counter (1/4, 2/4, etc.)\n7. Preload adjacent images for smooth scrolling",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use PageView.builder with physics: const BouncingScrollPhysics() for smooth scrolling"
+    },
+    {
+      "level": 2,
+      "text": "Preload images using CachedNetworkImage's precacheImage or a FutureBuilder that loads adjacent images"
+    },
+    {
+      "level": 3,
+      "text": "For pinch-to-zoom, wrap each image in InteractiveViewer or use the photo_view package for more features"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not constraining carousel height properly",
+      "consequence": "Carousel takes full screen or has layout overflow issues",
+      "correction": "Use SizedBox or ConstrainedBox with specific height, and set PageView's viewportFraction if needed"
+    },
+    {
+      "mistake": "Dots indicator not visible on light images",
+      "consequence": "Users cannot see which image they are on",
+      "correction": "Add a semi-transparent dark gradient overlay at the bottom, or use outlined dots with shadows"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,41 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.6-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a transaction system:\n\n1. Create a MockDatabase class with:\n   - accounts array with id, name, and balance\n   - transactionHistory array\n\n2. Implement a $transaction method that:\n   - Takes a callback function\n   - Creates a snapshot of data before execution\n   - Executes the callback\n   - If callback throws, restores the snapshot (rollback)\n   - If callback succeeds, commits the changes\n\n3. Create a transfer function that:\n   - Uses $transaction\n   - Checks for sufficient balance\n   - Transfers money between accounts\n\n4. Test with:\n   - A successful transfer\n   - A failed transfer (insufficient funds)\n\nShow that failed transfers don't change balances!",
+  "instructions": "Simulate a transaction system:\n\n1. Create a MockDatabase class with:\n   - accounts array with id, name, and balance\n   - transactionHistory array\n\n2. Implement a $transaction method that:\n   - Takes a callback function\n   - Creates a snapshot of data before execution\n   - Executes the callback\n   - If callback throws, restores the snapshot (rollback)\n   - If callback succeeds, commits the changes\n\n3. Create a transfer function that:\n   - Uses $transaction\n   - Checks for sufficient balance\n   - Transfers money between accounts\n\n4. Test with:\n   - A successful transfer\n   - A failed transfer (insufficient funds)\n\nShow that failed transfers don't change balances!",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Transaction commits on success",
+      "expectedOutput": "COMMITTED",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Transaction rolls back on failure",
+      "expectedOutput": "ROLLED_BACK",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use JSON.parse(JSON.stringify()) to create a deep copy snapshot of the data before the transaction."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not creating a deep copy for snapshot",
+      "consequence": "The snapshot will reference the same objects, so rollback won't restore original values.",
+      "correction": "Use JSON.parse(JSON.stringify(data)) or structuredClone(data) to create a true deep copy."
+    },
+    {
+      "mistake": "Forgetting to await the callback",
+      "consequence": "Errors in async operations won't trigger rollback.",
+      "correction": "Always await the callback: const result = await callback(this);"
+    }
+  ],
+  "difficulty": "intermediate"
+}

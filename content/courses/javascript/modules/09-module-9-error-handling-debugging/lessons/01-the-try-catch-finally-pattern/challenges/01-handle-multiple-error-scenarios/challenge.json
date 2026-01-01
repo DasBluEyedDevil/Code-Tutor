@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "9.1-challenge",
+  "title": "Handle Multiple Error Scenarios",
+  "description": "Create a function called `safeParseConfig` that takes a JSON string and returns a parsed configuration object. The function should:\n\n1. Try to parse the JSON\n2. If parsing fails, log 'Invalid JSON format' and return a default config\n3. If parsing succeeds but the config is missing required fields (name, version), log 'Missing required fields' and return a default config\n4. Always log 'Parse attempt complete' in a finally block\n5. Return the default config: { name: 'Unknown', version: '0.0.0' }",
+  "instructions": "Create a function called `safeParseConfig` that handles JSON parsing errors gracefully. The function should use try-catch-finally to handle both JSON parsing errors and missing required fields, always running cleanup code in finally.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Parses valid JSON with all required fields",
+      "expectedOutput": "Parse attempt complete\n{ name: 'MyApp', version: '1.0.0' }",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Returns default config for invalid JSON",
+      "expectedOutput": "Invalid JSON format\nParse attempt complete\n{ name: 'Unknown', version: '0.0.0' }",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Returns default config when required fields are missing",
+      "expectedOutput": "Missing required fields\nParse attempt complete\n{ name: 'Unknown', version: '0.0.0' }",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use JSON.parse() inside the try block. This throws an error for invalid JSON."
+    },
+    {
+      "level": 2,
+      "text": "After parsing, check if config.name and config.version exist using an if statement."
+    },
+    {
+      "level": 3,
+      "text": "The finally block should just contain: console.log('Parse attempt complete');"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting the field validation in the catch block instead of the try block",
+      "consequence": "The catch block only runs when an exception is thrown, not for logical validation failures.",
+      "correction": "Check for missing fields inside the try block, after JSON.parse() succeeds."
+    },
+    {
+      "mistake": "Forgetting to return defaultConfig in both error scenarios",
+      "consequence": "The function might return undefined in some error cases.",
+      "correction": "Ensure you return defaultConfig both when JSON parsing fails and when required fields are missing."
+    },
+    {
+      "mistake": "Not using finally for the completion log",
+      "consequence": "If you put the log in try or catch, it won't run in all scenarios.",
+      "correction": "Use finally to ensure 'Parse attempt complete' always logs."
+    }
+  ],
+  "difficulty": "intermediate"
+}

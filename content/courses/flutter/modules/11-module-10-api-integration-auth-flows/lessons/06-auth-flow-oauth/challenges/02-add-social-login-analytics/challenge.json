@@ -1,0 +1,23 @@
+{
+  "type": "CODE",
+  "id": "10.6-challenge-2",
+  "title": "Add Social Login Analytics",
+  "description": "Implement analytics tracking for social login events to understand user behavior.",
+  "instructions": "Create an analytics service that tracks social login events including:\n\n1. Login attempts (which provider, success/failure)\n2. Account linking events (which provider linked, success/failure)\n3. Login method preferences over time\n4. Error tracking with anonymized details\n\nThe service should be provider-agnostic (works with Firebase Analytics, Mixpanel, or any backend).",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create an abstract AnalyticsProvider interface so the service works with any analytics backend."
+    },
+    {
+      "level": 2,
+      "text": "Sanitize error codes before logging - only allow known safe values to prevent accidentally logging sensitive information."
+    },
+    {
+      "level": 3,
+      "text": "Wrap analytics calls in try-catch to prevent analytics errors from affecting the main app functionality."
+    }
+  ]
+}

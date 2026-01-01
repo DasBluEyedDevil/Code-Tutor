@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.5-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create a `CommentWidget` with: Use it to display 5 comments in a ListView! ---",
+  "instructions": "Create a `CommentWidget` with: Use it to display 5 comments in a ListView! ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Widget builds without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Custom widgets use constructor parameters: final String name; required this.name"
+    },
+    {
+      "level": 3,
+      "text": "Use Row with CircleAvatar for avatar, Expanded with Column for text content"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting 'required' keyword for constructor parameters",
+      "consequence": "Null values passed to widget",
+      "correction": "Add 'required' for mandatory parameters: required this.name"
+    },
+    {
+      "mistake": "Not using Expanded for text content in Row",
+      "consequence": "Text overflow error on long comments",
+      "correction": "Wrap Column with Expanded to let text wrap"
+    },
+    {
+      "mistake": "Missing super.key in constructor",
+      "consequence": "Widget key not properly initialized",
+      "correction": "Add super.key in const constructor"
+    }
+  ],
+  "difficulty": "beginner"
+}

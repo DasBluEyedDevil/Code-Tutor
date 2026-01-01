@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.6-challenge-1",
+  "title": "Create a Health Check System",
+  "description": "Build a comprehensive health check system that monitors database, cache, and external services.",
+  "instructions": "Create a HealthChecker class that:\n\n1. Defines a HealthCheck result class with name, status, latency, and error\n2. Implements checkDatabase() that tests database connectivity\n3. Implements checkCache() that tests Redis/cache connectivity\n4. Implements checkAll() that runs all checks and returns aggregate status\n5. Calculates overall system health based on individual check results\n6. Handles timeouts gracefully (max 5 seconds per check)",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Stopwatch to measure latency. Start it before the operation and stop it after."
+    },
+    {
+      "level": 2,
+      "text": "Use Future.wait() to run checks in parallel. This is more efficient than running them sequentially."
+    },
+    {
+      "level": 3,
+      "text": "For timeout handling, use .timeout(duration) on the Future and catch TimeoutException."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Running health checks sequentially instead of in parallel",
+      "consequence": "Health check takes 10+ seconds instead of 5 seconds max",
+      "correction": "Use Future.wait() to run all checks concurrently"
+    },
+    {
+      "mistake": "Not handling timeout scenarios",
+      "consequence": "Health checks hang indefinitely if a service is unresponsive",
+      "correction": "Always wrap checks with .timeout() and handle TimeoutException"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.2-challenge-1",
+  "title": "Implement Funnel Tracking",
+  "description": "Create an analytics mixin that tracks users through a conversion funnel (e.g., checkout flow).",
+  "instructions": "Create a CheckoutFunnelAnalytics class that tracks users through a 4-step checkout funnel:\n\n1. viewCart - Log when user views their cart with itemCount and cartTotal\n2. beginCheckout - Log when user starts checkout with cartTotal and optional couponCode\n3. addPaymentInfo - Log when user adds payment method with paymentType (e.g., 'credit_card', 'paypal')\n4. completePurchase - Log when purchase is complete with orderId, orderTotal, and itemCount\n5. Include a calculateFunnelDropoff() method that takes a Map of step counts and returns dropoff percentages\n\nEach step should include a 'funnel_step' parameter (1-4) for easy funnel visualization.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each step should include a 'funnel_step' parameter with its step number (1-4)"
+    },
+    {
+      "level": 2,
+      "text": "For dropoff calculation, use (current - next) / current * 100"
+    },
+    {
+      "level": 3,
+      "text": "Use collection if syntax to conditionally include optional parameters: if (couponCode != null) 'coupon': couponCode"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not including step number in events",
+      "consequence": "Cannot visualize funnel in analytics dashboard",
+      "correction": "Add a consistent 'funnel_step' parameter to all funnel events"
+    },
+    {
+      "mistake": "Calculating conversion instead of dropoff",
+      "consequence": "Metrics are inverted and confusing",
+      "correction": "Dropoff = (current - next) / current. Conversion = next / current."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "10.6-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a generic function and interface:\n\n1. Create a generic function `wrapInArray<T>` that:\n   - Takes a single value of type T\n   - Returns an array containing just that value: [value]\n\n2. Create a generic interface `Result<T>` with:\n   - `success`: boolean\n   - `data`: T (the generic type)\n   - `error`: string | null\n\n3. Create a function `createSuccess<T>` that:\n   - Takes a data parameter of type T\n   - Returns a Result<T> with success: true, the data, and error: null\n\n4. Test with different types (string, number, object)",
+  "instructions": "Create a generic function and interface:\n\n1. Create a generic function `wrapInArray<T>` that:\n   - Takes a single value of type T\n   - Returns an array containing just that value: [value]\n\n2. Create a generic interface `Result<T>` with:\n   - `success`: boolean\n   - `data`: T (the generic type)\n   - `error`: string | null\n\n3. Create a function `createSuccess<T>` that:\n   - Takes a data parameter of type T\n   - Returns a Result<T> with success: true, the data, and error: null\n\n4. Test with different types (string, number, object)",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "wrapInArray should wrap value in array",
+      "expectedOutput": "[42]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "createSuccess should create proper Result",
+      "expectedOutput": "true",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For wrapInArray, add <T> after the function name, then use T for the parameter type and T[] for the return type."
+    },
+    {
+      "level": 2,
+      "text": "For the Result interface, add <T> after the interface name: interface Result<T>. Then use T for the data property type."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add <T> to the function or interface",
+      "consequence": "TypeScript won't recognize it as a generic type.",
+      "correction": "Add <T> immediately after the function/interface name: function name<T>(...) or interface Name<T> {...}"
+    },
+    {
+      "mistake": "Using 'any' instead of the generic type parameter",
+      "consequence": "Loses type safety - the whole point of generics.",
+      "correction": "Replace 'any' with 'T' (or your type parameter name) to maintain type relationships."
+    },
+    {
+      "mistake": "Forgetting the return type annotation",
+      "consequence": "While TypeScript can infer, explicit types make code clearer.",
+      "correction": "Add return type: function wrapInArray<T>(value: T): T[] { ... }"
+    }
+  ],
+  "difficulty": "intermediate"
+}

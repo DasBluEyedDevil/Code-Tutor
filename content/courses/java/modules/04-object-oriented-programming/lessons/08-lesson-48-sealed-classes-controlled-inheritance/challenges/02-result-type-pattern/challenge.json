@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-8-sealed-result",
+  "title": "Result Type Pattern",
+  "description": "Create a sealed Result type for operation outcomes:\n- record Success(String message)\n- record Failure(String error)\n\nWrite a method that returns Success or Failure based on a condition.\nPrint appropriate message using pattern matching.\n\nTest: If input > 0, return Success(\"Positive\"), else Failure(\"Not positive\")\nInput: 5\nExpected output: Success: Positive",
+  "instructions": "Create a sealed Result type for operation outcomes:\n- record Success(String message)\n- record Failure(String error)\n\nWrite a method that returns Success or Failure based on a condition.\nPrint appropriate message using pattern matching.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-8-sealed-result-test-1",
+      "description": "Should print 'Success: Positive'",
+      "expectedOutput": "Success: Positive",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define: sealed interface Result permits Success, Failure {}"
+    },
+    {
+      "level": 2,
+      "text": "Use records for both variants: record Success(String message) implements Result {}"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using class instead of record",
+      "consequence": "More boilerplate code",
+      "correction": "Records are perfect for sealed type variants - use them!"
+    }
+  ],
+  "difficulty": "intermediate"
+}

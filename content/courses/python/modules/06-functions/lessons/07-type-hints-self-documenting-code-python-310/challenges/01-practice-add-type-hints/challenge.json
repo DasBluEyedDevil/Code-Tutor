@@ -1,0 +1,41 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-06-lesson-07-challenge-1",
+  "title": "Practice: Add Type Hints",
+  "description": "Add type hints to these functions to make them self-documenting.\n\n**Functions to annotate:**\n1. `calculate_bmi` - takes weight (float) and height (float), returns float\n2. `get_initials` - takes first name and last name (strings), returns string\n3. `find_longest` - takes a list of strings, returns the longest string\n4. `merge_dicts` - takes two dictionaries (string keys, int values), returns merged dict\n5. `safe_divide` - takes two numbers (int or float), returns float or None if dividing by zero",
+  "instructions": "Add type hints to these functions to make them self-documenting.\n\n**Functions to annotate:**\n1. `calculate_bmi` - takes weight (float) and height (float), returns float\n2. `get_initials` - takes first name and last name (strings), returns string\n3. `find_longest` - takes a list of strings, returns the longest string\n4. `merge_dicts` - takes two dictionaries (string keys, int values), returns merged dict\n5. `safe_divide` - takes two numbers (int or float), returns float or None if dividing by zero",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "BMI calculation is correct",
+      "expectedOutput": "BMI: 22.9",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the -> arrow syntax for return types. For collections, use list[str] and dict[str, int] syntax. For values that can be None, use type | None syntax (Python 3.10+)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using List instead of list (Python 3.9+)",
+      "consequence": "Works but outdated style",
+      "correction": "Use lowercase list[int] instead of List[int]"
+    },
+    {
+      "mistake": "Forgetting | None for nullable returns",
+      "consequence": "Type checkers may flag errors",
+      "correction": "Use float | None when function can return None (Python 3.10+)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,86 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-26-05-challenge-01",
+  "title": "Final Capstone: Complete Deployment Configuration",
+  "description": "Configure the complete production deployment setup for ShopFlow including health checks, structured logging, and configuration validation.",
+  "instructions": "Create the final production configuration for ShopFlow:\n\n1. Configure health checks for:\n   - PostgreSQL database (tag: ready)\n   - Redis cache (tag: ready)\n   - Stripe API (tag: ready, external)\n\n2. Add Serilog structured logging:\n   - Enrich with environment name and machine name\n   - Write to Console and Application Insights\n\n3. Configure options validation:\n   - Add DatabaseOptions with required ConnectionString\n   - Add StripeOptions with required SecretKey and WebhookSecret\n   - Validate on startup\n\n4. Map health check endpoints:\n   - /healthz/live - Liveness probe (no dependency checks)\n   - /healthz/ready - Readiness probe (all tagged checks)\n\nThis is your final challenge - bring together everything you have learned!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should configure Serilog",
+      "expectedOutput": "UseSerilog",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should add health checks",
+      "expectedOutput": "AddHealthChecks",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should validate options on start",
+      "expectedOutput": "ValidateOnStart",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should map liveness endpoint",
+      "expectedOutput": "/healthz/live",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Should map readiness endpoint",
+      "expectedOutput": "/healthz/ready",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Should add Required attributes to options",
+      "expectedOutput": "[Required",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use builder.Host.UseSerilog() to configure Serilog with a lambda that receives context and config."
+    },
+    {
+      "level": 2,
+      "text": "Chain AddNpgSql, AddRedis, and AddUrlGroup on the AddHealthChecks() builder."
+    },
+    {
+      "level": 3,
+      "text": "Use builder.Services.AddOptions<T>().Bind().ValidateDataAnnotations().ValidateOnStart() pattern."
+    },
+    {
+      "level": 4,
+      "text": "For liveness, use Predicate = _ => false to skip all checks. For readiness, filter by tag."
+    },
+    {
+      "level": 5,
+      "text": "Add [Required] attribute to properties in options classes for validation."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting ValidateOnStart() on options configuration",
+      "consequence": "Missing configuration values are only discovered when the options are first used, not at startup.",
+      "correction": "Always chain .ValidateOnStart() after .ValidateDataAnnotations() for fail-fast behavior."
+    },
+    {
+      "mistake": "Using the same Predicate for both health endpoints",
+      "consequence": "Either liveness checks too much (causing unnecessary restarts) or readiness checks too little (routing traffic to unhealthy instances).",
+      "correction": "Liveness should use Predicate = _ => false, readiness should filter for 'ready' tagged checks."
+    },
+    {
+      "mistake": "Not enriching logs with context",
+      "consequence": "Difficult to correlate logs across requests or identify which server generated a log entry.",
+      "correction": "Use Enrich.FromLogContext(), Enrich.WithEnvironmentName(), and Enrich.WithMachineName()."
+    }
+  ],
+  "difficulty": "advanced"
+}

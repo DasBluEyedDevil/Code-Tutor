@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.5-challenge",
+  "title": "Add Rate Limiting with Proper Errors",
+  "description": "Implement rate limiting middleware that returns consistent error responses.",
+  "instructions": "Create a rate limiting middleware that tracks requests per user ID (from JWT), limits to 100 requests per 15 minutes, and throws a TooManyRequestsError with a Retry-After header when the limit is exceeded.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Throws TooManyRequestsError when limit exceeded",
+      "expectedOutput": "TooManyRequestsError",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Sets Retry-After header in response",
+      "expectedOutput": "Retry-After",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Uses userId as rate limit key",
+      "expectedOutput": "c.get('userId')",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Cleans up expired rate limit records",
+      "expectedOutput": "resetTime < now",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Get userId from context using c.get('userId')"
+    },
+    {
+      "level": 2,
+      "text": "Track the request count and reset time in the rate limit store"
+    },
+    {
+      "level": 3,
+      "text": "When throwing the error, also set the Retry-After header with the number of seconds until the window resets"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not cleaning up old records from the store",
+      "consequence": "Memory leak as store grows indefinitely",
+      "correction": "Periodically delete records where resetTime has passed"
+    },
+    {
+      "mistake": "Not setting Retry-After header",
+      "consequence": "Clients don't know how long to wait before retrying",
+      "correction": "Add c.header('Retry-After', String(retryAfter)) before throwing error"
+    },
+    {
+      "mistake": "Using IP address instead of userId for authenticated routes",
+      "consequence": "All users behind same IP share a rate limit",
+      "correction": "Use userId (from JWT context) for authenticated endpoints"
+    }
+  ],
+  "difficulty": "intermediate"
+}

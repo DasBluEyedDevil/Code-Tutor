@@ -1,0 +1,105 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.10-challenge-1",
+  "title": "Complete the Notes App Refactor",
+  "description": "Refactor the messy Notes app into clean MVVM architecture with Riverpod. Transform the all-in-one StatefulWidget into separate Model, ViewModel, and View components.",
+  "instructions": "You are given a messy Notes app where everything is crammed into one StatefulWidget. Your task is to refactor it into proper MVVM architecture:\n\n1. **Create the Note Model**:\n   - id (String)\n   - title (String)\n   - content (String)\n   - createdAt (DateTime)\n   - Factory constructor Note.create()\n   - copyWith() method\n\n2. **Create the NotesViewModel**:\n   - Use @riverpod annotation\n   - State is List<Note>\n   - addNote(title, content)\n   - updateNote(id, title, content)\n   - deleteNote(id)\n\n3. **Create the NotesScreen**:\n   - Extend ConsumerWidget\n   - Watch notesViewModelProvider\n   - Delegate all actions to ViewModel\n   - No business logic in the widget\n\n4. **Requirements**:\n   - Empty state when no notes\n   - Add note via dialog\n   - Delete note via icon button\n   - Display note title, content, and date",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-model",
+      "description": "Note class has id, title, content, createdAt properties",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-model-factory",
+      "description": "Note.create() factory generates ID and timestamp automatically",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-model-copywith",
+      "description": "Note has copyWith() method for immutable updates",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-viewmodel",
+      "description": "NotesViewModel uses @riverpod and has List<Note> state",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-viewmodel-add",
+      "description": "addNote() creates and adds a new note to state",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-viewmodel-delete",
+      "description": "deleteNote() removes note from state by ID",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-view-consumer",
+      "description": "NotesScreen extends ConsumerWidget",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-view-watch",
+      "description": "View uses ref.watch() to observe notes",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-view-delegate",
+      "description": "View delegates actions to ViewModel via ref.read().notifier",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with the Note model. It needs four properties: id, title, content, and createdAt. Make them all final for immutability."
+    },
+    {
+      "level": 2,
+      "text": "For Note.create(), generate the ID using DateTime.now().millisecondsSinceEpoch.toString() and set createdAt to DateTime.now()."
+    },
+    {
+      "level": 3,
+      "text": "In NotesViewModel, state is List<Note>. For addNote, use: state = [...state, newNote]. For deleteNote, use: state = state.where((n) => n.id != id).toList()."
+    },
+    {
+      "level": 4,
+      "text": "Change StatefulWidget to ConsumerWidget. Replace _notes with ref.watch(notesViewModelProvider). Replace _addNote with ref.read(notesViewModelProvider.notifier).addNote()."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Mutating state directly: state.add(note) instead of state = [...state, note]",
+      "consequence": "Riverpod won't detect the change and UI won't update",
+      "correction": "Always create a new list: state = [...state, note] or state = state.where(...).toList()"
+    },
+    {
+      "mistake": "Using ref.watch() inside the onPressed callback",
+      "consequence": "Creates unnecessary subscriptions and potential bugs",
+      "correction": "Use ref.read() inside callbacks: ref.read(provider.notifier).method()"
+    },
+    {
+      "mistake": "Keeping business logic in the View (like validation or ID generation)",
+      "consequence": "Defeats the purpose of MVVM - logic cannot be tested independently",
+      "correction": "Move all logic to ViewModel. View should only call ViewModel methods with raw user input."
+    },
+    {
+      "mistake": "Forgetting to make Note immutable (using var instead of final)",
+      "consequence": "Can accidentally mutate notes, causing state bugs",
+      "correction": "Use final for all Note properties and provide copyWith() for updates"
+    }
+  ],
+  "difficulty": "intermediate"
+}

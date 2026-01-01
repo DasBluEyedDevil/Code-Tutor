@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-05-challenge-1",
+  "title": "Mini Web Framework",
+  "description": "Build a minimal web framework with routing and views that mimics Django's URL dispatch system.",
+  "instructions": "Create a Router class that maps URLs to view functions and handles request dispatching with parameter extraction.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Router handles GET requests",
+      "expectedOutput": "GET /transactions/ -> 200:",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** In the `route` decorator, convert the pattern to regex using `re.sub()` to replace `<int:name>` with `(?P<name>\\d+)`. Store the compiled regex, methods, and handler. In `dispatch`, loop through routes and use `re.match()` to find matches."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking HTTP method after matching path",
+      "consequence": "Wrong handler called or security bypass",
+      "correction": "First match the path, then verify the method is allowed for that route"
+    }
+  ],
+  "difficulty": "advanced"
+}

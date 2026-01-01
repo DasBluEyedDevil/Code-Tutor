@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.8-challenge-2",
+  "title": "Practice Challenge: Safe Method Calls",
+  "description": "You have an object that may or may not have certain methods. Use optional chaining to safely call methods that might not exist.",
+  "instructions": "Safely call methods using optional chaining for method calls.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Existing methods work correctly",
+      "expectedOutput": "8",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Missing methods return undefined",
+      "expectedOutput": "Method not available",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use method?.() syntax to safely call methods"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting ?. before the parentheses wrong",
+      "consequence": "Syntax error",
+      "correction": "Use calculator.method?.(args) not calculator.method.?(args)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

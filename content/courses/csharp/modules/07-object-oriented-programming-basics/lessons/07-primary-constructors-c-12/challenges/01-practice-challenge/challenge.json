@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-07-07-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a vehicle tracking system using primary constructors!\n\n1. Create a class 'Vehicle' with primary constructor: (string make, string model, int year)\n2. Add a method GetInfo() that returns a formatted string like 'Year Make Model'\n3. Create a derived class 'Car' with primary constructor: (string make, string model, int year, int doors)\n4. Pass make, model, year to base class Vehicle\n5. Add a method Describe() that uses GetInfo() and adds door count\n6. Create instances and test both classes",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain a year",
+      "expectedOutput": "202",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain 'doors'",
+      "expectedOutput": "doors",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Primary constructor syntax: class ClassName(Type param1, Type param2). Parameters are available throughout the class."
+    },
+    {
+      "level": 2,
+      "text": "For inheritance, use: class Derived(params) : Base(baseParams). Pass the needed parameters to the base constructor."
+    },
+    {
+      "level": 3,
+      "text": "Use string interpolation ($\"...\") to format strings with the constructor parameters."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to pass parameters to base class",
+      "consequence": "When inheriting, you must explicitly pass required parameters to the base class primary constructor using : Base(params) syntax.",
+      "correction": "class Car(string make, int year) : Vehicle(make, year)"
+    },
+    {
+      "mistake": "Thinking parameters are public properties",
+      "consequence": "Primary constructor parameters are captured privately. To expose them, create explicit properties.",
+      "correction": "Add: public string Make { get; } = make;"
+    },
+    {
+      "mistake": "Using primary constructors for mutable state",
+      "consequence": "Parameters are captured by value at construction. They work best for initialization data, not frequently changing state.",
+      "correction": "Use traditional fields/properties for mutable state."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,73 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-09-03-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create a product filtering system!\n\n1. Create a 'Product' class:\n   - string Name\n   - decimal Price\n   - string Category\n   - int Stock\n\n2. Create a List with at least 6 products:\n   - Mix of Electronics, Clothing, Books\n   - Varying prices ($10 - $500)\n   - Different stock levels (0 - 100)\n\n3. Use .Where() to find:\n   - Products under $50\n   - Electronics with stock > 0\n   - Products that are either Books OR price > $200\n   - Out of stock items (stock == 0)\n\n4. Display results for each filter with descriptive labels",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"under $50\"",
+      "expectedOutput": "under $50",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Electronics in stock\"",
+      "expectedOutput": "Electronics in stock",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Out of stock\"",
+      "expectedOutput": "Out of stock",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Where syntax: '.Where(item => condition)'. AND: '&&'. OR: '||'. Compare strings: 'p.Category == \"Books\"'. Property access: 'p.Price', 'p.Stock'."
+    },
+    {
+      "level": 2,
+      "text": "Using = instead of ==: Comparison is '==' (double equals)! Single '=' is assignment, won't work in lambda. 'x => x.Age = 30' is ERROR!"
+    },
+    {
+      "level": 3,
+      "text": "Forgetting parentheses with complex conditions: 'x => x > 5 && x < 10 || x == 100' can be ambiguous! Use parentheses: 'x => (x > 5 && x < 10) || x == 100'."
+    },
+    {
+      "level": 4,
+      "text": "Case sensitivity in string comparison: 'Category == \"electronics\"' won't match \"Electronics\"! Use .Equals(\"electronics\", StringComparison.OrdinalIgnoreCase) for case-insensitive."
+    },
+    {
+      "level": 5,
+      "text": "Null reference in lambda: If object property could be null, check first! 'x => x.Name.StartsWith(\"A\")' crashes if Name is null. Use: 'x => x.Name != null && x.Name.StartsWith(\"A\")'."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using = instead of ==",
+      "consequence": "Comparison is '==' (double equals)! Single '=' is assignment, won't work in lambda. 'x => x.Age = 30' is ERROR!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Forgetting parentheses with complex conditions",
+      "consequence": "'x => x > 5 && x < 10 || x == 100' can be ambiguous! Use parentheses: 'x => (x > 5 && x < 10) || x == 100'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Case sensitivity in string comparison",
+      "consequence": "'Category == \"electronics\"' won't match \"Electronics\"! Use .Equals(\"electronics\", StringComparison.OrdinalIgnoreCase) for case-insensitive.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Null reference in lambda",
+      "consequence": "If object property could be null, check first! 'x => x.Name.StartsWith(\"A\")' crashes if Name is null. Use: 'x => x.Name != null && x.Name.StartsWith(\"A\")'.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "intermediate"
+}

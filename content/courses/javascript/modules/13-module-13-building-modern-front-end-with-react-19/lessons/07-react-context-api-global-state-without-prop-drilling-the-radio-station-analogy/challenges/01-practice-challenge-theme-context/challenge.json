@@ -1,0 +1,38 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.7-challenge",
+  "title": "Practice Challenge: Theme Context",
+  "description": "Create a simple Theme Context system:\n\n1. Create a ThemeContext simulation with:\n   - Current theme ('light' or 'dark')\n   - toggleTheme function\n\n2. Create a Provider that manages theme state\n\n3. Create components that use the theme:\n   - ThemeToggle button\n   - ThemedBox that shows current theme\n\n4. Demonstrate theme switching",
+  "instructions": "Simulate React Context for theme management. Create provider, consumer, and demonstrate the toggle working.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Theme toggle works",
+      "expectedOutput": "dark",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a context object with _value property to store the current value"
+    },
+    {
+      "level": 2,
+      "text": "The Provider sets _value, useContext reads _value"
+    },
+    {
+      "level": 3,
+      "text": "toggleTheme should change 'light' to 'dark' and vice versa"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to wrap components in Provider",
+      "consequence": "useContext returns undefined or default value",
+      "correction": "Always wrap your component tree with <Provider value={...}>"
+    }
+  ],
+  "difficulty": "intermediate"
+}

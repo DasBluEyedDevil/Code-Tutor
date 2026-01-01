@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.2-challenge",
+  "title": "Add Task Queries",
+  "description": "Create a database queries module with common task operations.",
+  "instructions": "Create a queries file that exports functions for common task operations: findTasksByUser, findTaskById, and countTasksByStatus.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "findTasksByUser filters by userId and optional status",
+      "expectedOutput": "prisma.task.findMany",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "findTaskById checks both taskId and userId for security",
+      "expectedOutput": "userId",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "countTasksByStatus uses groupBy",
+      "expectedOutput": "groupBy",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use prisma.task.findMany with a where clause that includes userId"
+    },
+    {
+      "level": 2,
+      "text": "Use the spread operator with conditional object properties: ...(condition && { field: value })"
+    },
+    {
+      "level": 3,
+      "text": "For groupBy, use prisma.task.groupBy({ by: ['status'], where: { userId }, _count: { status: true } })"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not including userId in findTaskById",
+      "consequence": "Users could access tasks belonging to other users",
+      "correction": "Always filter by both taskId AND userId"
+    },
+    {
+      "mistake": "Using findUnique instead of findFirst for owner check",
+      "consequence": "findUnique only works with unique fields (id), can't combine with userId",
+      "correction": "Use findFirst with a where clause containing multiple conditions"
+    }
+  ],
+  "difficulty": "intermediate"
+}

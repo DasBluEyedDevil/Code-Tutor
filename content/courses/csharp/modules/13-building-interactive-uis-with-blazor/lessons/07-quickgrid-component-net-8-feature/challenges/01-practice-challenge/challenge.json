@@ -1,0 +1,85 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-13-07-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Build a Product Inventory Manager with QuickGrid!\n\n1. Product model:\n   - int Id\n   - string Name\n   - decimal Price\n   - int Stock\n   - string Category\n   - bool IsAvailable\n\n2. Create QuickGrid with:\n   - Property columns: Name (sortable), Category, Stock\n   - Template column for Price (red if > $500, green otherwise)\n   - Template column for Status (badge: In Stock / Low Stock / Out)\n   - Template column for Actions (Edit, Delete buttons)\n   - Enable sorting on Name and Price\n\n3. Add search filter input\n4. Add pagination (10 items per page)\n5. Show total products count\n\nPrint complete component!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"QuickGrid\"",
+      "expectedOutput": "QuickGrid",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"PropertyColumn\"",
+      "expectedOutput": "PropertyColumn",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"TemplateColumn\"",
+      "expectedOutput": "TemplateColumn",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Pagination\"",
+      "expectedOutput": "Pagination",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"Sortable\"",
+      "expectedOutput": "Sortable",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "PropertyColumn for simple properties. TemplateColumn for custom content. Sortable=\"true\" enables sorting. Use 'context' in templates to access row item. Pagination with PaginationState."
+    },
+    {
+      "level": 2,
+      "text": "IQueryable vs IEnumerable: Use IQueryable when possible (especially with EF Core)! Sorting/paging happens in database. IEnumerable loads all data first (slow!)."
+    },
+    {
+      "level": 3,
+      "text": "Missing NuGet package: QuickGrid requires Microsoft.AspNetCore.Components.QuickGrid package. In .NET 8+ templates, it's included. Older projects need manual install."
+    },
+    {
+      "level": 4,
+      "text": "Context in templates: Inside TemplateColumn, use 'context' to access current row item! '@context.Name', '@context.Price'. Don't forget 'context.'!"
+    },
+    {
+      "level": 5,
+      "text": "Pagination state: Must create PaginationState instance and pass to both QuickGrid AND Paginator! If mismatch, pagination breaks. Same instance for both!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "IQueryable vs IEnumerable",
+      "consequence": "Use IQueryable when possible (especially with EF Core)! Sorting/paging happens in database. IEnumerable loads all data first (slow!).",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Missing NuGet package",
+      "consequence": "QuickGrid requires Microsoft.AspNetCore.Components.QuickGrid package. In .NET 8+ templates, it's included. Older projects need manual install.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Context in templates",
+      "consequence": "Inside TemplateColumn, use 'context' to access current row item! '@context.Name', '@context.Price'. Don't forget 'context.'!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Pagination state",
+      "consequence": "Must create PaginationState instance and pass to both QuickGrid AND Paginator! If mismatch, pagination breaks. Same instance for both!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

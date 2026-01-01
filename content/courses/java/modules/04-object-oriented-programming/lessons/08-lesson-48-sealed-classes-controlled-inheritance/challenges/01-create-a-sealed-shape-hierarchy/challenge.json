@@ -1,0 +1,43 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-8-sealed-basic",
+  "title": "Create a Sealed Shape Hierarchy",
+  "description": "Create a sealed interface Shape with two permitted implementations:\n- record Circle(double radius) with area = PI * r^2\n- record Square(double side) with area = side * side\n\nAdd a method that calculates area using pattern matching.\n\nExpected output: 78.54 (for Circle with radius 5)",
+  "instructions": "Create a sealed interface Shape with two permitted implementations:\n- record Circle(double radius) with area = PI * r^2\n- record Square(double side) with area = side * side\n\nAdd a method that calculates area using pattern matching.\n\nExpected output: 78.54 (for Circle with radius 5)",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-8-sealed-basic-test-1",
+      "description": "Should print '78.54' for circle area",
+      "expectedOutput": "78.54",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'sealed interface Shape permits Circle, Square {}' to define the sealed interface"
+    },
+    {
+      "level": 2,
+      "text": "Records automatically implement interfaces: record Circle(double radius) implements Shape {}"
+    },
+    {
+      "level": 3,
+      "text": "Use switch with record patterns: case Circle(double r) -> Math.PI * r * r;"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the permits clause",
+      "consequence": "Compiler error or unexpected behavior",
+      "correction": "Use 'sealed interface Shape permits Circle, Square {}'"
+    },
+    {
+      "mistake": "Using default case when not needed",
+      "consequence": "Loses exhaustiveness checking benefit",
+      "correction": "With sealed types, list all cases explicitly - no default needed"
+    }
+  ],
+  "difficulty": "intermediate"
+}

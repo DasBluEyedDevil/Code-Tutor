@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-3-lesson-7-stream-map",
+  "title": "Map with Streams",
+  "description": "Given a list of names [\"alice\", \"bob\", \"charlie\"], use streams to:\n1. Convert each name to uppercase\n2. Collect to a list\n3. Print the result\n\nExpected output: [ALICE, BOB, CHARLIE]",
+  "instructions": "Given a list of names [\"alice\", \"bob\", \"charlie\"], use streams to:\n1. Convert each name to uppercase\n2. Collect to a list\n3. Print the result",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-3-lesson-7-stream-map-test-1",
+      "description": "Should print '[ALICE, BOB, CHARLIE]'",
+      "expectedOutput": "[ALICE, BOB, CHARLIE]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use .map() to transform each element"
+    },
+    {
+      "level": 2,
+      "text": "String::toUpperCase is a method reference for s -> s.toUpperCase()"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using map(String.toUpperCase())",
+      "consequence": "Compilation error",
+      "correction": "Use method reference String::toUpperCase or lambda s -> s.toUpperCase()"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,68 @@
+{
+  "type": "QUIZ",
+  "id": "10.2-quiz-1",
+  "title": "HTTP Fundamentals Quiz",
+  "description": "Test your understanding of HTTP communication with Dio and external APIs.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Which HTTP method should you use to update only the email field of a user profile?",
+      "options": [
+        "GET - because you are getting data",
+        "POST - because you are sending data",
+        "PUT - because you are updating",
+        "PATCH - because you are partially updating"
+      ],
+      "correctAnswer": 3,
+      "explanation": "PATCH is used for partial updates when you only want to modify specific fields. PUT would require sending the entire user object, even the fields you are not changing. PATCH is more efficient and clearer in intent."
+    },
+    {
+      "id": "q2",
+      "text": "In Dio, what is the correct order to add interceptors for: logging, authentication, and retry logic?",
+      "options": [
+        "Retry, Auth, Logging",
+        "Logging, Auth, Retry",
+        "Auth, Logging, Retry",
+        "The order does not matter"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Interceptors execute in order. Add Logging first to see all traffic including the auth headers that get added. Add Auth second to attach tokens before retry logic. Add Retry last so it can retry with the authenticated request."
+    },
+    {
+      "id": "q3",
+      "text": "What DioExceptionType indicates the server is unreachable (no internet or DNS failure)?",
+      "options": [
+        "badResponse",
+        "connectionTimeout",
+        "connectionError",
+        "receiveTimeout"
+      ],
+      "correctAnswer": 2,
+      "explanation": "connectionError occurs when the connection cannot be established at all - no internet, DNS failure, or server completely unreachable. connectionTimeout means we started connecting but it took too long. badResponse means we got a response but it was an error status."
+    },
+    {
+      "id": "q4",
+      "text": "Why should you NOT hardcode API keys in your Dart source code?",
+      "options": [
+        "Dart cannot compile string constants",
+        "Keys will be in version control and possibly decompiled from the app",
+        "The app will crash on startup",
+        "API keys expire immediately when hardcoded"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Hardcoded API keys end up in your git history (permanent, even if deleted later) and can be extracted from compiled apps by reverse engineering. Use environment variables, .env files (not committed), or fetch keys from your secure backend."
+    },
+    {
+      "id": "q5",
+      "text": "When should you use Dio instead of the Serverpod client?",
+      "options": [
+        "Always use Dio, it is more powerful",
+        "When calling your own Serverpod backend",
+        "When calling third-party APIs like Stripe, OpenWeatherMap, or GitHub",
+        "Only for file downloads"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Use the Serverpod client for your own Serverpod backend (type-safe, generated code). Use Dio for third-party APIs that do not have Serverpod-style clients. Dio gives you interceptors and fine control needed for external services."
+    }
+  ]
+}

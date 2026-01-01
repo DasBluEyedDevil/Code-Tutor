@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-05-lesson-04-challenge-1",
+  "title": "Practice Exercise",
+  "description": "Build a **City Distance Calculator** that uses tuples for coordinates and calculates distances between cities.\n\n**Requirements:**\n\n- Create a dictionary of cities with tuple coordinates (latitude, longitude)\n- Include at least 5 major cities\n- Display all cities with their coordinates\n- Ask user to select two cities\n- Calculate the distance between them using the Haversine formula (provided)\n- Show which city is further north (higher latitude)\n- Show which city is further west (more negative longitude)\n- Return results as a tuple: (distance, north_city, west_city)\n\n**Example Output:**\n\n<pre>=== City Distance Calculator ===\n\nAvailable cities:\n1. New York: (40.7128, -74.0060)\n2. Los Angeles: (34.0522, -118.2437)\n3. Chicago: (41.8781, -87.6298)\n4. Houston: (29.7604, -95.3698)\n5. Phoenix: (33.4484, -112.0740)\n\nSelect first city (1-5): 1\nSelected: New York (40.7128, -74.0060)\n\nSelect second city (1-5): 2\nSelected: Los Angeles (34.0522, -118.2437)\n\nResults:\n  Distance: 2451.3 miles\n  Further north: New York\n  Further west: Los Angeles\n</pre>**Haversine Formula (provided):**\n\n<pre>import math\n\ndef calculate_distance(coord1, coord2):\n    lat1, lon1 = coord1\n    lat2, lon2 = coord2\n    \n    # Convert to radians\n    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])\n    \n    # Haversine formula\n    dlat = lat2 - lat1\n    dlon = lon2 - lon1\n    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2\n    c = 2 * math.asin(math.sqrt(a))\n    \n    # Earth radius in miles\n    r = 3956\n    \n    return c * r\n</pre>",
+  "instructions": "Build a **City Distance Calculator** that uses tuples for coordinates and calculates distances between cities.\n\n**Requirements:**\n\n- Create a dictionary of cities with tuple coordinates (latitude, longitude)\n- Include at least 5 major cities\n- Display all cities with their coordinates\n- Ask user to select two cities\n- Calculate the distance between them using the Haversine formula (provided)\n- Show which city is further north (higher latitude)\n- Show which city is further west (more negative longitude)\n- Return results as a tuple: (distance, north_city, west_city)\n\n**Example Output:**\n\n<pre>=== City Distance Calculator ===\n\nAvailable cities:\n1. New York: (40.7128, -74.0060)\n2. Los Angeles: (34.0522, -118.2437)\n3. Chicago: (41.8781, -87.6298)\n4. Houston: (29.7604, -95.3698)\n5. Phoenix: (33.4484, -112.0740)\n\nSelect first city (1-5): 1\nSelected: New York (40.7128, -74.0060)\n\nSelect second city (1-5): 2\nSelected: Los Angeles (34.0522, -118.2437)\n\nResults:\n  Distance: 2451.3 miles\n  Further north: New York\n  Further west: Los Angeles\n</pre>**Haversine Formula (provided):**\n\n<pre>import math\n\ndef calculate_distance(coord1, coord2):\n    lat1, lon1 = coord1\n    lat2, lon2 = coord2\n    \n    # Convert to radians\n    lat1, lon1, lat2, lon2 = map(math.radians, [lat1, lon1, lat2, lon2])\n    \n    # Haversine formula\n    dlat = lat2 - lat1\n    dlon = lon2 - lon1\n    a = math.sin(dlat/2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon/2)**2\n    c = 2 * math.asin(math.sqrt(a))\n    \n    # Earth radius in miles\n    r = 3956\n    \n    return c * r\n</pre>",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Tuples use parentheses: (lat, lon). To unpack: lat, lon = coord. For dictionary access: cities[city_name] returns tuple. Index 0-based: city_list[choice - 1]. Further north = higher latitude. Further west = more negative longitude (in Western hemisphere). Create results tuple: (distance, north_city, west_city)."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the colon after if/for/while",
+      "consequence": "SyntaxError",
+      "correction": "Add : at the end of the line"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for equality checks"
+    },
+    {
+      "mistake": "Incorrect indentation",
+      "consequence": "IndentationError",
+      "correction": "Use consistent 4-space indentation"
+    }
+  ],
+  "difficulty": "beginner"
+}

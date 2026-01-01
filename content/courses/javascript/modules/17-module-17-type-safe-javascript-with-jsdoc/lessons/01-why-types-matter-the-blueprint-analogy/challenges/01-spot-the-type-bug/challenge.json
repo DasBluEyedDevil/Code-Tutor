@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "17.1-challenge",
+  "title": "Spot the Type Bug",
+  "description": "This code has a type bug. The function expects an array but gets called with a string. Add JSDoc to document what the function expects.",
+  "instructions": "Add JSDoc comments to the processItems function to document that it expects an array of strings.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Correct usage works",
+      "expectedOutput": "[\"HELLO\",\"WORLD\"]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use @param {string[]} to indicate an array of strings"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using @param {array} instead of @param {string[]}",
+      "consequence": "Generic 'array' doesn't give you element type safety",
+      "correction": "Use @param {string[]} for arrays of strings, @param {number[]} for arrays of numbers, etc."
+    }
+  ],
+  "difficulty": "beginner"
+}

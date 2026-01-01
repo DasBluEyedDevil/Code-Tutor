@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-09-challenge-1",
+  "title": "Build a Complete REST API",
+  "description": "Create a full REST API for a finance tracker with serializers, viewsets, routers, filtering, and permissions.",
+  "instructions": "Build a REST API that:\n1. Has serializers for Transaction and Category models with validation\n2. Implements ViewSets with list, create, retrieve, update, delete\n3. Uses a router to generate URL patterns\n4. Supports filtering by category and date range\n5. Implements permission checking (users can only access their own data)",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-api-1",
+      "description": "List returns only user's transactions",
+      "expectedOutput": "Found 2 transactions",
+      "isVisible": true
+    },
+    {
+      "id": "test-api-2",
+      "description": "Create adds new transaction",
+      "expectedOutput": "Created:",
+      "isVisible": true
+    },
+    {
+      "id": "test-api-3",
+      "description": "Permission check blocks unauthorized access",
+      "expectedOutput": "403",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In get_queryset, filter transactions where user_id matches request.user.id."
+    },
+    {
+      "level": 2,
+      "text": "In retrieve/update/destroy, first find the object, then check if tx.user_id == request.user.id before proceeding."
+    },
+    {
+      "level": 3,
+      "text": "The router should parse the URL path, extract the prefix and optional pk, then call the appropriate viewset method."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not filtering queryset by user",
+      "consequence": "Users can see other users' data",
+      "correction": "Always filter by request.user in get_queryset()"
+    },
+    {
+      "mistake": "Checking permissions only in list view",
+      "consequence": "Users can still access individual items via retrieve",
+      "correction": "Check ownership in retrieve, update, and destroy methods too"
+    }
+  ],
+  "difficulty": "advanced"
+}

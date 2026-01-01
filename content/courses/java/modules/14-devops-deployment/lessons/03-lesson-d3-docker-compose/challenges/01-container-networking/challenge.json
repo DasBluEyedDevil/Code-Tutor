@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "devops-lesson-3-mc-1",
+  "title": "Container Networking",
+  "description": "Understanding how containers communicate",
+  "question": "In docker-compose.yml, your app connects to 'db:5432'. What does 'db' refer to?",
+  "options": [
+    "A DNS entry in /etc/hosts on your computer",
+    "The Docker service name, which Docker's internal DNS resolves to the container IP",
+    "A hardcoded IP address that Docker assigns",
+    "An environment variable that must be set"
+  ],
+  "correctAnswer": 1,
+  "explanation": "Docker Compose creates a network and runs an internal DNS server. Service names (like 'db') become DNS hostnames that resolve to the container's IP address. This allows containers to communicate using predictable names instead of dynamic IP addresses.",
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.4-challenge-0",
+  "title": "Practice Challenge",
+  "description": "Create an app with: 1. At least 3 network images 2. Different sizes 3. At least one circular image 4. Text labels under each image ---",
+  "instructions": "Create an app with: 1. At least 3 network images 2. Different sizes 3. At least one circular image 4. Text labels under each image ---",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Gallery displays network images",
+      "expectedOutput": "Image.network widgets loading from picsum.photos URLs",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Circular profile image displays correctly",
+      "expectedOutput": "CircleAvatar with radius 60 and NetworkImage",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Text labels appear below images",
+      "expectedOutput": "Landscape Photo, Square Photo, Profile Photo labels visible",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Use Image.network('url') to load images from URLs"
+    },
+    {
+      "level": 3,
+      "text": "CircleAvatar uses backgroundImage: NetworkImage('url') for circular images"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to wrap images in SizedBox with explicit height",
+      "consequence": "Unbounded height error or layout issues",
+      "correction": "Use SizedBox or Container with height property"
+    },
+    {
+      "mistake": "Missing BoxFit for Image.network",
+      "consequence": "Image may overflow or look distorted",
+      "correction": "Add fit: BoxFit.cover to control how image fills space"
+    },
+    {
+      "mistake": "Using Image.network for CircleAvatar",
+      "consequence": "Image won't be circular",
+      "correction": "Use backgroundImage: NetworkImage('url') for CircleAvatar"
+    }
+  ],
+  "difficulty": "beginner"
+}

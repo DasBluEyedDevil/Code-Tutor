@@ -1,0 +1,8 @@
+---
+type: "THEORY"
+title: "Database configuration"
+---
+
+spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+spring.datasource.username=root
+spring.datasource.password=secret

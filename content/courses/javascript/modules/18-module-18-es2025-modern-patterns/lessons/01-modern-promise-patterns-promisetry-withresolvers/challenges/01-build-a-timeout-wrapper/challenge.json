@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.1-challenge",
+  "title": "Build a Timeout Wrapper",
+  "description": "Use Promise.withResolvers() to create a timeout wrapper.",
+  "instructions": "Create a function that takes a promise and a timeout. If the promise doesn't resolve within the timeout, reject with 'Timeout'.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Times out slow promises",
+      "expectedOutput": "Timeout",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Promise.race() to race between the original promise and your timeout promise"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not cleaning up the timeout on success",
+      "consequence": "Memory leak if many timeouts are created",
+      "correction": "Use .finally(() => clearTimeout(timer)) to clean up"
+    }
+  ],
+  "difficulty": "intermediate"
+}

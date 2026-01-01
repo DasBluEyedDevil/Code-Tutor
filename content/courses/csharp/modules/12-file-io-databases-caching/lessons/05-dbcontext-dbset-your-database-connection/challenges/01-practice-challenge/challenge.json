@@ -1,0 +1,91 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-12-05-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Demonstrate DbContext change tracking!\n\n1. Create 'Task' entity (Id, Title, IsCompleted)\n\n2. Create 'TaskDbContext' with DbSet<Task>\n\n3. Simulate change tracking states:\n   - Create new task, add to context\n   - Print state (should be 'Added')\n   - 'Save' and print state (now 'Unchanged')\n   - Modify task title\n   - Print state (now 'Modified')\n   - Mark for removal\n   - Print state (now 'Deleted')\n\n4. Show DbContext responsibilities:\n   - Print: Connection management\n   - Print: Change tracking\n   - Print: Query translation\n   - Print: Transaction management\n\n5. Emphasize 'using' statement importance!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should contain \"CHANGE TRACKING\"",
+      "expectedOutput": "CHANGE TRACKING",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain \"Added\"",
+      "expectedOutput": "Added",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Output should contain \"Modified\"",
+      "expectedOutput": "Modified",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Output should contain \"Deleted\"",
+      "expectedOutput": "Deleted",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Output should contain \"RESPONSIBILITIES\"",
+      "expectedOutput": "RESPONSIBILITIES",
+      "isVisible": true
+    },
+    {
+      "id": "test-6",
+      "description": "Output should contain \"Dispose\"",
+      "expectedOutput": "Dispose",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "DbContext: session with database. DbSet<T>: represents table. Change tracking: Added, Modified, Deleted, Unchanged. SaveChanges(): persists all. Always use 'using' statement!"
+    },
+    {
+      "level": 2,
+      "text": "Not disposing DbContext: Leads to connection leaks! Always use 'using' statement or manually call Dispose(). DbContext is meant for SHORT-LIVED use."
+    },
+    {
+      "level": 3,
+      "text": "Long-lived DbContext: Don't keep DbContext alive for entire app! Create per request (web) or per operation. Change tracking gets stale, memory grows."
+    },
+    {
+      "level": 4,
+      "text": "Detached entities: Entities not tracked by context = Detached. Can't SaveChanges() on detached! Must Add() or Attach() first."
+    },
+    {
+      "level": 5,
+      "text": "Multiple SaveChanges: SaveChanges() can be called multiple times, but creates multiple transactions. Batch changes, call SaveChanges() ONCE at end!"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not disposing DbContext",
+      "consequence": "Leads to connection leaks! Always use 'using' statement or manually call Dispose(). DbContext is meant for SHORT-LIVED use.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Long-lived DbContext",
+      "consequence": "Don't keep DbContext alive for entire app! Create per request (web) or per operation. Change tracking gets stale, memory grows.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Detached entities",
+      "consequence": "Entities not tracked by context = Detached. Can't SaveChanges() on detached! Must Add() or Attach() first.",
+      "correction": "Review the correct syntax and best practices for this concept."
+    },
+    {
+      "mistake": "Multiple SaveChanges",
+      "consequence": "SaveChanges() can be called multiple times, but creates multiple transactions. Batch changes, call SaveChanges() ONCE at end!",
+      "correction": "Review the correct syntax and best practices for this concept."
+    }
+  ],
+  "difficulty": "advanced"
+}

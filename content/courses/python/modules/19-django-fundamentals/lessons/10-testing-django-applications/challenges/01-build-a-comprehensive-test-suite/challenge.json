@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-19-lesson-10-challenge-1",
+  "title": "Build a Comprehensive Test Suite",
+  "description": "Create a complete test suite for a finance tracker with model tests, view tests, and edge case coverage.",
+  "instructions": "Build tests that:\n1. Test Transaction model validation (positive amounts, valid types)\n2. Test balance calculation with various scenarios (empty, only income, only expenses)\n3. Test view permissions (login required, ownership checks)\n4. Test API endpoints (list, create, update, delete)\n5. Use setUp/tearDown for test fixtures",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-suite-1",
+      "description": "Model validation tests pass",
+      "expectedOutput": "test_valid_transaction_creation ... ok",
+      "isVisible": true
+    },
+    {
+      "id": "test-suite-2",
+      "description": "Repository tests pass",
+      "expectedOutput": "test_balance_calculation ... ok",
+      "isVisible": true
+    },
+    {
+      "id": "test-suite-3",
+      "description": "Edge case tests pass",
+      "expectedOutput": "test_only_expenses ... ok",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "In Transaction.__post_init__, add validation: if self.amount <= 0: raise ValueError('Amount must be positive')"
+    },
+    {
+      "level": 2,
+      "text": "Use with self.assertRaises(ValueError) to test that exceptions are raised correctly."
+    },
+    {
+      "level": 3,
+      "text": "For user isolation tests, create transactions for user 1 and user 2, then verify get_user_transactions(1) only returns user 1's data."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not resetting state between tests",
+      "consequence": "Tests pass individually but fail together",
+      "correction": "Create fresh instances in setUp() method"
+    },
+    {
+      "mistake": "Testing internal implementation instead of behavior",
+      "consequence": "Tests break when refactoring even if behavior is correct",
+      "correction": "Test observable outputs, not internal methods"
+    },
+    {
+      "mistake": "Not testing edge cases",
+      "consequence": "Bugs with empty data, large numbers, or boundary conditions",
+      "correction": "Always test: empty state, single item, many items, edge values"
+    }
+  ],
+  "difficulty": "advanced"
+}

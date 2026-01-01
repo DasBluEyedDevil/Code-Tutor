@@ -1,0 +1,30 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-14-lesson-03b-challenge",
+  "title": "Interactive Exercise",
+  "description": "Create a SQLAlchemy model for a bookstore:\n1. Define a Book model with: id, title, author, price, in_stock (boolean)\n2. Define an Order model with: id, book_id (foreign key), quantity, order_date\n3. Create relationships between Book and Order\n4. Write queries to: find all books in stock, get orders for a specific book",
+  "instructions": "Create a SQLAlchemy model for a bookstore with Book and Order models.",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use Column(Integer, primary_key=True) for id. Use ForeignKey('books.id') for book_id. Use relationship() for bidirectional access."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to commit after add",
+      "consequence": "Changes not saved to database",
+      "correction": "Always call session.commit() after modifications"
+    }
+  ],
+  "difficulty": "advanced"
+}

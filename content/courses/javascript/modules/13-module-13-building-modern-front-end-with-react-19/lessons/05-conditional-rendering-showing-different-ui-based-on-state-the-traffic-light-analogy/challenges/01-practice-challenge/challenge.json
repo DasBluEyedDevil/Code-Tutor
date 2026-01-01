@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "12.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Create a user authentication UI with conditional rendering:\n\n1. Create an `AuthApp` object with:\n   - state: { isLoggedIn: false, user: null, loading: false }\n   - login(username) method\n   - logout() method\n   - render() method that shows different UI based on state\n\n2. Show:\n   - Loading message when loading = true\n   - Login button when not logged in\n   - Welcome message + Logout button when logged in\n\n3. Test all states",
+  "instructions": "Create a user authentication UI with conditional rendering:\n\n1. Create an `AuthApp` object with:\n   - state: { isLoggedIn: false, user: null, loading: false }\n   - login(username) method\n   - logout() method\n   - render() method that shows different UI based on state\n\n2. Show:\n   - Loading message when loading = true\n   - Login button when not logged in\n   - Welcome message + Logout button when logged in\n\n3. Test all states",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should show different UI when logged in",
+      "expectedOutput": "Welcome",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should show login when logged out",
+      "expectedOutput": "Login",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use if/else in render() to show different UI based on state"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common conditional rendering mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common conditional rendering mistakes:"
+    },
+    {
+      "mistake": "**Using if statement inside JSX**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Using if statement inside JSX**:\n   ```jsx\n   // WRONG! Can't use if in JSX\n   return (\n     <div>\n       {if (isLoggedIn) { <p>Welcome</p> }}  // Syntax error!\n     </div>\n   );\n   \n   // CORRECT! Use ternary\n   return (\n     <div>\n       {isLoggedIn ? <p>Welcome</p> : <p>Login</p>}\n     </div>\n   );\n   \n   // Or if/else before return:\n   if (isLoggedIn) {\n     return <div><p>Welcome</p></div>;\n   }\n   return <div><p>Login</p></div>;\n   ```"
+    },
+    {
+      "mistake": "**Wrong use of && operator**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong use of && operator**:\n   ```jsx\n   // WRONG! Renders \"0\" when count is 0\n   {count && <p>You have {count} items</p>}\n   \n   // CORRECT! Use explicit boolean\n   {count > 0 && <p>You have {count} items</p>}\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

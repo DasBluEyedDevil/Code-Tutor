@@ -1,0 +1,79 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-24-01-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Create a basic GitHub Actions workflow for a .NET project.",
+  "instructions": "Create a CI workflow for ShopFlow!\n\n1. Name the workflow 'ShopFlow CI'\n\n2. Configure triggers:\n   - Run on push to main branch\n   - Run on pull requests to main branch\n\n3. Create a single job 'build-and-test' that:\n   - Runs on ubuntu-latest\n   - Checks out the code\n   - Sets up .NET 9.0\n   - Restores dependencies\n   - Builds in Release configuration\n   - Runs tests\n\n4. Follow the YAML structure for GitHub Actions workflows.",
+  "language": "yaml",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should have workflow name",
+      "expectedOutput": "name:",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should trigger on push to main",
+      "expectedOutput": "push:",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Should use actions/checkout",
+      "expectedOutput": "actions/checkout",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Should build in Release configuration",
+      "expectedOutput": "Release",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with 'name: ShopFlow CI' at the top of the file."
+    },
+    {
+      "level": 2,
+      "text": "The 'on' section uses push: and pull_request: with branches: [main] under each."
+    },
+    {
+      "level": 3,
+      "text": "Steps use either 'uses:' for actions or 'run:' for shell commands."
+    },
+    {
+      "level": 4,
+      "text": "Use actions/checkout@v4 and actions/setup-dotnet@v4 for the first two steps."
+    },
+    {
+      "level": 5,
+      "text": "dotnet commands: restore, build --no-restore --configuration Release, test --no-build --configuration Release"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Incorrect YAML indentation",
+      "consequence": "YAML parsing fails and the workflow does not run. GitHub shows a syntax error.",
+      "correction": "Use consistent 2-space indentation. Each nested level adds 2 spaces."
+    },
+    {
+      "mistake": "Missing 'uses:' or 'run:' prefix in steps",
+      "consequence": "GitHub Actions does not know whether the step is an action reference or a shell command.",
+      "correction": "Always prefix action references with 'uses:' and shell commands with 'run:'."
+    },
+    {
+      "mistake": "Building without restoring first",
+      "consequence": "Build fails because NuGet packages are not downloaded.",
+      "correction": "Always run 'dotnet restore' before 'dotnet build', or omit --no-restore from build."
+    },
+    {
+      "mistake": "Running tests without building first",
+      "consequence": "Tests fail because there are no compiled assemblies to test.",
+      "correction": "Run build before test, or omit --no-build from the test command."
+    }
+  ],
+  "difficulty": "intermediate"
+}

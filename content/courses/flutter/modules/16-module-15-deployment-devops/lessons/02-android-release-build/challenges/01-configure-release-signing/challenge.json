@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "16.2-challenge-0",
+  "title": "Configure Release Signing",
+  "description": "Set up a complete Android release signing configuration.",
+  "instructions": "Write the complete build.gradle signing configuration that: 1) Loads key.properties safely (handling missing file), 2) Defines a release signing config, 3) Applies it to the release build type with minifyEnabled and shrinkResources enabled.",
+  "language": "groovy",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use rootProject.file('key.properties') to get the file reference"
+    },
+    {
+      "level": 2,
+      "text": "Check if the file exists with .exists() before loading"
+    },
+    {
+      "level": 3,
+      "text": "Use the ternary operator to handle null storeFile: keystoreProperties['storeFile'] ? file(...) : null"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not checking if key.properties exists",
+      "consequence": "Build fails on machines without the file (like CI before secrets are set)",
+      "correction": "Wrap the load() call in an if (file.exists()) check"
+    },
+    {
+      "mistake": "Using file() without null check on storeFile",
+      "consequence": "NullPointerException when key.properties is missing",
+      "correction": "Use ternary: keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null"
+    }
+  ],
+  "difficulty": "intermediate"
+}

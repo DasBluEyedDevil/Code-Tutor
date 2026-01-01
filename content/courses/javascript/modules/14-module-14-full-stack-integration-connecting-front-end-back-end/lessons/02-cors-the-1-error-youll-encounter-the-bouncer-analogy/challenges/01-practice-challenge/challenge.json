@@ -1,0 +1,46 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.2-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate CORS checking:\n\n1. Create a `browser` object with method `checkCORS(frontendOrigin, backendOrigin)` that:\n   - Compares the two origins\n   - Returns true if same origin (protocol + domain + port match)\n   - Returns false if different origins\n\n2. Create a `backend` object with:\n   - `corsEnabled` property (boolean)\n   - `allowedOrigins` array\n   - `handleRequest(origin)` method that:\n     - If corsEnabled is false → returns 'CORS Error: Blocked!'\n     - If origin is in allowedOrigins → returns 'Request allowed'\n     - Otherwise → returns 'CORS Error: Origin not allowed'\n\n3. Test various scenarios",
+  "instructions": "Simulate CORS checking:\n\n1. Create a `browser` object with method `checkCORS(frontendOrigin, backendOrigin)` that:\n   - Compares the two origins\n   - Returns true if same origin (protocol + domain + port match)\n   - Returns false if different origins\n\n2. Create a `backend` object with:\n   - `corsEnabled` property (boolean)\n   - `allowedOrigins` array\n   - `handleRequest(origin)` method that:\n     - If corsEnabled is false → returns 'CORS Error: Blocked!'\n     - If origin is in allowedOrigins → returns 'Request allowed'\n     - Otherwise → returns 'CORS Error: Origin not allowed'\n\n3. Test various scenarios",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should detect same origin",
+      "expectedOutput": "true",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should detect different ports",
+      "expectedOutput": "false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Origins are same if protocol, domain, AND port all match"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common CORS mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common CORS mistakes:"
+    },
+    {
+      "mistake": "**CORS middleware placed AFTER routes**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**CORS middleware placed AFTER routes**:\n   ```javascript\n   // WRONG!\n   app.get('/api/users', (req, res) => { ... });\n   app.use(cors());  // Too late! Routes already defined\n   \n   // CORRECT!\n   app.use(cors());  // BEFORE routes!\n   app.get('/api/users', (req, res) => { ... });\n   ```"
+    },
+    {
+      "mistake": "**Forgot to install cors package**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Forgot to install cors package**:\n   ```bash\n   # Error: Cannot find module 'cors'\n   npm install cors\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

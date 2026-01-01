@@ -1,0 +1,74 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-02-lesson-03-challenge-1",
+  "title": "Practice Exercise",
+  "description": "**Your Mission:** Create a \"Shopping Cart Calculator\" that handles user input and calculates totals!\n\n**Requirements:**\n\n- Ask the user for:\n<li>Item name (string)\n- Item price (comes as string, convert to float)\n- Quantity (comes as string, convert to int)\n- Tax rate percentage (comes as string, convert to float)\n\n</li>- Calculate:\n<li>Subtotal (price × quantity)\n- Tax amount (subtotal × tax rate / 100)\n- Final total (subtotal + tax)\n\n</li>- Display a formatted receipt showing all values\n- Use proper type conversions throughout\n\n**Bonus Challenge:**\n\n- Format the prices to 2 decimal places\n- Handle the case where quantity is a decimal (round it down)",
+  "instructions": "**Your Mission:** Create a \"Shopping Cart Calculator\" that handles user input and calculates totals!\n\n**Requirements:**\n\n- Ask the user for:\n<li>Item name (string)\n- Item price (comes as string, convert to float)\n- Quantity (comes as string, convert to int)\n- Tax rate percentage (comes as string, convert to float)\n\n</li>- Calculate:\n<li>Subtotal (price × quantity)\n- Tax amount (subtotal × tax rate / 100)\n- Final total (subtotal + tax)\n\n</li>- Display a formatted receipt showing all values\n- Use proper type conversions throughout\n\n**Bonus Challenge:**\n\n- Format the prices to 2 decimal places\n- Handle the case where quantity is a decimal (round it down)",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shopping cart title is displayed",
+      "expectedOutput": "SHOPPING CART CALCULATOR",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Receipt section is displayed",
+      "expectedOutput": "RECEIPT",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Total is calculated and displayed",
+      "expectedOutput": "TOTAL:",
+      "isVisible": false
+    },
+    {
+      "id": "test-5",
+      "description": "Tax calculation is shown",
+      "expectedOutput": "Tax",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hints:**\n\n- **String to float:** Use `float()` for prices and decimals\n- **String to int:** Use `int()` for whole numbers (quantity)\n- **Display numbers:** Just use the variable name in f-strings: `f\"{price}\"`\n- **Two decimal places:** Use `f\"{price:.2f}\"` - the `:.2f` means \"2 decimal places\"\n<li>**Conversion pattern:**```\nuser_input = input(\"Enter number: \")  # Always a string\nnumber = float(user_input)            # Convert to float\n# OR:\nnumber = int(user_input)              # Convert to int\n```\n</li>"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "future = age + 10     # ❌ TypeError: can only concatenate str to str",
+      "consequence": "This will cause an error",
+      "correction": "Review the correct syntax in the examples"
+    },
+    {
+      "mistake": "price = int(\"19.99\")  # ❌ ValueError: invalid literal",
+      "consequence": "This will cause an error",
+      "correction": "Review the correct syntax in the examples"
+    },
+    {
+      "mistake": "tax = price * 0.1  # ❌ Error! Can't multiply string by float",
+      "consequence": "This will cause an error",
+      "correction": "Review the correct syntax in the examples"
+    },
+    {
+      "mistake": "<pre>`age = int(input(\"Age: \"))  # ❌ Crashes if user types \"twenty\"`</pre>For now, assume users enter valid input. Later (Module 7), you'll learn to handle errors with try/except!",
+      "consequence": "This will cause an error",
+      "correction": "Review the correct syntax in the examples"
+    },
+    {
+      "mistake": "# ❌ Python does NOT auto-convert with strings:",
+      "consequence": "This will cause an error",
+      "correction": "Review the correct syntax in the examples"
+    }
+  ],
+  "difficulty": "beginner"
+}

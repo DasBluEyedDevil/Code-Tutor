@@ -1,0 +1,81 @@
+{
+  "type": "FREE_CODING",
+  "id": "20.8-challenge",
+  "title": "Add Health Endpoint with Database Check",
+  "description": "Implement a comprehensive health check endpoint that monitors application and database status.",
+  "instructions": "Create a GET /health endpoint that returns:\n1. A quick response with status='ok'\n2. A detailed endpoint at GET /health/detailed that:\n   - Checks database connectivity with a simple query\n   - Returns database latency in milliseconds\n   - Returns 200 if healthy, 503 if database is down\n   - Includes uptime and timestamp\n\nThe detailed health check should be used by your load balancer.",
+  "language": "typescript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "GET /health returns 200 with status ok",
+      "expectedOutput": "status: 'ok'",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "GET /health/detailed checks database with query",
+      "expectedOutput": "SELECT 1",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Returns 503 if database disconnected",
+      "expectedOutput": "503",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Measures and reports database latency",
+      "expectedOutput": "latency_ms",
+      "isVisible": true
+    },
+    {
+      "id": "test-5",
+      "description": "Includes uptime and version",
+      "expectedOutput": "uptime|version",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use prisma.$queryRaw to send a raw SQL query"
+    },
+    {
+      "level": 2,
+      "text": "Measure time before and after the database query to calculate latency"
+    },
+    {
+      "level": 3,
+      "text": "Return status code 503 (Service Unavailable) if database check fails, so load balancers know to remove this instance"
+    },
+    {
+      "level": 4,
+      "text": "Use process.uptime() to get application uptime in seconds"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not catching database errors",
+      "consequence": "Health endpoint crashes instead of returning degraded status",
+      "correction": "Wrap database check in try/catch and set status to degraded on error"
+    },
+    {
+      "mistake": "Returning 200 even when database is down",
+      "consequence": "Load balancer doesn't know there's a problem",
+      "correction": "Return 503 (Service Unavailable) when database is disconnected"
+    },
+    {
+      "mistake": "Not measuring database latency",
+      "consequence": "Can't detect slow database issues",
+      "correction": "Record time before/after query and include in response"
+    },
+    {
+      "mistake": "Expensive health checks (full queries instead of SELECT 1)",
+      "consequence": "Health checks slow down the application",
+      "correction": "Use simple queries like SELECT 1 that just verify connectivity"
+    }
+  ],
+  "difficulty": "intermediate"
+}

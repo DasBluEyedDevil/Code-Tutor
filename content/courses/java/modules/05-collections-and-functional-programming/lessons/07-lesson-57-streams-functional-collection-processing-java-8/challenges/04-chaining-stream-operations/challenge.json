@@ -1,0 +1,34 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-3-lesson-7-stream-chain",
+  "title": "Chaining Stream Operations",
+  "description": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only numbers greater than 5\n2. Multiply each by 2\n3. Collect to a list\n4. Print the result\n\nExpected output: [12, 14, 16, 18, 20]",
+  "instructions": "Given a list of numbers [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], use streams to:\n1. Filter only numbers greater than 5\n2. Multiply each by 2\n3. Collect to a list\n4. Print the result",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-3-lesson-7-stream-chain-test-1",
+      "description": "Should print '[12, 14, 16, 18, 20]'",
+      "expectedOutput": "[12, 14, 16, 18, 20]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Chain operations: .filter().map().collect()"
+    },
+    {
+      "level": 2,
+      "text": "Filter comes before map to avoid transforming elements we don't need"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting map before filter",
+      "consequence": "Works but less efficient",
+      "correction": "Filter first to reduce the number of elements to transform"
+    }
+  ],
+  "difficulty": "intermediate"
+}

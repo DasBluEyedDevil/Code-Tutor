@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.5-challenge",
+  "title": "Practice Challenge",
+  "description": "Create an interactive form validator:\n\n<form id=\"signupForm\">\n  <input type=\"text\" id=\"username\" placeholder=\"Username\">\n  <input type=\"email\" id=\"email\" placeholder=\"Email\">\n  <button type=\"submit\">Sign Up</button>\n  <p id=\"message\"></p>\n</form>\n\nWrite JavaScript that:\n1. When the form is submitted, prevent default behavior\n2. Get the username and email values\n3. If username is empty, show error message\n4. If email doesn't contain '@', show error message\n5. If both valid, show success message",
+  "instructions": "Create an interactive form validator:\n\n<form id=\"signupForm\">\n  <input type=\"text\" id=\"username\" placeholder=\"Username\">\n  <input type=\"email\" id=\"email\" placeholder=\"Email\">\n  <button type=\"submit\">Sign Up</button>\n  <p id=\"message\"></p>\n</form>\n\nWrite JavaScript that:\n1. When the form is submitted, prevent default behavior\n2. Get the username and email values\n3. If username is empty, show error message\n4. If email doesn't contain '@', show error message\n5. If both valid, show success message",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Validates empty username",
+      "expectedOutput": "Username required",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use if/else to check: username === '' and !email.includes('@')"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common mistakes:"
+    },
+    {
+      "mistake": "Calling the function immediately:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Calling the function immediately:\n   button.addEventListener('click', myFunction());  // WRONG - runs now!\n   button.addEventListener('click', myFunction);  // CORRECT - runs on click"
+    },
+    {
+      "mistake": "Forgetting event.preventDefault() for forms:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Forgetting event.preventDefault() for forms:\n   form.addEventListener('submit', function(event) {\n     // Form submits and page reloads before your code runs!\n   });\n   \n   Must prevent default:\n   form.addEventListener('submit', function(event) {\n     event.preventDefault();  // Now your code can run\n   });"
+    }
+  ],
+  "difficulty": "beginner"
+}

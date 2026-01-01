@@ -1,0 +1,45 @@
+{
+  "type": "FREE_CODING",
+  "id": "11.7-challenge-3",
+  "title": "Environment Config",
+  "description": "Build a type-safe configuration module that:\n\n1. Defines expected environment variables with types\n2. Validates all required variables at startup\n3. Provides typed access to configuration\n4. Has different defaults for different environments\n5. Fails fast with clear error messages for missing config\n\nThis is how professional applications manage configuration.",
+  "instructions": "Create a configuration system:\n\n1. Define a schema for expected environment variables\n2. Create a loadConfig function that validates env vars\n3. Provide typed access to config values\n4. Support default values\n5. Fail with clear errors for missing required values\n6. Create derived configuration (isDev, isProd, etc.)\n\nSimulate different environments and test the validation.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid config should load successfully",
+      "expectedOutput": "Config loaded successfully!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Missing required config should throw error",
+      "expectedOutput": "ConfigError",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Environment variables are always strings. Use coercion to convert them to the correct types (number, boolean)."
+    },
+    {
+      "level": 2,
+      "text": "Collect all validation errors before throwing, so developers see all problems at once instead of fixing them one by one."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not validating configuration at startup",
+      "consequence": "Missing config causes runtime errors that are hard to debug",
+      "correction": "Validate all required config when the app starts and fail fast with clear messages."
+    },
+    {
+      "mistake": "Using process.env directly throughout the codebase",
+      "consequence": "No type safety, easy to misspell variable names, hard to mock in tests",
+      "correction": "Create a centralized config module that validates and exports typed values."
+    }
+  ],
+  "difficulty": "intermediate"
+}

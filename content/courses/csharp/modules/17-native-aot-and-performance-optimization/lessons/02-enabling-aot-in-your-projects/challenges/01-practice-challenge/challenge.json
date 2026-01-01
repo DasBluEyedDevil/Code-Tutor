@@ -1,0 +1,67 @@
+{
+  "type": "FREE_CODING",
+  "id": "lesson-17-02-challenge-01",
+  "title": "Practice Challenge",
+  "description": "Apply what you've learned in this interactive coding challenge.",
+  "instructions": "Create an AOT-ready configuration system!\n\n1. Create a 'ServerSettings' class with:\n   - Port (int)\n   - Host (string)\n   - EnableSsl (bool)\n   - AllowedOrigins (List<string>)\n\n2. Create a JsonSerializerContext with [JsonSerializable] for:\n   - ServerSettings\n   - List<ServerSettings>\n\n3. Write code that:\n   - Creates a ServerSettings instance with sample values\n   - Serializes it to JSON using the source-generated context\n   - Prints the JSON (indented)\n   - Deserializes it back and verifies the values\n\n4. Print the .csproj settings needed for AOT\n\nUse JsonSerializer with the source-generated context!",
+  "language": "csharp",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Output should show serialized JSON",
+      "expectedOutput": "JSON",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should show AOT settings",
+      "expectedOutput": "PublishAot",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "[JsonSerializable(typeof(ServerSettings))] tells source generator to create code for ServerSettings."
+    },
+    {
+      "level": 2,
+      "text": "JsonSerializerContext is abstract - use 'partial class' and the generator fills in the implementation."
+    },
+    {
+      "level": 3,
+      "text": "[JsonSourceGenerationOptions(WriteIndented = true)] on the context class enables pretty-printing."
+    },
+    {
+      "level": 4,
+      "text": "Access pre-generated serializer: SettingsJsonContext.Default.ServerSettings (not typeof!)."
+    },
+    {
+      "level": 5,
+      "text": "Multiple [JsonSerializable] attributes can stack on one context class for multiple types."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using JsonSerializer.Serialize<T>() without context",
+      "consequence": "JsonSerializer.Serialize(obj) uses reflection internally - not AOT compatible!",
+      "correction": "Always pass the context: JsonSerializer.Serialize(obj, Context.Default.TypeName)"
+    },
+    {
+      "mistake": "Forgetting 'partial' on the context class",
+      "consequence": "Source generator can't add the implementation. You get compile errors!",
+      "correction": "internal partial class MyJsonContext : JsonSerializerContext { } - 'partial' is required!"
+    },
+    {
+      "mistake": "Not including all needed types in [JsonSerializable]",
+      "consequence": "Nested types or collections fail at runtime if not registered!",
+      "correction": "Add [JsonSerializable(typeof(List<T>))] for any generic collections you use."
+    },
+    {
+      "mistake": "Using object or dynamic in serialized types",
+      "consequence": "Source generator can't know the actual type. Serialization fails or produces wrong output.",
+      "correction": "Use concrete types. Replace 'object Data' with 'Dictionary<string, string> Data' or similar."
+    }
+  ],
+  "difficulty": "advanced"
+}

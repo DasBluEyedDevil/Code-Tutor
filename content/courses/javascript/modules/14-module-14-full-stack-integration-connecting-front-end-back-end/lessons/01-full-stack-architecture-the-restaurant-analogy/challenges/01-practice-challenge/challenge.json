@@ -1,0 +1,40 @@
+{
+  "type": "FREE_CODING",
+  "id": "13.1-challenge",
+  "title": "Practice Challenge",
+  "description": "Simulate a full-stack data flow:\n\n1. Create a `frontend` object with a method `fetchUsers()` that:\n   - Logs \"Sending GET request to /api/users\"\n   - Calls backend.handleGetUsers()\n   - Logs the result\n\n2. Create a `backend` object with method `handleGetUsers()` that:\n   - Logs \"Backend received request\"\n   - Calls database.getUsers()\n   - Returns the result\n\n3. Create a `database` object with method `getUsers()` that:\n   - Returns array of mock users\n\nTest the complete flow.",
+  "instructions": "Simulate a full-stack data flow:\n\n1. Create a `frontend` object with a method `fetchUsers()` that:\n   - Logs \"Sending GET request to /api/users\"\n   - Calls backend.handleGetUsers()\n   - Logs the result\n\n2. Create a `backend` object with method `handleGetUsers()` that:\n   - Logs \"Backend received request\"\n   - Calls database.getUsers()\n   - Returns the result\n\n3. Create a `database` object with method `getUsers()` that:\n   - Returns array of mock users\n\nTest the complete flow.",
+  "language": "javascript",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should simulate complete flow",
+      "expectedOutput": "1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Chain the method calls: frontend → backend → database → backend → frontend"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Common full-stack mistakes:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "Common full-stack mistakes:"
+    },
+    {
+      "mistake": "**CORS errors**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**CORS errors**:\n   ```\n   Error: Access to fetch at 'http://localhost:4000/api/users' from origin 'http://localhost:3000' \n   has been blocked by CORS policy\n   ```\n   Solution: Enable CORS on backend:\n   ```javascript\n   import cors from 'cors';\n   app.use(cors());\n   ```"
+    },
+    {
+      "mistake": "**Wrong API URLs**:",
+      "consequence": "This can lead to errors or unexpected behavior.",
+      "correction": "**Wrong API URLs**:\n   ```javascript\n   // Wrong! (missing http://)\n   fetch('localhost:4000/api/users')\n   \n   // Correct!\n   fetch('http://localhost:4000/api/users')\n   \n   // Better! (use environment variable)\n   fetch(`${import.meta.env.VITE_API_URL}/api/users`)\n   ```"
+    }
+  ],
+  "difficulty": "beginner"
+}

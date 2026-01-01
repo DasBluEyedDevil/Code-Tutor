@@ -1,0 +1,41 @@
+{
+  "type": "FREE_CODING",
+  "id": "module-03-lesson-07-challenge-1",
+  "title": "Practice: Build a Command Parser",
+  "description": "Build a command parser using match/case that handles:\n\n1. **Movement commands:** \"north\", \"south\", \"east\", \"west\" -> \"Moving [direction]\"\n2. **Action commands:** \"look\", \"inventory\", \"help\" -> Appropriate responses\n3. **Quit commands:** \"quit\" or \"exit\" -> \"Goodbye!\"\n4. **Complex commands:** \"go north\", \"take sword\" -> Parse and handle\n5. **Unknown commands:** -> \"I don't understand that command\"\n\n**Use guards for bonus:** If moving north when at row 0, say \"You can't go that way!\"",
+  "instructions": "Build a command parser using match/case that handles:\n\n1. **Movement commands:** \"north\", \"south\", \"east\", \"west\" -> \"Moving [direction]\"\n2. **Action commands:** \"look\", \"inventory\", \"help\" -> Appropriate responses\n3. **Quit commands:** \"quit\" or \"exit\" -> \"Goodbye!\"\n4. **Complex commands:** \"go north\", \"take sword\" -> Parse and handle\n5. **Unknown commands:** -> \"I don't understand that command\"\n\n**Use guards for bonus:** If moving north when at row 0, say \"You can't go that way!\"",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Code runs without errors",
+      "expectedOutput": "",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Basic movement works",
+      "expectedOutput": "Moving north",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `case [\"north\"]:` for single word. Use `case [\"go\", direction]:` to capture the direction. Use guards like `case [\"north\"] if row == 0:` for boundary checks. Put more specific patterns (with guards) BEFORE general patterns."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Putting wildcard case _ before specific cases",
+      "consequence": "Specific cases never match",
+      "correction": "Always put case _: at the end"
+    },
+    {
+      "mistake": "Forgetting to split command into words",
+      "consequence": "Can't match patterns like [\"go\", direction]",
+      "correction": "Use command.split() to get a list of words"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,68 @@
+{
+  "type": "QUIZ",
+  "id": "10.1-quiz-1",
+  "title": "Connecting Flutter to Dart Backend Quiz",
+  "description": "Test your understanding of Serverpod client integration, session management, and error handling.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is the main advantage of Serverpod's generated client over traditional REST API clients?",
+      "options": [
+        "It is faster at making network requests",
+        "It provides type safety with shared model classes between server and client",
+        "It requires less server memory",
+        "It works without an internet connection"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Serverpod generates client code from your server definitions, ensuring that the same Dart classes are used on both server and client. This provides compile-time type safety - if you change a model on the server, the client code is regenerated and your IDE shows errors immediately."
+    },
+    {
+      "id": "q2",
+      "text": "Where should you catch a ServerpodClientException when making API calls?",
+      "options": [
+        "In the main() function only",
+        "In a global error handler that runs on app startup",
+        "In a try-catch block around the API call",
+        "Serverpod handles all exceptions automatically"
+      ],
+      "correctAnswer": 2,
+      "explanation": "You should wrap each API call (or group of related calls) in a try-catch block. This allows you to handle errors appropriately based on the context - showing a retry button, navigating to login, or displaying an error message."
+    },
+    {
+      "id": "q3",
+      "text": "What is the purpose of FlutterAuthenticationKeyManager?",
+      "options": [
+        "To encrypt all API requests",
+        "To securely store authentication tokens on the device",
+        "To validate user passwords locally",
+        "To generate new API keys for each request"
+      ],
+      "correctAnswer": 1,
+      "explanation": "FlutterAuthenticationKeyManager uses Flutter's secure storage to persist authentication tokens. This allows users to stay logged in between app sessions without re-entering credentials."
+    },
+    {
+      "id": "q4",
+      "text": "In the Repository Pattern, what is the main purpose of the repository layer?",
+      "options": [
+        "To make API calls faster",
+        "To abstract data access from UI code, enabling caching and easier testing",
+        "To replace the Serverpod client",
+        "To store all data locally in a database"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The repository layer sits between your UI/business logic and the data sources (API, local DB, cache). This separation makes your code more testable (you can mock repositories), enables caching strategies, and allows you to change data sources without modifying UI code."
+    },
+    {
+      "id": "q5",
+      "text": "When should you regenerate the Serverpod client code?",
+      "options": [
+        "Only when deploying to production",
+        "Whenever you change server endpoints or model definitions",
+        "Once when creating the project and never again",
+        "Every time you run the Flutter app"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Run 'serverpod generate' in the server directory whenever you add, modify, or delete endpoints or model definitions. This updates the generated client code to match your server, ensuring type safety is maintained."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "14.5-challenge-1",
+  "title": "Responsive Navigation Shell",
+  "description": "Create a navigation shell that switches between bottom navigation, navigation rail, and sidebar based on screen width.",
+  "instructions": "Build a ResponsiveNavigationShell widget that wraps child content with appropriate navigation. For screens < 600px wide, use a BottomNavigationBar. For screens 600-900px, use a NavigationRail. For screens > 900px, use a NavigationDrawer (permanent sidebar). All navigation types should have the same 4 destinations: Home, Search, Favorites, Profile. The selected index and onDestinationSelected callback should be passed as parameters.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use LayoutBuilder and check constraints.maxWidth against breakpoints"
+    },
+    {
+      "level": 2,
+      "text": "Create separate methods for mobile, tablet, and desktop layouts for clarity"
+    },
+    {
+      "level": 3,
+      "text": "Store destination data in a list of records or objects to avoid repetition"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using different navigation item counts for different sizes",
+      "consequence": "Navigation is inconsistent across device sizes",
+      "correction": "Define destinations once and reuse for all navigation types"
+    },
+    {
+      "mistake": "Forgetting VerticalDivider between navigation and content",
+      "consequence": "Navigation and content blend together visually",
+      "correction": "Add const VerticalDivider(thickness: 1, width: 1) between NavigationRail/Drawer and content"
+    }
+  ],
+  "difficulty": "intermediate"
+}

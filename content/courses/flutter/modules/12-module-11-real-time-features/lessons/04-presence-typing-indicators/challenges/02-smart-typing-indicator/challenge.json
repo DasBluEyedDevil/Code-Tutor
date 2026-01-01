@@ -1,0 +1,24 @@
+{
+  "id": "11.4-challenge-1",
+  "title": "Smart Typing Indicator",
+  "description": "Build an enhanced typing indicator that handles edge cases and provides better UX.",
+  "instructions": "Extend the basic typing indicator with these enhancements:\n\n1. Show 'User was typing...' when typing stops mid-composition (faded text)\n2. Group rapid typing/stopped events to prevent flickering\n3. Show different states: 'typing', 'recording audio', 'uploading file'\n4. Handle the case where user switches conversations while typing\n5. Persist typing state briefly when user navigates away and back\n\nRequirements:\n- EnhancedTypingService with multiple activity types\n- Anti-flicker logic with minimum display time (1 second)\n- State machine for typing lifecycle: idle -> active -> stopping -> idle\n- Memory of recent typing state per conversation\n- Proper cleanup when switching conversations",
+  "type": "implementation",
+  "expectedOutput": "An enhanced typing indicator system with smooth state transitions, anti-flicker logic, and support for multiple activity types.",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Track _lastActiveTime when entering active state. In _transitionTo, check if enough time has passed before allowing transition to stopping/idle."
+    },
+    {
+      "level": 2,
+      "text": "For the stopping state, use AnimatedOpacity with a value of 0.5 to show the faded 'was typing' text. Transition to idle after stoppingDuration."
+    },
+    {
+      "level": 3,
+      "text": "Store conversation typing states in a static Map<String, SavedTypingState> to persist briefly across navigation. Clear entries older than 10 seconds."
+    }
+  ]
+}

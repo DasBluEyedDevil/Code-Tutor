@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-02-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Build a Secure Password Manager Class",
+  "description": "Create a password manager class for the Finance Tracker that handles hashing, verification, and automatic hash upgrades.",
+  "instructions": "Complete the PasswordManager class to:\n1. Hash passwords using bcrypt with configurable rounds\n2. Verify passwords and return whether rehashing is needed\n3. Validate password strength (min 12 chars, upper, lower, digit, special)\n4. Generate secure temporary passwords",
+  "startingCode": "from passlib.context import CryptContext\nimport secrets\nimport string\nimport re\nfrom typing import Tuple, Optional\n\nclass PasswordManager:\n    def __init__(self, rounds: int = 12):\n        # TODO: Create password context with bcrypt\n        # Set bcrypt rounds to the 'rounds' parameter\n        self.pwd_context = None  # Replace with CryptContext\n    \n    def hash_password(self, password: str) -> str:\n        \"\"\"Hash a password securely\"\"\"\n        # TODO: Return hashed password\n        pass\n    \n    def verify_password(self, plain: str, hashed: str) -> Tuple[bool, bool]:\n        \"\"\"\n        Verify password and check if rehash needed.\n        Returns: (is_valid, needs_rehash)\n        \"\"\"\n        # TODO: Verify password\n        # TODO: Check if hash needs update\n        pass\n    \n    def validate_strength(self, password: str) -> Tuple[bool, list]:\n        \"\"\"\n        Validate password strength.\n        Returns: (is_valid, list_of_failures)\n        \"\"\"\n        failures = []\n        \n        # TODO: Check minimum length (12)\n        # TODO: Check for uppercase letter\n        # TODO: Check for lowercase letter  \n        # TODO: Check for digit\n        # TODO: Check for special character\n        \n        return (len(failures) == 0, failures)\n    \n    def generate_temporary_password(self, length: int = 16) -> str:\n        \"\"\"\n        Generate a secure temporary password.\n        Must include upper, lower, digit, and special char.\n        \"\"\"\n        # TODO: Generate password with all required character types\n        # Use secrets module for cryptographic randomness\n        pass\n\n# Test the password manager\npm = PasswordManager(rounds=12)\n\n# Test password strength validation\nprint(\"Password Strength Tests:\")\nfor pwd in [\"short\", \"longenoughbutweakpassword\", \"SecureP@ss123!\"]:\n    is_valid, failures = pm.validate_strength(pwd)\n    status = \"PASS\" if is_valid else f\"FAIL: {failures}\"\n    print(f\"  '{pwd}': {status}\")\n\n# Test hashing and verification\npassword = \"MySecureP@ssword123!\"\nhashed = pm.hash_password(password)\nprint(f\"\\nHashed: {hashed[:50]}...\")\n\nis_valid, needs_rehash = pm.verify_password(password, hashed)\nprint(f\"Verification: valid={is_valid}, needs_rehash={needs_rehash}\")\n\nis_valid, _ = pm.verify_password(\"wrong\", hashed)\nprint(f\"Wrong password: valid={is_valid}\")\n\n# Test temporary password generation\ntemp = pm.generate_temporary_password()\nprint(f\"\\nTemporary password: {temp}\")\ntemp_valid, _ = pm.validate_strength(temp)\nprint(f\"Temporary password strength check: {temp_valid}\")",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Password manager validates, hashes, and verifies correctly",
+      "expectedOutput": "Temporary password strength check: True",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** For CryptContext, use `bcrypt__rounds=rounds` to set the cost. For temporary password, start with one of each required type, then fill with random. Use `secrets.SystemRandom().shuffle()` to randomize positions."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using random instead of secrets for password generation",
+      "consequence": "Predictable passwords, security vulnerability",
+      "correction": "Always use secrets module for cryptographic operations"
+    },
+    {
+      "mistake": "Not shuffling the temporary password",
+      "consequence": "First chars are always upper, lower, digit, special in order",
+      "correction": "Use secrets.SystemRandom().shuffle() to randomize positions"
+    }
+  ],
+  "difficulty": "advanced"
+}

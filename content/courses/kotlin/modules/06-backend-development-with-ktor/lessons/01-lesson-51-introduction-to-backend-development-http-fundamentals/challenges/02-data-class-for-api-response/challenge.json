@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "5.1.2",
+  "title": "Data Class for API Response",
+  "description": "Create a data class `ApiResponse` with status (Int) and message (String). Create an instance representing a successful response.",
+  "instructions": "Create a data class `ApiResponse` with status (Int) and message (String). Create an instance representing a successful response.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should have status 200",
+      "expectedOutput": "Status: 200",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should have success message",
+      "expectedOutput": "Message: Success",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use data class for API models"
+    },
+    {
+      "level": 2,
+      "text": "Include status code (Int) and message (String)"
+    },
+    {
+      "level": 3,
+      "text": "200 is the HTTP status for success"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

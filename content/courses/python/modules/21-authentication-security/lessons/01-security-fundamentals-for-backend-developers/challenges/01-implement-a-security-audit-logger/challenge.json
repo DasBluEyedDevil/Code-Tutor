@@ -1,0 +1,36 @@
+{
+  "id": "module-21-lesson-01-challenge-1",
+  "type": "FREE_CODING",
+  "title": "Implement a Security Audit Logger",
+  "description": "Create a security audit logger for the Finance Tracker that logs security-relevant events with proper context.",
+  "instructions": "Complete the SecurityAuditLogger class to:\n1. Log authentication events (login success/failure)\n2. Log authorization events (access granted/denied)\n3. Log data access events (view/modify sensitive data)\n4. Include relevant context (user_id, ip_address, timestamp, action)",
+  "startingCode": "from datetime import datetime\nfrom enum import Enum\nfrom typing import Optional, Dict, Any\nimport json\n\nclass SecurityEventType(Enum):\n    LOGIN_SUCCESS = \"LOGIN_SUCCESS\"\n    LOGIN_FAILURE = \"LOGIN_FAILURE\"\n    ACCESS_GRANTED = \"ACCESS_GRANTED\"\n    ACCESS_DENIED = \"ACCESS_DENIED\"\n    DATA_VIEWED = \"DATA_VIEWED\"\n    DATA_MODIFIED = \"DATA_MODIFIED\"\n    SUSPICIOUS_ACTIVITY = \"SUSPICIOUS_ACTIVITY\"\n\nclass SecurityAuditLogger:\n    def __init__(self):\n        self.logs = []  # In production, write to file or logging service\n    \n    def log_event(self, event_type: SecurityEventType, \n                  user_id: Optional[int],\n                  ip_address: str,\n                  resource: str,\n                  details: Optional[Dict[str, Any]] = None,\n                  success: bool = True) -> Dict:\n        \"\"\"Log a security event with full context\"\"\"\n        # TODO: Create the log entry with:\n        # - timestamp (ISO format)\n        # - event_type (as string)\n        # - user_id\n        # - ip_address  \n        # - resource\n        # - success\n        # - details (or empty dict if None)\n        log_entry = {\n            # Fill in the log entry fields\n        }\n        \n        self.logs.append(log_entry)\n        return log_entry\n    \n    def log_login_attempt(self, email: str, ip_address: str, \n                          success: bool, user_id: Optional[int] = None) -> Dict:\n        \"\"\"Log a login attempt\"\"\"\n        # TODO: Use log_event with appropriate event type\n        # LOGIN_SUCCESS if success, LOGIN_FAILURE if not\n        pass\n    \n    def log_data_access(self, user_id: int, ip_address: str,\n                        resource: str, action: str,\n                        record_ids: list) -> Dict:\n        \"\"\"Log data access event\"\"\"\n        # TODO: Use log_event with DATA_VIEWED or DATA_MODIFIED\n        # based on action ('view' or 'modify')\n        pass\n    \n    def get_suspicious_activity(self, ip_address: str, \n                                 minutes: int = 15) -> list:\n        \"\"\"Find failed login attempts from an IP in recent minutes\"\"\"\n        # TODO: Filter logs for LOGIN_FAILURE from this IP\n        # within the time window\n        pass\n\n# Test the security logger\nlogger = SecurityAuditLogger()\n\n# Log some events\nlogger.log_login_attempt(\"alice@example.com\", \"192.168.1.100\", True, user_id=1)\nlogger.log_login_attempt(\"hacker@evil.com\", \"10.0.0.50\", False)\nlogger.log_login_attempt(\"hacker@evil.com\", \"10.0.0.50\", False)\nlogger.log_data_access(1, \"192.168.1.100\", \"transactions\", \"view\", [101, 102, 103])\nlogger.log_data_access(1, \"192.168.1.100\", \"accounts\", \"modify\", [5])\n\n# Check for suspicious activity\nsuspicious = logger.get_suspicious_activity(\"10.0.0.50\")\nprint(f\"Suspicious activity from 10.0.0.50: {len(suspicious)} failed attempts\")\n\n# Print all logs\nprint(\"\\nAudit Log:\")\nfor log in logger.logs:\n    print(json.dumps(log, indent=2))",
+  "language": "python",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Audit logger captures security events correctly",
+      "expectedOutput": "Suspicious activity from 10.0.0.50: 2 failed attempts",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "**Hint:** Use `datetime.now().isoformat()` for timestamps. Access enum values with `.value`. For filtering, compare `datetime.fromisoformat()` of the stored timestamp against the cutoff time."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using datetime.now() without isoformat()",
+      "consequence": "Timestamp stored as datetime object, not serializable to JSON",
+      "correction": "Always use datetime.now().isoformat() for log entries"
+    },
+    {
+      "mistake": "Comparing enum directly instead of .value",
+      "consequence": "String comparison fails against enum object",
+      "correction": "Use event_type.value to get the string representation"
+    }
+  ],
+  "difficulty": "advanced"
+}

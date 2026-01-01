@@ -1,0 +1,16 @@
+{
+  "type": "MULTIPLE_CHOICE",
+  "id": "concurrency-lesson-1-mc-2",
+  "title": "Why Concurrency?",
+  "description": "Understanding the benefits of concurrent programming",
+  "question": "A microservice needs to call three external APIs (taking 100ms, 200ms, and 150ms respectively). What's the minimum total time if calls are made concurrently?",
+  "options": [
+    "450ms (sum of all calls)",
+    "200ms (the longest call)",
+    "150ms (average of calls)",
+    "100ms (the shortest call)"
+  ],
+  "correctAnswer": 1,
+  "explanation": "With concurrent execution, all three API calls start at the same time. The total time is determined by the slowest call (200ms), since all three run in parallel. Sequential execution would take 450ms (100+200+150). This 2.25x speedup is why concurrency matters for I/O-bound operations.",
+  "difficulty": "intermediate"
+}

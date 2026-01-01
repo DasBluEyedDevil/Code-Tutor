@@ -1,0 +1,72 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-2-lesson-3-bank",
+  "title": "Create Encapsulated BankAccount",
+  "description": "Create a BankAccount class with:\n- private field: balance (double)\n- constructor that sets initial balance\n- getBalance() method\n- deposit(double amount) method (only if amount > 0)\n- withdraw(double amount) method (only if amount > 0 and balance sufficient)",
+  "instructions": "Create a BankAccount class with:\n- private field: balance (double)\n- constructor that sets initial balance\n- getBalance() method\n- deposit(double amount) method (only if amount > 0)\n- withdraw(double amount) method (only if amount > 0 and balance sufficient)",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-2-lesson-3-bank-test-1",
+      "description": "BankAccount acc = new BankAccount(100.0);\nreturn acc.getBalance();",
+      "expectedOutput": "100.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-bank-test-2",
+      "description": "BankAccount acc = new BankAccount(100.0);\nacc.deposit(50.0);\nreturn acc.getBalance();",
+      "expectedOutput": "150.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-bank-test-3",
+      "description": "BankAccount acc = new BankAccount(100.0);\nacc.withdraw(30.0);\nreturn acc.getBalance();",
+      "expectedOutput": "70.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-bank-test-4",
+      "description": "BankAccount acc = new BankAccount(100.0);\nacc.withdraw(200.0);\nreturn acc.getBalance();",
+      "expectedOutput": "100.0",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-2-lesson-3-bank-test-5",
+      "description": "BankAccount acc = new BankAccount(100.0);\nacc.deposit(-50.0);\nreturn acc.getBalance();",
+      "expectedOutput": "100.0",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 2,
+      "text": "Define a function using the java syntax. Don't forget the return statement if needed."
+    },
+    {
+      "level": 2,
+      "text": "Use an if statement to check the condition."
+    },
+    {
+      "level": 3,
+      "text": "If stuck, try writing out the solution in plain English first, then convert to java code."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting semicolons",
+      "consequence": "Compilation error",
+      "correction": "Add ; at end of statements"
+    },
+    {
+      "mistake": "Using = instead of == for comparison",
+      "consequence": "Assignment instead of comparison",
+      "correction": "Use == for primitives, .equals() for objects"
+    },
+    {
+      "mistake": "Incorrect capitalization (Java is case-sensitive)",
+      "consequence": "Cannot find symbol error",
+      "correction": "Match exact capitalization"
+    }
+  ],
+  "difficulty": "beginner"
+}

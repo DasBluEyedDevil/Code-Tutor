@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.1.3",
+  "title": "Event Handler Simulation",
+  "description": "Create a Button class that stores a click handler lambda and calls it when clicked.",
+  "instructions": "Create a Button class that stores a click handler lambda and calls it when clicked.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should have correct label",
+      "expectedOutput": "Button label: Click Me",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should call click handler",
+      "expectedOutput": "Button was clicked!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "onClick is a lambda with no parameters"
+    },
+    {
+      "level": 2,
+      "text": "Call lambda like a function: onClick()"
+    },
+    {
+      "level": 3,
+      "text": "() -> Unit means function that takes nothing and returns nothing"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null safety operators",
+      "consequence": "NullPointerException",
+      "correction": "Use ?. for safe calls, ?: for elvis operator"
+    },
+    {
+      "mistake": "Using var when val would suffice",
+      "consequence": "Unnecessary mutability",
+      "correction": "Prefer val for immutable values"
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

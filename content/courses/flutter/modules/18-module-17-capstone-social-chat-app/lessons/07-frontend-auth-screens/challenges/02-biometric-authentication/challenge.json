@@ -1,0 +1,36 @@
+{
+  "type": "FREE_CODING",
+  "id": "18.7-challenge-1",
+  "title": "Biometric Authentication",
+  "description": "Add fingerprint and face unlock as an optional authentication method with secure storage integration.",
+  "instructions": "Implement biometric authentication:\n\n1. Check device biometric capabilities\n2. Add biometric toggle in security settings\n3. Store encrypted credentials for biometric unlock\n4. Show biometric prompt on app launch (if enabled)\n5. Implement fallback to password entry\n6. Handle biometric failures gracefully\n7. Clear biometric data on logout",
+  "language": "dart",
+  "testCases": [],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the local_auth package for cross-platform biometric authentication"
+    },
+    {
+      "level": 2,
+      "text": "Always check both canCheckBiometrics and isDeviceSupported for full compatibility"
+    },
+    {
+      "level": 3,
+      "text": "Handle lockout states (temporary and permanent) by falling back to password"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not clearing biometric data when user logs out",
+      "consequence": "Previous user's credentials could be accessed by next user",
+      "correction": "Always call disableBiometric() as part of the logout flow"
+    },
+    {
+      "mistake": "Using biometricOnly: true without fallback option",
+      "consequence": "User locked out if biometric fails repeatedly",
+      "correction": "Provide password fallback option and handle lockedOut/permanentlyLockedOut errors"
+    }
+  ],
+  "difficulty": "advanced"
+}

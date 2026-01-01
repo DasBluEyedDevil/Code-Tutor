@@ -1,0 +1,66 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.3-challenge-1",
+  "title": "Build a REST API Route Structure",
+  "description": "Create the route handlers for a simple API with users and products endpoints.",
+  "instructions": "Create three route handler files:\n\n1. `/api/users` - Returns a list of users\n2. `/api/users/[id]` - Returns a specific user by ID\n3. `/api/products` - Returns a list of products\n\nShow the code for all three files. Each should return appropriate JSON-like responses.",
+  "language": "dart",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Users index returns user list",
+      "expectedOutput": "users",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "User by ID route accepts id parameter",
+      "expectedOutput": "String id",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Products route returns products data",
+      "expectedOutput": "products",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "All routes use Response.json for proper JSON",
+      "expectedOutput": "Response.json",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "For the users index, return a Response.json with a 'users' key containing a list."
+    },
+    {
+      "level": 2,
+      "text": "The [id].dart file receives the ID as the second parameter after context. Use it in your response."
+    },
+    {
+      "level": 3,
+      "text": "Response.json(body: {'key': 'value'}) creates proper JSON responses. Use lists for collections."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to add String id parameter for dynamic routes",
+      "consequence": "Route handler crashes or ID is unavailable",
+      "correction": "Dynamic routes like [id].dart must have the parameter: onRequest(RequestContext context, String id)"
+    },
+    {
+      "mistake": "Using Response() instead of Response.json() for JSON data",
+      "consequence": "Response is sent as plain text, not properly formatted JSON",
+      "correction": "Use Response.json(body: {...}) when returning structured data"
+    },
+    {
+      "mistake": "Wrong folder structure for nested routes",
+      "consequence": "Routes don't match expected URLs",
+      "correction": "api/users/index.dart creates /api/users, api/users/[id].dart creates /api/users/:id"
+    }
+  ],
+  "difficulty": "intermediate"
+}
