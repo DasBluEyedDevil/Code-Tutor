@@ -15,10 +15,19 @@ console.log('Step 1: Gathering ingredients');
 console.log('Step 2: Mixing the batter');
 console.log('Step 3: Baking the cake');
 
-// 3. Combining Text and Math
-// We can use the + sign to join text and numbers together.
-console.log('Total score: ' + (500 + 45)); 
+// 3. Combining Text and Math (Template Literals)
+// We use backticks (`) and ${...} to insert calculations into text.
+console.log(`Total score: ${500 + 45}`);
 
-// Note: Using ( ) around math ensures the calculation happens 
-// BEFORE it gets joined to the text.
+// Note: The calculation inside ${...} happens BEFORE it gets displayed.
+```
+
+### Expected Output
+
+```
+30
+Step 1: Gathering ingredients
+Step 2: Mixing the batter
+Step 3: Baking the cake
+Total score: 545
 ```

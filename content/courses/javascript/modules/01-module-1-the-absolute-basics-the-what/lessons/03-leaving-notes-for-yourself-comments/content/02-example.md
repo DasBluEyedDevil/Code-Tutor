@@ -28,3 +28,10 @@ console.log('can be turned off at once.');
 
 console.log('Systems check complete.');
 ```
+
+### Expected Output
+
+```
+Main engine started.
+Systems check complete.
+```

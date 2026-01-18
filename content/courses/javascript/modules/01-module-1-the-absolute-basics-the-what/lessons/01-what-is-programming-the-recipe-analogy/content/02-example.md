@@ -15,5 +15,12 @@ console.log('Hello, World!');
 // You can also output numbers and results of math:
 console.log(100 + 50);
 
-// Notice that text needs quotes (' '), but numbers do not.
+// Notice that text needs quotes (' ' or " "), but numbers do not.
+```
+
+### Expected Output
+
+```
+Hello, World!
+150
 ```
