@@ -1,4 +1,3 @@
 void main() {
-    String name = "World";
-    println("Hello, " + name + "!");
+    System.out.println("Hello, Modern Java!");
 }

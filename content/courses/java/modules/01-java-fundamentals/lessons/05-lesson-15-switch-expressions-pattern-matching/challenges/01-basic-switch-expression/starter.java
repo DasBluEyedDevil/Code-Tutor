@@ -1,10 +1,9 @@
-// Basic Switch Expression
-// Write your code below
+import java.util.Scanner;
 
-String getSeason(int month) {
-    // Use switch expression here
-}
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        // Write your code below
 
-void main() {
-    println(getSeason(7));
+    }
 }

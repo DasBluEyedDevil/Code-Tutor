@@ -1,4 +1,6 @@
-// Rewrite using Java 23 implicit main syntax
-// Remove: public class, static, String[] args, System.out
+// Rewrite using modern syntax
+// No class wrapper needed!
 
-// Your code here
+void main() {
+
+}

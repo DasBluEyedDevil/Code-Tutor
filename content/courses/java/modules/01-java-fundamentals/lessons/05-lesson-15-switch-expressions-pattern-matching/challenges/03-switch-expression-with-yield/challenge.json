@@ -2,32 +2,36 @@
   "type": "FREE_CODING",
   "id": "epoch-0-lesson-5-switch-yield",
   "title": "Switch Expression with yield",
-  "description": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.\n\nTest: getGrade(95) should print \"Excellent!\" and return \"A\"",
-  "instructions": "Create a method getGrade(int score) that returns:\n- 90-100: \"A\" (print \"Excellent!\" too)\n- 80-89: \"B\"\n- 70-79: \"C\"\n- 60-69: \"D\"\n- below 60: \"F\"\n\nUse switch expression with yield for the A grade case.",
+  "description": "Write a program that takes a score (0-10) using `Scanner`.\nUse a switch expression to determine the result:\n- 10 -> Print `Perfect!` and yield `A`\n- 9 -> `A`\n- 8 -> `B`\n- 7 -> `C`\n- 6 -> `D`\n- default -> `F`\n\nPrint the final grade.",
+  "instructions": "Write a program that takes a score (0-10) using `Scanner`.\nUse a switch expression to determine the result:\n- 10 -> Print `Perfect!` and yield `A`\n- 9 -> `A`\n- 8 -> `B`\n- 7 -> `C`\n- 6 -> `D`\n- default -> `F`\n\nPrint the final grade.",
   "language": "java",
   "testCases": [
     {
       "id": "epoch-0-lesson-5-switch-yield-test-1",
-      "description": "Should print 'Excellent!' then 'A'",
-      "expectedOutput": "Excellent!\nA",
+      "description": "Score 10 (Perfect)",
+      "input": "10",
+      "expectedOutput": "Perfect!\nA",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-0-lesson-5-switch-yield-test-2",
+      "description": "Score 8 (B)",
+      "input": "8",
+      "expectedOutput": "B",
       "isVisible": true
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Divide score by 10 to get a single digit for the switch"
-    },
-    {
-      "level": 2,
-      "text": "Use { } block with yield for multiple statements: case 9 -> { print(); yield \"A\"; }"
+      "text": "For case 10, use a block: { System.out.println(...); yield \"A\"; }"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Using return instead of yield in switch expression block",
+      "mistake": "Using return instead of yield",
       "consequence": "Compilation error",
-      "correction": "Use yield to return a value from a switch expression block"
+      "correction": "Use yield inside switch blocks"
     }
   ],
   "difficulty": "intermediate"

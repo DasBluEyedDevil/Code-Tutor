@@ -1,10 +1,9 @@
-// Switch Expression with yield
-// Write your code below
+import java.util.Scanner;
 
-String getGrade(int score) {
-    // Use switch expression with yield here
-}
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        // Write your code below
 
-void main() {
-    println(getGrade(95));
+    }
 }

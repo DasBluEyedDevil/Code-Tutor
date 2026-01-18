@@ -3,8 +3,9 @@ type: "THEORY"
 title: "The Problem: Clunky Switch Statements"
 ---
 
-Traditional switch statements in Java are verbose and error-prone:
+Traditional `switch` statements in Java are verbose and error-prone.
 
+```java
 String dayType;
 switch (day) {
     case "MONDAY":
@@ -22,11 +23,11 @@ switch (day) {
         dayType = "Unknown";
         break;
 }
+```
 
-Problems:
-1. Must remember 'break' or fall-through bugs occur
-2. Can't return values directly from switch
-3. Very verbose for simple mappings
-4. No compile-time exhaustiveness checking
+### Problems
+1.  **Fall-through bugs**: If you forget `break`, the code "falls through" to the next case.
+2.  **Verbosity**: Requires a lot of code for simple mappings.
+3.  **Statement, not Expression**: Can't return a value directly.
 
-Switch expressions and pattern matching were introduced progressively in Java 14-21 and are fully stable in Java 23. These features fix all of the problems above!
+Java 14+ introduced **Switch Expressions** to fix these problems.

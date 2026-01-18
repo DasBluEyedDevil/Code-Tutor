@@ -2,43 +2,28 @@
   "type": "FREE_CODING",
   "id": "epoch-0-lesson-6-modern-main",
   "title": "Modern Main Method",
-  "description": "Rewrite this traditional Java program using Java 23 implicit main syntax:\n\npublic class Greeter {\n    public static void main(String[] args) {\n        String name = \"World\";\n        System.out.println(\"Hello, \" + name + \"!\");\n    }\n}\n\nYour solution should use void main() and println().",
-  "instructions": "Rewrite the Greeter program using Java 23 implicit main. Use void main() and println() instead of the traditional boilerplate.",
+  "description": "Rewrite the traditional \"Hello World\" program using the modern **Implicit Main** syntax.\n\nTraditional:\n```java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, Modern Java!\");\n    }\n}\n```\n\nRewrite it to use `void main()`.",
+  "instructions": "Rewrite the traditional \"Hello World\" program using the modern **Implicit Main** syntax.\n\nTraditional:\n```java\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, Modern Java!\");\n    }\n}\n```\n\nRewrite it to use `void main()`.",
   "language": "java",
   "testCases": [
     {
       "id": "test-1",
-      "description": "Should print 'Hello, World!'",
-      "input": "",
-      "expectedOutput": "Hello, World!",
+      "description": "Should print 'Hello, Modern Java!'",
+      "expectedOutput": "Hello, Modern Java!",
       "isVisible": true
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Start with 'void main()' - no public, no static, no class wrapper needed."
-    },
-    {
-      "level": 2,
-      "text": "Use println() directly instead of System.out.println()"
+      "text": "Just write 'void main() { ... }'"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Including 'static' keyword",
-      "consequence": "Implicit main methods don't need static",
-      "correction": "Just use 'void main()' - static is implied"
-    },
-    {
-      "mistake": "Wrapping in a class declaration",
-      "consequence": "Defeats the purpose of implicit classes",
-      "correction": "Write the main method directly, no class needed"
-    },
-    {
-      "mistake": "Using System.out.println instead of println",
-      "consequence": "Works but misses the shorthand",
-      "correction": "Use println() directly - it's automatically available"
+      "mistake": "Still using class wrapper",
+      "consequence": "Valid code, but not using the new feature",
+      "correction": "Remove public class Main"
     }
   ],
   "difficulty": "beginner"

@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "epoch-0-lesson-5-pattern-switch",
+  "title": "Pattern Matching Switch",
+  "description": "We've written some code to read input and convert it into an `Object` named `obj`. This object could be an `Integer`, a `String`, or `null`.\n\nWrite a **Switch Expression with Pattern Matching** to check the type of `obj`:\n\n- If `String` -> Print `String: ` followed by the value.\n- If `Integer` -> Print `Integer: ` followed by the value.\n- If `null` -> Print `It is null`.\n- Otherwise -> Print `Unknown type`.",
+  "instructions": "We've written some code to read input and convert it into an `Object` named `obj`. This object could be an `Integer`, a `String`, or `null`.\n\nWrite a **Switch Expression with Pattern Matching** to check the type of `obj`:\n\n- If `String` -> Print `String: ` followed by the value.\n- If `Integer` -> Print `Integer: ` followed by the value.\n- If `null` -> Print `It is null`.\n- Otherwise -> Print `Unknown type`.",
+  "language": "java",
+  "testCases": [
+    {
+      "id": "epoch-0-lesson-5-pattern-switch-test-1",
+      "description": "String input",
+      "input": "Hello",
+      "expectedOutput": "String: Hello",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-0-lesson-5-pattern-switch-test-2",
+      "description": "Integer input",
+      "input": "123",
+      "expectedOutput": "Integer: 123",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-0-lesson-5-pattern-switch-test-3",
+      "description": "Null input",
+      "input": "null",
+      "expectedOutput": "It is null",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "switch (obj) { case String s -> ... }"
+    },
+    {
+      "level": 2,
+      "text": "Remember to handle case null -> ..."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting null case",
+      "consequence": "MatchException (in Java 21+) or logic error",
+      "correction": "Add case null -> ..."
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -2,37 +2,47 @@
   "type": "FREE_CODING",
   "id": "epoch-0-lesson-5-switch-basic",
   "title": "Basic Switch Expression",
-  "description": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.\n\nTest: getSeason(7) should return \"Summer\"",
-  "instructions": "Create a method that takes a month number (1-12) and returns the season:\n- 12, 1, 2 -> \"Winter\"\n- 3, 4, 5 -> \"Spring\"\n- 6, 7, 8 -> \"Summer\"\n- 9, 10, 11 -> \"Fall\"\n- default -> \"Unknown\"\n\nUse switch expression with arrow syntax.",
+  "description": "Write a program that asks for a month number (1-12) using `Scanner`.\nUse a **Switch Expression** to determine the season and print it.\n\n- 12, 1, 2 -> `Winter`\n- 3, 4, 5 -> `Spring`\n- 6, 7, 8 -> `Summer`\n- 9, 10, 11 -> `Fall`\n- Any other number -> `Unknown`",
+  "instructions": "Write a program that asks for a month number (1-12) using `Scanner`.\nUse a **Switch Expression** to determine the season and print it.\n\n- 12, 1, 2 -> `Winter`\n- 3, 4, 5 -> `Spring`\n- 6, 7, 8 -> `Summer`\n- 9, 10, 11 -> `Fall`\n- Any other number -> `Unknown`",
   "language": "java",
   "testCases": [
     {
       "id": "epoch-0-lesson-5-switch-basic-test-1",
-      "description": "Should return 'Summer'",
+      "description": "Month 7 (Summer)",
+      "input": "7",
       "expectedOutput": "Summer",
       "isVisible": true
+    },
+    {
+      "id": "epoch-0-lesson-5-switch-basic-test-2",
+      "description": "Month 12 (Winter)",
+      "input": "12",
+      "expectedOutput": "Winter",
+      "isVisible": true
+    },
+    {
+      "id": "epoch-0-lesson-5-switch-basic-test-3",
+      "description": "Month 13 (Unknown)",
+      "input": "13",
+      "expectedOutput": "Unknown",
+      "isVisible": false
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Use the syntax: return switch (month) { case 1, 2 -> \"value\"; };"
+      "text": "Read the month as an int."
     },
     {
       "level": 2,
-      "text": "Multiple cases can share one arrow: case 12, 1, 2 -> \"Winter\""
+      "text": "String season = switch (month) { ... };"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Forgetting semicolon after the switch expression",
+      "mistake": "Forgetting semicolon",
       "consequence": "Compilation error",
-      "correction": "Switch expressions need ; at the end when used in a statement"
-    },
-    {
-      "mistake": "Using break with arrow syntax",
-      "consequence": "Compilation error",
-      "correction": "Arrow syntax doesn't use break - the arrow implies no fall-through"
+      "correction": "Add ; after the switch expression block"
     }
   ],
   "difficulty": "beginner"
