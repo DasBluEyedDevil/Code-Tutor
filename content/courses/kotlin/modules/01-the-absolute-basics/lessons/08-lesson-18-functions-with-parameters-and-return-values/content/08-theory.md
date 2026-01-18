@@ -45,9 +45,15 @@ fun displayConversions(temp: Double, unit: String) {
 
 fun main() {
     println("--- Temperature Converter ---")
-    displayConversions(25.0, "C")
-    displayConversions(77.0, "F")
-    displayConversions(298.15, "K")
+
+    println("Enter temperature value:")
+    val input = readln()
+    val temp = input.toDoubleOrNull() ?: 0.0
+
+    println("Enter unit (C, F, or K):")
+    val unit = readln()
+
+    displayConversions(temp, unit)
 }
 ```
 

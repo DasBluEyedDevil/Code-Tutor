@@ -35,8 +35,12 @@ fun printLength(obj: Any) {
 }
 
 fun main() {
-    printLength("Hello")     // Length: 5
-    printLength(42)          // Length: Not a string
-    printLength(listOf(1, 2)) // Length: Not a string
+    println("Enter something:")
+    val input = readln()
+
+    // Simulate mixed types by parsing
+    val obj: Any = input.toIntOrNull() ?: input
+
+    printLength(obj)
 }
 ```

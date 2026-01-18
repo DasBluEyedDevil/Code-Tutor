@@ -1,0 +1,53 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.5.1",
+  "title": "Sum of List",
+  "description": "Write a program that reads a list of numbers (separated by comma) and prints their sum.",
+  "instructions": "1. Read a line of input (e.g. \"1, 2, 3\").\n2. Split the string by \", \" or \",\".\n3. Convert each part to an Int.\n4. Calculate and print the sum.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Sum of 1, 2, 3",
+      "input": "1, 2, 3",
+      "expectedOutput": "6",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Sum of 10, 20, 30",
+      "input": "10, 20, 30",
+      "expectedOutput": "60",
+      "isVisible": false
+    },
+     {
+      "id": "test-3",
+      "description": "Single number",
+      "input": "5",
+      "expectedOutput": "5",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use `readln().split(\",\")` to get a list of strings."
+    },
+    {
+      "level": 2,
+      "text": "Use `.map { it.trim().toInt() }` to convert to numbers."
+    },
+    {
+      "level": 3,
+      "text": "Use `.sum()` to calculate the total."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not trimming spaces",
+      "consequence": "NumberFormatException",
+      "correction": "Use .trim() before .toInt()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

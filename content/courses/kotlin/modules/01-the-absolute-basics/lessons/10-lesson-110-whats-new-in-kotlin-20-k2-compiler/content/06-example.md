@@ -43,7 +43,9 @@ fun processUsers(users: List<User>): Map<Long, User> {
 }
 
 fun main() {
-    val user = createUser("Alice")
+    println("Enter username to create:")
+    val inputName = readln()
+    val user = createUser(inputName)
     println("User email: ${user.email}")
     
     val mixedValues: List<Any?> = listOf("Hello", 42, null, 3.14)

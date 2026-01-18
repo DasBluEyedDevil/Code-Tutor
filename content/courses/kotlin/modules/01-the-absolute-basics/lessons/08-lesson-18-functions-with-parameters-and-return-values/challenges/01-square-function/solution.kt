@@ -3,6 +3,6 @@ fun square(n: Int): Int {
 }
 
 fun main() {
-    val result = square(5)
-    println(result)
+    val n = readln().toInt()
+    println(square(n))
 }
