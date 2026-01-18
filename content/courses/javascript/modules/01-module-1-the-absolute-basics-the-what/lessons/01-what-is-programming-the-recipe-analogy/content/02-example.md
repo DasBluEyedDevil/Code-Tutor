@@ -17,3 +17,10 @@ console.log(100 + 50);
 
 // Notice that text needs quotes (' '), but numbers do not.
 ```
+
+**Expected Output**:
+
+```text
+Hello, World!
+150
+```

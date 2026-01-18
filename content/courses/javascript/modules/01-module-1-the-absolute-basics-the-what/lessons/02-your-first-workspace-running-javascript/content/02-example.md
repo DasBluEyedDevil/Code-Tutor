@@ -22,3 +22,13 @@ console.log('Total score: ' + (500 + 45));
 // Note: Using ( ) around math ensures the calculation happens 
 // BEFORE it gets joined to the text.
 ```
+
+**Expected Output**:
+
+```text
+30
+Step 1: Gathering ingredients
+Step 2: Mixing the batter
+Step 3: Baking the cake
+Total score: 545
+```
