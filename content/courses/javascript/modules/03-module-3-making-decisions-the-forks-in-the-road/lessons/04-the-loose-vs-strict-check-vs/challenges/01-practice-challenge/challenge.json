@@ -2,38 +2,32 @@
   "type": "FREE_CODING",
   "id": "3.4-challenge",
   "title": "Practice Challenge",
-  "description": "Debug this code! A user typed their age in a form (stored as a string). We want to check if they're 18, but the code isn't working:\n\nlet userAge = '18';  // String from form input\nif (userAge === 18) {\n  console.log('You are 18!');\n} else {\n  console.log('You are not 18');\n}\n\nFix it TWO ways:\n1. Convert userAge to a number before comparing (use Number(userAge))\n2. Compare as strings (userAge === '18')",
-  "instructions": "Debug this code! A user typed their age in a form (stored as a string). We want to check if they're 18, but the code isn't working:\n\nlet userAge = '18';  // String from form input\nif (userAge === 18) {\n  console.log('You are 18!');\n} else {\n  console.log('You are not 18');\n}\n\nFix it TWO ways:\n1. Convert userAge to a number before comparing (use Number(userAge))\n2. Compare as strings (userAge === '18')",
+  "description": "Debug this code! We want to check if the user is 18. Fix the code in two different ways as indicated in the comments.",
+  "instructions": "1. **Method 1**: Convert `userAge` to a number using `Number()` inside the `if` condition.\n2. **Method 2**: Compare `userAge2` to the string `'18'`.",
   "language": "javascript",
   "testCases": [
     {
       "id": "test-1",
-      "description": "Compares correctly",
-      "expectedOutput": "You are 18!",
+      "description": "Both methods print the success message",
+      "expectedOutput": "You are 18!\nYou are 18!",
       "isVisible": true
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Method 1: if (Number(userAge) === 18)\nMethod 2: if (userAge === '18')"
+      "text": "Method 1: `if (Number(userAge) === 18)`"
+    },
+    {
+      "level": 2,
+      "text": "Method 2: `if (userAge2 === '18')`"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Forgetting that form inputs are strings",
-      "consequence": "'18' === 18 returns false because types differ.",
-      "correction": "Convert with Number(userAge) before comparing to a number."
-    },
-    {
-      "mistake": "Using == to work around type issues",
-      "consequence": "While '18' == 18 works, this hides the real problem and can cause other bugs.",
-      "correction": "Convert types explicitly and use === for predictable behavior."
-    },
-    {
-      "mistake": "Not understanding type coercion",
-      "consequence": "Leads to subtle bugs that are hard to debug.",
-      "correction": "Always use === and handle type conversion explicitly."
+      "mistake": "Type mismatch",
+      "consequence": "`===` fails if types don't match.",
+      "correction": "Ensure both sides are the same type."
     }
   ],
   "difficulty": "beginner"

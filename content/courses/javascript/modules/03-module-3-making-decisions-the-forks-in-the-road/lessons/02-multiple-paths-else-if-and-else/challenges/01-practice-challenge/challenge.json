@@ -2,8 +2,8 @@
   "type": "FREE_CODING",
   "id": "3.2-challenge",
   "title": "Practice Challenge",
-  "description": "Create a movie rating advisor:\n1. Create a variable 'age' with a number\n2. If age is under 13: display 'You can watch G and PG movies'\n3. Else if age is under 17: display 'You can watch G, PG, and PG-13 movies'\n4. Else: display 'You can watch all movies including R-rated'",
-  "instructions": "Create a movie rating advisor:\n1. Create a variable 'age' with a number\n2. If age is under 13: display 'You can watch G and PG movies'\n3. Else if age is under 17: display 'You can watch G, PG, and PG-13 movies'\n4. Else: display 'You can watch all movies including R-rated'",
+  "description": "Create a movie rating advisor using `if` / `else if` / `else`.",
+  "instructions": "1. Set the variable `age` to `15`.\n2. If `age` is under 13: display \"You can watch G and PG movies\".\n3. Else if `age` is under 17: display \"You can watch G, PG, and PG-13 movies\".\n4. Else: display \"You can watch all movies including R-rated\".",
   "language": "javascript",
   "testCases": [
     {
@@ -16,24 +16,19 @@
   "hints": [
     {
       "level": 1,
-      "text": "Use if (age < 13), then else if (age < 17), then else for the rest."
+      "text": "Use `if (age < 13)`, then `else if (age < 17)`, then `else` for the rest."
     }
   ],
   "commonMistakes": [
     {
       "mistake": "Wrong order of conditions",
-      "consequence": "if (age >= 0) catches everyone before if (age >= 18) can run.",
-      "correction": "Check from most specific to least specific: if (age >= 18) before if (age >= 0)."
-    },
-    {
-      "mistake": "Using separate if statements instead of else if",
-      "consequence": "Multiple if statements can all run, causing duplicate output.",
-      "correction": "Use else if to ensure only one block executes."
+      "consequence": "Checking logic incorrectly.",
+      "correction": "Ensure you use `<` strictly as described."
     },
     {
       "mistake": "Adding a condition to else",
-      "consequence": "else (condition) causes a syntax error.",
-      "correction": "Use else if (condition) or just else without a condition."
+      "consequence": "Syntax error",
+      "correction": "`else` does not take a condition."
     }
   ],
   "difficulty": "beginner"

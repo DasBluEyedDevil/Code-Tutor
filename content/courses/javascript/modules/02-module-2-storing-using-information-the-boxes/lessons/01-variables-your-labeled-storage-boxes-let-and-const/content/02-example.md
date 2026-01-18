@@ -33,3 +33,13 @@ console.log(playerName + ' dealt ' + damageDealt + ' damage!');
 // const gravity = 9.8;
 // gravity = 10; // This would throw a "TypeError: Assignment to constant variable"
 ```
+
+**Expected Output**:
+
+```text
+Player: CyberKnight
+Starting Level: 1
+Level Up! Now at level: 2
+Current Health: 80
+CyberKnight dealt 30 damage!
+```

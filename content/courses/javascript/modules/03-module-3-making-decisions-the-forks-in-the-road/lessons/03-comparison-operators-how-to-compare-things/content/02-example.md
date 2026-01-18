@@ -26,3 +26,15 @@ if (isWinner) {
     console.log("Congratulations, you passed!");
 }
 ```
+
+**Expected Output**:
+
+```text
+true
+true
+false
+true
+true
+true
+Congratulations, you passed!
+```

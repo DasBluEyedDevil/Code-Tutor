@@ -36,3 +36,15 @@ let userAddress = null;   // Explicitly set to empty: null
 console.log(userJob);     // undefined
 console.log(userAddress); // null
 ```
+
+**Expected Output**:
+
+```text
+Hello, my name is Alice Smith
+The total cost is: $59.97
+Infinity
+NaN
+User logged in: true
+undefined
+null
+```

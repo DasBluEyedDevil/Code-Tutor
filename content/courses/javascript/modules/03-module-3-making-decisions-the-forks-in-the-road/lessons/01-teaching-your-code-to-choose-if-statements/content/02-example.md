@@ -27,5 +27,14 @@ if (age >= 18) {
 console.log("Application finished.");
 
 // 3. One-line shortcut (use sparingly)
-if (isLoggedIn) console.log("Welcome back!");
+// if (isLoggedIn) console.log("Welcome back!");
+```
+
+**Expected Output**:
+
+```text
+Starting purchase...
+Transaction approved!
+Remaining balance: $30.01
+Application finished.
 ```

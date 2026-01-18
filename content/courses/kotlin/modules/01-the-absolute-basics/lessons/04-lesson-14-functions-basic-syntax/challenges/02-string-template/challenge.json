@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.4.2",
+  "title": "String Template",
+  "description": "Create a variable 'name' with your name, then print 'Hello, [name]!' using string templates.",
+  "instructions": "Create a variable 'name' with your name, then print 'Hello, [name]!' using string templates.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Prints greeting with name",
+      "expectedOutput": "Hello, Alice!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses string interpolation correctly",
+      "expectedOutput": "Hello, Alice!",
+      "isVisible": false
+    },
+    {
+      "id": "test-3",
+      "description": "Includes exclamation mark",
+      "expectedOutput": "Hello, Alice!",
+      "isVisible": false
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use $name inside the string"
+    },
+    {
+      "level": 2,
+      "text": "String templates: \"text $variable text\""
+    },
+    {
+      "level": 3,
+      "text": "Remember quotes around the whole string"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the dollar sign",
+      "consequence": "Prints literal 'name' instead of variable value",
+      "correction": "Use $name to interpolate the variable"
+    },
+    {
+      "mistake": "Using concatenation instead of templates",
+      "consequence": "Works but less idiomatic",
+      "correction": "Prefer string templates: \"Hello, $name!\""
+    },
+    {
+      "mistake": "Incorrect string interpolation",
+      "consequence": "Syntax error",
+      "correction": "Use $variable or ${expression}"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -31,7 +31,17 @@ if (!isBanned) {
 
 // 4. Complex Combination
 // We use ( ) to group logic just like in math
+let hasParentalConsent = false; // Added missing variable for clarity
 if ((userAge > 13 || hasParentalConsent) && !isBanned) {
     console.log("Access granted to the game server.");
 }
+```
+
+**Expected Output**:
+
+```text
+Welcome to the Premium content!
+The office is closed.
+User is allowed to post comments.
+Access granted to the game server.
 ```

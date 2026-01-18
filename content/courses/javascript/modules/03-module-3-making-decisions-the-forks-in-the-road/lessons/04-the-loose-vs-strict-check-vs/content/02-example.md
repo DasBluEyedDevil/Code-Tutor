@@ -25,3 +25,17 @@ if (score !== 100) {
     console.log("The types do not match!");
 }
 ```
+
+**Expected Output**:
+
+```text
+true
+true
+true
+true
+false
+false
+false
+false
+The types do not match!
+```

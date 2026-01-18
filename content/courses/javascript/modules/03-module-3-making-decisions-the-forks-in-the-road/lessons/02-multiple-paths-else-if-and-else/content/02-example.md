@@ -30,3 +30,11 @@ if (age > 21) {
     console.log("You get a free drink for being a century old.");
 }
 ```
+
+**Expected Output**:
+
+```text
+Your score is: 85
+Grade: B
+You can enter the club.
+```
