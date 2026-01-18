@@ -1,5 +1,5 @@
 // Display your name
-Console.WriteLine("Your name here");
+Console.WriteLine("My name is [Your Name]");
 
 // Display your favorite language
 

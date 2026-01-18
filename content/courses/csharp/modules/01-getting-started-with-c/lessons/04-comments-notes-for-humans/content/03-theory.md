@@ -5,9 +5,9 @@ title: "Syntax Breakdown"
 
 ## Breaking Down the Syntax
 
-**`// Single-line comment`**: Everything after // on that line is ignored. Quick notes go here!
+**`// Single-line comment`**: Everything after `//` on that line is ignored. Quick notes go here!
 
-**`/* Multi-line comment */`**: Everything between /* and */ is ignored, even across multiple lines. Good for long explanations.
+**`/* Multi-line comment */`**: Everything between `/*` and `*/` is ignored, even across multiple lines. Good for long explanations.
 
 **`Why use comments?`**: Comments explain your thinking: "This loop finds the highest score" is better than just reading the code!
 

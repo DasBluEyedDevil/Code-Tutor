@@ -3,49 +3,55 @@
   "id": "lesson-01-05-challenge-01",
   "title": "Practice Challenge",
   "description": "Apply what you've learned in this interactive coding challenge.",
-  "instructions": "Create a personalized greeting card! Use string concatenation (+) to combine:\n\n1. A greeting: 'Hello' + [a name]\n2. A message: 'You have completed' + [a number] + 'lessons!'\n3. An encouragement: 'Keep going, you are doing' + [an adjective] + '!'\n\nMake it your own!",
+  "instructions": "Create a personalized greeting card using **String Interpolation** ($).\n\n1. Define a variable for your name: `string name = \"[Your Name]\";`\n2. Display a greeting using that variable: `Hello, {name}!`\n3. Display the number of lessons: `You have completed {5} lessons!`\n\n**Requirement**: Use the `$` syntax to insert the variables/values.",
   "language": "csharp",
   "testCases": [
     {
       "id": "test-1",
-      "description": "Output should contain \"Hello\"",
+      "description": "Output should contain Hello",
       "expectedOutput": "Hello",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Output should contain lessons count",
+      "expectedOutput": "lessons!",
       "isVisible": true
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Remember to add spaces! \"Hello\"+\"World\" becomes \"HelloWorld\". Use \"Hello \"+\" World\" for proper spacing!"
+      "text": "Start your string with `$` before the quotes: `$\"Like this\"`."
     },
     {
       "level": 2,
-      "text": "Forgetting spaces between words: \"Hello\"+\"World\" becomes \"HelloWorld\" instead of \"Hello World\"!"
+      "text": "Put your text inside the quotes, and variables inside `{}`."
     },
     {
       "level": 3,
-      "text": "Mixing up (2+2) vs 2+2 in text: Without parentheses, C# glues text instead of doing math first!"
+      "text": "Don't use `+`! The goal is to use the modern syntax."
     },
     {
       "level": 4,
-      "text": "Forgetting quotes around text: Console.WriteLine(Hello + World); won't work – they need quotes!"
+      "text": "Example: `Console.WriteLine($\"Hello, {variable}!\");`"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Forgetting spaces between words",
-      "consequence": "\"Hello\"+\"World\" becomes \"HelloWorld\" instead of \"Hello World\"!",
-      "correction": "Review the correct syntax and best practices for this concept."
+      "mistake": "Forgetting the $",
+      "consequence": "The code will print {variable} literally instead of the value.",
+      "correction": "Add a `$` before the opening quote."
     },
     {
-      "mistake": "Mixing up (2+2) vs 2+2 in text",
-      "consequence": "Without parentheses, C# glues text instead of doing math first!",
-      "correction": "Review the correct syntax and best practices for this concept."
+      "mistake": "Using + instead of $",
+      "consequence": "It works, but it's not the modern way we are practicing.",
+      "correction": "Rewrite the line using interpolation."
     },
     {
-      "mistake": "Forgetting quotes around text",
-      "consequence": "Console.WriteLine(Hello + World); won't work – they need quotes!",
-      "correction": "Review the correct syntax and best practices for this concept."
+      "mistake": "Using () or [] instead of {}",
+      "consequence": "Syntax error or incorrect output.",
+      "correction": "Use curly braces `{}` for variables."
     }
   ],
   "difficulty": "beginner"

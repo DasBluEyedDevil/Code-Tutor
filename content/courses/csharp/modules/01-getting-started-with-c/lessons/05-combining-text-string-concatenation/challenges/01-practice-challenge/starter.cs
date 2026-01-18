@@ -1,4 +1,7 @@
-// Create your greeting card using + to combine text!
+// Refactor this to use String Interpolation ($) instead of Concatenation (+)
 
-Console.WriteLine("Hello " + "Student");
-// Add two more lines with concatenation!
+// 1. Define your variable
+string name = "Student";
+
+Console.WriteLine("Hello " + name);
+// Add the other lines using $"" syntax!

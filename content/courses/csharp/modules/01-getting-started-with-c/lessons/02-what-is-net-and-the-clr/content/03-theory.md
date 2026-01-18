@@ -7,7 +7,7 @@ title: "Syntax Breakdown"
 
 **`.NET`**: The complete platform for building applications. It includes:
 - The CLR (runtime engine)
-- Base Class Library (pre-built code like Console.WriteLine)
+- Base Class Library (pre-built code like `Console.WriteLine`)
 - Compilers (C#, F#, VB.NET)
 - Tools (dotnet CLI, Visual Studio integration)
 

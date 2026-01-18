@@ -5,9 +5,9 @@ title: "Syntax Breakdown"
 
 ## Breaking Down the Syntax
 
-**`\n`**: The backslash-n creates a newline (line break). It's called an 'escape sequence' – special characters that do something instead of displaying.
+**`\n`**: The backslash-n creates a newline (line break). It's called an 'escape sequence' - special characters that do something instead of displaying.
 
-**`Multiple WriteLine vs. \n`**: Both methods work! Multiple WriteLine is clearer for beginners. Using \n is more compact but harder to read at first.
+**`Multiple WriteLine vs. \n`**: Both methods work! Multiple `WriteLine` is clearer for beginners. Using `\n` is more compact but harder to read at first.
 
 ## Common Escape Sequences
 

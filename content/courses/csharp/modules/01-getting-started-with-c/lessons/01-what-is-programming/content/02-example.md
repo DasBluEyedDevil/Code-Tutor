@@ -3,7 +3,7 @@ type: "EXAMPLE"
 title: "Code Example"
 ---
 
-This example shows your first C# program using Console.WriteLine to display text to the screen.
+This example shows your first C# program using `Console.WriteLine` to display text to the screen.
 
 ```csharp
 // YOUR FIRST C# PROGRAM!

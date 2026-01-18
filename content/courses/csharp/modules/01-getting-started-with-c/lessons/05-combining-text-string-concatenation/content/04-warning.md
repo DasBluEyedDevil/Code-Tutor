@@ -5,29 +5,23 @@ title: "Common Pitfalls"
 
 ## Watch Out For These Mistakes!
 
-**Forgetting spaces between concatenated words**:
+**Forgetting the `$`**: If you forget the dollar sign, C# prints the curly braces literally!
 ```csharp
-Console.WriteLine("Hello" + "World");   // HelloWorld (no space!)
-Console.WriteLine("Hello " + "World");  // Hello World (correct)
-Console.WriteLine("Hello" + " World"); // Hello World (also correct)
+string name = "Sam";
+Console.WriteLine("Hello {name}");  // Output: Hello {name}
+Console.WriteLine($"Hello {name}"); // Output: Hello Sam
 ```
 
-**The + operator order trap**: C# evaluates left to right!
+**Using the wrong brackets**: Interpolation uses CURLY braces `{}`, not parentheses `()` or square brackets `[]`.
 ```csharp
-Console.WriteLine("Sum: " + 2 + 2);   // Sum: 22 (text + 2 = text, then + 2 = text)
-Console.WriteLine("Sum: " + (2 + 2)); // Sum: 4 (math first in parentheses)
-Console.WriteLine(2 + 2 + " is the sum"); // 4 is the sum (math happens first!)
+Console.WriteLine($"Value: (x)"); // Wrong!
+Console.WriteLine($"Value: {x}"); // Correct!
 ```
 
-**Forgetting the $ for interpolation**:
-```csharp
-Console.WriteLine("Hello {name}");  // Prints literally: Hello {name}
-Console.WriteLine($"Hello {name}"); // Prints: Hello Alex
-```
+**Variables must exist**: You can't put a variable in `{}` if you haven't created it yet!
 
-**Escaping braces in interpolation**: To print literal braces, double them:
+**Concatenation Math Trap**: If you use `+`, remember order of operations!
 ```csharp
-Console.WriteLine($"Use {{name}} syntax"); // Use {name} syntax
+Console.WriteLine("Result: " + 5 + 5);   // Output: Result: 55 (String glue)
+Console.WriteLine($"Result: {5 + 5}");   // Output: Result: 10 (Math!)
 ```
-
-**Performance note**: In loops with many iterations, consider `StringBuilder` instead of repeated concatenation (covered in advanced lessons).
