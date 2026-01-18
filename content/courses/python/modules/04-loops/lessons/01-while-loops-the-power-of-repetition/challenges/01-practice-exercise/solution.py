@@ -3,6 +3,9 @@
 
 import random
 
+# For reproducible results during testing (secret number will be 4)
+random.seed(42)
+
 print("=== Number Guessing Game ===")
 print("I'm thinking of a number between 1 and 20...")
 print()
@@ -18,7 +21,11 @@ attempts = 0  # Counter for number of guesses
 while guess != secret_number:
     
     # Get user's guess
-    guess = int(input("Enter your guess: "))
+    try:
+        guess = int(input("Enter your guess: "))
+    except ValueError:
+        print("Please enter a valid number.")
+        continue
     
     # Increment attempt counter
     attempts = attempts + 1

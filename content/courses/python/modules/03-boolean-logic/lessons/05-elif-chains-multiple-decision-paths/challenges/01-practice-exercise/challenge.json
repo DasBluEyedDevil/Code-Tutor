@@ -2,14 +2,36 @@
   "type": "FREE_CODING",
   "id": "module-03-lesson-05-challenge-1",
   "title": "Practice Exercise",
-  "description": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n<pre>BMI = weight_kg / (height_m ** 2)</pre>**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n<pre>=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n</pre>",
-  "instructions": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n<pre>BMI = weight_kg / (height_m ** 2)</pre>**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n<pre>=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n</pre>",
+  "description": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n```python\nBMI = weight_kg / (height_m ** 2)\n```\n\n**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n```text\n=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n```",
+  "instructions": "Build a **BMI Calculator** that calculates Body Mass Index and categorizes the result into health categories.\n\n**BMI Formula:**\n\n```python\nBMI = weight_kg / (height_m ** 2)\n```\n\n**BMI Categories:**\n\n- **Underweight:** BMI < 18.5\n- **Normal weight:** 18.5 <= BMI < 25\n- **Overweight:** 25 <= BMI < 30\n- **Obese:** BMI >= 30\n\n**Your task:**\n\n- Ask user for weight (kg) and height (meters)\n- Calculate BMI using the formula\n- Use an elif chain to categorize the BMI\n- Display BMI and category with health recommendation\n\n**Example output:**\n\n```text\n=== BMI Calculator ===\n\nEnter your weight (kg): 70\nEnter your height (meters): 1.75\n\nYour BMI: 22.9\nCategory: Normal weight\nRecommendation: Maintain your current lifestyle!\n```",
   "language": "python",
   "testCases": [
     {
-      "id": "test-1",
-      "description": "Code runs without errors",
-      "expectedOutput": "",
+      "id": "test-normal",
+      "description": "Test with Normal weight (70kg, 1.75m)",
+      "input": "70\n1.75",
+      "expectedOutput": "Normal weight",
+      "isVisible": true
+    },
+    {
+      "id": "test-underweight",
+      "description": "Test with Underweight (50kg, 1.75m)",
+      "input": "50\n1.75",
+      "expectedOutput": "Underweight",
+      "isVisible": true
+    },
+    {
+      "id": "test-overweight",
+      "description": "Test with Overweight (80kg, 1.75m)",
+      "input": "80\n1.75",
+      "expectedOutput": "Overweight",
+      "isVisible": true
+    },
+    {
+      "id": "test-obese",
+      "description": "Test with Obese (100kg, 1.75m)",
+      "input": "100\n1.75",
+      "expectedOutput": "Obese",
       "isVisible": true
     }
   ],

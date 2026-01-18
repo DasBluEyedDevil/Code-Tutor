@@ -10,13 +10,14 @@ title: "Key Takeaways"
 - **else is optional**: But recommended to catch unexpected cases
 - **No redundant conditions needed**: Each elif automatically excludes previous ranges
 - **elif vs multiple if**:
-<li>elif: Mutually exclusive (categories, ranges, grades)
-- Multiple if: Independent checks (flags, multiple actions)
+  - `elif`: Mutually exclusive (categories, ranges, grades)
+  - Multiple `if`: Independent checks (flags, multiple actions)
 
-</li>- **Common use cases**: Grading, pricing tiers, menus, categorization, range checking
+- **Common use cases**: Grading, pricing tiers, menus, categorization, range checking
 
 ### elif Chain Pattern (Template):
-```
+
+```python
 # For ranges/categories (most common):
 if value < threshold1:        # Lowest range
     action1
@@ -36,8 +37,8 @@ elif choice == option3:
     action3
 else:
     error_action
-
 ```
+
 ### Before Moving On:
 Make sure you can:
 

@@ -5,15 +5,10 @@ title: "Code Example: match/case Patterns"
 
 **Expected Output:**
 ```
-=== Basic Pattern Matching ===
-Command: start
+=== Command System ===
+Available commands: start, stop, restart, quit, help
+Enter command: start
 Starting the application...
-
-Command: quit
-Goodbye!
-
-Command: dance
-Unknown command: dance
 
 === Matching with | (OR patterns) ===
 User said 'y' -> Proceeding...
@@ -26,47 +21,40 @@ Moving to (3, 4)
 Point (0, 0) is at origin? True
 At the origin!
 
-Point (0, 5) is on axis? y-axis at 5
-
 === Guards (if conditions) ===
 Temperature: 75 -> Nice weather!
 Temperature: 95 -> Too hot!
-Temperature: 30 -> Freezing!
 
-=== Matching Sequences ===
-[1] -> Single element: 1
-[1, 2] -> Two elements: 1 and 2
-[1, 2, 3, 4, 5] -> First: 1, Rest: [2, 3, 4, 5]
-
-=== Matching Dictionaries ===
-{'type': 'error', 'code': 404} -> Error 404!
-{'type': 'success', 'data': 'hello'} -> Success: hello
-{'type': 'warning'} -> Warning (no details)
+=== Matching Sequences (Lists) ===
+Enter a command like 'go north' or 'take sword':
+Command: go north
+Moving north...
 ```
 
 ```python
 # Pattern Matching with match/case (Python 3.10+)
 
-print("=== Basic Pattern Matching ===")
+print("=== Command System ===")
+print("Available commands: start, stop, restart, quit, help")
 
-def handle_command(command):
-    match command:
-        case "start":
-            return "Starting the application..."
-        case "stop":
-            return "Stopping the application..."
-        case "restart":
-            return "Restarting..."
-        case "quit" | "exit":  # Match multiple values with |
-            return "Goodbye!"
-        case _:  # Wildcard: matches anything else
-            return f"Unknown command: {command}"
+# Interactive input
+command = input("Enter command: ").lower().strip()
 
-for cmd in ["start", "quit", "dance"]:
-    print(f"Command: {cmd}")
-    print(handle_command(cmd))
-    print()
+match command:
+    case "start":
+        print("Starting the application...")
+    case "stop":
+        print("Stopping the application...")
+    case "restart":
+        print("Restarting...")
+    case "quit" | "exit":  # Match multiple values with |
+        print("Goodbye!")
+    case "help":
+        print("Help: Enter a command to run.")
+    case _:  # Wildcard: matches anything else
+        print(f"Unknown command: {command}")
 
+print()
 print("=== Matching with | (OR patterns) ===")
 
 def get_confirmation(response):
@@ -78,6 +66,7 @@ def get_confirmation(response):
         case _:
             return "Please answer yes or no."
 
+# Demonstration
 print(f"User said 'y' -> {get_confirmation('y')}")
 print(f"User said 'no' -> {get_confirmation('no')}")
 print()
@@ -118,47 +107,22 @@ def describe_temperature(temp):
         case _:
             return "Too hot!"
 
-for temp in [75, 95, 30]:
+for temp in [75, 95]:
     print(f"Temperature: {temp} -> {describe_temperature(temp)}")
+
 print()
+print("=== Matching Sequences (Lists) ===")
+print("Enter a command like 'go north' or 'take sword':")
+# Split input into a list of words
+cmd_parts = input("Command: ").lower().split()
 
-print("=== Matching Sequences ===")
-
-def describe_list(items):
-    match items:
-        case []:
-            return "Empty list"
-        case [single]:
-            return f"Single element: {single}"
-        case [first, second]:
-            return f"Two elements: {first} and {second}"
-        case [first, *rest]:  # * captures remaining items
-            return f"First: {first}, Rest: {rest}"
-
-test_lists = [[1], [1, 2], [1, 2, 3, 4, 5]]
-for lst in test_lists:
-    print(f"{lst} -> {describe_list(lst)}")
-print()
-
-print("=== Matching Dictionaries ===")
-
-def handle_response(response):
-    match response:
-        case {"type": "error", "code": code}:
-            return f"Error {code}!"
-        case {"type": "success", "data": data}:
-            return f"Success: {data}"
-        case {"type": "warning"}:
-            return "Warning (no details)"
-        case _:
-            return "Unknown response format"
-
-responses = [
-    {"type": "error", "code": 404},
-    {"type": "success", "data": "hello"},
-    {"type": "warning"}
-]
-
-for resp in responses:
-    print(f"{resp} -> {handle_response(resp)}")
+match cmd_parts:
+    case ["go", direction]:
+        print(f"Moving {direction}...")
+    case ["take", item]:
+        print(f"Taking {item}...")
+    case [single_cmd]:
+        print(f"Single command: {single_cmd}")
+    case _:
+        print("I don't understand that structure.")
 ```

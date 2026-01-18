@@ -32,19 +32,15 @@ def parse_command(command, player_position=(5, 5)):
         case _:
             return "I don't understand that command"
 
-# Test the command parser
-test_commands = [
-    "north",
-    "look",
-    "inventory",
-    "quit",
-    "go south",
-    "take sword",
-    "dance"
-]
+# Main Game Loop
+print("=== Adventure Game Command Parser ===")
+print("Type 'quit' to exit.")
 
-print("=== Testing Command Parser ===")
-for cmd in test_commands:
-    print(f"Command: '{cmd}'")
-    print(f"Response: {parse_command(cmd)}")
-    print()
+while True:
+    user_input = input("Enter command: ")
+    if user_input.lower() in ["quit", "exit"]:
+        print("Goodbye!")
+        break
+
+    response = parse_command(user_input)
+    print(response)

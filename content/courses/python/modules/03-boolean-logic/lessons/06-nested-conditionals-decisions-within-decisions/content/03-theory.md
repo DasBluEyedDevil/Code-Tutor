@@ -3,8 +3,9 @@ type: "THEORY"
 title: "Syntax Breakdown"
 ---
 
-### Nested Conditional Anatomy:
-```
+### Nested Conditional Anatomy
+
+```python
 if outer_condition:           # Level 0 indentation
     outer_statements          # Level 1 (4 spaces)
     
@@ -14,17 +15,18 @@ if outer_condition:           # Level 0 indentation
         inner_else_statements # Level 2 (8 spaces)
 else:
     outer_else_statements     # Level 1 (4 spaces)
-
 ```
+
 #### Indentation Levels:
 
-- **Level 0**: Main if (no indentation)
-- **Level 1**: Code inside main if (4 spaces)
-- **Level 2**: Code inside nested if (8 spaces)
-- **Level 3**: Code inside triple-nested if (12 spaces)
+- **Level 0**: Main `if` (no indentation)
+- **Level 1**: Code inside main `if` (4 spaces)
+- **Level 2**: Code inside nested `if` (8 spaces)
+- **Level 3**: Code inside triple-nested `if` (12 spaces)
 
 #### Execution Flow Example:
-```
+
+```python
 age = 20
 has_id = True
 
@@ -41,11 +43,19 @@ else:
 # Output:
 # Adult
 # ID verified
+```
 
-```
-### When to Use Nesting vs Logical Operators:
-<table border='1' cellpadding='5' style='border-collapse: collapse;'><tr><th>Use Nested if</th><th>Use Logical Operators (and/or)</th></tr><tr><td>When inner check only makes sense if outer is True</td><td>When both conditions are equal partners</td></tr><tr><td>When you need different actions at each level</td><td>When checking multiple requirements for one outcome</td></tr><tr><td>More readable for complex multi-level logic</td><td>Simpler and more concise for 2 conditions</td></tr></table>#### Example Comparison:
-```
+### When to Use Nesting vs Logical Operators
+
+| Use Nested if | Use Logical Operators (and/or) |
+| :--- | :--- |
+| When inner check only makes sense if outer is True | When both conditions are equal partners |
+| When you need different actions at each level | When checking multiple requirements for one outcome |
+| More readable for complex multi-level logic | Simpler and more concise for 2 conditions |
+
+#### Example Comparison:
+
+```python
 # Scenario 1: Use AND (both conditions equal)
 # "Can only drive if 16+ AND have license"
 if age >= 16 and has_license:
@@ -76,38 +86,43 @@ elif is_logged_in and not is_admin:
 else:
     show_login_page()
 # Redundant checks, less clear
+```
 
-```
-### Common Nesting Patterns:
+### Common Nesting Patterns
+
 #### 1. Layered Validation
-```
+
+```python
 if input_is_provided:
     if input_is_valid_format:
         if input_is_safe:
             process_input()
+```
 
-```
 #### 2. Permission Checking
-```
+
+```python
 if is_logged_in:
     if is_admin or is_owner:
         allow_edit()
     else:
         deny_access()
+```
 
-```
 #### 3. Tiered Eligibility
-```
+
+```python
 if age >= 18:
     if income >= 30000:
         if credit_score >= 650:
             approve_loan()
-
 ```
-### Avoiding Deep Nesting (Readability):
+
+### Avoiding Deep Nesting (Readability)
+
 **Problem:** Too many levels become hard to read:
 
-```
+```python
 # TOO DEEP (hard to follow):
 if condition1:
     if condition2:
@@ -115,71 +130,72 @@ if condition1:
             if condition4:
                 if condition5:
                     do_something()  # 5 levels deep!
-
 ```
+
 **Solution 1:** Use logical operators:
 
-```
+```python
 # BETTER:
 if condition1 and condition2 and condition3 and condition4 and condition5:
     do_something()  # Flat, easier to read
-
 ```
+
 **Solution 2:** Early returns (preview of functions):
 
-```
+```python
 # BETTER (for functions - you'll learn in Module 6):
 if not condition1:
     return
 if not condition2:
     return
 do_something()  # Flatter logic
-
 ```
+
 **Best Practice:** Keep nesting to 2-3 levels maximum for readability.
 
-### Common Mistakes:
+### Common Mistakes
 
-<li>**Wrong indentation levels**:```
-# WRONG:
-if outer:
-  if inner:  # Only 2 spaces! Should be 4
-      action
+- **Wrong indentation levels**:
+  ```python
+  # WRONG:
+  if outer:
+    if inner:  # Only 2 spaces! Should be 4
+        action
 
-# CORRECT:
-if outer:
-    if inner:  # 4 spaces for outer, 4 more for inner
-        action  # 8 spaces total
+  # CORRECT:
+  if outer:
+      if inner:  # 4 spaces for outer, 4 more for inner
+          action  # 8 spaces total
+  ```
 
-```
-</li><li>**Forgetting the outer logic path**:```
-# PROBLEM: What if not logged in?
-if is_logged_in:
-    if is_admin:
-        show_admin()
-    else:
-        show_user()
-# Missing else for outer if! What if not logged in?
+- **Forgetting the outer logic path**:
+  ```python
+  # PROBLEM: What if not logged in?
+  if is_logged_in:
+      if is_admin:
+          show_admin()
+      else:
+          show_user()
+  # Missing else for outer if! What if not logged in?
 
-# BETTER:
-if is_logged_in:
-    if is_admin:
-        show_admin()
-    else:
-        show_user()
-else:
-    show_login()  # Handle all cases!
+  # BETTER:
+  if is_logged_in:
+      if is_admin:
+          show_admin()
+      else:
+          show_user()
+  else:
+      show_login()  # Handle all cases!
+  ```
 
-```
-</li><li>**Nesting when AND would work**:```
-# UNNECESSARILY NESTED:
-if age >= 18:
-    if has_license:
-        allow_drive()
+- **Nesting when AND would work**:
+  ```python
+  # UNNECESSARILY NESTED:
+  if age >= 18:
+      if has_license:
+          allow_drive()
 
-# SIMPLER:
-if age >= 18 and has_license:
-    allow_drive()
-
-```
-</li>
+  # SIMPLER:
+  if age >= 18 and has_license:
+      allow_drive()
+  ```

@@ -1,4 +1,4 @@
-# Command Parser using match/case (Python 3.10+)
+# Command Parser using match/case (Python 3.10+) - SOLUTION
 
 def parse_command(command, player_position=(5, 5)):
     """Parse a text adventure game command.
@@ -64,25 +64,15 @@ def parse_command(command, player_position=(5, 5)):
         case _:
             return "I don't understand that command. Type 'help' for options."
 
-# Test the command parser
-test_commands = [
-    "north",
-    "look",
-    "inventory",
-    "quit",
-    "go south",
-    "take sword",
-    "dance",
-    "help"
-]
+# Main Game Loop
+print("=== Adventure Game Command Parser ===")
+print("Type 'quit' to exit.")
 
-print("=== Testing Command Parser ===")
-for cmd in test_commands:
-    print(f"Command: '{cmd}'")
-    print(f"Response: {parse_command(cmd)}")
-    print()
+while True:
+    user_input = input("Enter command: ")
+    if user_input.lower() in ["quit", "exit"]:
+        print("Goodbye!")
+        break
 
-# Test boundary conditions
-print("=== Testing Boundaries ===")
-print(f"At north boundary: {parse_command('north', (0, 5))}")
-print(f"At south boundary: {parse_command('south', (9, 5))}")
+    response = parse_command(user_input)
+    print(response)

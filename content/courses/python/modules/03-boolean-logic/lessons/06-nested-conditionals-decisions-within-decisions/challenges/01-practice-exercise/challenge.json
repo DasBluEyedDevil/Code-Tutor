@@ -2,14 +2,50 @@
   "type": "FREE_CODING",
   "id": "module-03-lesson-06-challenge-1",
   "title": "Practice Exercise",
-  "description": "Build a **Movie Ticket Pricing System** with age-based pricing and weekday/weekend rates, plus student discounts.\n\n**Pricing Rules:**\n\n- **Children (under 13):**\n<li>Weekday: $8\n- Weekend: $10\n\n</li>- **Adults (13-64):**\n<li>Students: $12 (any day)\n- Non-students weekday: $15\n- Non-students weekend: $18\n\n</li>- **Seniors (65+):**\n<li>Weekday: $10\n- Weekend: $12\n\n</li>\n**Your task:**\n\n- Ask for age, whether it's a weekend, and student status\n- Use nested conditionals to determine the correct price\n- Display the pricing breakdown\n\n**Example output:**\n\n<pre>=== Movie Ticket Pricing ===\n\nEnter your age: 19\nIs it the weekend? (yes/no): no\nAre you a student? (yes/no): yes\n\nAge Category: Adult\nDay Type: Weekday\nStudent Discount: Yes\nTicket Price: $12.00\n</pre>",
-  "instructions": "Build a **Movie Ticket Pricing System** with age-based pricing and weekday/weekend rates, plus student discounts.\n\n**Pricing Rules:**\n\n- **Children (under 13):**\n<li>Weekday: $8\n- Weekend: $10\n\n</li>- **Adults (13-64):**\n<li>Students: $12 (any day)\n- Non-students weekday: $15\n- Non-students weekend: $18\n\n</li>- **Seniors (65+):**\n<li>Weekday: $10\n- Weekend: $12\n\n</li>\n**Your task:**\n\n- Ask for age, whether it's a weekend, and student status\n- Use nested conditionals to determine the correct price\n- Display the pricing breakdown\n\n**Example output:**\n\n<pre>=== Movie Ticket Pricing ===\n\nEnter your age: 19\nIs it the weekend? (yes/no): no\nAre you a student? (yes/no): yes\n\nAge Category: Adult\nDay Type: Weekday\nStudent Discount: Yes\nTicket Price: $12.00\n</pre>",
+  "description": "Build a **Movie Ticket Pricing System** with age-based pricing and weekday/weekend rates, plus student discounts.\n\n**Pricing Rules:**\n\n- **Children (under 13):**\n  - Weekday: $8\n  - Weekend: $10\n\n- **Adults (13-64):**\n  - Students: $12 (any day)\n  - Non-students weekday: $15\n  - Non-students weekend: $18\n\n- **Seniors (65+):**\n  - Weekday: $10\n  - Weekend: $12\n\n**Your task:**\n\n- Ask for age, whether it's a weekend, and student status\n- Use nested conditionals to determine the correct price\n- Display the pricing breakdown\n\n**Example output:**\n\n```text\n=== Movie Ticket Pricing ===\n\nEnter your age: 19\nIs it the weekend? (yes/no): no\nAre you a student? (yes/no): yes\n\nAge Category: Adult\nDay Type: Weekday\nStudent Discount: Yes\nTicket Price: $12.00\n```",
+  "instructions": "Build a **Movie Ticket Pricing System** with age-based pricing and weekday/weekend rates, plus student discounts.\n\n**Pricing Rules:**\n\n- **Children (under 13):**\n  - Weekday: $8\n  - Weekend: $10\n\n- **Adults (13-64):**\n  - Students: $12 (any day)\n  - Non-students weekday: $15\n  - Non-students weekend: $18\n\n- **Seniors (65+):**\n  - Weekday: $10\n  - Weekend: $12\n\n**Your task:**\n\n- Ask for age, whether it's a weekend, and student status\n- Use nested conditionals to determine the correct price\n- Display the pricing breakdown\n\n**Example output:**\n\n```text\n=== Movie Ticket Pricing ===\n\nEnter your age: 19\nIs it the weekend? (yes/no): no\nAre you a student? (yes/no): yes\n\nAge Category: Adult\nDay Type: Weekday\nStudent Discount: Yes\nTicket Price: $12.00\n```",
   "language": "python",
   "testCases": [
     {
-      "id": "test-1",
-      "description": "Code runs without errors",
-      "expectedOutput": "",
+      "id": "test-child-weekday",
+      "description": "Child on Weekday",
+      "input": "10\nno\nno",
+      "expectedOutput": "Ticket Price: $8.00",
+      "isVisible": true
+    },
+    {
+      "id": "test-child-weekend",
+      "description": "Child on Weekend",
+      "input": "10\nyes\nno",
+      "expectedOutput": "Ticket Price: $10.00",
+      "isVisible": true
+    },
+    {
+      "id": "test-student",
+      "description": "Student (Adult)",
+      "input": "20\nno\nyes",
+      "expectedOutput": "Ticket Price: $12.00",
+      "isVisible": true
+    },
+    {
+      "id": "test-adult-weekday",
+      "description": "Adult Non-Student Weekday",
+      "input": "30\nno\nno",
+      "expectedOutput": "Ticket Price: $15.00",
+      "isVisible": true
+    },
+    {
+      "id": "test-adult-weekend",
+      "description": "Adult Non-Student Weekend",
+      "input": "30\nyes\nno",
+      "expectedOutput": "Ticket Price: $18.00",
+      "isVisible": true
+    },
+    {
+      "id": "test-senior-weekday",
+      "description": "Senior Weekday",
+      "input": "70\nno\nno",
+      "expectedOutput": "Ticket Price: $10.00",
       "isVisible": true
     }
   ],

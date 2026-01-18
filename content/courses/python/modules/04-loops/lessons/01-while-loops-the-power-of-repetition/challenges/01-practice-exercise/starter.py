@@ -3,6 +3,9 @@
 
 import random
 
+# For reproducible results during testing (secret number will be 4)
+random.seed(42)
+
 print("=== Number Guessing Game ===")
 print("I'm thinking of a number between 1 and 20...")
 print()
