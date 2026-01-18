@@ -1,51 +1,40 @@
 {
   "type": "FREE_CODING",
   "id": "2.2-challenge",
-  "title": "Practice Challenge",
-  "description": "Create a mini profile:\n1. Create a const 'userName' with your name (string)\n2. Create a let 'userAge' with your age (number)\n3. Create a const 'isLearning' set to true (boolean)\n4. Display a message: 'Name: [name], Age: [age], Learning: [boolean]' by joining strings and variables",
-  "instructions": "Create a mini profile:\n1. Create a const 'userName' with your name (string)\n2. Create a let 'userAge' with your age (number)\n3. Create a const 'isLearning' set to true (boolean)\n4. Display a message: 'Name: [name], Age: [age], Learning: [boolean]' by joining strings and variables",
+  "title": "Profile Generator",
+  "description": "Create a mini user profile using different data types and Template Literals.",
+  "instructions": "1.  Create a `const` variable named `userName` with the value `'Alice'`.\n2.  Create a `let` variable named `userAge` with the value `25`.\n3.  Create a `const` variable named `isLearning` with the value `true`.\n4.  Use `console.log()` and a Template Literal to display exactly: `Name: Alice, Age: 25, Learning: true`.",
   "language": "javascript",
   "testCases": [
     {
       "id": "test-1",
-      "description": "Displays a formatted profile message with name, age, and learning status",
+      "description": "Displays the correct profile message",
       "expectedOutput": "Name: Alice, Age: 25, Learning: true",
       "isVisible": true
     },
     {
       "id": "test-2",
-      "description": "Output contains the Name label",
-      "expectedOutput": "Name:",
-      "isVisible": false
-    },
-    {
-      "id": "test-3",
-      "description": "Output contains the Learning label with boolean",
-      "expectedOutput": "Learning: true",
+      "description": "Code uses Template Literals (backticks)",
+      "expectedOutput": "Name: Alice",
       "isVisible": false
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Use + to join strings and variables: 'Name: ' + userName + ', Age: ' + userAge + ', Learning: ' + isLearning"
+      "text": "Use backticks: `` `Name: ${userName}, Age: ${userAge}, Learning: ${isLearning}` ``"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Putting quotes around numbers",
-      "consequence": "let age = '25'; makes age a string, not a number. '25' + 5 = '255' (string concatenation, not 30).",
-      "correction": "Don't use quotes for numbers: let age = 25;"
+      "mistake": "Using quotes instead of backticks",
+      "consequence": "The variables won't be replaced with their values.",
+      "correction": "Use backticks (key above Tab)."
     },
     {
-      "mistake": "Putting quotes around booleans",
-      "consequence": "let isStudent = 'true'; creates a string containing the text 'true', not the boolean value true.",
-      "correction": "Don't use quotes for booleans: let isStudent = true;"
-    },
-    {
-      "mistake": "Forgetting to include all parts of the message",
-      "consequence": "The output format won't match what's expected.",
-      "correction": "Include all labels and values: 'Name: ' + userName + ', Age: ' + userAge + ', Learning: ' + isLearning"
+      "mistake": "Putting quotes around numbers or booleans",
+      "consequence": "The values become strings instead of their actual types.",
+      "correction": "Write `25` and `true` without quotes."
     }
   ],
   "difficulty": "beginner"

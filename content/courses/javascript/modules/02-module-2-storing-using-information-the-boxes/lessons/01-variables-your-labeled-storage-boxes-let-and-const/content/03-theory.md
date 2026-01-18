@@ -10,11 +10,12 @@ Creating a variable happens in two steps (often done at the same time):
 
 You can do both at once: `let score = 10;`
 
-### 2. let vs. const: The Rule of Thumb
+### 2. `let` vs. `const`: The Rule of Thumb
 Always use `const` by default. Only use `let` if you know for a fact the value needs to be reassigned. This makes your code safer because it prevents accidental changes to data that should stay permanent.
 
-### 3. What about 'var'?
-You might see `var` in older tutorials. It was the original way to create variables in JavaScript. However, it has "quirky" behaviors that often lead to bugs (like being accessible before it's even declared!). 
+### 3. What about `var`?
+You might see `var` in older tutorials. It was the original way to create variables in JavaScript. However, it has "quirky" behaviors that often lead to bugs (like being accessible before it's even declared!).
+
 **Modern JavaScript developers avoid `var` entirely.** Stick to `let` and `const`.
 
 ### 4. Naming Rules (The Fine Print)

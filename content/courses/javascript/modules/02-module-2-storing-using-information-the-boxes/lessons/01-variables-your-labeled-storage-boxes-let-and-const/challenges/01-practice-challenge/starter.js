@@ -1,3 +1,7 @@
-// Create your variables here
+// 1. Create a const variable 'city'
 
-// Display them here
+
+// 2. Create a let variable 'temperature'
+
+
+// 3. Display the message using a Template Literal

@@ -1,51 +1,46 @@
 {
   "type": "FREE_CODING",
   "id": "2.1-challenge",
-  "title": "Practice Challenge",
-  "description": "Create three variables:\n1. A 'const' variable called 'city' that stores your favorite city name (as text in quotes)\n2. A 'let' variable called 'temperature' that stores the number 72\n3. Use console.log to display both variables",
-  "instructions": "Create three variables:\n1. A 'const' variable called 'city' that stores your favorite city name (as text in quotes)\n2. A 'let' variable called 'temperature' that stores the number 72\n3. Use console.log to display both variables",
+  "title": "Variables & Templates",
+  "description": "Create variables to store data and display a formatted message.",
+  "instructions": "1.  Create a `const` variable named `city` with the value `'New York'`.\n2.  Create a `let` variable named `temperature` with the value `72`.\n3.  Use `console.log()` and a Template Literal (backticks) to display exactly: `The temperature in New York is 72`.",
   "language": "javascript",
   "testCases": [
     {
       "id": "test-1",
-      "description": "Displays the city name",
-      "expectedOutput": "New York",
+      "description": "Displays the correct message",
+      "expectedOutput": "The temperature in New York is 72",
       "isVisible": true
     },
     {
       "id": "test-2",
-      "description": "Displays the temperature value",
-      "expectedOutput": "72",
-      "isVisible": true
+      "description": "Uses const for city",
+      "expectedOutput": "New York",
+      "isVisible": false
     },
     {
       "id": "test-3",
-      "description": "Uses const for city variable",
-      "expectedOutput": "New York",
+      "description": "Uses let for temperature",
+      "expectedOutput": "72",
       "isVisible": false
     }
   ],
   "hints": [
     {
       "level": 1,
-      "text": "Remember: const city = 'some city'; and let temperature = 72; Then use console.log for each."
+      "text": "Use backticks for the string: `` `The temperature in ${city} is ${temperature}` ``"
     }
   ],
   "commonMistakes": [
     {
-      "mistake": "Forgetting 'let' or 'const' keyword",
-      "consequence": "Writing just age = 25; instead of let age = 25; causes an error in strict mode or creates a global variable.",
-      "correction": "Always declare variables with let or const: let age = 25;"
+      "mistake": "Using quotes instead of backticks",
+      "consequence": "`'The temperature in ${city}...'` prints the variable names literally.",
+      "correction": "Use backticks (key above Tab) for Template Literals."
     },
     {
-      "mistake": "Using 'let' or 'const' when updating a variable",
-      "consequence": "Writing let age = 25; let age = 26; throws an error because you can't redeclare the same variable.",
-      "correction": "Only use let/const when creating. To update: let age = 25; age = 26;"
-    },
-    {
-      "mistake": "Using const for values that need to change",
-      "consequence": "Trying to reassign a const variable throws a TypeError.",
-      "correction": "Use let for values that will change, const for values that stay the same."
+      "mistake": "Using 'let' for city",
+      "consequence": "Cities don't usually change names, so `const` is better.",
+      "correction": "Use `const city = ...`"
     }
   ],
   "difficulty": "beginner"

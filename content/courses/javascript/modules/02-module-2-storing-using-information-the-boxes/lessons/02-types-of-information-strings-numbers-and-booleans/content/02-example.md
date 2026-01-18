@@ -7,8 +7,8 @@ title: "Working with Different Data Types"
 // 1. STRINGS (Text)
 const firstName = "Alice";
 const lastName = 'Smith';
-// Template Literal (Modern JS using backticks ``)
-const fullName = `${firstName} ${lastName}`; 
+// Template Literal (Modern JS using backticks `` ` ``)
+const fullName = `${firstName} ${lastName}`;
 
 console.log(`Hello, my name is ${fullName}`);
 
@@ -35,4 +35,16 @@ let userAddress = null;   // Explicitly set to empty: null
 
 console.log(userJob);     // undefined
 console.log(userAddress); // null
+```
+
+### Expected Output
+
+```
+Hello, my name is Alice Smith
+The total cost is: $59.97
+Infinity
+NaN
+User logged in: true
+undefined
+null
 ```
