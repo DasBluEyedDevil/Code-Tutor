@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "course.schema.json",
+  "title": "Course Metadata",
+  "description": "Schema for course.json files that define top-level course metadata.",
+  "type": "object",
+  "required": [
+    "id",
+    "language",
+    "title",
+    "description",
+    "difficulty",
+    "estimatedHours",
+    "prerequisites"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique course identifier (e.g. 'java', 'csharp', 'python')"
+    },
+    "language": {
+      "type": "string",
+      "description": "Programming language identifier (e.g. 'java', 'csharp', 'dart')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable course title"
+    },
+    "description": {
+      "type": "string",
+      "description": "Course description summarizing scope and outcomes"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced", "beginner-to-advanced"],
+      "description": "Overall course difficulty level"
+    },
+    "estimatedHours": {
+      "type": "number",
+      "minimum": 1,
+      "description": "Estimated total hours to complete the course"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of prerequisite knowledge or skills"
+    },
+    "minimumRuntimeVersion": {
+      "type": "string",
+      "description": "Minimum runtime/SDK version required (e.g. 'Java 21', '.NET 8.0')"
+    },
+    "totalModules": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of modules in the course"
+    },
+    "totalLessons": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Total number of lessons across all modules"
+    },
+    "learningOutcomes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of learning outcomes students will achieve"
+    }
+  },
+  "additionalProperties": true
+}

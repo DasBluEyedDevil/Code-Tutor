@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "challenge.schema.json",
+  "title": "Challenge Metadata",
+  "description": "Schema for challenge.json files that define coding challenges and quizzes within a lesson.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique challenge identifier"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable challenge title"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "FREE_CODING",
+        "MULTIPLE_CHOICE",
+        "MULTI_CHOICE",
+        "QUIZ",
+        "CODE",
+        "TRUE_FALSE",
+        "quiz",
+        "coding",
+        "implementation"
+      ],
+      "description": "Challenge type determining the UI and evaluation mode"
+    },
+    "description": {
+      "type": "string",
+      "description": "Challenge description explaining the task"
+    },
+    "instructions": {
+      "type": "string",
+      "description": "Detailed instructions for completing the challenge"
+    },
+    "language": {
+      "type": "string",
+      "description": "Programming language for code challenges (e.g. 'java', 'python', 'csharp')"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"],
+      "description": "Challenge difficulty level"
+    },
+    "testCases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "expectedOutput": { "type": "string" },
+          "isVisible": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      },
+      "description": "Test cases for automated challenge evaluation"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["level", "text"],
+        "properties": {
+          "level": { "type": "integer", "minimum": 1 },
+          "text": { "type": "string" }
+        },
+        "additionalProperties": true
+      },
+      "description": "Progressive hints ordered by detail level"
+    },
+    "commonMistakes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mistake"],
+        "properties": {
+          "mistake": { "type": "string" },
+          "consequence": { "type": "string" },
+          "correction": { "type": "string" }
+        },
+        "additionalProperties": true
+      },
+      "description": "Common mistakes students make with this challenge"
+    },
+    "options": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Answer options for multiple choice challenges"
+    },
+    "correctAnswer": {
+      "description": "Correct answer index (for multiple choice) or value"
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Explanation of the correct answer"
+    },
+    "question": {
+      "type": "string",
+      "description": "Question text for quiz-type challenges"
+    },
+    "questions": {
+      "type": "array",
+      "description": "Array of questions for multi-question quizzes"
+    },
+    "solutionCode": {
+      "type": "string",
+      "description": "Solution code for reference"
+    },
+    "expectedOutput": {
+      "type": "string",
+      "description": "Expected output for simple output-matching challenges"
+    },
+    "startingCode": {
+      "type": "string",
+      "description": "Starting code template for the challenge"
+    }
+  },
+  "additionalProperties": true
+}

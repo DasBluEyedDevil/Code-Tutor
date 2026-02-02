@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "lesson.schema.json",
+  "title": "Lesson Metadata",
+  "description": "Schema for lesson.json files that define lesson-level metadata within a module.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "moduleId",
+    "order",
+    "estimatedMinutes",
+    "difficulty"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^lesson-\\d{2}-\\d{2}$",
+      "description": "Standardized lesson identifier in format lesson-{MM}-{LL} where MM is module number and LL is lesson number (e.g. 'lesson-01-03')"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable lesson title"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^module-\\d{2}$",
+      "description": "Reference to parent module ID (e.g. 'module-01')"
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Display order within the module (1-based)"
+    },
+    "estimatedMinutes": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Estimated minutes to complete the lesson"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["beginner", "intermediate", "advanced"],
+      "description": "Lesson difficulty level"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional lesson description"
+    }
+  },
+  "additionalProperties": true
+}
