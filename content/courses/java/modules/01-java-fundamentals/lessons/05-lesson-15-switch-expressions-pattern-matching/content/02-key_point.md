@@ -8,7 +8,7 @@ Modern Java uses the arrow (->) syntax for cleaner switches:
 // Old way (statement):
 switch (day) {
     case "MONDAY":
-        System.out.println("Start of week");
+        IO.println("Start of week");
         break;
     // ... more cases
 }

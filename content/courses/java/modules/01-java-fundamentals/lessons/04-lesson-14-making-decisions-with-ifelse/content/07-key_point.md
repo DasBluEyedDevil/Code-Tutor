@@ -7,7 +7,7 @@ When checking object types, you'll see TWO styles:
 
 MODERN SYNTAX (Java 16+):
 if (obj instanceof String s) {
-    println(s.length());  // s is already a String!
+    IO.println(s.length());  // s is already a String!
 }
 
 Use this when: Type check AND use the value together.
@@ -15,7 +15,7 @@ Use this when: Type check AND use the value together.
 TRADITIONAL SYNTAX (Java 8-15):
 if (obj instanceof String) {
     String s = (String) obj;  // Must cast separately
-    System.out.println(s.length());
+    IO.println(s.length());
 }
 
 Use this when: Working with Java 8-15 LTS or older codebases.

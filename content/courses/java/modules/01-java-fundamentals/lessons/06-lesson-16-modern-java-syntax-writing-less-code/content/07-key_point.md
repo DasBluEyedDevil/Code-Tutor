@@ -3,15 +3,15 @@ type: "KEY_POINT"
 title: "When to Use These Features"
 ---
 
-USE IMPLICIT MAIN WHEN:
+USE COMPACT SOURCE FILES WHEN:
 - Learning Java
 - Writing quick scripts
 - Building small utilities
 - Prototyping ideas
 
-USE TRADITIONAL SYNTAX WHEN:
-- Building production applications
-- Working on team projects
+USE FULL CLASS SYNTAX WHEN:
+- Building multi-class applications
+- Working on team projects with established conventions
 - Creating reusable libraries
 - Need explicit class structure
 

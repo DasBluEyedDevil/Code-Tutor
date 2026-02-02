@@ -8,9 +8,9 @@ Use 'else':
 
 int age = 15;
 if (age >= 18) {
-    System.out.println("You can vote!");
+    IO.println("You can vote!");
 } else {
-    System.out.println("Too young to vote.");
+    IO.println("Too young to vote.");
 }
 
 Now:

@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 // ... and more
 
-// NEW WAY (Java 23+):
+// MODULE IMPORT:
 import module java.base;
 
 This single line imports EVERYTHING from java.base:

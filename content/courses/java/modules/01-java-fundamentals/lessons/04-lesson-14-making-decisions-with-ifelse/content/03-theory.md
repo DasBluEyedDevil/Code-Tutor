@@ -13,7 +13,7 @@ Real example:
 
 int age = 20;
 if (age >= 18) {
-    System.out.println("You can vote!");
+    IO.println("You can vote!");
 }
 
 Breaking it down:

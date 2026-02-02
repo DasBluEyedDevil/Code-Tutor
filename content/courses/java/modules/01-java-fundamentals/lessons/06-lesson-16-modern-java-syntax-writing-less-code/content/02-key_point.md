@@ -1,31 +1,20 @@
 ---
 type: "KEY_POINT"
-title: "JEP 512: Compact Source Files - No More Ceremony"
+title: "Compact Source Files: How Your Code Works"
 ---
 
-Java 25 lets you write programs without class declarations (finalized as JEP 512, after previews as JEP 477/495):
+When you write a compact source file like this:
 
-// OLD WAY (still works):
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello!");
-    }
-}
-
-// NEW WAY (Java 25+):
 void main() {
     IO.println("Hello!");
 }
 
-What changed:
-- No public class declaration needed
-- No static keyword
-- No String[] args (unless you need them)
-- IO.println() for console output (IO class is in java.lang)
+Java automatically provides the surrounding structure. You don't need to declare a class or worry about the `public static` keywords.
 
-Perfect for:
-- Learning Java
-- Quick scripts
-- Small utilities
+What compact source files give you:
+- No class declaration needed for simple programs
+- No `static` keyword on main()
+- No `String[] args` (unless you need command-line arguments)
+- IO.println() for console output (the IO class is in java.lang, auto-imported)
 
-Note: For larger applications, you'll still use proper class structure.
+This is the standard way to write simple Java programs. As your programs grow and you start creating your own classes (Module 04), you'll learn the full class syntax naturally.

@@ -1,12 +1,19 @@
 ---
 type: "EXAMPLE"
-title: "Before and After: A Complete Comparison"
+title: "Compact vs Traditional: A Side-by-Side Comparison"
 ---
 
-The compact source file syntax (JEP 512, finalized in Java 25) dramatically reduces boilerplate for beginners. Here's a side-by-side comparison showing how much cleaner modern Java code can be.
+Here's how the same program looks in compact source file syntax (what you've been using) versus the traditional syntax you'll see in older resources.
 
 ```java
-// ========== OLD WAY (Java 8-21 LTS) ==========
+// ========== COMPACT (what you write) ==========
+void main() {
+    double celsius = 25.0;
+    double fahrenheit = celsius * 9/5 + 32;
+    IO.println(celsius + "C = " + fahrenheit + "F");
+}
+
+// ========== TRADITIONAL (what older tutorials show) ==========
 package com.example;
 
 public class TemperatureConverter {
@@ -17,12 +24,5 @@ public class TemperatureConverter {
     }
 }
 
-// ========== NEW WAY (Java 25+) ==========
-void main() {
-    double celsius = 25.0;
-    double fahrenheit = celsius * 9/5 + 32;
-    IO.println(celsius + "C = " + fahrenheit + "F");
-}
-
-// Same output, 60% less code!
+// Same output -- the compact version focuses on what matters!
 ```

@@ -11,7 +11,7 @@ try (Connection conn = DriverManager.getConnection(url, user, password);
      Statement stmt = conn.createStatement()) {
     
     int rowsAffected = stmt.executeUpdate(sql);
-    System.out.println("Inserted " + rowsAffected + " row(s)");
+    IO.println("Inserted " + rowsAffected + " row(s)");
 }
 
 UPDATE:

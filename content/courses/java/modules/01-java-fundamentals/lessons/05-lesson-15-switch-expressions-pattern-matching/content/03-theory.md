@@ -10,7 +10,7 @@ int numLetters = switch (day) {
     case "TUESDAY" -> 7;
     case "THURSDAY", "SATURDAY" -> 8;
     case "WEDNESDAY" -> {
-        System.out.println("Middle of week!");
+        IO.println("Middle of week!");
         yield 9;  // 'yield' returns the value from the block
     }
     default -> throw new IllegalArgumentException("Invalid day: " + day);

@@ -16,7 +16,7 @@ try (Connection conn = DriverManager.getConnection(url, user, password);
         String name = rs.getString("name");
         int age = rs.getInt("age");
         
-        System.out.println(id + ": " + name + ", " + age);
+        IO.println(id + ": " + name + ", " + age);
     }
 }
 

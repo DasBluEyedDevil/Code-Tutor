@@ -1,37 +1,23 @@
 ---
 type: "KEY_POINT"
-title: "Dual Syntax: Modern Java 25+ vs Traditional Java 21 LTS"
+title: "Summary: Java 25 Features for Clean Code"
 ---
 
-Here's a complete comparison of the features in this lesson:
+Here's a quick reference of the features covered in this lesson:
 
-COMPACT SOURCE FILE (Java 25+, JEP 512):
+COMPACT SOURCE FILES (JEP 512):
 void main() {
     IO.println("Hello!");
 }
+No class declaration, no static, no String[] args.
 
-TRADITIONAL MAIN (Java 8-21 LTS):
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello!");
-    }
-}
-
-UNNAMED VARIABLES (Java 22+, JEP 456):
+UNNAMED VARIABLES (JEP 456):
 catch (Exception _) { ... }
 for (var _ : list) { ... }
+Use _ when a variable is required but unused.
 
-TRADITIONAL UNUSED VARIABLES (Java 8-21):
-catch (Exception ignored) { ... }
-for (var unused : list) { ... }
-
-MODULE IMPORTS (Java 23+, JEP 476):
+MODULE IMPORTS (JEP 476):
 import module java.base;
+One line imports all standard library classes.
 
-TRADITIONAL IMPORTS (Java 8-21):
-import java.util.List;
-import java.util.Map;
-import java.io.IOException;
-// ... one import per class
-
-IMPORTANT: Most enterprise codebases use Java 17 or 21 LTS. Java 25 is the newest LTS (September 2025). When you start a job, you'll likely work with traditional syntax. This course teaches modern syntax first (it's easier to learn!), but you MUST recognize both to read real-world code.
+These features work together to make Java clean and focused on your logic. As your programs grow larger (Module 04 onwards), you'll naturally add more structure -- but you'll always understand WHY that structure exists.

@@ -3,24 +3,16 @@ type: "KEY_POINT"
 title: "Which Syntax Should You Use?"
 ---
 
-You'll see TWO styles of Java code in the real world:
+In Java 25, printing is simple:
 
-MODERN SYNTAX (Java 23+):
 void main() {
-    println("Hello, World!");
+    IO.println("Hello, World!");
 }
 
-Use this when: Learning, prototyping, or using Java 23+.
+That's it! IO.println() prints text to the console, followed by a new line.
 
-TRADITIONAL SYNTAX (Java 8-21 LTS):
-public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
-}
+- IO is a built-in class (in java.lang, auto-imported)
+- println() means "print line" -- it prints your text and moves to the next line
+- Everything you want to print goes inside the parentheses, in quotes
 
-Use this when: Working in enterprise codebases, using Java 21 LTS, or in job interviews.
-
-IMPORTANT: According to the 2025 Java Developer Report, 61% of developers use Java 17 and 45% use Java 21 LTS. You MUST recognize both syntaxes!
-
-This course teaches modern syntax first (it's simpler to learn!) but ALWAYS shows the traditional equivalent. When you see code at work or in tutorials, you'll know exactly what's happening.
+NOTE: In older tutorials and Stack Overflow answers, you'll see System.out.println() instead of IO.println(). They do the same thing -- IO.println() is the modern way. We cover the old syntax in Lesson 6.

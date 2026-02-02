@@ -1,15 +1,15 @@
 ---
 type: "THEORY"
-title: "JEP 456: Unnamed Variables with _"
+title: "Unnamed Variables with _"
 ---
 
-Sometimes you MUST declare a variable but don't need it:
+Sometimes you MUST declare a variable but don't actually use it:
 
 // Forced to name the exception even if unused:
 try {
     riskyOperation();
 } catch (Exception e) {  // 'e' is never used!
-    System.out.println("Something went wrong");
+    IO.println("Something went wrong");
 }
 
 // Forced to name element in enhanced for-loop:
@@ -17,7 +17,7 @@ for (var item : List.of(1, 2, 3, 4, 5)) {  // 'item' never used!
     doSomething();
 }
 
-Java 22 finalized the unnamed variable '_' (JEP 456):
+Java solves this with the unnamed variable '_' (JEP 456):
 
 try {
     riskyOperation();

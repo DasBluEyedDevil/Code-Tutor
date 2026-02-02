@@ -17,7 +17,7 @@ try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
     pstmt.setString(3, "alice@example.com");
     
     int rowsInserted = pstmt.executeUpdate();
-    System.out.println("Inserted: " + rowsInserted);
+    IO.println("Inserted: " + rowsInserted);
 }
 
 BATCH INSERT (multiple rows):

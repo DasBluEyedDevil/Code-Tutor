@@ -1,16 +1,14 @@
 ---
 type: "THEORY"
-title: "The Problem: Java's Ceremony"
+title: "Why Java Is Clean and Simple"
 ---
 
-Traditional Java requires a lot of boilerplate just to print 'Hello':
+Throughout this course, you've been writing Java like this:
 
-public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
+void main() {
+    IO.println("Hello, World!");
 }
 
-That's 5 lines and 4 concepts (public, class, static, void, String[] args) just to print one message!
+Simple, right? That's because Java 25 uses compact source files (JEP 512) as the standard way to write simple programs. You write your logic, and Java handles the rest.
 
-Java 25 finalizes features (JEP 512: Compact Source Files) that eliminate this ceremony, making Java as concise as Python or JavaScript for simple programs.
+But Java wasn't always this concise. Under the hood, Java has a more verbose syntax that you'll encounter in older tutorials, textbooks, and enterprise codebases. This lesson explains what that older syntax looks like and why you don't need it for learning.
