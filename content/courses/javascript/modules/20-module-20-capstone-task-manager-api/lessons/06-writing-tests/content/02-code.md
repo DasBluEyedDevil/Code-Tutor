@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Bun Test Setup - describe, it, expect patterns"
 ---
 

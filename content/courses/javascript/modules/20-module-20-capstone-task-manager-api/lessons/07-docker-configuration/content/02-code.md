@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Dockerfile for Bun API - Multi-Stage Build"
 ---
 

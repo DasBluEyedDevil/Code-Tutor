@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Practical Example: Rate Limiting with Errors"
 ---
 

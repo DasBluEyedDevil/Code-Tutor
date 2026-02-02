@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Health Endpoint with Database Check"
 ---
 

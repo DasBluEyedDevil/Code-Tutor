@@ -1,5 +1,5 @@
 ---
-type: "ARCHITECTURE"
+type: "THEORY"
 title: "Designing Multi-Provider Authentication"
 ---
 

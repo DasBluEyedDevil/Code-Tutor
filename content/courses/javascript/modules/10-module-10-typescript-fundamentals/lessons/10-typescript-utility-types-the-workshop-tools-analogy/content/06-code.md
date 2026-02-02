@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "ReturnType<T> and Parameters<T>"
 ---
 

@@ -1,5 +1,5 @@
 ---
-type: "EXPERIMENT"
+type: "EXAMPLE"
 title: "Section 8: Best Practices"
 ---
 

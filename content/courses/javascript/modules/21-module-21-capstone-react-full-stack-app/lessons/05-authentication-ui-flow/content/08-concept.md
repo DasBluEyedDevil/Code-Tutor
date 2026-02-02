@@ -1,5 +1,5 @@
 ---
-type: "CONCEPT"
+type: "THEORY"
 title: "Challenge: Add Password Strength Indicator"
 ---
 

@@ -1,5 +1,5 @@
 ---
-type: "REAL_WORLD"
+type: "ANALOGY"
 title: "Where C# is Used in Production"
 ---
 

@@ -1,5 +1,5 @@
 ---
-type: "EXPERIMENT"
+type: "EXAMPLE"
 title: "Error Tracking with Sentry"
 ---
 

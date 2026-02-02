@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "CommonJS Syntax (require/exports)"
 ---
 

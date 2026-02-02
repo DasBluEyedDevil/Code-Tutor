@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Deploy to Fly.io (Alternative)"
 ---
 

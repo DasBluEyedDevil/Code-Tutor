@@ -1,5 +1,5 @@
 ---
-type: "ARCHITECTURE"
+type: "THEORY"
 title: "Control Flow Patterns in Clean Code"
 ---
 

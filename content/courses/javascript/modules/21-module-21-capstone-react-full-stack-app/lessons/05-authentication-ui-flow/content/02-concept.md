@@ -1,5 +1,5 @@
 ---
-type: "CONCEPT"
+type: "THEORY"
 title: "Form Validation & Error Handling"
 ---
 

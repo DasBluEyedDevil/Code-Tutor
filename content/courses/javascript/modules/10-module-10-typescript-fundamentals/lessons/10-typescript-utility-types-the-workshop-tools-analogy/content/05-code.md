@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Readonly<T> and ReadonlyArray<T>"
 ---
 

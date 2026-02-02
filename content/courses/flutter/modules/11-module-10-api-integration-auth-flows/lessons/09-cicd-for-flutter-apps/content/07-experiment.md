@@ -1,5 +1,5 @@
 ---
-type: "EXPERIMENT"
+type: "EXAMPLE"
 title: "Section 5: Quality Gates and Best Practices"
 ---
 

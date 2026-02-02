@@ -1,5 +1,5 @@
 ---
-type: "REAL_WORLD"
+type: "ANALOGY"
 title: "Type Mistakes That Cost Companies Millions"
 ---
 

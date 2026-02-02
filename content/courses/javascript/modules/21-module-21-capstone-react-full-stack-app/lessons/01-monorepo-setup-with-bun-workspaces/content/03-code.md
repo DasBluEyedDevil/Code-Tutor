@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Configure Root package.json with Workspaces"
 ---
 

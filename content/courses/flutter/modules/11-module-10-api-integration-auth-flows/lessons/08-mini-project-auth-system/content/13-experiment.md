@@ -1,5 +1,5 @@
 ---
-type: "EXPERIMENT"
+type: "EXAMPLE"
 title: "Section 6: Testing the Auth System"
 ---
 

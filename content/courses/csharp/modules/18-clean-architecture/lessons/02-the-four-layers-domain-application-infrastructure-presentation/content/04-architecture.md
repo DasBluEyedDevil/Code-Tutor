@@ -1,5 +1,5 @@
 ---
-type: "ARCHITECTURE"
+type: "THEORY"
 title: "Project References in .NET"
 ---
 

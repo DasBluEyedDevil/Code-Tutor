@@ -1,5 +1,5 @@
 ---
-type: "REAL_WORLD"
+type: "ANALOGY"
 title: "Validation in Production E-commerce Systems"
 ---
 

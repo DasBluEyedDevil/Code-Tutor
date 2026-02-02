@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Node.js 22+ require(esm) Support"
 ---
 

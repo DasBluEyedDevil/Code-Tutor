@@ -1,5 +1,5 @@
 ---
-type: "PITFALLS"
+type: "WARNING"
 title: "Common Interop Issues"
 ---
 

@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Pick<T, K> and Omit<T, K>"
 ---
 

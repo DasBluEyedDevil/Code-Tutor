@@ -1,5 +1,5 @@
 ---
-type: "DEEP_DIVE"
+type: "THEORY"
 title: "Inside the CLR: How Your Code Actually Runs"
 ---
 

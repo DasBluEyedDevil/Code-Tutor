@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "NoInfer<T> (TypeScript 5.4+)"
 ---
 

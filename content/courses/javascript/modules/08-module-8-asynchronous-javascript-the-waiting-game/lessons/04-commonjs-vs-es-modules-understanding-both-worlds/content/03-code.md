@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "ES Modules Syntax (import/export)"
 ---
 

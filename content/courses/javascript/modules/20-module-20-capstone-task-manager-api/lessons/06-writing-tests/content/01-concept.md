@@ -1,5 +1,5 @@
 ---
-type: "CONCEPT"
+type: "THEORY"
 title: "Testing Strategy - Unit vs Integration"
 ---
 

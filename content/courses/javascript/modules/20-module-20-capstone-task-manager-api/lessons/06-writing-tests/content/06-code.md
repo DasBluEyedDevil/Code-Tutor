@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Testing Auth Flows - Register, Login, Protected Routes"
 ---
 

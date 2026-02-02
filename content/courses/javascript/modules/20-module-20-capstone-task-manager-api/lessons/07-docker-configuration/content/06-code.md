@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Running Locally with Docker - Build and Run Commands"
 ---
 

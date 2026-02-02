@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Task Routes - Get, Update, Delete"
 ---
 

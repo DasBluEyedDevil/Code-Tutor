@@ -1,5 +1,5 @@
 ---
-type: "CONCEPT"
+type: "THEORY"
 title: "Consistent Error Handling - Why It Matters"
 ---
 

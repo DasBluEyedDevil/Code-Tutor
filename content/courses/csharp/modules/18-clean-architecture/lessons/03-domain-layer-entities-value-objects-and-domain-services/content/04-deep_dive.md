@@ -1,5 +1,5 @@
 ---
-type: "DEEP_DIVE"
+type: "THEORY"
 title: "Domain Events"
 ---
 

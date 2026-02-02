@@ -1,5 +1,5 @@
 ---
-type: "CODE"
+type: "EXAMPLE"
 title: "Environment Configuration - .env.docker and .env.production"
 ---
 

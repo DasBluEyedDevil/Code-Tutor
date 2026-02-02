@@ -1,5 +1,5 @@
 ---
-type: "CONCEPT"
+type: "THEORY"
 title: "React Hook Form + Zod for Type-Safe Forms"
 ---
 
