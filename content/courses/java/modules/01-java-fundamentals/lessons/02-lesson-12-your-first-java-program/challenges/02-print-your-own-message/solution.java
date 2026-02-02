@@ -3,5 +3,5 @@
 
 void main() {
     // Print the custom message exactly as specified
-    println("Java is awesome!");
+    IO.println("Java is awesome!");
 }

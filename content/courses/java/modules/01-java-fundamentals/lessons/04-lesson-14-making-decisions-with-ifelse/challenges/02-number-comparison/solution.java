@@ -7,8 +7,8 @@ void main() {
     
     // Check if number is big (greater than 10) or small
     if (number > 10) {
-        println("Big number");
+        IO.println("Big number");
     } else {
-        println("Small number");
+        IO.println("Small number");
     }
 }

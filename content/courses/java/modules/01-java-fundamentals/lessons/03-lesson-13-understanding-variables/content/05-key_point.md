@@ -13,7 +13,7 @@ You can name variables almost anything, BUT:
 ✗ DON'T:
 - Use spaces: 'my age' is WRONG, use 'myAge'
 - Start with a number: '2cool' is WRONG, use 'cool2'
-- Use special characters: 'score$' is usually wrong
+- Use '$' in names: 'score$' is technically valid but reserved for compiler-generated code
 - Use Java keywords: 'int', 'class', 'public' are reserved
 
 Good names: age, playerScore, userName, totalCost

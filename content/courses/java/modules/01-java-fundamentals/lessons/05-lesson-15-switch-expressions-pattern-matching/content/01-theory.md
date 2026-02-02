@@ -29,4 +29,4 @@ Problems:
 3. Very verbose for simple mappings
 4. No compile-time exhaustiveness checking
 
-Switch expressions and pattern matching were introduced progressively in Java 14-21 and are fully stable in Java 23. These features fix all of the problems above!
+Switch expressions were finalized in Java 14 (JEP 361), and pattern matching for switch was finalized in Java 21 (JEP 441). These features fix all of the problems above!

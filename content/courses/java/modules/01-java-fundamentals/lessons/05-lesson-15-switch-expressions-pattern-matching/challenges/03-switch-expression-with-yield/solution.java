@@ -2,7 +2,7 @@
 String getGrade(int score) {
     return switch (score / 10) {
         case 10, 9 -> {
-            println("Excellent!");
+            IO.println("Excellent!");
             yield "A";
         }
         case 8 -> "B";
@@ -13,5 +13,5 @@ String getGrade(int score) {
 }
 
 void main() {
-    println(getGrade(95));
+    IO.println(getGrade(95));
 }

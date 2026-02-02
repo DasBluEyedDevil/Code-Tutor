@@ -7,8 +7,8 @@ void main() {
     
     // Check voting eligibility with if/else
     if (age >= 18) {
-        println("Can vote");
+        IO.println("Can vote");
     } else {
-        println("Cannot vote");
+        IO.println("Cannot vote");
     }
 }

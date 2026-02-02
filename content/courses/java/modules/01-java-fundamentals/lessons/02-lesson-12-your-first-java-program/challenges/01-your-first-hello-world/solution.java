@@ -1,8 +1,8 @@
 // Solution: Your First Hello World
-// This demonstrates the basic println statement
+// This demonstrates the basic IO.println statement
 
 void main() {
-    // Use println to print text to the console
+    // Use IO.println to print text to the console
     // The text must be enclosed in double quotes
-    println("Hello, World!");
+    IO.println("Hello, World!");
 }

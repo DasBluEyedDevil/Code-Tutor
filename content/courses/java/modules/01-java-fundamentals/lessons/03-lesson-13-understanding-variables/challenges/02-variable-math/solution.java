@@ -12,5 +12,5 @@ void main() {
     int sum = x + y;
     
     // Step 4: Print the sum
-    println(sum);
+    IO.println(sum);
 }

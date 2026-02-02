@@ -6,5 +6,5 @@ String describe(Object obj) {
 }
 
 void main() {
-    println(describe("Hello"));
+    IO.println(describe("Hello"));
 }

@@ -6,5 +6,5 @@ String getGrade(int score) {
 }
 
 void main() {
-    println(getGrade(95));
+    IO.println(getGrade(95));
 }

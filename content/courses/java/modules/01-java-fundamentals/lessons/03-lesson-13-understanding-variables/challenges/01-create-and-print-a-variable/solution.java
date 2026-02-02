@@ -6,5 +6,5 @@ void main() {
     int age = 30;
     
     // Step 2: Print the variable
-    println(age);
+    IO.println(age);
 }

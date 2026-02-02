@@ -6,5 +6,5 @@ String getSeason(int month) {
 }
 
 void main() {
-    println(getSeason(7));
+    IO.println(getSeason(7));
 }
