@@ -37,30 +37,34 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 6 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Git cleanup (remove .bak files, verify INFR-02, update .gitignore)
-- [ ] 01-02-PLAN.md -- Schema standardization (define shared JSON schemas, standardize all IDs, validate all courses)
-- [ ] 01-03-PLAN.md -- Content type migration (migrate 185 non-standard section types, fix numbering gaps, clean directory names)
-- [ ] 01-04-PLAN.md -- Python Module 14 restructuring (split into focused modules, resolve 8 duplicate pairs, renumber downstream)
-- [ ] 01-05-PLAN.md -- Version manifest and runtime requirements (pin targets, create manifest, update course.json)
-- [ ] 01-06-PLAN.md -- Gap closure: ANALOGY and WARNING WPF renderers (close verification gap for NORM-02)
+- [x] 01-01-PLAN.md -- Git cleanup (remove .bak files, verify INFR-02, update .gitignore)
+- [x] 01-02-PLAN.md -- Schema standardization (define shared JSON schemas, standardize all IDs, validate all courses)
+- [x] 01-03-PLAN.md -- Content type migration (migrate 185 non-standard section types, fix numbering gaps, clean directory names)
+- [x] 01-04-PLAN.md -- Python Module 14 restructuring (split into focused modules, resolve 8 duplicate pairs, renumber downstream)
+- [x] 01-05-PLAN.md -- Version manifest and runtime requirements (pin targets, create manifest, update course.json)
+- [x] 01-06-PLAN.md -- Gap closure: ANALOGY and WARNING WPF renderers (close verification gap for NORM-02)
 
 ### Phase 2: Java Course Audit
-**Goal**: The Java course teaches a complete, accurate path from absolute beginner to deploying a Spring Boot application, with every lesson verified against Java 21 LTS and every challenge executing correctly
+**Goal**: The Java course teaches a complete, accurate path from absolute beginner to deploying a Spring Boot application, with every lesson verified against Java 25 LTS and every challenge executing correctly
 **Depends on**: Phase 1
 **Requirements**: JAVA-01, JAVA-02, JAVA-03, JAVA-04, JAVA-05
 **Success Criteria** (what must be TRUE):
-  1. Every Java lesson uses consistent, correct API references (IO.println vs System.out.println decision resolved globally across 75+ files)
+  1. Every Java lesson uses consistent, correct API references (IO.println used globally, System.out.println mentioned only in one LEGACY_COMPARISON section)
   2. All 96 lessons progress from fundamentals through OOP through Spring Boot with no knowledge gaps or assumed context not yet taught
-  3. Every coding challenge compiles and runs against Java 21 LTS, and test validation passes for both starter and solution code
-  4. A deployable capstone project exists that a student can build and deploy after completing the course
-  5. Voice, tone, analogies, and difficulty progression are consistent from Module 1 through the final module
-**Plans**: TBD
+  3. Every coding challenge compiles and runs against Java 25 LTS, and test validation passes for both starter and solution code
+  4. A deployable capstone project exists with both Thymeleaf (simpler) and React (advanced) frontend paths
+  5. Voice, tone, and difficulty progression are consistent from Module 1 through the final module
+**Plans**: 8 plans
 
 Plans:
-- [ ] 02-01: Java structural review (lesson progression, module ordering, prerequisite chains)
-- [ ] 02-02: Java content accuracy pass (API verification, code correctness, freshness against Java 21)
-- [ ] 02-03: Java challenge validation (execute all solutions, verify test cases, fix broken challenges)
-- [ ] 02-04: Java voice and polish pass (consistent tone, add examples/analogies where thin, verify capstone)
+- [ ] 02-01-PLAN.md -- Version targets and structural review (Java 25, Spring Boot 4.0.x, fix directory names, module progression analysis)
+- [ ] 02-02-PLAN.md -- Modules 01-03 accuracy pass (fundamentals, data types, Git -- IO.println migration, compact syntax, LEGACY_COMPARISON)
+- [ ] 02-03-PLAN.md -- Modules 04-05 accuracy pass (OOP, collections/FP -- syntax transition, flexible constructors, remove Java 8 framing)
+- [ ] 02-04-PLAN.md -- Modules 06-09 accuracy pass (streams, concurrency, testing, databases -- virtual threads, @MockitoBean, JDBC)
+- [ ] 02-05-PLAN.md -- Modules 10-12 accuracy pass (web/APIs, Spring Boot, security -- Spring Boot 4.0.x migration, Spring Security 7)
+- [ ] 02-06-PLAN.md -- Modules 13-15 accuracy pass (React, DevOps, full-stack -- Docker eclipse-temurin:25, deployment configs)
+- [ ] 02-07-PLAN.md -- Module 16 capstone restructure (dual path: Thymeleaf + React, Railway deployment)
+- [ ] 02-08-PLAN.md -- Global verification and voice pass (sweep for survivors, progression review, human checkpoint)
 
 ### Phase 3: JavaScript Course Audit
 **Goal**: The JavaScript course teaches a complete path from fundamentals through React and Node.js to a deployable full-stack application, with all non-standard content types migrated and Bun/Hono APIs verified
@@ -199,8 +203,8 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation and Content Normalization | 6/6 | ✓ Complete | 2026-02-02 |
-| 2. Java Course Audit | 0/4 | Not started | - |
+| 1. Foundation and Content Normalization | 6/6 | Complete | 2026-02-02 |
+| 2. Java Course Audit | 0/8 | Planning complete | - |
 | 3. JavaScript Course Audit | 0/4 | Not started | - |
 | 4. C# Course Audit | 0/4 | Not started | - |
 | 5. Flutter/Dart Course Audit | 0/4 | Not started | - |
