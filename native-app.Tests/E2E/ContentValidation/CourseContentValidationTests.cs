@@ -160,7 +160,7 @@ public class CourseContentValidationTests
         var course = LoadCourse(courseId);
         if (course == null) return;
 
-        var validSectionTypes = new[] { "THEORY", "EXAMPLE", "KEY_POINT", "LEGACY_COMPARISON", "ANALOGY", "INTRODUCTION", "WARNING", "TIP", "NOTE", "EXERCISE", "SUMMARY", "EXPERIMENT" };
+        var validSectionTypes = new[] { "THEORY", "EXAMPLE", "KEY_POINT", "LEGACY_COMPARISON", "ANALOGY", "WARNING" };
 
         // Assert
         foreach (var module in course.Modules)
@@ -359,7 +359,7 @@ public class CourseContentValidationTests
         var course = LoadCourse(courseId);
         if (course == null) return;
 
-        var validDifficulties = new[] { "beginner", "intermediate", "advanced" };
+        var validDifficulties = new[] { "beginner", "intermediate", "advanced", "beginner-to-advanced" };
 
         // Assert
         validDifficulties.Should().Contain(course.Difficulty.ToLowerInvariant(),

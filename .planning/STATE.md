@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 1 of 9 (Foundation and Content Normalization)
-Plan: 3 of 5 in current phase (01-01, 01-02, 01-05 complete)
+Plan: 4 of 5 in current phase (01-01, 01-02, 01-04, 01-05 complete; 01-03 may be running in parallel)
 Status: In progress
-Last activity: 2026-02-02 -- Completed 01-02-PLAN.md (JSON Schemas and ID Standardization)
+Last activity: 2026-02-02 -- Completed 01-04-PLAN.md (Python Module 14 Restructuring)
 
-Progress: [######....] 3/5 phase plans (60%)
+Progress: [########..] 4/5 phase plans (80%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
-- Average duration: 3 min
-- Total execution time: 9 min
+- Total plans completed: 4
+- Average duration: 5 min
+- Total execution time: 19 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 3/5 | 9 min | 3 min |
+| 01-foundation | 4/5 | 19 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (2 min), 01-05 (2 min), 01-02 (5 min)
-- Trend: stable
+- Last 5 plans: 01-01 (2 min), 01-05 (2 min), 01-02 (5 min), 01-04 (10 min)
+- Trend: increasing (larger plans take longer as expected)
 
 *Updated after each plan completion*
 
@@ -55,6 +55,10 @@ Recent decisions affecting current work:
 - [01-02]: challenge.schema.json allows 9 different type values reflecting actual usage across courses
 - [01-02]: Module order field added to all 116 module.json files for explicit ordering
 - [01-02]: minimumRuntimeVersion included as optional string in course.schema.json per Plan 01-05 requirement
+- [01-04]: Python Module 14 split into 3 modules (not 4) -- Django content better served by existing Module 19/21
+- [01-04]: Downstream modules 19/20/21 kept as separate advanced modules -- not merged with intro-level splits from M14
+- [01-04]: Python course now has 24 modules (was 22), with modules 15-22 renumbered to 17-24
+- [01-04]: Capstone module metadata fixed (difficulty: advanced, estimatedHours: 10)
 
 ### Pending Todos
 
@@ -69,6 +73,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-02T21:05:00Z
-Stopped at: Completed 01-02-PLAN.md (JSON Schemas and ID Standardization)
+Last session: 2026-02-02T21:18:00Z
+Stopped at: Completed 01-04-PLAN.md (Python Module 14 Restructuring)
 Resume file: None
