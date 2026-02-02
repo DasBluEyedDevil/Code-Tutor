@@ -18,7 +18,7 @@ void main() {
     // Chain transformations
     CompletableFuture<String> result = fetchUser
         .thenApply(userId -> {
-            System.out.println("Got user: " + userId);
+            IO.println("Got user: " + userId);
             return userId.toUpperCase();
         })
         .thenCompose(userId -> {
@@ -32,9 +32,9 @@ void main() {
     
     // Handle both success and failure
     result
-        .thenAccept(r -> System.out.println("Success: " + r))
+        .thenAccept(r -> IO.println("Success: " + r))
         .exceptionally(ex -> {
-            System.out.println("Error: " + ex.getMessage());
+            IO.println("Error: " + ex.getMessage());
             return null;
         });
     
@@ -52,12 +52,12 @@ void main() {
     CompletableFuture<String> combined = future1.thenCombine(future2,
         (r1, r2) -> r1 + " + " + r2);
     
-    System.out.println(combined.join());  // "Result 1 + Result 2"
+    IO.println(combined.join());  // "Result 1 + Result 2"
     
     // Wait for either (first to complete)
     CompletableFuture<String> fastest = future1.applyToEither(future2,
         r -> "Fastest: " + r);
-    System.out.println(fastest.join());  // Probably "Fastest: Result 2"
+    IO.println(fastest.join());  // Probably "Fastest: Result 2"
     
     // Wait for all
     CompletableFuture<Void> all = CompletableFuture.allOf(future1, future2);
@@ -65,7 +65,7 @@ void main() {
     
     // Wait for first (any)
     CompletableFuture<Object> any = CompletableFuture.anyOf(future1, future2);
-    System.out.println("First: " + any.join());
+    IO.println("First: " + any.join());
 }
 
 void sleep(long ms) {

@@ -18,6 +18,6 @@ Traditional defensive coding is ugly:
 Optional<T> is Java's solution - a container that may or may not contain a value. It forces you to handle the 'no value' case explicitly.
 
 Optional<String> name = findUserById(42);
-name.ifPresent(n -> System.out.println(n.length()));
+name.ifPresent(n -> IO.println(n.length()));
 
 Optional doesn't eliminate nulls, but it makes 'might be absent' explicit in the API.

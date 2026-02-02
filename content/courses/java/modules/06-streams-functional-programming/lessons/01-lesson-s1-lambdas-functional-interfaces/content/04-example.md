@@ -12,25 +12,25 @@ import java.util.*;
 void main() {
     // Predicate: filtering
     Predicate<Integer> isEven = n -> n % 2 == 0;
-    System.out.println(isEven.test(4));  // true
-    System.out.println(isEven.test(7));  // false
+    IO.println(isEven.test(4));  // true
+    IO.println(isEven.test(7));  // false
     
     // Function: transforming
     Function<String, String> toUpper = s -> s.toUpperCase();
-    System.out.println(toUpper.apply("hello"));  // HELLO
+    IO.println(toUpper.apply("hello"));  // HELLO
     
     // Consumer: performing actions
     List<String> names = List.of("Alice", "Bob", "Charlie");
-    names.forEach(name -> System.out.println("Hi, " + name));
+    names.forEach(name -> IO.println("Hi, " + name));
     
     // Supplier: generating values
     Supplier<UUID> idGenerator = () -> UUID.randomUUID();
-    System.out.println(idGenerator.get());
+    IO.println(idGenerator.get());
     
     // Combining predicates
     Predicate<Integer> isPositive = n -> n > 0;
     Predicate<Integer> isEvenAndPositive = isEven.and(isPositive);
-    System.out.println(isEvenAndPositive.test(4));   // true
-    System.out.println(isEvenAndPositive.test(-4));  // false
+    IO.println(isEvenAndPositive.test(4));   // true
+    IO.println(isEvenAndPositive.test(-4));  // false
 }
 ```

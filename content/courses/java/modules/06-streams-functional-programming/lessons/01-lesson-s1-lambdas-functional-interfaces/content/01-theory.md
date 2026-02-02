@@ -3,7 +3,7 @@ type: "THEORY"
 title: "The Problem: Verbose Anonymous Classes"
 ---
 
-Before Java 8, passing behavior as a parameter required anonymous inner classes:
+Before lambdas, passing behavior as a parameter required anonymous inner classes:
 
 // Old way: 5 lines just to compare two strings!
 Collections.sort(names, new Comparator<String>() {

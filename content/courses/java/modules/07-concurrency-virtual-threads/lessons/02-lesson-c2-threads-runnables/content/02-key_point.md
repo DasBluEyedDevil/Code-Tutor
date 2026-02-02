@@ -6,7 +6,7 @@ title: "Creating Threads: Two Approaches"
 APPROACH 1: Implement Runnable (PREFERRED)
 
 Runnable task = () -> {
-    System.out.println("Running in: " + Thread.currentThread().getName());
+    IO.println("Running in: " + Thread.currentThread().getName());
 };
 
 Thread thread = new Thread(task);
@@ -22,7 +22,7 @@ APPROACH 2: Extend Thread (RARE)
 class MyThread extends Thread {
     @Override
     public void run() {
-        System.out.println("Running!");
+        IO.println("Running!");
     }
 }
 

@@ -22,22 +22,22 @@ void main() {
         .sorted()                                // ALICE, CHARLIE, DAVID
         .collect(Collectors.toList());
     
-    System.out.println(result);  // [ALICE, CHARLIE, DAVID]
+    IO.println(result);  // [ALICE, CHARLIE, DAVID]
     
     // Count elements matching a condition
     long count = names.stream()
         .filter(name -> name.startsWith("A"))
         .count();
-    System.out.println("Names starting with A: " + count);  // 2
+    IO.println("Names starting with A: " + count);  // 2
     
     // Find first match
     Optional<String> first = names.stream()
         .filter(name -> name.contains("v"))
         .findFirst();
-    first.ifPresent(name -> System.out.println("Found: " + name));  // David
+    first.ifPresent(name -> IO.println("Found: " + name));  // David
     
     // Numeric operations with IntStream
     int sum = IntStream.rangeClosed(1, 10).sum();
-    System.out.println("Sum 1-10: " + sum);  // 55
+    IO.println("Sum 1-10: " + sum);  // 55
 }
 ```

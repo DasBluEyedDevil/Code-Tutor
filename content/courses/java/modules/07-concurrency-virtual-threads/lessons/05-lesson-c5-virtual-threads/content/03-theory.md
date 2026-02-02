@@ -8,7 +8,7 @@ Three ways to create virtual threads:
 1. Thread.startVirtualThread()
 
 Thread vt = Thread.startVirtualThread(() -> {
-    System.out.println("Running on: " + Thread.currentThread());
+    IO.println("Running on: " + Thread.currentThread());
 });
 vt.join();
 

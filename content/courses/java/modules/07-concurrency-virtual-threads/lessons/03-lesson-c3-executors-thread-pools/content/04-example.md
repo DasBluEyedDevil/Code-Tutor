@@ -16,7 +16,7 @@ void main() throws Exception {
     try {
         // Submit Runnable (no return value)
         executor.submit(() -> {
-            System.out.println("Task 1 on " + Thread.currentThread().getName());
+            IO.println("Task 1 on " + Thread.currentThread().getName());
         });
         
         // Submit Callable (returns a value)
@@ -26,11 +26,11 @@ void main() throws Exception {
         });
         
         // Do other work while task runs...
-        System.out.println("Doing other work...");
+        IO.println("Doing other work...");
         
         // Get result (blocks until complete)
         Integer result = future.get();  // Waits up to forever
-        System.out.println("Result: " + result);
+        IO.println("Result: " + result);
         
         // Get with timeout
         Future<String> future2 = executor.submit(() -> {
@@ -41,7 +41,7 @@ void main() throws Exception {
         try {
             String result2 = future2.get(1, TimeUnit.SECONDS);  // Only wait 1s
         } catch (TimeoutException e) {
-            System.out.println("Task took too long!");
+            IO.println("Task took too long!");
             future2.cancel(true);  // Cancel the task
         }
         
@@ -55,7 +55,7 @@ void main() throws Exception {
         // invokeAll waits for ALL to complete
         List<Future<Integer>> futures = executor.invokeAll(tasks);
         for (Future<Integer> f : futures) {
-            System.out.println("Got: " + f.get());
+            IO.println("Got: " + f.get());
         }
         
     } finally {
@@ -64,7 +64,7 @@ void main() throws Exception {
         
         // Wait for tasks to finish (with timeout)
         if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
-            System.out.println("Forcing shutdown...");
+            IO.println("Forcing shutdown...");
             executor.shutdownNow();  // Force stop
         }
     }

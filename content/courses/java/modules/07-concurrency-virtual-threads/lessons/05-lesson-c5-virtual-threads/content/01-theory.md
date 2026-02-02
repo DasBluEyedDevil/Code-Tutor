@@ -3,7 +3,7 @@ type: "THEORY"
 title: "The Platform Thread Problem"
 ---
 
-Before Java 21, every Java thread mapped to an OS thread (platform thread):
+Traditionally, every Java thread mapped to an OS thread (platform thread). Virtual threads, introduced in Java 21 and now the standard approach, solve this fundamental limitation:
 
 PLATFORM THREAD COSTS:
 - ~1MB stack memory each

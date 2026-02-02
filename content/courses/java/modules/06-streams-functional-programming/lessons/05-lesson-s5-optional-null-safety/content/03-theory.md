@@ -19,12 +19,12 @@ orElseThrow(): Return value or throw exception
 Conditional actions:
 
 ifPresent(consumer): Execute if value present
-  opt.ifPresent(name -> System.out.println(name));
+  opt.ifPresent(name -> IO.println(name));
 
 ifPresentOrElse(consumer, emptyAction): Java 9+
   opt.ifPresentOrElse(
-      name -> System.out.println("Found: " + name),
-      () -> System.out.println("Not found")
+      name -> IO.println("Found: " + name),
+      () -> IO.println("Not found")
   );
 
 AVOID these anti-patterns:

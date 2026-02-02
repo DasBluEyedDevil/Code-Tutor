@@ -3,7 +3,7 @@ type: "KEY_POINT"
 title: "Virtual Threads: The Game Changer"
 ---
 
-Java 21 introduced virtual threads - lightweight threads managed by the JVM:
+Virtual threads are lightweight threads managed by the JVM, and the standard approach for concurrent Java applications:
 
 VIRTUAL THREADS:
 - Minimal memory (~1KB vs 1MB)

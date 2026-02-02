@@ -8,7 +8,7 @@ A thread is an independent path of execution within a program.
 Every Java program starts with ONE thread: the main thread.
 
 void main() {
-    System.out.println("Hello");  // Runs on main thread
+    IO.println("Hello");  // Runs on main thread
     doSomething();                 // Still main thread
 }
 
@@ -16,7 +16,7 @@ But you can create ADDITIONAL threads:
 
 // Main thread creates a new thread
 Thread worker = new Thread(() -> {
-    System.out.println("I'm on a different thread!");
+    IO.println("I'm on a different thread!");
 });
 worker.start();  // Now TWO threads running!
 

@@ -19,9 +19,10 @@ JAVA 8 (2014): CompletableFuture
 - Composable futures
 - Parallel streams
 
-JAVA 21 (2023): Virtual Threads
+JAVA 21+ (2023): Virtual Threads
 - Lightweight threads (millions possible!)
 - Simple blocking code, high scalability
-- Game changer for I/O-bound applications
+- Now the standard approach for I/O-bound applications
+- Spring Boot 4.0.x enables virtual threads by default
 
-This module covers it all, culminating in virtual threads - the biggest concurrency innovation since Java 5.
+This module covers it all, culminating in virtual threads - now the standard concurrency model for modern Java applications.

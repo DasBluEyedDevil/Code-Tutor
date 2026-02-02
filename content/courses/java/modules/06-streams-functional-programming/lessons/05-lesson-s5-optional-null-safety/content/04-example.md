@@ -23,10 +23,10 @@ void main() {
     
     // orElse: provide default
     User user1 = findUser(1).orElse(new User(0, "Guest", "guest@example.com"));
-    System.out.println(user1.name());  // Alice
+    IO.println(user1.name());  // Alice
     
     User user99 = findUser(99).orElse(new User(0, "Guest", "guest@example.com"));
-    System.out.println(user99.name());  // Guest
+    IO.println(user99.name());  // Guest
     
     // orElseThrow: fail fast for required values
     try {
@@ -34,17 +34,17 @@ void main() {
             () -> new RuntimeException("User not found")
         );
     } catch (RuntimeException e) {
-        System.out.println("Error: " + e.getMessage());
+        IO.println("Error: " + e.getMessage());
     }
     
     // map: transform if present
     Optional<String> email = findUser(1).map(User::email);
-    email.ifPresent(e -> System.out.println("Email: " + e));
+    email.ifPresent(e -> IO.println("Email: " + e));
     
     // filter: conditional extraction
     Optional<User> alice = findUser(1)
         .filter(u -> u.name().equals("Alice"));
-    System.out.println("Is Alice? " + alice.isPresent());  // true
+    IO.println("Is Alice? " + alice.isPresent());  // true
     
     // flatMap: when the mapper returns Optional
     Optional<String> getEmailDomain(int userId) {
@@ -57,6 +57,6 @@ void main() {
                     : Optional.empty();
             });
     }
-    System.out.println(getEmailDomain(1).orElse("N/A"));  // example.com
+    IO.println(getEmailDomain(1).orElse("N/A"));  // example.com
 }
 ```

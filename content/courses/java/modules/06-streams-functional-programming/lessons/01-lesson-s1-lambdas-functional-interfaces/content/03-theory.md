@@ -16,7 +16,7 @@ Function<T, R>: Takes T, returns R
   length.apply("hello");  // 5
 
 Consumer<T>: Takes T, returns nothing
-  Consumer<String> printer = s -> System.out.println(s);
+  Consumer<String> printer = s -> IO.println(s);
   printer.accept("hello");  // prints: hello
 
 Supplier<T>: Takes nothing, returns T

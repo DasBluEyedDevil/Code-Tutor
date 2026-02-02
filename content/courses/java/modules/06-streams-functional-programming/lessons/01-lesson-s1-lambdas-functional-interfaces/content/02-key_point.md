@@ -12,7 +12,7 @@ Lambda expressions have this basic syntax:
 Examples:
 
 // No parameters
-() -> System.out.println("Hello")
+() -> IO.println("Hello")
 
 // One parameter (parentheses optional)
 x -> x * 2

@@ -11,10 +11,10 @@ CompletableFuture<String> cf = CompletableFuture.supplyAsync(() -> {
 });
 
 // Non-blocking: attach callback
-cf.thenAccept(result -> System.out.println("Got: " + result));
+cf.thenAccept(result -> IO.println("Got: " + result));
 
 // Main thread continues immediately!
-System.out.println("Not blocked!");
+IO.println("Not blocked!");
 
 KEY METHODS:
 

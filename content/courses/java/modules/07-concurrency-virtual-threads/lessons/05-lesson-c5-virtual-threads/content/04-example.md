@@ -31,7 +31,7 @@ void main() throws Exception {
     }  // Blocks until all complete
     
     Duration virtualTime = Duration.between(start, Instant.now());
-    System.out.println("Virtual threads: " + virtualTime.toMillis() + "ms");
+    IO.println("Virtual threads: " + virtualTime.toMillis() + "ms");
     // Output: ~100-200ms (tasks run concurrently)
     
     // Compare with platform thread pool (10 threads)
@@ -43,12 +43,12 @@ void main() throws Exception {
     }
     
     Duration poolTime = Duration.between(start, Instant.now());
-    System.out.println("Platform threads (10): " + poolTime.toMillis() + "ms");
+    IO.println("Platform threads (10): " + poolTime.toMillis() + "ms");
     // Output: ~100,000ms (10 threads, 1000 batches of 100ms)
     
     // Check if current thread is virtual
     Thread.startVirtualThread(() -> {
-        System.out.println("Is virtual: " + Thread.currentThread().isVirtual());
+        IO.println("Is virtual: " + Thread.currentThread().isVirtual());
     }).join();
 }
 ```

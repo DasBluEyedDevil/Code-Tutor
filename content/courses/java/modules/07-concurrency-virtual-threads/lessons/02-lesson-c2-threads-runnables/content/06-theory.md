@@ -13,7 +13,7 @@ worker.start();
 worker.join(5000);  // Returns after 5s OR when worker finishes
 
 if (worker.isAlive()) {
-    System.out.println("Worker still running after 5s");
+    IO.println("Worker still running after 5s");
 }
 
 INTERRUPTING THREADS:
@@ -23,7 +23,7 @@ Thread worker = new Thread(() -> {
     while (!Thread.currentThread().isInterrupted()) {
         // Do work
     }
-    System.out.println("Received interrupt, stopping");
+    IO.println("Received interrupt, stopping");
 });
 
 worker.start();
