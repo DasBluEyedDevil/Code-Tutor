@@ -7,7 +7,7 @@ You have an Animal class with a makeSound() method:
 
 class Animal {
     void makeSound() {
-        System.out.println("Generic animal sound");
+        IO.println("Generic animal sound");
     }
 }
 

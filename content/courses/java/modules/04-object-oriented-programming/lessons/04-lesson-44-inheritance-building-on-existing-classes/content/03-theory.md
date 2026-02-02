@@ -17,7 +17,7 @@ class Animal {
     }
     
     public void eat() {
-        System.out.println(name + " is eating.");
+        IO.println(name + " is eating.");
     }
 }
 
@@ -27,7 +27,7 @@ class Dog extends Animal {
     }
     
     public void bark() {
-        System.out.println(name + " says Woof!");  // Can use 'name'
+        IO.println(name + " says Woof!");  // Can use 'name'
     }
 }
 

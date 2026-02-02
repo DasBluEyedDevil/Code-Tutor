@@ -14,5 +14,5 @@ int evaluate(Expr expr) {
 
 void main() {
     Expr expr = new Add(new Num(3), new Num(4));
-    println(evaluate(expr));
+    IO.println(evaluate(expr));
 }

@@ -13,7 +13,7 @@ public class Student {
     
     // METHODS (what the object can do)
     void study() {
-        System.out.println(name + " is studying");
+        IO.println(name + " is studying");
     }
 }
 

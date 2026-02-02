@@ -3,8 +3,8 @@ type: "THEORY"
 title: "Interfaces: Pure Contracts"
 ---
 
-INTERFACE = 100% abstract contract (no implementation)
-Before Java 8, interfaces had ONLY abstract methods.
+INTERFACE = a contract that defines what a class can do.
+At their simplest, interfaces contain only abstract methods (no implementation).
 
 interface Flyable {
     void fly();  // public abstract (automatically)
@@ -14,24 +14,24 @@ interface Flyable {
 class Bird implements Flyable {
     @Override
     public void fly() {
-        System.out.println("Flapping wings!");
+        IO.println("Flapping wings!");
     }
     
     @Override
     public void land() {
-        System.out.println("Landing on branch.");
+        IO.println("Landing on branch.");
     }
 }
 
 class Airplane implements Flyable {
     @Override
     public void fly() {
-        System.out.println("Jet engines roaring!");
+        IO.println("Jet engines roaring!");
     }
     
     @Override
     public void land() {
-        System.out.println("Landing on runway.");
+        IO.println("Landing on runway.");
     }
 }
 

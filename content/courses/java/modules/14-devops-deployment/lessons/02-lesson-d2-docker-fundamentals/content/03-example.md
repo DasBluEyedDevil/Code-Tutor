@@ -7,7 +7,7 @@ A Dockerfile defines how to build your container image. Here's a production-read
 
 ```dockerfile
 # Build stage - compiles the application
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
 
 # Set working directory inside container
 WORKDIR /app
@@ -26,7 +26,7 @@ COPY src/ src/
 RUN ./mvnw clean package -DskipTests
 
 # Runtime stage - smaller image for production
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 # Create non-root user for security
 RUN addgroup -S spring && adduser -S spring -G spring

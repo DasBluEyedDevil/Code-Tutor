@@ -25,32 +25,30 @@ public record Student(String name, int grade, double gpa) {
 }
 
 // Using the record
-public class Main {
-    public static void main(String[] args) {
-        // Create records
-        var alice = new Student("Alice", 10, 3.8);
-        var bob = new Student("Bob", 11, 3.2);
-        
-        // Access components
-        System.out.println(alice.name());  // Alice
-        System.out.println(alice.gpa());   // 3.8
-        
-        // Use custom methods
-        System.out.println(alice.isHonorRoll());  // true
-        System.out.println(bob.isHonorRoll());    // false
-        
-        // Automatic toString
-        System.out.println(alice);  // Student[name=Alice, grade=10, gpa=3.8]
-        
-        // Automatic equals
-        var aliceCopy = new Student("Alice", 10, 3.8);
-        System.out.println(alice.equals(aliceCopy));  // true
-        
-        // Use in collections
-        var students = List.of(alice, bob);
-        for (var student : students) {
-            System.out.println(student.name() + ": " + student.gpa());
-        }
+void main() {
+    // Create records
+    var alice = new Student("Alice", 10, 3.8);
+    var bob = new Student("Bob", 11, 3.2);
+
+    // Access components
+    IO.println(alice.name());  // Alice
+    IO.println(alice.gpa());   // 3.8
+
+    // Use custom methods
+    IO.println(alice.isHonorRoll());  // true
+    IO.println(bob.isHonorRoll());    // false
+
+    // Automatic toString
+    IO.println(alice);  // Student[name=Alice, grade=10, gpa=3.8]
+
+    // Automatic equals
+    var aliceCopy = new Student("Alice", 10, 3.8);
+    IO.println(alice.equals(aliceCopy));  // true
+
+    // Use in collections
+    var students = List.of(alice, bob);
+    for (var student : students) {
+        IO.println(student.name() + ": " + student.gpa());
     }
 }
 ```

@@ -11,5 +11,5 @@ void main() {
     var rect = new Rectangle(5, 10);
     
     // Print the area
-    println(rect.area());
+    IO.println(rect.area());
 }

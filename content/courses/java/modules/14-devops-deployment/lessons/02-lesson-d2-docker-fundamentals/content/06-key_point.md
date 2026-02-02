@@ -5,7 +5,7 @@ title: "Docker Layer Caching"
 
 Docker builds images in LAYERS. Each instruction creates a layer:
 
-FROM eclipse-temurin:21-jdk-alpine  # Layer 1: Base image
+FROM eclipse-temurin:25-jdk-alpine  # Layer 1: Base image
 COPY pom.xml .                      # Layer 2: pom.xml
 RUN mvn dependency:go-offline       # Layer 3: Dependencies
 COPY src/ src/                      # Layer 4: Source code

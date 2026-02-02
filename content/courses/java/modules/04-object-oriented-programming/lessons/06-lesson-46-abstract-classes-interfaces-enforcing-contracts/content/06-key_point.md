@@ -15,9 +15,9 @@ interface Flyable { void fly(); }
 interface Walkable { void walk(); }
 
 class Duck extends Animal implements Flyable, Swimmable, Walkable {
-    public void fly() { System.out.println("Flying"); }
-    public void swim() { System.out.println("Swimming"); }
-    public void walk() { System.out.println("Walking"); }
+    public void fly() { IO.println("Flying"); }
+    public void swim() { IO.println("Swimming"); }
+    public void walk() { IO.println("Walking"); }
 }
 
 Now Duck can be used as:

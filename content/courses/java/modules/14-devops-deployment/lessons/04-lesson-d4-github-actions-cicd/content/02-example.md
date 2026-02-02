@@ -18,7 +18,7 @@ on:
 
 # Environment variables available to all jobs
 env:
-  JAVA_VERSION: '21'
+  JAVA_VERSION: '25'
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 

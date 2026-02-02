@@ -41,12 +41,12 @@ void main() {
         new Constant(2)
     );
     
-    println(format(expr));    // (3 + 4) * 2
-    println(evaluate(expr));  // 14
-    
+    IO.println(format(expr));    // (3 + 4) * 2
+    IO.println(evaluate(expr));  // 14
+
     // Expression: -(5 + 3)
     Expr neg = new Negate(new Add(new Constant(5), new Constant(3)));
-    println(format(neg));     // -(5 + 3)
-    println(evaluate(neg));   // -8
+    IO.println(format(neg));     // -(5 + 3)
+    IO.println(evaluate(neg));   // -8
 }
 ```

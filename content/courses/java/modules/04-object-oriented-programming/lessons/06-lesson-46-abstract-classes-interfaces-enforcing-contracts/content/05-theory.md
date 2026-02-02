@@ -18,7 +18,7 @@ abstract class Animal {  // Common state and behavior
 
 INTERFACE:
 ✓ CAN-DO relationship (Bird CAN fly, Dog CAN swim)
-✓ Define BEHAVIOR contract, no implementation (pre-Java 8)
+✓ Define BEHAVIOR contract (can include default implementations)
 ✓ No state (no fields, except constants)
 ✓ Multiple implementation allowed!
 

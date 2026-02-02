@@ -8,7 +8,7 @@ class Car {
     
     // Method that uses the brand field
     void honk() {
-        System.out.println(brand + " goes beep!");
+        IO.println(brand + " goes beep!");
     }
 }
 

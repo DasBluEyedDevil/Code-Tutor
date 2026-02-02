@@ -14,7 +14,7 @@ myPet.makeSound();  // Calls Cat's version → "Meow!"
 This enables POWERFUL patterns:
 
 void feedAnimal(Animal a) {
-    System.out.println("Feeding...");
+    IO.println("Feeding...");
     a.makeSound();  // Will call the RIGHT version automatically!
 }
 

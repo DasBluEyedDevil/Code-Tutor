@@ -7,7 +7,7 @@ Remember our Animal example?
 
 class Animal {
     public void makeSound() {
-        System.out.println("Generic sound");  // What IS a generic sound?
+        IO.println("Generic sound");  // What IS a generic sound?
     }
 }
 

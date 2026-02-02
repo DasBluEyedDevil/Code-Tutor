@@ -8,13 +8,13 @@ PITFALL 1: Not caching dependencies
 # BAD - downloads dependencies every run (slow!)
 - uses: actions/setup-java@v4
   with:
-    java-version: '21'
+    java-version: '25'
     distribution: 'temurin'
 
 # GOOD - caches Maven dependencies
 - uses: actions/setup-java@v4
   with:
-    java-version: '21'
+    java-version: '25'
     distribution: 'temurin'
     cache: 'maven'
 
@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        java: [17, 21]
+        java: [21, 25]
 
 PITFALL 4: Ignoring exit codes
 

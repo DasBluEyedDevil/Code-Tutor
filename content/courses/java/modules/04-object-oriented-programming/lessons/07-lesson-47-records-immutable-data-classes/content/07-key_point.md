@@ -1,9 +1,9 @@
 ---
 type: "KEY_POINT"
-title: "Record Patterns (Java 21+)"
+title: "Record Patterns"
 ---
 
-Java 21 introduced RECORD PATTERNS - automatically extract record components in pattern matching!
+RECORD PATTERNS let you automatically extract record components in pattern matching!
 
 BASIC RECORD PATTERN:
 record Point(int x, int y) {}
@@ -11,7 +11,7 @@ record Point(int x, int y) {}
 Object obj = new Point(3, 4);
 if (obj instanceof Point(int x, int y)) {
     // x and y are extracted automatically!
-    System.out.println("x=" + x + ", y=" + y);
+    IO.println("x=" + x + ", y=" + y);
 }
 
 IN SWITCH EXPRESSIONS:

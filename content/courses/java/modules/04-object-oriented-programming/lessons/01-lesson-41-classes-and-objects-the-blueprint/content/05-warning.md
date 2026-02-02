@@ -22,7 +22,7 @@ COMMON MISTAKES TO AVOID:
    Fields have default values (0, null, false), but relying on them causes bugs.
    Always initialize fields explicitly via constructors.
 
-5. JAVA 16+ ALTERNATIVE - RECORDS:
+5. ALTERNATIVE FOR DATA CLASSES - RECORDS:
    For simple data classes, consider using records:
    record Student(String name, int age) {}
    Records auto-generate constructor, getters, equals, hashCode, toString.

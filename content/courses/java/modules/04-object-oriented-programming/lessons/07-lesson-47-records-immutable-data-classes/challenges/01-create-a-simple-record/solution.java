@@ -7,5 +7,5 @@ void main() {
     var book = new Book("1984", "Orwell", 328);
     
     // Access and print the title
-    println(book.title());
+    IO.println(book.title());
 }

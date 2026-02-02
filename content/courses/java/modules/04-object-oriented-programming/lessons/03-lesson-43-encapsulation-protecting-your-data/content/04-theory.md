@@ -18,7 +18,7 @@ class Car {
         if (newSpeed >= 0 && newSpeed <= 200) {
             speed = newSpeed;
         } else {
-            System.out.println("Invalid speed!");
+            IO.println("Invalid speed!");
         }
     }
 }
@@ -28,4 +28,4 @@ Car myCar = new Car();
 myCar.speed = -500;  // COMPILE ERROR! speed is private
 myCar.setSpeed(-500);  // Prints "Invalid speed!", doesn't change
 myCar.setSpeed(60);  // Works! Sets speed to 60
-System.out.println(myCar.getSpeed());  // 60
+IO.println(myCar.getSpeed());  // 60

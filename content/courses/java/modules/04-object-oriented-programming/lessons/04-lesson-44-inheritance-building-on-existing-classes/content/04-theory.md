@@ -13,11 +13,11 @@ title: "The 'super' Keyword"
 2. CALLING PARENT METHOD:
    public void eat() {
        super.eat();  // Call Animal's eat() first
-       System.out.println("Dog is satisfied.");
+       IO.println("Dog is satisfied.");
    }
 
 3. ACCESSING PARENT FIELD:
-   System.out.println(super.name);  // Usually just use 'name'
+   IO.println(super.name);  // Usually just use 'name'
 
 NOTE: If you don't call super(...) explicitly, Java tries to call
 the parent's no-argument constructor automatically.

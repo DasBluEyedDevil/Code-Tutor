@@ -8,17 +8,17 @@ Imagine you need these classes:
 class Dog {
     String name;
     int age;
-    void eat() { System.out.println("Eating..."); }
-    void sleep() { System.out.println("Sleeping..."); }
-    void bark() { System.out.println("Woof!"); }
+    void eat() { IO.println("Eating..."); }
+    void sleep() { IO.println("Sleeping..."); }
+    void bark() { IO.println("Woof!"); }
 }
 
 class Cat {
     String name;  // DUPLICATE!
     int age;  // DUPLICATE!
-    void eat() { System.out.println("Eating..."); }  // DUPLICATE!
-    void sleep() { System.out.println("Sleeping..."); }  // DUPLICATE!
-    void meow() { System.out.println("Meow!"); }
+    void eat() { IO.println("Eating..."); }  // DUPLICATE!
+    void sleep() { IO.println("Sleeping..."); }  // DUPLICATE!
+    void meow() { IO.println("Meow!"); }
 }
 
 This is HORRIBLE:

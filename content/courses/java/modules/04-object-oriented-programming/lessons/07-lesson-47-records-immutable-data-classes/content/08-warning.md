@@ -1,6 +1,6 @@
 ---
 type: "WARNING"
-title: "Common Records Pitfalls (Java 16+)"
+title: "Common Records Pitfalls"
 ---
 
 1. USING getTitle() INSTEAD OF title():

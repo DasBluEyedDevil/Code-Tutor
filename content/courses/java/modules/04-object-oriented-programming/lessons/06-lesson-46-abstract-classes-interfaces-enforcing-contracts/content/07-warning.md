@@ -10,14 +10,14 @@ title: "Common Abstract Classes and Interfaces Pitfalls"
 2. FORGETTING abstract KEYWORD:
 class Shape { abstract void draw(); }  // ERROR! Class must be abstract
 
-3. INTERFACE DEFAULT METHODS (Java 8+):
-Interfaces CAN have default implementations now:
+3. INTERFACE DEFAULT METHODS:
+Interfaces CAN have default implementations:
 interface Drawable {
-    default void draw() { System.out.println("Drawing..."); }
+    default void draw() { IO.println("Drawing..."); }
 }
 But use sparingly - can cause diamond problem!
 
-4. SEALED TYPES (Java 17+):
+4. SEALED TYPES:
 For controlled hierarchies, consider sealed classes/interfaces:
 sealed interface Shape permits Circle, Rectangle, Triangle {}
 
@@ -25,4 +25,4 @@ sealed interface Shape permits Circle, Rectangle, Triangle {}
 Interfaces with ONE abstract method can be used with lambdas:
 @FunctionalInterface
 interface Runnable { void run(); }
-Runnable r = () -> System.out.println("Running!");
+Runnable r = () -> IO.println("Running!");

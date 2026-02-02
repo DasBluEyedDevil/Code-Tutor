@@ -22,6 +22,6 @@ public class Solution {
         Book book = new Book("1984", "Orwell", 328);
         
         // Print the formatted output
-        System.out.println(book.title + " by " + book.author);
+        IO.println(book.title + " by " + book.author);
     }
 }

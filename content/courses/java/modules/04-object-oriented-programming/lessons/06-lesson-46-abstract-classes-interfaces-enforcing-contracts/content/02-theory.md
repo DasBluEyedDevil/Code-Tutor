@@ -18,7 +18,7 @@ abstract class Animal {  // Can't do: new Animal()
     
     // CONCRETE METHOD - has implementation
     public void sleep() {
-        System.out.println(name + " is sleeping.");
+        IO.println(name + " is sleeping.");
     }
 }
 
@@ -29,7 +29,7 @@ class Dog extends Animal {
     
     @Override
     public void makeSound() {  // MUST implement this!
-        System.out.println("Woof!");
+        IO.println("Woof!");
     }
 }
 

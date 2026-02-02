@@ -7,21 +7,21 @@ OVERRIDING = Replacing a parent method with your own version
 
 class Animal {
     public void makeSound() {
-        System.out.println("Generic sound");
+        IO.println("Generic sound");
     }
 }
 
 class Dog extends Animal {
     @Override  // ANNOTATION - tells Java "I'm overriding"
     public void makeSound() {
-        System.out.println("Woof!");
+        IO.println("Woof!");
     }
 }
 
 class Cat extends Animal {
     @Override
     public void makeSound() {
-        System.out.println("Meow!");
+        IO.println("Meow!");
     }
 }
 

@@ -15,5 +15,5 @@ double calculateArea(Shape shape) {
 void main() {
     Shape circle = new Circle(5);
     // Format to 2 decimal places
-    System.out.printf("%.2f%n", calculateArea(circle));
+    IO.println(String.format("%.2f", calculateArea(circle)));
 }

@@ -10,7 +10,7 @@ Then reality hits:
 DEVELOPER: 'The app works on my machine!'
 OPS TEAM: 'We deployed it and it crashes.'
 DEVELOPER: 'That's impossible, I tested it!'
-OPS TEAM: 'You're running Java 21, production has Java 17.'
+OPS TEAM: 'You're running Java 25, production has Java 21.'
 DEVELOPER: 'Well... update Java then.'
 OPS TEAM: 'That breaks 15 other applications.'
 

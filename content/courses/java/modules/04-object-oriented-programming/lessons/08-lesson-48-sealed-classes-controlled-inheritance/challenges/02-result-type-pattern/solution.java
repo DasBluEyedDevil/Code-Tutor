@@ -22,5 +22,5 @@ String formatResult(Result result) {
 
 void main() {
     Result result = checkNumber(5);
-    println(formatResult(result));
+    IO.println(formatResult(result));
 }

@@ -1,6 +1,6 @@
 ---
 type: "WARNING"
-title: "Common Sealed Classes Pitfalls (Java 17+)"
+title: "Common Sealed Classes Pitfalls"
 ---
 
 1. FORGETTING THE MODIFIER ON SUBCLASSES:

@@ -21,6 +21,6 @@ What you get automatically:
 
 Usage:
 Person alice = new Person("Alice", 30);
-System.out.println(alice.name());   // Alice
-System.out.println(alice.age());    // 30
-System.out.println(alice);          // Person[name=Alice, age=30]
+IO.println(alice.name());   // Alice
+IO.println(alice.age());    // 30
+IO.println(alice);          // Person[name=Alice, age=30]

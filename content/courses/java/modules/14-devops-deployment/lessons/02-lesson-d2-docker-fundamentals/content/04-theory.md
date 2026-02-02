@@ -7,7 +7,7 @@ ESSENTIAL INSTRUCTIONS:
 
 FROM <image>:<tag>
   Base image to build on
-  eclipse-temurin:21-jdk-alpine = Java 21 on Alpine Linux
+  eclipse-temurin:25-jdk-alpine = Java 25 on Alpine Linux
   Alpine = lightweight Linux (5MB vs 200MB)
 
 WORKDIR /path
@@ -35,11 +35,11 @@ ENTRYPOINT ["command", "arg1"]
 
 MULTI-STAGE BUILDS:
 
-FROM eclipse-temurin:21-jdk-alpine AS build
+FROM eclipse-temurin:25-jdk-alpine AS build
   # Full JDK for compilation
   # ~300MB image
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
   # Only JRE for runtime
   # ~100MB image
   COPY --from=build /app/target/*.jar app.jar

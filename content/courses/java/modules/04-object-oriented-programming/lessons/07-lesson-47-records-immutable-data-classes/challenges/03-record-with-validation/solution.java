@@ -13,5 +13,5 @@ void main() {
     var age = new Age(25);
     
     // Print the years
-    println(age.years());
+    IO.println(age.years());
 }
