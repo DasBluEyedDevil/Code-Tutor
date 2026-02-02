@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Structured Concurrency (Stable in Java 23)"
+title: "Structured Concurrency"
 ---
 
 Problem: Running multiple concurrent tasks and handling results/errors:
@@ -13,7 +13,7 @@ Future<List<Order>> ordersFuture = executor.submit(() -> fetchOrders(userId));
 User user = userFuture.get();      // What if this throws?
 List<Order> orders = ordersFuture.get();  // This might still be running!
 
-// STRUCTURED CONCURRENCY (Stable in Java 23):
+// STRUCTURED CONCURRENCY:
 try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
     
     Subtask<User> userTask = scope.fork(() -> fetchUser(userId));
@@ -31,5 +31,5 @@ try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 // If userTask fails, ordersTask is automatically cancelled!
 // No orphan threads, no resource leaks
 
-NOTE: Structured Concurrency was a preview feature in Java 21-22
-and became stable in Java 23. No --enable-preview flag needed!
+NOTE: Structured Concurrency is a stable feature in modern Java.
+No special flags needed!
