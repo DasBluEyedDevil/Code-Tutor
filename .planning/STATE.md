@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 1 - Foundation and Content Normalization
+**Current focus:** Phase 2 - Java Course Audit
 
 ## Current Position
 

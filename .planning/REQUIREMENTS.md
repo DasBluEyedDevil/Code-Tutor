@@ -7,11 +7,11 @@
 
 ### Content Normalization
 
-- [ ] **NORM-01**: All 6 courses use consistent lesson.json schema (id format, required fields, metadata structure)
-- [ ] **NORM-02**: All content sections use standardized type names recognized by the app (THEORY, EXAMPLE, KEY_POINT, ANALOGY, WARNING, CODE)
-- [ ] **NORM-03**: Module and lesson numbering is sequential with no gaps or duplicates across all courses
-- [ ] **NORM-04**: Python Module 14 restructured — duplicate lessons resolved, coherent progression restored
-- [ ] **NORM-05**: Version targets pinned per language (Java 21 LTS, Python 3.12+, C# 12/.NET 8, Node 22 LTS, Kotlin 2.0+, Flutter 3.x/Dart 3.x)
+- [x] **NORM-01**: All 6 courses use consistent lesson.json schema (id format, required fields, metadata structure)
+- [x] **NORM-02**: All content sections use standardized type names recognized by the app (THEORY, EXAMPLE, KEY_POINT, ANALOGY, WARNING, LEGACY_COMPARISON)
+- [x] **NORM-03**: Module and lesson numbering is sequential with no gaps or duplicates across all courses
+- [x] **NORM-04**: Python Module 14 restructured — duplicate lessons resolved, coherent progression restored
+- [x] **NORM-05**: Version targets pinned per language (Java 21 LTS, Python 3.12+, C# 12/.NET 8, Node 22 LTS, Kotlin 2.0+, Flutter 3.x/Dart 3.x)
 
 ### Content Quality — Python
 
@@ -79,10 +79,10 @@
 
 ### Infrastructure
 
-- [ ] **INFR-01**: .bak files removed from version control
-- [ ] **INFR-02**: Compiled binaries (bin/obj) removed from git history for csharp capstone
-- [ ] **INFR-03**: Minimum runtime versions updated (Python 3.12+, Java 21+, Node 22+, Kotlin 2.0+, Dart 3.0+)
-- [ ] **INFR-04**: .gitignore updated to prevent future .bak and binary checkins
+- [x] **INFR-01**: .bak files removed from version control
+- [x] **INFR-02**: Compiled binaries (bin/obj) removed from git history for csharp capstone
+- [x] **INFR-03**: Minimum runtime versions updated (Python 3.12+, Java 21+, Node 22+, Kotlin 2.0+, Dart 3.0+)
+- [x] **INFR-04**: .gitignore updated to prevent future .bak and binary checkins
 
 ## v2 Requirements
 
@@ -115,11 +115,11 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NORM-01 | Phase 1 | Pending |
-| NORM-02 | Phase 1 | Pending |
-| NORM-03 | Phase 1 | Pending |
-| NORM-04 | Phase 1 | Pending |
-| NORM-05 | Phase 1 | Pending |
+| NORM-01 | Phase 1 | Complete |
+| NORM-02 | Phase 1 | Complete |
+| NORM-03 | Phase 1 | Complete |
+| NORM-04 | Phase 1 | Complete |
+| NORM-05 | Phase 1 | Complete |
 | JAVA-01 | Phase 2 | Pending |
 | JAVA-02 | Phase 2 | Pending |
 | JAVA-03 | Phase 2 | Pending |
@@ -160,10 +160,10 @@
 | UIEX-03 | Phase 9 | Pending |
 | UIEX-04 | Phase 9 | Pending |
 | UIEX-05 | Phase 9 | Pending |
-| INFR-01 | Phase 1 | Pending |
-| INFR-02 | Phase 1 | Pending |
-| INFR-03 | Phase 1 | Pending |
-| INFR-04 | Phase 1 | Pending |
+| INFR-01 | Phase 1 | Complete |
+| INFR-02 | Phase 1 | Complete |
+| INFR-03 | Phase 1 | Complete |
+| INFR-04 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 44 total
@@ -172,4 +172,4 @@
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-02 after roadmap creation*
+*Last updated: 2026-02-02 after Phase 1 completion*
