@@ -9,29 +9,30 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 
 ## Current Position
 
-Phase: 1 of 9 (Foundation and Content Normalization)
-Plan: 6 of 6 in current phase (01-01 through 01-06 complete, including gap closure)
-Status: Phase complete (all gaps closed)
-Last activity: 2026-02-02 -- Completed 01-06-PLAN.md (Gap Closure: ANALOGY and WARNING Renderers)
+Phase: 2 of 9 (Java Course Audit)
+Plan: 1 of 8 in current phase (02-01 complete)
+Status: In progress
+Last activity: 2026-02-02 -- Completed 02-01-PLAN.md (Version Targets and Structural Review)
 
-Progress: [############] 6/6 phase plans (100%)
+Progress: [#.......] 1/8 phase plans (12%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: 6 min
-- Total execution time: 37 min
+- Total execution time: 42 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
+| 02-java-audit | 1/8 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-05 (2 min), 01-02 (5 min), 01-04 (10 min), 01-03 (17 min), 01-06 (1 min)
-- Trend: gap closure plans are fast (surgical, well-scoped changes)
+- Last 5 plans: 02-01 (5 min), 01-06 (1 min), 01-05 (2 min), 01-02 (5 min), 01-04 (10 min)
+- Trend: Phase 2 starting fast with metadata/structural work
 
 *Updated after each plan completion*
 
@@ -63,6 +64,13 @@ Recent decisions affecting current work:
 - [01-04]: Python course now has 24 modules (was 22), with modules 15-22 renumbered to 17-24
 - [01-04]: Capstone module metadata fixed (difficulty: advanced, estimatedHours: 10)
 - [01-06]: All 6 standard content types now have dedicated WPF renderers (THEORY, EXAMPLE, KEY_POINT, ANALOGY, WARNING, LEGACY_COMPARISON)
+- [02-01]: Java 25 LTS as course target (version-manifest.json + course.json)
+- [02-01]: Spring Boot 4.0.x as framework target (Spring Framework 7, Jakarta EE 11)
+- [02-01]: All version numbers removed from lesson titles and directory names
+- [02-01]: Preview features noted without --enable-preview flag references
+- [02-01]: Module 05/06 content overlap identified (lambdas+streams taught twice)
+- [02-01]: Module 15 lesson 15.7 duplicates Module 07 concurrency content
+- [02-01]: Module 08 and 15 have incorrect difficulty metadata
 
 ### Pending Todos
 
@@ -71,12 +79,14 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
-- Java IO.println vs System.out.println decision needed in Phase 2 (affects 75+ files)
+- Java IO.println vs System.out.println decision needed in Phase 2 (affects 75+ files) -- Plan 02-02
+- Module 05/06 streams overlap needs resolution in Plan 02-04
+- Module 15 lesson 15.7 virtual threads duplication needs resolution in Plan 02-06
 - Dart Frog community transition (July 2025) needs API verification in Phase 5
 - ONNX Runtime GenAI 12 versions behind (0.5.2 -> current) -- upgrade risk in Phase 8
 
 ## Session Continuity
 
-Last session: 2026-02-02T22:17:00Z
-Stopped at: Completed 01-06-PLAN.md (Gap Closure: ANALOGY and WARNING Renderers) -- Phase 1 fully complete including gap closure
+Last session: 2026-02-02T23:40:00Z
+Stopped at: Completed 02-01-PLAN.md (Version Targets and Structural Review)
 Resume file: None
