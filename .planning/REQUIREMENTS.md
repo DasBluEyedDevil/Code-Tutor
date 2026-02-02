@@ -115,61 +115,61 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NORM-01 | TBD | Pending |
-| NORM-02 | TBD | Pending |
-| NORM-03 | TBD | Pending |
-| NORM-04 | TBD | Pending |
-| NORM-05 | TBD | Pending |
-| PYTH-01 | TBD | Pending |
-| PYTH-02 | TBD | Pending |
-| PYTH-03 | TBD | Pending |
-| PYTH-04 | TBD | Pending |
-| PYTH-05 | TBD | Pending |
-| JAVA-01 | TBD | Pending |
-| JAVA-02 | TBD | Pending |
-| JAVA-03 | TBD | Pending |
-| JAVA-04 | TBD | Pending |
-| JAVA-05 | TBD | Pending |
-| CSRP-01 | TBD | Pending |
-| CSRP-02 | TBD | Pending |
-| CSRP-03 | TBD | Pending |
-| CSRP-04 | TBD | Pending |
-| CSRP-05 | TBD | Pending |
-| JSCR-01 | TBD | Pending |
-| JSCR-02 | TBD | Pending |
-| JSCR-03 | TBD | Pending |
-| JSCR-04 | TBD | Pending |
-| JSCR-05 | TBD | Pending |
-| KTLN-01 | TBD | Pending |
-| KTLN-02 | TBD | Pending |
-| KTLN-03 | TBD | Pending |
-| KTLN-04 | TBD | Pending |
-| KTLN-05 | TBD | Pending |
-| FLTR-01 | TBD | Pending |
-| FLTR-02 | TBD | Pending |
-| FLTR-03 | TBD | Pending |
-| FLTR-04 | TBD | Pending |
-| FLTR-05 | TBD | Pending |
-| TUTR-01 | TBD | Pending |
-| TUTR-02 | TBD | Pending |
-| TUTR-03 | TBD | Pending |
-| TUTR-04 | TBD | Pending |
-| TUTR-05 | TBD | Pending |
-| UIEX-01 | TBD | Pending |
-| UIEX-02 | TBD | Pending |
-| UIEX-03 | TBD | Pending |
-| UIEX-04 | TBD | Pending |
-| UIEX-05 | TBD | Pending |
-| INFR-01 | TBD | Pending |
-| INFR-02 | TBD | Pending |
-| INFR-03 | TBD | Pending |
-| INFR-04 | TBD | Pending |
+| NORM-01 | Phase 1 | Pending |
+| NORM-02 | Phase 1 | Pending |
+| NORM-03 | Phase 1 | Pending |
+| NORM-04 | Phase 1 | Pending |
+| NORM-05 | Phase 1 | Pending |
+| JAVA-01 | Phase 2 | Pending |
+| JAVA-02 | Phase 2 | Pending |
+| JAVA-03 | Phase 2 | Pending |
+| JAVA-04 | Phase 2 | Pending |
+| JAVA-05 | Phase 2 | Pending |
+| JSCR-01 | Phase 3 | Pending |
+| JSCR-02 | Phase 3 | Pending |
+| JSCR-03 | Phase 3 | Pending |
+| JSCR-04 | Phase 3 | Pending |
+| JSCR-05 | Phase 3 | Pending |
+| CSRP-01 | Phase 4 | Pending |
+| CSRP-02 | Phase 4 | Pending |
+| CSRP-03 | Phase 4 | Pending |
+| CSRP-04 | Phase 4 | Pending |
+| CSRP-05 | Phase 4 | Pending |
+| FLTR-01 | Phase 5 | Pending |
+| FLTR-02 | Phase 5 | Pending |
+| FLTR-03 | Phase 5 | Pending |
+| FLTR-04 | Phase 5 | Pending |
+| FLTR-05 | Phase 5 | Pending |
+| KTLN-01 | Phase 6 | Pending |
+| KTLN-02 | Phase 6 | Pending |
+| KTLN-03 | Phase 6 | Pending |
+| KTLN-04 | Phase 6 | Pending |
+| KTLN-05 | Phase 6 | Pending |
+| PYTH-01 | Phase 7 | Pending |
+| PYTH-02 | Phase 7 | Pending |
+| PYTH-03 | Phase 7 | Pending |
+| PYTH-04 | Phase 7 | Pending |
+| PYTH-05 | Phase 7 | Pending |
+| TUTR-01 | Phase 8 | Pending |
+| TUTR-02 | Phase 8 | Pending |
+| TUTR-03 | Phase 8 | Pending |
+| TUTR-04 | Phase 8 | Pending |
+| TUTR-05 | Phase 8 | Pending |
+| UIEX-01 | Phase 9 | Pending |
+| UIEX-02 | Phase 9 | Pending |
+| UIEX-03 | Phase 9 | Pending |
+| UIEX-04 | Phase 9 | Pending |
+| UIEX-05 | Phase 9 | Pending |
+| INFR-01 | Phase 1 | Pending |
+| INFR-02 | Phase 1 | Pending |
+| INFR-03 | Phase 1 | Pending |
+| INFR-04 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 44 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 44
+- Mapped to phases: 44
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-02 after initial definition*
+*Last updated: 2026-02-02 after roadmap creation*
