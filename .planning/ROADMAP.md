@@ -34,7 +34,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Module and lesson numbering is sequential with no gaps or duplicates in any course
   4. Python Module 14 has been restructured into coherent focused modules with no duplicate lessons
   5. Version targets are pinned per language (Java 21, Python 3.12+, C# 12/.NET 8, Node 22, Kotlin 2.0+, Flutter 3.x/Dart 3.x) and documented in a manifest file
-**Plans**: 5 plans
+**Plans**: 6 plans
 
 Plans:
 - [ ] 01-01-PLAN.md -- Git cleanup (remove .bak files, verify INFR-02, update .gitignore)
@@ -42,6 +42,7 @@ Plans:
 - [ ] 01-03-PLAN.md -- Content type migration (migrate 185 non-standard section types, fix numbering gaps, clean directory names)
 - [ ] 01-04-PLAN.md -- Python Module 14 restructuring (split into focused modules, resolve 8 duplicate pairs, renumber downstream)
 - [ ] 01-05-PLAN.md -- Version manifest and runtime requirements (pin targets, create manifest, update course.json)
+- [ ] 01-06-PLAN.md -- Gap closure: ANALOGY and WARNING WPF renderers (close verification gap for NORM-02)
 
 ### Phase 2: Java Course Audit
 **Goal**: The Java course teaches a complete, accurate path from absolute beginner to deploying a Spring Boot application, with every lesson verified against Java 21 LTS and every challenge executing correctly
@@ -198,7 +199,7 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 
 | Phase | Plans Complete | Status | Completed |
 |-------|---------------|--------|-----------|
-| 1. Foundation and Content Normalization | 0/5 | Planned | - |
+| 1. Foundation and Content Normalization | 5/6 | Gap closure | - |
 | 2. Java Course Audit | 0/4 | Not started | - |
 | 3. JavaScript Course Audit | 0/4 | Not started | - |
 | 4. C# Course Audit | 0/4 | Not started | - |
