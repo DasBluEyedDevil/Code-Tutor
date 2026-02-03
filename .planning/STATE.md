@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 2 complete, ready for Phase 3 (JavaScript Course Audit)
+**Current focus:** Phase 3 in progress (JavaScript Course Audit)
 
 ## Current Position
 
-Phase: 2 of 9 (Java Course Audit) -- COMPLETE
-Plan: 8 of 8 in current phase (all complete)
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 02-08-PLAN.md (Global Verification and Voice Pass)
+Phase: 3 of 9 (JavaScript Course Audit)
+Plan: 1 of 7 in current phase
+Status: In progress
+Last activity: 2026-02-03 -- Completed 03-01-PLAN.md (Filename Normalization, Version Manifest, Metadata)
 
-Progress: [########] 8/8 phase plans (100%)
+Progress: [#.......] 1/7 phase plans (14%)
 
-Overall: [##############....................] 14/44 total plans (32%)
+Overall: [###############.................] 15/44 total plans (34%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 14
+- Total plans completed: 15
 - Average duration: 10 min
-- Total execution time: ~140 min
+- Total execution time: ~143 min
 
 **By Phase:**
 
@@ -31,10 +31,11 @@ Overall: [##############....................] 14/44 total plans (32%)
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
 | 02-java-audit | 8/8 | 100 min | 13 min |
+| 03-js-audit | 1/7 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-08 (8 min), 02-07 (15 min), 02-03 (8 min), 02-06 (20 min), 02-02 (21 min)
-- Trend: Final verification plan fast; module migration plans average 15 min
+- Last 5 plans: 03-01 (3 min), 02-08 (8 min), 02-07 (15 min), 02-03 (8 min), 02-06 (20 min)
+- Trend: Structural rename plans very fast; content audit plans expected longer
 
 *Updated after each plan completion*
 
@@ -95,6 +96,9 @@ Recent decisions affecting current work:
 - [02-07]: Capstone @MockBean fully replaced with @MockitoBean (Spring Boot 4.0.x pattern)
 - [02-08]: No Phase 2.1 needed -- zero systemic voice or progression issues found
 - [02-08]: 9 stale version tag stragglers fixed in final global sweep (Java 17+, Java 16 references)
+- [03-01]: Prisma stays on 6.x patterns despite 7.0 release (ESM-first, no Rust engines; ecosystem needs stabilization)
+- [03-01]: Hono jwt() requires alg option since 4.11.0 (breaking change documented in version manifest)
+- [03-01]: JS course has 132 lessons across 21 modules (course.json previously said 95)
 
 ### Pending Todos
 
@@ -110,6 +114,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T00:40:35Z
-Stopped at: Completed 02-08-PLAN.md (Global Verification and Voice Pass) -- Phase 2 COMPLETE
+Last session: 2026-02-03T01:31:47Z
+Stopped at: Completed 03-01-PLAN.md (Filename Normalization, Version Manifest, Metadata)
 Resume file: None
