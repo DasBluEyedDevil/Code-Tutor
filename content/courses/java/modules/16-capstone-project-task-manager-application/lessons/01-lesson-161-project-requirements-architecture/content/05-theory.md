@@ -5,14 +5,14 @@ title: "Project Structure and Module Organization"
 
 A well-organized project structure makes code easier to navigate, maintain, and scale. Here is how we will organize our Task Manager:
 
-Backend Structure (Spring Boot):
-taskmanager-api/
+Backend Structure (Spring Boot -- Shared by Both Paths):
+taskmanager/
   src/main/java/com/taskmanager/
     TaskManagerApplication.java       # Main entry point
     config/                            # Configuration classes
       SecurityConfig.java              # Spring Security setup
       WebConfig.java                   # CORS, converters
-    controller/                        # REST endpoints
+    controller/                        # REST endpoints (and MVC controllers for Thymeleaf path)
       AuthController.java              # Login, register, logout
       TaskController.java              # Task CRUD operations
       CategoryController.java          # Category CRUD operations
@@ -51,29 +51,33 @@ taskmanager-api/
       V1__create_users.sql
       V2__create_categories.sql
       V3__create_tasks.sql
+    templates/                         # Thymeleaf templates (Thymeleaf path only)
+      layout.html
+      tasks/list.html
+      tasks/form.html
 
-Frontend Structure (React):
+Frontend Structure -- Thymeleaf Path:
+The Thymeleaf path keeps everything inside the Spring Boot project. Templates live in src/main/resources/templates/ and static assets in src/main/resources/static/. There is no separate frontend project to build or deploy.
+
+Frontend Structure -- React Path:
 taskmanager-ui/
   src/
     components/                        # Reusable UI components
-      TaskCard.tsx
-      CategoryBadge.tsx
-      Header.tsx
+      TaskCard.jsx
+      CategoryBadge.jsx
+      Header.jsx
     pages/                             # Page components
-      LoginPage.tsx
-      DashboardPage.tsx
-      TasksPage.tsx
+      LoginPage.jsx
+      DashboardPage.jsx
+      TasksPage.jsx
     hooks/                             # Custom React hooks
-      useAuth.ts
-      useTasks.ts
+      useAuth.js
+      useTasks.js
     services/                          # API communication
-      api.ts
-      authService.ts
-      taskService.ts
-    types/                             # TypeScript interfaces
-      Task.ts
-      User.ts
+      api.js
+      authService.js
+      taskService.js
     context/                           # React context
-      AuthContext.tsx
+      AuthContext.jsx
 
 This structure follows industry best practices: separation by feature type, clear naming conventions, and logical grouping of related files.

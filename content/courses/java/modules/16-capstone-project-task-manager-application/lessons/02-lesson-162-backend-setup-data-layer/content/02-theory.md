@@ -8,7 +8,7 @@ Create your application.yml file in src/main/resources. This YAML configuration 
 ```yaml
 spring:
   application:
-    name: taskmanager-api
+    name: taskmanager
   
   datasource:
     url: jdbc:postgresql://localhost:5432/taskmanager

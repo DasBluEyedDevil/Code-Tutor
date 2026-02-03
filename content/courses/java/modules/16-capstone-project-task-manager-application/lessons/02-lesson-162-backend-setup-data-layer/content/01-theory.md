@@ -10,11 +10,11 @@ Using Spring Initializr (start.spring.io):
 Project Configuration:
 - Project: Maven
 - Language: Java
-- Spring Boot: 3.2.x (or latest stable)
+- Spring Boot: 4.0.x
 - Group: com.taskmanager
-- Artifact: taskmanager-api
+- Artifact: taskmanager
 - Packaging: Jar
-- Java: 21
+- Java: 25
 
 Dependencies to Add:
 1. Spring Web - REST API endpoints, embedded Tomcat

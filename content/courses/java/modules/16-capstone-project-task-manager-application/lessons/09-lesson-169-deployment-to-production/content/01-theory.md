@@ -15,7 +15,7 @@ Why Multi-Stage Builds?
 # Dockerfile (in project root)
 
 # Stage 1: Build the application
-FROM gradle:8.5-jdk21 AS builder
+FROM gradle:8.12-jdk25 AS builder
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ COPY src ./src
 RUN gradle build -x test --no-daemon
 
 # Stage 2: Create the runtime image
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 
@@ -60,7 +60,7 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 For Maven projects, replace the builder stage:
 ```dockerfile
-FROM maven:3.9-eclipse-temurin-21 AS builder
+FROM maven:3.9-eclipse-temurin-25 AS builder
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
@@ -71,7 +71,7 @@ RUN mvn package -DskipTests
 Build and run locally:
 ```bash
 # Build the image
-docker build -t taskmanager-api:latest .
+docker build -t taskmanager:latest .
 
 # Run with environment variables
 docker run -p 8080:8080 \
@@ -79,7 +79,7 @@ docker run -p 8080:8080 \
   -e SPRING_DATASOURCE_USERNAME=postgres \
   -e SPRING_DATASOURCE_PASSWORD=password \
   -e JWT_SECRET=your-secret-key \
-  taskmanager-api:latest
+  taskmanager:latest
 ```
 
 The alpine base image is just 50MB. Combined with JRE-only (no JDK), your final image stays lean.

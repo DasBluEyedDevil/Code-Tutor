@@ -1,12 +1,12 @@
 ---
 type: "THEORY"
-title: "Spring Security 6 Configuration Overview"
+title: "Spring Security Configuration Overview"
 ---
 
-Spring Security 6 brings significant changes from previous versions, adopting a more functional, lambda-based configuration style. Understanding these changes is crucial for building secure applications.
+Spring Security uses a functional, lambda-based configuration style. Understanding how it works is crucial for building secure applications.
 
 The Security Filter Chain:
-Spring Security works by intercepting HTTP requests through a chain of filters. Each filter performs a specific security function: authentication, authorization, CSRF protection, session management, and more. In Spring Security 6, we configure this chain using the SecurityFilterChain bean.
+Spring Security works by intercepting HTTP requests through a chain of filters. Each filter performs a specific security function: authentication, authorization, CSRF protection, session management, and more. We configure this chain using the SecurityFilterChain bean.
 
 Key Concepts:
 
@@ -18,11 +18,10 @@ Key Concepts:
 
 4. OncePerRequestFilter: Base class for custom filters that should execute once per request. We extend this for our JWT authentication filter.
 
-Changes from Spring Security 5:
-- authorizeRequests() replaced with authorizeHttpRequests()
-- antMatchers() replaced with requestMatchers()
-- Lambda DSL is now preferred over chained method calls
-- WebSecurityConfigurerAdapter is deprecated; use SecurityFilterChain bean instead
+Configuration patterns used in Spring Boot 4.0.x:
+- authorizeHttpRequests() with requestMatchers() for URL-based security rules
+- Lambda DSL for fluent, readable configuration
+- SecurityFilterChain bean (not the legacy WebSecurityConfigurerAdapter)
 
 Our authentication flow:
 1. User sends credentials to /api/auth/login

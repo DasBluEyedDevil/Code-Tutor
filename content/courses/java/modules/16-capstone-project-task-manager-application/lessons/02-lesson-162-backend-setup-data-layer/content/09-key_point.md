@@ -11,7 +11,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: taskmanager-db
     environment:
       POSTGRES_DB: taskmanager

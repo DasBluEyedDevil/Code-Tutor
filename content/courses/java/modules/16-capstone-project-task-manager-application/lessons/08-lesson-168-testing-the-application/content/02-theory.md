@@ -20,7 +20,7 @@ import com.taskmanager.service.CustomUserDetailsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -45,13 +45,13 @@ class TaskControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @MockitoBean
     private TaskService taskService;
 
-    @MockBean
+    @MockitoBean
     private JwtTokenProvider jwtTokenProvider;
 
-    @MockBean
+    @MockitoBean
     private CustomUserDetailsService userDetailsService;
 
     @Test
@@ -133,7 +133,7 @@ class TaskControllerTest {
 
 Key @WebMvcTest features:
 - Loads only web layer, not full context (fast)
-- @MockBean creates Spring-managed mocks
+- @MockitoBean creates Spring-managed mocks
 - @WithMockUser simulates authenticated user
 - MockMvc makes HTTP requests and verifies responses
 - csrf() adds CSRF token for POST/PUT/DELETE
