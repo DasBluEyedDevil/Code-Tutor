@@ -49,7 +49,7 @@ Common full-stack mistakes:
 
 5. **Hardcoded URLs**:
    - Don't hardcode: `http://localhost:4000`
-   - Use env variables: `process.env.API_URL`
+   - Use env variables: `import.meta.env.VITE_API_URL` (frontend) or `process.env.API_URL` (backend)
    - Different in dev vs production!
 
 6. **Not validating data**:

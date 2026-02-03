@@ -12,7 +12,7 @@ Complete Dockerfile using multi-stage builds for production-ready images.
 # ============================================
 # Stage 1: Install dependencies
 # ============================================
-FROM oven/bun:1.1 AS base
+FROM oven/bun:1 AS base
 WORKDIR /app
 
 # Copy package files first (better caching)
@@ -36,7 +36,7 @@ COPY . .
 # ============================================
 # Stage 3: Production image
 # ============================================
-FROM oven/bun:1.1-slim AS production
+FROM oven/bun:1-slim AS production
 WORKDIR /app
 
 # Install curl for health checks (slim images don't include it)

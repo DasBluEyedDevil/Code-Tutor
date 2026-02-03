@@ -115,7 +115,7 @@ class DockerContainer {
 console.log('=== Multi-Stage Build Demo ===\n');
 console.log('Stage 1: Builder Image (with dev dependencies)\n');
 
-const builderImage = new DockerImage('my-api:builder', 'oven/bun:1.1');
+const builderImage = new DockerImage('my-api:builder', 'oven/bun:1');
 builderImage
   .addLayer('WORKDIR /app', 0)
   .addLayer('COPY package.json bun.lockb ./', 5)
@@ -126,7 +126,7 @@ builderImage
 
 console.log('\n\nStage 2: Production Image (minimal)\n');
 
-const productionImage = new DockerImage('my-api:latest', 'oven/bun:1.1-slim');
+const productionImage = new DockerImage('my-api:latest', 'oven/bun:1-slim');
 productionImage
   .addLayer('WORKDIR /app', 0)
   .addLayer('COPY package.json bun.lockb ./', 5)

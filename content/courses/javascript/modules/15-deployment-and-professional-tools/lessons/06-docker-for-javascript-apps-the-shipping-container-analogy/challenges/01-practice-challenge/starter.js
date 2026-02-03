@@ -56,7 +56,7 @@ class DockerContainer {
 // Build a Bun app image
 console.log('=== Building Docker Image ===\n');
 
-const appImage = new DockerImage('my-api', 'oven/bun:1.1-slim');
+const appImage = new DockerImage('my-api', 'oven/bun:1-slim');
 appImage
   .addLayer('WORKDIR /app', 0)
   .addLayer('COPY package.json bun.lockb ./', 5)

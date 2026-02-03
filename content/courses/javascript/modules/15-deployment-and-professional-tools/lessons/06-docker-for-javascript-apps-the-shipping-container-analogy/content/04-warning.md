@@ -38,7 +38,7 @@ Common Docker mistakes:
 3. **Running as root** (security risk):
    ```dockerfile
    # Add non-root user
-   FROM oven/bun:1.1-slim
+   FROM oven/bun:1-slim
 
    # Create app user
    RUN addgroup --system app && adduser --system --group app
@@ -57,7 +57,7 @@ Common Docker mistakes:
    CMD ["node", "index.js"]
 
    # CORRECT! Image is ~150MB
-   FROM oven/bun:1.1-slim
+   FROM oven/bun:1-slim
    COPY --from=build /app/dist ./dist
    CMD ["bun", "dist/index.js"]
    ```

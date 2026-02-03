@@ -7,7 +7,7 @@ Docker fundamentals for JavaScript developers:
 
 1. **Basic Dockerfile Commands**:
    ```dockerfile
-   FROM oven/bun:1.1      # Base image (pinned version)
+   FROM oven/bun:1        # Base image (major version tag)
    WORKDIR /app           # Set working directory
    COPY . .               # Copy files
    RUN bun install        # Run command during build
@@ -18,12 +18,12 @@ Docker fundamentals for JavaScript developers:
 2. **Multi-Stage Builds** (smaller images):
    ```dockerfile
    # Stage 1: Build
-   FROM oven/bun:1.1 AS builder
+   FROM oven/bun:1 AS builder
    COPY . .
    RUN bun install && bun run build
 
    # Stage 2: Production (only copy what's needed)
-   FROM oven/bun:1.1-slim
+   FROM oven/bun:1-slim
    COPY --from=builder /app/dist ./dist
    CMD ["bun", "dist/index.js"]
    ```
