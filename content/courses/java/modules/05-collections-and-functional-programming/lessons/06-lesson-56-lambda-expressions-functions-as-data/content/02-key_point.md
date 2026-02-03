@@ -12,7 +12,7 @@ A lambda is an anonymous function you can pass around:
 EXAMPLES:
 
 // No parameters
-() -> System.out.println("Hello")
+() -> IO.println("Hello")
 
 // One parameter (parentheses optional)
 x -> x * 2

@@ -21,7 +21,7 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
     // Collect results
     for (Future<String> future : futures) {
         String result = future.get();  // Blocks until complete
-        System.out.println(result);
+        IO.println(result);
     }
 }
 

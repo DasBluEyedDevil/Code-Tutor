@@ -24,10 +24,10 @@ QUERYING:
 
 LOOPING:
 for (int i = 0; i < list.size(); i++) {
-    System.out.println(list.get(i));
+    IO.println(list.get(i));
 }
 
 // Enhanced for loop (easier!)
 for (String item : list) {
-    System.out.println(item);
+    IO.println(item);
 }

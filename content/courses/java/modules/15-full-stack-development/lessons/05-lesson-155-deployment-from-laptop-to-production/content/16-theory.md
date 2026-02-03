@@ -3,7 +3,7 @@ type: "THEORY"
 title: "Run with layers"
 ---
 
-FROM eclipse-temurin:23-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY --from=builder /app/dependencies/ ./
 COPY --from=builder /app/spring-boot-loader/ ./

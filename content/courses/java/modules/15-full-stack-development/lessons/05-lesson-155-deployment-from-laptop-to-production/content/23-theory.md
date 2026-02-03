@@ -8,7 +8,7 @@ STEP 1: Build the application
 ./mvnw clean package
 
 STEP 2: Create Dockerfile
-FROM eclipse-temurin:23-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY target/myapp.jar app.jar
 EXPOSE 8080

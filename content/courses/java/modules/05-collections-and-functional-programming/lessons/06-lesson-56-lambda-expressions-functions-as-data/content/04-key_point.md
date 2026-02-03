@@ -6,10 +6,10 @@ title: "Method References"
 When a lambda just calls an existing method, use a method reference:
 
 // Lambda that calls a method
-list.forEach(s -> System.out.println(s));
+list.forEach(s -> IO.println(s));
 
 // Method reference (cleaner!)
-list.forEach(System.out::println);
+list.forEach(IO::println);
 
 FOUR TYPES OF METHOD REFERENCES:
 

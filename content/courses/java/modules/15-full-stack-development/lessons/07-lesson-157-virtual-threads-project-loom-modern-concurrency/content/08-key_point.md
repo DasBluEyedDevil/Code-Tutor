@@ -33,7 +33,7 @@ DETECT PINNING:
 
 CHECKLIST FOR VIRTUAL THREAD READINESS:
 ✓ Replace synchronized with ReentrantLock
-✓ Avoid ThreadLocal (use ScopedValue instead - stable in Java 23)
+✓ Avoid ThreadLocal (use ScopedValue instead - stable in Java 25)
 ✓ Don't pool virtual threads (create fresh ones)
 ✓ Update JDBC drivers to latest versions
 ✓ Check third-party libraries for synchronized usage

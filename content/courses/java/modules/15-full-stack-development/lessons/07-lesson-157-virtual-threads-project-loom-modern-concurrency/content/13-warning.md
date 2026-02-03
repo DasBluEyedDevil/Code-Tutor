@@ -4,7 +4,7 @@ title: "Virtual Thread Adoption Considerations"
 ---
 
 PINNING IS STILL A CONCERN:
-Java 21's virtual threads can still be pinned by synchronized blocks.
+Virtual threads can still be pinned by synchronized blocks.
 Fix: Replace synchronized with ReentrantLock for blocking operations.
 
 DON'T POOL VIRTUAL THREADS:
@@ -13,7 +13,7 @@ Fix: Use Executors.newVirtualThreadPerTaskExecutor() - create per task.
 
 THREAD LOCALS HAVE OVERHEAD:
 Virtual threads copy ThreadLocal values at creation time.
-Fix: Consider ScopedValues (stable in Java 23) for request-scoped data.
+Fix: Use ScopedValues (stable in Java 25) for request-scoped data.
 
 UPDATE YOUR LIBRARIES:
 Older JDBC drivers and libraries may not be virtual-thread friendly.

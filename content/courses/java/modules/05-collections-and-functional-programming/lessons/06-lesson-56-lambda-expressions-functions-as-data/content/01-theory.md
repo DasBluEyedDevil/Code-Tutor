@@ -22,7 +22,7 @@ Collections.sort(names, new Comparator<String>() {
 
 That's A LOT of code just to say: "sort by length"!
 
-Java 8 introduced LAMBDA EXPRESSIONS to pass behavior in a concise way:
+LAMBDA EXPRESSIONS let you pass behavior in a concise way:
 
 Collections.sort(names, (a, b) -> a.length() - b.length());
 

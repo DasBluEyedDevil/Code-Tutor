@@ -12,12 +12,12 @@ fruits.add("Cherry");
 
 // Traditional for loop
 for (int i = 0; i < fruits.size(); i++) {
-    System.out.println(fruits.get(i));
+    IO.println(fruits.get(i));
 }
 
 // Enhanced for loop (for-each)
 for (String fruit : fruits) {  // Read as: "for each fruit in fruits"
-    System.out.println(fruit);
+    IO.println(fruit);
 }
 
 Benefits:
@@ -28,5 +28,5 @@ Benefits:
 Works with HashMap too:
 HashMap<String, Integer> ages = new HashMap<>();
 for (String key : ages.keySet()) {
-    System.out.println(key + ": " + ages.get(key));
+    IO.println(key + ": " + ages.get(key));
 }

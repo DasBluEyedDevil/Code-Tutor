@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Resource Naming Conventions (2024-2025 Standards)"
+title: "Resource Naming Conventions (2025-2026 Standards)"
 ---
 
 RULE 1: Use PLURAL NOUNS for collections:

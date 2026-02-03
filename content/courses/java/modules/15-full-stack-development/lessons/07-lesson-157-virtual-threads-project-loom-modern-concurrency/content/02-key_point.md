@@ -17,7 +17,7 @@ VIRTUAL THREADS:
 - When food ready, ANY waiter picks up notepad and delivers
 - 10 real waiters can serve 1000 tables!
 
-Java 21 adds Virtual Threads:
+Java 25 Virtual Threads (standard since Java 21, mature in 25):
 - Managed by JVM, not OS
 - Cost: ~1KB each (vs 1MB for platform threads)
 - Can have MILLIONS of them

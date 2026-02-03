@@ -32,9 +32,9 @@ public class VirtualThreadDemo {
             // Collect results
             for (Future<String> future : futures) {
                 try {
-                    System.out.println(future.get());
+                    IO.println(future.get());
                 } catch (ExecutionException e) {
-                    System.err.println("Failed: " + e.getCause());
+                    IO.println("Failed: " + e.getCause());
                 }
             }
         }

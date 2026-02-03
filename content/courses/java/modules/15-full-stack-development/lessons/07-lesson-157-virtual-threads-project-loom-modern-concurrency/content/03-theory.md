@@ -1,12 +1,12 @@
 ---
 type: "THEORY"
-title: "Creating Virtual Threads in Java 21"
+title: "Creating Virtual Threads in Java 25"
 ---
 
-BEFORE Java 21 - Platform Thread:
+BEFORE Virtual Threads - Platform Thread:
 
 Thread platformThread = new Thread(() -> {
-    System.out.println("Running on platform thread");
+    IO.println("Running on platform thread");
 });
 platformThread.start();
 
@@ -14,11 +14,11 @@ platformThread.start();
 ExecutorService executor = Executors.newFixedThreadPool(10);
 executor.submit(() -> doWork());
 
-JAVA 21 - Virtual Thread:
+Virtual Thread (standard since Java 21, mature in Java 25):
 
 // Method 1: Thread.startVirtualThread()
 Thread virtualThread = Thread.startVirtualThread(() -> {
-    System.out.println("Running on virtual thread!");
+    IO.println("Running on virtual thread!");
 });
 
 // Method 2: Thread.ofVirtual().start()

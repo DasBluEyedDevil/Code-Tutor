@@ -5,19 +5,17 @@ title: "Spring Boot with Virtual Threads"
 
 Virtual Threads in Spring Boot:
 
-Spring Boot 4.0+: Virtual threads require configuration.
-Set spring.threads.virtual.enabled=true in application.properties.
+Spring Boot 4.0 enables virtual threads by default. Every @RestController
+handler runs on a virtual thread -- no configuration needed.
 
-Spring Boot 3.2-3.x: Enable manually:
-# application.properties
-spring.threads.virtual.enabled=true
+This is automatic with Java 25 + Spring Boot 4.0.x.
 
-BEFORE (Platform Threads):
+BEFORE (Platform Threads - old default):
 - Tomcat default: 200 threads
 - 200 concurrent requests max
 - Request 201 waits in queue
 
-AFTER (Virtual Threads):
+AFTER (Virtual Threads - Spring Boot 4.0 default):
 - Each request gets its own virtual thread
 - Handle 10,000+ concurrent requests
 - No thread pool exhaustion!

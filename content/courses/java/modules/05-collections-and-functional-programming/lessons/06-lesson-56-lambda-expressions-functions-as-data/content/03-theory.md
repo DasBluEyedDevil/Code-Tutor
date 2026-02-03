@@ -16,8 +16,8 @@ interface Calculator {
 Calculator add = (a, b) -> a + b;
 Calculator multiply = (a, b) -> a * b;
 
-System.out.println(add.calculate(5, 3));      // 8
-System.out.println(multiply.calculate(5, 3)); // 15
+IO.println(add.calculate(5, 3));      // 8
+IO.println(multiply.calculate(5, 3)); // 15
 
 COMMON BUILT-IN FUNCTIONAL INTERFACES:
 
@@ -28,7 +28,7 @@ COMMON BUILT-IN FUNCTIONAL INTERFACES:
    Function<String, Integer> length = s -> s.length();
 
 3. Consumer<T> - takes T, returns nothing
-   Consumer<String> printer = s -> System.out.println(s);
+   Consumer<String> printer = s -> IO.println(s);
 
 4. Supplier<T> - takes nothing, returns T
    Supplier<Double> random = () -> Math.random();

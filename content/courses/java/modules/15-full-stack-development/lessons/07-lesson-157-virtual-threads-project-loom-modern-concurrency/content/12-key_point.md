@@ -5,10 +5,10 @@ title: "TL;DR - Virtual Threads Summary"
 
 WHAT: Lightweight threads managed by JVM (not OS)
 WHY: Handle millions of concurrent connections
-WHEN: Java 21+ (LTS), Spring Boot 3.2+ (enable with spring.threads.virtual.enabled=true)
+WHEN: Standard since Java 21, mature in Java 25. Spring Boot 4.0 enables them by default.
 
-Spring Boot 4.0+: Virtual threads enabled by default!
-Spring Boot 3.2-3.x: spring.threads.virtual.enabled=true
+Spring Boot 4.0.x: Virtual threads enabled by default -- no configuration needed!
+Every @RestController handler runs on a virtual thread automatically.
 
 Create manually:
 Thread.startVirtualThread(() -> doWork());

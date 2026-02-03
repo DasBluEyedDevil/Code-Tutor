@@ -29,7 +29,7 @@ Collections.sort(players, (p1, p2) -> p2.score - p1.score);
 // Display leaderboard
 for (int i = 0; i < players.size(); i++) {
     Player p = players.get(i);
-    System.out.println((i+1) + ". " + p.name + ": " + p.score);
+    IO.println((i+1) + ". " + p.name + ": " + p.score);
 }
 
 Output:

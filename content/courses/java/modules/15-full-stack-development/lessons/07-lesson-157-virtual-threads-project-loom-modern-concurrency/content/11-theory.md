@@ -3,17 +3,17 @@ type: "THEORY"
 title: "Migration Checklist: Adopting Virtual Threads"
 ---
 
-STEP 1: Update to Java 23+ and Spring Boot 4.x
-<java.version>21</java.version>
+STEP 1: Use Java 25 and Spring Boot 4.0.x
+<java.version>25</java.version>
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>4.0.0</version>
 </parent>
 
-STEP 2: Virtual Threads Configuration
-Spring Boot 4.0+: Enabled by default! No action needed.
-Spring Boot 3.2-3.x: Add spring.threads.virtual.enabled=true
+STEP 2: Virtual Threads -- Enabled by Default
+Spring Boot 4.0 enables virtual threads by default.
+No configuration needed! Every request handler uses virtual threads automatically.
 
 STEP 3: Update Dependencies
 - JDBC drivers (PostgreSQL 42.7+, MySQL 8.3+)
