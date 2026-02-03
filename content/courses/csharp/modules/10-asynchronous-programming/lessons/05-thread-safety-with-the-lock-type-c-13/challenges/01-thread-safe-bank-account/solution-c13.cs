@@ -1,6 +1,3 @@
-// C# 12 fallback: Uses traditional object lock instead of C# 13 Lock type
-// Demonstrates the same thread-safety concepts with C# 12 compatible syntax
-
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,13 +6,13 @@ using System.Collections.Generic;
 class BankAccount
 {
     private decimal _balance;
-    private readonly object _lock = new();  // C# 12: use object instead of Lock
-
+    private readonly Lock _lock = new();
+    
     public BankAccount(decimal initialBalance)
     {
         _balance = initialBalance;
     }
-
+    
     public decimal Balance
     {
         get
@@ -26,7 +23,7 @@ class BankAccount
             }
         }
     }
-
+    
     public void Deposit(decimal amount)
     {
         lock (_lock)
@@ -35,7 +32,7 @@ class BankAccount
             Console.WriteLine($"Deposited {amount}, Balance: {_balance}");
         }
     }
-
+    
     public bool Withdraw(decimal amount)
     {
         lock (_lock)
