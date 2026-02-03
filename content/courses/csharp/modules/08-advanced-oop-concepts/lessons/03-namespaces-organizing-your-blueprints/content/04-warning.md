@@ -9,7 +9,7 @@ title: "Common Pitfalls"
 
 **Missing using in other namespaces**: If MyStore.Services needs Product from MyStore.Models, you still need `using MyStore.Models;` inside that file!
 
-**Implicit usings confusion**: When `<ImplicitUsings>` is enabled, you might use types without realizing they're auto-imported. Check obj/Debug/net8.0/GlobalUsings.g.cs to see what's included.
+**Implicit usings confusion**: When `<ImplicitUsings>` is enabled, you might use types without realizing they're auto-imported. Check obj/Debug/net9.0/GlobalUsings.g.cs to see what's included.
 
 **Namespace vs folder mismatch**: By convention, namespace should match folder structure. File at 'MyApp/Models/Customer.cs' should have 'namespace MyApp.Models'. Not required, but strongly recommended.
 

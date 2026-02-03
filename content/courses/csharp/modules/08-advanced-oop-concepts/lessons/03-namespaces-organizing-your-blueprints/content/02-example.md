@@ -68,7 +68,7 @@ global using System.Linq;
 // In .csproj: <ImplicitUsings>enable</ImplicitUsings>
 // Automatically includes: System, System.Collections.Generic,
 // System.IO, System.Linq, System.Threading.Tasks, and more!
-// Check obj/Debug/net8.0/GlobalUsings.g.cs to see what's included
+// Check obj/Debug/net9.0/GlobalUsings.g.cs to see what's included
 
 // FILE-SCOPED NAMESPACES (C# 10+) - cleaner!
 namespace MyApp.Models;  // Note the semicolon!
