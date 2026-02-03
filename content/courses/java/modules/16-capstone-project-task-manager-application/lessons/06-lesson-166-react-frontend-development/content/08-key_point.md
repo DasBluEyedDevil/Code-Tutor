@@ -1,103 +1,24 @@
 ---
 type: "KEY_POINT"
-title: "Authentication Context and Protected Routes"
+title: "Comparing the Two Paths"
 ---
 
-React Context provides global state without prop drilling. We use it to manage authentication state across the entire application.
+Both paths produce a working Task Manager. Here is a quick comparison:
 
-```jsx
-// src/context/AuthContext.jsx
-import { createContext, useState, useEffect, useContext } from 'react';
-import { authService } from '../services/authService';
+Thymeleaf Path:
+- Setup time: Minutes (just add a dependency)
+- Deployment: Single JAR file
+- JavaScript needed: None (or minimal for progressive enhancement)
+- Learning curve: Low if you already know Spring MVC
+- Best for: Server-rendered applications, forms-heavy CRUD apps, rapid prototyping
 
-const AuthContext = createContext(null);
+React Path:
+- Setup time: Longer (separate project, Node.js toolchain)
+- Deployment: Two services (backend JAR + frontend static files or container)
+- JavaScript needed: Extensive (JSX, hooks, state management)
+- Learning curve: Higher (new language, new paradigm)
+- Best for: Dynamic SPAs, real-time features, rich interactive UIs
 
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+Both paths teach the same architectural principles: separation of concerns, proper error handling, and clean API design. The Thymeleaf path just keeps both concerns in one project.
 
-  useEffect(() => {
-    // Check for existing session on mount
-    const token = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
-  }, []);
-
-  async function login(email, password) {
-    const userData = await authService.login(email, password);
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return userData;
-  }
-
-  async function register(email, password, name) {
-    const userData = await authService.register(email, password, name);
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    return userData;
-  }
-
-  function logout() {
-    authService.logout();
-    setUser(null);
-    localStorage.removeItem('user');
-  }
-
-  const value = {
-    user,
-    loading,
-    isAuthenticated: !!user,
-    login,
-    register,
-    logout,
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-}
-
-// src/hooks/useAuth.js
-import { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
-  }
-  return context;
-}
-
-// Usage in components:
-import { useAuth } from '../hooks/useAuth';
-
-function Header() {
-  const { user, logout, isAuthenticated } = useAuth();
-
-  return (
-    <header>
-      {isAuthenticated ? (
-        <>
-          <span>Welcome, {user.name}</span>
-          <button onClick={logout}>Logout</button>
-        </>
-      ) : (
-        <Link to="/login">Login</Link>
-      )}
-    </header>
-  );
-}
-```
-
-Context Benefits:
-- Single source of truth for auth state
-- Any component can access auth without prop drilling
-- Centralized login/logout logic
-- Automatic re-render on auth state change
+Whichever path you chose, continue to Lesson 07 where you will connect the frontend to the backend (Thymeleaf: form handling and CSRF; React: CORS and JWT flow) and Lesson 08 where you will add tests for both the backend and your chosen frontend approach.

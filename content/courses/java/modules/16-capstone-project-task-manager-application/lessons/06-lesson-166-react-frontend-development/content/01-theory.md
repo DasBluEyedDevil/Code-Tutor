@@ -1,66 +1,30 @@
 ---
 type: "THEORY"
-title: "Vite + React Project Setup"
+title: "Two Approaches to Web Frontends"
 ---
 
-We will use Vite as our build tool for the React frontend. Vite offers lightning-fast hot module replacement (HMR) and optimized builds, making it the modern choice for React development.
+You have built the complete Spring Boot backend: entities, repositories, services, REST API, authentication, and validation. Now it is time to add a frontend so users can actually interact with your application.
 
-Project Creation:
-Open a terminal and run:
-```bash
-npm create vite@latest frontend -- --template react
-cd frontend
-npm install
-```
+You have two choices, and this lesson covers both. Pick the one that fits your goals:
 
-Install Additional Dependencies:
-```bash
-# Routing
-npm install react-router-dom
+Server-Side Rendering with Thymeleaf:
+Thymeleaf is a Java template engine that integrates directly with Spring MVC. The server generates complete HTML pages and sends them to the browser. Forms submit data via standard HTTP POST requests. There is no separate frontend project, no JavaScript framework, and no API calls -- everything lives inside your Spring Boot application.
 
-# HTTP client
-npm install axios
+Choose Thymeleaf if you want to:
+- Stay in the Java ecosystem (no JavaScript/Node.js required)
+- Deploy a single JAR file with everything included
+- Build something quickly without learning a new framework
+- Create traditional web applications with server-rendered pages
 
-# Optional: Tailwind CSS for styling
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
-```
+Client-Side Rendering with React:
+React is a JavaScript library that runs in the browser. It communicates with your Spring Boot backend through the REST API you already built. The frontend is a separate project with its own build process, and it runs independently from the backend.
 
-Tailwind Configuration (tailwind.config.js):
-```javascript
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
+Choose React if you want to:
+- Build a single-page application with dynamic, instant UI updates
+- Gain experience with the most popular JavaScript framework
+- Practice full-stack development with separate frontend and backend
+- Deploy a multi-service architecture
 
-Add Tailwind directives to src/index.css:
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+Both approaches produce a fully functional Task Manager. The backend you built in Lessons 01-05 works with either path -- that is the power of a well-designed service layer.
 
-Environment Variables (.env):
-```
-VITE_API_URL=http://localhost:8080/api
-```
-
-Access in code:
-```javascript
-const API_URL = import.meta.env.VITE_API_URL;
-```
-
-Start Development Server:
-```bash
-npm run dev
-```
-
-The app will be available at http://localhost:5173. Vite's HMR means changes appear instantly without full page reloads.
+Read the sections below for your chosen path. If you are unsure, start with Thymeleaf -- it is faster to set up and lets you focus on the Java skills you have been building throughout this course.

@@ -1,9 +1,11 @@
 ---
 type: "THEORY"
-title: "End-to-End Testing Overview"
+title: "Shared: End-to-End Testing Overview"
 ---
 
-End-to-end (E2E) tests verify the entire application works together, from browser to database. They simulate real user scenarios.
+BOTH PATHS
+
+End-to-end (E2E) tests verify the entire application works together, from browser to database. They simulate real user scenarios. Whether you chose Thymeleaf or React, Playwright works the same way -- it drives a real browser, so it does not care how the HTML was generated.
 
 Popular E2E Testing Tools:
 

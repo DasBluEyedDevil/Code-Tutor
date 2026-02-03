@@ -1,146 +1,105 @@
 ---
 type: "THEORY"
-title: "Handling API Errors in the Frontend"
+title: "Shared: Dashboard Page"
 ---
 
-Robust error handling separates professional applications from amateur ones. Users should always understand what went wrong and what they can do about it.
+BOTH PATHS
 
-Error Response Structure:
-Our Spring Boot backend returns consistent error responses:
+Regardless of your frontend choice, users need a dashboard that shows task statistics and recent activity.
 
-```json
-{
-  "timestamp": "2024-01-15T10:30:00Z",
-  "status": 400,
-  "error": "Bad Request",
-  "detail": "Title is required",
-  "path": "/api/tasks",
-  "errors": {
-    "title": "Title is required",
-    "dueDate": "Due date must be in the future"
-  }
-}
-```
+Thymeleaf Dashboard (templates/dashboard.html):
+```html
+<main class="max-w-6xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-6">
+        Welcome, <span th:text="${username}">User</span>!
+    </h1>
 
-Centralized Error Handling:
-
-```javascript
-// src/utils/errorHandler.js
-export function getErrorMessage(error) {
-  // Network error (no response from server)
-  if (!error.response) {
-    return 'Unable to connect to server. Please check your internet connection.';
-  }
-
-  const { status, data } = error.response;
-
-  // Handle specific status codes
-  switch (status) {
-    case 400:
-      return data.detail || 'Invalid request. Please check your input.';
-    case 401:
-      return 'Session expired. Please log in again.';
-    case 403:
-      return 'You do not have permission to perform this action.';
-    case 404:
-      return 'The requested resource was not found.';
-    case 409:
-      return data.detail || 'This operation conflicts with existing data.';
-    case 422:
-      return data.detail || 'Validation failed. Please check your input.';
-    case 500:
-      return 'Server error. Please try again later.';
-    default:
-      return data.detail || 'An unexpected error occurred.';
-  }
-}
-
-export function getFieldErrors(error) {
-  return error.response?.data?.errors || {};
-}
-```
-
-Using Error Handling in Forms:
-
-```jsx
-// In TaskForm.jsx
-import { getErrorMessage, getFieldErrors } from '../utils/errorHandler';
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
-  setFieldErrors({});
-
-  try {
-    if (isEditMode) {
-      await taskService.updateTask(id, formData);
-    } else {
-      await taskService.createTask(formData);
-    }
-    navigate('/tasks');
-  } catch (err) {
-    // Set general error message
-    setError(getErrorMessage(err));
-    
-    // Set field-specific errors for inline display
-    setFieldErrors(getFieldErrors(err));
-  } finally {
-    setLoading(false);
-  }
-}
-
-// Render field errors inline
-<input
-  name="title"
-  className={fieldErrors.title ? 'border-red-500' : 'border-gray-300'}
-  // ...
-/>
-{fieldErrors.title && (
-  <p className="text-red-500 text-sm mt-1">{fieldErrors.title}</p>
-)}
-```
-
-Global Error Boundary:
-
-```jsx
-// src/components/common/ErrorBoundary.jsx
-import { Component } from 'react';
-
-export default class ErrorBoundary extends Component {
-  state = { hasError: false, error: null };
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
-    // Send to error tracking service (Sentry, etc.)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">
-              Something went wrong
-            </h1>
-            <p className="text-gray-600 mb-4">
-              We are sorry, but something unexpected happened.
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-              Reload Page
-            </button>
-          </div>
+    <div class="grid grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <p class="text-3xl font-bold" th:text="${totalTasks}">0</p>
+            <p class="text-gray-500">Total Tasks</p>
         </div>
-      );
-    }
-    return this.props.children;
-  }
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <p class="text-3xl font-bold text-yellow-600" th:text="${pendingTasks}">0</p>
+            <p class="text-gray-500">Pending</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <p class="text-3xl font-bold text-green-600" th:text="${completedTasks}">0</p>
+            <p class="text-gray-500">Completed</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 text-center">
+            <p class="text-3xl font-bold text-red-600" th:text="${overdueTasks}">0</p>
+            <p class="text-gray-500">Overdue</p>
+        </div>
+    </div>
+
+    <h2 class="text-xl font-semibold mb-4">Recent Tasks</h2>
+    <div th:each="task : ${recentTasks}" class="bg-white rounded shadow p-3 mb-2">
+        <a th:href="@{/tasks/{id}/edit(id=${task.id})}"
+           th:text="${task.title}" class="text-blue-600 hover:underline">Task</a>
+        <span th:text="${task.status}" class="text-sm text-gray-500 ml-2">Status</span>
+    </div>
+</main>
+```
+
+React Dashboard:
+```jsx
+// src/pages/DashboardPage.jsx
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { taskService } from '../services/taskService';
+import { useAuth } from '../context/AuthContext';
+
+export default function DashboardPage() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState({ total: 0, pending: 0, completed: 0, overdue: 0 });
+  const [recentTasks, setRecentTasks] = useState([]);
+
+  useEffect(() => {
+    taskService.getTasks(0, 100).then(data => {
+      const tasks = data.content;
+      const now = new Date();
+      setStats({
+        total: tasks.length,
+        pending: tasks.filter(t => t.status === 'PENDING').length,
+        completed: tasks.filter(t => t.status === 'COMPLETED').length,
+        overdue: tasks.filter(t => t.dueDate && new Date(t.dueDate) < now && t.status !== 'COMPLETED').length,
+      });
+      setRecentTasks(tasks.slice(0, 5));
+    });
+  }, []);
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold mb-6">Welcome, {user?.name}!</h1>
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-lg shadow p-4 text-center">
+          <p className="text-3xl font-bold">{stats.total}</p>
+          <p className="text-gray-500">Total Tasks</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4 text-center">
+          <p className="text-3xl font-bold text-yellow-600">{stats.pending}</p>
+          <p className="text-gray-500">Pending</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4 text-center">
+          <p className="text-3xl font-bold text-green-600">{stats.completed}</p>
+          <p className="text-gray-500">Completed</p>
+        </div>
+        <div className="bg-white rounded-lg shadow p-4 text-center">
+          <p className="text-3xl font-bold text-red-600">{stats.overdue}</p>
+          <p className="text-gray-500">Overdue</p>
+        </div>
+      </div>
+      <h2 className="text-xl font-semibold mb-4">Recent Tasks</h2>
+      {recentTasks.map(task => (
+        <div key={task.id} className="bg-white rounded shadow p-3 mb-2">
+          <Link to={`/tasks/${task.id}/edit`} className="text-blue-600 hover:underline">{task.title}</Link>
+          <span className="text-sm text-gray-500 ml-2">{task.status}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 ```
+
+Both versions show the same information -- total tasks, pending count, completed count, and overdue count -- just rendered differently. The Thymeleaf version gets data from the controller's Model, while the React version fetches from the API.

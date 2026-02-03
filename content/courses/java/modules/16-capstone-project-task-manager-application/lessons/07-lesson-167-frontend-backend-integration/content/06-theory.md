@@ -1,60 +1,39 @@
 ---
 type: "THEORY"
-title: "Loading States and Optimistic Updates"
+title: "Shared: Loading States and User Experience"
 ---
 
-A responsive UI requires proper loading states and, for better user experience, optimistic updates that show changes immediately before server confirmation.
+BOTH PATHS
 
-Loading States:
+Professional applications handle loading states gracefully so users always know what is happening.
 
-```jsx
-// src/components/common/LoadingSpinner.jsx
-export default function LoadingSpinner({ size = 'medium', className = '' }) {
-  const sizeClasses = {
-    small: 'w-4 h-4',
-    medium: 'w-8 h-8',
-    large: 'w-12 h-12',
-  };
+Thymeleaf Approach:
+Server-side rendering naturally shows complete pages. There are no loading spinners needed because the browser waits for the full response before rendering. However, you can add subtle UX improvements:
 
-  return (
-    <div className={`flex justify-center items-center ${className}`}>
-      <div
-        className={`${sizeClasses[size]} border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin`}
-      />
-    </div>
-  );
-}
+```html
+<!-- Show a "no results" message rather than a blank page -->
+<div th:if="${#lists.isEmpty(tasks)}" class="text-center py-12 text-gray-500">
+    <p>No tasks found matching your criteria.</p>
+    <a th:href="@{/tasks/new}" class="text-blue-600 hover:underline">Create your first task</a>
+</div>
 
-// Button with loading state
-export function LoadingButton({ loading, children, ...props }) {
-  return (
-    <button disabled={loading} {...props}>
-      {loading ? (
-        <span className="flex items-center gap-2">
-          <LoadingSpinner size="small" />
-          Processing...
-        </span>
-      ) : (
-        children
-      )}
-    </button>
-  );
-}
+<!-- Confirmation dialogs for destructive actions -->
+<form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post">
+    <button type="submit" onclick="return confirm('Are you sure you want to delete this task?')"
+            class="text-red-600 hover:underline">Delete</button>
+</form>
 ```
 
-Skeleton Loading for Lists:
+React Approach:
+Client-side rendering requires explicit loading and error states:
 
 ```jsx
-// src/components/common/TaskSkeleton.jsx
-export default function TaskSkeleton() {
+// Skeleton loading pattern
+function TaskSkeleton() {
   return (
     <div className="border rounded-lg p-4 animate-pulse">
       <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
-      <div className="h-3 bg-gray-200 rounded w-1/2 mb-4" />
-      <div className="flex justify-between">
-        <div className="h-3 bg-gray-200 rounded w-1/4" />
-        <div className="h-3 bg-gray-200 rounded w-1/6" />
-      </div>
+      <div className="h-3 bg-gray-200 rounded w-1/2" />
     </div>
   );
 }
@@ -69,45 +48,4 @@ export default function TaskSkeleton() {
 )}
 ```
 
-Optimistic Updates:
-Optimistic updates immediately reflect user actions in the UI, then sync with the server. If the server request fails, we roll back.
-
-```jsx
-async function handleToggleComplete(task) {
-  // Optimistically update UI immediately
-  const previousTasks = tasks;
-  const optimisticStatus = task.status === 'COMPLETED' ? 'PENDING' : 'COMPLETED';
-  
-  setTasks(prev => prev.map(t => 
-    t.id === task.id ? { ...t, status: optimisticStatus } : t
-  ));
-
-  try {
-    // Actually update on server
-    await taskService.toggleComplete(task.id, task.status);
-  } catch (err) {
-    // Rollback on failure
-    setTasks(previousTasks);
-    setError('Failed to update task status');
-  }
-}
-
-async function handleDelete(taskId) {
-  if (!window.confirm('Delete this task?')) return;
-
-  // Optimistically remove from UI
-  const previousTasks = tasks;
-  setTasks(prev => prev.filter(t => t.id !== taskId));
-
-  try {
-    await taskService.deleteTask(taskId);
-    // Success - no action needed, UI already updated
-  } catch (err) {
-    // Rollback on failure
-    setTasks(previousTasks);
-    setError('Failed to delete task');
-  }
-}
-```
-
-Optimistic updates make your application feel instant. The key is always saving the previous state so you can rollback on error. This pattern is especially effective for toggle operations and deletions where the user expects immediate feedback.
+Both approaches aim for the same goal: users should never face a blank screen or wonder if something is broken. The Thymeleaf path achieves this naturally through full page loads, while the React path requires explicit loading state management.

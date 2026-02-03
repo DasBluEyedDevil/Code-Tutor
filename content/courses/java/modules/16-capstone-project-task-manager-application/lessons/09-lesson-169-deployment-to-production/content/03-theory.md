@@ -3,7 +3,15 @@ type: "THEORY"
 title: "GitHub Actions CI/CD Pipeline"
 ---
 
+BOTH PATHS (with differences)
+
 GitHub Actions automates testing and deployment. Every push triggers tests, and merges to main trigger deployment.
+
+**Thymeleaf path:** You only need the `test` and `build` jobs. Remove the `test-frontend` job and the `frontend` Docker image build step entirely.
+
+**React path:** You need all four jobs: backend tests, frontend tests, Docker build for both images, and deploy.
+
+The workflow below shows the full React pipeline. Thymeleaf users: delete the `test-frontend` job, remove it from the `needs` array in the `build` job, and remove the "Build and push Frontend image" step.
 
 Create the workflow file:
 ```yaml

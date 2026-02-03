@@ -3,7 +3,15 @@ type: "THEORY"
 title: "Docker Compose for Full Stack"
 ---
 
+BOTH PATHS (with differences)
+
 Docker Compose orchestrates multiple containers, making it easy to run the complete application stack locally or in staging environments.
+
+**Thymeleaf path:** You only need TWO services: postgres and api. Remove the frontend service entirely -- your Thymeleaf templates are served by the Spring Boot app.
+
+**React path:** You need THREE services: postgres, api, and frontend. The React app is built and served by nginx.
+
+The docker-compose.yml below shows the full React stack. Thymeleaf users: simply delete the frontend service and you are done.
 
 ```yaml
 # docker-compose.yml

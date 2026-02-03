@@ -3,7 +3,13 @@ type: "THEORY"
 title: "Multi-Stage Dockerfile for Spring Boot"
 ---
 
-A multi-stage Dockerfile separates the build environment from the runtime environment, resulting in smaller, more secure production images.
+BOTH PATHS
+
+A multi-stage Dockerfile separates the build environment from the runtime environment, resulting in smaller, more secure production images. This Dockerfile is the same whether you chose Thymeleaf or React -- both paths share the same Spring Boot backend.
+
+If you chose the **Thymeleaf path**, this single Dockerfile is ALL you need. Your templates and static assets are bundled inside the Spring Boot JAR, so one container serves everything. This is one of the big advantages of the Thymeleaf path -- your entire app is one JAR file.
+
+If you chose the **React path**, you also need a separate frontend Dockerfile (shown in the next section).
 
 Why Multi-Stage Builds?
 - Build stage includes JDK, Gradle/Maven, source code (large)

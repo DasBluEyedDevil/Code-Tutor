@@ -1,157 +1,170 @@
 ---
 type: "THEORY"
-title: "TaskList Component with Filtering UI"
+title: "Thymeleaf Path: Building the Task Manager Pages"
 ---
 
-The TaskList component displays tasks and provides filtering options. It demonstrates state management, conditional rendering, and component composition.
+THYMELEAF PATH (continued)
 
-```jsx
-// src/components/tasks/TaskList.jsx
-import { useState, useEffect } from 'react';
-import { taskService } from '../../services/taskService';
-import TaskCard from './TaskCard';
-import TaskFilters from './TaskFilters';
-import LoadingSpinner from '../common/LoadingSpinner';
+Now let us build the actual Task Manager pages. We need a task list page, a task form page (for create and edit), and Spring MVC controllers to serve them.
 
-export default function TaskList() {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filters, setFilters] = useState({
-    status: 'ALL',
-    priority: 'ALL',
-    search: '',
-  });
+Task List Page (templates/tasks/list.html):
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('My Tasks')}">
+    <title>My Tasks</title>
+</head>
+<body class="bg-gray-100">
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
-  useEffect(() => {
-    loadTasks();
-  }, []);
-
-  async function loadTasks() {
-    try {
-      setLoading(true);
-      const response = await taskService.getTasks();
-      setTasks(response.content);
-      setError(null);
-    } catch (err) {
-      setError('Failed to load tasks. Please try again.');
-      console.error('Error loading tasks:', err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleDelete(taskId) {
-    if (!window.confirm('Are you sure you want to delete this task?')) {
-      return;
-    }
-    try {
-      await taskService.deleteTask(taskId);
-      setTasks(tasks.filter(t => t.id !== taskId));
-    } catch (err) {
-      setError('Failed to delete task.');
-    }
-  }
-
-  // Apply filters client-side
-  const filteredTasks = tasks.filter(task => {
-    if (filters.status !== 'ALL' && task.status !== filters.status) {
-      return false;
-    }
-    if (filters.priority !== 'ALL' && task.priority !== filters.priority) {
-      return false;
-    }
-    if (filters.search && !task.title.toLowerCase().includes(filters.search.toLowerCase())) {
-      return false;
-    }
-    return true;
-  });
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  return (
-    <div className="space-y-6">
-      <TaskFilters filters={filters} onFilterChange={setFilters} />
-      
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
+    <main class="max-w-6xl mx-auto p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold">My Tasks</h1>
+            <a th:href="@{/tasks/new}"
+               class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                + New Task
+            </a>
         </div>
-      )}
 
-      {filteredTasks.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
-          <p>No tasks found.</p>
-          <p className="text-sm">Create your first task to get started!</p>
+        <!-- Flash messages -->
+        <div th:if="${successMessage}"
+             class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <span th:text="${successMessage}">Success</span>
         </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {filteredTasks.map(task => (
-            <TaskCard 
-              key={task.id} 
-              task={task} 
-              onDelete={() => handleDelete(task.id)}
-              onUpdate={loadTasks}
-            />
-          ))}
+
+        <!-- Task cards -->
+        <div th:if="${#lists.isEmpty(tasks)}" class="text-center py-12 text-gray-500">
+            <p>No tasks yet. Create your first task to get started!</p>
         </div>
-      )}
-    </div>
-  );
-}
 
-// src/components/tasks/TaskFilters.jsx
-export default function TaskFilters({ filters, onFilterChange }) {
-  return (
-    <div className="flex flex-wrap gap-4 p-4 bg-gray-50 rounded-lg">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Status
-        </label>
-        <select
-          value={filters.status}
-          onChange={(e) => onFilterChange({ ...filters, status: e.target.value })}
-          className="border rounded-md px-3 py-2"
-        >
-          <option value="ALL">All Statuses</option>
-          <option value="PENDING">Pending</option>
-          <option value="IN_PROGRESS">In Progress</option>
-          <option value="COMPLETED">Completed</option>
-        </select>
-      </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div th:each="task : ${tasks}"
+                 th:classappend="${task.priority.name() == 'URGENT'} ? 'border-red-500' :
+                                 (${task.priority.name() == 'HIGH'} ? 'border-orange-500' : 'border-gray-200')"
+                 class="bg-white rounded-lg shadow p-4 border-l-4">
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Priority
-        </label>
-        <select
-          value={filters.priority}
-          onChange={(e) => onFilterChange({ ...filters, priority: e.target.value })}
-          className="border rounded-md px-3 py-2"
-        >
-          <option value="ALL">All Priorities</option>
-          <option value="LOW">Low</option>
-          <option value="MEDIUM">Medium</option>
-          <option value="HIGH">High</option>
-          <option value="URGENT">Urgent</option>
-        </select>
-      </div>
+                <div class="flex justify-between items-start">
+                    <h3 class="font-semibold" th:text="${task.title}">Task Title</h3>
+                    <span th:text="${task.priority}"
+                          th:classappend="${task.priority.name() == 'URGENT'} ? 'bg-red-100 text-red-800' : 'bg-gray-100'"
+                          class="text-xs px-2 py-1 rounded">MEDIUM</span>
+                </div>
 
-      <div className="flex-1 min-w-[200px]">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Search
-        </label>
-        <input
-          type="text"
-          value={filters.search}
-          onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
-          placeholder="Search tasks..."
-          className="w-full border rounded-md px-3 py-2"
-        />
-      </div>
-    </div>
-  );
+                <p th:if="${task.description}" th:text="${task.description}"
+                   class="text-gray-600 text-sm mt-2">Description</p>
+
+                <div class="flex justify-between items-center mt-4 text-sm">
+                    <span th:if="${task.category}" th:text="${task.category.name}"
+                          class="text-blue-600">Category</span>
+                    <span th:if="${task.dueDate}" th:text="${#temporals.format(task.dueDate, 'MMM dd, yyyy')}"
+                          th:classappend="${task.dueDate.isBefore(T(java.time.LocalDate).now()) and task.status.name() != 'COMPLETED'} ? 'text-red-600 font-bold' : 'text-gray-500'">
+                        Due Date
+                    </span>
+                </div>
+
+                <div class="flex gap-2 mt-4">
+                    <a th:href="@{/tasks/{id}/edit(id=${task.id})}"
+                       class="text-blue-600 hover:underline text-sm">Edit</a>
+                    <form th:action="@{/tasks/{id}/delete(id=${task.id})}" method="post" class="inline">
+                        <button type="submit" class="text-red-600 hover:underline text-sm"
+                                onclick="return confirm('Delete this task?')">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
+```
+
+Spring MVC Controller for Thymeleaf Views:
+```java
+@Controller
+@RequestMapping("/tasks")
+public class TaskViewController {
+
+    private final TaskService taskService;
+    private final CategoryService categoryService;
+
+    public TaskViewController(TaskService taskService,
+                              CategoryService categoryService) {
+        this.taskService = taskService;
+        this.categoryService = categoryService;
+    }
+
+    @GetMapping
+    public String listTasks(@AuthenticationPrincipal User user, Model model) {
+        var tasks = taskService.getTasksForUser(user);
+        model.addAttribute("tasks", tasks);
+        return "tasks/list";
+    }
+
+    @GetMapping("/new")
+    public String showCreateForm(@AuthenticationPrincipal User user, Model model) {
+        model.addAttribute("taskForm", new TaskRequest());
+        model.addAttribute("categories", categoryService.getCategoriesForUser(user));
+        return "tasks/form";
+    }
+
+    @PostMapping
+    public String createTask(@AuthenticationPrincipal User user,
+                             @Valid @ModelAttribute("taskForm") TaskRequest request,
+                             BindingResult bindingResult,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getCategoriesForUser(user));
+            return "tasks/form";
+        }
+        taskService.createTask(request, user);
+        redirectAttributes.addFlashAttribute("successMessage", "Task created successfully!");
+        return "redirect:/tasks";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String showEditForm(@PathVariable Long id,
+                               @AuthenticationPrincipal User user,
+                               Model model) {
+        var task = taskService.getTask(id, user);
+        model.addAttribute("taskForm", TaskRequest.fromTask(task));
+        model.addAttribute("categories", categoryService.getCategoriesForUser(user));
+        model.addAttribute("taskId", id);
+        return "tasks/form";
+    }
+
+    @PostMapping("/{id}")
+    public String updateTask(@PathVariable Long id,
+                             @AuthenticationPrincipal User user,
+                             @Valid @ModelAttribute("taskForm") TaskRequest request,
+                             BindingResult bindingResult,
+                             Model model,
+                             RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.getCategoriesForUser(user));
+            model.addAttribute("taskId", id);
+            return "tasks/form";
+        }
+        taskService.updateTask(id, request, user);
+        redirectAttributes.addFlashAttribute("successMessage", "Task updated successfully!");
+        return "redirect:/tasks";
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteTask(@PathVariable Long id,
+                             @AuthenticationPrincipal User user,
+                             RedirectAttributes redirectAttributes) {
+        taskService.deleteTask(id, user);
+        redirectAttributes.addFlashAttribute("successMessage", "Task deleted.");
+        return "redirect:/tasks";
+    }
 }
 ```
+
+Key patterns:
+- @Controller (not @RestController) returns view names, not JSON
+- @ModelAttribute binds form data to Java objects
+- BindingResult captures validation errors (must follow @Valid parameter)
+- RedirectAttributes.addFlashAttribute passes messages across redirects
+- Post-Redirect-Get pattern prevents duplicate form submissions

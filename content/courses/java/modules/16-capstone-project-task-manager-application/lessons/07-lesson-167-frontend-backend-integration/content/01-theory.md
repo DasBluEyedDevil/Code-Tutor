@@ -1,45 +1,85 @@
 ---
 type: "THEORY"
-title: "Connecting React to Spring Boot API"
+title: "Thymeleaf Path: Spring MVC Form Handling and CSRF"
 ---
 
-Now that we have both a fully functional Spring Boot backend and a React frontend, it is time to connect them. This integration is where the full-stack application truly comes together, allowing users to interact with your backend through a beautiful, responsive interface.
+THYMELEAF PATH
 
-The connection between frontend and backend happens through HTTP requests. React makes requests to our Spring Boot REST API endpoints, receives JSON responses, and updates the UI accordingly. We already set up the Axios API service in lesson 16.6 - now we will ensure everything works seamlessly together.
+Spring MVC and Thymeleaf handle form submission through the standard HTTP POST/redirect/GET pattern. Spring Security adds automatic CSRF protection, and the framework provides elegant validation error display.
 
-CORS Configuration Reminder:
-Your Spring Boot backend must allow requests from the React development server. In SecurityConfig, we configured CORS to allow http://localhost:5173 (Vite's default port). In production, you will update this to your actual frontend domain.
+CSRF Protection:
+Spring Security automatically includes a CSRF token in Thymeleaf forms. You do not need to do anything special -- Thymeleaf's th:action automatically adds the hidden CSRF field:
+
+```html
+<form th:action="@{/tasks}" method="post">
+    <!-- Spring Security auto-inserts: -->
+    <!-- <input type="hidden" name="_csrf" value="abc123..."> -->
+    <input type="text" name="title" />
+    <button type="submit">Create</button>
+</form>
+```
+
+This protects against cross-site request forgery attacks. Every POST, PUT, and DELETE request must include the CSRF token, and Spring Security verifies it automatically.
+
+Validation Error Display:
+When form validation fails, the controller returns the form view again with errors attached to the BindingResult. Thymeleaf can display these inline:
+
+```html
+<form th:action="@{/tasks}" th:object="${taskForm}" method="post">
+    <div>
+        <label>Title *</label>
+        <input type="text" th:field="*{title}"
+               th:classappend="${#fields.hasErrors('title')} ? 'border-red-500' : 'border-gray-300'"
+               class="w-full border rounded px-3 py-2" />
+        <p th:if="${#fields.hasErrors('title')}"
+           th:errors="*{title}" class="text-red-500 text-sm mt-1">Error message</p>
+    </div>
+    <!-- more fields... -->
+</form>
+```
+
+Flash Attributes and Redirect Messages:
+After a successful create/update/delete, redirect the user back to the task list with a success message:
 
 ```java
-// In SecurityConfig.java - CORS configuration
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:5173",
-        "https://yourdomain.com"
-    ));
-    configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    configuration.setAllowCredentials(true);
-    return new UrlBasedCorsConfigurationSource() {{
-        registerCorsConfiguration("/**", configuration);
-    }};
+@PostMapping
+public String createTask(@AuthenticationPrincipal User user,
+                         @Valid @ModelAttribute("taskForm") TaskRequest request,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes) {
+    if (bindingResult.hasErrors()) {
+        return "tasks/form";  // Re-render form with errors
+    }
+    taskService.createTask(request, user);
+    redirectAttributes.addFlashAttribute("successMessage", "Task created!");
+    return "redirect:/tasks";  // Redirect to list (Post-Redirect-Get)
 }
 ```
 
-Environment Configuration:
-Create a .env file in your frontend directory to configure the API URL:
+Flash attributes survive one redirect and are then discarded. This prevents the success message from appearing again on page refresh.
 
-```bash
-# frontend/.env
-VITE_API_URL=http://localhost:8080/api
+Session-Based Authentication for Thymeleaf:
+For the Thymeleaf path, you can use Spring Security's built-in form login instead of JWT:
+
+```java
+@Bean
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    http
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
+            .anyRequest().authenticated()
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .defaultSuccessUrl("/tasks")
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutSuccessUrl("/login?logout")
+            .permitAll()
+        );
+    return http.build();
+}
 ```
 
-For production, create .env.production:
-```bash
-# frontend/.env.production
-VITE_API_URL=https://api.yourdomain.com/api
-```
-
-Vite automatically loads the correct file based on the build mode. When you run npm run build, it uses .env.production.
+This is simpler than JWT -- Spring Security handles session creation, CSRF tokens, and logout automatically.

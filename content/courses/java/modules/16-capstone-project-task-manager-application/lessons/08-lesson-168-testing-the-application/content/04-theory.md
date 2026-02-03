@@ -1,9 +1,11 @@
 ---
 type: "THEORY"
-title: "React Component Tests with Vitest and React Testing Library"
+title: "React Path: Component Tests with Vitest and React Testing Library"
 ---
 
-For the React frontend, we use Vitest (a fast test runner compatible with Vite) and React Testing Library (for component testing that focuses on user behavior).
+REACT PATH
+
+If you chose the React frontend, you need frontend-specific tests in addition to the shared backend tests. We use Vitest (a fast test runner compatible with Vite) and React Testing Library (for component testing that focuses on user behavior). If you chose the Thymeleaf path, skip this section -- your frontend is tested through the MockMvc view controller tests covered earlier.
 
 Setup Vitest:
 ```bash

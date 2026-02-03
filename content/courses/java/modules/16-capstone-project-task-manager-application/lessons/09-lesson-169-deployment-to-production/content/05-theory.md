@@ -3,7 +3,13 @@ type: "THEORY"
 title: "Railway Deployment Walkthrough"
 ---
 
+BOTH PATHS
+
 Railway is a modern platform that makes deploying full-stack applications simple. Here is a step-by-step guide to deploying our Task Manager.
+
+**Thymeleaf path advantage:** You only need TWO Railway services (PostgreSQL database + Spring Boot app). Your entire application deploys as a single JAR -- no separate frontend deployment needed.
+
+**React path:** You need THREE Railway services (PostgreSQL database + Spring Boot API + React frontend served by nginx).
 
 Step 1: Create Railway Account
 - Go to https://railway.app

@@ -1,123 +1,46 @@
 ---
 type: "THEORY"
-title: "Full CRUD Operations from UI"
+title: "React Path: Full CRUD Operations and Error Handling"
 ---
 
-Let us implement all CRUD (Create, Read, Update, Delete) operations for tasks, connecting each UI action to our Spring Boot API.
+REACT PATH (continued)
 
-The Complete Task Service:
-
-```javascript
-// src/services/taskService.js
-import api from './api';
-
-export const taskService = {
-  // READ - Get all tasks with pagination and filtering
-  async getTasks({ page = 0, size = 20, status, priority, categoryId, search } = {}) {
-    const params = new URLSearchParams();
-    params.append('page', page);
-    params.append('size', size);
-    if (status) params.append('status', status);
-    if (priority) params.append('priority', priority);
-    if (categoryId) params.append('categoryId', categoryId);
-    if (search) params.append('search', search);
-    
-    const response = await api.get(`/tasks?${params}`);
-    return response.data;
-  },
-
-  // READ - Get single task by ID
-  async getTask(id) {
-    const response = await api.get(`/tasks/${id}`);
-    return response.data;
-  },
-
-  // CREATE - Create new task
-  async createTask(taskData) {
-    const response = await api.post('/tasks', taskData);
-    return response.data;
-  },
-
-  // UPDATE - Update existing task
-  async updateTask(id, taskData) {
-    const response = await api.put(`/tasks/${id}`, taskData);
-    return response.data;
-  },
-
-  // UPDATE - Quick status toggle
-  async toggleComplete(id, currentStatus) {
-    const newStatus = currentStatus === 'COMPLETED' ? 'PENDING' : 'COMPLETED';
-    const response = await api.patch(`/tasks/${id}/status`, { status: newStatus });
-    return response.data;
-  },
-
-  // DELETE - Remove task
-  async deleteTask(id) {
-    await api.delete(`/tasks/${id}`);
-  },
-};
-```
-
-Using the Service in Components:
+Connecting all CRUD operations from the React UI to the backend API, with proper loading states and error handling.
 
 ```jsx
 // src/pages/TasksPage.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { taskService } from '../services/taskService';
-import TaskList from '../components/tasks/TaskList';
-import TaskFilters from '../components/tasks/TaskFilters';
-import LoadingSpinner from '../components/common/LoadingSpinner';
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [pagination, setPagination] = useState({ page: 0, totalPages: 0 });
-  const [filters, setFilters] = useState({});
 
   const loadTasks = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await taskService.getTasks({ 
-        page: pagination.page, 
-        ...filters 
-      });
+      const data = await taskService.getTasks();
       setTasks(data.content);
-      setPagination(prev => ({
-        ...prev,
-        totalPages: data.totalPages,
-        totalElements: data.totalElements,
-      }));
-      setError(null);
     } catch (err) {
       setError('Failed to load tasks');
-      console.error(err);
     } finally {
       setLoading(false);
     }
-  }, [pagination.page, filters]);
+  }, []);
 
-  useEffect(() => {
-    loadTasks();
-  }, [loadTasks]);
+  useEffect(() => { loadTasks(); }, [loadTasks]);
 
   async function handleDelete(taskId) {
     if (!window.confirm('Delete this task?')) return;
+    const previous = tasks;
+    setTasks(prev => prev.filter(t => t.id !== taskId));
     try {
       await taskService.deleteTask(taskId);
-      setTasks(prev => prev.filter(t => t.id !== taskId));
     } catch (err) {
+      setTasks(previous);
       setError('Failed to delete task');
-    }
-  }
-
-  async function handleToggleComplete(task) {
-    try {
-      const updated = await taskService.toggleComplete(task.id, task.status);
-      setTasks(prev => prev.map(t => t.id === task.id ? updated : t));
-    } catch (err) {
-      setError('Failed to update task');
     }
   }
 
@@ -125,34 +48,47 @@ export default function TasksPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Tasks</h1>
-        <Link
-          to="/tasks/new"
-          className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
-        >
+        <Link to="/tasks/new" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
           + New Task
         </Link>
       </div>
-
-      <TaskFilters filters={filters} onFilterChange={setFilters} />
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
-
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        <TaskList
-          tasks={tasks}
-          onDelete={handleDelete}
-          onToggleComplete={handleToggleComplete}
-        />
+      {error && <div className="bg-red-100 text-red-700 p-3 rounded">{error}</div>}
+      {loading ? <div>Loading...</div> : (
+        tasks.length === 0
+          ? <p className="text-center text-gray-500 py-12">No tasks yet.</p>
+          : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {tasks.map(task => (
+                <div key={task.id} className="bg-white rounded-lg shadow p-4">
+                  <h3 className="font-semibold">{task.title}</h3>
+                  <p className="text-sm text-gray-500">{task.status} - {task.priority}</p>
+                  <div className="flex gap-2 mt-3">
+                    <Link to={`/tasks/${task.id}/edit`} className="text-blue-600 text-sm hover:underline">Edit</Link>
+                    <button onClick={() => handleDelete(task.id)} className="text-red-600 text-sm hover:underline">Delete</button>
+                  </div>
+                </div>
+              ))}
+            </div>
       )}
     </div>
   );
 }
 ```
 
-This pattern keeps components focused on UI while the service handles API communication.
+Centralized Error Handling:
+```javascript
+// src/utils/errorHandler.js
+export function getErrorMessage(error) {
+  if (!error.response) return 'Unable to connect to server.';
+  switch (error.response.status) {
+    case 400: return error.response.data.detail || 'Invalid request.';
+    case 401: return 'Session expired. Please log in again.';
+    case 403: return 'You do not have permission for this action.';
+    case 404: return 'Resource not found.';
+    case 422: return error.response.data.detail || 'Validation failed.';
+    default: return 'An unexpected error occurred.';
+  }
+}
+```
+
+Optimistic Updates:
+Notice the delete handler uses optimistic updates -- the task is removed from the UI immediately, and if the API call fails, the previous state is restored. This makes the application feel instant.
