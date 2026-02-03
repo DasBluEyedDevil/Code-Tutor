@@ -13,7 +13,7 @@ Code Tutor's primary blocker is content quality, not application architecture. T
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation and Content Normalization** - Clean infrastructure and standardize all content schemas before editing begins
-- [ ] **Phase 2: Java Course Audit** - Establish the gold-standard audited course (best existing structure)
+- [x] **Phase 2: Java Course Audit** - Establish the gold-standard audited course (best existing structure)
 - [ ] **Phase 3: JavaScript Course Audit** - Second audit, migrate non-standard content types, verify Bun/Hono APIs
 - [ ] **Phase 4: C# Course Audit** - Add missing KEY_POINTs, reorder modules, calibrate estimated hours
 - [ ] **Phase 5: Flutter/Dart Course Audit** - Rename generic modules, verify Dart Frog APIs, split mega-modules
@@ -57,14 +57,14 @@ Plans:
 **Plans**: 8 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Version targets and structural review (Java 25, Spring Boot 4.0.x, fix directory names, module progression analysis)
-- [ ] 02-02-PLAN.md -- Modules 01-03 accuracy pass (fundamentals, data types, Git -- IO.println migration, compact syntax, LEGACY_COMPARISON)
-- [ ] 02-03-PLAN.md -- Modules 04-05 accuracy pass (OOP, collections/FP -- syntax transition, flexible constructors, remove Java 8 framing)
-- [ ] 02-04-PLAN.md -- Modules 06-09 accuracy pass (streams, concurrency, testing, databases -- virtual threads, @MockitoBean, JDBC)
-- [ ] 02-05-PLAN.md -- Modules 10-12 accuracy pass (web/APIs, Spring Boot, security -- Spring Boot 4.0.x migration, Spring Security 7)
-- [ ] 02-06-PLAN.md -- Modules 13-15 accuracy pass (React, DevOps, full-stack -- Docker eclipse-temurin:25, deployment configs)
-- [ ] 02-07-PLAN.md -- Module 16 capstone restructure (dual path: Thymeleaf + React, Railway deployment)
-- [ ] 02-08-PLAN.md -- Global verification and voice pass (sweep for survivors, progression review, human checkpoint)
+- [x] 02-01-PLAN.md -- Version targets and structural review (Java 25, Spring Boot 4.0.x, fix directory names, module progression analysis)
+- [x] 02-02-PLAN.md -- Modules 01-03 accuracy pass (fundamentals, data types, Git -- IO.println migration, compact syntax, LEGACY_COMPARISON)
+- [x] 02-03-PLAN.md -- Modules 04-05 accuracy pass (OOP, collections/FP -- syntax transition, flexible constructors, remove Java 8 framing)
+- [x] 02-04-PLAN.md -- Modules 06-09 accuracy pass (streams, concurrency, testing, databases -- virtual threads, @MockitoBean, JDBC)
+- [x] 02-05-PLAN.md -- Modules 10-12 accuracy pass (web/APIs, Spring Boot, security -- Spring Boot 4.0.x migration, Spring Security 7)
+- [x] 02-06-PLAN.md -- Modules 13-15 accuracy pass (React, DevOps, full-stack -- Docker eclipse-temurin:25, deployment configs)
+- [x] 02-07-PLAN.md -- Module 16 capstone restructure (dual path: Thymeleaf + React, Railway deployment)
+- [x] 02-08-PLAN.md -- Global verification and voice pass (sweep for survivors, progression review, human checkpoint)
 
 ### Phase 3: JavaScript Course Audit
 **Goal**: The JavaScript course teaches a complete path from fundamentals through React and Node.js to a deployable full-stack application, with all non-standard content types migrated and Bun/Hono APIs verified
