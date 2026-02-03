@@ -12,3 +12,5 @@ title: "Syntax Breakdown"
 **`app.MapPut(route, handler)`**: Handles PUT requests (update). Typically receives ID in route and updated object in body: (int id, Product product) => ...
 
 **`TypedResults.NoContent()`**: Returns 204 No Content. Common for DELETE - operation succeeded but no data to return. TypedResults version for better OpenAPI docs!
+
+**`Results<T1, T2> return type`**: Declare possible return types for each endpoint! Example: Results<Ok<Product>, NotFound> tells both compiler and OpenAPI exactly what can be returned.

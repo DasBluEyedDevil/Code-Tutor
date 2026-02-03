@@ -23,10 +23,10 @@ HybridCache combines BOTH:
 3. If not there, fetch from warehouse (database)
 4. Store in BOTH caches for next time
 
-HybridCache in modern .NET:
+HybridCache (.NET 9 -- requires .NET 9 or later!):
 - One API for both caching levels
 - Automatic stampede protection
 - Tag-based invalidation
-- Replaces IMemoryCache + IDistributedCache juggling
+- Replaces the old IMemoryCache + IDistributedCache juggling pattern
 
 Think: HybridCache = 'The smart librarian who checks everywhere automatically!'
