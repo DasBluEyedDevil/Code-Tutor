@@ -29,7 +29,7 @@ az webapp create \
   --name MyUniqueAppName \
   --resource-group MyAppRG \
   --plan MyAppPlan \
-  --runtime "DOTNET|8.0"
+  --runtime "DOTNET|9.0"
 
 // 6. Deploy from Git
 az webapp deployment source config \

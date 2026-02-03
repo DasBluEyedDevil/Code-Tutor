@@ -9,9 +9,9 @@ This example demonstrates the concepts in action.
 // .NET 8 RENDERING MODES
 
 // 1. STATIC SERVER-SIDE RENDERING (SSR)
-// Default - no interactivity, fast SEO
+// Default when NO @rendermode specified - no interactivity, fast SEO
 @page "/products"
-@rendermode RenderMode.Static
+@* No @rendermode = Static SSR (server renders HTML, no interactivity) *@
 
 <h3>Product List</h3>
 @foreach (var product in products)

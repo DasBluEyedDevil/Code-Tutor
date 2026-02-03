@@ -11,4 +11,4 @@ title: "Syntax Breakdown"
 
 **`@rendermode InteractiveAuto`**: NEW in .NET 8! Starts with Server (fast), downloads WASM in background, seamlessly switches. Best user experience!
 
-**`Static SSR`**: No interactivity, pure HTML. Like traditional web pages. Fast, SEO-friendly. Use for content pages, blogs, documentation.
+**`Static SSR`**: The default when no @rendermode is specified. No interactivity, pure HTML. Like traditional web pages. Fast, SEO-friendly. Use for content pages, blogs, documentation.
