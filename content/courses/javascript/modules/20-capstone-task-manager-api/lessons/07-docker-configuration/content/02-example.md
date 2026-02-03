@@ -10,7 +10,7 @@ Create a Dockerfile that optimizes for size and security:
 # Multi-stage build: first stage builds, second stage runs
 
 # Build stage
-FROM oven/bun:1.1 as builder
+FROM oven/bun:1 as builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ COPY prisma ./prisma
 RUN bunx prisma generate
 
 # Production stage
-FROM oven/bun:1.1
+FROM oven/bun:1
 
 WORKDIR /app
 

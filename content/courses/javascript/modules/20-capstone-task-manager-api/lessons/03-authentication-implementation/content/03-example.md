@@ -30,12 +30,14 @@ export async function generateToken(user: { id: string; email: string }): Promis
     exp: now + expiresIn,
   };
 
-  return sign(payload, JWT_SECRET);
+  // alg is required since Hono 4.11.0 -- always specify the algorithm explicitly
+  return sign(payload, JWT_SECRET, 'HS256');
 }
 
 export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    const payload = await verify(token, JWT_SECRET) as JWTPayload;
+    // alg must match what was used in sign()
+    const payload = await verify(token, JWT_SECRET, 'HS256') as JWTPayload;
     return payload;
   } catch (error) {
     return null;
