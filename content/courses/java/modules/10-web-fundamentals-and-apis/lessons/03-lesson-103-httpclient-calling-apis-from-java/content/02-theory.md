@@ -26,7 +26,7 @@ public class APIExample {
         );
         
         // 4. Process response
-        System.out.println("Status: " + response.statusCode());
-        System.out.println("Body: " + response.body());
+        IO.println("Status: " + response.statusCode());
+        IO.println("Body: " + response.body());
     }
 }

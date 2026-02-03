@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Complete Configuration Example (Spring Boot 3.4+)"
+title: "Complete Configuration Example (Spring Boot 4.0+)"
 ---
 
 ```java
@@ -9,10 +9,7 @@ application.yml:
 spring:
   application:
     name: book-store-api
-    group: retail-services  # NEW in 3.4: Group related apps
-  threads:
-    virtual:
-      enabled: true  # NEW in 3.4: Enable virtual threads (Java 21+)
+    group: retail-services  # Group related apps
   datasource:
     url: jdbc:mysql://localhost:3306/bookstore
     username: ${DB_USER:root}
@@ -23,7 +20,7 @@ spring:
     show-sql: true
   mvc:
     problemdetails:
-      enabled: true  # NEW in 3.4: RFC 7807 error responses
+      enabled: true  # RFC 7807 error responses
 
 server:
   port: 8080
@@ -31,7 +28,7 @@ server:
 logging:
   structured:
     format:
-      console: ecs  # NEW in 3.4: Structured logging (ecs, logstash, gelf)
+      console: ecs  # Structured logging (ecs, logstash, gelf)
 
 app:
   features:

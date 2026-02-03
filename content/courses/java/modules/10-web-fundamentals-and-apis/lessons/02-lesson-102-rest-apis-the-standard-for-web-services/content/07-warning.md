@@ -28,6 +28,6 @@ CRITICAL CONSIDERATIONS FOR PRODUCTION APIs:
 5. ERROR RESPONSES (RFC 7807 Problem Details)
    - Never expose stack traces to clients
    - Use RFC 7807 Problem Details for consistent error format
-   - Spring Boot 3.4+: Enable with spring.mvc.problemdetails.enabled=true
+   - Spring Boot 4.0+: Enable with spring.mvc.problemdetails.enabled=true
    - Returns standardized fields: type, title, status, detail, instance
    - Log details server-side for debugging

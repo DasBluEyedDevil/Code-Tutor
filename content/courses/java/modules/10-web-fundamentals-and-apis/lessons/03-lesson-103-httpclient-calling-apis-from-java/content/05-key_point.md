@@ -13,19 +13,19 @@ try {
         // Success!
         String body = response.body();
     } else if (response.statusCode() == 404) {
-        System.err.println("Resource not found");
+        IO.println("Resource not found");
     } else if (response.statusCode() >= 500) {
-        System.err.println("Server error: " + response.statusCode());
+        IO.println("Server error: " + response.statusCode());
     } else {
-        System.err.println("Error: " + response.statusCode());
+        IO.println("Error: " + response.statusCode());
     }
     
 } catch (IOException e) {
     // Network error (can't reach server)
-    System.err.println("Network error: " + e.getMessage());
+    IO.println("Network error: " + e.getMessage());
 } catch (InterruptedException e) {
     // Request was interrupted
-    System.err.println("Request interrupted");
+    IO.println("Request interrupted");
 }
 
 COMMON ERRORS:

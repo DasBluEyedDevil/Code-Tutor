@@ -16,7 +16,7 @@ app:
     signup-enabled: true
     max-upload-size: 10485760
 
-Java Record (Java 17+):
+Java Record:
 
 @ConfigurationProperties(prefix = "app.email")
 public record EmailProperties(

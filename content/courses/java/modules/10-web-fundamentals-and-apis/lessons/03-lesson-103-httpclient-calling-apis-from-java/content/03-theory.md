@@ -37,5 +37,5 @@ HttpResponse<String> response = client.send(
 // Parse response
 if (response.statusCode() == 201) {
     User created = gson.fromJson(response.body(), User.class);
-    System.out.println("Created user: " + created.name);
+    IO.println("Created user: " + created.name);
 }

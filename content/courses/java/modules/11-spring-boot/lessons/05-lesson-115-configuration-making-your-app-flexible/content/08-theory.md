@@ -25,8 +25,8 @@ public class AppService {
     private boolean featureEnabled;
     
     public void printConfig() {
-        System.out.println("App: " + appName);
-        System.out.println("Max users: " + maxUsers);
+        IO.println("App: " + appName);
+        IO.println("Max users: " + maxUsers);
     }
 }
 

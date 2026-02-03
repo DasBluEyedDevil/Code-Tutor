@@ -3,7 +3,7 @@ type: "KEY_POINT"
 title: "Common Validation Annotations"
 ---
 
-Jakarta Validation (javax.validation → jakarta.validation in Spring Boot 3+):
+Jakarta Validation (Spring Boot 4.0 uses jakarta.validation exclusively):
 
 NULL/NOT NULL:
 @NotNull - Value cannot be null

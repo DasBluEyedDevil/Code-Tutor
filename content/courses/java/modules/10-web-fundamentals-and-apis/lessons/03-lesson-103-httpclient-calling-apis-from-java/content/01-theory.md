@@ -11,7 +11,7 @@ Modern applications don't exist in isolation:
 
 Your Java code needs to make HTTP requests to external services.
 
-Java 11+ provides: HttpClient (modern, built-in)
+Java provides: HttpClient (modern, built-in since Java 11)
 Before Java 11: HttpURLConnection (old, clunky)
 Popular library: Apache HttpClient
 

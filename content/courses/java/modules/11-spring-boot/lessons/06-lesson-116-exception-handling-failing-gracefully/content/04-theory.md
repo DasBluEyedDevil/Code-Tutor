@@ -34,7 +34,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         // Log full error for developers
-        System.err.println("Unexpected error: " + ex.getMessage());
+        // Log full error for developers (use a real logger in production)
+        IO.println("Unexpected error: " + ex.getMessage());
         
         // Return safe message to client
         ErrorResponse error = new ErrorResponse(

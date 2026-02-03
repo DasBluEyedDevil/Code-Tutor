@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Complete Exception Handling with ProblemDetail (Spring Boot 3.4+)"
+title: "Complete Exception Handling with ProblemDetail (Spring Boot 4.0+)"
 ---
 
 ```java

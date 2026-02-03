@@ -31,10 +31,10 @@ WHEN USING HTTPCLIENT IN PRODUCTION:
 
 6. JSON LIBRARIES
    - Gson is simple but Jackson is more powerful
-   - Consider using records for DTOs (Java 17+)
+   - Consider using records for DTOs
 
-7. VIRTUAL THREADS (Java 21+ / Spring Boot 3.4+)
-   - HttpClient uses virtual threads when enabled
-   - Set spring.threads.virtual.enabled=true
+7. VIRTUAL THREADS (Spring Boot 4.0+)
+   - HttpClient uses virtual threads by default
+   - Virtual threads are enabled automatically in Spring Boot 4.0
    - Dramatically improves scalability for I/O-heavy apps
    - No code changes needed - same blocking code, better performance

@@ -26,7 +26,7 @@ AVOID COMMON CONTROLLER MISTAKES:
    - Bean Validation annotations on DTOs
    - Custom validators for complex rules
 
-5. EXCEPTION HANDLING (Spring Boot 3.4+)
+5. EXCEPTION HANDLING (Spring Boot 4.0+)
    - Use @RestControllerAdvice globally
    - Never expose stack traces
    - Enable RFC 7807 Problem Details:

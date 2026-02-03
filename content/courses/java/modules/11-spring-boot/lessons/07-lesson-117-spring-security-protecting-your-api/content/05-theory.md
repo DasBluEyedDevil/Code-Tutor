@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "SecurityFilterChain - Configuring Security (Spring Security 6)"
+title: "SecurityFilterChain - Configuring Security (Spring Security 7)"
 ---
 
 Create SecurityConfig class to customize security:

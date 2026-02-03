@@ -1,9 +1,9 @@
 ---
 type: "THEORY"
-title: "RFC 7807 Problem Details - Industry Standard Errors (Spring Boot 3.4+)"
+title: "RFC 7807 Problem Details - Industry Standard Errors (Spring Boot 4.0+)"
 ---
 
-Spring Boot 3.4+ supports RFC 7807 Problem Details out of the box!
+Spring Boot 4.0 supports RFC 7807 Problem Details out of the box!
 
 ENABLE IN application.properties:
 spring.mvc.problemdetails.enabled=true

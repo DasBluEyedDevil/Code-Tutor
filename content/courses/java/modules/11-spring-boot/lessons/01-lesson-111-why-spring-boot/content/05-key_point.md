@@ -1,15 +1,15 @@
 ---
 type: "KEY_POINT"
-title: "Spring Boot 3.4 and Beyond - What's New"
+title: "Spring Boot 4.0 - What's New"
 ---
 
-Spring Boot 3.4 Key Features (Released November 2024):
+Spring Boot 4.0 Key Features:
 
-1. VIRTUAL THREADS (Project Loom)
-   - Enable with: spring.threads.virtual.enabled=true
-   - Requires Java 21+, recommended Java 24+
-   - HttpClient, OtlpMeterRegistry, Undertow use virtual threads
+1. VIRTUAL THREADS (Project Loom) - ON BY DEFAULT
+   - No configuration needed -- virtual threads are the default in Spring Boot 4.0
+   - HttpClient, web servers, and schedulers all use virtual threads
    - Massive scalability for I/O-heavy applications
+   - No code changes needed -- same blocking code, better performance
 
 2. STRUCTURED LOGGING (Observability)
    - Built-in support for ECS, Logstash, GELF formats
@@ -24,25 +24,21 @@ Spring Boot 3.4 Key Features (Released November 2024):
    - Industry-standard error format
 
 4. @MockitoBean (Testing)
-   - Replaces deprecated @MockBean annotation
-   - Part of Spring Framework 6.2 core
+   - Replaces the removed @MockBean annotation
+   - Part of Spring Framework 7 core
    - Use @MockitoSpyBean instead of @SpyBean
    - Standardized mocking in integration tests
 
-5. DOCKER COMPOSE IMPROVEMENTS
-   - spring.docker.compose.start.arguments
-   - spring.docker.compose.stop.arguments
-   - Better container orchestration
-
-SPRING BOOT 4.0 (November 2025 Preview):
-- Jakarta EE 11 + Servlet 6.1 baseline
-- Java 17+ required, 25 recommended
-- HTTP Service Clients (interface-based)
-- Built-in API versioning support
-- GraalVM v25+ for native images
+5. SPRING FRAMEWORK 7 + JAKARTA EE 11
+   - Jakarta EE 11 + Servlet 6.1 baseline
+   - Java 17+ required, Java 25 recommended
+   - HTTP Service Clients (interface-based)
+   - Built-in API versioning support
+   - GraalVM v25+ for native images
 
 WHY THIS MATTERS:
 - Better observability (structured logging)
-- Massive scalability (virtual threads)
+- Massive scalability (virtual threads by default)
 - Standardized errors (Problem Details)
 - Modern testing (@MockitoBean)
+- Latest Jakarta EE and Spring Framework
