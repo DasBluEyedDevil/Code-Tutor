@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 2 of 9 (Java Course Audit)
-Plan: 6 of 8 in current phase (02-01, 02-02, 02-04, 02-05, 02-06 complete)
+Plan: 6 of 8 in current phase (02-01, 02-02, 02-03, 02-04, 02-05, 02-06 complete)
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-06-PLAN.md (Modules 13-15 Migration)
+Last activity: 2026-02-03 -- Completed 02-03-PLAN.md (Modules 04-05 OOP and Collections/FP Migration)
 
-Progress: [#####...] 5/8 phase plans (62%)
+Progress: [######..] 6/8 phase plans (75%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: 10 min
-- Total execution time: 109 min
+- Total execution time: 117 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
-| 02-java-audit | 5/8 | 72 min | 14 min |
+| 02-java-audit | 6/8 | 80 min | 13 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-06 (20 min), 02-02 (21 min), 02-05 (17 min), 02-04 (9 min), 02-01 (5 min)
-- Trend: Module 13-15 migration included extensive verification of prior work plus virtual threads rewrite
+- Last 5 plans: 02-03 (8 min), 02-06 (20 min), 02-02 (21 min), 02-05 (17 min), 02-04 (9 min)
+- Trend: OOP/Collections migration fast due to partial prior execution overlap
 
 *Updated after each plan completion*
 
@@ -83,6 +83,10 @@ Recent decisions affecting current work:
 - [02-06]: Module 14 already migrated by prior plan execution (verified, no new changes)
 - [02-06]: Virtual threads content reframed: Spring Boot 4.0 enables by default, no config needed
 - [02-06]: Historical Spring Boot 3.2 mention kept only in challenge explanation for context
+- [02-03]: Module 04 Lesson 01 reframed as explicit transition from compact source files to full class syntax
+- [02-03]: Flexible constructor bodies (JEP 513) documented in Module 04 Lesson 02 with validation-before-super example
+- [02-03]: All version-tagged framing removed from Modules 04-05 (Java 8+, Java 16+, Java 17+, Java 21+)
+- [02-03]: Lambda/streams examples rewritten to compact void main() with IO::println method references
 
 ### Pending Todos
 
@@ -98,6 +102,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T00:07:00Z
-Stopped at: Completed 02-06-PLAN.md (Modules 13-15 Migration)
+Last session: 2026-02-03T00:00:00Z
+Stopped at: Completed 02-03-PLAN.md (Modules 04-05 OOP and Collections/FP Migration)
 Resume file: None
