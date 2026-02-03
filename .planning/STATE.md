@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 3 of 9 (JavaScript Course Audit)
-Plan: 5 of 7 in current phase
+Plan: 6 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 03-03-PLAN.md (Modules 01-09 Accuracy Pass)
+Last activity: 2026-02-03 -- Completed 03-06-PLAN.md (M17-21 Accuracy Pass)
 
-Progress: [#####...] 5/7 phase plans (71%)
+Progress: [######..] 6/7 phase plans (86%)
 
-Overall: [###################.............] 19/44 total plans (43%)
+Overall: [####################............] 20/44 total plans (45%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
-- Average duration: 10 min
-- Total execution time: ~197 min
+- Total plans completed: 20
+- Average duration: 11 min
+- Total execution time: ~214 min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Overall: [###################.............] 19/44 total plans (43%)
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
 | 02-java-audit | 8/8 | 100 min | 13 min |
-| 03-js-audit | 5/7 | 57 min | 11 min |
+| 03-js-audit | 6/7 | 74 min | 12 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-03 (13 min), 03-04 (18 min), 03-05 (8 min), 03-02 (15 min), 03-01 (3 min)
-- Trend: M01-09 fundamentals verified clean (zero changes); accuracy passes increasingly finding no issues
+- Last 5 plans: 03-06 (17 min), 03-03 (13 min), 03-04 (18 min), 03-05 (8 min), 03-02 (15 min)
+- Trend: M17-21 had significant fixes (TS 7.0 misinfo, JWT alg, Docker tags, Fly.io config, Bun challenge wrappers)
 
 *Updated after each plan completion*
 
@@ -121,6 +121,12 @@ Recent decisions affecting current work:
 - [03-03]: M08 lesson swap (CJS vs ESM before Import Attributes) confirmed already applied by 03-05
 - [03-03]: M08 L03 (CJS vs ESM) missing ANALOGY section noted but not added (plan prohibits new sections)
 - [03-03]: M07 DOM challenges are conceptual/browser-native, not Node.js-runnable -- appropriate for content
+- [03-06]: TS 7.0 false claims corrected (Go-based rewrite targeting mid-2026+, not released Dec 2025)
+- [03-06]: M19 L01/L02/L04 got simulation wrappers; L03/L05 marked Bun-only (no meaningful cross-runtime equivalent)
+- [03-06]: M20/M21 capstone analogies added to L01-L03 of each module (6 new analogy files)
+- [03-06]: M20/M21 capstone key_points added to bookend lessons (4 new key_point files)
+- [03-06]: Fly.io fly.toml updated from deprecated [[services]] to modern [http_service] format
+- [03-06]: JWT alg: 'HS256' added to M20 Hono sign()/verify() calls (matches 03-01 version manifest finding)
 
 ### Pending Todos
 
@@ -136,6 +142,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T01:53:00Z
-Stopped at: Completed 03-03-PLAN.md (Modules 01-09 Accuracy Pass)
+Last session: 2026-02-03T01:58:00Z
+Stopped at: Completed 03-06-PLAN.md (M17-21 Accuracy Pass)
 Resume file: None
