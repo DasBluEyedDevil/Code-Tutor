@@ -1,7 +1,7 @@
 {
   "$schema": "Version manifest for Code Tutor course content",
   "description": "Pinned version targets for all courses. Auditors verify content against these versions. When auditing a course, check code examples and API references against the runtime and framework versions listed here.",
-  "lastUpdated": "2026-02-02",
+  "lastUpdated": "2026-02-03",
   "note": "Framework versions are baseline targets from project planning. Each course audit phase should re-verify latest stable versions at audit start and update lastVerified accordingly.",
   "courses": {
     "java": {
@@ -137,38 +137,38 @@
         "name": "Node.js",
         "version": "22",
         "versionType": "LTS",
-        "lastVerified": "2026-02-02"
+        "lastVerified": "2026-02-03"
       },
       "frameworks": [
         {
           "name": "Bun",
           "version": "1.x",
-          "notes": "Alternative runtime and package manager used in course",
-          "lastVerified": "2026-02-02"
+          "notes": "Alternative runtime and package manager. Course verified against Bun 1.3.x. Bun-specific APIs (bun:sqlite, bun:ffi) in Modules 19-20.",
+          "lastVerified": "2026-02-03"
         },
         {
           "name": "Hono",
           "version": "4.x",
-          "notes": "Lightweight web framework replacing Express",
-          "lastVerified": "2026-02-02"
+          "notes": "Lightweight web framework. alg option required in jwt() middleware since 4.11.0.",
+          "lastVerified": "2026-02-03"
         },
         {
           "name": "React",
           "version": "19.x",
-          "notes": "Frontend UI library",
-          "lastVerified": "2026-02-02"
+          "notes": "Frontend UI library. Course uses React 19 patterns (hooks, functional components).",
+          "lastVerified": "2026-02-03"
         },
         {
           "name": "Prisma",
           "version": "6.x",
-          "notes": "ORM for database modules; verify latest stable at audit time",
-          "lastVerified": "2026-02-02"
+          "notes": "Prisma 7.0 released (ESM-first, no Rust engines); course stays on 6.x patterns. Upgrade when ecosystem stabilizes.",
+          "lastVerified": "2026-02-03"
         },
         {
           "name": "TypeScript",
           "version": "5.x",
           "notes": "Used throughout course alongside JavaScript",
-          "lastVerified": "2026-02-02"
+          "lastVerified": "2026-02-03"
         }
       ]
     },
