@@ -32,7 +32,7 @@
 - L05 (bun:ffi): Marked as conceptual/Bun-only with note about node-ffi-napi alternative
 
 ### Task 2: Accuracy Pass Modules 20-21 (Both Capstones)
-**Commit:** `dfb85e87`
+**Commits:** `dfb85e87`, `6e1e9459`
 
 **M20 -- Capstone Task Manager API (8 lessons):**
 - JWT FIX: Added `alg: 'HS256'` to both `sign()` and `verify()` calls in L03 03-example.md (required since Hono 4.11.0)
@@ -41,7 +41,8 @@
 - Architecture verified: Bun + Hono + Prisma + Zod stack consistent throughout
 - Zod validation matches M11 patterns (zValidator middleware with proper schemas)
 - Deployment instructions complete: Railway and Fly.io with step-by-step CLI commands
-- M20 L03/L06 challenges correctly use Bun APIs (expected for Bun capstone, no simulation needed)
+- CI/CD FIX: oven-sh/setup-bun@v1 updated to @v2 in L08 GitHub Actions pipeline
+- L06 testing challenge FIX: Raw bun:test imports replaced with simulation wrappers (2 files)
 - Added 3 analogies (L01 restaurant kitchen, L02 filing cabinet, L03 concert wristband)
 - Added 2 key_points (L01 project setup checklist, L08 capstone deployment summary)
 
@@ -82,7 +83,21 @@
 - **Files created:** M20 L01/L02/L03 analogy.md, M21 L01/L02/L03 analogy.md
 - **Commit:** dfb85e87
 
-**4. [Rule 2 - Missing Critical] Added key_point sections to capstone modules**
+**4. [Rule 1 - Bug] Fixed oven-sh/setup-bun@v1 in M20 CI/CD**
+- **Found during:** Task 2 continuation
+- **Issue:** M20 L08 02-example.md used `oven-sh/setup-bun@v1` while all other course content uses `@v2`
+- **Fix:** Updated to `oven-sh/setup-bun@v2`
+- **Files modified:** M20 L08 02-example.md
+- **Commit:** 6e1e9459
+
+**5. [Rule 2 - Missing Critical] Added bun:test simulation wrappers to M20 L06 challenges**
+- **Found during:** Task 2 continuation
+- **Issue:** M20 L06 challenge files had raw `import { ... } from 'bun:test'` with no simulation wrapper
+- **Fix:** Added simulation globals (describe/it/expect/beforeEach) and commented out the bun:test imports
+- **Files modified:** M20 L06 starter.js, solution.js
+- **Commit:** 6e1e9459
+
+**6. [Rule 2 - Missing Critical] Added key_point sections to capstone modules**
 - **Found during:** Structural review findings in plan
 - **Issue:** M20 had ZERO key_point sections, M21 had ZERO key_point sections
 - **Fix:** Added key_points to bookend lessons (setup and deployment) in both modules (4 new files)
@@ -121,7 +136,7 @@
 - lessons/05-calling-native-code-with-ffi/challenges/01-system-info-via-ffi/starter.js
 - lessons/05-calling-native-code-with-ffi/challenges/01-system-info-via-ffi/solution.js
 
-**M20 (8 files modified/created):**
+**M20 (11 files modified/created):**
 - lessons/01-project-setup-planning/content/09-analogy.md (NEW)
 - lessons/01-project-setup-planning/content/10-key_point.md (NEW)
 - lessons/02-database-schema-design/content/08-analogy.md (NEW)
@@ -129,6 +144,9 @@
 - lessons/03-authentication-implementation/content/09-analogy.md (NEW)
 - lessons/07-docker-configuration/content/02-example.md (Docker tag fix)
 - lessons/07-docker-configuration/content/07-warning.md (Docker tag fix)
+- lessons/06-writing-tests/challenges/01-add-tests-for-task-filtering-and-pagination/starter.js (bun:test simulation wrapper)
+- lessons/06-writing-tests/challenges/01-add-tests-for-task-filtering-and-pagination/solution.js (bun:test simulation wrapper)
+- lessons/08-deployment/content/02-example.md (setup-bun@v1 to @v2)
 - lessons/08-deployment/content/04-example.md (Fly.io config fix)
 - lessons/08-deployment/content/09-key_point.md (NEW)
 
@@ -148,7 +166,8 @@
 
 ## Metrics
 
-- **Duration:** ~17 min
+- **Duration:** ~20 min (across two sessions)
 - **Completed:** 2026-02-03
-- **Files touched:** 26 (12 modified, 14 created)
+- **Files touched:** 29 (15 modified, 14 created)
 - **Modules verified:** 5 (M17-M21, 35 lessons total)
+- **Commits:** 51ba9c2f (Task 1), dfb85e87 + 6e1e9459 (Task 2)

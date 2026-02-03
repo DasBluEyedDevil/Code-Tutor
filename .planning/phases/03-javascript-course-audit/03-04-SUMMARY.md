@@ -71,7 +71,7 @@ Each task was committed atomically:
 1. **Task 1: Accuracy pass Module 10 (TypeScript Fundamentals)** - no commit (zero changes; all 54 files verified correct)
 2. **Task 2: Accuracy pass Modules 11-12 (Bun/Hono + Prisma)** - `f621d31d` (fix)
 
-**Plan metadata:** pending (docs: complete plan)
+**Plan metadata:** (see docs commit)
 
 ## Files Created/Modified
 

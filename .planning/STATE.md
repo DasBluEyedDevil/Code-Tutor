@@ -127,6 +127,8 @@ Recent decisions affecting current work:
 - [03-06]: M20/M21 capstone key_points added to bookend lessons (4 new key_point files)
 - [03-06]: Fly.io fly.toml updated from deprecated [[services]] to modern [http_service] format
 - [03-06]: JWT alg: 'HS256' added to M20 Hono sign()/verify() calls (matches 03-01 version manifest finding)
+- [03-06]: M20 L06 testing challenges got bun:test simulation wrappers (raw imports replaced)
+- [03-06]: oven-sh/setup-bun@v1 updated to @v2 in M20 CI/CD pipeline (consistency with M15/M16)
 
 ### Pending Todos
 
@@ -142,6 +144,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T01:58:00Z
-Stopped at: Completed 03-06-PLAN.md (M17-21 Accuracy Pass)
+Last session: 2026-02-03T02:08:00Z
+Stopped at: Completed 03-06-PLAN.md (M17-21 Accuracy Pass) -- finalized with docs commit
 Resume file: None
