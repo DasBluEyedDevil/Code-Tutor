@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 2 of 9 (Java Course Audit)
-Plan: 6 of 8 in current phase (02-01, 02-02, 02-03, 02-04, 02-05, 02-06 complete)
+Plan: 7 of 8 in current phase (02-01, 02-02, 02-03, 02-04, 02-05, 02-06, 02-07 complete)
 Status: In progress
-Last activity: 2026-02-03 -- Completed 02-03-PLAN.md (Modules 04-05 OOP and Collections/FP Migration)
+Last activity: 2026-02-02 -- Completed 02-07-PLAN.md (Module 16 Capstone Dual-Path Restructure)
 
-Progress: [######..] 6/8 phase plans (75%)
+Progress: [#######.] 7/8 phase plans (88%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 10 min
-- Total execution time: 117 min
+- Total execution time: 132 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
-| 02-java-audit | 6/8 | 80 min | 13 min |
+| 02-java-audit | 7/8 | 95 min | 14 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (8 min), 02-06 (20 min), 02-02 (21 min), 02-05 (17 min), 02-04 (9 min)
-- Trend: OOP/Collections migration fast due to partial prior execution overlap
+- Last 5 plans: 02-07 (15 min), 02-03 (8 min), 02-06 (20 min), 02-02 (21 min), 02-05 (17 min)
+- Trend: Capstone restructure moderate complexity (dual-path content creation)
 
 *Updated after each plan completion*
 
@@ -87,6 +87,10 @@ Recent decisions affecting current work:
 - [02-03]: Flexible constructor bodies (JEP 513) documented in Module 04 Lesson 02 with validation-before-super example
 - [02-03]: All version-tagged framing removed from Modules 04-05 (Java 8+, Java 16+, Java 17+, Java 21+)
 - [02-03]: Lambda/streams examples rewritten to compact void main() with IO::println method references
+- [02-07]: Both Thymeleaf and React paths use same lesson files with "THYMELEAF PATH" / "REACT PATH" / "BOTH PATHS" section headers
+- [02-07]: Thymeleaf tutorial self-contained in Lesson 06 (no separate Thymeleaf module needed)
+- [02-07]: Thymeleaf single-JAR deployment advantage highlighted as key differentiator for beginners
+- [02-07]: Capstone @MockBean fully replaced with @MockitoBean (Spring Boot 4.0.x pattern)
 
 ### Pending Todos
 
@@ -102,6 +106,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T00:00:00Z
-Stopped at: Completed 02-03-PLAN.md (Modules 04-05 OOP and Collections/FP Migration)
+Last session: 2026-02-02T00:00:00Z
+Stopped at: Completed 02-07-PLAN.md (Module 16 Capstone Dual-Path Restructure)
 Resume file: None
