@@ -76,13 +76,16 @@ Plans:
   3. Every coding challenge executes correctly (Node.js and Bun paths both verified) and test validation passes
   4. A deployable capstone project exists with clear deployment instructions
   5. All non-standard content types (CODE, CONCEPT) have been migrated to standard types (EXAMPLE, THEORY) and render correctly
-**Plans**: TBD
+**Plans**: 7 plans
 
 Plans:
-- [ ] 03-01: JavaScript content type migration (CODE to EXAMPLE, CONCEPT to THEORY, verify rendering)
-- [ ] 03-02: JavaScript structural review (progression, module order, framework transition smoothness)
-- [ ] 03-03: JavaScript accuracy and freshness pass (ES2024+, Node 22, Bun API verification)
-- [ ] 03-04: JavaScript challenge validation (execute all solutions in Node.js, fix broken challenges, verify capstone)
+- [ ] 03-01-PLAN.md -- Content type filename migration + version targets (rename 143 files, update manifest, fix course.json, delete artifact)
+- [ ] 03-02-PLAN.md -- Structural review and progression analysis (module ordering, prerequisite chains, Bun challenge strategy)
+- [ ] 03-03-PLAN.md -- Accuracy pass: Fundamentals M01-09 (ES2024/2025 features, DOM simulation, async patterns)
+- [ ] 03-04-PLAN.md -- Accuracy pass: TypeScript + Backend M10-12 (TS 5.x, Hono JWT alg fix, Prisma 6.x)
+- [ ] 03-05-PLAN.md -- Accuracy pass: React + Deployment + Testing M13-16 (React 19, Docker oven/bun:1, bun:test simulation)
+- [ ] 03-06-PLAN.md -- Accuracy pass: Advanced + Capstones M17-21 (fix TS 7.0 misinfo, ES2025, Bun challenges, capstone deploy)
+- [ ] 03-07-PLAN.md -- Global verification and voice pass (sweep for survivors, progression review, human checkpoint)
 
 ### Phase 4: C# Course Audit
 **Goal**: The C# course teaches a complete path from basics through ASP.NET to a deployable application, with KEY_POINTs added throughout and estimated hours calibrated to reality
@@ -205,7 +208,7 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 |-------|---------------|--------|-----------|
 | 1. Foundation and Content Normalization | 6/6 | Complete | 2026-02-02 |
 | 2. Java Course Audit | 8/8 | Complete | 2026-02-03 |
-| 3. JavaScript Course Audit | 0/4 | Not started | - |
+| 3. JavaScript Course Audit | 0/7 | Not started | - |
 | 4. C# Course Audit | 0/4 | Not started | - |
 | 5. Flutter/Dart Course Audit | 0/4 | Not started | - |
 | 6. Kotlin Course Audit | 0/5 | Not started | - |
