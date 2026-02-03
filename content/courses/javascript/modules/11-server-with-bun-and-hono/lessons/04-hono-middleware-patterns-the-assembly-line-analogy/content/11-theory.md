@@ -17,7 +17,7 @@ Here is a comprehensive summary of essential Hono middleware patterns for buildi
    - Verify token signature and check expiration
    - Store decoded payload in context with `c.set('user', payload)`
    - Chain with role-based access control middleware
-   - Use Hono's built-in `jwt()` middleware for simpler setup
+   - Use Hono's built-in `jwt()` middleware for simpler setup (requires `alg` option, e.g. `jwt({ secret, alg: 'HS256' })`)
 
 3. **CORS Middleware**:
    - Use `cors()` from 'hono/cors' for easy setup

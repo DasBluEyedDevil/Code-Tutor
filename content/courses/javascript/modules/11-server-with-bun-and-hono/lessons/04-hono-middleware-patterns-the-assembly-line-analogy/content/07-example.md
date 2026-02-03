@@ -181,8 +181,9 @@ app.delete('/api/admin/users/:id', (c) => {
 // Simpler alternative to custom implementation
 
 // import { jwt } from 'hono/jwt';
-// app.use('/api/v2/*', jwt({ secret: JWT_SECRET }));
+// app.use('/api/v2/*', jwt({ secret: JWT_SECRET, alg: 'HS256' }));
 // Then access payload via c.get('jwtPayload')
+// Note: The alg option is required since Hono 4.11.0
 
 export default app;
 

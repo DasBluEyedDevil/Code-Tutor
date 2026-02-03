@@ -172,7 +172,7 @@ import { jwt } from 'hono/jwt';
 import { cors } from 'hono/cors';
 
 app.use('/api/*', cors());
-app.use('/api/protected/*', jwt({ secret: 'your-secret' }));
+app.use('/api/protected/*', jwt({ secret: 'your-secret', alg: 'HS256' }));
 
 app.post(
   '/api/protected/posts',

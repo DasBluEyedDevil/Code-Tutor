@@ -25,6 +25,8 @@ Understanding Prisma ORM:
    # - .env (database connection string)
    ```
 
+> **Note:** This course uses Prisma 6.x patterns. Prisma 7.0 has been released with an ESM-first architecture and no Rust query engines, but the 6.x API shown here remains fully supported and is the stable choice for most projects today.
+
 3. **Prisma Schema** (schema.prisma):
    ```prisma
    model User {
