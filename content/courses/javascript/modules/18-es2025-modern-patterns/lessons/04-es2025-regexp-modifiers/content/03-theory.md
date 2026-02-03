@@ -18,7 +18,8 @@ title: "Available Modifiers"
 Previously, flags were all-or-nothing. Now you can have fine-grained control:
 
 ```javascript
-// Match 'http' or 'HTTPS' but capture exact case of domain
+// Match 'http' or 'HTTPS' case-insensitively, but domain part is case-sensitive
 const url = /(?i:https?):\/\/([a-z0-9.]+)/;
-url.exec('HTTP://Example.COM');  // ['HTTP://Example.COM', 'example.com'] - domain lowercased
+url.exec('HTTP://example.com');   // ['HTTP://example.com', 'example.com'] - matches!
+url.exec('HTTP://Example.COM');   // null - domain part is case-sensitive (no 'i' flag)
 ```
