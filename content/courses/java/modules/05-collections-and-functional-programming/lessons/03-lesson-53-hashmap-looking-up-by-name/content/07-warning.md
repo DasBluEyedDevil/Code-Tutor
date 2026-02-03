@@ -18,6 +18,6 @@ HashMap does NOT maintain insertion order.
 Use LinkedHashMap for insertion order.
 Use TreeMap for sorted key order.
 
-Java 21+ Note:
+Sequenced Collections Note (since Java 21):
 HashMap does NOT implement SequencedMap (no ordering).
-LinkedHashMap does implement SequencedMap with getFirst(), getLast().
+LinkedHashMap does implement SequencedMap with firstEntry(), lastEntry().

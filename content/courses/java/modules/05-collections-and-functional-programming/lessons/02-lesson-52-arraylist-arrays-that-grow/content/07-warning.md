@@ -21,5 +21,5 @@ nums.add(1); nums.add(2);
 nums.remove(1);  // Removes at INDEX 1, not value 1!
 nums.remove(Integer.valueOf(1));  // Removes VALUE 1
 
-Java 21+ Sequenced Collections:
-ArrayList now supports getFirst(), getLast(), addFirst(), reversed().
+Sequenced Collections (since Java 21):
+ArrayList supports getFirst(), getLast(), addFirst(), reversed().

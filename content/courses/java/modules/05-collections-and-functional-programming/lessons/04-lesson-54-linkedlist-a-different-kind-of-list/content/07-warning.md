@@ -17,6 +17,6 @@ Use ArrayList if you need fast random access.
 Memory overhead:
 Each element has prev/next pointers - more memory than ArrayList.
 
-Java 21+ Sequenced Collections:
+Sequenced Collections (since Java 21):
 LinkedList implements SequencedCollection.
-New methods: reversed() returns reversed view.
+The reversed() method returns a reversed view.

@@ -19,5 +19,5 @@ Null elements cause NullPointerException:
 Collections.sort(listWithNulls);  // CRASH!
 Use Comparator.nullsFirst() or nullsLast().
 
-Java 21+ Sequenced Collections Compatibility:
-If your class implements List and defines getFirst() with a different signature, you'll get a compile error when upgrading to Java 21. The new SequencedCollection interface defines getFirst()/getLast() which List now inherits.
+Sequenced Collections Compatibility (since Java 21):
+If your class implements List and defines getFirst() with a different signature, you may get a compile error. The SequencedCollection interface (added in Java 21) defines getFirst()/getLast() which List now inherits. Watch for this when working with legacy code.
