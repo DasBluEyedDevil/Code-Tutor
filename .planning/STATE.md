@@ -10,29 +10,29 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 2 of 9 (Java Course Audit)
-Plan: 4 of 8 in current phase (02-01, 02-04 complete)
+Plan: 5 of 8 in current phase (02-01, 02-04, 02-05 complete)
 Status: In progress
-Last activity: 2026-02-02 -- Completed 02-04-PLAN.md (Modules 06-09 Migration)
+Last activity: 2026-02-03 -- Completed 02-05-PLAN.md (Modules 10-12 Web/Spring Boot/Security Migration)
 
-Progress: [##......] 2/8 phase plans (25%)
+Progress: [###.....] 3/8 phase plans (37%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 6 min
-- Total execution time: 51 min
+- Total plans completed: 9
+- Average duration: 7 min
+- Total execution time: 68 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
-| 02-java-audit | 2/8 | 14 min | 7 min |
+| 02-java-audit | 3/8 | 31 min | 10 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (9 min), 02-01 (5 min), 01-06 (1 min), 01-05 (2 min), 01-02 (5 min)
-- Trend: Content migration plans slightly longer than metadata-only work
+- Last 5 plans: 02-05 (17 min), 02-04 (9 min), 02-01 (5 min), 01-06 (1 min), 01-05 (2 min)
+- Trend: Content migration plans taking longer as Spring Boot version upgrade requires careful rewrites
 
 *Updated after each plan completion*
 
@@ -74,6 +74,8 @@ Recent decisions affecting current work:
 - [02-04]: Module 08 System.out.println in lesson 86 preserved intentionally (anti-pattern teaching examples)
 - [02-04]: Module 08 has no @MockBean references; @MockitoBean belongs in Spring modules not JUnit fundamentals
 - [02-04]: Virtual threads reframed as standard Java with brief historical note ("introduced in Java 21")
+- [02-05]: WebSecurityConfigurerAdapter/antMatchers kept in Module 12 migration warning as OLD pattern examples
+- [02-05]: Spring Boot 3.0 historical reference retained in Module 11 lesson 1 (explains Jakarta EE migration history)
 
 ### Pending Todos
 
@@ -84,12 +86,11 @@ Recent decisions affecting current work:
 
 - Module 05/06 streams overlap still exists (identified in 02-01, needs future resolution)
 - Module 15 lesson 15.7 virtual threads duplication needs resolution in Plan 02-06
-- Module 08 @MockitoBean should be verified when Spring modules (10-15) are audited
 - Dart Frog community transition (July 2025) needs API verification in Phase 5
 - ONNX Runtime GenAI 12 versions behind (0.5.2 -> current) -- upgrade risk in Phase 8
 
 ## Session Continuity
 
-Last session: 2026-02-02T23:55:00Z
-Stopped at: Completed 02-04-PLAN.md (Modules 06-09 Migration)
+Last session: 2026-02-03T00:03:00Z
+Stopped at: Completed 02-05-PLAN.md (Modules 10-12 Web/Spring Boot/Security Migration)
 Resume file: None
