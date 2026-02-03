@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 3 of 9 (JavaScript Course Audit)
-Plan: 2 of 7 in current phase
+Plan: 3 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-03 -- Completed 03-02-PLAN.md (Structural Assessment)
+Last activity: 2026-02-03 -- Completed 03-05-PLAN.md (Modules 13-16 Accuracy Pass)
 
-Progress: [##......] 2/7 phase plans (29%)
+Progress: [###.....] 3/7 phase plans (43%)
 
-Overall: [################................] 16/44 total plans (36%)
+Overall: [#################...............] 17/44 total plans (39%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 16
+- Total plans completed: 17
 - Average duration: 10 min
-- Total execution time: ~158 min
+- Total execution time: ~166 min
 
 **By Phase:**
 
@@ -31,11 +31,11 @@ Overall: [################................] 16/44 total plans (36%)
 |-------|-------|-------|----------|
 | 01-foundation | 6/6 | 37 min | 6 min |
 | 02-java-audit | 8/8 | 100 min | 13 min |
-| 03-js-audit | 2/7 | 18 min | 9 min |
+| 03-js-audit | 3/7 | 26 min | 9 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (15 min), 03-01 (3 min), 02-08 (8 min), 02-07 (15 min), 02-03 (8 min)
-- Trend: Structural assessment thorough but efficient; accuracy passes expected longer
+- Last 5 plans: 03-05 (8 min), 03-02 (15 min), 03-01 (3 min), 02-08 (8 min), 02-07 (15 min)
+- Trend: Accuracy passes efficient when content is already high-quality
 
 *Updated after each plan completion*
 
@@ -107,6 +107,11 @@ Recent decisions affecting current work:
 - [03-02]: M19 ALL 5 challenges use raw Bun APIs with no simulation wrappers (need adding)
 - [03-02]: 13 of 21 modules have zero KEY_POINT sections (systemic gap)
 - [03-02]: M18 ES2025 module is NOT redundant -- covers genuinely new features vs earlier modules
+- [03-05]: Docker oven/bun:1.1 fixed to oven/bun:1 in M15 (10 replacements across 5 files)
+- [03-05]: M20 capstone also has 8 oven/bun:1.1 references (deferred to plan 03-06/07)
+- [03-05]: M13 React content fully verified -- functional components, hooks, Vite, no CRA
+- [03-05]: M16 all 14 challenges confirmed with simulation wrappers (zero raw bun:test imports)
+- [03-05]: M14 process.env.API_URL clarified to distinguish frontend (import.meta.env) from backend (process.env)
 
 ### Pending Todos
 
@@ -122,6 +127,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T01:44:00Z
-Stopped at: Completed 03-02-PLAN.md (Structural Assessment)
+Last session: 2026-02-03T01:49:00Z
+Stopped at: Completed 03-05-PLAN.md (Modules 13-16 Accuracy Pass)
 Resume file: None
