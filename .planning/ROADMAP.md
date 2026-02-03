@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation and Content Normalization** - Clean infrastructure and standardize all content schemas before editing begins
 - [x] **Phase 2: Java Course Audit** - Establish the gold-standard audited course (best existing structure)
 - [x] **Phase 3: JavaScript Course Audit** - Second audit, migrate non-standard content types, verify Bun/Hono APIs
-- [ ] **Phase 4: C# Course Audit** - Add missing KEY_POINTs, reorder modules, calibrate estimated hours
+- [ ] **Phase 4: C# Course Audit** - Align to .NET 9/C# 13, add 131 KEY_POINTs, verify accuracy across 24 modules
 - [ ] **Phase 5: Flutter/Dart Course Audit** - Rename generic modules, verify Dart Frog APIs, split mega-modules
 - [ ] **Phase 6: Kotlin Course Audit** - Create missing capstone, add 70+ challenges, balance content types
 - [ ] **Phase 7: Python Course Audit** - Restructure Module 14, resolve duplicates, add Git module
@@ -88,22 +88,23 @@ Plans:
 - [x] 03-07-PLAN.md -- Global verification and voice pass (sweep for survivors, progression review, human checkpoint)
 
 ### Phase 4: C# Course Audit
-**Goal**: The C# course teaches a complete path from basics through ASP.NET to a deployable application, with KEY_POINTs added throughout and estimated hours calibrated to reality
+**Goal**: The C# course teaches a complete path from basics through ASP.NET Core to a deployable application, with version manifest aligned to .NET 9/C# 13 (matching actual content), KEY_POINTs added to all 132 lessons, and estimated hours calibrated to reality
 **Depends on**: Phase 1
 **Requirements**: CSRP-01, CSRP-02, CSRP-03, CSRP-04, CSRP-05
 **Success Criteria** (what must be TRUE):
-  1. Every C# lesson is accurate against C# 12/.NET 8, using current stable patterns and no deprecated APIs
+  1. Every C# lesson is accurate against C# 13/.NET 9, using current stable patterns and no deprecated APIs
   2. All 132 lessons progress smoothly from fundamentals through OOP through ASP.NET Core with no knowledge gaps
-  3. Every coding challenge executes via Roslyn and test validation passes for both starter and solution code
-  4. A deployable capstone project exists with clear build and deployment instructions
+  3. Every coding challenge is reviewed for correctness (M01-10 Roslyn-compatible, M11-24 framework-dependent -- code review only)
+  4. A deployable capstone project (ShopFlow) exists with clear build and deployment instructions
   5. Every lesson has at least one KEY_POINT section (currently only 1 across 132 lessons), providing clear takeaways
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 04-01: C# structural review (module reordering, progression analysis, prerequisite verification)
-- [ ] 04-02: C# content accuracy pass (C# 12/.NET 8 verification, deprecated API removal)
-- [ ] 04-03: C# KEY_POINT enrichment (add KEY_POINTs to all 132 lessons, add missing examples/analogies)
-- [ ] 04-04: C# challenge validation (execute all solutions via Roslyn, verify test cases, confirm capstone)
+- [ ] 04-01-PLAN.md -- Version alignment + filename migration + structural review (align to .NET 9/C# 13, rename 24 files, update metadata, delete artifact)
+- [ ] 04-02-PLAN.md -- Accuracy pass: Fundamentals M01-10 (C# 12/13 features, .NET 9 APIs, pure C# content)
+- [ ] 04-03-PLAN.md -- Accuracy pass: Web/Blazor/Data/Testing M11-15 (ASP.NET Core 9, EF Core 9, Blazor, Aspire 9.x, xUnit, add M12 WARNINGs)
+- [ ] 04-04-PLAN.md -- Accuracy pass: Advanced/Auth/DevOps/Capstone M16-24 (Aspire Advanced, AOT, OpenAPI, Auth, CI/CD, capstone alignment)
+- [ ] 04-05-PLAN.md -- KEY_POINT enrichment + challenge validation + global sweep (131 KEY_POINTs, JSON validation, human checkpoint)
 
 ### Phase 5: Flutter/Dart Course Audit
 **Goal**: The Flutter course teaches a complete path from Dart basics through full app development with backend integration to a deployable mobile/web application, with Dart Frog APIs verified against current community-maintained status
@@ -209,7 +210,7 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 | 1. Foundation and Content Normalization | 6/6 | Complete | 2026-02-02 |
 | 2. Java Course Audit | 8/8 | Complete | 2026-02-03 |
 | 3. JavaScript Course Audit | 7/7 | Complete | 2026-02-03 |
-| 4. C# Course Audit | 0/4 | Not started | - |
+| 4. C# Course Audit | 0/5 | Not started | - |
 | 5. Flutter/Dart Course Audit | 0/4 | Not started | - |
 | 6. Kotlin Course Audit | 0/5 | Not started | - |
 | 7. Python Course Audit | 0/5 | Not started | - |
