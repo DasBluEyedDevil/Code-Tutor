@@ -27,6 +27,6 @@ for (int i = 0; i < 10; i += 2) {
 5. ITERATE OVER CHARACTERS
 String word = "Hello";
 for (int i = 0; i < word.length(); i++) {
-    System.out.println(word.charAt(i));
+    IO.println(word.charAt(i));
     // Prints: H e l l o (each on new line)
 }

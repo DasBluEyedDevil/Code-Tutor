@@ -21,7 +21,7 @@ Three parts separated by semicolons:
 Example - Print 0 to 4:
 
 for (int i = 0; i < 5; i++) {
-    System.out.println(i);
+    IO.println(i);
 }
 
 Execution flow:

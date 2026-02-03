@@ -8,5 +8,5 @@ void main() {
 
 // Define a method that prints "Welcome!"
 void printWelcome() {
-    println("Welcome!");
+    IO.println("Welcome!");
 }

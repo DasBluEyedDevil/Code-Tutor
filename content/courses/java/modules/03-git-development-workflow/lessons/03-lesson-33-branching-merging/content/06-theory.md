@@ -26,7 +26,7 @@ public int add(int a, int b) {
 =======
     // Feature branch version
     int sum = a + b;
-    System.out.println("Sum: " + sum);
+    IO.println("Sum: " + sum);
     return sum;
 >>>>>>> feature/new-algorithm
 }

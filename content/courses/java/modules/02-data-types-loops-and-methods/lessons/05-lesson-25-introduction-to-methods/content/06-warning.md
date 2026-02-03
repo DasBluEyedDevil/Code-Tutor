@@ -26,7 +26,7 @@ public static int divide(int a, int b) {
 
 4. USING VOID RETURN VALUE:
 // WRONG: void has no value to store
-public static void printHi() { System.out.println("Hi"); }
+public static void printHi() { IO.println("Hi"); }
 String result = printHi();  // COMPILE ERROR!
 
 5. CONFUSING METHOD WITH CONSTRUCTOR:

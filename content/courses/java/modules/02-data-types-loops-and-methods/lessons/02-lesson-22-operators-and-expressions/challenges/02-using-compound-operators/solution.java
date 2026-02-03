@@ -12,5 +12,5 @@ void main() {
     score -= 30;  // score is now 120
     
     // Print the final score
-    println(score);
+    IO.println(score);
 }

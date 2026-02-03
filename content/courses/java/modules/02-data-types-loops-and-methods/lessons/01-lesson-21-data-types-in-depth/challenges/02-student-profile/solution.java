@@ -1,5 +1,5 @@
 // Solution: Student Profile
-// Using Java 23 implicit main syntax
+// Demonstrates string concatenation with variables
 // This demonstrates string concatenation with variables
 
 void main() {
@@ -10,5 +10,5 @@ void main() {
     boolean isEnrolled = true;
     
     // Print the formatted message using string concatenation
-    println(studentName + " is " + studentAge + " years old");
+    IO.println(studentName + " is " + studentAge + " years old");
 }

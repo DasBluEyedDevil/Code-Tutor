@@ -1,5 +1,5 @@
 // Solution: Creating Multiple Data Types
-// Using Java 23 implicit main syntax (introduced in Lesson 0.6)
+// Demonstrates using different data types
 // This demonstrates using different data types in Java
 
 void main() {
@@ -9,6 +9,6 @@ void main() {
     String name = "Bob";       // String for text (note double quotes)
     boolean isActive = true;   // Boolean for true/false values
     
-    // Print the name variable using simple println()
-    println(name);
+    // Print the name variable using IO.println()
+    IO.println(name);
 }

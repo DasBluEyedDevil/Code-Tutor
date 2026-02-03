@@ -6,7 +6,7 @@ title: "Parameters and Return Values"
 PARAMETERS: Inputs to the method
 
 public static void greet(String name) {
-    System.out.println("Hello, " + name + "!");
+    IO.println("Hello, " + name + "!");
 }
 
 greet("Alice");  // Prints: Hello, Alice!

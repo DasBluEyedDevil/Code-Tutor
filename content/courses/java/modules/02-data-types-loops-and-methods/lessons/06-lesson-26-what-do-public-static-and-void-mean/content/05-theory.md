@@ -20,7 +20,7 @@ public class Dog {
     String name;
     
     public void bark() {  // NO 'static'
-        System.out.println(name + " says Woof!");
+        IO.println(name + " says Woof!");
     }
 }
 

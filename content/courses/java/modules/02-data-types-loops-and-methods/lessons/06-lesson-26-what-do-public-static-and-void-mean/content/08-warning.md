@@ -20,7 +20,7 @@ public boolean checkPassword(String input) { ... }
 public class Example {
     String name;
     public static void main(String[] args) {
-        System.out.println(name);  // COMPILE ERROR!
+        IO.println(name);  // COMPILE ERROR!
     }
 }
 

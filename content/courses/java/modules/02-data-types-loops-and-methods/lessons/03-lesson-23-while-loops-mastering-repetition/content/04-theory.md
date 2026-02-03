@@ -8,7 +8,7 @@ title: "The Infinite Loop Danger"
 WRONG:
 int count = 1;
 while (count <= 5) {
-    System.out.println(count);
+    IO.println(count);
     // Forgot count++!
 }
 

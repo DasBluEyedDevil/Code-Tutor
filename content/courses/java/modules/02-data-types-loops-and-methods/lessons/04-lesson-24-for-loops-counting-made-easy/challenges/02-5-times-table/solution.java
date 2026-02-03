@@ -5,6 +5,6 @@ void main() {
     // Loop from 1 to 5
     for (int i = 1; i <= 5; i++) {
         // Print i multiplied by 5
-        println(i * 5);
+        IO.println(i * 5);
     }
 }

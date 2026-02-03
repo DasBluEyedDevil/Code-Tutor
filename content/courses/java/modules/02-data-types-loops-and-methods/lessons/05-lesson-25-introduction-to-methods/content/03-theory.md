@@ -22,7 +22,7 @@ Let's break it down:
 Example 1: Method that returns nothing (void)
 
 public static void sayHello() {
-    System.out.println("Hello!");
+    IO.println("Hello!");
 }
 
 Calling it:

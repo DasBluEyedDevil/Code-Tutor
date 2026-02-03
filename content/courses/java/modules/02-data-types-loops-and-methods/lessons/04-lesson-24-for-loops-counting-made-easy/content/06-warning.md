@@ -38,4 +38,4 @@ for (int i = 0; i < 1000; i++) {
 5. SCOPE OF LOOP VARIABLE:
 // i only exists inside the loop
 for (int i = 0; i < 5; i++) { }
-System.out.println(i);  // ERROR: i not defined here
+IO.println(i);  // ERROR: i not defined here

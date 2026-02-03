@@ -9,7 +9,7 @@ In Java, methods can be passed around as VALUES, not just called!
 
 TRADITIONAL: Call methods directly
 void printNumber(int n) {
-    println(n);
+    IO.println(n);
 }
 for (int i = 1; i <= 5; i++) {
     printNumber(i);  // Call the method

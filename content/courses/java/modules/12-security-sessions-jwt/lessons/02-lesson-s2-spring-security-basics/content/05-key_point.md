@@ -3,7 +3,7 @@ type: "KEY_POINT"
 title: "Authorization Matchers"
 ---
 
-Spring Security 6 uses requestMatchers() with various matching strategies:
+Spring Security 7 uses requestMatchers() with various matching strategies:
 
 BY PATH:
 .requestMatchers("/admin/**")           // /admin/anything

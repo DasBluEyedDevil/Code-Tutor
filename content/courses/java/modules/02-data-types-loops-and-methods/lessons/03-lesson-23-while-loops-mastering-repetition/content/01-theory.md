@@ -5,9 +5,9 @@ title: "The Problem: Repeating Tasks"
 
 Imagine you need to print "Hello" 100 times. You COULD write:
 
-System.out.println("Hello");
-System.out.println("Hello");
-System.out.println("Hello");
+IO.println("Hello");
+IO.println("Hello");
+IO.println("Hello");
 // ...97 more times!
 
 This is:

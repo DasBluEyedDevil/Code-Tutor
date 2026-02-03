@@ -18,5 +18,5 @@ void main() {
     }
     
     // Step 4: Print the final sum
-    println(sum);
+    IO.println(sum);
 }

@@ -3,7 +3,7 @@ type: "EXAMPLE"
 title: "JWT Security Configuration"
 ---
 
-Complete Spring Security 6 JWT setup:
+Complete Spring Security 7 JWT setup:
 
 ```java
 @Configuration

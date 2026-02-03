@@ -27,8 +27,8 @@ while (n <= 10) {
 // Countdown
 int countdown = 5;
 while (countdown > 0) {
-    System.out.println(countdown);
+    IO.println(countdown);
     countdown--;
 }
-System.out.println("Blast off!");
+IO.println("Blast off!");
 // Prints: 5 4 3 2 1 Blast off!

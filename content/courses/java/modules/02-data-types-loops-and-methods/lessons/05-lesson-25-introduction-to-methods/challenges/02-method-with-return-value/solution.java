@@ -4,7 +4,7 @@
 void main() {
     // Call the method with 5 and print the result
     int result = doubleNumber(5);
-    println(result);
+    IO.println(result);
 }
 
 // Method that takes an int and returns it doubled

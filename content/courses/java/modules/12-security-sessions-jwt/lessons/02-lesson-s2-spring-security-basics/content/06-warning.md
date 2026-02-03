@@ -1,11 +1,11 @@
 ---
 type: "WARNING"
-title: "Spring Security 6 Migration Notes"
+title: "Spring Security Migration Notes"
 ---
 
-If you see old tutorials, note these Spring Security 6 changes:
+If you see old tutorials, note these changes in modern Spring Security (7.x):
 
-OLD (Spring Security 5.x):
+OLD (Spring Security 5.x and earlier):
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
@@ -15,7 +15,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 
-NEW (Spring Security 6.x):
+CURRENT (Spring Security 7.x / Spring Boot 4.0):
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -30,7 +30,7 @@ public class SecurityConfig {
 }
 
 KEY CHANGES:
-- No more extending WebSecurityConfigurerAdapter (deprecated)
+- WebSecurityConfigurerAdapter was removed (use SecurityFilterChain beans)
 - authorizeRequests() -> authorizeHttpRequests()
 - antMatchers() -> requestMatchers()
 - Method returns SecurityFilterChain bean

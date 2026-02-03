@@ -1,5 +1,5 @@
 // Solution: Basic Calculator
-// Using Java 23 implicit main syntax
+// Demonstrates arithmetic operators and order of operations
 // This demonstrates arithmetic operators and order of operations
 
 void main() {
@@ -11,5 +11,5 @@ void main() {
     int result = (a + b) * 2;
     
     // Print the result
-    println(result);
+    IO.println(result);
 }

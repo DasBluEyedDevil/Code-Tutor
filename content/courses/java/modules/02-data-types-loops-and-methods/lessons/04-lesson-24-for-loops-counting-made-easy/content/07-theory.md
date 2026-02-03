@@ -8,19 +8,19 @@ When you just want to process each item in a collection, the ENHANCED FOR LOOP (
 TRADITIONAL FOR LOOP:
 String[] names = {"Alice", "Bob", "Charlie"};
 for (int i = 0; i < names.length; i++) {
-    System.out.println(names[i]);
+    IO.println(names[i]);
 }
 
 ENHANCED FOR LOOP (simpler!):
 for (String name : names) {
-    System.out.println(name);
+    IO.println(name);
 }
 
 Read this as: "for each name in names, do..."
 
 With 'var' (Java 10+), it's even cleaner:
 for (var name : names) {
-    System.out.println(name);
+    IO.println(name);
 }
 
 Benefits of enhanced for:

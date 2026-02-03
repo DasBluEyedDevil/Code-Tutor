@@ -8,7 +8,7 @@ void main() {
     // Step 2: Loop while i <= 10
     while (i <= 10) {
         // Step 3: Print the current value
-        println(i);
+        IO.println(i);
         
         // Step 4: Increment i (CRITICAL to avoid infinite loop!)
         i++;

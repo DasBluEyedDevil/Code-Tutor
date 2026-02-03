@@ -8,7 +8,7 @@ title: "Part 1: Understanding 'void' vs Return Types"
 VOID METHOD (performs action, returns nothing):
 
 public static void sayHello() {
-    System.out.println("Hello!");
+    IO.println("Hello!");
     // NO return statement
 }
 

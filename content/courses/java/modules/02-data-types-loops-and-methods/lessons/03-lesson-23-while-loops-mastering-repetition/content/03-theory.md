@@ -13,7 +13,7 @@ Real example - Count to 5:
 
 int count = 1;
 while (count <= 5) {
-    System.out.println(count);
+    IO.println(count);
     count++;  // CRITICAL: Change the condition!
 }
 

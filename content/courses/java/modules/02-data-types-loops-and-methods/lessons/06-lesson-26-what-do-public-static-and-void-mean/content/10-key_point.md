@@ -22,7 +22,7 @@ void main() {
 }
 
 void greet(String name) {
-    println("Hello, " + name + "!");
+    IO.println("Hello, " + name + "!");
 }
 
 // Full (production)

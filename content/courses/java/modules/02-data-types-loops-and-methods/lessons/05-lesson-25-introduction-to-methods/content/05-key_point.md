@@ -8,9 +8,9 @@ When to use 'void' (no return value):
 ✓ You don't need a result back
 
 public static void printBanner() {
-    System.out.println("============");
-    System.out.println("WELCOME");
-    System.out.println("============");
+    IO.println("============");
+    IO.println("WELCOME");
+    IO.println("============");
 }
 
 When to return a value:
