@@ -11,15 +11,15 @@ Some projects need both during migration:
 ```kotlin
 // build.gradle.kts - Using both kapt and KSP
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.0"
     id("org.jetbrains.kotlin.kapt")  // Keep for legacy processors
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 
 dependencies {
     // KSP-migrated libraries
-    implementation("androidx.room:room-runtime:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.8.4")
+    ksp("androidx.room:room-compiler:2.8.4")
     
     implementation("com.squareup.moshi:moshi:1.15.1")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")

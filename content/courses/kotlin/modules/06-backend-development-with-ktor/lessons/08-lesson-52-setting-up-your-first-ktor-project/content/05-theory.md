@@ -15,7 +15,7 @@ title: "💻 Creating Your First Ktor Project"
    Build System: Gradle Kotlin
    Website: example.com
    Artifact: com.example.myfirstapi
-   Ktor Version: 3.2.0 (or latest)
+   Ktor Version: 3.4.0 (or latest)
    Engine: CIO
    Configuration: Code (not YAML/HOCON for now)
    ```

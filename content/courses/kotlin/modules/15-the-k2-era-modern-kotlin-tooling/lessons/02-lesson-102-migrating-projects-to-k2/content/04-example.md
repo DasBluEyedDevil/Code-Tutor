@@ -11,9 +11,9 @@ Start with language version, then move to API version:
 ```kotlin
 // gradle/libs.versions.toml
 [versions]
-kotlin = "2.0.21"
-kotlinx-coroutines = "1.9.0"
-kotlinx-serialization = "1.7.3"
+kotlin = "2.3.0"
+kotlinx-coroutines = "1.10.2"
+kotlinx-serialization = "1.10.0"
 
 // Step 1: Update Kotlin version in build.gradle.kts
 plugins {

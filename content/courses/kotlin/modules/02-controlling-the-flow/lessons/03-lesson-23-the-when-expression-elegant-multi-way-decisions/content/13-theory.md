@@ -17,6 +17,8 @@ Congratulations! You've mastered Kotlin's `when` expression. Let's recap:
 
 **When Syntax Patterns:**
 
+**Looking Ahead:** Kotlin 2.2 introduced **guard conditions** in `when` branches, letting you add `if` conditions directly to branches (e.g., `is String if value.isNotEmpty() ->`). You'll encounter these in more advanced modules — for now, the argument-less `when` form covers the same use cases.
+
 **Best Practices:**
 - Use `when` for 3+ options
 - Put specific cases before general ones

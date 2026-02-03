@@ -8,7 +8,7 @@ title: "Test Reporting and Coverage"
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("org.jetbrains.kotlinx.kover") version "0.7.6"
+    id("org.jetbrains.kotlinx.kover") version "0.9.5"
 }
 
 koverReport {

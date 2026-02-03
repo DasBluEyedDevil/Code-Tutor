@@ -87,8 +87,8 @@ fun displayProfile(
     // Future Projections
     println("🔮 FUTURE PROJECTIONS")
     printSimpleLine()
-    println("In 10 years (${2024 + 10}), you will be: $ageIn10Years years old")
-    println("In 20 years (${2024 + 20}), you will be: $ageIn20Years years old")
+    println("In 10 years (${2026 + 10}), you will be: $ageIn10Years years old")
+    println("In 20 years (${2026 + 20}), you will be: $ageIn20Years years old")
     println()
 
     // Interests & Dreams

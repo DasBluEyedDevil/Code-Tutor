@@ -13,7 +13,7 @@ For Compose Multiplatform development, you'll need:
 - **Kotlin Multiplatform plugin** - Installed via Android Studio
 - **JDK 17+** - Usually bundled with Android Studio
 - To verify your Kotlin version: Settings → Languages & Frameworks → Kotlin
-- **Important**: Kotlin 2.1.0+ is required for Compose Multiplatform 1.8+
+- **Important**: Kotlin 2.2.20+ is required for the latest Compose Multiplatform (1.10.0+)
 
 **Required for iOS Development (macOS only)**:
 - **Xcode** (latest stable version from Mac App Store) - For iOS builds and simulator

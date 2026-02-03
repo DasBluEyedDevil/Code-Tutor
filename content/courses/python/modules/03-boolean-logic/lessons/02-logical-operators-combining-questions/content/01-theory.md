@@ -11,7 +11,9 @@ Imagine you're a bouncer at an exclusive nightclub. You have a list of rules to 
 
 Someone walks up to the door. You need to check:
 
-<p style='text-align: center; font-size: 16px; font-weight: bold;'>"Is age >= 21 <span style='color: blue;'>AND</span> has_valid_id <span style='color: blue;'>AND NOT</span> is_banned?"</p>If ALL of these are true, they get in. If ANY condition fails, they're turned away.
+**"Is age >= 21 AND has_valid_id AND NOT is_banned?"**
+
+If ALL of these are true, they get in. If ANY condition fails, they're turned away.
 
 This is **combining Boolean questions** using **logical operators**:
 

@@ -7,7 +7,7 @@ title: "Best Practices Summary"
 ### Do
 
 1. **Define clear error hierarchies** - Sealed interfaces for each domain
-2. **Use Validated for input validation** - Collect all errors at once
+2. **Use error accumulation for input validation** - Collect all errors at once with `zipOrAccumulate`
 3. **Use Either for business logic** - Short-circuit on first error
 4. **Handle errors at boundaries** - Controllers, CLI, etc.
 5. **Test both success and failure paths** - Errors are first-class

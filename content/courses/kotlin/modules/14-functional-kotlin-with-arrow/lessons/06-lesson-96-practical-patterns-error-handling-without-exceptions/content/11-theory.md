@@ -16,7 +16,7 @@ You've learned:
 **Error Handling Types**
 - `Result<T>` for basic error handling
 - `Either<E, A>` for typed errors
-- `Validated<E, A>` for error accumulation
+- Error accumulation with `zipOrAccumulate`/`mapOrAccumulate` (Arrow 2.x)
 - `Option<A>` for explicit optionality
 
 **Railway-Oriented Programming**

@@ -17,6 +17,8 @@ title: "Object Declarations (Singletons)"
 - Cannot have constructors
 - Can implement interfaces and extend classes
 
+> **`data object` variant**: When you use `data object` instead of `object`, Kotlin generates a clean `toString()` (e.g., `"Loading"` instead of `"Loading@1a2b3c"`), a consistent `equals()`, and a stable `hashCode()`. Use `data object` for sealed class branches and anywhere a readable string representation matters.
+
 ### Real-World Example: Application Config
 
 

@@ -11,7 +11,7 @@ Apply the plugin in your build script:
 ```kotlin
 // build.gradle.kts
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.0"
 }
 
 // Apply the script plugin

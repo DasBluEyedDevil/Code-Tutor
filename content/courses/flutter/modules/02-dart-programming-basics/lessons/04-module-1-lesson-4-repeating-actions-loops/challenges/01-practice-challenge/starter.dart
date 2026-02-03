@@ -12,6 +12,7 @@ void main() {
     // TODO: Inner loop to print stars for this row
     // Hint: Build a string of stars then print it
     var stars = '';
-    
-    print(stars);  }
+
+    print(stars);
+  }
 }

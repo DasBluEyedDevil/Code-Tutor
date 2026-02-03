@@ -11,7 +11,7 @@ The build script configures how your project is built:
 ```kotlin
 // build.gradle.kts
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.0"
     application
 }
 

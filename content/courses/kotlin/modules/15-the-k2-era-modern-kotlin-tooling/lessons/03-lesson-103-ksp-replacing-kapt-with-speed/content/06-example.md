@@ -22,7 +22,7 @@ dependencies {
 
 // After: KSP for Hilt
 plugins {
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
     id("com.google.dagger.hilt.android")
 }
 

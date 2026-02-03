@@ -33,3 +33,5 @@ color = input()
 # Respond
 print("Wow!", color, "is a great color!")
 ```
+
+```

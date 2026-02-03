@@ -30,11 +30,14 @@ title: "Common Pitfalls and Best Practices"
 
 
 ```kotlin
-// ✅ Safe pattern
+// ✅ Safe pattern using getValue() (throws if missing, but we checked)
 if ("Alice" in contacts) {
-    val contact = contacts["Alice"]!!
+    val contact = contacts.getValue("Alice")
     // Use contact
 } else {
     println("Contact not found")
 }
+
+// ✅ Even better: use getOrElse for a safe default
+val contact = contacts.getOrElse("Alice") { "Unknown" }
 ```

@@ -6,10 +6,12 @@ title: "Key Takeaways"
 
 - `Either<E, A>` provides typed error handling with explicit error types
 - Use `either { }` builder with `bind()` for clean chaining
-- `Validated<E, A>` accumulates all errors (use for form validation)
+- Error accumulation collects all errors (use for form validation)
 - `Option<A>` makes optionality explicit
-- Combine types: Validated for input, Either for processing
-- Arrow Core 1.2.4 is production-ready and widely used
+- Combine validation with processing for robust error handling
+- Arrow Core 2.2.1 is the latest stable release
+
+> **Arrow 2.x Update**: `Validated` has been replaced by `EitherNel` (typealias for `Either<NonEmptyList<E>, A>`) and the `zipOrAccumulate`/`mapOrAccumulate` functions in the `Raise` DSL. The concepts are identical — only the API surface changed.
 
 ---
 

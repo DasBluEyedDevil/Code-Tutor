@@ -16,13 +16,13 @@ Verify your dependencies support Kotlin 2.0:
 
 // gradle/libs.versions.toml
 [versions]
-kotlin = "2.0.21"
-kotlinx-coroutines = "1.9.0"       # Full K2 support
-kotlinx-serialization = "1.7.3"    # Full K2 support
-ktor = "3.0.2"                     # Full K2 support
-koin = "4.0.0"                     # Full K2 support (use ksp)
-arrow = "1.2.4"                    # Full K2 support
-compose-multiplatform = "1.7.1"    # Full K2 support
+kotlin = "2.3.0"
+kotlinx-coroutines = "1.10.2"       # Full K2 support
+kotlinx-serialization = "1.10.0"    # Full K2 support
+ktor = "3.4.0"                      # Full K2 support
+koin = "4.1.1"                      # Full K2 support (use ksp)
+arrow = "2.2.1"                     # Full K2 support
+compose-multiplatform = "1.10.0"    # Full K2 support
 
 // Libraries to check/update:
 // - Room: 2.6.0+ supports KSP

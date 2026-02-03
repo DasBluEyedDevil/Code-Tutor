@@ -60,7 +60,7 @@ fun main() {
     val keyStoreFile = File("/etc/letsencrypt/live/myapp.com/keystore.jks")
     val keyStore = KeyStore.getInstance(keyStoreFile, "password".toCharArray())
 
-    embeddedServer(Netty, environment = applicationEngineEnvironment {
+    embeddedServer(Netty, configure = {
         connector {
             port = 80
         }
@@ -73,9 +73,8 @@ fun main() {
             port = 443
             keyStorePath = keyStoreFile
         }
-        module {
-            module()
-        }
-    }).start(wait = true)
+    }) {
+        module()
+    }.start(wait = true)
 }
 ```

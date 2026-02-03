@@ -42,6 +42,6 @@ process(42 as Number) // Explicitly Number
 // Solution: Migrate to KSP or update kapt version
 plugins {
     // id("org.jetbrains.kotlin.kapt")  // Remove if possible
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 ```

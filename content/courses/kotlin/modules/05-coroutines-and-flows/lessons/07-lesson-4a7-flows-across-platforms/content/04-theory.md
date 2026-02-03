@@ -8,13 +8,7 @@ title: "Collecting on iOS with SKIE"
 ### Setup in build.gradle.kts
 ```kotlin
 plugins {
-    id("co.touchlab.skie") version "0.8.0"
-}
-
-skie {
-    features {
-        enableSwiftUIObservingPreview = true
-    }
+    id("co.touchlab.skie") version "0.10.9"
 }
 ```
 

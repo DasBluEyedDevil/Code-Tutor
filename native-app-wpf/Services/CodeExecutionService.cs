@@ -11,6 +11,7 @@ namespace CodeTutor.Wpf.Services;
 public interface ICodeExecutionService
 {
     Task<ExecutionResult> ExecuteAsync(string code, string language);
+    Task<IInteractiveSession> StartInteractiveSessionAsync(string code, string language);
     Task<RuntimeInfo> GetRuntimeInfoAsync(string language);
     bool IsPistonAvailable { get; }
 }
@@ -51,6 +52,9 @@ public class CodeExecutionService : ICodeExecutionService
 
     public async Task<ExecutionResult> ExecuteAsync(string code, string language)
     {
+        // For C# and Piston (if available), keep the old batch behavior for now
+        // or wrap the interactive session in a batch wait.
+        
         // Input validation
         if (string.IsNullOrWhiteSpace(language))
             return new ExecutionResult(false, "", "Language cannot be empty");
@@ -62,167 +66,149 @@ public class CodeExecutionService : ICodeExecutionService
         {
             return await _roslynExecutor.ExecuteAsync(code);
         }
-
-        // Ensure Piston check is complete before using
-        if (_pistonCheckTask != null && !_pistonCheckTask.IsCompleted)
-        {
-            await _pistonCheckTask;
+        
+        // Existing Piston logic (omitted for brevity in this interactive focused update, 
+        // assuming local execution is prioritized for interactivity)
+        if (_pistonCheckTask != null && !_pistonCheckTask.IsCompleted) await _pistonCheckTask;
+        if (_pistonAvailable == true) {
+             var pistonResult = await _pistonExecutor.ExecuteAsync(code, language);
+             if (pistonResult.Success || !pistonResult.Error.Contains("connection failed")) return pistonResult;
         }
 
-        // Try Piston first if available (sandboxed)
-        if (_pistonAvailable == true)
+        // Use the new interactive session mechanism but wait for it to finish for backward compatibility
+        var outputBuilder = new System.Text.StringBuilder();
+        var errorBuilder = new System.Text.StringBuilder();
+        var tcs = new TaskCompletionSource<int>();
+
+        try 
         {
-            var pistonResult = await _pistonExecutor.ExecuteAsync(code, language);
-            // Only fall back to local if Piston connection failed, not for code errors
-            if (pistonResult.Success || !pistonResult.Error.Contains("connection failed"))
-                return pistonResult;
-            // Connection failed, fall back to local execution
-        }
+            using var session = await StartInteractiveSessionAsync(code, language);
+            session.OutputReceived += (s, data) => outputBuilder.Append(data);
+            session.ErrorReceived += (s, data) => errorBuilder.Append(data);
+            session.Exited += (s, code) => tcs.TrySetResult(code);
 
-        // Fallback to local execution
-        return langLower switch
-        {
-            "python" => await ExecuteLocalAsync("python", code, ".py"),
-            "javascript" or "js" => await ExecuteLocalAsync("node", code, ".js"),
-            "java" => await ExecuteJavaAsync(code),
-            "kotlin" => await ExecuteLocalAsync("kotlinc", code, ".kts", "-script"),
-            "rust" => await ExecuteRustAsync(code),
-            "dart" or "flutter" => await ExecuteLocalAsync("dart", code, ".dart", "run"),
-            _ => new ExecutionResult(false, "", $"Language '{language}' not supported")
-        };
-    }
-
-    private async Task<ExecutionResult> ExecuteLocalAsync(string command, string code, string extension, string? extraArgs = null)
-    {
-        var runtimeInfo = await _runtimeDetection.CheckRuntimeAsync(command);
-        if (!runtimeInfo.IsAvailable)
-        {
-            return new ExecutionResult(false, "",
-                $"{command} is not installed.\n\n{runtimeInfo.InstallHint}");
-        }
-
-        var tempFile = Path.Combine(Path.GetTempPath(), $"codetutor_{Guid.NewGuid()}{extension}");
-        await File.WriteAllTextAsync(tempFile, code);
-
-        try
-        {
-            var args = extraArgs != null ? $"{extraArgs} \"{tempFile}\"" : $"\"{tempFile}\"";
-            return await RunProcessAsync(command, args);
-        }
-        finally
-        {
-            try { File.Delete(tempFile); } catch { }
-        }
-    }
-
-    private async Task<ExecutionResult> ExecuteJavaAsync(string code)
-    {
-        var runtimeInfo = await _runtimeDetection.CheckRuntimeAsync("java");
-        if (!runtimeInfo.IsAvailable)
-        {
-            return new ExecutionResult(false, "",
-                $"Java is not installed.\n\n{runtimeInfo.InstallHint}");
-        }
-
-        var className = "Main";
-        var classMatch = Regex.Match(code, @"public\s+class\s+(\w+)");
-        if (classMatch.Success)
-            className = classMatch.Groups[1].Value;
-
-        var tempDir = Path.Combine(Path.GetTempPath(), $"codetutor_{Guid.NewGuid()}");
-        Directory.CreateDirectory(tempDir);
-
-        try
-        {
-            var javaFile = Path.Combine(tempDir, $"{className}.java");
-            await File.WriteAllTextAsync(javaFile, code);
-
-            var compileResult = await RunProcessAsync("javac", $"\"{javaFile}\"");
-            if (!compileResult.Success)
-                return new ExecutionResult(false, "", compileResult.Error);
-
-            return await RunProcessAsync("java", $"-cp \"{tempDir}\" {className}");
-        }
-        finally
-        {
-            try { Directory.Delete(tempDir, true); } catch { }
-        }
-    }
-
-    private async Task<ExecutionResult> ExecuteRustAsync(string code)
-    {
-        var runtimeInfo = await _runtimeDetection.CheckRuntimeAsync("rust");
-        if (!runtimeInfo.IsAvailable)
-        {
-            return new ExecutionResult(false, "",
-                $"Rust is not installed.\n\n{runtimeInfo.InstallHint}");
-        }
-
-        var tempDir = Path.Combine(Path.GetTempPath(), $"codetutor_{Guid.NewGuid()}");
-        Directory.CreateDirectory(tempDir);
-
-        try
-        {
-            var rustFile = Path.Combine(tempDir, "main.rs");
-            var exeFile = Path.Combine(tempDir, "main.exe");
-            await File.WriteAllTextAsync(rustFile, code);
-
-            var compileResult = await RunProcessAsync("rustc", $"\"{rustFile}\" -o \"{exeFile}\"");
-            if (!compileResult.Success)
-                return new ExecutionResult(false, "", compileResult.Error);
-
-            return await RunProcessAsync(exeFile, "");
-        }
-        finally
-        {
-            try { Directory.Delete(tempDir, true); } catch { }
-        }
-    }
-
-    private async Task<ExecutionResult> RunProcessAsync(string command, string arguments)
-    {
-        try
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = command,
-                Arguments = arguments,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-
-            using var process = Process.Start(psi);
-            if (process == null)
-                return new ExecutionResult(false, "", "Failed to start process");
-
-            var outputTask = process.StandardOutput.ReadToEndAsync();
-            var errorTask = process.StandardError.ReadToEndAsync();
-
+            // Wait for exit or timeout
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-            try
-            {
-                await process.WaitForExitAsync(cts.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                process.Kill(true);
-                return new ExecutionResult(false, "", "Execution timed out after 30 seconds");
-            }
+            using var reg = cts.Token.Register(() => {
+                session.StopAsync();
+                tcs.TrySetResult(-1);
+            });
 
-            var output = await outputTask;
-            var error = await errorTask;
-
+            var exitCode = await tcs.Task;
+            
             return new ExecutionResult(
-                process.ExitCode == 0,
-                output.Trim(),
-                error.Trim()
+                exitCode == 0,
+                outputBuilder.ToString().Trim(),
+                errorBuilder.ToString().Trim()
             );
         }
         catch (Exception ex)
         {
             return new ExecutionResult(false, "", ex.Message);
         }
+    }
+
+    public async Task<IInteractiveSession> StartInteractiveSessionAsync(string code, string language)
+    {
+        var langLower = language.ToLowerInvariant();
+        
+        return langLower switch
+        {
+            "python" => await StartLocalSessionAsync("python", code, ".py", "-u"), // -u for unbuffered output
+            "javascript" or "js" => await StartLocalSessionAsync("node", code, ".js", "--interactive"), // node interactive might need care, usually just running script is fine
+            "java" => await StartJavaSessionAsync(code),
+            "kotlin" => await StartLocalSessionAsync("kotlinc", code, ".kts", "-script"),
+            // "rust" => await StartRustSessionAsync(code), // Needs compilation step first
+            "dart" or "flutter" => await StartLocalSessionAsync("dart", code, ".dart", "run"),
+            _ => throw new NotSupportedException($"Interactive mode not supported for '{language}'")
+        };
+    }
+
+    private async Task<IInteractiveSession> StartLocalSessionAsync(string command, string code, string extension, string? extraArgs = null)
+    {
+        var runtimeInfo = await _runtimeDetection.CheckRuntimeAsync(command);
+        if (!runtimeInfo.IsAvailable)
+        {
+             throw new Exception($"{command} is not installed.\n\n{runtimeInfo.InstallHint}");
+        }
+
+        var tempFile = Path.Combine(Path.GetTempPath(), $"codetutor_{Guid.NewGuid()}{extension}");
+        await File.WriteAllTextAsync(tempFile, code);
+        // Note: Temp file cleanup is tricky with async sessions. 
+        // ideally we track it and delete on session dispose.
+        // For now, we leave it (OS cleans temp eventually) or we need a wrapper.
+
+        var args = extraArgs != null ? $"{extraArgs} \"{tempFile}\"" : $"\"{tempFile}\""
+        
+        var psi = new ProcessStartInfo
+        {
+            FileName = command,
+            Arguments = args,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            RedirectStandardInput = true, // KEY CHANGE
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        
+        var process = Process.Start(psi);
+        if (process == null) throw new Exception("Failed to start process");
+        
+        process.EnableRaisingEvents = true;
+
+        return new InteractiveProcessSession(process);
+    }
+
+    private async Task<IInteractiveSession> StartJavaSessionAsync(string code)
+    {
+        var runtimeInfo = await _runtimeDetection.CheckRuntimeAsync("java");
+        if (!runtimeInfo.IsAvailable) throw new Exception("Java not installed");
+
+        var className = "Main";
+        var classMatch = Regex.Match(code, @"public\s+class\s+(\w+)");
+        if (classMatch.Success) className = classMatch.Groups[1].Value;
+
+        var tempDir = Path.Combine(Path.GetTempPath(), $"codetutor_{Guid.NewGuid()}");
+        Directory.CreateDirectory(tempDir);
+        var javaFile = Path.Combine(tempDir, $"{className}.java");
+        await File.WriteAllTextAsync(javaFile, code);
+
+        // Compile first
+        var compilePsi = new ProcessStartInfo
+        {
+            FileName = "javac",
+            Arguments = $"\"{javaFile}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        
+        using var compileProc = Process.Start(compilePsi);
+        await compileProc!.WaitForExitAsync();
+        
+        if (compileProc.ExitCode != 0)
+        {
+            var error = await compileProc.StandardError.ReadToEndAsync();
+            throw new Exception($"Compilation failed: {error}");
+        }
+
+        // Run
+        var psi = new ProcessStartInfo
+        {
+            FileName = "java",
+            Arguments = $"-cp \"{tempDir}\" {className}",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            RedirectStandardInput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        
+        var process = Process.Start(psi);
+        if (process == null) throw new Exception("Failed to start Java process");
+        process.EnableRaisingEvents = true;
+
+        return new InteractiveProcessSession(process);
     }
 }

@@ -16,8 +16,8 @@ In `gradle/libs.versions.toml`:
 
 ```toml
 [versions]
-navigation = "2.8.4"
+navigation = "2.9.1"
 
 [libraries]
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+androidx-navigation-compose = { group = "org.jetbrains.androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
 ```

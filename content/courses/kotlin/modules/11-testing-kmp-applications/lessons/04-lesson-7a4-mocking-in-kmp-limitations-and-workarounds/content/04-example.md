@@ -8,14 +8,14 @@ Mokkery is a KMP-compatible mocking library using KSP:
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("dev.mokkery") version "2.0.0"
+    id("dev.mokkery") version "3.1.1"
 }
 
 kotlin {
     sourceSets {
         val commonTest by getting {
             dependencies {
-                implementation("dev.mokkery:mokkery-runtime:2.0.0")
+                implementation("dev.mokkery:mokkery-runtime:3.1.1")
             }
         }
     }

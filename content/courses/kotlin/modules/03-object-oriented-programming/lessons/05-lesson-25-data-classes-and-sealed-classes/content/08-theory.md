@@ -11,10 +11,10 @@ title: "Sealed Classes for State Management"
 
 ```kotlin
 sealed class UiState {
-    object Loading : UiState()
+    data object Loading : UiState()
     data class Success(val items: List<String>) : UiState()
     data class Error(val message: String) : UiState()
-    object Empty : UiState()
+    data object Empty : UiState()
 }
 
 class ViewModel {

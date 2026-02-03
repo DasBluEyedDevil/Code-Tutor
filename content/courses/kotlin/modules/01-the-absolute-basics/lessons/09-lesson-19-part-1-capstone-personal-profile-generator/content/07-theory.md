@@ -41,8 +41,8 @@ Height: 1.78m (5.84 feet)
 
 🔮 FUTURE PROJECTIONS
 ---
-In 10 years (2034), you will be: 32 years old
-In 20 years (2044), you will be: 42 years old
+In 10 years (2036), you will be: 32 years old
+In 20 years (2046), you will be: 42 years old
 
 ⭐ INTERESTS & DREAMS
 ---

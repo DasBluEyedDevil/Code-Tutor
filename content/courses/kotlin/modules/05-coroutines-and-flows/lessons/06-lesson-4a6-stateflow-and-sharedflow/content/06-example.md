@@ -19,7 +19,7 @@ data class TodoState(
 
 sealed class TodoEvent {
     data class ShowSnackbar(val message: String) : TodoEvent()
-    object ScrollToTop : TodoEvent()
+    data object ScrollToTop : TodoEvent()
 }
 
 class TodoViewModel {

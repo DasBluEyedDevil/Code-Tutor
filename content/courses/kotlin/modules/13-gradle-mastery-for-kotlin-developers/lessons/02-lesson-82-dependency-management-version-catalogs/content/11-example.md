@@ -9,9 +9,9 @@ title: "Solution: Version Catalog"
 ```toml
 # gradle/libs.versions.toml
 [versions]
-kotlin = "2.0.21"
-ktor = "3.0.2"
-kotlinx-serialization = "1.7.3"
+kotlin = "2.3.0"
+ktor = "3.4.0"
+kotlinx-serialization = "1.10.0"
 logback = "1.5.12"
 
 [libraries]

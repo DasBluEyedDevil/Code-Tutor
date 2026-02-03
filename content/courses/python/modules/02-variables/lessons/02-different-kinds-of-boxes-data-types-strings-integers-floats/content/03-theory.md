@@ -7,92 +7,111 @@ Let's break down each data type and understand the rules:
 
 ### 1. Strings (str) - The Text Type
 
-<li>**What they are:** Any text wrapped in quotes (single `'` or double `"`)
+- **What they are:** Any text wrapped in quotes (single `'` or double `"`)
 
-```
-name = "Alice"     # Double quotes
-greeting = 'Hi!'   # Single quotes (works the same)
-message = "123"    # Even numbers in quotes are strings!
-```
-</li><li>**Key rule:** MUST have matching quotes at start and end
+  ```python
+  name = "Alice"     # Double quotes
+  greeting = 'Hi!'   # Single quotes (works the same)
+  message = "123"    # Even numbers in quotes are strings!
+  ```
 
-```
-"Hello"  ✅ Correct
-'Hello'  ✅ Also correct
-"Hello'  ❌ Error - quotes don't match!
-```
-</li><li>**The `type()` function:** Tells you what type a value is
+- **Key rule:** MUST have matching quotes at start and end
 
-<pre>`print(type("Alice"))  # Shows: <class 'str'>`</pre>Think of `type()` as asking "What kind of container is this?"
+  ```python
+  "Hello"  ✅ Correct
+  'Hello'  ✅ Also correct
+  "Hello'  ❌ Error - quotes don't match!
+  ```
 
-</li>
+- **The `type()` function:** Tells you what type a value is
+
+  ```python
+  print(type("Alice"))  # Shows: <class 'str'>
+  ```
+  
+  Think of `type()` as asking "What kind of container is this?"
+
 ### 2. Integers (int) - The Whole Number Type
 
-<li>**What they are:** Whole numbers with NO decimal point and NO quotes
+- **What they are:** Whole numbers with NO decimal point and NO quotes
 
-```
-age = 25        # Positive integer
-count = 0       # Zero is an integer
-debt = -500     # Negative integer
-```
-</li><li>**Key rule:** NO quotes, NO decimal point
+  ```python
+  age = 25        # Positive integer
+  count = 0       # Zero is an integer
+  debt = -500     # Negative integer
+  ```
 
-```
-age = 25       ✅ Integer
-age = "25"     ❌ String (has quotes)
-age = 25.0     ❌ Float (has decimal point)
-```
-</li><li>**You can do math:** +, -, *, /, //, %, **
+- **Key rule:** NO quotes, NO decimal point
 
-```
-students = 20 + 5   # Addition: 25
-groups = 20 // 5    # Division (whole number): 4
-squared = 5 ** 2    # Exponent: 25
-```
-</li>
+  ```python
+  age = 25       ✅ Integer
+  age = "25"     ❌ String (has quotes)
+  age = 25.0     ❌ Float (has decimal point)
+  ```
+
+- **You can do math:** +, -, *, /, //, %, **
+
+  ```python
+  students = 20 + 5   # Addition: 25
+  groups = 20 // 5    # Division (whole number): 4
+  squared = 5 ** 2    # Exponent: 25
+  ```
+
 ### 3. Floats (float) - The Decimal Number Type
 
-<li>**What they are:** Numbers with a decimal point
+- **What they are:** Numbers with a decimal point
 
-```
-price = 19.99
-pi = 3.14159
-temperature = -2.5
-exact_value = 5.0  # Even whole numbers with .0 are floats!
-```
-</li><li>**Key rule:** MUST have a decimal point (even if it's .0)
+  ```python
+  price = 19.99
+  pi = 3.14159
+  temperature = -2.5
+  exact_value = 5.0  # Even whole numbers with .0 are floats!
+  ```
 
-```
-price = 19.99  ✅ Float
-price = 20     ❌ Integer (no decimal point)
-```
-</li><li>**Mixing int and float:** Result is always a float
+- **Key rule:** MUST have a decimal point (even if it's .0)
 
-```
-result = 5 + 2.5   # 5 (int) + 2.5 (float) = 7.5 (float)
-print(type(result))  # <class 'float'>
-```
-</li><li>**IEEE 754 Standard:** Python uses 64-bit precision for floats (about 15-17 decimal digits of accuracy)
+  ```python
+  price = 19.99  ✅ Float
+  price = 20     ❌ Integer (no decimal point)
+  ```
 
-</li>
+- **Mixing int and float:** Result is always a float
+
+  ```python
+  result = 5 + 2.5   # 5 (int) + 2.5 (float) = 7.5 (float)
+  print(type(result))  # <class 'float'>
+  ```
+
+- **IEEE 754 Standard:** Python uses 64-bit precision for floats (about 15-17 decimal digits of accuracy)
+
 ### 4. Booleans (bool) - The True/False Type
 
-<li>**What they are:** Only TWO possible values: `True` or `False`
+- **What they are:** Only TWO possible values: `True` or `False`
 
-```
-is_raining = True
-has_license = False
-```
-</li><li>**Key rules:**
+  ```python
+  is_raining = True
+  has_license = False
+  ```
 
-- Must be capitalized: `True` and `False` (not `true` or `false`)
-- NO quotes (with quotes they become strings)
+- **Key rules:**
 
-```
-is_student = True    ✅ Boolean
-is_student = true    ❌ Error (not capitalized)
-is_student = "True"  ❌ String (has quotes)
-```
-</li>
+  - Must be capitalized: `True` and `False` (not `true` or `false`)
+  - NO quotes (with quotes they become strings)
+
+  ```python
+  is_student = True    ✅ Boolean
+  is_student = true    ❌ Error (not capitalized)
+  is_student = "True"  ❌ String (has quotes)
+  ```
+
 ### 5. Mixing Types - What Works and What Doesn't
-<table><thead><tr><th>Operation</th><th>Example</th><th>Result</th></tr></thead><tbody><tr><td>String + String</td><td>`"Hello" + " World"`</td><td>✅ `"Hello World"`</td></tr><tr><td>Integer + Integer</td><td>`5 + 3`</td><td>✅ `8`</td></tr><tr><td>Float + Integer</td><td>`5.5 + 2`</td><td>✅ `7.5`</td></tr><tr><td>String * Integer</td><td>`"Ha" * 3`</td><td>✅ `"HaHaHa"`</td></tr><tr><td>String + Integer</td><td>`"Age: " + 25`</td><td>❌ TypeError!</td></tr></tbody></table>**The golden rule:** You can't directly combine strings and numbers with `+`. You need to convert them first (we'll learn this next lesson!).
+
+| Operation | Example | Result |
+| :--- | :--- | :--- |
+| String + String | `"Hello" + " World"` | ✅ `"Hello World"` |
+| Integer + Integer | `5 + 3` | ✅ `8` |
+| Float + Integer | `5.5 + 2` | ✅ `7.5` |
+| String * Integer | `"Ha" * 3` | ✅ `"HaHaHa"` |
+| String + Integer | `"Age: " + 25` | ❌ TypeError! |
+
+**The golden rule:** You can't directly combine strings and numbers with `+`. You need to convert them first (we'll learn this next lesson!).

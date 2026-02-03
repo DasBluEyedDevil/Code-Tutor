@@ -13,8 +13,8 @@ web: java -jar build/libs/my-app-all.jar
 ```kotlin
 // build.gradle.kts
 plugins {
-    kotlin("jvm") version "2.0.0"
-    id("io.ktor.plugin") version "2.3.7"
+    kotlin("jvm") version "2.3.0"
+    id("io.ktor.plugin") version "3.4.0"
 }
 
 application {

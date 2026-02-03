@@ -6,9 +6,9 @@ interface AuthRepository {
 }
 
 sealed class AuthState {
-    object LoggedOut : AuthState()
+    data object LoggedOut : AuthState()
     data class LoggedIn(val user: User) : AuthState()
-    object Loading : AuthState()
+    data object Loading : AuthState()
 }
 
 data class User(val id: String, val email: String, val name: String)

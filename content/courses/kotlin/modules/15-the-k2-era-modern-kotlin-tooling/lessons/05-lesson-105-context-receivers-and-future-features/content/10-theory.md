@@ -38,8 +38,8 @@ You've completed Module 10: The K2 Era - Modern Kotlin Tooling!
    - Arrow integration
 
 **Key Versions:**
-- Kotlin: 2.0.21
-- KSP: 2.0.21-1.0.28
+- Kotlin: 2.3.0
+- KSP: 2.3.4
 - KotlinPoet: 1.18.1
 
 You're now equipped with cutting-edge Kotlin knowledge to build faster, safer, and more maintainable applications!

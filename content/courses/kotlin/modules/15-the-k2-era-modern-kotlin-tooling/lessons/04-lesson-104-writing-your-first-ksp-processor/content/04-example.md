@@ -36,7 +36,7 @@ plugins {
 
 dependencies {
     implementation(project(":annotations"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:2.0.21-1.0.28")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.3.4")
     implementation("com.squareup:kotlinpoet:1.18.1")
     implementation("com.squareup:kotlinpoet-ksp:1.18.1")
 }
@@ -44,7 +44,7 @@ dependencies {
 // app/build.gradle.kts
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 
 dependencies {

@@ -14,7 +14,7 @@ Conflicts occur when different dependencies require different versions of the sa
 configurations.all {
     resolutionStrategy {
         // Force a specific version
-        force("org.jetbrains.kotlin:kotlin-stdlib:2.0.21")
+        force("org.jetbrains.kotlin:kotlin-stdlib:2.3.0")
         
         // Fail on version conflict
         failOnVersionConflict()

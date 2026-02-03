@@ -42,7 +42,7 @@ The expect/actual pattern lets you:
 
 **Question 5: B) iOS support is now stable**
 
-As of May 2025, Compose Multiplatform iOS support reached stable status (version 1.8.0). Companies like McDonald's, Cash App, and 9GAG are using it in production apps.
+Compose Multiplatform iOS support reached stable status in 2025, and the framework continues to evolve rapidly (latest version 1.10.0 as of January 2026). Companies like McDonald's, Cash App, and 9GAG are using it in production apps.
 
 ---
 

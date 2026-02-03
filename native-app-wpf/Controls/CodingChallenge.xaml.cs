@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Effects;
 using CodeTutor.Wpf.Models;
 using CodeTutor.Wpf.Behaviors;
@@ -19,7 +20,11 @@ public partial class CodingChallenge : UserControl
     private int _currentHintIndex = 0;
     private int _failedAttempts = 0;
     private readonly string _originalCode;
+    
+    // Interactive session state
+    private IInteractiveSession? _currentSession;
     private CancellationTokenSource? _executionCts;
+    private readonly System.Text.StringBuilder _outputBuffer = new();
 
     public event EventHandler<string>? ChallengeCompleted;
     public bool IsCompleted { get; private set; }
@@ -75,7 +80,6 @@ public partial class CodingChallenge : UserControl
 
         if (!runtimeInfo.IsAvailable && !string.IsNullOrEmpty(runtimeInfo.InstallHint))
         {
-            // Show a subtle warning in the output panel
             OutputPanel.Visibility = Visibility.Visible;
             OutputText.Text = $"Note: {runtimeInfo.InstallHint}";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentYellowBrush");
@@ -90,7 +94,6 @@ public partial class CodingChallenge : UserControl
             return;
         }
 
-        // Require at least 1 failed attempt to show first hint
         if (_failedAttempts == 0)
         {
             HintButton.Content = new TextBlock { Text = "Hint (run code first)" };
@@ -119,86 +122,132 @@ public partial class CodingChallenge : UserControl
 
     private async void RunCode_Click(object sender, RoutedEventArgs e)
     {
-        _executionCts?.Cancel();
+        await StopCurrentSessionAsync();
+
         _executionCts = new CancellationTokenSource();
+        _outputBuffer.Clear();
 
         RunningIndicator.Visibility = Visibility.Visible;
         StopButton.Visibility = Visibility.Visible;
+        InputPanel.Visibility = Visibility.Visible; // Show input box
+        InputBox.Clear();
+        InputBox.Focus();
 
         StatusBar.SetStatus("Running...", false);
+        
+        OutputPanel.Visibility = Visibility.Visible;
+        TestResultsPanel.Visibility = Visibility.Collapsed;
+        OutputText.Text = ""; // Start clean
+        OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
+        OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("BorderDefaultBrush");
+        OutputPanel.Background = (System.Windows.Media.Brush)FindResource("BackgroundDarkBrush");
 
         try
         {
-            OutputPanel.Visibility = Visibility.Visible;
-            TestResultsPanel.Visibility = Visibility.Collapsed;
-            OutputText.Text = "Running...";
-            OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
-
-            // Reset to default border while running
-            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("BorderDefaultBrush");
-            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("BackgroundDarkBrush");
-
-            var result = await _executionService.ExecuteAsync(CodeEditor.Text, _challenge.Language);
-
-            if (result.Success)
-            {
-                OutputText.Text = string.IsNullOrEmpty(result.Output) ? "(No output)" : result.Output;
-                OutputText.Foreground = (System.Windows.Media.Brush)FindResource("TextPrimaryBrush");
-
-                // Set success styling
-                OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentGreenBrush");
-                OutputPanel.Background = (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush");
-
-                // Run test case validation if test cases exist
-                if (_challenge.TestCases != null && _challenge.TestCases.Count > 0)
-                {
-                    ValidateTestCases(result.Output);
-                }
-
-                StatusBar.SetStatus("Ready", true);
-            }
-            else
-            {
-                OutputText.Text = string.IsNullOrEmpty(result.Error) ? result.Output : result.Error;
-                OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
-
-                // Set error styling
-                OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
-                OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
-
-                _failedAttempts++;
-                UpdateHintButtonState();
-
-                StatusBar.SetStatus("Ready", true);
-            }
+            _currentSession = await _executionService.StartInteractiveSessionAsync(CodeEditor.Text, _challenge.Language);
+            
+            _currentSession.OutputReceived += (s, data) => Dispatcher.Invoke(() => AppendOutput(data, false));
+            _currentSession.ErrorReceived += (s, data) => Dispatcher.Invoke(() => AppendOutput(data, true));
+            _currentSession.Exited += (s, exitCode) => Dispatcher.Invoke(() => OnSessionExited(exitCode));
         }
         catch (Exception ex)
         {
             OutputText.Text = $"Execution failed: {ex.Message}";
             OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
-            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
-            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
-
-            StatusBar.SetStatus("Ready", true);
-        }
-        finally
-        {
             RunningIndicator.Visibility = Visibility.Collapsed;
             StopButton.Visibility = Visibility.Collapsed;
+            InputPanel.Visibility = Visibility.Collapsed;
+            StatusBar.SetStatus("Error", true);
         }
     }
 
-    private void StopExecution_Click(object sender, RoutedEventArgs e)
+    private void AppendOutput(string text, bool isError)
     {
-        _executionCts?.Cancel();
-        OutputText.Text = "Execution cancelled.";
-        OutputText.Foreground = (System.Windows.Media.Brush)FindResource("AccentOrangeBrush");
-        OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentOrangeBrush");
-        OutputPanel.Background = (System.Windows.Media.Brush)FindResource("WarningBackgroundBrush");
+        _outputBuffer.Append(text);
+        OutputText.Text += text;
+        
+        // Scroll to bottom
+        if (OutputText.Parent is ScrollViewer scrollViewer)
+        {
+            scrollViewer.ScrollToBottom();
+        }
+    }
 
+    private void OnSessionExited(int exitCode)
+    {
         RunningIndicator.Visibility = Visibility.Collapsed;
         StopButton.Visibility = Visibility.Collapsed;
+        InputPanel.Visibility = Visibility.Collapsed;
+        StatusBar.SetStatus("Ready", true);
+
+        bool success = exitCode == 0;
+        
+        if (success)
+        {
+            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentGreenBrush");
+            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("SuccessBackgroundBrush");
+
+            if (_challenge.TestCases != null && _challenge.TestCases.Count > 0)
+            {
+                ValidateTestCases(_outputBuffer.ToString());
+            }
+        }
+        else
+        {
+            OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentRedBrush");
+            OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
+            _failedAttempts++;
+            UpdateHintButtonState();
+        }
+        
+        _currentSession?.Dispose();
+        _currentSession = null;
+    }
+
+    private async Task StopCurrentSessionAsync()
+    {
+        if (_currentSession != null)
+        {
+            await _currentSession.StopAsync();
+            _currentSession.Dispose();
+            _currentSession = null;
+        }
+    }
+
+    private async void StopExecution_Click(object sender, RoutedEventArgs e)
+    {
+        await StopCurrentSessionAsync();
+        OutputText.Text += "\nExecution cancelled.";
+        RunningIndicator.Visibility = Visibility.Collapsed;
+        StopButton.Visibility = Visibility.Collapsed;
+        InputPanel.Visibility = Visibility.Collapsed;
         StatusBar.SetStatus("Cancelled", true);
+    }
+
+    private async void SendInput_Click(object sender, RoutedEventArgs e)
+    {
+        await SendInputAsync();
+    }
+
+    private async void InputBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            await SendInputAsync();
+        }
+    }
+
+    private async Task SendInputAsync()
+    {
+        if (_currentSession == null) return;
+
+        var text = InputBox.Text;
+        InputBox.Clear();
+        
+        // Echo input to output for better UX
+        AppendOutput(text + Environment.NewLine, false);
+        
+        await _currentSession.InputAsync(text);
     }
 
     private void ValidateTestCases(string actualOutput)
@@ -236,7 +285,6 @@ public partial class CodingChallenge : UserControl
             ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
             : (System.Windows.Media.Brush)FindResource("AccentRedBrush");
 
-        // Set panel border and background based on overall result
         TestResultsPanel.BorderBrush = allPassed
             ? (System.Windows.Media.Brush)FindResource("AccentGreenBrush")
             : (System.Windows.Media.Brush)FindResource("AccentRedBrush");
@@ -250,7 +298,6 @@ public partial class CodingChallenge : UserControl
             UpdateHintButtonState();
         }
 
-        // Fire completion event if all tests pass
         if (allPassed && !IsCompleted)
         {
             TriggerSuccessCelebration();
@@ -298,6 +345,7 @@ public partial class CodingChallenge : UserControl
         OutputPanel.Visibility = Visibility.Collapsed;
         TestResultsPanel.Visibility = Visibility.Collapsed;
         HintPanel.Visibility = Visibility.Collapsed;
+        InputPanel.Visibility = Visibility.Collapsed;
         _currentHintIndex = 0;
         _failedAttempts = 0;
 

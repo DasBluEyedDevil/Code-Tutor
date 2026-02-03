@@ -11,11 +11,11 @@ Koin annotations use KSP for dependency injection:
 ```kotlin
 // build.gradle.kts with KSP for Koin
 plugins {
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 
 dependencies {
-    implementation("io.insert-koin:koin-core:4.0.0")
+    implementation("io.insert-koin:koin-core:4.1.1")
     implementation("io.insert-koin:koin-annotations:1.4.0")
     ksp("io.insert-koin:koin-ksp-compiler:1.4.0")
 }

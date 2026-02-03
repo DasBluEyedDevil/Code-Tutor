@@ -16,9 +16,11 @@ In this lesson, you'll learn:
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("io.arrow-kt:arrow-core:1.2.4")
+    implementation("io.arrow-kt:arrow-core:2.2.1")
 }
 ```
+
+> **Note**: Arrow 2.x replaced `Validated` with `EitherNel` and `zipOrAccumulate`. The concepts taught here (error accumulation vs. short-circuit) remain the same — only the types changed. See the Arrow migration guide for details.
 
 ---
 

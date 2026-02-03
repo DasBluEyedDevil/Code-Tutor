@@ -133,7 +133,7 @@ actual fun getPlatformName() = "Desktop"
 // build.gradle.kts
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version "1.6.0"
+    id("org.jetbrains.compose") version "1.10.0"
 }
 
 kotlin {

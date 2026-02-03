@@ -10,7 +10,7 @@ Plugins add capabilities to your build:
 
 ```kotlin
 plugins {
-    kotlin("jvm") version "2.0.21"  // Kotlin JVM plugin
+    kotlin("jvm") version "2.3.0"  // Kotlin JVM plugin
     application                       // Creates runnable application
     id("com.example.custom")          // Custom/third-party plugin
 }

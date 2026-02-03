@@ -8,7 +8,7 @@ Welcome to **Part 6: Cross-Platform Development with Compose Multiplatform**!
 
 You've mastered Kotlin fundamentals, object-oriented programming, functional programming, and backend development with Ktor. Now it's time to bring your skills to cross-platform UI development.
 
-**Compose Multiplatform** is JetBrains' framework for building native user interfaces that run on Android, iOS, Desktop, and Web from a single Kotlin codebase. As of May 2025, iOS support is now **stable** (v1.8.0), making Compose Multiplatform a production-ready choice for cross-platform development.
+**Compose Multiplatform** is JetBrains' framework for building native user interfaces that run on Android, iOS, Desktop, and Web from a single Kotlin codebase. iOS support is **stable** and the framework continues to evolve rapidly (latest version 1.10.0 as of January 2026), making Compose Multiplatform a production-ready choice for cross-platform development.
 
 In this lesson, you'll:
 - ✅ Understand what Compose Multiplatform is and its platform support

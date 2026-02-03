@@ -40,11 +40,11 @@ A simpler approach using `multiplatform-settings`:
 
 ```kotlin
 // build.gradle.kts
-implementation("com.russhwolf:multiplatform-settings:1.1.1")
-implementation("com.russhwolf:multiplatform-settings-no-arg:1.1.1")
+implementation("com.russhwolf:multiplatform-settings:1.3.0")
+implementation("com.russhwolf:multiplatform-settings-no-arg:1.3.0")
 
 // For encrypted storage on Android:
-implementation("com.russhwolf:multiplatform-settings-datastore:1.1.1")
+implementation("com.russhwolf:multiplatform-settings-datastore:1.3.0")
 ```
 
 ```kotlin

@@ -11,7 +11,7 @@ data class CartState(
 sealed class CartEvent {
     data class ItemAdded(val name: String) : CartEvent()
     data class ItemRemoved(val name: String) : CartEvent()
-    object CartCleared : CartEvent()
+    data object CartCleared : CartEvent()
 }
 
 class ShoppingCartViewModel {

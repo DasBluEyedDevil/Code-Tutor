@@ -6,7 +6,7 @@ title: "Lesson Summary"
 
 ### Migration Summary
 
-1. **Update Kotlin to 2.0.21+** in your version catalog
+1. **Update Kotlin to 2.3.0+** in your version catalog
 2. **Enable K2 progressively** - language version first, then API version
 3. **Check dependencies** - ensure all libraries support Kotlin 2.0
 4. **Fix stricter null checks** - K2 catches more null issues

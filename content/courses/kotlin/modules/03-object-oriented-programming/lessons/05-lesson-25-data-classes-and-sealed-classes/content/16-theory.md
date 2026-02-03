@@ -13,7 +13,7 @@ title: "Solution: API Result"
 sealed class ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>()
     data class Error(val code: Int, val message: String) : ApiResult<Nothing>()
-    object Loading : ApiResult<Nothing>()
+    data object Loading : ApiResult<Nothing>()
 }
 
 data class User(val id: Int, val name: String, val email: String)

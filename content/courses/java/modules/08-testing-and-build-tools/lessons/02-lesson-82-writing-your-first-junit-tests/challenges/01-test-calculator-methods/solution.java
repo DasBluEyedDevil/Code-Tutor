@@ -30,5 +30,5 @@
 // }
 
 void main() {
-    println("Test scenarios defined above");
+    IO.println("Test scenarios defined above");
 }

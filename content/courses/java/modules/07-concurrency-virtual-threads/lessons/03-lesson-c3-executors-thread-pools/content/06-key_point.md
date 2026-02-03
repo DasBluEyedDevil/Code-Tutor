@@ -27,7 +27,7 @@ void shutdownGracefully(ExecutorService executor) {
 }
 
 JAVA 19+ ALTERNATIVE:
-ExecutorService implements AutoCloseable:
+ExecutorService implements AutoCloseable (since Java 19), enabling try-with-resources:
 
 try (var executor = Executors.newFixedThreadPool(4)) {
     executor.submit(task);

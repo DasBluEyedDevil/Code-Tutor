@@ -8,7 +8,7 @@ title: "Gradle Plugin Setup"
 **In gradle/libs.versions.toml:**
 ```toml
 [versions]
-sqldelight = "2.0.2"
+sqldelight = "2.2.1"
 
 [libraries]
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }

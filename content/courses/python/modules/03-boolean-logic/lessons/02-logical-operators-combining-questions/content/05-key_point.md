@@ -4,22 +4,22 @@ title: "Key Takeaways"
 ---
 
 - **Three logical operators** combine Boolean questions:
-<li>`and` → All conditions must be True (strict gatekeeper)
-- `or` → At least one condition must be True (lenient)
-- `not` → Reverses True to False and vice versa
+  - `and` → All conditions must be True (strict gatekeeper)
+  - `or` → At least one condition must be True (lenient)
+  - `not` → Reverses True to False and vice versa
 
-</li>- **Truth tables** show all possible outcomes:
-<li>AND: Only True when ALL are True
-- OR: Only False when ALL are False
-- NOT: Always flips the value
+- **Truth tables** show all possible outcomes:
+  - AND: Only True when ALL are True
+  - OR: Only False when ALL are False
+  - NOT: Always flips the value
 
-</li>- **Use parentheses** to make complex conditions clear and control order
+- **Use parentheses** to make complex conditions clear and control order
 - **Short-circuit evaluation**: Python stops checking once the answer is determined (efficient!)
 - **Avoid redundancy**: Don't write `bool_var == True`, just use `bool_var`
 - **Operator precedence**: `not` > `and` > `or` (when in doubt, use parentheses!)
 
 ### Common Patterns You'll Use Constantly:
-```
+```python
 # Range checking (AND)
 if 18 <= age <= 65:  # Chained comparison
     # Working age
@@ -35,8 +35,8 @@ if not is_logged_in:
 # Complex conditions
 if (is_member or spent >= 100) and has_coupon:
     # Apply special discount
-
 ```
+
 ### Before Moving On:
 Make sure you can:
 

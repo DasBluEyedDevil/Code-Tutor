@@ -5,7 +5,9 @@ title: "Understanding the Concept"
 
 Imagine you're at a door with an electronic lock. The lock doesn't care about your story, your excuses, or your good intentions. It asks one simple question:
 
-<p style='text-align: center; font-size: 18px; font-weight: bold;'>"Is the code correct?"</p>The answer can only be:
+**"Is the code correct?"**
+
+The answer can only be:
 
 - **YES** → The door unlocks
 - **NO** → The door stays locked
@@ -26,4 +28,8 @@ Every decision a computer makes starts with these yes/no questions. In Python, w
 ### The Foundation of All Programming Decisions:
 Remember the calculator from Module 2? When we checked `if choice == 1:`, we were asking a Boolean question:
 
-<pre>"Is the user's choice equal to 1?"</pre>The answer (True or False) determined which path the program took. Now you'll learn how to ask these questions deliberately and powerfully!
+```python
+"Is the user's choice equal to 1?"
+```
+
+The answer (True or False) determined which path the program took. Now you'll learn how to ask these questions deliberately and powerfully!

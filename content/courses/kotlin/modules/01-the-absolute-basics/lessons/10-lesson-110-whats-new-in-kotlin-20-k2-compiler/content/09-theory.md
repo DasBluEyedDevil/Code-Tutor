@@ -19,14 +19,14 @@ What is the main benefit of the K2 compiler?
 
 ### Question 2: Backward Compatibility
 
-Does existing Kotlin code work with Kotlin 2.0?
+Does existing Kotlin code work with the Kotlin 2.x series?
 
 **A)** No, all code must be rewritten
 **B)** Only code written after 2020
 **C)** Yes, most existing code works unchanged
 **D)** Only with special migration tools
 
-**Answer**: **C** - Kotlin 2.0 maintains backward compatibility, and most existing code works without changes.
+**Answer**: **C** - The Kotlin 2.x series maintains backward compatibility, and most existing code works without changes.
 
 ---
 

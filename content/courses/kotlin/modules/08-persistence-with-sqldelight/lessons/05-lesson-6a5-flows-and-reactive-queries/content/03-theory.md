@@ -7,7 +7,7 @@ title: "SQLDelight Flow Extension"
 
 Add the coroutines extension:
 ```kotlin
-implementation("app.cash.sqldelight:coroutines-extensions:2.0.2")
+implementation("app.cash.sqldelight:coroutines-extensions:2.2.1")
 ```
 
 ### Converting Query to Flow

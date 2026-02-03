@@ -24,7 +24,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
     // API - exposed to library consumers
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
     
     // Annotation processor - compile only
     compileOnly("org.projectlombok:lombok:1.18.30")

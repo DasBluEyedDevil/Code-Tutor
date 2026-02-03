@@ -40,4 +40,4 @@ actual val mainDispatcher = Dispatchers.Default // No UI thread
 ```
 
 ### Frozen State on iOS (Legacy)
-With Kotlin/Native's old memory model (pre-1.7.20), objects shared across threads needed to be frozen. The new memory model (default since Kotlin 1.9) eliminates this. Make sure you're on Kotlin 1.9+ to avoid freeze-related issues.
+With Kotlin/Native's old memory model (pre-1.7.20), objects shared across threads needed to be frozen. The new memory model (default since Kotlin 1.9, and the only option in Kotlin 2.0+) eliminates this entirely. If you're following this course with Kotlin 2.x, frozen state is not a concern.

@@ -6,7 +6,7 @@ title: "Understanding the Concept"
 Imagine you're organizing your garage. You have different types of containers for different things:
 
 - 📦 **Cardboard boxes** for storing books and papers (fragile text items)
-- 🧰 **Plastic bins with numbers** for counting screws and nails (whole numbers)
+- 🧮 **Plastic bins with numbers** for counting screws and nails (whole numbers)
 - ⚖️ **Containers with measurement scales** for liquids like paint (precise amounts with decimals)
 - ✅ **Yes/No labels** for items that are either here or not (True/False)
 

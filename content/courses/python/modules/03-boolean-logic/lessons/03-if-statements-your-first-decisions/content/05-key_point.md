@@ -10,12 +10,12 @@ title: "Key Takeaways"
 - **Code flow**: Python evaluates the condition, runs indented code if True, skips it if False
 - **Multiple if statements** are independent - each check runs separately
 - **Common mistakes**:
-<li>Missing colon
-- Wrong indentation (too much, too little, mixing tabs/spaces)
-- Using `=` instead of `==`
-- Indenting code that should always run
+  - Missing colon
+  - Wrong indentation (too much, too little, mixing tabs/spaces)
+  - Using `=` instead of `==`
+  - Indenting code that should always run
 
-</li>- **if works with any Boolean**: comparisons, logical operators, Boolean variables
+- **if works with any Boolean**: comparisons, logical operators, Boolean variables
 
 ### Before Moving On:
 Make sure you can:

@@ -13,18 +13,16 @@ title: "Key Takeaways"
 - **Guaranteed execution**: Variables set in both blocks will always be defined
 
 ### When to Use if-else:
-```
-✅ Use if-else when:
-• Exactly two mutually exclusive outcomes
-• Both True and False cases need explicit handling
-• Binary decisions (on/off, yes/no, valid/invalid)
+✅ **Use if-else when:**
+- Exactly two mutually exclusive outcomes
+- Both True and False cases need explicit handling
+- Binary decisions (on/off, yes/no, valid/invalid)
 
-❌ Don't use if-else when:
-• More than two possible outcomes (use elif - next lesson!)
-• The False case needs no action (just use if)
-• Conditions are independent (use multiple if statements)
+❌ **Don't use if-else when:**
+- More than two possible outcomes (use elif - next lesson!)
+- The False case needs no action (just use if)
+- Conditions are independent (use multiple if statements)
 
-```
 ### Before Moving On:
 Make sure you can:
 

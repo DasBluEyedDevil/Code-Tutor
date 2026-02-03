@@ -63,7 +63,7 @@ Companies using Kotlin:
 - **Coursera**: Android app
 - **Evernote**: Android app
 
-**Job Market**: Over 50,000 Kotlin developer jobs posted in 2024 (Indeed, LinkedIn).
+**Job Market**: Kotlin continues to see strong demand, with tens of thousands of developer job listings on Indeed and LinkedIn.
 
 ---
 

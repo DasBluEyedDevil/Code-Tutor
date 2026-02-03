@@ -39,7 +39,7 @@ userFlow.value = User("Alice", 26) // Emitted (different value)
 ```kotlin
 // UI State Pattern
 sealed class UiState {
-    object Loading : UiState()
+    data object Loading : UiState()
     data class Success(val data: List<Item>) : UiState()
     data class Error(val message: String) : UiState()
 }

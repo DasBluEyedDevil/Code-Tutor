@@ -32,5 +32,5 @@
 // }
 
 void main() {
-    println("Test cases defined above");
+    IO.println("Test cases defined above");
 }

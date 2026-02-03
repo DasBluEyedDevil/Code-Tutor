@@ -137,6 +137,26 @@
                                        Style="{StaticResource CodeText}"
                                        TextWrapping="Wrap" />
                         </ScrollViewer>
+                        
+                        <!-- Interactive Input -->
+                        <Grid x:Name="InputPanel" Visibility="Collapsed" Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox x:Name="InputBox" 
+                                     Style="{StaticResource InputBox}"
+                                     FontFamily="{StaticResource MonoFont}"
+                                     KeyDown="InputBox_KeyDown"
+                                     Margin="0,0,8,0" />
+                            <Button x:Name="SendInputButton"
+                                    Grid.Column="1"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Padding="12,4"
+                                    Click="SendInput_Click">
+                                <TextBlock Text="Send" />
+                            </Button>
+                        </Grid>
                     </StackPanel>
                 </Border>
 

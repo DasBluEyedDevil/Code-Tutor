@@ -10,7 +10,7 @@ title: "Image Loading with Coil"
 
 
 ```kotlin
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 
@@ -22,8 +22,7 @@ fun UserAvatar(url: String?, size: Dp = 48.dp) {
         modifier = Modifier
             .size(size)
             .clip(CircleShape),
-        placeholder = painterResource(R.drawable.ic_placeholder),
-        error = painterResource(R.drawable.ic_error)
+        contentScale = ContentScale.Crop
     )
 }
 

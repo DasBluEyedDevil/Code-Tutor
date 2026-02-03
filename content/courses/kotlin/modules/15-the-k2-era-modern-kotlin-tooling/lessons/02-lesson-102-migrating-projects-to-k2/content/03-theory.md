@@ -9,7 +9,7 @@ title: "Migration Checklist"
 Before enabling K2, verify these items:
 
 **1. Kotlin Version**
-- Update to Kotlin 2.0.21 or later
+- Update to Kotlin 2.3.0 or later
 - Update Kotlin Gradle Plugin
 
 **2. Dependencies**

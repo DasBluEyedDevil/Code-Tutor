@@ -5,10 +5,10 @@ title: "Key Takeaways"
 
 - **7 Arithmetic Operators**: `+`, `-`, `*`, `/`, `//`, `%`, `**`
 - **Division has two tools**:
-<li>`/` (regular) always gives a decimal (float)
-- `//` (floor) gives only the whole number part (int)
+  - `/` (regular) always gives a decimal (float)
+  - `//` (floor) gives only the whole number part (int)
 
-</li>- **Modulo (%)** gives you the <em>remainder</em> after division - perfect for finding leftovers
+- **Modulo (%)** gives you the *remainder* after division - perfect for finding leftovers
 - **Order matters**: Python follows PEMDAS - use parentheses to control the order
 - **Power operator (**)** is for exponentiation, not ^ (which means something else in Python)
 - **Mixing types**: Operations with floats produce floats; division (/) always produces a float

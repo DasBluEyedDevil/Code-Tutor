@@ -11,7 +11,7 @@ Be careful with plugin versions:
 ```kotlin
 // buildSrc/build.gradle.kts
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.0")
 }
 
 // Don't also specify version in convention plugin!

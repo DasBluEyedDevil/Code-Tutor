@@ -24,13 +24,7 @@ for await state in viewModel.state {
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("co.touchlab.skie") version "0.9.0"
-}
-
-skie {
-    features {
-        enableSwiftUIObservingPreview = true
-    }
+    id("co.touchlab.skie") version "0.10.9"
 }
 ```
 

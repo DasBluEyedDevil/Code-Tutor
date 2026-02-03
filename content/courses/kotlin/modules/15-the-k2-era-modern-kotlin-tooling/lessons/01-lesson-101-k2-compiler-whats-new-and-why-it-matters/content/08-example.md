@@ -12,7 +12,7 @@ How to configure K2 in your build:
 // build.gradle.kts
 
 plugins {
-    kotlin("jvm") version "2.0.21"
+    kotlin("jvm") version "2.3.0"
 }
 
 kotlin {

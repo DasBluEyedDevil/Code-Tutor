@@ -8,8 +8,8 @@ title: "Setup for Koin Annotations"
 ```toml
 # gradle/libs.versions.toml
 [versions]
-koin = "4.0.0"
-ksp = "2.0.21-1.0.28"
+koin = "4.1.1"
+ksp = "2.3.4"
 
 [libraries]
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin" }

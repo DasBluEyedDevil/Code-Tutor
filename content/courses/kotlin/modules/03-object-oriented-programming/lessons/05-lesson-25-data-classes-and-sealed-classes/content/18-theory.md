@@ -11,7 +11,7 @@ title: "Solution: Task Management"
 
 ```kotlin
 sealed class TaskState {
-    object Todo : TaskState() {
+    data object Todo : TaskState() {
         override fun toString() = "TODO"
     }
 

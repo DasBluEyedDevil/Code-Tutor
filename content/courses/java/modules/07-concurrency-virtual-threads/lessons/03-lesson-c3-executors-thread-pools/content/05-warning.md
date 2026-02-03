@@ -9,7 +9,7 @@ ExecutorService executor = Executors.newFixedThreadPool(4);
 executor.submit(task);
 // Program never exits! Non-daemon threads keep JVM alive
 
-ALWAYS call shutdown() in a finally block or use try-with-resources (Java 19+).
+ALWAYS call shutdown() in a finally block or use try-with-resources (ExecutorService implements AutoCloseable since Java 19).
 
 MISTAKE 2: Using newCachedThreadPool for I/O tasks
 

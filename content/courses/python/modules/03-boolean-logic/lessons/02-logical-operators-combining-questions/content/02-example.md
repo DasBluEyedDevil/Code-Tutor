@@ -95,7 +95,7 @@ y = 10
 result = (x > 10) and (y > 5)  # Python sees x > 10 is False, stops there
 print("Short-circuit AND:", result)  # False (didn't need to check y)
 
-# OR: If first is True, doesn't check the second  
+# OR: If first is True, doesn't check the second
 result = (x < 10) or (y > 100)  # Python sees x < 10 is True, stops there
 print("Short-circuit OR:", result)  # True (didn't need to check y)
 ```

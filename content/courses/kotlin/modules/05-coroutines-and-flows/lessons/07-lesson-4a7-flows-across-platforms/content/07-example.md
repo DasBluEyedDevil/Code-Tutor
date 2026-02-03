@@ -32,8 +32,8 @@ class UserRepository {
 
 // presentation/AuthViewModel.kt
 sealed class AuthState {
-    object NotAuthenticated : AuthState()
-    object Loading : AuthState()
+    data object NotAuthenticated : AuthState()
+    data object Loading : AuthState()
     data class Authenticated(val user: User) : AuthState()
     data class Error(val message: String) : AuthState()
 }

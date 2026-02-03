@@ -33,19 +33,14 @@
   ],
   "commonMistakes": [
     {
-      "mistake": "Using ^ instead of ** for exponentiation",
-      "consequence": "^ is bitwise XOR in Python, not power",
-      "correction": "Use ** for exponentiation: 2 ** 3 gives 8"
+      "mistake": "Using regular division / instead of //",
+      "consequence": "You get a decimal number for hours (e.g. 2.25 hours) instead of a whole number",
+      "correction": "Use floor division (//) for hours"
     },
     {
-      "mistake": "Confusing / and // (division vs floor division)",
-      "consequence": "/ always returns a float, // returns an integer",
-      "correction": "Use / for decimal results, // for whole numbers only"
-    },
-    {
-      "mistake": "Dividing by zero",
-      "consequence": "ZeroDivisionError crashes your program",
-      "correction": "Always check that the divisor is not zero before dividing"
+      "mistake": "Forgetting to convert input to integer",
+      "consequence": "TypeError: unsupported operand type(s) for //: 'str' and 'int'",
+      "correction": "Use int(input(...))"
     }
   ],
   "difficulty": "beginner"

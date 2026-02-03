@@ -8,7 +8,7 @@ title: "Adding Koin to Your Project"
 ```toml
 # gradle/libs.versions.toml
 [versions]
-koin = "4.0.0"
+koin = "4.1.1"
 
 [libraries]
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

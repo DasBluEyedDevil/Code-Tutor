@@ -32,7 +32,7 @@ if age == 18:
 # WRONG - Mixing tabs and spaces
 if score > 90:
     print("A")    # 4 spaces
-	print("Great")  # Tab - IndentationError!
+        print("Great")  # Tab - IndentationError!
 
 # CORRECT - Always use 4 spaces
 if score > 90:

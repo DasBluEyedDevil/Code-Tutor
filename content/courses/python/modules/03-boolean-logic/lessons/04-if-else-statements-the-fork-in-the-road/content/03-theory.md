@@ -4,7 +4,7 @@ title: "Syntax Breakdown"
 ---
 
 ### if-else Statement Anatomy:
-```
+```python
 if condition:
     # Code block 1 (runs if True)
     statement1
@@ -13,67 +13,65 @@ else:
     # Code block 2 (runs if False)
     statement3
     statement4
-
 ```
+
 #### Breaking It Down:
 
-<li>**The if block** (same as before):```
-if condition:  # Check if True
-    code       # Runs if True
+- **The if block** (same as before):
+  ```python
+  if condition:  # Check if True
+      code       # Runs if True
+  ```
 
-```
-</li><li>**The else keyword**:```
-else:  # Note: no condition! No parentheses!
+- **The else keyword**:
+  ```python
+  else:  # Note: no condition! No parentheses!
+  ```
+  - Must be at the same indentation level as its `if`
+  - Has a colon (:) just like if
+  - **No condition** - else means "everything else"
 
-```
+- **The else block**:
+  ```python
+  else:
+      code  # Runs if condition is False
+  ```
+  - Indented just like the if block (4 spaces)
+  - Can have multiple statements
 
-- Must be at the same indentation level as its `if`
-- Has a colon (:) just like if
-- **No condition** - else means "everything else"
-
-</li><li>**The else block**:```
-else:
-    code  # Runs if condition is False
-
-```
-
-- Indented just like the if block (4 spaces)
-- Can have multiple statements
-
-</li>
 ### How Python Reads if-else:
 
-- Evaluate the condition (True or False?)
-- If **True** → Execute if block, **skip else block**
-- If **False** → **Skip if block**, execute else block
-- Continue with code after the if-else structure
+1. Evaluate the condition (True or False?)
+2. If **True** → Execute if block, **skip else block**
+3. If **False** → **Skip if block**, execute else block
+4. Continue with code after the if-else structure
 
 #### Visual Flow:
-```
+```python
 age = 15
 
 if age >= 18:
-    print("Adult")   ← Skipped (False)
+    print("Adult")   # Skipped (False)
 else:
-    print("Minor")   ← Executed (because if was False)
+    print("Minor")   # Executed (because if was False)
 
-print("Done")       ← Always runs
+print("Done")       # Always runs
 
 # Output:
 # Minor
 # Done
+```
 
-```
 ### Key Differences: if vs if-else vs Multiple if:
-<table border='1' cellpadding='5' style='border-collapse: collapse;'><tr><th>Pattern</th><th>Behavior</th><th>When to Use</th></tr><tr><td>**if only**<pre>if condition:
-    code</pre></td><td>Code runs if True, nothing happens if False</td><td>When False case needs no action</td></tr><tr><td>**if-else**<pre>if condition:
-    code1
-else:
-    code2</pre></td><td>Exactly ONE block always runs</td><td>Binary decisions (two mutually exclusive options)</td></tr><tr><td>**Multiple if**<pre>if cond1:
-    code1
-if cond2:
-    code2</pre></td><td>Each check is independent; multiple blocks can run</td><td>Multiple independent conditions</td></tr></table>#### Example Comparison:
-```
+
+| Pattern | Behavior | When to Use |
+| :--- | :--- | :--- |
+| **if only**<br>`if condition:`<br>`    code` | Code runs if True, nothing happens if False | When False case needs no action |
+| **if-else**<br>`if condition:`<br>`    code1`<br>`else:`<br>`    code2` | Exactly ONE block always runs | Binary decisions (two mutually exclusive options) |
+| **Multiple if**<br>`if cond1:`<br>`    code1`<br>`if cond2:`<br>`    code2` | Each check is independent; multiple blocks can run | Multiple independent conditions |
+
+#### Example Comparison:   
+```python
 # Scenario: Checking score for grade
 score = 95
 
@@ -90,107 +88,105 @@ if score >= 90:
 else:
     print("Not an A")
 # Better: Only one check needed, one guaranteed output
-
 ```
+
 ### Common Patterns:
 #### 1. Binary Decision (Yes/No)
-```
+```python
 if user_input == "yes":
     proceed()
 else:
     cancel()
-
 ```
 #### 2. Pass/Fail
-```
+```python
 if score >= 60:
     print("PASS")
 else:
     print("FAIL")
-
 ```
 #### 3. Even/Odd
-```
+```python
 if number % 2 == 0:
     print("Even")
 else:
     print("Odd")
-
 ```
 #### 4. Toggle/Switch
-```
+```python
 if is_on:
     turn_off()
 else:
     turn_on()
-
 ```
 #### 5. Validation
-```
+```python
 if len(password) >= 8:
     accept_password()
 else:
     reject_password()
-
 ```
+
 ### Common Mistakes:
 
-<li>**Putting a condition on else**:```
-# WRONG:
-if age >= 18:
-    print("Adult")
-else age < 18:  # SyntaxError! No condition on else!
-    print("Minor")
+- **Putting a condition on else**:
+  ```python
+  # WRONG:
+  if age >= 18:
+      print("Adult")
+  else age < 18:  # SyntaxError! No condition on else!
+      print("Minor")
 
-# CORRECT:
-if age >= 18:
-    print("Adult")
-else:  # No condition needed - else means "all other cases"
-    print("Minor")
+  # CORRECT:
+  if age >= 18:
+      print("Adult")
+  else:  # No condition needed - else means "all other cases"
+      print("Minor")
+  ```
 
-```
-</li><li>**Wrong indentation**:```
-# WRONG:
-if age >= 18:
-    print("Adult")
-  else:  # IndentationError! else must align with if
-    print("Minor")
+- **Wrong indentation**:
+  ```python
+  # WRONG:
+  if age >= 18:
+      print("Adult")
+    else:  # IndentationError! else must align with if
+      print("Minor")
 
-# CORRECT:
-if age >= 18:
-    print("Adult")
-else:  # Same indentation level as if
-    print("Minor")
+  # CORRECT:
+  if age >= 18:
+      print("Adult")
+  else:  # Same indentation level as if
+      print("Minor")
+  ```
 
-```
-</li><li>**Missing colon on else**:```
-# WRONG:
-if age >= 18:
-    print("Adult")
-else  # SyntaxError! Missing colon
-    print("Minor")
+- **Missing colon on else**:
+  ```python
+  # WRONG:
+  if age >= 18:
+      print("Adult")
+  else  # SyntaxError! Missing colon
+      print("Minor")
 
-# CORRECT:
-if age >= 18:
-    print("Adult")
-else:  # Colon required!
-    print("Minor")
+  # CORRECT:
+  if age >= 18:
+      print("Adult")
+  else:  # Colon required!
+      print("Minor")
+  ```
 
-```
-</li><li>**Using when you need elif**:```
-# PROBLEM: Want to check multiple ranges
-if score >= 90:
-    print("A")
-else:
-    print("Not an A")  # Too broad! What about B, C, D?
+- **Using when you need elif**:
+  ```python
+  # PROBLEM: Want to check multiple ranges
+  if score >= 90:
+      print("A")
+  else:
+      print("Not an A")  # Too broad! What about B, C, D?
 
-# BETTER: Use elif (next lesson!)
-if score >= 90:
-    print("A")
-elif score >= 80:
-    print("B")
-else:
-    print("C or below")
-
-```
-</li>
+  # BETTER: Use elif (next lesson!)
+  if score >= 90:
+      print("A")
+  elif score >= 80:
+      print("B")
+  else:
+      print("C or below")
+  ```

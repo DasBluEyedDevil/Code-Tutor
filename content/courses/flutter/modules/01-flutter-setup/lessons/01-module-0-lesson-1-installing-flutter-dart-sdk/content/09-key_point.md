@@ -15,7 +15,7 @@ Impeller is Flutter's rendering engine that replaced Skia. Think of it as the "g
 
 **Current Status (Flutter 3.38+):**
 - **iOS**: Default since Flutter 3.29 - Skia fallback has been removed
-- **Android**: Default since Flutter 3.38 for API 29+ devices with Vulkan support
+- **Android**: Default since Flutter 3.27 for API 29+ devices with Vulkan support
 - **Android Fallback**: Devices without Vulkan (or with known driver issues) automatically use OpenGL
 
 You don't need to do anything to enable Impeller—it's automatic! This is why Flutter apps feel smoother than ever.

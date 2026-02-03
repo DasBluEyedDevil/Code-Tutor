@@ -30,7 +30,7 @@ class ValidateNoteUseCase {
 }
 
 sealed class ValidationResult {
-    object Valid : ValidationResult()
+    data object Valid : ValidationResult()
     data class Invalid(val errors: List<String>) : ValidationResult()
 }
 

@@ -14,7 +14,8 @@ Think of this as building your first real tool. Up until now, you've been learni
 
 Now you're going to combine all of these into a **Simple Calculator** that works like this:
 
-<pre>Welcome to Simple Calculator!
+```
+Welcome to Simple Calculator!
 
 Choose an operation:
 1. Addition (+)
@@ -30,7 +31,9 @@ Enter first number: 10
 Enter second number: 5
 
 Result: 10 + 5 = 15
-</pre>This isn't just a learning exercise - you're building a <em>real, functional program</em> that you could actually use!
+```
+
+This isn't just a learning exercise - you're building a *real, functional program* that you could actually use!
 
 ### Real-World Connection:
 Every calculator app on your phone, every spreadsheet formula, every e-commerce checkout total - they all work on these same principles. You're learning the foundation of computational thinking.

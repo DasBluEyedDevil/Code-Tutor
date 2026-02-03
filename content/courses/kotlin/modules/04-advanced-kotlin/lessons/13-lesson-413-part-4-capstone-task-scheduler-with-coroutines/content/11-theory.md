@@ -37,7 +37,7 @@ Add sophisticated error recovery strategies:
 
 ```kotlin
 sealed class RecoveryStrategy {
-    object Retry : RecoveryStrategy()
+    data object Retry : RecoveryStrategy()
     data class Fallback(val alternativeTask: Task<*>) : RecoveryStrategy()
     data class Circuit(val threshold: Int, val resetTime: Duration) : RecoveryStrategy()
 }

@@ -24,7 +24,7 @@ This command checks your entire setup and tells you what's wrong.
 
 
 ```dart
-[✓] Flutter (Channel stable, 3.24.0)
+[✓] Flutter (Channel stable, 3.38.6)
 [✗] Android toolchain - develop for Android devices
     ✗ Android SDK not found
 [!] Xcode - develop for iOS and macOS (Xcode 15.0)

@@ -11,12 +11,12 @@ Version catalogs centralize dependency versions in a single file:
 ```toml
 # gradle/libs.versions.toml
 [versions]
-kotlin = "2.0.21"
-kotlinx-coroutines = "1.9.0"
-kotlinx-serialization = "1.7.3"
-ktor = "3.0.2"
-koin = "4.0.0"
-compose-multiplatform = "1.7.1"
+kotlin = "2.3.0"
+kotlinx-coroutines = "1.10.2"
+kotlinx-serialization = "1.10.0"
+ktor = "3.4.0"
+koin = "4.1.1"
+compose-multiplatform = "1.10.0"
 
 [libraries]
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }

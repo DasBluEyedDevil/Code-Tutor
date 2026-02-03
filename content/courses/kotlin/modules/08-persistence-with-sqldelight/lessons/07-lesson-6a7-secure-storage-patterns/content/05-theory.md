@@ -9,7 +9,7 @@ For highly sensitive apps, encrypt the entire database:
 
 ```kotlin
 // build.gradle.kts
-implementation("net.zetetic:sqlcipher-android:4.5.4")
+implementation("net.zetetic:sqlcipher-android:4.13.0")
 
 // Android encrypted driver
 fun createEncryptedDriver(

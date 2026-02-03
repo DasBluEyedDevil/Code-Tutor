@@ -10,7 +10,7 @@ title: "Testing Flows with Turbine"
 // In build.gradle.kts
 commonTest {
     dependencies {
-        implementation("app.cash.turbine:turbine:1.0.0")
+        implementation("app.cash.turbine:turbine:1.2.1")
     }
 }
 ```

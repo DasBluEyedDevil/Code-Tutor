@@ -22,7 +22,7 @@ import kotlin.reflect.full.*
 sealed class TaskResult<out T> {
     data class Success<T>(val value: T) : TaskResult<T>()
     data class Failure(val error: Throwable) : TaskResult<Nothing>()
-    object Cancelled : TaskResult<Nothing>()
+    data object Cancelled : TaskResult<Nothing>()
 
     fun <R> map(transform: (T) -> R): TaskResult<R> = when (this) {
         is Success -> Success(transform(value))

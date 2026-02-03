@@ -21,7 +21,7 @@ dependencies {
 
 // After: KSP
 plugins {
-    id("com.google.devtools.ksp") version "2.0.21-1.0.28"
+    id("com.google.devtools.ksp") version "2.3.4"
 }
 
 dependencies {
