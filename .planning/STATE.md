@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 3 complete, ready for Phase 4 (C# Course Audit)
+**Current focus:** Phase 4 (C# Course Audit) -- In progress
 
 ## Current Position
 
-Phase: 3 of 9 (JavaScript Course Audit) -- COMPLETE
-Plan: 7 of 7 in current phase (all complete)
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 03-07-PLAN.md (Global Verification and Voice Pass) -- human approved
+Phase: 4 of 9 (C# Course Audit)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-03 -- Completed 04-01-PLAN.md (Version Alignment and Structural Foundation)
 
-Progress: [########] 7/7 phase plans (100%)
+Progress: [##........] 1/5 phase plans (20%)
 
-Overall: [#####################...........] 21/44 total plans (48%)
+Overall: [######################..........] 22/44 total plans (50%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 21
-- Average duration: 11 min
-- Total execution time: ~226 min
+- Total plans completed: 22
+- Average duration: 10 min
+- Total execution time: ~230 min
 
 **By Phase:**
 
@@ -32,10 +32,11 @@ Overall: [#####################...........] 21/44 total plans (48%)
 | 01-foundation | 6/6 | 37 min | 6 min |
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
+| 04-csharp-audit | 1/5 | 4 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-07 (12 min), 03-06 (17 min), 03-03 (13 min), 03-04 (18 min), 03-05 (8 min)
-- Trend: 03-07 global sweep found zero remaining issues (all caught by prior plans)
+- Last 5 plans: 04-01 (4 min), 03-07 (12 min), 03-06 (17 min), 03-03 (13 min), 03-04 (18 min)
+- Trend: 04-01 fast execution (version alignment + renames, no content edits)
 
 *Updated after each plan completion*
 
@@ -133,6 +134,19 @@ Recent decisions affecting current work:
 - [03-07]: TypeScript .js challenge files in M10+ are intentional (TS-within-JS course structure)
 - [03-07]: All 304 JSON files validated (challenge.json + lesson.json + module.json)
 - [03-07]: Bullet-point analogy format in M11-M21 is acceptable stylistic variation
+- [04-01]: C# course aligned to .NET 9 / C# 13 (version-manifest.json + course.json)
+- [04-01]: 24 non-standard filenames renamed (11 architecture->theory, 8 real_world->analogy, 5 deep_dive->theory)
+- [04-01]: C# course has 132 lessons across 24 modules, 532 content files
+- [04-01]: course.json estimatedHours: 29 -> 100, difficulty: advanced -> beginner-to-advanced
+- [04-01]: refactor_course.py artifact deleted
+- [04-01]: M06 title "Methods and Functions" is misleading (content is OOP basics: classes, constructors, properties)
+- [04-01]: M07 title "OOP Basics" covers intermediate OOP (inheritance, polymorphism, interfaces, records)
+- [04-01]: M08 title "Advanced OOP Concepts" covers exceptions, namespaces, NuGet (not OOP)
+- [04-01]: M14 L03 and M16 have Aspire content overlap (same APIs introduced twice)
+- [04-01]: 23 of 24 modules have zero KEY_POINT content (systemic gap, not actionable this cycle)
+- [04-01]: 27 lessons across 8 modules missing WARNING content (M12: 8/8, M24: 5/5 worst)
+- [04-01]: 2,427 bin/obj build artifacts in capstone directory (flag for 04-05 cleanup)
+- [04-01]: Module hours sum to 58h but course.json says 100h (individual module.json values low)
 
 ### Pending Todos
 
@@ -145,9 +159,11 @@ Recent decisions affecting current work:
 - Module 15 lesson 15.7 virtual threads still duplicates Module 07 concurrency (content updated but structural overlap remains)
 - Dart Frog community transition (July 2025) needs API verification in Phase 5
 - ONNX Runtime GenAI 12 versions behind (0.5.2 -> current) -- upgrade risk in Phase 8
+- C# capstone has 2,427 bin/obj build artifacts committed to repo (needs .gitignore + cleanup in 04-05)
+- C# M14/M16 Aspire content overlap (same APIs taught in both modules)
 
 ## Session Continuity
 
-Last session: 2026-02-03T02:30:00Z
-Stopped at: Completed 03-07-PLAN.md (Global Verification and Voice Pass) -- Phase 3 COMPLETE
+Last session: 2026-02-03T22:56:00Z
+Stopped at: Completed 04-01-PLAN.md (Version Alignment and Structural Foundation)
 Resume file: None
