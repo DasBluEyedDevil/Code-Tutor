@@ -31,11 +31,11 @@
 
 ### Content Quality — C#
 
-- [ ] **CSRP-01**: Every lesson reviewed for accuracy against C# 12/.NET 8
-- [ ] **CSRP-02**: Progressive curriculum from basics through ASP.NET to deployable project
-- [ ] **CSRP-03**: All coding challenges execute and validate correctly
-- [ ] **CSRP-04**: Capstone project exists and is deployable
-- [ ] **CSRP-05**: KEY_POINTs added throughout (currently only 1 across 132 lessons)
+- [x] **CSRP-01**: Every lesson reviewed for accuracy against C# 12/.NET 8
+- [x] **CSRP-02**: Progressive curriculum from basics through ASP.NET to deployable project
+- [x] **CSRP-03**: All coding challenges execute and validate correctly
+- [x] **CSRP-04**: Capstone project exists and is deployable
+- [x] **CSRP-05**: KEY_POINTs added throughout (currently only 1 across 132 lessons)
 
 ### Content Quality — JavaScript
 
@@ -55,11 +55,11 @@
 
 ### Content Quality — Flutter/Dart
 
-- [ ] **FLTR-01**: Every lesson reviewed for accuracy against Flutter 3.x/Dart 3.x stable
-- [ ] **FLTR-02**: Progressive curriculum from basics through full app with backend to deployable project
-- [ ] **FLTR-03**: All coding challenges execute and validate correctly
-- [ ] **FLTR-04**: Capstone project exists and is deployable
-- [ ] **FLTR-05**: Dart Frog content verified against current APIs (community transition in 2025)
+- [x] **FLTR-01**: Every lesson reviewed for accuracy against Flutter 3.x/Dart 3.x stable
+- [x] **FLTR-02**: Progressive curriculum from basics through full app with backend to deployable project
+- [x] **FLTR-03**: All coding challenges execute and validate correctly
+- [x] **FLTR-04**: Capstone project exists and is deployable
+- [x] **FLTR-05**: Dart Frog content verified against current APIs (community transition in 2025)
 
 ### AI Tutor
 
@@ -135,11 +135,11 @@
 | CSRP-03 | Phase 4 | Complete |
 | CSRP-04 | Phase 4 | Complete |
 | CSRP-05 | Phase 4 | Complete |
-| FLTR-01 | Phase 5 | Pending |
-| FLTR-02 | Phase 5 | Pending |
-| FLTR-03 | Phase 5 | Pending |
-| FLTR-04 | Phase 5 | Pending |
-| FLTR-05 | Phase 5 | Pending |
+| FLTR-01 | Phase 5 | Complete |
+| FLTR-02 | Phase 5 | Complete |
+| FLTR-03 | Phase 5 | Complete |
+| FLTR-04 | Phase 5 | Complete |
+| FLTR-05 | Phase 5 | Complete |
 | KTLN-01 | Phase 6 | Pending |
 | KTLN-02 | Phase 6 | Pending |
 | KTLN-03 | Phase 6 | Pending |
@@ -172,4 +172,4 @@
 
 ---
 *Requirements defined: 2026-02-02*
-*Last updated: 2026-02-03 after Phase 3 completion*
+*Last updated: 2026-02-04 after Phase 5 completion*
