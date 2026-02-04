@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 5 of 9 (Flutter/Dart Course Audit)
-Plan: 1 of 7 in current phase
+Plan: 2 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 05-01-PLAN.md (Version alignment and structural cleanup)
+Last activity: 2026-02-04 -- Completed 05-02-PLAN.md (M01-M07 accuracy verification)
 
-Progress: [#.........] 1/7 phase plans (14%)
+Progress: [##........] 2/7 phase plans (29%)
 
-Overall: [###########################.....] 27/44 total plans (61%)
+Overall: [############################....] 28/44 total plans (64%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
+- Total plans completed: 28
 - Average duration: 10 min
-- Total execution time: ~287 min
+- Total execution time: ~294 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Overall: [###########################.....] 27/44 total plans (61%)
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
-| 05-flutter-audit | 1/7 | 5 min | 5 min |
+| 05-flutter-audit | 2/7 | 12 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-01 (5 min), 04-05 (25 min), 04-04 (15 min), 04-03 (8 min), 04-02 (7 min)
-- Trend: Phase 5 started; version alignment + structural cleanup complete
+- Last 5 plans: 05-02 (7 min), 05-01 (5 min), 04-05 (25 min), 04-04 (15 min), 04-03 (8 min)
+- Trend: M01-M07 verified; foundational modules clean
 
 *Updated after each plan completion*
 
@@ -183,6 +183,14 @@ Recent decisions affecting current work:
 - [05-01]: 5 misplaced lessons annotated with [Note:] placement context in M10/M11
 - [05-01]: M03/M04/M05 descriptions written from scratch (originals were generic placeholders)
 - [05-01]: course.json estimatedHours kept at 150 (153 lessons; ~1h/lesson reasonable for full-stack)
+- [05-02]: M01-M05 verified 100% accurate with zero corrections (05-01 alignment was thorough)
+- [05-02]: Flutter 3.27 references kept as historical context (Impeller Android default, deep linking default)
+- [05-02]: WillPopScope references kept in M07 L08 migration lesson (intentional teaching context)
+- [05-02]: Riverpod version constraints updated to ^2.6.1 (flutter_riverpod, riverpod_annotation, riverpod_generator, hooks_riverpod)
+- [05-02]: Riverpod 3.x migration note added in M06 L04 (first Riverpod code lesson)
+- [05-02]: GoRouter version reference updated to 17.x (not pinned to 17.0.0)
+- [05-02]: useMaterial3: true removed from M07 code examples (Material 3 is default since Flutter 3.16)
+- [05-02]: Uncommitted 05-01 changes detected in M08, M09, M15, M16, M17 (outside M01-M07 scope)
 
 ### Pending Todos
 
@@ -200,6 +208,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-04T04:07:00Z
-Stopped at: Completed 05-01-PLAN.md (Version alignment and structural cleanup)
+Last session: 2026-02-04T04:17:13Z
+Stopped at: Completed 05-02-PLAN.md (M01-M07 accuracy verification)
 Resume file: None
