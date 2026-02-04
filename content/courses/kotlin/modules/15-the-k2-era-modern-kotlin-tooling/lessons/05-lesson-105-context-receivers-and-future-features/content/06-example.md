@@ -22,36 +22,36 @@ class Transaction(
     override fun execute(sql: String): Int {
         return connection.prepareStatement(sql).executeUpdate()
     }
-    
+
     override fun query(sql: String): List<Map<String, Any>> {
         // Implementation
         return emptyList()
     }
-    
+
     override fun rollback() {
         connection.rollback()
     }
 }
 
 // Functions that require transaction context
-context(TransactionContext)
+context(tx: TransactionContext)
 fun transferMoney(from: Long, to: Long, amount: BigDecimal) {
-    execute("UPDATE accounts SET balance = balance - $amount WHERE id = $from")
-    execute("UPDATE accounts SET balance = balance + $amount WHERE id = $to")
+    tx.execute("UPDATE accounts SET balance = balance - $amount WHERE id = $from")
+    tx.execute("UPDATE accounts SET balance = balance + $amount WHERE id = $to")
 }
 
-context(TransactionContext)
+context(tx: TransactionContext)
 fun createOrder(userId: Long, items: List<OrderItem>): Long {
-    execute("INSERT INTO orders (user_id, created_at) VALUES ($userId, NOW())")
-    val orderId = query("SELECT LAST_INSERT_ID()").first()["id"] as Long
-    
+    tx.execute("INSERT INTO orders (user_id, created_at) VALUES ($userId, NOW())")
+    val orderId = tx.query("SELECT LAST_INSERT_ID()").first()["id"] as Long
+
     items.forEach { item ->
-        execute(
+        tx.execute(
             "INSERT INTO order_items (order_id, product_id, quantity) " +
             "VALUES ($orderId, ${item.productId}, ${item.quantity})"
         )
     }
-    
+
     return orderId
 }
 

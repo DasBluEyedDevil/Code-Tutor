@@ -1,44 +1,44 @@
 ---
 type: "EXAMPLE"
-title: "Context Receivers for DSLs"
+title: "Context Parameters for DSLs"
 ---
 
 
-Context receivers enable powerful DSL patterns:
+Context parameters enable powerful DSL patterns:
 
 
 
 ```kotlin
-// HTML DSL with context receivers
+// HTML DSL with context parameters
 class HtmlBuilder {
     private val content = StringBuilder()
-    
+
     fun append(text: String) {
         content.append(text)
     }
-    
+
     override fun toString() = content.toString()
 }
 
-context(HtmlBuilder)
+context(html: HtmlBuilder)
 fun div(cssClass: String? = null, block: context(HtmlBuilder) () -> Unit) {
-    append("<div")
-    cssClass?.let { append(" class=\"$it\"") }
-    append(">")
+    html.append("<div")
+    cssClass?.let { html.append(" class=\"$it\"") }
+    html.append(">")
     block()
-    append("</div>")
+    html.append("</div>")
 }
 
-context(HtmlBuilder)
+context(html: HtmlBuilder)
 fun span(text: String, cssClass: String? = null) {
-    append("<span")
-    cssClass?.let { append(" class=\"$it\"") }
-    append(">$text</span>")
+    html.append("<span")
+    cssClass?.let { html.append(" class=\"$it\"") }
+    html.append(">$text</span>")
 }
 
-context(HtmlBuilder)
+context(html: HtmlBuilder)
 fun p(text: String) {
-    append("<p>$text</p>")
+    html.append("<p>$text</p>")
 }
 
 // Usage
@@ -51,7 +51,7 @@ fun buildPage(): String {
             }
             div("content") {
                 p("Hello, World!")
-                p("Context receivers are powerful.")
+                p("Context parameters are powerful.")
             }
         }
     }
@@ -60,5 +60,5 @@ fun buildPage(): String {
 
 // Outputs:
 // <div class="container"><div class="header"><span class="title">Welcome</span></div>
-// <div class="content"><p>Hello, World!</p><p>Context receivers are powerful.</p></div></div>
+// <div class="content"><p>Hello, World!</p><p>Context parameters are powerful.</p></div></div>
 ```

@@ -4,9 +4,9 @@ title: "Why KSP Over kapt?"
 ---
 
 
-### The Problem with kapt
+### The Problem with kapt (Deprecated)
 
-kapt (Kotlin Annotation Processing Tool) works by:
+kapt (Kotlin Annotation Processing Tool) is deprecated as of Kotlin 2.0. It works by:
 1. Generating Java stubs from Kotlin code
 2. Running Java annotation processors on those stubs
 3. Processing the generated code

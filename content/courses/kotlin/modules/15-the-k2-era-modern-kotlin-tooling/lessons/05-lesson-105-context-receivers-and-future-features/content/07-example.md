@@ -1,10 +1,10 @@
 ---
 type: "EXAMPLE"
-title: "Arrow's Raise with Context Receivers"
+title: "Arrow's Raise with Context Parameters"
 ---
 
 
-Arrow uses context receivers for effect handling:
+Arrow uses context parameters for effect handling:
 
 
 
@@ -18,23 +18,23 @@ sealed interface UserError {
     data object Unauthorized : UserError
 }
 
-// Functions using Raise context
-context(Raise<UserError>)
+// Functions using Raise context parameter
+context(raise: Raise<UserError>)
 suspend fun getUser(id: Long): User {
-    ensure(id > 0) { UserError.NotFound(id) }
-    
+    raise.ensure(id > 0) { UserError.NotFound(id) }
+
     return userRepository.findById(id)
-        ?: raise(UserError.NotFound(id))
+        ?: raise.raise(UserError.NotFound(id))
 }
 
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 suspend fun validateEmail(email: String): String {
-    ensure(email.contains("@")) { UserError.InvalidEmail(email) }
-    ensure(!email.startsWith("test@")) { UserError.InvalidEmail(email) }
+    raise.ensure(email.contains("@")) { UserError.InvalidEmail(email) }
+    raise.ensure(!email.startsWith("test@")) { UserError.InvalidEmail(email) }
     return email
 }
 
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 suspend fun updateUserEmail(userId: Long, newEmail: String): User {
     val user = getUser(userId)  // Raise context is available
     val validEmail = validateEmail(newEmail)
@@ -46,7 +46,7 @@ suspend fun main() {
     val result: Either<UserError, User> = either {
         updateUserEmail(123, "new@example.com")
     }
-    
+
     result.fold(
         ifLeft = { error -> println("Error: $error") },
         ifRight = { user -> println("Updated: $user") }

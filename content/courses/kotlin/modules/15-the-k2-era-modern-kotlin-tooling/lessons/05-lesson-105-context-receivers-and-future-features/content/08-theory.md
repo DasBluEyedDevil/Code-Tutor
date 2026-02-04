@@ -1,52 +1,44 @@
 ---
 type: "THEORY"
-title: "Future Kotlin Features"
+title: "Migration: Context Receivers to Context Parameters"
 ---
 
 
-### Upcoming Language Features
+### Migrating from Context Receivers
 
-**1. Name-Based Destructuring (Under Consideration)**
+If you have code using the deprecated context receivers syntax, here is how to migrate:
+
+**1. Syntax Change**
 ```kotlin
-// Current: position-based
-val (first, second) = pair
+// OLD (deprecated context receivers, -Xcontext-receivers)
+context(Logger)
+fun doWork() {
+    info("working")  // Implicit member access
+}
 
-// Future: name-based
-val (x = first, y = second) = point
-```
-
-**2. Static Extensions (KEEP-348)**
-```kotlin
-// Add static methods to existing classes
-fun String.Companion.randomAlphanumeric(length: Int): String
-
-String.randomAlphanumeric(10)  // Static call
-```
-
-**3. Union Types (Discussion Phase)**
-```kotlin
-// Express "either A or B" without sealed classes
-fun parse(input: String): Int | ParseError
-```
-
-**4. Collection Literals (Proposed)**
-```kotlin
-// Simpler collection creation
-val list = [1, 2, 3]  // Instead of listOf(1, 2, 3)
-val map = {"a": 1, "b": 2}  // Instead of mapOf("a" to 1, "b" to 2)
-```
-
-**5. Explicit Backing Fields (Under Development)**
-```kotlin
-class Counter {
-    var count: Int = 0
-        field = 0  // Explicit backing field
-        set(value) {
-            require(value >= 0)
-            field = value
-        }
+// NEW (context parameters, -Xcontext-parameters)
+context(logger: Logger)
+fun doWork() {
+    logger.info("working")  // Explicit qualified access
 }
 ```
+
+**2. Compiler Flag**
+```kotlin
+// build.gradle.kts -- replace the old flag
+kotlin {
+    compilerOptions {
+        // Remove: freeCompilerArgs.add("-Xcontext-receivers")
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
+}
+```
+
+**3. Key Differences**
+- Context parameters are **named**: `context(name: Type)` instead of `context(Type)`
+- Access is **explicit**: `name.member()` instead of implicit `member()`
+- Multiple contexts: `context(a: TypeA, b: TypeB)` -- no ambiguity
+- Historical note: context receivers were experimental in Kotlin 1.6.20-1.9.x, deprecated in 2.0.20
 
 ---
 

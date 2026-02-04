@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Understanding Context Receivers"
+title: "Understanding Context Parameters"
 ---
 
 
@@ -19,7 +19,6 @@ But what if a function needs multiple "contexts" to operate?
 class Logger { fun info(msg: String) { /* ... */ } }
 class Database { fun query(sql: String): List<Row> { /* ... */ } }
 
-// How do we write a function that needs both?
 // Traditional approach: pass as parameters
 fun loadUsers(logger: Logger, db: Database): List<User> {
     logger.info("Loading users")
@@ -27,17 +26,19 @@ fun loadUsers(logger: Logger, db: Database): List<User> {
 }
 ```
 
-### The Solution: Context Receivers
+### The Solution: Context Parameters
 
-Context receivers allow functions to require multiple implicit receivers:
+Context parameters allow functions to declare named dependencies that the compiler provides implicitly:
 
 ```kotlin
-context(Logger, Database)
+context(logger: Logger, db: Database)
 fun loadUsers(): List<User> {
-    info("Loading users")  // Logger is in context
-    return query("SELECT * FROM users").map { /* ... */ }  // Database too
+    logger.info("Loading users")      // Explicit access via parameter name
+    return db.query("SELECT * FROM users").map { /* ... */ }
 }
 ```
+
+> **Feature Status**: Context parameters are Beta since Kotlin 2.2. Enable with `-Xcontext-parameters`. They replace the deprecated *context receivers* experiment (`-Xcontext-receivers`) which used unnamed `context(Type)` syntax.
 
 ---
 

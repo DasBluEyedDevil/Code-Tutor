@@ -6,11 +6,12 @@ title: "Module Summary"
 
 ### Congratulations!
 
-You've completed Module 10: The K2 Era - Modern Kotlin Tooling!
+You've completed Module 15: The K2 Era - Modern Kotlin Tooling!
 
 **What You've Learned:**
 
 1. **K2 Compiler**
+   - Default compiler since Kotlin 2.0
    - 2x faster compilation
    - Smarter type inference and smart casts
    - Better error diagnostics
@@ -21,9 +22,9 @@ You've completed Module 10: The K2 Era - Modern Kotlin Tooling!
    - Library compatibility
 
 3. **KSP**
-   - 2x faster than kapt
+   - Replacement for deprecated kapt
+   - 2x faster, Kotlin-native
    - Migrating Room, Moshi, Dagger, Koin
-   - KSP configuration
 
 4. **Writing KSP Processors**
    - Project structure
@@ -31,16 +32,17 @@ You've completed Module 10: The K2 Era - Modern Kotlin Tooling!
    - KotlinPoet code generation
    - Testing processors
 
-5. **Context Receivers**
-   - Multiple implicit receivers
+5. **Context Parameters**
+   - Named context dependencies (Beta since Kotlin 2.2)
    - DSL patterns
    - Transaction contexts
-   - Arrow integration
+   - Arrow Raise integration
+   - Migration from deprecated context receivers
 
 **Key Versions:**
-- Kotlin: 2.3.0
-- KSP: 2.3.4
-- KotlinPoet: 1.18.1
+- Kotlin: 2.3.x
+- KSP: 2.3.x
+- KotlinPoet: 1.18.x
 
 You're now equipped with cutting-edge Kotlin knowledge to build faster, safer, and more maintainable applications!
 

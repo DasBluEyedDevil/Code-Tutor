@@ -4,7 +4,7 @@ title: "Topic Introduction"
 ---
 
 
-KSP (Kotlin Symbol Processing) is a modern alternative to kapt that's significantly faster and designed specifically for Kotlin. If you're using kapt for annotation processing, migrating to KSP can cut your build times substantially.
+KSP (Kotlin Symbol Processing) is the standard replacement for kapt (deprecated in Kotlin 2.0). KSP is significantly faster and designed specifically for Kotlin. If you're still using kapt for annotation processing, migrating to KSP will cut your build times substantially and future-proof your project.
 
 In this lesson, you'll learn:
 - Why KSP is faster than kapt
