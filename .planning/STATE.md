@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 02 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 04 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 2 of 10 in current phase
+Plan: 4 of 10 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-02-PLAN.md (accuracy pass M01-M05)
+Last activity: 2026-02-04 -- Completed 06-04-PLAN.md (M08-M12 accuracy pass + capstone assessment)
 
-Progress: [##........] 2/10 phase plans (20%)
+Progress: [####......] 4/10 phase plans (40%)
 
-Overall: [#################################.........] 35/61 total plans (57%)
+Overall: [###################################.......] 37/61 total plans (61%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 37
 - Average duration: 10 min
-- Total execution time: ~348 min
+- Total execution time: ~364 min
 
 **By Phase:**
 
@@ -35,11 +35,11 @@ Overall: [#################################.........] 35/61 total plans (57%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 2/10 | 11 min | 6 min |
+| 06-kotlin-audit | 4/10 | 27 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-02 (7 min), 06-01 (4 min), 05-07 (5 min), 05-06 (10 min), 05-05 (10 min)
-- Trend: M01-M05 accuracy verified; coroutines overlap assessed (kept both with transition note)
+- Last 5 plans: 06-04 (8 min), 06-03 (8 min), 06-02 (7 min), 06-01 (4 min), 05-07 (5 min)
+- Trend: M08-M12 accuracy verified; capstone is Jetpack Compose not CMP (documented for Plan 08)
 
 *Updated after each plan completion*
 
@@ -229,6 +229,12 @@ Recent decisions affecting current work:
 - [06-02]: GlobalScope references in M05 L02 kept as anti-pattern warnings (pedagogically correct)
 - [06-02]: Kotlin version refs in M03 L04/L05 and M05 L07 kept as historical context
 - [06-02]: M01 L10 version-tagged framing cleaned: "Kotlin 2.0 in Practice" -> "Modern Kotlin in Practice"
+- [06-04]: M08-M10 verified 100% accurate (SQLDelight 2.2.x, KMP Architecture, Koin 4.1.x -- zero corrections)
+- [06-04]: M11 verified 100% accurate (kotlin.test, runTest, StandardTestDispatcher -- zero corrections)
+- [06-04]: M12 docker-compose version field + commands updated to Compose V2
+- [06-04]: M12 L08 capstone is Jetpack Compose ONLY (not CMP) -- uses AndroidViewModel, no shared code
+- [06-04]: M12 L08 ShopKotlin can be reframed as Android reference while Plan 08 creates CMP capstone
+- [06-04]: M12 L08 lesson.json says 30 min, content says 12-16 hours (metadata discrepancy)
 
 ### Pending Todos
 
@@ -247,5 +253,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-02-PLAN.md (accuracy pass M01-M05)
+Stopped at: Completed 06-04-PLAN.md (M08-M12 accuracy pass + capstone assessment)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
