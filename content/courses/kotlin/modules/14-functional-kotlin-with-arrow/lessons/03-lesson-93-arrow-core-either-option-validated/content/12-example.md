@@ -1,28 +1,29 @@
 ---
 type: "EXAMPLE"
-title: "Using Validated"
+title: "Handling Accumulated Errors"
 ---
 
 
-Handling Validated results:
+Handling EitherNel results:
 
 
 
 ```kotlin
 // Usage - shows all errors at once!
-val result = validateRegistration("ab", "invalid", "123", 16)
+val result: EitherNel<String, Registration> =
+    validateRegistration("ab", "invalid", "123", 16)
 
-when (result) {
-    is Validated.Valid -> {
-        println("Registration successful: ${result.value}")
-    }
-    is Validated.Invalid -> {
+result.fold(
+    ifLeft = { errors ->
         println("Errors:")
-        result.value.forEach { error ->
+        errors.forEach { error ->
             println("  - $error")
         }
+    },
+    ifRight = { registration ->
+        println("Registration successful: $registration")
     }
-}
+)
 
 // Output:
 // Errors:
@@ -31,10 +32,7 @@ when (result) {
 //   - Password must be at least 8 characters
 //   - Must be 18 or older
 
-// Convert to Either when done validating
-val either: Either<NonEmptyList<String>, Registration> = result.toEither()
-
-// Or use fold
+// EitherNel IS an Either, so all Either operations work
 val message: String = result.fold(
     { errors -> "Failed: ${errors.joinToString(", ")}" },
     { registration -> "Welcome, ${registration.username}!" }

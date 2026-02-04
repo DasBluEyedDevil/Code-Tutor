@@ -1,29 +1,29 @@
 ---
 type: "WARNING"
-title: "Context Receiver Limitations"
+title: "Context Parameters: Beta Feature"
 ---
 
 
-### Experimental Feature
+### Enable Context Parameters
 
-Context receivers require a compiler flag:
+Context parameters require a compiler flag (Beta since Kotlin 2.2):
 
 ```kotlin
 // build.gradle.kts
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xcontext-receivers")
+        freeCompilerArgs.add("-Xcontext-parameters")
     }
 }
 ```
 
 ### Alternative: Use either { } Blocks
 
-If you can't use context receivers:
+If you prefer not to use context parameters:
 
 ```kotlin
 // Instead of:
-context(Raise<E>)
+context(raise: Raise<E>)
 fun doWork(): A
 
 // Use:
@@ -32,9 +32,13 @@ fun doWork(): Either<E, A> = either {
 }
 ```
 
+### Deprecated: Context Receivers
+
+The older `-Xcontext-receivers` flag and unnamed `context(Raise<E>)` syntax were experimental and deprecated in Kotlin 2.0.20. Always use the named context parameters form: `context(raise: Raise<E>)`.
+
 ### IDE Support
 
-IDE support for context receivers is improving but may have issues. The `either { }` builder approach works reliably.
+IntelliJ IDEA 2024.2+ and Kotlin plugin 2.2+ have good support for context parameters. The `either { }` builder approach remains a reliable alternative.
 
 ---
 

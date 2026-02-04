@@ -1,6 +1,6 @@
 ---
 type: "THEORY"
-title: "Validated - Accumulating Errors"
+title: "Error Accumulation with zipOrAccumulate"
 ---
 
 
@@ -17,14 +17,19 @@ either {
 }
 ```
 
-### Validated Collects All Errors
+### zipOrAccumulate Collects All Errors
 
 ```kotlin
-validateName(name)
-    .zip(validateEmail(email), validateAge(age)) { n, e, a ->
+either {
+    zipOrAccumulate(
+        { validateName(name) },
+        { validateEmail(email) },
+        { validateAge(age) }
+    ) { n, e, a ->
         User(n, e, a)
     }
-// Returns ALL validation errors at once!
+}
+// Returns ALL validation errors at once as EitherNel!
 ```
 
 ---

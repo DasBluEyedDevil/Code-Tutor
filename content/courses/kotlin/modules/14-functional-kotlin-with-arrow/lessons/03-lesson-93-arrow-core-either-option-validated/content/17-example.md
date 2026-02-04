@@ -8,7 +8,7 @@ title: "Solution: User Service"
 
 ```kotlin
 import arrow.core.*
-import arrow.core.raise.either
+import arrow.core.raise.*
 
 sealed interface UserError {
     data class NotFound(val id: Long) : UserError
@@ -24,14 +24,13 @@ class UserService(private val repository: UserRepository) {
     fun createUser(request: CreateUserRequest): Either<UserError, User> = either {
         // Validate input (accumulate errors)
         val validated = validateCreateRequest(request)
-            .toEither()
             .mapLeft { UserError.InvalidData(it) }
             .bind()
-        
+
         // Check email uniqueness
         val exists = repository.existsByEmail(validated.email)
         ensure(!exists) { UserError.Conflict("Email already registered") }
-        
+
         // Create user
         repository.save(User(0, validated.name, validated.email))
     }
@@ -43,7 +42,6 @@ class UserService(private val repository: UserRepository) {
     fun updateEmail(userId: Long, newEmail: String): Either<UserError, User> = either {
         val user = getUser(userId).bind()
         val validEmail = validateEmail(newEmail)
-            .toEither()
             .mapLeft { UserError.InvalidData(it) }
             .bind()
         
@@ -51,16 +49,19 @@ class UserService(private val repository: UserRepository) {
         repository.save(updated)
     }
 
-    private fun validateCreateRequest(request: CreateUserRequest): ValidatedNel<String, CreateUserRequest> =
-        validateName(request.name)
-            .zip(validateEmail(request.email)) { n, e -> CreateUserRequest(n, e) }
+    private fun validateCreateRequest(request: CreateUserRequest): EitherNel<String, CreateUserRequest> =
+        either {
+            zipOrAccumulate(
+                { ensure(request.name.isNotBlank()) { "Name cannot be blank" } },
+                { ensure("@" in request.email) { "Invalid email format" } }
+            ) { _, _ -> request }
+        }
 
-    private fun validateName(name: String): ValidatedNel<String, String> =
-        if (name.isNotBlank()) name.validNel()
-        else "Name cannot be blank".invalidNel()
-
-    private fun validateEmail(email: String): ValidatedNel<String, String> =
-        if ("@" in email) email.validNel()
-        else "Invalid email format".invalidNel()
+    // Individual validations return Either for composability
+    private fun validateEmail(email: String): EitherNel<String, String> =
+        either {
+            ensure(email.contains("@")) { nonEmptyListOf("Invalid email format") }
+            email
+        }
 }
 ```

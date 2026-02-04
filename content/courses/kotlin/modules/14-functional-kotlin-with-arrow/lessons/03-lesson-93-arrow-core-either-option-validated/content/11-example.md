@@ -1,48 +1,33 @@
 ---
 type: "EXAMPLE"
-title: "Validated for Form Validation"
+title: "Error Accumulation for Form Validation"
 ---
 
 
-Collect all validation errors:
+Collect all validation errors with `zipOrAccumulate`:
 
 
 
 ```kotlin
 import arrow.core.*
-
-// ValidatedNel = Validated with NonEmptyList of errors
-fun validateUsername(name: String): ValidatedNel<String, String> =
-    if (name.length >= 3) name.validNel()
-    else "Username must be at least 3 characters".invalidNel()
-
-fun validateEmail(email: String): ValidatedNel<String, String> =
-    if ("@" in email) email.validNel()
-    else "Invalid email format".invalidNel()
-
-fun validatePassword(pass: String): ValidatedNel<String, String> =
-    if (pass.length >= 8) pass.validNel()
-    else "Password must be at least 8 characters".invalidNel()
-
-fun validateAge(age: Int): ValidatedNel<String, Int> =
-    if (age >= 18) age.validNel()
-    else "Must be 18 or older".invalidNel()
+import arrow.core.raise.*
 
 data class Registration(val username: String, val email: String, val password: String, val age: Int)
 
-// Combine all validations - collects ALL errors
+// EitherNel = Either<NonEmptyList<E>, A> -- collects all errors
 fun validateRegistration(
     username: String,
     email: String,
     password: String,
     age: Int
-): ValidatedNel<String, Registration> =
-    validateUsername(username)
-        .zip(
-            validateEmail(email),
-            validatePassword(password),
-            validateAge(age)
-        ) { u, e, p, a ->
-            Registration(u, e, p, a)
-        }
+): EitherNel<String, Registration> = either {
+    zipOrAccumulate(
+        { ensure(username.length >= 3) { "Username must be at least 3 characters" } },
+        { ensure("@" in email) { "Invalid email format" } },
+        { ensure(password.length >= 8) { "Password must be at least 8 characters" } },
+        { ensure(age >= 18) { "Must be 18 or older" } }
+    ) { _, _, _, _ ->
+        Registration(username, email, password, age)
+    }
+}
 ```

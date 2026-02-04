@@ -19,34 +19,34 @@ sealed interface ValidationError {
 
 data class ValidatedUser(val name: String, val email: String, val age: Int)
 
-context(Raise<ValidationError>)
+context(raise: Raise<ValidationError>)
 fun validateUser(name: String?, email: String?, age: Int?): ValidatedUser {
     // ensureNotNull - fail if null
-    val validName = ensureNotNull(name) {
+    val validName = raise.ensureNotNull(name) {
         ValidationError.EmptyField("name")
     }
-    
-    val validEmail = ensureNotNull(email) {
+
+    val validEmail = raise.ensureNotNull(email) {
         ValidationError.EmptyField("email")
     }
-    
-    val validAge = ensureNotNull(age) {
+
+    val validAge = raise.ensureNotNull(age) {
         ValidationError.EmptyField("age")
     }
-    
+
     // ensure - fail if condition is false
-    ensure(validName.isNotBlank()) {
+    raise.ensure(validName.isNotBlank()) {
         ValidationError.EmptyField("name")
     }
-    
-    ensure("@" in validEmail) {
+
+    raise.ensure("@" in validEmail) {
         ValidationError.InvalidFormat("email", validEmail)
     }
-    
-    ensure(validAge in 0..150) {
+
+    raise.ensure(validAge in 0..150) {
         ValidationError.OutOfRange("age", validAge)
     }
-    
+
     return ValidatedUser(validName, validEmail, validAge)
 }
 ```

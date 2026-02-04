@@ -21,20 +21,20 @@ sealed interface UserError {
 data class User(val id: Long, val name: String, val email: String)
 
 // Function that can raise UserError
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 fun getUser(id: Long): User {
     // ensure - like require() but raises typed error
-    ensure(id > 0) { UserError.InvalidId(id) }
-    
+    raise.ensure(id > 0) { UserError.InvalidId(id) }
+
     // raise - immediately fail with error
     val user = userRepository.findById(id)
-        ?: raise(UserError.NotFound(id))
-    
+        ?: raise.raise(UserError.NotFound(id))
+
     return user
 }
 
 // Composing functions with Raise
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 fun getUserEmail(id: Long): String {
     val user = getUser(id)  // No .bind()!
     return user.email

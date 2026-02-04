@@ -4,17 +4,15 @@ title: "Common Mistakes"
 ---
 
 
-### Using Validated for Sequential Operations
+### Using zipOrAccumulate for Sequential Operations
 
 ```kotlin
-// WRONG - Validated is for parallel/independent validations
-val result = validateEmail(email).andThen { 
-    checkEmailNotTaken(it)  // This depends on email being valid!
-}
+// WRONG - zipOrAccumulate is for independent validations
+// Don't put dependent operations in separate lambdas
 
 // RIGHT - Use Either for dependent operations
 val result = either {
-    val validEmail = validateEmail(email).toEither().bind()
+    val validEmail = validateEmail(email).bind()
     val available = checkEmailNotTaken(validEmail).bind()
     available
 }

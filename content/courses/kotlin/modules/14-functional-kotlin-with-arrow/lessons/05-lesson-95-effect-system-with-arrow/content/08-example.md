@@ -20,28 +20,28 @@ sealed interface ApiError {
 }
 
 // Suspend function with Raise
-context(Raise<ApiError>)
+context(raise: Raise<ApiError>)
 suspend fun fetchUser(id: Long): User {
-    ensure(id > 0) { ApiError.NotFound(id) }
-    
+    raise.ensure(id > 0) { ApiError.NotFound(id) }
+
     return try {
         apiClient.get("/users/$id")
     } catch (e: IOException) {
-        raise(ApiError.NetworkError(e))
+        raise.raise(ApiError.NetworkError(e))
     }
 }
 
-context(Raise<ApiError>)
+context(raise: Raise<ApiError>)
 suspend fun fetchUserPosts(user: User): List<Post> {
     return try {
         apiClient.get("/users/${user.id}/posts")
     } catch (e: IOException) {
-        raise(ApiError.NetworkError(e))
+        raise.raise(ApiError.NetworkError(e))
     }
 }
 
 // Compose suspend functions with Raise
-context(Raise<ApiError>)
+context(raise: Raise<ApiError>)
 suspend fun getUserWithPosts(userId: Long): UserWithPosts {
     val user = fetchUser(userId)
     val posts = fetchUserPosts(user)

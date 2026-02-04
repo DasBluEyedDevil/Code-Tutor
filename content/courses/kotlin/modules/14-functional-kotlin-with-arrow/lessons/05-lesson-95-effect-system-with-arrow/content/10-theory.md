@@ -4,7 +4,7 @@ title: "Raise vs Either Return"
 ---
 
 
-### When to Use Raise (context receiver)
+### When to Use Raise (context parameter)
 
 1. **Internal implementation**: Functions called within `either { }` blocks
 2. **Many operations**: When you'd have many `.bind()` calls
@@ -23,13 +23,13 @@ title: "Raise vs Either Return"
 fun getUser(id: Long): Either<UserError, User>
 
 // Inside Raise context
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 fun doWork() {
     val user = getUser(123).bind()  // Either -> Raise
 }
 
 // Raise function
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 fun getUser(id: Long): User
 
 // Get Either from Raise

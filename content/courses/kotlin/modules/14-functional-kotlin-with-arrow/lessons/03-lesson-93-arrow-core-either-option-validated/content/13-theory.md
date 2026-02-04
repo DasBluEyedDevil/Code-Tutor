@@ -9,7 +9,7 @@ title: "When to Use Each Type"
 | Scenario | Type | Reason |
 |----------|------|--------|
 | Operation may fail with typed error | `Either<E, A>` | Error type in signature |
-| Need to accumulate all errors | `Validated<E, A>` | Doesn't short-circuit |
+| Need to accumulate all errors | `EitherNel<E, A>` + `zipOrAccumulate` | Collects all errors |
 | Value may be absent | `Option<A>` | Explicit optionality |
 | Interop with exception-throwing code | `Result<T>` | Built into Kotlin |
 
@@ -20,7 +20,7 @@ Can it fail?
 |-- No -> Use plain value
 +-- Yes -> What kind of failure?
     |-- Typed domain error -> Either
-    |   +-- Need all errors at once? -> Validated first, then Either
+    |   +-- Need all errors at once? -> zipOrAccumulate with EitherNel
     |-- Exception-based -> Result
     +-- Value absent -> Option (or nullable)
 ```

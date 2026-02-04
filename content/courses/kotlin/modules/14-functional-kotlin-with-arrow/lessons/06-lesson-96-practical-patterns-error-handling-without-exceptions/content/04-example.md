@@ -25,26 +25,26 @@ sealed interface ApiError {
 }
 
 // Generic safe API call wrapper
-context(Raise<ApiError>)
+context(raise: Raise<ApiError>)
 suspend inline fun <reified T> HttpClient.safeGet(url: String): T {
     val response = catch(
         block = { get(url) },
         catch = { e ->
             when (e) {
-                is SocketTimeoutException -> raise(ApiError.Timeout)
-                is IOException -> raise(ApiError.NetworkError(e))
+                is SocketTimeoutException -> raise.raise(ApiError.Timeout)
+                is IOException -> raise.raise(ApiError.NetworkError(e))
                 else -> throw e
             }
         }
     )
-    
-    ensure(response.status.value in 200..299) {
+
+    raise.ensure(response.status.value in 200..299) {
         ApiError.ServerError(response.status.value, response.bodyAsText())
     }
-    
+
     return catch(
         block = { response.body<T>() },
-        catch = { raise(ApiError.DeserializationError(response.bodyAsText())) }
+        catch = { raise.raise(ApiError.DeserializationError(response.bodyAsText())) }
     )
 }
 

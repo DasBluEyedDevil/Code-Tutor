@@ -32,36 +32,36 @@ class OrderService(
     }
     
     // Internal implementation uses Raise
-    context(Raise<OrderError>)
+    context(raise: Raise<OrderError>)
     private suspend fun processOrderInternal(orderId: Long): Order {
         // Get order
         val order = orderRepository.findById(orderId)
-            ?: raise(OrderError.NotFound(orderId))
-        
+            ?: raise.raise(OrderError.NotFound(orderId))
+
         // Validate status
-        ensure(order.status == OrderStatus.PENDING) {
+        raise.ensure(order.status == OrderStatus.PENDING) {
             OrderError.InvalidStatus("Order is ${order.status}, expected PENDING")
         }
-        
+
         // Check inventory
         for (item in order.items) {
             val available = inventoryService.getStock(item.productId)
-            ensure(available >= item.quantity) {
+            raise.ensure(available >= item.quantity) {
                 OrderError.InsufficientStock(item.productId)
             }
         }
-        
+
         // Reserve inventory
         inventoryService.reserve(order.items)
-        
+
         // Process payment
         val paymentResult = paymentService.charge(order.customerId, order.total)
-        ensure(paymentResult.success) {
+        raise.ensure(paymentResult.success) {
             // Rollback inventory reservation on payment failure
             inventoryService.release(order.items)
             OrderError.PaymentFailed(paymentResult.message)
         }
-        
+
         // Update order
         return orderRepository.save(
             order.copy(status = OrderStatus.PROCESSING, paymentId = paymentResult.id)

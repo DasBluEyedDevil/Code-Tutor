@@ -24,24 +24,24 @@ sealed interface AppError {
 }
 
 // Functions with different error types
-context(Raise<UserError>)
+context(raise: Raise<UserError>)
 fun getUser(id: Long): User = /* ... */
 
-context(Raise<PaymentError>)
+context(raise: Raise<PaymentError>)
 fun processPayment(amount: Double): Receipt = /* ... */
 
 // Compose by mapping errors
-context(Raise<AppError>)
+context(raise: Raise<AppError>)
 fun processOrder(userId: Long, amount: Double): OrderResult {
     // withError maps the error type
-    val user = withError({ AppError.User(it) }) {
+    val user = raise.withError({ AppError.User(it) }) {
         getUser(userId)
     }
-    
-    val receipt = withError({ AppError.Payment(it) }) {
+
+    val receipt = raise.withError({ AppError.Payment(it) }) {
         processPayment(amount)
     }
-    
+
     return OrderResult(user, receipt)
 }
 

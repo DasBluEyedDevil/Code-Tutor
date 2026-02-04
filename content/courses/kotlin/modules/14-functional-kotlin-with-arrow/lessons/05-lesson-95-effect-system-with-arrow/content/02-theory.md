@@ -4,7 +4,7 @@ title: "Topic Introduction"
 ---
 
 
-Arrow 1.2+ introduces a powerful effect system based on `Raise<E>`. This provides an alternative to returning `Either<E, A>` that feels more like writing imperative code while maintaining functional safety.
+Arrow's `Raise<E>` DSL provides a powerful effect system for error handling. Instead of returning `Either<E, A>` from every function, you declare that a function operates within a `Raise<E>` context -- making error handling feel like imperative code while maintaining functional safety.
 
 In this lesson, you'll learn:
 - Understanding `Raise<E>` for effect-based error handling
