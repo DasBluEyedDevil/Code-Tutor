@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.12.1",
+  "title": "Route Guard Simulation",
+  "description": "Simulate route protection by checking if a request has a valid token before granting access.",
+  "instructions": "Create a function checkAccess(path, token, requiredRole) that returns 'Granted' or 'Denied' based on whether the token contains the required role. Test with admin and user tokens.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Admin access granted",
+      "expectedOutput": "/admin: Granted",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "User denied admin",
+      "expectedOutput": "/admin: Denied",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "No token denied",
+      "expectedOutput": "/admin: Denied",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Check if token is not null/empty first"
+    },
+    {
+      "level": 2,
+      "text": "Parse the role from the token string"
+    },
+    {
+      "level": 3,
+      "text": "Compare the parsed role with the required role"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling null/empty token",
+      "consequence": "NullPointerException",
+      "correction": "Check for null/blank token before parsing"
+    },
+    {
+      "mistake": "Case-sensitive role comparison",
+      "consequence": "Admin != admin",
+      "correction": "Use equals with ignoreCase or normalize case"
+    },
+    {
+      "mistake": "Not separating authentication from authorization",
+      "consequence": "Mixing concerns",
+      "correction": "First check token exists (auth), then check role (authz)"
+    }
+  ],
+  "difficulty": "intermediate"
+}

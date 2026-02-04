@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.14.1",
+  "title": "Test Assertion Library",
+  "description": "Build a minimal assertion library to understand how test frameworks work.",
+  "instructions": "Create assertEquals and assertTrue functions that print PASS/FAIL. Run a few assertions and show results.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Passing equality",
+      "expectedOutput": "PASS: 2 + 2 equals 4",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Passing truth",
+      "expectedOutput": "PASS: list is not empty",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Failing assertion",
+      "expectedOutput": "FAIL: wrong sum - expected 5 but got 4",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Compare expected and actual values"
+    },
+    {
+      "level": 2,
+      "text": "Print PASS or FAIL with the test name"
+    },
+    {
+      "level": 3,
+      "text": "Include expected vs actual in failure messages"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Throwing exceptions on failure",
+      "consequence": "Stops remaining tests",
+      "correction": "Print FAIL and continue for demonstration purposes"
+    },
+    {
+      "mistake": "Not showing expected vs actual",
+      "consequence": "Hard to debug failures",
+      "correction": "Include both values in the failure message"
+    },
+    {
+      "mistake": "Using == for floating point",
+      "consequence": "Rounding errors cause false failures",
+      "correction": "Use delta comparison for doubles"
+    }
+  ],
+  "difficulty": "intermediate"
+}

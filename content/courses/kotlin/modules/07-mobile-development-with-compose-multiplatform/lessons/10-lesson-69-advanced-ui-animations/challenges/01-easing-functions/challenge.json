@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.9.1",
+  "title": "Animation Easing Functions",
+  "description": "Implement basic easing functions used in UI animations, demonstrating how values change over time.",
+  "instructions": "Create linear, easeIn (quadratic), and easeOut easing functions that take a progress (0.0-1.0) and return the eased value. Print values at 0%, 25%, 50%, 75%, 100%.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Linear at 50%",
+      "expectedOutput": "Linear(0.50) = 0.50",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "EaseIn at 50%",
+      "expectedOutput": "EaseIn(0.50) = 0.25",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "EaseOut at 50%",
+      "expectedOutput": "EaseOut(0.50) = 0.75",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Linear: output = input (no transformation)"
+    },
+    {
+      "level": 2,
+      "text": "EaseIn (quadratic): output = input * input"
+    },
+    {
+      "level": 3,
+      "text": "EaseOut (quadratic): output = 1 - (1-input)^2"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Wrong easeOut formula",
+      "consequence": "Animation feels wrong",
+      "correction": "EaseOut is 1 - (1 - t) * (1 - t)"
+    },
+    {
+      "mistake": "Not clamping input to 0-1",
+      "consequence": "Values outside valid range",
+      "correction": "Use coerceIn(0.0, 1.0) on input"
+    },
+    {
+      "mistake": "Formatting precision issues",
+      "consequence": "Output doesn't match expected",
+      "correction": "Use %.2f format for consistent decimal places"
+    }
+  ],
+  "difficulty": "intermediate"
+}

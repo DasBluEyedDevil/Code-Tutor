@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.8.1",
+  "title": "Repository Pattern",
+  "description": "Implement the repository pattern using an interface and an in-memory implementation.",
+  "instructions": "Define a Repository<T> interface with findAll(), findById(), save(), and deleteById() methods. Implement InMemoryUserRepository for a User data class. Print results.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Finds user by ID",
+      "expectedOutput": "Found: User(id=1, name=Alice)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows total count",
+      "expectedOutput": "Total users: 2",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Define interface Repository<T> with generic methods"
+    },
+    {
+      "level": 2,
+      "text": "The in-memory implementation stores items in a MutableList"
+    },
+    {
+      "level": 3,
+      "text": "findById returns T? (nullable) since item might not exist"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not using generics for the interface",
+      "consequence": "Repository only works for one type",
+      "correction": "Use Repository<T> for reusability"
+    },
+    {
+      "mistake": "Exposing the internal list",
+      "consequence": "Breaks encapsulation",
+      "correction": "Return copies or use toList()"
+    },
+    {
+      "mistake": "Missing null handling in findById",
+      "consequence": "Crash when ID not found",
+      "correction": "Return T? and handle missing items"
+    }
+  ],
+  "difficulty": "intermediate"
+}

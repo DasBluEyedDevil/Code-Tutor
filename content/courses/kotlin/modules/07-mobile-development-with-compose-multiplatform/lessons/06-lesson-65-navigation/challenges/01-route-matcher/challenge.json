@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.5.1",
+  "title": "Route Matcher",
+  "description": "Simulate a navigation router that matches URL paths to screen names, including path parameters.",
+  "instructions": "Create a Router class that registers routes with patterns like '/users/{id}' and matches incoming paths. Print the matched screen and extracted parameters.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Matches home",
+      "expectedOutput": "Screen: Home, Params: {}",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Matches user with ID",
+      "expectedOutput": "Screen: UserDetail, Params: {id=42}",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "No match",
+      "expectedOutput": "Screen: NotFound, Params: {}",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store routes as pattern-screen pairs"
+    },
+    {
+      "level": 2,
+      "text": "Split both pattern and path by '/' and compare segments"
+    },
+    {
+      "level": 3,
+      "text": "Segments wrapped in {} are parameters to extract"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not extracting path parameters",
+      "consequence": "Router matches but loses parameter values",
+      "correction": "When a pattern segment has {}, extract the path segment as that param"
+    },
+    {
+      "mistake": "Not handling trailing slashes",
+      "consequence": "/home/ doesn't match /home",
+      "correction": "Normalize paths by removing trailing slashes"
+    },
+    {
+      "mistake": "Matching by contains instead of exact path",
+      "consequence": "/home matches /homepage",
+      "correction": "Compare segment by segment for exact matching"
+    }
+  ],
+  "difficulty": "advanced"
+}

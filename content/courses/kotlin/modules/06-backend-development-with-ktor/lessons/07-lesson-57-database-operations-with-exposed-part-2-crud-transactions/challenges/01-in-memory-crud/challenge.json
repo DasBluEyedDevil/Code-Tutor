@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.7.1",
+  "title": "In-Memory CRUD",
+  "description": "Implement CRUD operations on an in-memory data store to understand the repository pattern concepts.",
+  "instructions": "Create a TodoStore class with create(title), readAll(), update(id, title), and delete(id) methods. Demonstrate all four operations.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Creates and lists",
+      "expectedOutput": "Todo(id=1, title=Buy groceries)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Updates item",
+      "expectedOutput": "Todo(id=1, title=Buy organic groceries)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Shows count after delete",
+      "expectedOutput": "Remaining: 1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a data class Todo(val id: Int, var title: String)"
+    },
+    {
+      "level": 2,
+      "text": "Keep a MutableList<Todo> and an auto-incrementing ID counter"
+    },
+    {
+      "level": 3,
+      "text": "Use find { it.id == id } to locate items by ID"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not auto-incrementing IDs",
+      "consequence": "Duplicate IDs possible",
+      "correction": "Use a private var nextId that increments on each create"
+    },
+    {
+      "mistake": "Modifying list while iterating",
+      "consequence": "ConcurrentModificationException",
+      "correction": "Use removeAll or find the item first, then remove"
+    },
+    {
+      "mistake": "Not handling missing IDs in update/delete",
+      "consequence": "Silent failures",
+      "correction": "Return Boolean to indicate success or failure"
+    }
+  ],
+  "difficulty": "intermediate"
+}

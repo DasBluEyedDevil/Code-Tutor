@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.13.1",
+  "title": "Simple DI Container",
+  "description": "Build a minimal dependency injection container to understand how DI frameworks work internally.",
+  "instructions": "Create a Container class that can register and resolve dependencies by type name. Register a greeting service and resolve it.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Resolves registered service",
+      "expectedOutput": "Hello, World!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows container size",
+      "expectedOutput": "Registered: 1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a MutableMap<String, () -> Any> to store factories"
+    },
+    {
+      "level": 2,
+      "text": "register stores a lambda that creates the instance"
+    },
+    {
+      "level": 3,
+      "text": "resolve calls the lambda and returns the result"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Creating instances at registration time",
+      "consequence": "Eager loading, no lazy creation",
+      "correction": "Store a factory lambda, invoke it on resolve"
+    },
+    {
+      "mistake": "Not handling unregistered types",
+      "consequence": "NullPointerException on resolve",
+      "correction": "Throw a clear error or return null for missing registrations"
+    },
+    {
+      "mistake": "Using concrete types instead of interfaces",
+      "consequence": "Tight coupling",
+      "correction": "Register by interface name for loose coupling"
+    }
+  ],
+  "difficulty": "intermediate"
+}

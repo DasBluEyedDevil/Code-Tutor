@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.3.1",
+  "title": "Layout Size Calculator",
+  "description": "Simulate layout calculations by computing positions and sizes for a column-based layout system.",
+  "instructions": "Create a function calculateLayout(items, containerWidth) that distributes items evenly in a column layout. Print each item's position and size.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "First item position",
+      "expectedOutput": "Item A: y=0, height=100",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Second item position",
+      "expectedOutput": "Item B: y=100, height=100",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Third item position",
+      "expectedOutput": "Item C: y=200, height=100",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Divide total height evenly among items"
+    },
+    {
+      "level": 2,
+      "text": "Each item's y position is index * itemHeight"
+    },
+    {
+      "level": 3,
+      "text": "Use forEachIndexed to track position"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Off-by-one in position calculation",
+      "consequence": "Items overlap or have gaps",
+      "correction": "y = index * itemHeight (zero-based)"
+    },
+    {
+      "mistake": "Integer division truncation",
+      "consequence": "Items don't fill container exactly",
+      "correction": "Use integer division; remaining space goes to last item"
+    },
+    {
+      "mistake": "Not handling empty list",
+      "consequence": "Division by zero",
+      "correction": "Return early if items list is empty"
+    }
+  ],
+  "difficulty": "intermediate"
+}

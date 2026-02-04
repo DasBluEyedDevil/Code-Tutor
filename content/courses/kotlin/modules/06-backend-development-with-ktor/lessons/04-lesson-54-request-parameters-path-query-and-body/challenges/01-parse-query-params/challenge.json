@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.4.1",
+  "title": "Parse Query Parameters",
+  "description": "Simulate parsing query parameters from a URL string. Extract key-value pairs from the query string portion.",
+  "instructions": "Write a function parseQuery(url: String) that extracts query parameters into a Map<String, String>. Parse '/api/users?name=Alice&age=25' and print each parameter.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Extracts name parameter",
+      "expectedOutput": "name=Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Extracts age parameter",
+      "expectedOutput": "age=25",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Split the URL on '?' to get the query string"
+    },
+    {
+      "level": 2,
+      "text": "Split the query string on '&' to get individual params"
+    },
+    {
+      "level": 3,
+      "text": "Split each param on '=' to get key and value"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling URLs without query params",
+      "consequence": "IndexOutOfBoundsException",
+      "correction": "Check if '?' exists before splitting"
+    },
+    {
+      "mistake": "Splitting on wrong delimiter",
+      "consequence": "Parameters not separated correctly",
+      "correction": "Split on '?' first, then '&', then '='"
+    },
+    {
+      "mistake": "Including the path in results",
+      "consequence": "First key contains the path",
+      "correction": "Use substringAfter('?') to get only the query string"
+    }
+  ],
+  "difficulty": "intermediate"
+}

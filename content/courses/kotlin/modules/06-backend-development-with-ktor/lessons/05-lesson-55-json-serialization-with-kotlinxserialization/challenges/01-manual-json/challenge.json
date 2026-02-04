@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.5.1",
+  "title": "Manual JSON Builder",
+  "description": "Simulate JSON serialization by building a JSON string from a data class without any library imports.",
+  "instructions": "Create a data class User(name, email, age) and a toJson() extension function that returns a valid JSON string. Print the JSON for a sample user.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Generates valid JSON",
+      "expectedOutput": "{\"name\":\"Alice\",\"email\":\"alice@example.com\",\"age\":25}",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use string templates to build the JSON manually"
+    },
+    {
+      "level": 2,
+      "text": "Strings in JSON need double quotes"
+    },
+    {
+      "level": 3,
+      "text": "Numbers in JSON don't need quotes"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting quotes around string values",
+      "consequence": "Invalid JSON",
+      "correction": "Wrap string values in escaped double quotes"
+    },
+    {
+      "mistake": "Adding quotes around numbers",
+      "consequence": "Number becomes string in JSON",
+      "correction": "Numbers should be unquoted in JSON"
+    },
+    {
+      "mistake": "Trailing comma after last field",
+      "consequence": "Invalid JSON",
+      "correction": "No comma after the last key-value pair"
+    }
+  ],
+  "difficulty": "intermediate"
+}

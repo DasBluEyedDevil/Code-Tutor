@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.10.1",
+  "title": "Simple Password Hasher",
+  "description": "Simulate password hashing by creating a reversible encoding function. Demonstrate why plain text passwords are dangerous.",
+  "instructions": "Create a hashPassword(password) function that converts each character to its shifted ASCII value (char + 3). Create verifyPassword(input, hash) that checks if the hashed input matches. Print the hash and verification results.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Shows hashed password",
+      "expectedOutput": "Hash: vhfuhw456",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Correct password verifies",
+      "expectedOutput": "Verify 'secret123': true",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Wrong password fails",
+      "expectedOutput": "Verify 'wrong': false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Map each character: (it + 3).toChar()"
+    },
+    {
+      "level": 2,
+      "text": "To verify, hash the input and compare with stored hash"
+    },
+    {
+      "level": 3,
+      "text": "Use String's map function to transform characters"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using plaintext comparison",
+      "consequence": "Security vulnerability",
+      "correction": "Always compare hashes, never store plaintext"
+    },
+    {
+      "mistake": "Different hash for same input",
+      "consequence": "Verification always fails",
+      "correction": "Ensure the hash function is deterministic"
+    },
+    {
+      "mistake": "Not handling special characters",
+      "consequence": "Crashes on non-ASCII input",
+      "correction": "The simple shift works for ASCII characters"
+    }
+  ],
+  "difficulty": "intermediate"
+}

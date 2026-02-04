@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.6.1",
+  "title": "API Response Parser",
+  "description": "Parse a simulated API JSON response string into data objects and handle success/error cases.",
+  "instructions": "Create a function parseResponse(json) that extracts status and data from a simple key=value formatted response. Handle both success and error responses.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Parses success response",
+      "expectedOutput": "Status: 200, Data: Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Parses error response",
+      "expectedOutput": "Status: 404, Error: Not Found",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Split the response string by commas to get fields"
+    },
+    {
+      "level": 2,
+      "text": "Split each field by '=' to get key-value pairs"
+    },
+    {
+      "level": 3,
+      "text": "Check the status to determine if it's success or error"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling different response formats",
+      "consequence": "Crashes on error responses",
+      "correction": "Check for both 'data' and 'error' fields"
+    },
+    {
+      "mistake": "Hardcoding field positions",
+      "consequence": "Breaks if field order changes",
+      "correction": "Parse by key name, not position"
+    },
+    {
+      "mistake": "Not trimming whitespace",
+      "consequence": "Extra spaces in parsed values",
+      "correction": "Use trim() on parsed values"
+    }
+  ],
+  "difficulty": "intermediate"
+}

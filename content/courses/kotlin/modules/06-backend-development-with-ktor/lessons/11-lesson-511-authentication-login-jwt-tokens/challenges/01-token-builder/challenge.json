@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.11.1",
+  "title": "Token Builder",
+  "description": "Simulate JWT token structure by building a dot-separated token string with header, payload, and signature sections.",
+  "instructions": "Create a function buildToken(userId, role) that returns a fake JWT-like token as 'header.payload.signature'. Print the token and extract the payload.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Token has three parts",
+      "expectedOutput": "Parts: 3",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Payload contains user info",
+      "expectedOutput": "Payload: userId=42,role=admin",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "A JWT has three dot-separated parts: header.payload.signature"
+    },
+    {
+      "level": 2,
+      "text": "Build each part as a simple string"
+    },
+    {
+      "level": 3,
+      "text": "Use split('.') to extract parts from the token"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using actual Base64 encoding",
+      "consequence": "Overcomplicating the simulation",
+      "correction": "Keep it simple -- plain text parts separated by dots"
+    },
+    {
+      "mistake": "Wrong number of dot separators",
+      "consequence": "Split produces wrong number of parts",
+      "correction": "Ensure exactly two dots for three parts"
+    },
+    {
+      "mistake": "Not including all required fields",
+      "consequence": "Incomplete token",
+      "correction": "Include userId and role in the payload section"
+    }
+  ],
+  "difficulty": "intermediate"
+}

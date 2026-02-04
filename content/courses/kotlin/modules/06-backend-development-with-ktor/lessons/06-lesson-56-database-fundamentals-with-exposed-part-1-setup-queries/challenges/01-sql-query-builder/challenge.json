@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.6.1",
+  "title": "SQL Query Builder",
+  "description": "Build a simple SQL SELECT query builder using pure Kotlin string operations to understand query construction.",
+  "instructions": "Create a QueryBuilder class with select(), from(), and where() methods that chain to build a SQL string. Print the final query.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Builds correct SQL",
+      "expectedOutput": "SELECT name, email FROM users WHERE age > 18",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Store parts of the query as properties"
+    },
+    {
+      "level": 2,
+      "text": "Each method should return 'this' for chaining"
+    },
+    {
+      "level": 3,
+      "text": "A build() method assembles the final string"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting to return this for chaining",
+      "consequence": "Cannot chain method calls",
+      "correction": "Return this from each builder method"
+    },
+    {
+      "mistake": "Extra spaces in the output",
+      "consequence": "Query string doesn't match expected",
+      "correction": "Use joinToString for clean comma separation"
+    },
+    {
+      "mistake": "Not handling the WHERE clause as optional",
+      "consequence": "Query always has WHERE",
+      "correction": "Only append WHERE if a condition was set"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.4.1",
+  "title": "State Holder Pattern",
+  "description": "Implement a state holder class that manages UI state and notifies on changes, simulating Compose state management.",
+  "instructions": "Create a StateHolder<T> class that holds a value and tracks change count. Demonstrate updating state and printing the history.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Initial state",
+      "expectedOutput": "State: 0 (changes: 0)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "After first update",
+      "expectedOutput": "State: 5 (changes: 1)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "After second update",
+      "expectedOutput": "State: 10 (changes: 2)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a generic class StateHolder<T>(initial: T)"
+    },
+    {
+      "level": 2,
+      "text": "Track the number of changes with a counter"
+    },
+    {
+      "level": 3,
+      "text": "Update the value and increment counter in setValue"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not counting same-value updates",
+      "consequence": "Counter doesn't match expected",
+      "correction": "Increment counter on every setValue call regardless of value"
+    },
+    {
+      "mistake": "Making state publicly mutable",
+      "consequence": "State can be changed without tracking",
+      "correction": "Use a private setter, expose only a setValue method"
+    },
+    {
+      "mistake": "Not using generics",
+      "consequence": "State holder only works for one type",
+      "correction": "Use StateHolder<T> for any type"
+    }
+  ],
+  "difficulty": "intermediate"
+}

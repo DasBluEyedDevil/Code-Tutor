@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "6.9.1",
+  "title": "Input Validator",
+  "description": "Create a validation system that collects multiple validation errors instead of failing on the first one.",
+  "instructions": "Write a validate function for a registration form (name, email, age) that returns a list of error messages. Test with invalid input and print all errors.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Catches empty name",
+      "expectedOutput": "Name must not be empty",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Catches invalid email",
+      "expectedOutput": "Email must contain @",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Catches invalid age",
+      "expectedOutput": "Age must be between 1 and 150",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Create a mutableListOf<String>() to collect errors"
+    },
+    {
+      "level": 2,
+      "text": "Check each field and add error messages to the list"
+    },
+    {
+      "level": 3,
+      "text": "Return the list -- empty list means valid input"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Throwing exception on first error",
+      "consequence": "User only sees one error at a time",
+      "correction": "Collect all errors and return them as a list"
+    },
+    {
+      "mistake": "Not validating all fields",
+      "consequence": "Invalid data gets through",
+      "correction": "Check name, email format, and age range"
+    },
+    {
+      "mistake": "Using exceptions for validation",
+      "consequence": "Exceptions are for exceptional cases",
+      "correction": "Return error lists for expected validation failures"
+    }
+  ],
+  "difficulty": "intermediate"
+}

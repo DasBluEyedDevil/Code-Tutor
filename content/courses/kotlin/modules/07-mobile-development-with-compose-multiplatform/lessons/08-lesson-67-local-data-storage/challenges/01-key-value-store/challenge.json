@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.7.1",
+  "title": "Key-Value Store",
+  "description": "Implement a simple key-value store that simulates local data persistence with typed getters.",
+  "instructions": "Create a KeyValueStore class with put(key, value) and getString/getInt methods. Demonstrate storing and retrieving different types.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Retrieves string",
+      "expectedOutput": "Name: Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Retrieves int",
+      "expectedOutput": "Age: 25",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Returns default for missing",
+      "expectedOutput": "Missing: unknown",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use MutableMap<String, Any> as the internal store"
+    },
+    {
+      "level": 2,
+      "text": "Use 'as? Type' for safe casting in typed getters"
+    },
+    {
+      "level": 3,
+      "text": "Provide default values when key is missing"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Unsafe casting with 'as' instead of 'as?'",
+      "consequence": "ClassCastException at runtime",
+      "correction": "Use safe cast (as?) and provide a default value"
+    },
+    {
+      "mistake": "Not handling missing keys",
+      "consequence": "NullPointerException",
+      "correction": "Always provide a default value parameter"
+    },
+    {
+      "mistake": "Storing everything as String",
+      "consequence": "Type information lost",
+      "correction": "Store as Any and cast on retrieval"
+    }
+  ],
+  "difficulty": "intermediate"
+}

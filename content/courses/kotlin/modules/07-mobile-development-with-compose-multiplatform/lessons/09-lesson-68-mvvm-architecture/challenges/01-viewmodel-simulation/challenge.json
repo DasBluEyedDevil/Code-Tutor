@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "7.8.1",
+  "title": "ViewModel Simulation",
+  "description": "Simulate the MVVM pattern with a ViewModel that manages state and exposes actions, without any framework dependencies.",
+  "instructions": "Create a TodoViewModel class with a list of todos, addTodo(title) and toggleComplete(id) methods. Demonstrate the full lifecycle.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Shows initial todos",
+      "expectedOutput": "[ ] Buy groceries",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows second todo",
+      "expectedOutput": "[ ] Walk the dog",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Shows toggled todo",
+      "expectedOutput": "[x] Buy groceries",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "ViewModel holds the state (list of todos)"
+    },
+    {
+      "level": 2,
+      "text": "Each todo has id, title, and isComplete flag"
+    },
+    {
+      "level": 3,
+      "text": "toggleComplete flips the isComplete flag for the given id"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Exposing mutable state directly",
+      "consequence": "View can modify state without going through ViewModel",
+      "correction": "Expose read-only list, mutate only through methods"
+    },
+    {
+      "mistake": "Not finding the correct todo by ID",
+      "consequence": "Wrong item gets toggled",
+      "correction": "Use find { it.id == id } to locate the correct todo"
+    },
+    {
+      "mistake": "Creating new list on every state change",
+      "consequence": "Unnecessary allocations (but correct)",
+      "correction": "For simulation, mutating in place is fine"
+    }
+  ],
+  "difficulty": "intermediate"
+}
