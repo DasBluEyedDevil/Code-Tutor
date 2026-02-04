@@ -26,6 +26,8 @@ Congratulations! You've learned the fundamentals of Kotlin coroutines. Here's wh
 
 In the next lesson, we'll dive into **Advanced Coroutines** - exploring Flows for reactive streams, channels for communication, exception handling, and advanced patterns!
 
+> **Note:** This lesson and the next (Lesson 4.3) provide a self-contained introduction to coroutines within the Advanced Kotlin module. **Module 5: Coroutines & Flows** revisits these concepts in much greater depth -- covering structured concurrency patterns, dispatchers, exception propagation, Flow operators, and StateFlow/SharedFlow for production applications. Think of these two lessons as your foundation; Module 5 is where you master coroutines.
+
 ---
 
 **Practice Challenge**: Build a download manager that downloads multiple files concurrently, shows progress for each file, and allows cancelling individual downloads or all downloads at once.
