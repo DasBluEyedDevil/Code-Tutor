@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 5 of 9 (Flutter/Dart Course Audit)
-Plan: 2 of 7 in current phase
+Plan: 3 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 05-02-PLAN.md (M01-M07 accuracy verification)
+Last activity: 2026-02-04 -- Completed 05-03-PLAN.md (M08-M13 backend modules accuracy verification)
 
-Progress: [##........] 2/7 phase plans (29%)
+Progress: [###.......] 3/7 phase plans (43%)
 
-Overall: [############################....] 28/44 total plans (64%)
+Overall: [#############################...] 29/44 total plans (66%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: 10 min
-- Total execution time: ~294 min
+- Total execution time: ~303 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Overall: [############################....] 28/44 total plans (64%)
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
-| 05-flutter-audit | 2/7 | 12 min | 6 min |
+| 05-flutter-audit | 3/7 | 21 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-02 (7 min), 05-01 (5 min), 04-05 (25 min), 04-04 (15 min), 04-03 (8 min)
-- Trend: M01-M07 verified; foundational modules clean
+- Last 5 plans: 05-03 (9 min), 05-02 (7 min), 05-01 (5 min), 04-05 (25 min), 04-04 (15 min)
+- Trend: Backend modules (M08-M13) verified; Dart Frog community status + Serverpod 3.x warnings added
 
 *Updated after each plan completion*
 
@@ -191,6 +191,12 @@ Recent decisions affecting current work:
 - [05-02]: GoRouter version reference updated to 17.x (not pinned to 17.0.0)
 - [05-02]: useMaterial3: true removed from M07 code examples (Material 3 is default since Flutter 3.16)
 - [05-02]: Uncommitted 05-01 changes detected in M08, M09, M15, M16, M17 (outside M01-M07 scope)
+- [05-03]: Dart Frog community maintenance status documented in M08 L01 and L02 (FLTR-05 complete)
+- [05-03]: Serverpod 3.x awareness note with Relic auth reference added to M09 L01
+- [05-03]: Serverpod CLI version pin (^2.0.0) added to M09 L02 and L18
+- [05-03]: PostgreSQLException -> ServerException in M08 L06 (postgres 3.x API)
+- [05-03]: SharedPreferences auth token example removed from M13 (security fix, contradicted M11 flutter_secure_storage teaching)
+- [05-03]: go_router ^14.6.0 -> ^17.0.0 in M11 L07/L08 (match version manifest)
 
 ### Pending Todos
 
@@ -201,13 +207,13 @@ Recent decisions affecting current work:
 
 - Module 05/06 streams overlap still exists (identified in 02-01, needs future resolution)
 - Module 15 lesson 15.7 virtual threads still duplicates Module 07 concurrency (content updated but structural overlap remains)
-- Dart Frog community transition (July 2025) needs API verification in Phase 5
+- Dart Frog community transition (July 2025) -- RESOLVED in 05-03: API verified, community status documented
 - ONNX Runtime GenAI 12 versions behind (0.5.2 -> current) -- upgrade risk in Phase 8
 - C# capstone has 2,427 bin/obj build artifacts committed to repo (needs .gitignore + cleanup in 04-05)
 - C# M14/M16 Aspire content overlap (same APIs taught in both modules)
 
 ## Session Continuity
 
-Last session: 2026-02-04T04:17:13Z
-Stopped at: Completed 05-02-PLAN.md (M01-M07 accuracy verification)
+Last session: 2026-02-04T04:20:04Z
+Stopped at: Completed 05-03-PLAN.md (M08-M13 backend modules accuracy verification)
 Resume file: None
