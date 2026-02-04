@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 4 complete, ready for Phase 5 (Flutter/Dart Course Audit)
+**Current focus:** Phase 5 in progress (Flutter/Dart Course Audit)
 
 ## Current Position
 
-Phase: 4 of 9 (C# Course Audit) -- COMPLETE
-Plan: 5 of 5 in current phase (all complete)
-Status: Phase complete
-Last activity: 2026-02-03 -- Completed 04-05-PLAN.md (KEY_POINT enrichment and challenge validation) -- human approved
+Phase: 5 of 9 (Flutter/Dart Course Audit)
+Plan: 1 of 7 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 05-01-PLAN.md (Version alignment and structural cleanup)
 
-Progress: [##########] 5/5 phase plans (100%)
+Progress: [#.........] 1/7 phase plans (14%)
 
-Overall: [##########################......] 26/44 total plans (59%)
+Overall: [###########################.....] 27/44 total plans (61%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 26
+- Total plans completed: 27
 - Average duration: 10 min
-- Total execution time: ~282 min
+- Total execution time: ~287 min
 
 **By Phase:**
 
@@ -33,10 +33,11 @@ Overall: [##########################......] 26/44 total plans (59%)
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
+| 05-flutter-audit | 1/7 | 5 min | 5 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-05 (25 min), 04-04 (15 min), 04-03 (8 min), 04-02 (7 min), 04-01 (4 min)
-- Trend: Phase 4 complete; 131 KEY_POINTs created, 3 C# 12 fallbacks, global sweep clean
+- Last 5 plans: 05-01 (5 min), 04-05 (25 min), 04-04 (15 min), 04-03 (8 min), 04-02 (7 min)
+- Trend: Phase 5 started; version alignment + structural cleanup complete
 
 *Updated after each plan completion*
 
@@ -172,6 +173,16 @@ Recent decisions affecting current work:
 - [04-05]: Global sweep clean -- zero stale refs, zero non-standard files, zero artifacts
 - [04-05]: Human approved phase completion
 - [04-05]: No Phase 4.1 needed -- all CSRP requirements satisfied, course production-ready
+- [05-01]: Flutter 3.38.x/Dart 3.10.x as course target (matches setup content and current stable)
+- [05-01]: Riverpod 2.x patterns retained (Riverpod 4.0 expected; migration deferred)
+- [05-01]: Serverpod 2.x patterns retained (3.0 released Dec 2025; migration deferred)
+- [05-01]: GoRouter updated to 17.x (requires Flutter 3.32+/Dart 3.8+)
+- [05-01]: Drift 2.x added to version manifest (used in M13 offline persistence)
+- [05-01]: 18 experiment files renamed to example across M02, M04, M07, M09, M10, M11
+- [05-01]: 9 archived Firebase/Supabase lessons marked with "archived": true in M09
+- [05-01]: 5 misplaced lessons annotated with [Note:] placement context in M10/M11
+- [05-01]: M03/M04/M05 descriptions written from scratch (originals were generic placeholders)
+- [05-01]: course.json estimatedHours kept at 150 (153 lessons; ~1h/lesson reasonable for full-stack)
 
 ### Pending Todos
 
@@ -189,6 +200,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-03T23:39:00Z
-Stopped at: Completed 04-05-PLAN.md (KEY_POINT enrichment and challenge validation) -- Phase 4 COMPLETE
+Last session: 2026-02-04T04:07:00Z
+Stopped at: Completed 05-01-PLAN.md (Version alignment and structural cleanup)
 Resume file: None
