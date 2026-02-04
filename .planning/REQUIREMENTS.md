@@ -130,11 +130,11 @@
 | JSCR-03 | Phase 3 | Complete |
 | JSCR-04 | Phase 3 | Complete |
 | JSCR-05 | Phase 3 | Complete |
-| CSRP-01 | Phase 4 | Pending |
-| CSRP-02 | Phase 4 | Pending |
-| CSRP-03 | Phase 4 | Pending |
-| CSRP-04 | Phase 4 | Pending |
-| CSRP-05 | Phase 4 | Pending |
+| CSRP-01 | Phase 4 | Complete |
+| CSRP-02 | Phase 4 | Complete |
+| CSRP-03 | Phase 4 | Complete |
+| CSRP-04 | Phase 4 | Complete |
+| CSRP-05 | Phase 4 | Complete |
 | FLTR-01 | Phase 5 | Pending |
 | FLTR-02 | Phase 5 | Pending |
 | FLTR-03 | Phase 5 | Pending |
