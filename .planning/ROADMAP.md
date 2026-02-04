@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Java Course Audit** - Establish the gold-standard audited course (best existing structure)
 - [x] **Phase 3: JavaScript Course Audit** - Second audit, migrate non-standard content types, verify Bun/Hono APIs
 - [x] **Phase 4: C# Course Audit** - Align to .NET 9/C# 13, add 131 KEY_POINTs, verify accuracy across 24 modules
-- [ ] **Phase 5: Flutter/Dart Course Audit** - Rename generic modules, verify Dart Frog APIs, split mega-modules
+- [ ] **Phase 5: Flutter/Dart Course Audit** - Align to Flutter 3.38/Dart 3.10, verify Dart Frog/Serverpod APIs, enrich KEY_POINTs and analogies
 - [ ] **Phase 6: Kotlin Course Audit** - Create missing capstone, add 70+ challenges, balance content types
 - [ ] **Phase 7: Python Course Audit** - Restructure Module 14, resolve duplicates, add Git module
 - [ ] **Phase 8: AI Tutor Enhancement** - Socratic method prompting, lesson-aware context, ONNX Runtime upgrade
@@ -111,18 +111,21 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: FLTR-01, FLTR-02, FLTR-03, FLTR-04, FLTR-05
 **Success Criteria** (what must be TRUE):
-  1. Every Flutter lesson is accurate against Flutter 3.x/Dart 3.x stable, with no deprecated widget usage or outdated patterns
+  1. Every Flutter lesson is accurate against Flutter 3.38/Dart 3.10 stable, with no deprecated widget usage or outdated patterns
   2. All 153 lessons progress from Dart fundamentals through widgets through state management through backend to deployment with no knowledge cliffs
   3. Every coding challenge executes correctly and test validation passes
   4. A deployable capstone project exists (cross-platform Flutter app with backend)
   5. Dart Frog content is verified against current community-maintained APIs, with clear guidance on its status and relationship to Serverpod
-**Plans**: TBD
+**Plans**: 7 plans
 
 Plans:
-- [ ] 05-01: Flutter structural review (rename generic modules, split Serverpod mega-module, verify progression)
-- [ ] 05-02: Flutter content accuracy pass (Flutter 3.x/Dart 3.x verification, widget freshness)
-- [ ] 05-03: Dart Frog verification (API existence check, community status documentation, Serverpod relationship)
-- [ ] 05-04: Flutter challenge validation (execute solutions, add challenges to under-covered lessons, verify capstone)
+- [ ] 05-01-PLAN.md -- Version alignment + structural cleanup (Flutter 3.38/Dart 3.10, fix 6 generic module titles, rename 18 experiment files, annotate archived/misplaced lessons)
+- [ ] 05-02-PLAN.md -- Accuracy pass: Fundamentals M01-07 (Dart basics, widgets, layouts, Riverpod 2.x with 3.x note, GoRouter 17.x)
+- [ ] 05-03-PLAN.md -- Accuracy pass: Backend M08-13 (Dart Frog 1.2.x community status, Serverpod 2.x with 3.x warnings, testing, API, real-time, offline)
+- [ ] 05-04-PLAN.md -- Accuracy pass: Advanced + Capstone M14-18 (testing, UI, deployment, capstone consistency with earlier modules)
+- [ ] 05-05-PLAN.md -- KEY_POINT enrichment (44 lessons) + WARNING gap closure (M11-M14)
+- [ ] 05-06-PLAN.md -- Challenge validation (217 challenges) + ANALOGY enrichment for worst-gap modules + capstone assessment
+- [ ] 05-07-PLAN.md -- Global verification and sweep (JSON validation, stale ref sweep, human checkpoint)
 
 ### Phase 6: Kotlin Course Audit
 **Goal**: The Kotlin course teaches a complete path from basics through Android and Ktor to a deployable application, with a capstone project created from scratch and challenge coverage raised from 45% to 100%
@@ -211,7 +214,7 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 | 2. Java Course Audit | 8/8 | Complete | 2026-02-03 |
 | 3. JavaScript Course Audit | 7/7 | Complete | 2026-02-03 |
 | 4. C# Course Audit | 5/5 | Complete | 2026-02-03 |
-| 5. Flutter/Dart Course Audit | 0/4 | Not started | - |
+| 5. Flutter/Dart Course Audit | 0/7 | Not started | - |
 | 6. Kotlin Course Audit | 0/5 | Not started | - |
 | 7. Python Course Audit | 0/5 | Not started | - |
 | 8. AI Tutor Enhancement | 0/4 | Not started | - |
