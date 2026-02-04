@@ -142,12 +142,12 @@ Plans:
 Plans:
 - [x] 06-01-PLAN.md -- Version alignment + structural cleanup (Kotlin 2.3, Ktor 3.4.0, fix M06 lesson ordering, fix module title prefixes, delete artifacts)
 - [x] 06-02-PLAN.md -- Accuracy pass: Fundamentals M01-05 (Kotlin 2.3 idioms, null safety, OOP, advanced Kotlin, coroutines overlap assessment)
-- [ ] 06-03-PLAN.md -- Accuracy pass: Backend + UI M06-07 (Ktor 3.4.0, Exposed 1.0.0, Compose Multiplatform 1.10.x, fix M06 forward references)
+- [x] 06-03-PLAN.md -- Accuracy pass: Backend + UI M06-07 (Ktor 3.4.0, Exposed 1.0.0, Compose Multiplatform 1.10.x, fix M06 forward references)
 - [x] 06-04-PLAN.md -- Accuracy pass: KMP Ecosystem M08-12 (SQLDelight 2.2.x, Koin 4.1.x, kotlin.test, deployment, capstone assessment)
-- [ ] 06-05-PLAN.md -- Accuracy pass: Advanced M13-15 (Gradle 8.12+, Arrow 2.2.x context parameters migration, K2 Era, context receivers rewrite)
-- [ ] 06-06-PLAN.md -- Challenge creation: M01-07 (~40 challenges, pure Kotlin + framework-independent)
-- [ ] 06-07-PLAN.md -- Challenge creation: M08-15 (~40 challenges, including 0% coverage modules M13-M15)
-- [ ] 06-08-PLAN.md -- Capstone creation (Task Manager KMP app: Ktor + Compose Multiplatform + SQLDelight + Koin)
+- [x] 06-05-PLAN.md -- Accuracy pass: Advanced M13-15 (Gradle 8.12+, Arrow 2.2.x context parameters migration, K2 Era, context receivers rewrite)
+- [x] 06-06-PLAN.md -- Challenge creation: M01-07 (~40 challenges, pure Kotlin + framework-independent)
+- [x] 06-07-PLAN.md -- Challenge creation: M08-15 (~40 challenges, including 0% coverage modules M13-M15)
+- [x] 06-08-PLAN.md -- Capstone creation: TaskFlow KMP app (Ktor 3.4 + CMP 1.10 + SQLDelight 2.2 + Koin 4.1 + H2, replacing ShopKotlin)
 - [ ] 06-09-PLAN.md -- Enrichment pass (~98 KEY_POINTs + ~18 analogies + ~10 warnings for gap modules)
 - [ ] 06-10-PLAN.md -- Global verification and sweep (JSON validation, stale ref sweep, human checkpoint)
 

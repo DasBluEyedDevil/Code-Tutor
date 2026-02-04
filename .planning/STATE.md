@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-07 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-08 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 7 of 10 in current phase
+Plan: 8 of 10 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-07-PLAN.md (M08-M15 challenge creation)
+Last activity: 2026-02-04 -- Completed 06-08-PLAN.md (KMP capstone project)
 
-Progress: [########..] 8/10 phase plans complete
+Progress: [#########.] 9/10 phase plans complete
 
-Overall: [#########################################.] 41/61 total plans (67%)
+Overall: [##########################################] 42/61 total plans (69%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 41
+- Total plans completed: 42
 - Average duration: 10 min
-- Total execution time: ~404 min
+- Total execution time: ~414 min
 
 **By Phase:**
 
@@ -35,11 +35,11 @@ Overall: [#########################################.] 41/61 total plans (67%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 8/10 | 79 min | 10 min |
+| 06-kotlin-audit | 9/10 | 89 min | 10 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-07 (15 min), 06-06 (11 min), 06-05 (14 min), 06-03 (12 min), 06-04 (8 min)
-- Trend: 30 more challenges for M08-M15; all 15 modules now at 100% challenge coverage
+- Last 5 plans: 06-08 (10 min), 06-07 (15 min), 06-06 (11 min), 06-05 (14 min), 06-03 (12 min)
+- Trend: KMP capstone replaces ShopKotlin with TaskFlow (Ktor+CMP+SQLDelight+H2)
 
 *Updated after each plan completion*
 
@@ -254,6 +254,11 @@ Recent decisions affecting current work:
 - [06-07]: M12 deployment challenges use QUIZ format (CI/CD, app stores are procedural knowledge)
 - [06-07]: M15 context parameters simulated via explicit passing (requires -Xcontext-parameters flag)
 - [06-07]: M13 Gradle challenges use string parsing (framework-independent, runnable standalone)
+- [06-08]: TaskFlow KMP capstone replaces ShopKotlin (Android-only Jetpack Compose app)
+- [06-08]: H2 embedded database chosen over PostgreSQL (zero-setup requirement for capstone)
+- [06-08]: Desktop target demonstrated instead of iOS (no macOS/Xcode setup needed)
+- [06-08]: Plain ViewModel pattern instead of AndroidViewModel (KMP commonMain compatible)
+- [06-08]: ShopKotlin completely replaced (not kept as alternative -- fundamentally incompatible with KMP)
 
 ### Pending Todos
 
@@ -272,5 +277,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-07-PLAN.md (M08-M15 challenge creation -- 30 new challenges)
+Stopped at: Completed 06-08-PLAN.md (KMP capstone project -- TaskFlow replaces ShopKotlin)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
