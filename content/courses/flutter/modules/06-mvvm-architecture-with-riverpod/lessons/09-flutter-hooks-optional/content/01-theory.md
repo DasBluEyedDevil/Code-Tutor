@@ -72,7 +72,7 @@ Add to pubspec.yaml:
 ```yaml
 dependencies:
   flutter_hooks: ^0.20.5
-  hooks_riverpod: ^2.5.1  # If using with Riverpod
+  hooks_riverpod: ^2.6.1  # If using with Riverpod
 ```
 
 ### Is This Required?

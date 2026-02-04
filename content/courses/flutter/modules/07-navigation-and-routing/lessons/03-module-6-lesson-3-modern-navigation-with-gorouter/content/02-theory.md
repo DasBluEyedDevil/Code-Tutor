@@ -12,5 +12,5 @@ title: "What is GoRouter?"
 - Web-friendly (URL bar works!)
 - Maintained by Flutter team
 
-**Current version**: 17.0.0 (Flutter 3.29+, Dart 3.7+)
+**Current version**: 17.x (requires Flutter 3.32+, Dart 3.8+)
 

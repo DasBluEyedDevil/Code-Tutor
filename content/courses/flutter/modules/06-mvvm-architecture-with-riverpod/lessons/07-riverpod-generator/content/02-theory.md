@@ -21,13 +21,13 @@ Add these to your pubspec.yaml file. Note that riverpod_generator and build_runn
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.6.0
-  riverpod_annotation: ^2.6.0
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  riverpod_generator: ^2.6.0
+  riverpod_generator: ^2.6.1
   build_runner: ^2.4.0
 ```
 

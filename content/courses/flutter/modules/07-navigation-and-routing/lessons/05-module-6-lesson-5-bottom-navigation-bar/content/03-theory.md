@@ -20,7 +20,7 @@ Flutter's Material 3 has a newer, better widget: **NavigationBar**!
 import 'package:flutter/material.dart';
 
 void main() => runApp(MaterialApp(
-  theme: ThemeData(useMaterial3: true),  // Enable Material 3
+  theme: ThemeData(),  // Material 3 is the default
   home: MyApp(),
 ));
 
