@@ -10,13 +10,14 @@ title: "SharedPreferences"
 - User preferences (theme, language)
 - Simple flags (onboarding completed)
 - Small configuration values
-- Authentication tokens
+- Non-sensitive app settings
 
 **Limitations:**
 - No complex queries
 - No relationships
 - Limited data types
 - Not for large datasets
+- **Not secure** -- stores data in plain text (use `flutter_secure_storage` for tokens and secrets)
 
 
 
@@ -38,13 +39,14 @@ class PreferencesService {
   static Future<void> setDarkMode(bool value) => 
       _prefs.setBool('dark_mode', value);
   
-  // User token
-  static String? get authToken => _prefs.getString('auth_token');
-  static Future<void> setAuthToken(String token) => 
-      _prefs.setString('auth_token', token);
-  static Future<void> clearAuthToken() => 
-      _prefs.remove('auth_token');
-  
+  // Last selected tab (non-sensitive setting)
+  static int get lastTab => _prefs.getInt('last_tab') ?? 0;
+  static Future<void> setLastTab(int index) =>
+      _prefs.setInt('last_tab', index);
+
+  // NOTE: For auth tokens, use flutter_secure_storage instead!
+  // SharedPreferences stores data in plain text.
+
   // Onboarding flag
   static bool get hasCompletedOnboarding => 
       _prefs.getBool('onboarding_complete') ?? false;

@@ -72,7 +72,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.5.1
-  go_router: ^14.6.0
+  go_router: ^17.0.0
   flutter_secure_storage: ^9.2.2
   google_sign_in: ^6.2.1
   dio: ^5.7.0  # For HTTP requests

@@ -11,7 +11,7 @@ Ensure your `pubspec.yaml` includes:
 
 ```yaml
 dependencies:
-  go_router: ^14.6.0
+  go_router: ^17.0.0
   flutter_riverpod: ^2.5.1
 ```
 

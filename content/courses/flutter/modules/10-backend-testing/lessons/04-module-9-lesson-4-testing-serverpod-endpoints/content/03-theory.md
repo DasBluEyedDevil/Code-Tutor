@@ -10,7 +10,7 @@ First, add test dependencies to your server's pubspec.yaml:
 ```yaml
 dev_dependencies:
   test: ^1.24.0
-  serverpod_test: ^1.2.0
+  serverpod_test: ^2.0.0
 ```
 
 Create a test directory structure:
