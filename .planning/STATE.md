@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 planned (Kotlin Course Audit). Ready for execution.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 01 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 0 of 10 in current phase
-Status: Planned, not started
-Last activity: 2026-02-04 -- Research + planning complete (10 plans in 6 waves)
+Plan: 1 of 10 in current phase
+Status: In progress
+Last activity: 2026-02-04 -- Completed 06-01-PLAN.md (version alignment + structural fixes)
 
-Progress: [..........] 0/10 phase plans (0%)
+Progress: [#.........] 1/10 phase plans (10%)
 
-Overall: [################################..........] 33/61 total plans (54%)
+Overall: [################################..........] 34/61 total plans (56%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 33
+- Total plans completed: 34
 - Average duration: 10 min
-- Total execution time: ~337 min
+- Total execution time: ~341 min
 
 **By Phase:**
 
@@ -35,9 +35,11 @@ Overall: [################################..........] 33/61 total plans (54%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
+| 06-kotlin-audit | 1/10 | 4 min | 4 min |
+
 **Recent Trend:**
-- Last 5 plans: 05-07 (5 min), 05-06 (10 min), 05-05 (10 min), 05-04 (9 min), 05-03 (9 min)
-- Trend: Phase 5 complete; Flutter course production-ready for 3.38/Dart 3.10
+- Last 5 plans: 06-01 (4 min), 05-07 (5 min), 05-06 (10 min), 05-05 (10 min), 05-04 (9 min)
+- Trend: Phase 6 execution started; Kotlin 2.3 targets + M06 reorder complete
 
 *Updated after each plan completion*
 
@@ -217,6 +219,12 @@ Recent decisions affecting current work:
 - [05-07]: Flutter 3.27 refs kept as historical context (3 occurrences, intentional)
 - [05-07]: WillPopScope refs kept in M07 L08 migration lesson (4 occurrences, intentional)
 - [05-07]: Human approved Phase 5 completion -- no Phase 5.1 needed
+- [06-01]: Kotlin 2.3 as course target with K2 compiler, context parameters Beta
+- [06-01]: 9 frameworks pinned: Ktor 3.4.x, CMP 1.10.x, SQLDelight 2.2.x, Koin 4.1.x, Exposed 1.0.x, Arrow 2.2.x, kotlinx-coroutines 1.10.x, kotlinx-serialization 1.10.x, Gradle 8.x
+- [06-01]: M06 lesson ordering fixed: alphabetical-broken (auth before routing) -> logical progression (15 dirs renamed)
+- [06-01]: Module title prefixes removed from M05 (04A), M08 (06A), M09 (06B), M10 (06C)
+- [06-01]: course.json difficulty beginner -> beginner-to-advanced, description updated for 128 lessons/15 modules
+- [06-01]: refactor_course.py artifact deleted (same pattern as C# 04-01)
 
 ### Pending Todos
 
@@ -235,5 +243,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Phase 6 planning complete (10 plans, 6 waves). Ready for execution.
+Stopped at: Completed 06-01-PLAN.md (version alignment + structural fixes)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
