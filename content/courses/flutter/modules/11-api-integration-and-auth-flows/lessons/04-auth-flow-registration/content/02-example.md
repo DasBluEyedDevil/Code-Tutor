@@ -26,7 +26,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   
   # State management (we will use Riverpod)
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^2.6.1
   
   # Form validation helpers
   email_validator: ^2.1.17
