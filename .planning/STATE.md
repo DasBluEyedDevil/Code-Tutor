@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 5 of 9 (Flutter/Dart Course Audit)
-Plan: 3 of 7 in current phase
+Plan: 4 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 05-03-PLAN.md (M08-M13 backend modules accuracy verification)
+Last activity: 2026-02-04 -- Completed 05-04-PLAN.md (M14-M18 accuracy verification + capstone consistency)
 
-Progress: [###.......] 3/7 phase plans (43%)
+Progress: [####......] 4/7 phase plans (57%)
 
-Overall: [#############################...] 29/44 total plans (66%)
+Overall: [##############################..] 30/44 total plans (68%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 29
+- Total plans completed: 30
 - Average duration: 10 min
-- Total execution time: ~303 min
+- Total execution time: ~312 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Overall: [#############################...] 29/44 total plans (66%)
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
-| 05-flutter-audit | 3/7 | 21 min | 7 min |
+| 05-flutter-audit | 4/7 | 30 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-03 (9 min), 05-02 (7 min), 05-01 (5 min), 04-05 (25 min), 04-04 (15 min)
-- Trend: Backend modules (M08-M13) verified; Dart Frog community status + Serverpod 3.x warnings added
+- Last 5 plans: 05-04 (9 min), 05-03 (9 min), 05-02 (7 min), 05-01 (5 min), 04-05 (25 min)
+- Trend: M14-M18 accuracy verified; capstone consistency confirmed with M06/M07/M09 teachings
 
 *Updated after each plan completion*
 
@@ -197,6 +197,13 @@ Recent decisions affecting current work:
 - [05-03]: PostgreSQLException -> ServerException in M08 L06 (postgres 3.x API)
 - [05-03]: SharedPreferences auth token example removed from M13 (security fix, contradicted M11 flutter_secure_storage teaching)
 - [05-03]: go_router ^14.6.0 -> ^17.0.0 in M11 L07/L08 (match version manifest)
+- [05-04]: M18 GoRouter ^14.0.0 -> ^17.0.0 (critical capstone-to-M07 consistency fix)
+- [05-04]: SDK constraint >=3.0.0 -> >=3.10.0 in M18 pubspec examples (3 files)
+- [05-04]: withOpacity -> withValues(alpha:) across M14-M18 (15 replacements; deprecated in Flutter 3.27)
+- [05-04]: textScaleFactorOf -> textScalerOf in M15 responsive layouts (deprecated in Flutter 3.16)
+- [05-04]: CI/CD flutter-version 3.24.0 -> 3.38.0 in M16/M18 GitHub Actions workflows (7+ files)
+- [05-04]: AnimatedBuilder in M15 L02 confirmed correct (not deprecated; is current Flutter API)
+- [05-04]: FLTR-04 capstone assessed complete: 12-lesson project guide with inline pubspec + code (no standalone directory)
 
 ### Pending Todos
 
@@ -214,6 +221,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-04T04:20:04Z
-Stopped at: Completed 05-03-PLAN.md (M08-M13 backend modules accuracy verification)
+Last session: 2026-02-04T04:25:00Z
+Stopped at: Completed 05-04-PLAN.md (M14-M18 accuracy verification + capstone consistency)
 Resume file: None
