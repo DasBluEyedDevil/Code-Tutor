@@ -135,7 +135,7 @@ class MessageBubble extends StatelessWidget {
               Text(
                 TimeFormatter.formatTime(message.createdAt),
                 style: theme.textTheme.labelSmall?.copyWith(
-                  color: textColor.withOpacity(0.7),
+                  color: textColor.withValues(alpha: 0.7),
                 ),
               ),
               if (isFromMe) ...[
@@ -194,7 +194,7 @@ class MessageBubble extends StatelessWidget {
                 TimeFormatter.formatTime(message.createdAt),
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: isFromMe
-                      ? theme.colorScheme.onPrimary.withOpacity(0.7)
+                      ? theme.colorScheme.onPrimary.withValues(alpha: 0.7)
                       : theme.colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -216,7 +216,7 @@ class MessageBubble extends StatelessWidget {
 
   Widget _buildStatusIcon(ThemeData theme, Color color) {
     IconData icon;
-    Color iconColor = color.withOpacity(0.7);
+    Color iconColor = color.withValues(alpha: 0.7);
 
     switch (message.status) {
       case MessageStatus.sending:

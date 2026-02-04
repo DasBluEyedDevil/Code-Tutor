@@ -16,7 +16,7 @@ name: social_chat_server
 description: Social Chat Serverpod Backend
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 dependencies:
   serverpod: ^2.0.0

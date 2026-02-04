@@ -84,7 +84,7 @@ class ConversationsScreen extends ConsumerWidget {
           Icon(
             Icons.chat_bubble_outline,
             size: 80,
-            color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+            color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 24),
           Text(
@@ -406,7 +406,7 @@ class _TypingDotsState extends State<_TypingDots>
               width: 4,
               height: 4,
               decoration: BoxDecoration(
-                color: widget.color.withOpacity(opacity.clamp(0.3, 1.0)),
+                color: widget.color.withValues(alpha: opacity.clamp(0.3, 1.0)),
                 shape: BoxShape.circle,
               ),
             );

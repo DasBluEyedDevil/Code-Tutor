@@ -14,7 +14,7 @@ First, add the auth packages to your project:
 # server/pubspec.yaml
 name: social_chat_server
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 dependencies:
   serverpod: ^2.0.0
@@ -28,7 +28,7 @@ dev_dependencies:
 # client/pubspec.yaml
 name: social_chat_client
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 dependencies:
   serverpod_client: ^2.0.0
@@ -39,7 +39,7 @@ dependencies:
 # flutter/pubspec.yaml (your Flutter app)
 name: social_chat_flutter
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
 
 dependencies:
   flutter:

@@ -6,11 +6,11 @@ title: "Common Setup Mistakes"
 
 **1. Wrong Dart/Flutter Versions**
 
-Serverpod 2.x requires Dart 3.0+. Check your versions:
+Serverpod 2.x requires Dart 3.0+ and this course targets Dart 3.10+/Flutter 3.38+. Check your versions:
 
 ```bash
-dart --version   # Should be 3.0.0 or higher
-flutter --version # Should be 3.10.0 or higher
+dart --version   # Should be 3.10.0 or higher
+flutter --version # Should be 3.38.0 or higher
 ```
 
 **2. Path Dependency Errors**

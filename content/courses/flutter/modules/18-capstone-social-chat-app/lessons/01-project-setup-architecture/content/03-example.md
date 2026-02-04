@@ -56,7 +56,7 @@ name: social_chat_app
 description: Social Chat Flutter Application
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.10.0 <4.0.0'
   flutter: '>=3.10.0'
 
 dependencies:
@@ -77,7 +77,7 @@ dependencies:
   riverpod_annotation: ^2.3.0
   
   # Navigation
-  go_router: ^14.0.0
+  go_router: ^17.0.0
   
   # UI
   cached_network_image: ^3.3.0

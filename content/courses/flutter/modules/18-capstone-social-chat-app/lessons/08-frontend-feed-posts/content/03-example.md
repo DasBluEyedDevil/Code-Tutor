@@ -325,7 +325,7 @@ class FeedEmptyState extends StatelessWidget {
             Icon(
               Icons.dynamic_feed_outlined,
               size: 80,
-              color: theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 24),
             Text(

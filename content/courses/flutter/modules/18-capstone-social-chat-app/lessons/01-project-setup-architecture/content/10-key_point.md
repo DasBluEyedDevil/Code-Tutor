@@ -9,8 +9,8 @@ title: "Project Setup Checklist"
 Ensure you've completed these setup steps:
 
 **Environment Setup**
-- [ ] Dart SDK 3.0+ installed
-- [ ] Flutter 3.10+ installed
+- [ ] Dart SDK 3.10+ installed
+- [ ] Flutter 3.38+ installed
 - [ ] Serverpod CLI installed (`dart pub global activate serverpod_cli`)
 - [ ] Docker installed (for local database)
 - [ ] IDE configured (VS Code or Android Studio with Dart/Flutter plugins)
