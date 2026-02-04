@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-4-1",
+  "title": "Railway Validation Chain",
+  "description": "Implement railway-oriented programming for user registration validation. Chain multiple validation steps where each can fail independently, and the first failure short-circuits the chain.",
+  "instructions": "Build a validation pipeline using the Either type from the previous lesson. Chain validateName, validateEmail, validateAge, and validatePassword functions. Each returns Either<ValidationError, ValidatedField>. Use flatMap to chain them.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid input should pass all validations",
+      "expectedOutput": "Right(User(name=Alice, email=alice@example.com, age=25))",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "First failing validation should short-circuit",
+      "expectedOutput": "Left(InvalidEmail(email=not-an-email))",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Each validation returns Either<ValidationError, ValidatedValue>"
+    },
+    {
+      "level": 2,
+      "text": "Chain with flatMap: validateName(name).flatMap { validName -> validateEmail(email).flatMap { ... } }"
+    },
+    {
+      "level": 3,
+      "text": "Use map on the final step to construct the output object"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using nested if/else instead of flatMap chaining",
+      "consequence": "Pyramid of doom -- deeply nested code that is hard to read",
+      "correction": "flatMap flattens nested Either results into a linear chain"
+    },
+    {
+      "mistake": "Railway-oriented only reports the FIRST error, not all errors",
+      "consequence": "User must fix one error at a time",
+      "correction": "This is expected for railway/short-circuit validation; use zipOrAccumulate for accumulating all errors"
+    }
+  ]
+}

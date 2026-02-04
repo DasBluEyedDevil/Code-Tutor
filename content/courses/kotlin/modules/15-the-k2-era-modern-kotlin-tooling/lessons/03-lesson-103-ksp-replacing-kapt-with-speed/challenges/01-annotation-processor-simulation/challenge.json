@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-10-3-1",
+  "title": "Annotation Processor Simulation",
+  "description": "Simulate what an annotation processor does by parsing Kotlin source code strings to find annotated elements and generating output code. This demonstrates the concept of compile-time code generation without requiring actual KSP APIs.",
+  "instructions": "Create an AnnotationProcessor that reads Kotlin source code as a string, finds all classes annotated with @AutoToString, and generates a toString() extension function for each. Parse class names and properties from the source text.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should detect annotated class and generate toString",
+      "expectedOutput": "fun User.generatedToString() = \"User(name=$name, age=$age)\"",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should handle multiple annotated classes",
+      "expectedOutput": "Generated 2 toString functions",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Look for lines containing @AutoToString, then the next line with 'data class' or 'class'"
+    },
+    {
+      "level": 2,
+      "text": "Extract class name with regex: class (\\w+)"
+    },
+    {
+      "level": 3,
+      "text": "Extract constructor parameters between ( and ): val (\\w+): (\\w+)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Trying to use actual KSP or KAPT APIs",
+      "consequence": "Dependencies not available in standalone exercise",
+      "correction": "This is a simulation using string parsing -- same concept, no framework needed"
+    }
+  ]
+}

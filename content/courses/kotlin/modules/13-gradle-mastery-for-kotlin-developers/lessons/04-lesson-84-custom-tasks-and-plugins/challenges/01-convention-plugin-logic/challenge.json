@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-8-4-1",
+  "title": "Convention Plugin Logic",
+  "description": "Implement a simplified convention plugin configuration builder that validates and merges settings from multiple configuration sources (defaults, project-level, command-line overrides).",
+  "instructions": "Create a PluginConfig data class and a ConfigBuilder that supports layered configuration: defaults, then project overrides, then CLI overrides. Each layer can override values from the previous layer. Implement merge logic.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Defaults should be used when no overrides",
+      "expectedOutput": "jvmTarget=17, allWarningsAsErrors=false, optIn=[]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Project overrides should replace defaults",
+      "expectedOutput": "jvmTarget=21, allWarningsAsErrors=true, optIn=[kotlinx.coroutines.ExperimentalCoroutinesApi]",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "CLI overrides should replace project settings",
+      "expectedOutput": "jvmTarget=21, allWarningsAsErrors=false",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use nullable fields in override layers -- null means 'use previous layer's value'"
+    },
+    {
+      "level": 2,
+      "text": "Implement a merge function: override ?: default"
+    },
+    {
+      "level": 3,
+      "text": "For list fields (optIn), append overrides to defaults instead of replacing"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Replacing lists entirely instead of merging them",
+      "consequence": "Project-level optIn removes defaults instead of adding to them",
+      "correction": "Use (default + override).distinct() for list merging"
+    }
+  ]
+}

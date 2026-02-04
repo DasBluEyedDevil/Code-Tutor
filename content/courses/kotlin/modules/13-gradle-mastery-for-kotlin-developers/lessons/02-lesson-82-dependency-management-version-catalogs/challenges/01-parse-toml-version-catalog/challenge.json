@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-8-2-1",
+  "title": "Parse TOML Version Catalog",
+  "description": "Implement a simplified TOML parser for Gradle version catalogs. Parse [versions], [libraries], and [bundles] sections from a libs.versions.toml string.",
+  "instructions": "Create a VersionCatalogParser that extracts versions, library coordinates (with version references resolved), and bundles from a TOML-formatted string. Pure string parsing -- no TOML libraries.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should resolve version references in libraries",
+      "expectedOutput": "ktor-server-core = io.ktor:ktor-server-core:3.4.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should parse bundles as lists of library keys",
+      "expectedOutput": "ktor-server = [ktor-server-core, ktor-server-netty]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Track which [section] you are in as you iterate lines"
+    },
+    {
+      "level": 2,
+      "text": "In [versions], store key-value pairs in a Map<String, String>"
+    },
+    {
+      "level": 3,
+      "text": "In [libraries], parse module and version.ref, then resolve version.ref from the versions map"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling the version.ref indirection",
+      "consequence": "Library version shows as the ref name instead of the actual version number",
+      "correction": "When you see version.ref = 'ktor', look up 'ktor' in the [versions] map"
+    },
+    {
+      "mistake": "Splitting on '=' without handling TOML inline tables { }",
+      "consequence": "Malformed parsing of library declarations",
+      "correction": "Use regex to handle both simple key = value and key = { module = ..., version.ref = ... } formats"
+    }
+  ]
+}

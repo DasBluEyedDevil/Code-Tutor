@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-10-4-1",
+  "title": "Builder Class Generator",
+  "description": "Implement a code generator that reads a data class definition (as a string) and generates a Builder class with fluent API. This simulates what a KSP processor would do at compile time.",
+  "instructions": "Create a BuilderGenerator that parses a data class and outputs a Builder class with setter methods for each property, a build() method, and default values. Pure string transformation -- no KSP APIs needed.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should generate a Builder class with setters",
+      "expectedOutput": "class UserBuilder { fun name(value: String) = apply { ... } }",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should generate a build() method",
+      "expectedOutput": "fun build() = User(name = name, email = email, age = age)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Parse properties as List<Pair<String, String>> (name to type)"
+    },
+    {
+      "level": 2,
+      "text": "Generate: private var propName: Type? = null for each property"
+    },
+    {
+      "level": 3,
+      "text": "Generate: fun propName(value: Type) = apply { this.propName = value } for fluent API"
+    },
+    {
+      "level": 4,
+      "text": "build() should use requireNotNull for non-nullable properties"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling nullable vs non-nullable types",
+      "consequence": "Builder allows null for required fields",
+      "correction": "Use requireNotNull in build() for non-nullable types, keep null for nullable types"
+    }
+  ]
+}

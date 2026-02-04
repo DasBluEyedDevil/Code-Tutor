@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-10-1-1",
+  "title": "K2 Features Quiz",
+  "description": "Test your understanding of the K2 compiler, its improvements, and what it means for Kotlin developers.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is the primary benefit of the K2 compiler over the K1 (old) compiler?",
+      "options": [
+        "K2 adds new language features that K1 cannot support",
+        "K2 is significantly faster (up to 2x compilation speed) with better type inference and IDE responsiveness",
+        "K2 only works with Kotlin Multiplatform projects",
+        "K2 replaces the need for Gradle"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The K2 compiler rewrites the frontend with a new architecture that is up to 2x faster for compilation. It also improves type inference (smarter smart casts, better lambda inference) and makes the IDE experience faster with a new FIR-based analysis engine."
+    },
+    {
+      "id": "q2",
+      "text": "What does 'FIR' stand for in the context of the K2 compiler?",
+      "options": [
+        "Fast Incremental Recompilation",
+        "Frontend Intermediate Representation",
+        "Full Integration Runtime",
+        "Functional Inference Resolution"
+      ],
+      "correctAnswer": 1,
+      "explanation": "FIR (Frontend Intermediate Representation) is the new data structure K2 uses to represent Kotlin code during compilation. It replaces the old PSI-based analysis with a more efficient tree structure that enables faster type checking and resolution."
+    },
+    {
+      "id": "q3",
+      "text": "In Kotlin 2.0+, what is the recommended way to enable the K2 compiler?",
+      "options": [
+        "Add a compiler plugin to build.gradle.kts",
+        "K2 is the DEFAULT compiler since Kotlin 2.0 -- no action needed",
+        "Set languageVersion = '2.0' in kotlin.compilerOptions",
+        "Install a separate K2 SDK"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Since Kotlin 2.0, the K2 compiler is the default. You do not need to enable it explicitly. The old K1 compiler can still be forced with -language-version 1.9 if needed for migration, but K2 is the standard path forward."
+    }
+  ]
+}

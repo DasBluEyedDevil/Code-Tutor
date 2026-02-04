@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-1-1",
+  "title": "Pipe and Compose",
+  "description": "Implement pipe and compose higher-order functions. Pipe applies functions left-to-right; compose applies right-to-left. Build these from scratch using pure Kotlin.",
+  "instructions": "Implement infix fun <A, B> A.pipe(f: (A) -> B): B and fun <A, B, C> compose(f: (B) -> C, g: (A) -> B): (A) -> C. Then use them to build a data transformation pipeline.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Pipe should apply functions left-to-right",
+      "expectedOutput": "HELLO WORLD",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Compose should create a combined function",
+      "expectedOutput": "6",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Pipeline should chain multiple transformations",
+      "expectedOutput": "[KOTLIN, ARROW]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "pipe is just: f(this)"
+    },
+    {
+      "level": 2,
+      "text": "compose returns a lambda: { a -> f(g(a)) }"
+    },
+    {
+      "level": 3,
+      "text": "Chain multiple pipes: value.pipe(f1).pipe(f2).pipe(f3)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Confusing pipe and compose direction",
+      "consequence": "Functions applied in wrong order",
+      "correction": "Pipe = left-to-right (data flows forward). Compose = right-to-left (mathematical composition f(g(x)))"
+    }
+  ]
+}

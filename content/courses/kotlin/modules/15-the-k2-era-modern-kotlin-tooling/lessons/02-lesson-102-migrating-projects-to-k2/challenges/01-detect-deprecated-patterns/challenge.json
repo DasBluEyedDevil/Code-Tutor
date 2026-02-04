@@ -1,0 +1,50 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-10-2-1",
+  "title": "Detect Deprecated Patterns",
+  "description": "Implement a code analyzer that detects deprecated Kotlin patterns in source code strings. Identify KAPT usage, old compiler flags, deprecated API patterns, and suggest K2-era replacements.",
+  "instructions": "Create a DeprecationDetector that scans Kotlin source code (as a string) and returns a list of findings. Detect: kapt plugin usage, @JvmStatic in object companions, old-style buildSrc patterns, and -Xjvm-default=all flag usage.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should detect KAPT usage",
+      "expectedOutput": "DEPRECATED: 'kapt' found -- replace with KSP (kotlin(\"com.google.devtools.ksp\"))",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should detect old compiler flag",
+      "expectedOutput": "DEPRECATED: '-Xjvm-default=all' -- no longer needed in Kotlin 2.0+ (all interface methods have default impls)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Clean code should produce no findings",
+      "expectedOutput": "No deprecated patterns found",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use String.contains() or Regex to detect each pattern"
+    },
+    {
+      "level": 2,
+      "text": "Store pattern-to-message mappings in a list of pairs"
+    },
+    {
+      "level": 3,
+      "text": "Return all matched patterns with their replacement suggestions"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Only checking exact matches instead of pattern-based detection",
+      "consequence": "Misses variations like 'id(\"kotlin-kapt\")' vs 'kotlin(\"kapt\")'",
+      "correction": "Check for the core keyword ('kapt') rather than exact syntax"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-5-1",
+  "title": "Raise-Pattern Result Builder",
+  "description": "Implement a simplified Raise DSL that allows writing imperative-style code with typed errors. Functions in a Raise context can 'raise' errors that short-circuit execution, similar to Arrow 2.x's Raise DSL.",
+  "instructions": "Create a Raise<E> interface with a raise(error: E): Nothing function. Implement an 'either' builder function that catches raised errors and returns Either<E, A>. Functions that can fail accept 'raise: Raise<E>' as a context parameter.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Successful computation should return Right",
+      "expectedOutput": "Right(User(name=Alice, email=alice@example.com))",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Raised error should return Left",
+      "expectedOutput": "Left(InvalidEmail(value=bad-email))",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "raise() throws a special internal exception that the builder catches"
+    },
+    {
+      "level": 2,
+      "text": "The 'either' builder wraps the block in try/catch and converts to Left/Right"
+    },
+    {
+      "level": 3,
+      "text": "Use a private class RaiseException(val error: Any?) : Exception() as the control flow mechanism"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using exceptions for business errors directly",
+      "consequence": "Exception-based flow is untyped and invisible in function signatures",
+      "correction": "Raise pattern uses exceptions only internally; the public API is typed Either<E, A>"
+    },
+    {
+      "mistake": "Forgetting that raise() returns Nothing",
+      "consequence": "Compiler doesn't know that code after raise() is unreachable",
+      "correction": "raise() return type must be Nothing so the compiler knows execution stops"
+    }
+  ]
+}

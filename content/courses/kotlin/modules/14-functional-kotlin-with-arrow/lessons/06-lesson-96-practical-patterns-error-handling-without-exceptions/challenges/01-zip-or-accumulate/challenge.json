@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-6-1",
+  "title": "Zip or Accumulate",
+  "description": "Implement a zipOrAccumulate function that runs ALL validations and collects ALL errors, instead of short-circuiting on the first failure. This is the Arrow 2.x pattern for form validation.",
+  "instructions": "Build a zipOrAccumulate function that takes multiple Either<E, A> values and either combines all Right values using a transform function, or accumulates all Left errors into a List<E>. No Arrow imports.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "All valid inputs should combine into Right",
+      "expectedOutput": "Right(User(name=Alice, email=alice@example.com, age=25))",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Multiple errors should ALL be collected",
+      "expectedOutput": "Left([InvalidName(), InvalidEmail(bad), InvalidAge(-5)])",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Single error among valid inputs should still be Left",
+      "expectedOutput": "Left([InvalidEmail(nope)])",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Evaluate ALL inputs eagerly (don't short-circuit)"
+    },
+    {
+      "level": 2,
+      "text": "Collect all Left values into a list; if list is empty, all are Right"
+    },
+    {
+      "level": 3,
+      "text": "For 3 inputs: check each, accumulate errors, if zero errors then apply transform to all 3 Right values"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using flatMap for accumulation (flatMap short-circuits on first Left)",
+      "consequence": "Only first error is reported instead of all errors",
+      "correction": "Evaluate all inputs independently, then check results together"
+    },
+    {
+      "mistake": "Nesting when expressions instead of using a clean pattern",
+      "consequence": "Code becomes unreadable with 3+ validations",
+      "correction": "Collect errors in a list, then decide: empty list = success, non-empty = failure"
+    }
+  ]
+}

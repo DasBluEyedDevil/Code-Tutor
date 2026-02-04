@@ -1,0 +1,56 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-3-1",
+  "title": "Build Option Type",
+  "description": "Implement a simplified Option<A> type from scratch. Option represents a value that may or may not exist, replacing nullable types with explicit type-safe handling. Build map, flatMap, getOrElse, and filter operations.",
+  "instructions": "Create a sealed class Option<out A> with Some(value) and None subtypes. Implement map, flatMap, getOrElse, and filter. No Arrow imports -- build from scratch.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Some should map the value",
+      "expectedOutput": "Some(10)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "None should skip map",
+      "expectedOutput": "None",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "getOrElse should return value for Some, default for None",
+      "expectedOutput": "5, 0",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "filter should return None when predicate fails",
+      "expectedOutput": "None",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "None should be a data object (singleton) of type Option<Nothing>"
+    },
+    {
+      "level": 2,
+      "text": "map on None returns None; on Some wraps transform result in Some"
+    },
+    {
+      "level": 3,
+      "text": "getOrElse takes a lambda () -> @UnsafeVariance A as default provider"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using null internally instead of Option.None",
+      "consequence": "Defeats the purpose of Option -- hides nullability",
+      "correction": "Option eliminates null entirely; None is an explicit empty case"
+    }
+  ]
+}

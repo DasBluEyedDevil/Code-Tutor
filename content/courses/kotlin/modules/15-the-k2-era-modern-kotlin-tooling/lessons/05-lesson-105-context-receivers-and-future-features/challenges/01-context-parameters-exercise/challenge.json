@@ -1,0 +1,59 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-10-5-1",
+  "title": "Context Parameters Exercise",
+  "description": "Implement a logging and transaction context system using Kotlin context parameters (Kotlin 2.2+ with -Xcontext-parameters). Functions declare context dependencies explicitly, and callers must provide them.",
+  "instructions": "Create Logger and Transaction context interfaces. Write functions that require these contexts using the context(logger: Logger, tx: Transaction) syntax. Demonstrate how context parameters propagate through call chains without manual passing.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Logger context should be available in function body",
+      "expectedOutput": "[INFO] Processing order 123",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Transaction context should enable commit/rollback",
+      "expectedOutput": "Transaction committed with 2 operations",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Combined contexts should propagate to nested calls",
+      "expectedOutput": "[INFO] Saving user Alice\nTransaction committed with 1 operations",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Context parameters use: context(logger: Logger) fun doWork() { logger.info(...) }"
+    },
+    {
+      "level": 2,
+      "text": "Multiple contexts: context(logger: Logger, tx: Transaction) fun saveUser(...)"
+    },
+    {
+      "level": 3,
+      "text": "Context parameters propagate: if function A has context(logger) and calls function B which also needs context(logger), the context flows automatically"
+    },
+    {
+      "level": 4,
+      "text": "Provide context at the call site with: with(myLogger) { doWork() }"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Confusing context parameters with extension receivers",
+      "consequence": "Using 'this' instead of the named parameter",
+      "correction": "Context parameters are named: context(logger: Logger) means use 'logger', not 'this'"
+    },
+    {
+      "mistake": "Forgetting -Xcontext-parameters compiler flag",
+      "consequence": "Compilation error: context parameters not enabled",
+      "correction": "Add compilerOptions { freeCompilerArgs.add(\"-Xcontext-parameters\") } in build.gradle.kts"
+    }
+  ]
+}

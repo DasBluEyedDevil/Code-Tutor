@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-8-1-1",
+  "title": "Parse Build Configuration",
+  "description": "Implement a parser that extracts key-value configuration from a simplified build.gradle.kts-style string. Extract group, version, and dependency declarations.",
+  "instructions": "Create a BuildConfigParser that takes a multi-line config string and extracts: group name, version, and a list of dependency coordinates. Use string parsing only -- no Gradle APIs.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should extract group and version",
+      "expectedOutput": "group=com.example, version=1.0.0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should extract dependencies",
+      "expectedOutput": "dependencies=[org.jetbrains.kotlin:kotlin-stdlib:2.3.0, io.ktor:ktor-server-core:3.4.0]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Split the config by lines and look for lines containing '=' for assignments"
+    },
+    {
+      "level": 2,
+      "text": "Use Regex to extract quoted string values after '='"
+    },
+    {
+      "level": 3,
+      "text": "Dependencies follow the pattern: implementation(\"group:artifact:version\")"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not trimming whitespace from extracted values",
+      "consequence": "Values have leading/trailing spaces",
+      "correction": "Always call trim() on extracted strings"
+    },
+    {
+      "mistake": "Using split(':') without limiting -- artifact coordinates contain colons",
+      "consequence": "Incorrect parsing of Maven coordinates",
+      "correction": "Maven coordinates always have exactly 3 parts: group:artifact:version"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-8-3-1",
+  "title": "KMP Source Sets Quiz",
+  "description": "Test your understanding of Kotlin Multiplatform source set configuration and hierarchy.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "In a KMP project, where should platform-independent business logic be placed?",
+      "options": [
+        "androidMain",
+        "iosMain",
+        "commonMain",
+        "jvmMain"
+      ],
+      "correctAnswer": 2,
+      "explanation": "commonMain is the shared source set that compiles for ALL target platforms. Business logic, data models, repository interfaces, and shared utilities go here. Platform-specific implementations use expect/actual declarations."
+    },
+    {
+      "id": "q2",
+      "text": "What is the purpose of an intermediate source set like 'nativeMain' in KMP?",
+      "options": [
+        "It replaces commonMain for native platforms",
+        "It allows sharing code between native targets (iOS, macOS, Linux) without including JVM or JS",
+        "It is required for all KMP projects",
+        "It contains the main() function for native apps"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Intermediate source sets like nativeMain sit between commonMain and specific targets (iosArm64Main, macosArm64Main, etc.). They share code across a subset of platforms -- in this case, all Kotlin/Native targets. This avoids duplicating expect/actual for each native target."
+    },
+    {
+      "id": "q3",
+      "text": "If you declare 'expect fun platformName(): String' in commonMain, where must the 'actual' implementation go?",
+      "options": [
+        "In commonMain alongside the expect declaration",
+        "In each platform source set (androidMain, iosMain, etc.) that the project targets",
+        "Only in androidMain since Android is the primary target",
+        "In a separate module called 'platform-impl'"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Every 'expect' declaration in commonMain must have a corresponding 'actual' implementation in EACH platform source set. If your project targets Android and iOS, you need actual fun platformName() in both androidMain and iosMain."
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-9-2-1",
+  "title": "Build Either Type",
+  "description": "Implement a simplified Either<L, R> type from scratch. Either represents a value that is one of two types: Left (typically error) or Right (typically success). Build map, flatMap, and fold operations.",
+  "instructions": "Create a sealed class Either<out L, out R> with Left and Right subclasses. Implement map (transforms Right), flatMap (chains Either-returning functions), fold (extracts value from either side), and helper extension functions .left() and .right().",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Right should map the success value",
+      "expectedOutput": "Right(6)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Left should skip map and preserve error",
+      "expectedOutput": "Left(not found)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "flatMap should chain Either-returning functions",
+      "expectedOutput": "Right(42)",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "fold should extract value from either side",
+      "expectedOutput": "Error: not found",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Either is sealed with two subclasses: data class Left<L>(val value: L) and data class Right<R>(val value: R)"
+    },
+    {
+      "level": 2,
+      "text": "map only transforms Right; Left passes through unchanged"
+    },
+    {
+      "level": 3,
+      "text": "flatMap on Right applies the function; on Left returns the Left unchanged"
+    },
+    {
+      "level": 4,
+      "text": "fold takes two lambdas: one for Left, one for Right"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Making Either invariant instead of covariant",
+      "consequence": "Cannot use Either<Nothing, String> where Either<Error, String> is expected",
+      "correction": "Use 'out' variance: sealed class Either<out L, out R>"
+    },
+    {
+      "mistake": "Forgetting that flatMap on Left must return Either<L, NewR> not Either<L, R>",
+      "consequence": "Type mismatch in chained operations",
+      "correction": "Cast Left to Either<L, Nothing> which is compatible with any Right type"
+    }
+  ]
+}

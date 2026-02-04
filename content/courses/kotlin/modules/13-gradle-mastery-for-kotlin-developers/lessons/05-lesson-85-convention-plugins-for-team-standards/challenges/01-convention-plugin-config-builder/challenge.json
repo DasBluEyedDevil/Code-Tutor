@@ -1,0 +1,44 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-8-5-1",
+  "title": "Convention Plugin Config DSL",
+  "description": "Build a type-safe DSL for configuring team convention standards. The DSL should allow specifying code style rules, dependency constraints, and test coverage thresholds.",
+  "instructions": "Implement a Kotlin DSL using builder pattern with lambda receivers. Create a TeamConventions class configured via a teamConventions { } block that accepts code style settings, dependency rules, and coverage requirements.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "DSL should capture code style settings",
+      "expectedOutput": "maxLineLength=120, indentSize=4",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "DSL should capture dependency constraints",
+      "expectedOutput": "bannedGroups=[com.google.guava], requiredGroup=org.jetbrains.kotlinx",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a function with a lambda receiver: fun teamConventions(block: TeamConventionsBuilder.() -> Unit)"
+    },
+    {
+      "level": 2,
+      "text": "Nested DSLs use the same pattern: fun codeStyle(block: CodeStyleBuilder.() -> Unit)"
+    },
+    {
+      "level": 3,
+      "text": "Builders accumulate settings, then build() creates the immutable config"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting @DslMarker to prevent scope leaking",
+      "consequence": "Inner blocks can accidentally call outer scope functions",
+      "correction": "Use @DslMarker annotation on builder classes to restrict scope access"
+    }
+  ]
+}
