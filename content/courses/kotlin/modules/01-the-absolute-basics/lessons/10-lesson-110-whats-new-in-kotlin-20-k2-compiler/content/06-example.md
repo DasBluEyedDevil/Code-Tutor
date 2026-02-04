@@ -1,12 +1,12 @@
 ---
 type: "EXAMPLE"
-title: "Kotlin 2.0 in Practice"
+title: "Modern Kotlin in Practice"
 ---
 
-Modern Kotlin 2.0 patterns combine data classes, extension functions, scope functions, and collection operations. The K2 compiler infers types more accurately and compiles these patterns faster.
+Modern Kotlin patterns combine data classes, extension functions, scope functions, and collection operations. The K2 compiler infers types more accurately and compiles these patterns faster.
 
 ```kotlin
-// Modern Kotlin 2.0 code examples
+// Modern Kotlin code examples
 
 // 1. Data class with modern patterns
 data class User(

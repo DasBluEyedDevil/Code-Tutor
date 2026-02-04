@@ -6,7 +6,7 @@ title: "Smarter Smart Casts"
 K2 compiler's smart casts work in more scenarios. They now handle complex conditions, work across property accesses, and track nullability through when expressions - reducing the need for explicit casts.
 
 ```kotlin
-// Kotlin 2.0 has smarter smart casts
+// The K2 compiler has smarter smart casts
 
 // Example 1: Smart casts work across more scenarios
 fun processValue(value: Any) {
@@ -35,7 +35,7 @@ fun processContainer(container: Container) {
 }
 
 fun main() {
-    processValue("Hello Kotlin 2.0")
+    processValue("Hello Kotlin")
     println(describe("test"))
     println(describe(42))
     println(describe(listOf(1, 2, 3)))
