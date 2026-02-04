@@ -84,7 +84,7 @@ class _BouncyColorButtonState extends State<BouncyColorButton>
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: (_colorAnimation.value ?? Colors.blue).withOpacity(0.4),
+                  color: (_colorAnimation.value ?? Colors.blue).withValues(alpha: 0.4),
                   blurRadius: 8 + (_controller.value * 12),
                   offset: Offset(0, 4 + (_controller.value * 4)),
                 ),

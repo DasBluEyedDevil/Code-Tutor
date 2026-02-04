@@ -19,7 +19,7 @@ on:
     branches: [main]
 
 env:
-  FLUTTER_VERSION: '3.24.0'
+  FLUTTER_VERSION: '3.38.0'
 
 jobs:
   # Matrix build for multiple Flutter versions
@@ -31,11 +31,11 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        flutter-version: ['3.22.0', '3.24.0']
+        flutter-version: ['3.36.0', '3.38.0']
         exclude:
           # Skip older Flutter on Windows for speed
           - os: windows-latest
-            flutter-version: '3.22.0'
+            flutter-version: '3.36.0'
     
     steps:
       - uses: actions/checkout@v4
@@ -102,7 +102,7 @@ on:
       flutter-version:
         required: false
         type: string
-        default: '3.24.0'
+        default: '3.38.0'
       working-directory:
         required: false
         type: string

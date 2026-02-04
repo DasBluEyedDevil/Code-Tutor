@@ -168,7 +168,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.38.0'
           cache: true
 
       - run: flutter config --enable-linux-desktop

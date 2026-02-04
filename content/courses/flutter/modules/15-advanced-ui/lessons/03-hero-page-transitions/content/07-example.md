@@ -36,7 +36,7 @@ class CustomHeroExample extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3 * animation.value),
+                    color: Colors.black.withValues(alpha: 0.3 * animation.value),
                     blurRadius: 20 * animation.value,
                     spreadRadius: 5 * animation.value,
                   ),

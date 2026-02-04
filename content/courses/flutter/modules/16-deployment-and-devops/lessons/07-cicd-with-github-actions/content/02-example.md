@@ -24,7 +24,7 @@ on:
     branches: [main]
 
 env:
-  FLUTTER_VERSION: '3.24.0'
+  FLUTTER_VERSION: '3.38.0'
 
 jobs:
   analyze:

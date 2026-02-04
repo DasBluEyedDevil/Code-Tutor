@@ -28,8 +28,8 @@ class ResponsiveHomePage extends StatelessWidget {
     // Get safe area padding (notch, status bar, etc.)
     final padding = MediaQuery.paddingOf(context);
     
-    // Get text scale factor for accessibility
-    final textScale = MediaQuery.textScaleFactorOf(context);
+    // Get text scaler for accessibility
+    final textScaler = MediaQuery.textScalerOf(context);
     
     return Scaffold(
       appBar: AppBar(
@@ -46,7 +46,7 @@ class ResponsiveHomePage extends StatelessWidget {
                 children: [
                   Text('Orientation: ${isLandscape ? "Landscape" : "Portrait"}'),
                   Text('Safe area top: ${padding.top}'),
-                  Text('Text scale: ${textScale}x'),
+                  Text('Text scaler: $textScaler'),
                 ],
               ),
             ),

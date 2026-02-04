@@ -13,7 +13,7 @@ title: "MediaQuery - Screen Size, Orientation, and More"
 | `size` | Screen dimensions | Size(375.0, 812.0) |
 | `orientation` | Portrait/Landscape | Orientation.portrait |
 | `devicePixelRatio` | Pixel density | 3.0 (retina) |
-| `textScaleFactor` | User's text size preference | 1.0 (default) |
+| `textScaler` | User's text size preference | TextScaler.linear(1.0) |
 | `platformBrightness` | Light/Dark mode | Brightness.dark |
 | `padding` | Safe area insets | EdgeInsets (notch, etc.) |
 | `viewInsets` | Keyboard/overlay insets | EdgeInsets |
@@ -27,7 +27,7 @@ final mediaQuery = MediaQuery.of(context);
 // Specific properties (more efficient)
 final width = MediaQuery.sizeOf(context).width;
 final orientation = MediaQuery.orientationOf(context);
-final textScale = MediaQuery.textScaleFactorOf(context);
+final textScaler = MediaQuery.textScalerOf(context);
 ```
 
 **Performance Note:**
