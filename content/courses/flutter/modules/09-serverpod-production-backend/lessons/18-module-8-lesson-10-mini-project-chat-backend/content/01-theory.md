@@ -35,5 +35,7 @@ You should have completed all previous lessons in Module 8:
 - Authentication (8.5 and 8.6)
 - Real-time streams (8.7)
 
+> **Version Note:** This project uses Serverpod 2.x patterns. Ensure your CLI is pinned: `dart pub global activate serverpod_cli ^2.0.0`. Serverpod 3.x has breaking changes in authentication and streaming APIs.
+
 Let us begin building ChatPod!
 

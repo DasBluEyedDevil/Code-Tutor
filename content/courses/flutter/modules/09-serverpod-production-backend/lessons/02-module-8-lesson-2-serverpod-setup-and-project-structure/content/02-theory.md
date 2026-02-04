@@ -10,7 +10,7 @@ Before starting, verify you have these installed:
 ```bash
 dart --version
 ```
-You should see Dart 3.0 or higher.
+You should see Dart 3.10 or higher (included with Flutter 3.38+).
 
 **2. Docker Desktop**
 Serverpod uses Docker to run PostgreSQL and Redis locally. This is essential for development.

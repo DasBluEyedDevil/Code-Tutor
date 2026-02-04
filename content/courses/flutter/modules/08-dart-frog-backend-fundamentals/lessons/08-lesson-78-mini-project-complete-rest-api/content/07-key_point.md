@@ -4,7 +4,7 @@ title: "What You Built - Complete Backend Skills"
 ---
 
 
-### Module 7 Complete!
+### Module 8 Complete!
 
 You now have production-ready backend development skills:
 
@@ -45,5 +45,5 @@ You now have production-ready backend development skills:
 - Add PostgreSQL for persistent storage
 - Add environment variables for secrets
 
-**Module 8 Coming Up**: Firebase integration for alternative backend approach!
+**Module 9 Coming Up**: Serverpod -- a batteries-included Dart backend framework for production applications!
 

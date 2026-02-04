@@ -43,7 +43,7 @@ await db.close();
 ```dart
 try {
   final db = await Connection.open(endpoint);
-} on PostgreSQLException catch (e) {
+} on ServerException catch (e) {
   print('Database connection failed: ${e.message}');
   // Handle gracefully - maybe use fallback or retry
 }

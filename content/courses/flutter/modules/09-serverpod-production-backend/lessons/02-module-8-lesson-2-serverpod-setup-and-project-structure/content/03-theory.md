@@ -8,11 +8,14 @@ The Serverpod CLI is your main tool for creating projects, generating code, and 
 
 **Installation Command:**
 
+> **IMPORTANT:** `dart pub global activate serverpod_cli` installs the latest CLI version (currently 3.x). This course teaches Serverpod 2.x patterns. To follow along exactly, pin the version: `dart pub global activate serverpod_cli ^2.0.0`. Serverpod 3.0 introduced breaking changes in authentication (Relic replaces serverpod_auth) and web server components.
+
 ```bash
-dart pub global activate serverpod_cli
+# Pin to 2.x to match this course:
+dart pub global activate serverpod_cli ^2.0.0
 ```
 
-This downloads and installs the latest stable Serverpod CLI globally on your system.
+This downloads and installs the Serverpod 2.x CLI globally on your system.
 
 **Verify Installation:**
 

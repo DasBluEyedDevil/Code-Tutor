@@ -18,7 +18,7 @@ When building a Dart Frog backend, you have several database options:
 - No separate server required
 - Easy to set up and test
 
-**3. Firebase/Supabase** (covered in Module 8)
+**3. Firebase/Supabase**
 - Cloud-hosted, managed databases
 - Real-time sync capabilities
 - No database administration needed

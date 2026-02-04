@@ -32,7 +32,7 @@ void main() async {
 ---
 
 ### Dart Frog (Lightweight, File-Based Routing)
-**What it is**: A minimalist backend framework by Very Good Ventures. Think of it as "Next.js for Dart."
+**What it is**: A minimalist backend framework originally created by Very Good Ventures (VGV), now maintained by the community under the dart-frog-dev GitHub organization since July 2025. Think of it as "Next.js for Dart."
 
 **Analogy**: Like a kit home. Structure is provided, but you have flexibility to customize.
 
