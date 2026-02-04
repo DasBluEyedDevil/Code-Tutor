@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.6.1",
+  "title": "Data Pipeline",
+  "description": "Build a data processing pipeline that filters, transforms, and aggregates a list of records.",
+  "instructions": "Given a list of student scores, filter passing scores (>=60), calculate the average, and print the result formatted to one decimal place.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Shows passing count",
+      "expectedOutput": "Passing: 4 students",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows average",
+      "expectedOutput": "Average: 79.5",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use filter { it >= 60 } to get passing scores"
+    },
+    {
+      "level": 2,
+      "text": "Use .average() to compute the mean"
+    },
+    {
+      "level": 3,
+      "text": "Use String.format or formatting to show one decimal place"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Integer division truncating the average",
+      "consequence": "78 instead of 79.5",
+      "correction": "The average() function returns Double automatically"
+    },
+    {
+      "mistake": "Including failing scores in the average",
+      "consequence": "Wrong average calculation",
+      "correction": "Filter first, then calculate average"
+    },
+    {
+      "mistake": "Empty list edge case",
+      "consequence": "NaN from average() on empty list",
+      "correction": "Handle the case where no scores pass"
+    }
+  ],
+  "difficulty": "intermediate"
+}

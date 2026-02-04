@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.4.1",
+  "title": "Scope Functions Practice",
+  "description": "Use let, apply, and also to configure and transform an object.",
+  "instructions": "Create a MutableList, use apply to add items, also to print the size, and let to transform the result. Print the final uppercase list.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Shows size",
+      "expectedOutput": "List has 3 items",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows uppercase list",
+      "expectedOutput": "[APPLE, BANANA, CHERRY]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "apply returns the receiver object after executing the block"
+    },
+    {
+      "level": 2,
+      "text": "also is like apply but uses 'it' instead of 'this'"
+    },
+    {
+      "level": 3,
+      "text": "let transforms the object and returns the lambda result"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Confusing apply and let return values",
+      "consequence": "apply returns receiver, let returns lambda result",
+      "correction": "Use apply for configuration, let for transformation"
+    },
+    {
+      "mistake": "Using it inside apply block",
+      "consequence": "apply uses this, not it",
+      "correction": "Inside apply, call methods directly on this"
+    },
+    {
+      "mistake": "Chaining scope functions unnecessarily",
+      "consequence": "Hard to read code",
+      "correction": "Use each scope function for its intended purpose"
+    }
+  ],
+  "difficulty": "intermediate"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.10.1",
+  "title": "Lazy Configuration",
+  "description": "Use lazy delegation to defer expensive initialization until first access.",
+  "instructions": "Create a class AppConfig with a lazy property databaseUrl that prints 'Loading config...' when first accessed, then returns the URL. Access it twice and show that initialization happens only once.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Shows loading message",
+      "expectedOutput": "Loading config...",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows URL on first access",
+      "expectedOutput": "jdbc:postgresql://localhost/mydb",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Shows URL on second access",
+      "expectedOutput": "jdbc:postgresql://localhost/mydb",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'by lazy { }' to declare the property"
+    },
+    {
+      "level": 2,
+      "text": "Put the print statement inside the lazy block"
+    },
+    {
+      "level": 3,
+      "text": "lazy only executes the block on first access"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Initializing eagerly in constructor",
+      "consequence": "Loading happens at object creation, not first use",
+      "correction": "Use by lazy for deferred initialization"
+    },
+    {
+      "mistake": "Using lateinit instead of lazy",
+      "consequence": "lateinit requires manual initialization, not computed",
+      "correction": "Use lazy when the value is computed from a block"
+    },
+    {
+      "mistake": "Expecting lazy block to run every time",
+      "consequence": "Block only runs once, result is cached",
+      "correction": "lazy computes once and caches the result"
+    }
+  ],
+  "difficulty": "intermediate"
+}

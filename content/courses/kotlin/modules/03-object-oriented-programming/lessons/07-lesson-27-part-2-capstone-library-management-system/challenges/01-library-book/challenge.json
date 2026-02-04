@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.7.1",
+  "title": "Library Book Tracker",
+  "description": "Create a simple library system with a Book data class and a Library class that can add and find books.",
+  "instructions": "Create a data class Book(title, author) and a Library class with addBook() and findByAuthor() methods. Add two books and search by author.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Finds Kotlin book",
+      "expectedOutput": "Found: Kotlin in Action by Dmitry Jemerov",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Shows library size",
+      "expectedOutput": "Library has 2 books",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use data class Book(val title: String, val author: String)"
+    },
+    {
+      "level": 2,
+      "text": "Library should have a private MutableList<Book>"
+    },
+    {
+      "level": 3,
+      "text": "Use filter { it.author == author } for findByAuthor"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using regular class instead of data class",
+      "consequence": "No automatic toString, equals, copy",
+      "correction": "Use data class for simple value holders"
+    },
+    {
+      "mistake": "Making the book list public",
+      "consequence": "External code can modify the list directly",
+      "correction": "Keep the list private, expose methods"
+    },
+    {
+      "mistake": "Returning null instead of empty list",
+      "consequence": "Callers must handle null",
+      "correction": "Return an empty list when no books match"
+    }
+  ],
+  "difficulty": "intermediate"
+}

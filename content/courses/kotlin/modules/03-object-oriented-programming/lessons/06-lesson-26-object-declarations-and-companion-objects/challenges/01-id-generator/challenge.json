@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.6.1",
+  "title": "ID Generator Singleton",
+  "description": "Create a singleton object that generates unique sequential IDs.",
+  "instructions": "Create an object IdGenerator with a nextId() function that returns incrementing integers starting from 1. Print three consecutive IDs.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "First ID is 1",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Second ID is 2",
+      "expectedOutput": "2",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Third ID is 3",
+      "expectedOutput": "3",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the object keyword to create a singleton"
+    },
+    {
+      "level": 2,
+      "text": "Keep a private var counter inside the object"
+    },
+    {
+      "level": 3,
+      "text": "Return ++counter to get the next ID"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using class instead of object",
+      "consequence": "Multiple instances possible, IDs reset",
+      "correction": "Use object keyword for a singleton"
+    },
+    {
+      "mistake": "Starting counter at 1 and using counter++",
+      "consequence": "First ID returned is 1, then increments after",
+      "correction": "Start at 0 and use ++counter, or start at 1 and use counter++ then return"
+    },
+    {
+      "mistake": "Making counter public",
+      "consequence": "External code can modify the counter",
+      "correction": "Keep counter private, expose only nextId()"
+    }
+  ],
+  "difficulty": "intermediate"
+}

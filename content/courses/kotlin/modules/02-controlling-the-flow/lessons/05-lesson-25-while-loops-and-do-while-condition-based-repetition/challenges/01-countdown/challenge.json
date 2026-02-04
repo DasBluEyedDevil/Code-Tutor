@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.5.1",
+  "title": "Countdown Timer",
+  "description": "Use a while loop to count down from 5 to 1, then print 'Go!'.",
+  "instructions": "Write a program using a while loop that counts down from 5 to 1 (printing each number), then prints 'Go!'.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Counts down from 5",
+      "expectedOutput": "5",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Reaches 1",
+      "expectedOutput": "1",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Prints Go at the end",
+      "expectedOutput": "Go!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Start with var count = 5"
+    },
+    {
+      "level": 2,
+      "text": "Loop while count > 0, decrement each iteration"
+    },
+    {
+      "level": 3,
+      "text": "Use count-- or count = count - 1 to decrement"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Off-by-one: loop includes 0",
+      "consequence": "Prints an extra 0 before Go!",
+      "correction": "Use while (count > 0) not while (count >= 0)"
+    },
+    {
+      "mistake": "Forgetting to decrement",
+      "consequence": "Infinite loop",
+      "correction": "Always modify the loop variable inside the loop"
+    },
+    {
+      "mistake": "Using for loop instead of while",
+      "consequence": "Works but doesn't practice while loops",
+      "correction": "Use while loop as instructed"
+    }
+  ],
+  "difficulty": "beginner"
+}

@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "3.5.1",
+  "title": "Result Sealed Class",
+  "description": "Create a sealed class Result with Success(data) and Error(message) subclasses, then use when to handle both cases.",
+  "instructions": "Define a sealed class Result with two subclasses: Success(val data: String) and Error(val message: String). Write a function describe(result: Result) that returns a description string. Test with both cases.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Handles Success",
+      "expectedOutput": "Success: Hello",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Handles Error",
+      "expectedOutput": "Error: Not found",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use 'sealed class Result' as the base"
+    },
+    {
+      "level": 2,
+      "text": "Subclasses should be data classes inside or extend Result"
+    },
+    {
+      "level": 3,
+      "text": "Use when(result) with is checks for exhaustive matching"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting sealed keyword",
+      "consequence": "when expression is not exhaustive",
+      "correction": "Mark the base class as sealed for exhaustive when"
+    },
+    {
+      "mistake": "Not using data class for subclasses",
+      "consequence": "No automatic equals/hashCode/toString",
+      "correction": "Use data class for value-carrying subclasses"
+    },
+    {
+      "mistake": "Missing a branch in when",
+      "consequence": "Compile error with sealed class",
+      "correction": "Handle all subclasses or add an else branch"
+    }
+  ],
+  "difficulty": "intermediate"
+}

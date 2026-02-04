@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.7.1",
+  "title": "Generic Stack",
+  "description": "Implement a generic Stack<T> class with push, pop, and peek operations.",
+  "instructions": "Create a Stack<T> class that supports push(item), pop() (returns T?), peek() (returns T?), and isEmpty(). Demonstrate with integers.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Peek shows top",
+      "expectedOutput": "Top: 30",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Pop returns top",
+      "expectedOutput": "Popped: 30",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "After pop, new top",
+      "expectedOutput": "Top: 20",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a MutableList<T> as the backing storage"
+    },
+    {
+      "level": 2,
+      "text": "Push adds to end, pop removes from end"
+    },
+    {
+      "level": 3,
+      "text": "Return null from pop/peek when stack is empty"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using a fixed type instead of generic T",
+      "consequence": "Stack only works with one type",
+      "correction": "Use class Stack<T> for any element type"
+    },
+    {
+      "mistake": "Throwing exception on empty pop",
+      "consequence": "Crashes at runtime",
+      "correction": "Return null (T?) for empty stack operations"
+    },
+    {
+      "mistake": "Removing from front instead of back",
+      "consequence": "FIFO queue behavior instead of LIFO stack",
+      "correction": "Stack is last-in-first-out: remove from the end"
+    }
+  ],
+  "difficulty": "intermediate"
+}

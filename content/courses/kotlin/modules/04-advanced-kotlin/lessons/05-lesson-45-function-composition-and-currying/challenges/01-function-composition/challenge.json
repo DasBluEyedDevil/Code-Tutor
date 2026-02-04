@@ -1,0 +1,48 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.5.1",
+  "title": "Function Composition",
+  "description": "Create a compose function that chains two functions together, then use it to build a text processing pipeline.",
+  "instructions": "Write a compose function that takes two functions f and g and returns a new function that applies g first, then f. Use it to compose trim and uppercase operations.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Composes trim and uppercase",
+      "expectedOutput": "HELLO WORLD",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "compose(f, g) should return { x -> f(g(x)) }"
+    },
+    {
+      "level": 2,
+      "text": "Use function types like (String) -> String"
+    },
+    {
+      "level": 3,
+      "text": "String::trim and String::uppercase are function references"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Applying functions in wrong order",
+      "consequence": "compose(f,g)(x) should be f(g(x)), not g(f(x))",
+      "correction": "In composition, the second function is applied first"
+    },
+    {
+      "mistake": "Forgetting generic types",
+      "consequence": "Only works for one type",
+      "correction": "Use generics for reusable composition"
+    },
+    {
+      "mistake": "Not using function references",
+      "consequence": "More verbose code",
+      "correction": "Use :: syntax for method references"
+    }
+  ],
+  "difficulty": "advanced"
+}

@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.13.1",
+  "title": "Priority Task Queue",
+  "description": "Build a simple priority-based task queue that processes tasks in priority order.",
+  "instructions": "Create a Task data class with name and priority (Int, lower = higher priority). Create a TaskQueue class that adds tasks and processes them in priority order. Print each task as it's processed.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Highest priority first",
+      "expectedOutput": "Processing: Deploy (priority 1)",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Medium priority second",
+      "expectedOutput": "Processing: Build (priority 2)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Lowest priority last",
+      "expectedOutput": "Processing: Test (priority 3)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a data class Task(val name: String, val priority: Int)"
+    },
+    {
+      "level": 2,
+      "text": "Sort tasks by priority before processing"
+    },
+    {
+      "level": 3,
+      "text": "Use sortedBy { it.priority } for ordering"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not sorting by priority",
+      "consequence": "Tasks processed in insertion order",
+      "correction": "Sort the task list by priority before processing"
+    },
+    {
+      "mistake": "Sorting in descending order",
+      "consequence": "Lowest priority runs first",
+      "correction": "Lower priority number = higher priority, use ascending sort"
+    },
+    {
+      "mistake": "Modifying list while iterating",
+      "consequence": "ConcurrentModificationException",
+      "correction": "Sort into a new list or sort before iterating"
+    }
+  ],
+  "difficulty": "intermediate"
+}

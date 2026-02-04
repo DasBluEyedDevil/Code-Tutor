@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.6.1",
+  "title": "Safe Greeting",
+  "description": "Write a function that takes a nullable name and returns a greeting, using the Elvis operator to provide a default.",
+  "instructions": "Write a function greet(name: String?) that returns 'Hello, <name>!' or 'Hello, Guest!' if name is null. Print greetings for both 'Alice' and null.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Greets Alice",
+      "expectedOutput": "Hello, Alice!",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Uses default for null",
+      "expectedOutput": "Hello, Guest!",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use the Elvis operator ?: to provide a default value"
+    },
+    {
+      "level": 2,
+      "text": "The parameter type should be String? (nullable)"
+    },
+    {
+      "level": 3,
+      "text": "name ?: \"Guest\" gives you name or Guest if null"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not marking parameter as nullable",
+      "consequence": "Cannot pass null to the function",
+      "correction": "Use String? instead of String"
+    },
+    {
+      "mistake": "Using if/else instead of Elvis operator",
+      "consequence": "Works but less idiomatic",
+      "correction": "Use ?: for concise null handling"
+    },
+    {
+      "mistake": "Forgetting to handle the null case",
+      "consequence": "NullPointerException at runtime",
+      "correction": "Always handle null with ?. or ?:"
+    }
+  ],
+  "difficulty": "beginner"
+}

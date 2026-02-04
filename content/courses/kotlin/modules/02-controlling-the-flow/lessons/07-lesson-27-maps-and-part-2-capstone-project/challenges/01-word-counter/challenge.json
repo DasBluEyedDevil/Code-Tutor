@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "2.7.1",
+  "title": "Word Counter",
+  "description": "Create a map that counts occurrences of each word in a list and print the results.",
+  "instructions": "Given a list of words, count how many times each word appears using a mutableMapOf. Print each word and its count in 'word: count' format, sorted alphabetically.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Counts apple",
+      "expectedOutput": "apple: 3",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Counts banana",
+      "expectedOutput": "banana: 2",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Counts cherry",
+      "expectedOutput": "cherry: 1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use mutableMapOf<String, Int>() to store counts"
+    },
+    {
+      "level": 2,
+      "text": "For each word, get current count (default 0) and add 1"
+    },
+    {
+      "level": 3,
+      "text": "Use map.toSortedMap() to sort alphabetically before printing"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling the first occurrence",
+      "consequence": "NullPointerException when incrementing",
+      "correction": "Use getOrDefault(word, 0) to handle missing keys"
+    },
+    {
+      "mistake": "Using mapOf instead of mutableMapOf",
+      "consequence": "Cannot add entries to immutable map",
+      "correction": "Use mutableMapOf for maps you need to modify"
+    },
+    {
+      "mistake": "Forgetting to sort output",
+      "consequence": "Output order is unpredictable",
+      "correction": "Use toSortedMap() for alphabetical order"
+    }
+  ],
+  "difficulty": "intermediate"
+}

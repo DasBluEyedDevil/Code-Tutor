@@ -1,0 +1,60 @@
+{
+  "type": "FREE_CODING",
+  "id": "1.9.1",
+  "title": "Profile Card",
+  "description": "Create a function that generates a formatted profile card string from a name, age, and hobby.",
+  "instructions": "Write a function profileCard(name: String, age: Int, hobby: String) that returns a multi-line string with the format shown in the expected output. Print the result for ('Alice', 25, 'coding').",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Prints name line",
+      "expectedOutput": "Name: Alice",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Prints age line",
+      "expectedOutput": "Age: 25",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Prints hobby line",
+      "expectedOutput": "Hobby: coding",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use string templates with $variable for interpolation"
+    },
+    {
+      "level": 2,
+      "text": "Use println for each line or a multi-line string"
+    },
+    {
+      "level": 3,
+      "text": "Each line follows the pattern 'Label: value'"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting string interpolation syntax",
+      "consequence": "Prints literal $name instead of the value",
+      "correction": "Use $name or ${expression} in string templates"
+    },
+    {
+      "mistake": "Extra spaces or wrong format",
+      "consequence": "Output doesn't match expected",
+      "correction": "Follow the exact format: 'Label: value'"
+    },
+    {
+      "mistake": "Using concatenation instead of templates",
+      "consequence": "Works but less readable",
+      "correction": "Prefer string templates in Kotlin"
+    }
+  ],
+  "difficulty": "beginner"
+}

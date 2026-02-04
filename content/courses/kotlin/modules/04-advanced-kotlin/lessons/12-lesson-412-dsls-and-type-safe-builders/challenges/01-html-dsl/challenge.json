@@ -1,0 +1,54 @@
+{
+  "type": "FREE_CODING",
+  "id": "4.12.1",
+  "title": "Simple HTML DSL",
+  "description": "Build a tiny DSL for generating HTML strings using Kotlin's lambda with receiver pattern.",
+  "instructions": "Create a buildHtml function with a lambda receiver on StringBuilder. Add helper functions tag() that wraps content in HTML tags. Generate and print a simple HTML snippet.",
+  "language": "kotlin",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Generates h1 tag",
+      "expectedOutput": "<h1>Hello</h1>",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Generates p tag",
+      "expectedOutput": "<p>World</p>",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use StringBuilder.() -> Unit as the receiver lambda type"
+    },
+    {
+      "level": 2,
+      "text": "A tag function appends <tag>content</tag> to the builder"
+    },
+    {
+      "level": 3,
+      "text": "Use buildString { } or StringBuilder() as the entry point"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Forgetting the receiver type",
+      "consequence": "Cannot call append directly",
+      "correction": "Use StringBuilder.() -> Unit for the lambda type"
+    },
+    {
+      "mistake": "Not closing HTML tags",
+      "consequence": "Malformed HTML output",
+      "correction": "Always append both opening and closing tags"
+    },
+    {
+      "mistake": "Returning Unit instead of String",
+      "consequence": "Cannot use the result",
+      "correction": "buildHtml should return the built String"
+    }
+  ],
+  "difficulty": "advanced"
+}
