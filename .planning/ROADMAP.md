@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: JavaScript Course Audit** - Second audit, migrate non-standard content types, verify Bun/Hono APIs
 - [x] **Phase 4: C# Course Audit** - Align to .NET 9/C# 13, add 131 KEY_POINTs, verify accuracy across 24 modules
 - [x] **Phase 5: Flutter/Dart Course Audit** - Align to Flutter 3.38/Dart 3.10, verify Dart Frog/Serverpod APIs, enrich KEY_POINTs and analogies
-- [ ] **Phase 6: Kotlin Course Audit** - Create missing capstone, add 70+ challenges, balance content types
+- [ ] **Phase 6: Kotlin Course Audit** - Align to Kotlin 2.3/Ktor 3.4.0, fix M06 ordering, create 80+ challenges, build KMP capstone, enrich content
 - [ ] **Phase 7: Python Course Audit** - Restructure Module 14, resolve duplicates, add Git module
 - [ ] **Phase 8: AI Tutor Enhancement** - Socratic method prompting, lesson-aware context, ONNX Runtime upgrade
 - [ ] **Phase 9: UI and Engagement** - Interactive code examples, progress tracking, visual polish
@@ -128,23 +128,28 @@ Plans:
 - [x] 05-07-PLAN.md -- Global verification and sweep (JSON validation, stale ref sweep, human checkpoint)
 
 ### Phase 6: Kotlin Course Audit
-**Goal**: The Kotlin course teaches a complete path from basics through Android and Ktor to a deployable application, with a capstone project created from scratch and challenge coverage raised from 45% to 100%
+**Goal**: The Kotlin course teaches a complete path from basics through Android and Ktor to a deployable application, with a capstone project created from scratch and challenge coverage raised from 37% to 100%
 **Depends on**: Phase 1
 **Requirements**: KTLN-01, KTLN-02, KTLN-03, KTLN-04, KTLN-05
 **Success Criteria** (what must be TRUE):
-  1. Every Kotlin lesson is accurate against Kotlin 2.0+ with K2 compiler, using current idioms and no deprecated patterns
+  1. Every Kotlin lesson is accurate against Kotlin 2.3 with K2 compiler, using current idioms and no deprecated patterns
   2. All 128 lessons progress from basics through OOP through Android/Ktor to deployment with no assumed knowledge gaps
-  3. Every lesson has at least one coding challenge (70+ new challenges created), and all challenges execute and validate correctly
-  4. A capstone project exists (Ktor + Compose Multiplatform or equivalent) that students can build and deploy
+  3. Every lesson has at least one coding challenge (80+ new challenges created), and all challenges execute and validate correctly
+  4. A capstone project exists (Ktor + Compose Multiplatform Task Manager) that students can build and deploy
   5. KEY_POINTs added throughout (currently only 30 across 128 lessons) and content balanced with examples and analogies
-**Plans**: TBD
+**Plans**: 10 plans
 
 Plans:
-- [ ] 06-01: Kotlin structural review (progression, module ordering, identify challenge gaps)
-- [ ] 06-02: Kotlin content accuracy pass (Kotlin 2.0+ verification, K2 compiler patterns)
-- [ ] 06-03: Kotlin challenge creation (create 70+ missing challenges with starter code, solutions, and test cases)
-- [ ] 06-04: Kotlin capstone creation (design and build deployable capstone project)
-- [ ] 06-05: Kotlin enrichment pass (KEY_POINTs, examples, analogies, voice consistency)
+- [ ] 06-01-PLAN.md -- Version alignment + structural cleanup (Kotlin 2.3, Ktor 3.4.0, fix M06 lesson ordering, fix module title prefixes, delete artifacts)
+- [ ] 06-02-PLAN.md -- Accuracy pass: Fundamentals M01-05 (Kotlin 2.3 idioms, null safety, OOP, advanced Kotlin, coroutines overlap assessment)
+- [ ] 06-03-PLAN.md -- Accuracy pass: Backend + UI M06-07 (Ktor 3.4.0, Exposed 1.0.0, Compose Multiplatform 1.10.x, fix M06 forward references)
+- [ ] 06-04-PLAN.md -- Accuracy pass: KMP Ecosystem M08-12 (SQLDelight 2.2.x, Koin 4.1.x, kotlin.test, deployment, capstone assessment)
+- [ ] 06-05-PLAN.md -- Accuracy pass: Advanced M13-15 (Gradle 8.12+, Arrow 2.2.x context parameters migration, K2 Era, context receivers rewrite)
+- [ ] 06-06-PLAN.md -- Challenge creation: M01-07 (~40 challenges, pure Kotlin + framework-independent)
+- [ ] 06-07-PLAN.md -- Challenge creation: M08-15 (~40 challenges, including 0% coverage modules M13-M15)
+- [ ] 06-08-PLAN.md -- Capstone creation (Task Manager KMP app: Ktor + Compose Multiplatform + SQLDelight + Koin)
+- [ ] 06-09-PLAN.md -- Enrichment pass (~98 KEY_POINTs + ~18 analogies + ~10 warnings for gap modules)
+- [ ] 06-10-PLAN.md -- Global verification and sweep (JSON validation, stale ref sweep, human checkpoint)
 
 ### Phase 7: Python Course Audit
 **Goal**: The Python course teaches a complete path from absolute basics through web frameworks to a deployable application, with Module 14 restructured into focused modules and a Git/developer tools module added
@@ -215,7 +220,7 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 | 3. JavaScript Course Audit | 7/7 | Complete | 2026-02-03 |
 | 4. C# Course Audit | 5/5 | Complete | 2026-02-03 |
 | 5. Flutter/Dart Course Audit | 7/7 | Complete | 2026-02-04 |
-| 6. Kotlin Course Audit | 0/5 | Not started | - |
+| 6. Kotlin Course Audit | 0/10 | Planned | - |
 | 7. Python Course Audit | 0/5 | Not started | - |
 | 8. AI Tutor Enhancement | 0/4 | Not started | - |
 | 9. UI and Engagement | 0/4 | Not started | - |
