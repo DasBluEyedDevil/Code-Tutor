@@ -28,7 +28,6 @@ Orchestrate your app with its database:
 
 ```yaml
 # docker-compose.yml
-version: '3.8'
 services:
   app:
     build: .
@@ -70,14 +69,14 @@ Run with Docker Compose:
 
 ```bash
 # Build and start
-docker-compose up -d --build
+docker compose up -d --build
 
 # View logs
-docker-compose logs -f app
+docker compose logs -f app
 
 # Stop everything
-docker-compose down
+docker compose down
 
 # Stop and remove volumes (clean slate)
-docker-compose down -v
+docker compose down -v
 ```

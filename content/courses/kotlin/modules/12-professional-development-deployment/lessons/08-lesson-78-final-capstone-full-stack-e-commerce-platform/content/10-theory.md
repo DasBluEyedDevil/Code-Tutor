@@ -15,8 +15,6 @@ title: "Phase 6: Deployment (1-2 hours)"
 
 
 ```yaml
-version: '3.8'
-
 services:
   backend:
     build: ./shopkotlin-backend
