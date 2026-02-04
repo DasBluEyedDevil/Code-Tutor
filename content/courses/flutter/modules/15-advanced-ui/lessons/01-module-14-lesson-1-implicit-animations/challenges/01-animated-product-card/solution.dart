@@ -32,7 +32,7 @@ class _ExpandableProductCardState extends State<ExpandableProductCard> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(_isExpanded ? 0.15 : 0.08),
+              color: Colors.black.withValues(alpha: _isExpanded ? 0.15 : 0.08),
               blurRadius: _isExpanded ? 12 : 6,
               offset: Offset(0, _isExpanded ? 6 : 3),
             ),

@@ -58,7 +58,7 @@ class _PulsingButtonState extends State<PulsingButton>
               color: Colors.blue,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.blue.withOpacity(0.3 + (glowIntensity * 0.4)),
+                  color: Colors.blue.withValues(alpha: 0.3 + (glowIntensity * 0.4)),
                   blurRadius: 8 + (glowIntensity * 16),
                   spreadRadius: glowIntensity * 4,
                 ),

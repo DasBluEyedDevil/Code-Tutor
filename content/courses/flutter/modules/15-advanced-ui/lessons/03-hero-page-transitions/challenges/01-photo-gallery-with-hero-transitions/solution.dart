@@ -89,7 +89,7 @@ class PhotoDetailScreen extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.5 * animation.value),
+                        color: Colors.black.withValues(alpha: 0.5 * animation.value),
                         blurRadius: 30 * animation.value,
                         spreadRadius: 10 * animation.value,
                       ),

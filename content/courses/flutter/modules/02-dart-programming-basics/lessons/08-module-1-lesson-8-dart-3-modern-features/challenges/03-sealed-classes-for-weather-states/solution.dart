@@ -31,10 +31,10 @@ String getAdvice(Weather weather) {
       'Light rain. A jacket should be enough.',
     Rainy(intensity: var i) => 
       '$i rain. Consider an umbrella.',
-    Snowy(inches: var in) when in > 6 => 
-      'Heavy snow ($in inches)! Roads may be dangerous.',
-    Snowy(inches: var in) => 
-      'Light snow ($in inches). Drive carefully.',
+    Snowy(inches: var snowIn) when snowIn > 6 =>
+      'Heavy snow ($snowIn inches)! Roads may be dangerous.',
+    Snowy(inches: var snowIn) =>
+      'Light snow ($snowIn inches). Drive carefully.',
   };
 }
 
