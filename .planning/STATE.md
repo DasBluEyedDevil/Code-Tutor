@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 01 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 02 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 1 of 10 in current phase
+Plan: 2 of 10 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-01-PLAN.md (version alignment + structural fixes)
+Last activity: 2026-02-04 -- Completed 06-02-PLAN.md (accuracy pass M01-M05)
 
-Progress: [#.........] 1/10 phase plans (10%)
+Progress: [##........] 2/10 phase plans (20%)
 
-Overall: [################################..........] 34/61 total plans (56%)
+Overall: [#################################.........] 35/61 total plans (57%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: 10 min
-- Total execution time: ~341 min
+- Total execution time: ~348 min
 
 **By Phase:**
 
@@ -35,11 +35,11 @@ Overall: [################################..........] 34/61 total plans (56%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 1/10 | 4 min | 4 min |
+| 06-kotlin-audit | 2/10 | 11 min | 6 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-01 (4 min), 05-07 (5 min), 05-06 (10 min), 05-05 (10 min), 05-04 (9 min)
-- Trend: Phase 6 execution started; Kotlin 2.3 targets + M06 reorder complete
+- Last 5 plans: 06-02 (7 min), 06-01 (4 min), 05-07 (5 min), 05-06 (10 min), 05-05 (10 min)
+- Trend: M01-M05 accuracy verified; coroutines overlap assessed (kept both with transition note)
 
 *Updated after each plan completion*
 
@@ -225,6 +225,10 @@ Recent decisions affecting current work:
 - [06-01]: Module title prefixes removed from M05 (04A), M08 (06A), M09 (06B), M10 (06C)
 - [06-01]: course.json difficulty beginner -> beginner-to-advanced, description updated for 128 lessons/15 modules
 - [06-01]: refactor_course.py artifact deleted (same pattern as C# 04-01)
+- [06-02]: M04/M05 coroutines overlap: KEPT both -- M04 L08-L09 are preview, M05 is deep-dive (transition note added)
+- [06-02]: GlobalScope references in M05 L02 kept as anti-pattern warnings (pedagogically correct)
+- [06-02]: Kotlin version refs in M03 L04/L05 and M05 L07 kept as historical context
+- [06-02]: M01 L10 version-tagged framing cleaned: "Kotlin 2.0 in Practice" -> "Modern Kotlin in Practice"
 
 ### Pending Todos
 
@@ -243,5 +247,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-01-PLAN.md (version alignment + structural fixes)
+Stopped at: Completed 06-02-PLAN.md (accuracy pass M01-M05)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md

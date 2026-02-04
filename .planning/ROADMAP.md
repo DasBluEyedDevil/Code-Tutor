@@ -140,8 +140,8 @@ Plans:
 **Plans**: 10 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Version alignment + structural cleanup (Kotlin 2.3, Ktor 3.4.0, fix M06 lesson ordering, fix module title prefixes, delete artifacts)
-- [ ] 06-02-PLAN.md -- Accuracy pass: Fundamentals M01-05 (Kotlin 2.3 idioms, null safety, OOP, advanced Kotlin, coroutines overlap assessment)
+- [x] 06-01-PLAN.md -- Version alignment + structural cleanup (Kotlin 2.3, Ktor 3.4.0, fix M06 lesson ordering, fix module title prefixes, delete artifacts)
+- [x] 06-02-PLAN.md -- Accuracy pass: Fundamentals M01-05 (Kotlin 2.3 idioms, null safety, OOP, advanced Kotlin, coroutines overlap assessment)
 - [ ] 06-03-PLAN.md -- Accuracy pass: Backend + UI M06-07 (Ktor 3.4.0, Exposed 1.0.0, Compose Multiplatform 1.10.x, fix M06 forward references)
 - [ ] 06-04-PLAN.md -- Accuracy pass: KMP Ecosystem M08-12 (SQLDelight 2.2.x, Koin 4.1.x, kotlin.test, deployment, capstone assessment)
 - [ ] 06-05-PLAN.md -- Accuracy pass: Advanced M13-15 (Gradle 8.12+, Arrow 2.2.x context parameters migration, K2 Era, context receivers rewrite)
