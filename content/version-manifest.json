@@ -1,7 +1,7 @@
 {
   "$schema": "Version manifest for Code Tutor course content",
   "description": "Pinned version targets for all courses. Auditors verify content against these versions. When auditing a course, check code examples and API references against the runtime and framework versions listed here.",
-  "lastUpdated": "2026-02-03",
+  "lastUpdated": "2026-02-04",
   "note": "Framework versions are baseline targets from project planning. Each course audit phase should re-verify latest stable versions at audit start and update lastVerified accordingly.",
   "courses": {
     "java": {
@@ -217,39 +217,45 @@
     "flutter": {
       "runtime": {
         "name": "Flutter",
-        "version": "3.27.x",
+        "version": "3.38.x",
         "secondaryRuntime": {
           "name": "Dart",
-          "version": "3.6.x"
+          "version": "3.10.x"
         },
         "versionType": "stable",
-        "notes": "Latest stable within Flutter 3.x / Dart 3.x line",
-        "lastVerified": "2026-02-02"
+        "notes": "Course targets Flutter 3.38/Dart 3.10. Dot shorthands (Dart 3.10) used in content. Impeller default on iOS and Android API 29+.",
+        "lastVerified": "2026-02-04"
       },
       "frameworks": [
         {
           "name": "Riverpod",
           "version": "2.x",
-          "notes": "State management solution",
-          "lastVerified": "2026-02-02"
+          "notes": "State management. Course teaches Notifier/AsyncNotifier patterns (2.x API). These work in Riverpod 3.x via legacy imports. Riverpod 4.0 expected; migration deferred.",
+          "lastVerified": "2026-02-04"
         },
         {
           "name": "GoRouter",
-          "version": "14.x",
-          "notes": "Declarative routing",
-          "lastVerified": "2026-02-02"
+          "version": "17.x",
+          "notes": "Declarative routing. Requires Flutter 3.32+/Dart 3.8+.",
+          "lastVerified": "2026-02-04"
         },
         {
           "name": "Dart Frog",
           "version": "1.x",
-          "notes": "Backend framework; community-maintained as of July 2025 -- verify API stability at audit time",
-          "lastVerified": "2026-02-02"
+          "notes": "Backend framework. Community-maintained since July 2025 (was VGV). API stable and unchanged (1.0.0 -> 1.2.6).",
+          "lastVerified": "2026-02-04"
         },
         {
           "name": "Serverpod",
           "version": "2.x",
-          "notes": "Full-stack Dart server framework",
-          "lastVerified": "2026-02-02"
+          "notes": "Full-stack Dart server framework. Course teaches 2.x patterns. Serverpod 3.0 released Dec 2025 with new auth system (Relic) and web server; migration deferred to future cycle.",
+          "lastVerified": "2026-02-04"
+        },
+        {
+          "name": "Drift",
+          "version": "2.x",
+          "notes": "Local SQLite database with type-safe queries. Compatible within 2.x line.",
+          "lastVerified": "2026-02-04"
         }
       ]
     }
