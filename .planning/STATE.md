@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-05 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-06 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 5 of 10 in current phase
+Plan: 6 of 10 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-05-PLAN.md (M13-M15 accuracy pass)
+Last activity: 2026-02-04 -- Completed 06-06-PLAN.md (M01-M07 challenge creation)
 
-Progress: [######....] 6/10 phase plans complete
+Progress: [#######...] 7/10 phase plans complete
 
-Overall: [######################################....] 39/61 total plans (64%)
+Overall: [########################################..] 40/61 total plans (66%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 39
+- Total plans completed: 40
 - Average duration: 10 min
-- Total execution time: ~378 min
+- Total execution time: ~389 min
 
 **By Phase:**
 
@@ -35,11 +35,11 @@ Overall: [######################################....] 39/61 total plans (64%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 6/10 | 53 min | 9 min |
+| 06-kotlin-audit | 7/10 | 64 min | 9 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-05 (14 min), 06-03 (12 min), 06-04 (8 min), 06-02 (7 min), 06-01 (4 min)
-- Trend: M13-M15 context receivers->parameters migration, Validated->zipOrAccumulate, KAPT deprecated
+- Last 5 plans: 06-06 (11 min), 06-05 (14 min), 06-03 (12 min), 06-04 (8 min), 06-02 (7 min)
+- Trend: 40 challenges created for M01-M07, pure logic extraction for framework-dependent modules
 
 *Updated after each plan completion*
 
@@ -247,6 +247,9 @@ Recent decisions affecting current work:
 - [06-05]: M14 L05 Arrow version ref fixed: "Arrow 1.2+" -> Arrow 2.x Raise DSL
 - [06-05]: M15 L03 KAPT explicitly described as deprecated (Kotlin 2.0)
 - [06-05]: M15 L05 full rewrite: context receivers -> context parameters primary teaching
+- [06-06]: QUIZ type used for setup/overview/capstone lessons (concepts not suited for coding challenges)
+- [06-06]: Pure logic extraction pattern for M06-M07 (no Ktor/Compose/Exposed/Koin imports in challenges)
+- [06-06]: One challenge per missing lesson targeting primary concept; existing multi-challenge lessons kept
 
 ### Pending Todos
 
@@ -265,5 +268,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-05-PLAN.md (M13-M15 accuracy pass + context parameters rewrite)
+Stopped at: Completed 06-06-PLAN.md (M01-M07 challenge creation -- 40 new challenges)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
