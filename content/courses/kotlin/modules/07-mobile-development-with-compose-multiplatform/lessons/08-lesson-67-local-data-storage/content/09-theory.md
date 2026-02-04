@@ -1,15 +1,16 @@
 ---
 type: "THEORY"
-title: "DataStore for Preferences"
+title: "DataStore for Preferences (Android-Only)"
 ---
 
-
+> **Android-only:** DataStore uses `android.content.Context`. For cross-platform key-value storage, consider **multiplatform-settings** or **SQLDelight** for structured data (covered in Module 08).
 
 ---
 
 
 
 ```kotlin
+// androidMain -- DataStore requires Android Context
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*

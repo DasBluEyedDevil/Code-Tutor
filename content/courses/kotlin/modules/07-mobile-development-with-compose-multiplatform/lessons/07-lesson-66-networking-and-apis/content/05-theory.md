@@ -1,8 +1,9 @@
 ---
 type: "THEORY"
-title: "Retrofit Setup"
+title: "Retrofit Setup (Android-Only)"
 ---
 
+> **Android-only:** Retrofit and OkHttp are Android/JVM libraries. They work in `androidMain` but NOT in `commonMain`. For cross-platform networking, use **Ktor Client** (covered later in this lesson).
 
 ### API Service Interface
 
@@ -15,6 +16,7 @@ title: "Retrofit Setup"
 
 
 ```kotlin
+// androidMain -- Retrofit is Android/JVM only
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

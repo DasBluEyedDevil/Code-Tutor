@@ -10,7 +10,7 @@ title: "Solution 1"
 
 
 ```kotlin
-// Data class
+// Data class (Android/Room version -- for cross-platform, use SQLDelight)
 @Entity
 data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -19,7 +19,7 @@ data class Note(
     val timestamp: Long = System.currentTimeMillis()
 )
 
-// DAO
+// DAO (Room)
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM note ORDER BY timestamp DESC")
@@ -33,7 +33,7 @@ interface NoteDao {
 }
 
 // Repository
-class NoteRepository @Inject constructor(
+class NoteRepository(
     private val noteDao: NoteDao
 ) {
     fun getAllNotes(): Flow<List<Note>> = noteDao.getAllNotes()
@@ -48,8 +48,7 @@ class NoteRepository @Inject constructor(
 }
 
 // ViewModel
-@HiltViewModel
-class NotesViewModel @Inject constructor(
+class NotesViewModel(
     private val repository: NoteRepository
 ) : ViewModel() {
 
@@ -71,7 +70,7 @@ class NotesViewModel @Inject constructor(
 
 // UI
 @Composable
-fun NotesScreen(viewModel: NotesViewModel = hiltViewModel()) {
+fun NotesScreen(viewModel: NotesViewModel) {
     val notes by viewModel.notes.collectAsState()
 
     Scaffold(

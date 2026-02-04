@@ -33,7 +33,7 @@ data class WeatherEntity(
 )
 
 // Repository
-class WeatherRepository @Inject constructor(
+class WeatherRepository(
     private val api: WeatherApi,
     private val dao: WeatherDao
 ) {
@@ -59,8 +59,7 @@ class WeatherRepository @Inject constructor(
 }
 
 // ViewModel
-@HiltViewModel
-class WeatherViewModel @Inject constructor(
+class WeatherViewModel(
     private val repository: WeatherRepository
 ) : ViewModel() {
 

@@ -1,8 +1,9 @@
 ---
 type: "THEORY"
-title: "Room Database"
+title: "Room Database (Android-Only)"
 ---
 
+> **Android-only:** Room is an Android library. It works in `androidMain` but NOT in `commonMain`. For cross-platform persistence, use **SQLDelight** (covered in Module 08: Persistence with SQLDelight).
 
 ### Entity (Table)
 
@@ -21,6 +22,7 @@ title: "Room Database"
 
 
 ```kotlin
+// androidMain -- Room is Android only
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room

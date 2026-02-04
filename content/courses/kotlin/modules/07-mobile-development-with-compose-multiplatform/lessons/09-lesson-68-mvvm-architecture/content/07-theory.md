@@ -15,6 +15,10 @@ title: "Clean Architecture Layers"
 
 
 ```kotlin
+// Note: @HiltViewModel and @Inject are Android-only (Hilt DI).
+// For cross-platform, inject dependencies via constructor and use Koin.
+
+// Android with Hilt:
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val getTasksUseCase: GetTasksUseCase,
@@ -36,5 +40,14 @@ class TasksViewModel @Inject constructor(
             deleteTaskUseCase(task)
         }
     }
+}
+
+// Cross-platform alternative (Koin):
+class TasksViewModel(
+    private val getTasksUseCase: GetTasksUseCase,
+    private val addTaskUseCase: AddTaskUseCase,
+    private val deleteTaskUseCase: DeleteTaskUseCase
+) : ViewModel() {
+    // Same logic -- DI framework differs, not the ViewModel
 }
 ```

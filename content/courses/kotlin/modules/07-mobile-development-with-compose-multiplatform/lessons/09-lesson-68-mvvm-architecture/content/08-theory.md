@@ -18,7 +18,7 @@ sealed class UiState<out T> {
     data class Error(val message: String) : UiState<Nothing>()
 }
 
-class UsersViewModel @Inject constructor(
+class UsersViewModel(
     private val repository: UserRepository
 ) : ViewModel() {
 
@@ -46,7 +46,7 @@ class UsersViewModel @Inject constructor(
 }
 
 @Composable
-fun UsersScreen(viewModel: UsersViewModel = hiltViewModel()) {
+fun UsersScreen(viewModel: UsersViewModel) {
     val uiState by viewModel.uiState.collectAsState()
 
     when (val state = uiState) {

@@ -10,18 +10,17 @@ title: "Solution 1"
 
 
 ```kotlin
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,7 +28,6 @@ fun ProductCard(
     name: String,
     price: Double,
     description: String,
-    imageRes: Int,
     onAddToCart: () -> Unit
 ) {
     ElevatedCard(
@@ -42,15 +40,21 @@ fun ProductCard(
         shape = RoundedCornerShape(12.dp)
     ) {
         Column {
-            // Product image
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = name,
-                contentScale = ContentScale.Crop,
+            // Product image placeholder (cross-platform)
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-            )
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = name.first().toString(),
+                    style = MaterialTheme.typography.displayLarge,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
 
             Column(modifier = Modifier.padding(16.dp)) {
                 // Product name
@@ -96,20 +100,6 @@ fun ProductCard(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProductCardPreview() {
-    MaterialTheme {
-        ProductCard(
-            name = "Wireless Headphones",
-            price = 129.99,
-            description = "Premium noise-cancelling headphones with 30-hour battery life.",
-            imageRes = R.drawable.ic_launcher_foreground,
-            onAddToCart = { }
-        )
     }
 }
 ```

@@ -1,8 +1,9 @@
 ---
 type: "THEORY"
-title: "Dependency Injection with Hilt"
+title: "Dependency Injection with Hilt (Android-Only)"
 ---
 
+> **Android-only:** Hilt is an Android DI framework built on Dagger. It does NOT work in `commonMain`. For cross-platform DI, use **Koin** (covered in Module 10: Dependency Injection with Koin).
 
 ### Setup
 
@@ -32,6 +33,7 @@ Update `AndroidManifest.xml`:
 
 
 ```kotlin
+// androidMain -- Hilt is Android only
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable

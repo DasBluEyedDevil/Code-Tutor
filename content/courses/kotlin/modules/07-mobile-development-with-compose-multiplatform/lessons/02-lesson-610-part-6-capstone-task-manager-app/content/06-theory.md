@@ -34,7 +34,7 @@ title: "Complete Implementation"
 @Composable
 fun StatisticsScreen(
     onNavigateBack: () -> Unit,
-    viewModel: StatisticsViewModel = hiltViewModel()
+    viewModel: StatisticsViewModel  // Provided via Koin or manual DI
 ) {
     val stats by viewModel.stats.collectAsState()
 

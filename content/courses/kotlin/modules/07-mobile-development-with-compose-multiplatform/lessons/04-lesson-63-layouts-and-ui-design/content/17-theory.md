@@ -52,17 +52,19 @@ Material Design 3's dynamic color extracts colors from the user's wallpaper:
 
 ---
 
-
+> **Note:** Dynamic color is an Android-specific feature (Android 12+). In a Compose Multiplatform project, this code belongs in `androidMain`. The `commonMain` theme should use static color schemes that work on all platforms.
 
 ```kotlin
+// androidMain -- Android-specific dynamic theming
 @Composable
 fun AppTheme(
     dynamicColor: Boolean = true,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            // Extract colors from wallpaper
+            // Extract colors from wallpaper (Android 12+ only)
             if (darkTheme) {
                 dynamicDarkColorScheme(LocalContext.current)
             } else {
@@ -70,11 +72,21 @@ fun AppTheme(
             }
         }
         else -> {
-            // Fallback to static colors
+            // Fallback to static colors (used on all platforms)
             if (darkTheme) DarkColorScheme else LightColorScheme
         }
     }
 
+    MaterialTheme(colorScheme = colorScheme, content = content)
+}
+
+// commonMain -- Cross-platform theme (no dynamic color)
+@Composable
+fun AppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
     MaterialTheme(colorScheme = colorScheme, content = content)
 }
 ```

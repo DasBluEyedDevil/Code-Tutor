@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -23,8 +22,8 @@ fun UserList() {
     Column {
         ProfileCard(
             name = "Alice Johnson",
-            role = "Android Developer",
-            imageRes = R.drawable.ic_launcher_foreground
+            role = "Kotlin Developer",
+            initials = "AJ"
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -32,7 +31,7 @@ fun UserList() {
         ProfileCard(
             name = "Bob Smith",
             role = "Product Manager",
-            imageRes = R.drawable.ic_launcher_foreground
+            initials = "BS"
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -40,14 +39,8 @@ fun UserList() {
         ProfileCard(
             name = "Carol Williams",
             role = "UX Designer",
-            imageRes = R.drawable.ic_launcher_foreground
+            initials = "CW"
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun UserListPreview() {
-    UserList()
 }
 ```
