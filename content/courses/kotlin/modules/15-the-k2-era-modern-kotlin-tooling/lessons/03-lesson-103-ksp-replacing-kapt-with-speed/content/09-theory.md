@@ -10,7 +10,7 @@ title: "Libraries Supporting KSP"
 - Room 2.4+
 - Moshi 1.13+
 - Dagger/Hilt 2.48+
-- Koin 3.5+ (annotations)
+- Koin 4.x (annotations via KSP)
 - Glide 4.14+
 - Lyricist (i18n)
 - Ktorfit
