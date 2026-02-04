@@ -5,25 +5,25 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-06 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plans 01-07 complete.
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 6 of 10 in current phase
+Plan: 7 of 10 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-06-PLAN.md (M01-M07 challenge creation)
+Last activity: 2026-02-04 -- Completed 06-07-PLAN.md (M08-M15 challenge creation)
 
-Progress: [#######...] 7/10 phase plans complete
+Progress: [########..] 8/10 phase plans complete
 
-Overall: [########################################..] 40/61 total plans (66%)
+Overall: [#########################################.] 41/61 total plans (67%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 40
+- Total plans completed: 41
 - Average duration: 10 min
-- Total execution time: ~389 min
+- Total execution time: ~404 min
 
 **By Phase:**
 
@@ -35,11 +35,11 @@ Overall: [########################################..] 40/61 total plans (66%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 7/10 | 64 min | 9 min |
+| 06-kotlin-audit | 8/10 | 79 min | 10 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-06 (11 min), 06-05 (14 min), 06-03 (12 min), 06-04 (8 min), 06-02 (7 min)
-- Trend: 40 challenges created for M01-M07, pure logic extraction for framework-dependent modules
+- Last 5 plans: 06-07 (15 min), 06-06 (11 min), 06-05 (14 min), 06-03 (12 min), 06-04 (8 min)
+- Trend: 30 more challenges for M08-M15; all 15 modules now at 100% challenge coverage
 
 *Updated after each plan completion*
 
@@ -250,6 +250,10 @@ Recent decisions affecting current work:
 - [06-06]: QUIZ type used for setup/overview/capstone lessons (concepts not suited for coding challenges)
 - [06-06]: Pure logic extraction pattern for M06-M07 (no Ktor/Compose/Exposed/Koin imports in challenges)
 - [06-06]: One challenge per missing lesson targeting primary concept; existing multi-challenge lessons kept
+- [06-07]: M14 FP challenges build Either/Option/Raise from scratch (zero Arrow imports, students learn by building)
+- [06-07]: M12 deployment challenges use QUIZ format (CI/CD, app stores are procedural knowledge)
+- [06-07]: M15 context parameters simulated via explicit passing (requires -Xcontext-parameters flag)
+- [06-07]: M13 Gradle challenges use string parsing (framework-independent, runnable standalone)
 
 ### Pending Todos
 
@@ -268,5 +272,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-06-PLAN.md (M01-M07 challenge creation -- 40 new challenges)
+Stopped at: Completed 06-07-PLAN.md (M08-M15 challenge creation -- 30 new challenges)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
