@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-02)
 
 **Core value:** Every course teaches a coherent, progressive path from absolute beginner to independently building and deploying a real application.
-**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 04 complete.
+**Current focus:** Phase 6 executing (Kotlin Course Audit). Plan 04 complete, Plan 03 completed (out-of-order).
 
 ## Current Position
 
 Phase: 6 of 9 (Kotlin Course Audit)
-Plan: 4 of 10 in current phase
+Plan: 5 of 10 in current phase (01, 02, 03, 04 complete + 05 partial)
 Status: In progress
-Last activity: 2026-02-04 -- Completed 06-04-PLAN.md (M08-M12 accuracy pass + capstone assessment)
+Last activity: 2026-02-04 -- Completed 06-03-PLAN.md (M06-M07 accuracy pass)
 
-Progress: [####......] 4/10 phase plans (40%)
+Progress: [####......] 4/10 phase plans complete (+ 06-03 just completed = 5)
 
-Overall: [###################################.......] 37/61 total plans (61%)
+Overall: [####################################......] 38/61 total plans (62%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 37
+- Total plans completed: 38
 - Average duration: 10 min
 - Total execution time: ~364 min
 
@@ -35,11 +35,11 @@ Overall: [###################################.......] 37/61 total plans (61%)
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
 | 05-flutter-audit | 7/7 | 55 min | 8 min |
 
-| 06-kotlin-audit | 4/10 | 27 min | 7 min |
+| 06-kotlin-audit | 5/10 | 39 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-04 (8 min), 06-03 (8 min), 06-02 (7 min), 06-01 (4 min), 05-07 (5 min)
-- Trend: M08-M12 accuracy verified; capstone is Jetpack Compose not CMP (documented for Plan 08)
+- Last 5 plans: 06-03 (12 min), 06-04 (8 min), 06-02 (7 min), 06-01 (4 min), 05-07 (5 min)
+- Trend: M06-M07 verified; M07 Android-only APIs annotated (Retrofit/Room/Hilt labeled, cross-platform alternatives shown)
 
 *Updated after each plan completion*
 
@@ -235,6 +235,12 @@ Recent decisions affecting current work:
 - [06-04]: M12 L08 capstone is Jetpack Compose ONLY (not CMP) -- uses AndroidViewModel, no shared code
 - [06-04]: M12 L08 ShopKotlin can be reframed as Android reference while Plan 08 creates CMP capstone
 - [06-04]: M12 L08 lesson.json says 30 min, content says 12-16 hours (metadata discrepancy)
+- [06-03]: M06 forward references all correct post-reorder (zero broken cross-references found)
+- [06-03]: Exposed 1.0.0 v1 namespace (org.jetbrains.exposed.v1.*) confirmed correct in M06 L08
+- [06-03]: M07 L07-L09 teach Android-specific libraries (Retrofit, Room, Hilt) -- annotated as Android-only, not replaced
+- [06-03]: hiltViewModel() removed from commonMain code; constructor injection used instead
+- [06-03]: R.drawable references replaced with cross-platform Box/initials patterns
+- [06-03]: Dynamic color theming labeled as androidMain with commonMain fallback shown
 
 ### Pending Todos
 
@@ -253,5 +259,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-04
-Stopped at: Completed 06-04-PLAN.md (M08-M12 accuracy pass + capstone assessment)
+Stopped at: Completed 06-03-PLAN.md (M06-M07 accuracy pass, out-of-order completion)
 Resume file: .planning/phases/06-kotlin-course-audit/.continue-here.md
