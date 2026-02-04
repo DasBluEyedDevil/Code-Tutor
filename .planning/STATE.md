@@ -10,20 +10,20 @@ See: .planning/PROJECT.md (updated 2026-02-02)
 ## Current Position
 
 Phase: 5 of 9 (Flutter/Dart Course Audit)
-Plan: 4 of 7 in current phase
+Plan: 5 of 7 in current phase
 Status: In progress
-Last activity: 2026-02-04 -- Completed 05-04-PLAN.md (M14-M18 accuracy verification + capstone consistency)
+Last activity: 2026-02-04 -- Completed 05-05-PLAN.md (KEY_POINT and WARNING enrichment)
 
-Progress: [####......] 4/7 phase plans (57%)
+Progress: [#####.....] 5/7 phase plans (71%)
 
-Overall: [##############################..] 30/44 total plans (68%)
+Overall: [###############################.] 31/44 total plans (70%)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 30
+- Total plans completed: 31
 - Average duration: 10 min
-- Total execution time: ~312 min
+- Total execution time: ~322 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Overall: [##############################..] 30/44 total plans (68%)
 | 02-java-audit | 8/8 | 100 min | 13 min |
 | 03-js-audit | 7/7 | 86 min | 12 min |
 | 04-csharp-audit | 5/5 | 59 min | 12 min |
-| 05-flutter-audit | 4/7 | 30 min | 8 min |
+| 05-flutter-audit | 5/7 | 40 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-04 (9 min), 05-03 (9 min), 05-02 (7 min), 05-01 (5 min), 04-05 (25 min)
-- Trend: M14-M18 accuracy verified; capstone consistency confirmed with M06/M07/M09 teachings
+- Last 5 plans: 05-05 (10 min), 05-04 (9 min), 05-03 (9 min), 05-02 (7 min), 05-01 (5 min)
+- Trend: KEY_POINT/WARNING enrichment complete; 60 new content files across 13 modules
 
 *Updated after each plan completion*
 
@@ -204,6 +204,9 @@ Recent decisions affecting current work:
 - [05-04]: CI/CD flutter-version 3.24.0 -> 3.38.0 in M16/M18 GitHub Actions workflows (7+ files)
 - [05-04]: AnimatedBuilder in M15 L02 confirmed correct (not deprecated; is current Flutter API)
 - [05-04]: FLTR-04 capstone assessed complete: 12-lesson project guide with inline pubspec + code (no standalone directory)
+- [05-05]: 44 KEY_POINT files bring Flutter course to 100% active lesson coverage (139/139 lessons)
+- [05-05]: 16 WARNING files across M11 (5), M12 (4), M13 (4), M14 (3) -- all previously zero-WARNING modules
+- [05-05]: No KEY_POINTs for archived M09 L10-L17/L19, misplaced M10 L06-L08, or misplaced M11 L09-L10
 
 ### Pending Todos
 
@@ -221,6 +224,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-04T04:25:00Z
-Stopped at: Completed 05-04-PLAN.md (M14-M18 accuracy verification + capstone consistency)
+Last session: 2026-02-04T04:35:39Z
+Stopped at: Completed 05-05-PLAN.md (KEY_POINT and WARNING enrichment)
 Resume file: None
