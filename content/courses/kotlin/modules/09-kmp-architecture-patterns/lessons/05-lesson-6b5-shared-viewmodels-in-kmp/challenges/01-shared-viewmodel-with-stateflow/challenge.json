@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-6b-5-1",
+  "title": "Shared ViewModel with StateFlow",
+  "description": "Implement a pure Kotlin ViewModel that can be shared across Android and iOS, using StateFlow for state management and a CoroutineScope for async operations.",
+  "instructions": "Create a BookmarkViewModel that manages a list of bookmarks. It should expose state as StateFlow, support adding and removing bookmarks, and toggle bookmark status. No platform-specific imports allowed.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Adding a bookmark should update state",
+      "expectedOutput": "bookmarks=[Bookmark(id=1, title=Kotlin Docs, isStarred=false)]",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Toggle starred should flip isStarred",
+      "expectedOutput": "Bookmark(id=1, title=Kotlin Docs, isStarred=true)",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Remove should filter out the bookmark",
+      "expectedOutput": "bookmarks=[]",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use MutableStateFlow for mutable internal state, expose as StateFlow via asStateFlow()"
+    },
+    {
+      "level": 2,
+      "text": "Use _state.update { } to safely modify state from any coroutine"
+    },
+    {
+      "level": 3,
+      "text": "Toggle starred by mapping the list and flipping isStarred for the matching id"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Importing Android lifecycle or Compose dependencies",
+      "consequence": "ViewModel cannot be shared with iOS",
+      "correction": "Use only Kotlin stdlib and kotlinx.coroutines in commonMain"
+    },
+    {
+      "mistake": "Using mutableListOf instead of StateFlow for state",
+      "consequence": "UI won't recompose on changes",
+      "correction": "Use StateFlow so collectors are notified of every state change"
+    }
+  ]
+}

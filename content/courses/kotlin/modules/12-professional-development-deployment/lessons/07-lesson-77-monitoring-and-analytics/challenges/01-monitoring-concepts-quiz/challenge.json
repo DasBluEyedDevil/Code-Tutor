@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-7-1",
+  "title": "Monitoring Concepts Quiz",
+  "description": "Test your understanding of application monitoring, logging, and analytics for deployed KMP applications.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is the difference between structured logging and unstructured logging?",
+      "options": [
+        "Structured logging uses XML, unstructured uses JSON",
+        "Structured logging emits machine-parseable key-value fields; unstructured outputs free-text strings",
+        "Structured logging is for production, unstructured is for development only",
+        "There is no difference -- they are the same"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Structured logging outputs log entries as key-value pairs (often JSON) that can be indexed and queried by monitoring tools. Unstructured logging produces human-readable text strings that are harder to search and aggregate programmatically."
+    },
+    {
+      "id": "q2",
+      "text": "In a KMP backend (Ktor), what should a health check endpoint return?",
+      "options": [
+        "The full application configuration including secrets",
+        "A simple HTTP 200 with basic status info (database connectivity, uptime)",
+        "The complete server log file",
+        "A redirect to the monitoring dashboard"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A health check endpoint returns HTTP 200 with minimal status information (up/down, database reachable, uptime). It should NEVER expose secrets, full configs, or sensitive internal state. Load balancers and orchestrators poll this endpoint to determine instance health."
+    },
+    {
+      "id": "q3",
+      "text": "Which metric is MOST important for detecting a memory leak in a Ktor backend?",
+      "options": [
+        "HTTP request count per minute",
+        "JVM heap usage trending upward over time without returning to baseline",
+        "CPU usage spikes during peak hours",
+        "Network bandwidth utilization"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A memory leak shows as JVM heap usage that grows over time and never returns to a stable baseline after garbage collection. Request count and CPU spikes are normal under load. Network bandwidth relates to traffic volume, not memory."
+    }
+  ]
+}

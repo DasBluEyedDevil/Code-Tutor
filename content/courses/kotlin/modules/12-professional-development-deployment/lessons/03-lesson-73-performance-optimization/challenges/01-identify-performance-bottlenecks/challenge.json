@@ -1,0 +1,49 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-7-3-1",
+  "title": "Identify Performance Bottlenecks",
+  "description": "Analyze a data processing pipeline and fix the performance issues by using sequences, avoiding unnecessary allocations, and choosing the right collection operations.",
+  "instructions": "Refactor the processOrders function to eliminate performance bottlenecks. The function currently creates multiple intermediate lists, iterates the full collection multiple times, and does redundant work.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Should produce same results as original",
+      "expectedOutput": "Total: 270.0, Count: 3",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Should use sequence for lazy evaluation",
+      "expectedOutput": "Uses asSequence() for chained operations",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use asSequence() to avoid creating intermediate lists"
+    },
+    {
+      "level": 2,
+      "text": "Combine filter and map into a single pass with mapNotNull or sequence chain"
+    },
+    {
+      "level": 3,
+      "text": "Use sumOf instead of map + sum for single-pass aggregation"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using sequences for small collections (under ~1000 items)",
+      "consequence": "Sequence overhead can be slower than eager list operations for small data",
+      "correction": "Sequences shine for large datasets or chains of 3+ intermediate operations"
+    },
+    {
+      "mistake": "Calling toList() in the middle of a sequence chain",
+      "consequence": "Materializes the sequence, eliminating lazy evaluation benefits",
+      "correction": "Only call a terminal operation (toList, sum, count) at the end of the chain"
+    }
+  ]
+}

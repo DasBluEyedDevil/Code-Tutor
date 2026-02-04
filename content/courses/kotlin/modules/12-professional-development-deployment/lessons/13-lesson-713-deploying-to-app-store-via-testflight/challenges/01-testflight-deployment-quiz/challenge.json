@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-13-1",
+  "title": "TestFlight Deployment Quiz",
+  "description": "Test your understanding of deploying iOS apps via TestFlight for KMP projects.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is TestFlight's primary purpose in the iOS deployment pipeline?",
+      "options": [
+        "A replacement for the App Store",
+        "A beta testing distribution platform that allows testers to install pre-release builds",
+        "An automated testing framework for iOS unit tests",
+        "A CI/CD server for building iOS apps"
+      ],
+      "correctAnswer": 1,
+      "explanation": "TestFlight is Apple's beta testing platform. Developers upload builds to App Store Connect, invite testers (up to 10,000 external testers), and testers install via the TestFlight app. It supports crash reports, feedback, and multiple build groups."
+    },
+    {
+      "id": "q2",
+      "text": "In a KMP project, what must happen BEFORE uploading to TestFlight?",
+      "options": [
+        "The shared Kotlin module must be published to Maven Central",
+        "The Kotlin/Native framework must be built and embedded in the Xcode project, then archived as an .ipa",
+        "The Android AAB must be built first",
+        "TestFlight requires only the source code, not a built binary"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The KMP shared module compiles to a Kotlin/Native framework that the Xcode project embeds. You then archive the full iOS app (producing an .ipa) via Xcode or xcodebuild, and upload it to App Store Connect using Xcode Organizer or altool/notarytool."
+    },
+    {
+      "id": "q3",
+      "text": "What is the difference between Internal and External TestFlight testers?",
+      "options": [
+        "Internal testers pay, external testers are free",
+        "Internal testers (up to 100, team members) get builds immediately; External testers (up to 10,000) require Apple beta review",
+        "Internal testers are on Android; External testers are on iOS",
+        "There is no difference; all testers get builds the same way"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Internal testers (up to 100) must be App Store Connect users on your team and receive builds instantly without review. External testers (up to 10,000) can be anyone with an email address, but the first build to external testers requires Apple's Beta App Review (usually 24-48 hours)."
+    }
+  ]
+}

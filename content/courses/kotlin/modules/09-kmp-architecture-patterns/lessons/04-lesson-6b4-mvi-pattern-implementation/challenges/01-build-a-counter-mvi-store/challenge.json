@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-6b-4-1",
+  "title": "Build a Counter MVI Store",
+  "description": "Implement a simple MVI store for a counter feature with Intent, State, and a reduce function that processes intents into new states.",
+  "instructions": "Create a sealed interface CounterIntent with Increment, Decrement, and Reset actions. Create a CounterState data class. Implement a CounterStore class with a reduce function that processes intents and updates state via StateFlow.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Increment intent should increase count by 1",
+      "expectedOutput": "CounterState(count=1, history=[Increment])",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Multiple intents should accumulate",
+      "expectedOutput": "CounterState(count=3, history=[Increment, Increment, Increment])",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Reset should return to zero and clear history",
+      "expectedOutput": "CounterState(count=0, history=[])",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a sealed interface for intents with data object subtypes"
+    },
+    {
+      "level": 2,
+      "text": "The reduce function should use when(intent) to pattern match"
+    },
+    {
+      "level": 3,
+      "text": "Use _state.update { } for thread-safe state mutations"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Using var for state instead of StateFlow",
+      "consequence": "State changes are not observable",
+      "correction": "Use MutableStateFlow for internal state and expose as StateFlow"
+    },
+    {
+      "mistake": "Forgetting to handle all intent types in when expression",
+      "consequence": "Compile error with sealed interface",
+      "correction": "Sealed when expressions must be exhaustive -- handle every subtype"
+    }
+  ]
+}

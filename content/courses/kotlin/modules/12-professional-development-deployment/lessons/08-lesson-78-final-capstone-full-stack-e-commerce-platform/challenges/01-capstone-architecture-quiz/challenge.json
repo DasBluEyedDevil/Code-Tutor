@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-8-1",
+  "title": "Capstone Architecture Quiz",
+  "description": "Test your understanding of full-stack KMP e-commerce platform architecture decisions.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "In a KMP e-commerce app, which code should live in the shared commonMain module?",
+      "options": [
+        "Android XML layouts and iOS storyboards",
+        "Product data models, cart logic, and API client interfaces",
+        "Platform-specific payment SDK integrations",
+        "SQLDelight database driver initialization"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Business logic (cart calculations, data models, repository interfaces, API contracts) belongs in commonMain so it is shared across all platforms. UI layouts are platform-specific, payment SDKs use platform APIs, and driver initialization uses expect/actual."
+    },
+    {
+      "id": "q2",
+      "text": "For the backend (Ktor), where should sensitive configuration like database credentials be stored?",
+      "options": [
+        "Hardcoded in Application.kt for reliability",
+        "In a JSON config file committed to git",
+        "In environment variables or a secrets manager, never in source code",
+        "In the README for team reference"
+      ],
+      "correctAnswer": 2,
+      "explanation": "Secrets must NEVER be committed to source code. Use environment variables (12-factor app principle) or a dedicated secrets manager (Vault, AWS Secrets Manager). Ktor supports reading config from environment variables via application.conf HOCON substitution."
+    },
+    {
+      "id": "q3",
+      "text": "What is the primary benefit of using SQLDelight in the shared module for e-commerce data?",
+      "options": [
+        "It generates SQL from Kotlin code",
+        "It generates typesafe Kotlin APIs from .sq SQL files, with platform-specific drivers",
+        "It replaces the need for a backend database",
+        "It only works on Android, which is the primary target"
+      ],
+      "correctAnswer": 1,
+      "explanation": "SQLDelight generates typesafe Kotlin data classes and query functions from .sq files. The generated API lives in commonMain while actual database drivers (Android SQLite, iOS native, JVM JDBC) are provided per-platform via expect/actual."
+    }
+  ]
+}

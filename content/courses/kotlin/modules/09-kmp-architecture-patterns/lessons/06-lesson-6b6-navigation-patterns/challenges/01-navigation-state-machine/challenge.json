@@ -1,0 +1,65 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-6b-6-1",
+  "title": "Navigation State Machine",
+  "description": "Implement a typesafe navigation state machine using sealed interfaces. The router should manage a navigation stack and support push, pop, and replace operations.",
+  "instructions": "Create a sealed interface Screen with Home, Detail(id), and Settings subtypes. Implement a NavigationRouter that manages a stack of screens using StateFlow. Support push, pop, and replaceTop operations.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Initial state should show Home screen",
+      "expectedOutput": "current=Home, stackSize=1",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Push should add screen to stack",
+      "expectedOutput": "current=Detail(id=42), stackSize=2",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Pop should return to previous screen",
+      "expectedOutput": "current=Home, stackSize=1",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Pop on single screen should not crash",
+      "expectedOutput": "current=Home, stackSize=1",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use a List<Screen> as the navigation stack inside StateFlow"
+    },
+    {
+      "level": 2,
+      "text": "The current screen is always stack.last()"
+    },
+    {
+      "level": 3,
+      "text": "Pop should only remove if stack has more than one screen (never empty the stack)"
+    },
+    {
+      "level": 4,
+      "text": "ReplaceTop uses dropLast(1) + newScreen"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Allowing the stack to become empty on pop",
+      "consequence": "NoSuchElementException when accessing current screen",
+      "correction": "Guard pop: only remove if stack.size > 1"
+    },
+    {
+      "mistake": "Using a mutable list directly without StateFlow",
+      "consequence": "UI collectors won't see navigation changes",
+      "correction": "Wrap the stack in a data class inside StateFlow"
+    }
+  ]
+}

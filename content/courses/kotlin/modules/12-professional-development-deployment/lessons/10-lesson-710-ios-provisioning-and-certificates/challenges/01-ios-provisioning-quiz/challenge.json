@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-10-1",
+  "title": "iOS Provisioning Quiz",
+  "description": "Test your understanding of iOS provisioning profiles, certificates, and code signing for KMP apps.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What is the relationship between a signing certificate and a provisioning profile?",
+      "options": [
+        "They are the same thing with different names",
+        "A provisioning profile links a signing certificate to an App ID and list of allowed devices",
+        "A signing certificate is only needed for Android; iOS uses provisioning profiles",
+        "A provisioning profile replaces the need for a signing certificate"
+      ],
+      "correctAnswer": 1,
+      "explanation": "A provisioning profile bundles three things together: the signing certificate (who built it), the App ID (which app), and optionally a list of device UDIDs (where it can run). All three must match for iOS to allow the app to launch."
+    },
+    {
+      "id": "q2",
+      "text": "What is the difference between a Development and Distribution provisioning profile?",
+      "options": [
+        "Development profiles are free; Distribution profiles cost money",
+        "Development profiles allow debugging on specific devices; Distribution profiles allow App Store or TestFlight distribution",
+        "Development profiles are for Swift; Distribution profiles are for Kotlin",
+        "There is no practical difference"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Development profiles are tied to specific device UDIDs and enable debugging features. Distribution profiles (App Store or Ad Hoc) are used for releasing to TestFlight/App Store and do not include device restrictions (App Store) or include a broader device list (Ad Hoc)."
+    },
+    {
+      "id": "q3",
+      "text": "In a KMP project, which Gradle configuration typically specifies the iOS signing team ID?",
+      "options": [
+        "build.gradle.kts in the shared module",
+        "The iosApp Xcode project settings or a Kotlin/Native framework export configuration",
+        "settings.gradle.kts in the root project",
+        "The local.properties file only"
+      ],
+      "correctAnswer": 1,
+      "explanation": "iOS signing is managed in the Xcode project settings (Signing & Capabilities tab) for the iosApp target. The KMP shared module produces a framework, but signing happens at the Xcode project level where the team ID, provisioning profile, and bundle identifier are configured."
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-12-1",
+  "title": "Play Store Deployment Quiz",
+  "description": "Test your understanding of the Google Play Store deployment process for KMP Android apps.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "What file format does Google Play require for new app submissions (since August 2021)?",
+      "options": [
+        "APK (Android Package Kit)",
+        "AAB (Android App Bundle)",
+        "JAR (Java Archive)",
+        "ZIP archive of the project"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Google Play requires Android App Bundle (.aab) format for all new apps. AABs allow Google Play to generate optimized APKs for each device configuration (screen density, CPU architecture, language), reducing download size by 15-30% compared to universal APKs."
+    },
+    {
+      "id": "q2",
+      "text": "What is the purpose of Play App Signing?",
+      "options": [
+        "To encrypt the app's source code",
+        "Google manages your app signing key, so you upload with an upload key and Google re-signs for distribution",
+        "To verify the developer's identity via government ID",
+        "To password-protect the app from unauthorized users"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Play App Signing means Google holds your app signing key securely. You sign uploads with a separate upload key. If your upload key is compromised, you can reset it without affecting existing installs. Google re-signs the final APKs with the app signing key."
+    },
+    {
+      "id": "q3",
+      "text": "What is the recommended testing track progression before production release?",
+      "options": [
+        "Production immediately for fast iteration",
+        "Internal testing -> Closed testing -> Open testing -> Production",
+        "Open testing -> Internal testing -> Production",
+        "Closed testing -> Production (skip other tracks)"
+      ],
+      "correctAnswer": 1,
+      "explanation": "The recommended progression is: Internal testing (up to 100 testers, instant approval) -> Closed testing (invited testers, can require review) -> Open testing (anyone can join, full review) -> Production. Each stage catches different categories of issues."
+    }
+  ]
+}

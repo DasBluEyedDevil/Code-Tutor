@@ -1,0 +1,55 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-7-6-1",
+  "title": "Dockerfile Validation",
+  "description": "Implement a Dockerfile linter that parses a Dockerfile string and checks for common mistakes: missing FROM, duplicate EXPOSE, running as root, and invalid instruction ordering.",
+  "instructions": "Create a DockerfileLinter class that parses Dockerfile content line-by-line and returns a list of lint warnings. Check for: missing FROM as first instruction, COPY/ADD before FROM, missing WORKDIR, running as root (no USER instruction), and duplicate EXPOSE ports.",
+  "language": "kotlin",
+  "difficulty": "advanced",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid Dockerfile should pass with no warnings",
+      "expectedOutput": "Warnings: 0",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Missing FROM should produce warning",
+      "expectedOutput": "WARNING: No FROM instruction found",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "No USER instruction should warn about root",
+      "expectedOutput": "WARNING: Container runs as root (no USER instruction)",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Split the Dockerfile string by newlines and process each non-comment, non-empty line"
+    },
+    {
+      "level": 2,
+      "text": "Track which instructions you have seen with a Set<String>"
+    },
+    {
+      "level": 3,
+      "text": "Parse the instruction keyword as the first word of each line (trimmed, uppercase)"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not handling multi-line instructions (lines ending with backslash)",
+      "consequence": "Incorrectly parsing continuation lines as new instructions",
+      "correction": "For this exercise, treat each line independently; note multi-line as a known limitation"
+    },
+    {
+      "mistake": "Case-sensitive instruction matching",
+      "consequence": "Missing instructions like 'from' or 'From'",
+      "correction": "Convert instruction keyword to uppercase before comparing"
+    }
+  ]
+}

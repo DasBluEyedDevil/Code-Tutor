@@ -1,0 +1,61 @@
+{
+  "type": "FREE_CODING",
+  "id": "challenge-7-4-1",
+  "title": "Validate API Key Format",
+  "description": "Implement a validator for API keys that checks format, length, character set, and prefix patterns. Pure string logic -- no network or crypto libraries needed.",
+  "instructions": "Create an ApiKeyValidator that validates keys against configurable rules: required prefix, minimum length, allowed character set (alphanumeric + hyphens), and checksum digit validation.",
+  "language": "kotlin",
+  "difficulty": "intermediate",
+  "testCases": [
+    {
+      "id": "test-1",
+      "description": "Valid key should pass all checks",
+      "expectedOutput": "Valid",
+      "isVisible": true
+    },
+    {
+      "id": "test-2",
+      "description": "Wrong prefix should fail",
+      "expectedOutput": "Invalid: must start with 'sk-'",
+      "isVisible": true
+    },
+    {
+      "id": "test-3",
+      "description": "Too short should fail",
+      "expectedOutput": "Invalid: minimum length is 20",
+      "isVisible": true
+    },
+    {
+      "id": "test-4",
+      "description": "Invalid characters should fail",
+      "expectedOutput": "Invalid: contains illegal characters",
+      "isVisible": true
+    }
+  ],
+  "hints": [
+    {
+      "level": 1,
+      "text": "Use startsWith() for prefix validation"
+    },
+    {
+      "level": 2,
+      "text": "Use a Regex like [a-zA-Z0-9-]+ for character set validation"
+    },
+    {
+      "level": 3,
+      "text": "Return a sealed class Result with Success and Failure subtypes for clean error reporting"
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Not validating empty or blank strings first",
+      "consequence": "IndexOutOfBoundsException on empty input",
+      "correction": "Check isBlank() as the first validation step"
+    },
+    {
+      "mistake": "Hardcoding validation rules instead of making them configurable",
+      "consequence": "Cannot reuse validator for different API key formats",
+      "correction": "Accept prefix, minLength, and pattern as constructor parameters"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "type": "QUIZ",
+  "id": "challenge-7-5-1",
+  "title": "CI/CD Pipeline Quiz",
+  "description": "Test your understanding of CI/CD concepts for KMP projects.",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "In a KMP CI/CD pipeline, which step should run FIRST?",
+      "options": [
+        "Deploy to production",
+        "Run commonTest (shared unit tests)",
+        "Build iOS app",
+        "Upload to app stores"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Shared unit tests (commonTest) should run first because they are fast, catch most logic errors, and don't require platform-specific build tools. Fail fast on cheap tests before expensive platform builds."
+    },
+    {
+      "id": "q2",
+      "text": "Why do KMP projects typically need SEPARATE CI jobs for Android and iOS builds?",
+      "options": [
+        "To make the pipeline look more organized",
+        "Android builds require Linux/Windows, iOS builds require macOS with Xcode",
+        "They use completely different programming languages",
+        "App store policies require separate build machines"
+      ],
+      "correctAnswer": 1,
+      "explanation": "iOS builds require macOS with Xcode (Apple's toolchain), while Android builds can run on any OS with the Android SDK. This typically means separate CI runners (e.g., ubuntu-latest for Android, macos-latest for iOS)."
+    },
+    {
+      "id": "q3",
+      "text": "What is the purpose of Gradle build caching in a KMP CI pipeline?",
+      "options": [
+        "To store source code backups",
+        "To avoid recompiling unchanged modules, reducing build time significantly",
+        "To cache network responses during testing",
+        "To store deployment credentials securely"
+      ],
+      "correctAnswer": 1,
+      "explanation": "Gradle build caching stores task outputs (compiled classes, processed resources) so that unchanged modules skip compilation entirely. For KMP projects with multiple targets, this can reduce CI build times by 50-70%."
+    }
+  ]
+}
