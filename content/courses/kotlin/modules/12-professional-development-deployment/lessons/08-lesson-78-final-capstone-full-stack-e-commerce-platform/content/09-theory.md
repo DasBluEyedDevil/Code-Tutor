@@ -1,153 +1,193 @@
 ---
 type: "THEORY"
-title: "Phase 5: CI/CD Pipeline (1-2 hours)"
+title: "Client-Side Cache: SQLDelight"
 ---
 
+The client uses SQLDelight for offline-first local storage. You write plain SQL in `.sq` files and SQLDelight generates type-safe Kotlin code. Platform-specific drivers are provided via `expect`/`actual`.
 
-### GitHub Actions Workflow
+### SQL Schema (.sq file)
 
+```sql
+-- composeApp/src/commonMain/sqldelight/com/taskflow/app/db/TaskFlowDatabase.sq
 
----
+CREATE TABLE IF NOT EXISTS TaskEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    priority TEXT NOT NULL DEFAULT 'MEDIUM',
+    status TEXT NOT NULL DEFAULT 'TODO',
+    category TEXT NOT NULL DEFAULT '',
+    dueDate TEXT,
+    userId TEXT NOT NULL DEFAULT '',
+    createdAt TEXT NOT NULL DEFAULT '',
+    updatedAt TEXT NOT NULL DEFAULT '',
+    synced INTEGER NOT NULL DEFAULT 0
+);
 
+-- Queries
 
+selectAll:
+SELECT * FROM TaskEntity
+ORDER BY
+    CASE priority
+        WHEN 'URGENT' THEN 0
+        WHEN 'HIGH' THEN 1
+        WHEN 'MEDIUM' THEN 2
+        WHEN 'LOW' THEN 3
+    END,
+    createdAt DESC;
 
-```yaml
-# .github/workflows/ci-cd.yml
-name: ShopKotlin CI/CD
+selectById:
+SELECT * FROM TaskEntity WHERE id = ?;
 
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+selectUnsynced:
+SELECT * FROM TaskEntity WHERE synced = 0;
 
-env:
-  JAVA_VERSION: '17'
+insert:
+INSERT OR REPLACE INTO TaskEntity(id, title, description, priority, status, category, dueDate, userId, createdAt, updatedAt, synced)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
-jobs:
-  backend-test:
-    name: Backend Tests
-    runs-on: ubuntu-latest
+markSynced:
+UPDATE TaskEntity SET synced = 1 WHERE id = ?;
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: testpass
-          POSTGRES_DB: shopkotlin_test
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+deleteById:
+DELETE FROM TaskEntity WHERE id = ?;
 
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: Run backend tests
-        run: |
-          cd shopkotlin-backend
-          ./gradlew test
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v3
-        with:
-          files: shopkotlin-backend/build/reports/jacoco/test/jacocoTestReport.xml
-
-  backend-build:
-    name: Build Backend
-    needs: backend-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: Build JAR
-        run: |
-          cd shopkotlin-backend
-          ./gradlew shadowJar
-
-      - name: Build Docker image
-        run: |
-          cd shopkotlin-backend
-          docker build -t shopkotlin-backend:latest .
-
-      - name: Push to registry (main only)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag shopkotlin-backend:latest ${{ secrets.DOCKER_USERNAME }}/shopkotlin-backend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/shopkotlin-backend:latest
-
-  android-test:
-    name: Android Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: Run unit tests
-        run: |
-          cd shopkotlin-android
-          ./gradlew test
-
-  android-build:
-    name: Build Android APK
-    needs: android-test
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-
-      - name: Build debug APK
-        run: |
-          cd shopkotlin-android
-          ./gradlew assembleDebug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug
-          path: shopkotlin-android/app/build/outputs/apk/debug/app-debug.apk
-
-  deploy:
-    name: Deploy to Production
-    needs: [backend-build, android-build]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.14
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "shopkotlin-api"
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          appdir: "shopkotlin-backend"
+deleteAll:
+DELETE FROM TaskEntity;
 ```
+
+The `synced` column tracks whether a local change has been pushed to the server. This enables the offline-first pattern.
+
+### Platform Drivers (expect/actual)
+
+```kotlin
+// composeApp/src/commonMain/kotlin/com/taskflow/app/data/local/DriverFactory.kt
+package com.taskflow.app.data.local
+
+import app.cash.sqldelight.db.SqlDriver
+
+expect class DriverFactory {
+    fun createDriver(): SqlDriver
+}
+```
+
+```kotlin
+// composeApp/src/desktopMain/kotlin/com/taskflow/app/DatabaseDriverFactory.kt
+package com.taskflow.app.data.local
+
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import com.taskflow.app.db.TaskFlowDatabase
+
+actual class DriverFactory {
+    actual fun createDriver(): SqlDriver {
+        val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+        TaskFlowDatabase.Schema.create(driver)
+        return driver
+    }
+}
+```
+
+```kotlin
+// composeApp/src/androidMain/kotlin/com/taskflow/app/DatabaseDriverFactory.kt
+package com.taskflow.app.data.local
+
+import android.content.Context
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import com.taskflow.app.db.TaskFlowDatabase
+
+actual class DriverFactory(private val context: Context) {
+    actual fun createDriver(): SqlDriver {
+        return AndroidSqliteDriver(TaskFlowDatabase.Schema, context, "taskflow.db")
+    }
+}
+```
+
+### SyncManager
+
+The SyncManager coordinates between the local cache and the remote server.
+
+```kotlin
+// composeApp/src/commonMain/kotlin/com/taskflow/app/data/repository/SyncManager.kt
+package com.taskflow.app.data.repository
+
+import com.taskflow.app.data.local.DriverFactory
+import com.taskflow.app.data.remote.TaskFlowApi
+import com.taskflow.app.db.TaskFlowDatabase
+import com.taskflow.shared.model.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class SyncManager(
+    driverFactory: DriverFactory,
+    private val api: TaskFlowApi,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+) {
+    private val database = TaskFlowDatabase(driverFactory.createDriver())
+    private val queries = database.taskFlowDatabaseQueries
+
+    fun getAllTasks(): List<Task> {
+        return queries.selectAll().executeAsList().map { entity ->
+            Task(
+                id = entity.id,
+                title = entity.title,
+                description = entity.description,
+                priority = enumValueOf(entity.priority),
+                status = enumValueOf(entity.status),
+                category = entity.category,
+                dueDate = entity.dueDate,
+                userId = entity.userId,
+                createdAt = entity.createdAt,
+                updatedAt = entity.updatedAt
+            )
+        }
+    }
+
+    fun cacheTask(task: Task, synced: Boolean = true) {
+        queries.insert(
+            id = task.id,
+            title = task.title,
+            description = task.description,
+            priority = task.priority.name,
+            status = task.status.name,
+            category = task.category,
+            dueDate = task.dueDate,
+            userId = task.userId,
+            createdAt = task.createdAt,
+            updatedAt = task.updatedAt,
+            synced = if (synced) 1L else 0L
+        )
+    }
+
+    fun syncWithServer() {
+        scope.launch {
+            // Push unsynced local changes
+            val unsynced = queries.selectUnsynced().executeAsList()
+            for (entity in unsynced) {
+                try {
+                    // Push to server (implementation depends on change type)
+                    queries.markSynced(entity.id)
+                } catch (_: Exception) {
+                    // Network error -- retry on next sync
+                }
+            }
+
+            // Pull latest from server
+            try {
+                val remoteTasks = api.getAllTasks()
+                for (task in remoteTasks) {
+                    cacheTask(task, synced = true)
+                }
+            } catch (_: Exception) {
+                // Offline -- use cached data
+            }
+        }
+    }
+}
+```
+
+---
+

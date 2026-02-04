@@ -1,44 +1,44 @@
 {
   "type": "QUIZ",
   "id": "challenge-7-8-1",
-  "title": "Capstone Architecture Quiz",
-  "description": "Test your understanding of full-stack KMP e-commerce platform architecture decisions.",
+  "title": "TaskFlow KMP Architecture Quiz",
+  "description": "Test your understanding of the TaskFlow capstone architecture, technology choices, and KMP project structure.",
   "questions": [
     {
       "id": "q1",
-      "text": "In a KMP e-commerce app, which code should live in the shared commonMain module?",
+      "text": "In the TaskFlow capstone, which module contains the @Serializable data classes shared between the server and client?",
       "options": [
-        "Android XML layouts and iOS storyboards",
-        "Product data models, cart logic, and API client interfaces",
-        "Platform-specific payment SDK integrations",
-        "SQLDelight database driver initialization"
+        "server/ -- the server generates the classes and the client copies them",
+        "composeApp/ -- the UI module owns the data models",
+        "shared/ -- commonMain source set compiles to all targets",
+        "Each module defines its own copy of the models"
       ],
-      "correctAnswer": 1,
-      "explanation": "Business logic (cart calculations, data models, repository interfaces, API contracts) belongs in commonMain so it is shared across all platforms. UI layouts are platform-specific, payment SDKs use platform APIs, and driver initialization uses expect/actual."
+      "correctAnswer": 2,
+      "explanation": "The shared/ module's commonMain source set contains @Serializable data classes (Task, User, DTOs) that compile to JVM (server), Android, and Desktop targets. This guarantees the server and client use identical types with no mapping code."
     },
     {
       "id": "q2",
-      "text": "For the backend (Ktor), where should sensitive configuration like database credentials be stored?",
+      "text": "Why does TaskFlow use H2 instead of PostgreSQL for the server database?",
       "options": [
-        "Hardcoded in Application.kt for reliability",
-        "In a JSON config file committed to git",
-        "In environment variables or a secrets manager, never in source code",
-        "In the README for team reference"
+        "H2 is faster than PostgreSQL for all workloads",
+        "H2 is an embedded JVM database requiring zero setup -- no Docker or external services needed",
+        "PostgreSQL does not work with Exposed ORM",
+        "H2 supports multiplatform compilation to Android and iOS"
       ],
-      "correctAnswer": 2,
-      "explanation": "Secrets must NEVER be committed to source code. Use environment variables (12-factor app principle) or a dedicated secrets manager (Vault, AWS Secrets Manager). Ktor supports reading config from environment variables via application.conf HOCON substitution."
+      "correctAnswer": 1,
+      "explanation": "H2 runs as an embedded JVM database. It creates tables in memory (or a local file) automatically when the Ktor server starts. This eliminates the need to install PostgreSQL, run Docker, or configure cloud databases -- making the capstone accessible to all students."
     },
     {
       "id": "q3",
-      "text": "What is the primary benefit of using SQLDelight in the shared module for e-commerce data?",
+      "text": "What is the purpose of the 'synced' column in the SQLDelight TaskEntity table?",
       "options": [
-        "It generates SQL from Kotlin code",
-        "It generates typesafe Kotlin APIs from .sq SQL files, with platform-specific drivers",
-        "It replaces the need for a backend database",
-        "It only works on Android, which is the primary target"
+        "It stores the server-side primary key for the task",
+        "It tracks whether a local change has been pushed to the server, enabling offline-first behavior",
+        "It indicates whether the task is visible in the UI",
+        "It records the timestamp of the last synchronization"
       ],
       "correctAnswer": 1,
-      "explanation": "SQLDelight generates typesafe Kotlin data classes and query functions from .sq files. The generated API lives in commonMain while actual database drivers (Android SQLite, iOS native, JVM JDBC) are provided per-platform via expect/actual."
+      "explanation": "The synced column (INTEGER, 0 or 1) tracks whether local changes have been pushed to the server. When the user creates or updates a task offline, synced is set to 0. The SyncManager queries selectUnsynced to find these records and pushes them when connectivity returns."
     }
   ]
 }

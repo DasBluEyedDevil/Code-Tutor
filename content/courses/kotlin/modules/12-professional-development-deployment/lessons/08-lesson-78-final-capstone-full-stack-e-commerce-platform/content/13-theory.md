@@ -1,73 +1,167 @@
 ---
 type: "THEORY"
-title: "Final Thoughts"
+title: "Testing and Running the Application"
 ---
 
+### Server Integration Tests
 
-Congratulations on completing the Kotlin Training Course! 🎉🎉🎉
+Use Ktor's `testApplication` to test API endpoints without starting a real server.
 
-You've built a **production-ready, full-stack e-commerce platform** using:
-- Kotlin (backend and Android)
-- Ktor (REST API)
-- PostgreSQL (database)
-- Jetpack Compose (modern Android UI)
-- JWT authentication
-- Stripe payments
-- Docker (containerization)
-- GitHub Actions (CI/CD)
-- Cloud deployment
+```kotlin
+// server/src/test/kotlin/com/taskflow/server/AuthRoutesTest.kt
+package com.taskflow.server
 
-### You've Mastered:
-✅ Kotlin fundamentals and advanced features
-✅ Backend development with Ktor
-✅ Android development with Jetpack Compose
-✅ Database design and optimization
-✅ API design and security
-✅ Testing strategies (unit, integration, UI)
-✅ DevOps practices (CI/CD, Docker)
-✅ Cloud deployment
-✅ Performance optimization
-✅ Security best practices
-✅ Monitoring and analytics
+import com.taskflow.server.di.serverModule
+import com.taskflow.server.plugins.configureDatabase
+import com.taskflow.server.plugins.configureRouting
+import com.taskflow.server.plugins.configureSecurity
+import com.taskflow.server.plugins.configureSerialization
+import com.taskflow.shared.dto.ApiResponse
+import com.taskflow.shared.dto.AuthResponse
+import com.taskflow.shared.dto.LoginRequest
+import com.taskflow.shared.dto.RegisterRequest
+import io.ktor.client.call.body
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.testing.testApplication
+import org.koin.ktor.plugin.Koin
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
-### What's Next?
+class AuthRoutesTest {
 
-**1. Enhance Your Project**:
-- Add the extension challenges
-- Deploy to production
-- Get real users
-- Collect feedback
+    @Test
+    fun `register should create user and return token`() = testApplication {
+        application {
+            install(Koin) { modules(serverModule(this@application)) }
+            configureDatabase()
+            configureSerialization()
+            configureSecurity()
+            configureRouting()
+        }
 
-**2. Build Your Portfolio**:
-- Showcase ShopKotlin on GitHub
-- Write blog posts about your learnings
-- Create a portfolio website
-- Share on LinkedIn
+        val client = createClient {
+            install(ContentNegotiation) { json() }
+        }
 
-**3. Continue Learning**:
-- Explore Kotlin Multiplatform in depth
-- Learn Compose Multiplatform (desktop, web)
-- Study microservices architecture
-- Master Kubernetes and cloud-native development
+        val response = client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(RegisterRequest("test@example.com", "password123", "Test User"))
+        }
 
-**4. Join the Community**:
-- Contribute to open-source Kotlin projects
-- Join Kotlin Slack/Discord communities
-- Attend Kotlin conferences (KotlinConf)
-- Share your knowledge through teaching
+        assertEquals(HttpStatusCode.Created, response.status)
 
-### You're Ready!
+        val body: ApiResponse<AuthResponse> = response.body()
+        assertTrue(body.success)
+        assertNotNull(body.data?.token)
+        assertEquals("test@example.com", body.data?.user?.email)
+    }
 
-You now have the skills to:
-- Build production Android apps
-- Develop scalable backend APIs
-- Work at modern tech companies
-- Start your own projects
-- Mentor other developers
+    @Test
+    fun `login should return token for valid credentials`() = testApplication {
+        application {
+            install(Koin) { modules(serverModule(this@application)) }
+            configureDatabase()
+            configureSerialization()
+            configureSecurity()
+            configureRouting()
+        }
 
-**The journey doesn't end here - it's just beginning!**
+        val client = createClient {
+            install(ContentNegotiation) { json() }
+        }
 
-Keep coding, keep learning, and most importantly, keep building amazing things with Kotlin! 🚀
+        // Register first
+        client.post("/api/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(RegisterRequest("login@example.com", "password123", "Login User"))
+        }
+
+        // Then login
+        val response = client.post("/api/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequest("login@example.com", "password123"))
+        }
+
+        assertEquals(HttpStatusCode.OK, response.status)
+
+        val body: ApiResponse<AuthResponse> = response.body()
+        assertTrue(body.success)
+        assertNotNull(body.data?.token)
+    }
+
+    @Test
+    fun `login should reject invalid credentials`() = testApplication {
+        application {
+            install(Koin) { modules(serverModule(this@application)) }
+            configureDatabase()
+            configureSerialization()
+            configureSecurity()
+            configureRouting()
+        }
+
+        val client = createClient {
+            install(ContentNegotiation) { json() }
+        }
+
+        val response = client.post("/api/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(LoginRequest("nobody@example.com", "wrongpassword"))
+        }
+
+        assertEquals(HttpStatusCode.Unauthorized, response.status)
+    }
+}
+```
+
+### Running the Full Stack
+
+**Step 1: Start the server**
+
+```bash
+./gradlew :server:run
+```
+
+The server starts on `http://localhost:8080` with H2 in-memory database.
+
+**Step 2: Run the desktop client**
+
+```bash
+./gradlew :composeApp:run
+```
+
+The Compose Multiplatform desktop window opens. Register a user, then create and manage tasks.
+
+**Step 3: Run on Android** (requires Android SDK)
+
+```bash
+./gradlew :composeApp:installDebug
+```
+
+**Step 4: Run server tests**
+
+```bash
+./gradlew :server:test
+```
+
+### What You Have Built
+
+At this point, you have a working full-stack Kotlin application with:
+
+- A Ktor REST API with JWT authentication and H2 database
+- Shared domain models compiled to both server JVM and client targets
+- A Compose Multiplatform client running on Desktop and Android
+- SQLDelight offline cache with sync logic
+- Koin dependency injection on both server and client
+- Integration tests using Ktor test host
+- Zero external service dependencies -- everything runs locally
 
 ---
 
