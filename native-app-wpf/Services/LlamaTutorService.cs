@@ -87,13 +87,12 @@ public class LlamaTutorService : ITutorService, IDisposable
 
             UpdateProgress(30);
 
-            // Load model parameters
+            // Load model parameters - simplified for compatibility
             var parameters = new ModelParams(_modelPath)
             {
-                ContextSize = 2048,   // Reduced context window for faster inference
-                GpuLayerCount = 0,    // CPU only for compatibility (set to 20+ for GPU)
-                Threads = Environment.ProcessorCount / 2, // Use half the CPU cores
-                BatchSize = 512,      // Smaller batch for lower memory
+                ContextSize = 4096,   // Standard context window
+                GpuLayerCount = 0,    // CPU only for compatibility
+                Threads = Environment.ProcessorCount > 1 ? Environment.ProcessorCount - 1 : 1,
             };
 
             UpdateProgress(50);
@@ -115,21 +114,18 @@ public class LlamaTutorService : ITutorService, IDisposable
         {
             try
             {
-                var executor = new InteractiveExecutor(_context);
-                var session = new ChatSession(executor);
-                session.AddSystemMessage(_systemPrompt);
+                // Use StatelessExecutor for simpler warm-up
+                var executor = new StatelessExecutor(_model!, _context.Params);
+                var prompt = $"System: {_systemPrompt}\nUser: Hello\nAssistant:";
                 
-                var warmupResult = session.ChatAsync(
-                    new ChatHistory.Message(AuthorRole.User, "Hello"),
-                    inferenceParams: new InferenceParams { MaxTokens = 1 });
-                
-                // Consume one token
-                var enumerator = warmupResult.GetAsyncEnumerator();
+                var result = executor.InferAsync(prompt, new InferenceParams { MaxTokens = 1 });
+                var enumerator = result.GetAsyncEnumerator();
                 enumerator.MoveNextAsync().AsTask().Wait();
                 enumerator.DisposeAsync().AsTask().Wait();
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Warm-up warning: {ex.Message}");
                 // Warm-up failures are non-critical
             }
         }, cancellationToken);
@@ -141,46 +137,27 @@ public class LlamaTutorService : ITutorService, IDisposable
         IReadOnlyList<TutorMessage> history,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        if (!IsModelLoaded || _context == null)
+        if (!IsModelLoaded || _context == null || _model == null)
             throw new InvalidOperationException("Model not loaded. Call LoadModelAsync first.");
 
-        // Build context-aware message
-        var contextualMessage = BuildContextualMessage(userMessage, context);
+        // Build the full prompt with Qwen chat format
+        var prompt = BuildQwenPrompt(userMessage, context, history);
+        
+        System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Prompt length: {prompt.Length} chars");
 
         // Yield immediately to show "Thinking..."
         await Task.Yield();
 
-        // Create a fresh session for each conversation to avoid history corruption
-        var executor = new InteractiveExecutor(_context);
-        var session = new ChatSession(executor);
+        // Use StatelessExecutor - more reliable for Qwen models
+        var executor = new StatelessExecutor(_model, _context.Params);
         
-        // Add system prompt
-        session.AddSystemMessage(_systemPrompt);
-
-        // Add conversation history - ensure strict alternation between user and assistant
-        // Filter to valid alternating pairs only
-        var validHistory = GetValidHistoryPairs(history);
-        foreach (var (user, assistant) in validHistory)
-        {
-            session.AddUserMessage(user);
-            if (!string.IsNullOrEmpty(assistant))
-            {
-                session.AddAssistantMessage(assistant);
-            }
-        }
-
         var inferenceParams = new InferenceParams
         {
-            MaxTokens = 256,      // Reduced for faster response
-            AntiPrompts = new[] { "<|im_end|>", "<|im_start|>", "User:", "Human:" },
+            MaxTokens = 512,
+            AntiPrompts = new[] { "<|im_end|>", "<|im_start|>", "User:", "Assistant:", "System:" },
         };
 
-        // Generate response
-        IAsyncEnumerable<string> result;
-        
-        result = session.ChatAsync(
-            new ChatHistory.Message(AuthorRole.User, contextualMessage),
-            inferenceParams: inferenceParams);
+        var result = executor.InferAsync(prompt, inferenceParams);
 
         await using var enumerator = result.GetAsyncEnumerator(cancellationToken);
         bool hasTokens = false;
@@ -193,43 +170,47 @@ public class LlamaTutorService : ITutorService, IDisposable
 
         if (!hasTokens)
         {
-            yield return "[Model returned empty response - check if model file is complete]";
+            yield return "[No response generated. The model may need more time to load.]";
         }
     }
 
     /// <summary>
-    /// Extracts valid user-assistant pairs from history, ensuring strict alternation.
+    /// Builds a prompt in Qwen chat format.
+    /// Qwen2.5 uses: <|im_start|>system\n...\n<|im_end|>\n<|im_start|>user\n...\n<|im_end|>\n<|im_start|>assistant\n
     /// </summary>
-    private List<(string user, string assistant)> GetValidHistoryPairs(IReadOnlyList<TutorMessage> history)
-    {
-        var pairs = new List<(string user, string assistant)>();
-        if (history == null || history.Count == 0) return pairs;
-
-        string? pendingUser = null;
-        
-        foreach (var msg in history)
-        {
-            if (msg.Role == MessageRole.User)
-            {
-                // If we had a pending user message without an assistant response, skip it
-                // and start fresh with this one
-                pendingUser = msg.Content;
-            }
-            else if (msg.Role == MessageRole.Assistant && pendingUser != null)
-            {
-                // Complete pair
-                pairs.Add((pendingUser, msg.Content));
-                pendingUser = null;
-            }
-        }
-
-        return pairs;
-    }
-
-    private string BuildContextualMessage(string userMessage, TutorContext context)
+    private string BuildQwenPrompt(string userMessage, TutorContext context, IReadOnlyList<TutorMessage> history)
     {
         var sb = new StringBuilder();
-
+        
+        // System message
+        sb.AppendLine("<|im_start|>system");
+        sb.AppendLine(_systemPrompt);
+        sb.AppendLine("<|im_end|>");
+        
+        // Add conversation history
+        if (history != null)
+        {
+            foreach (var msg in history.TakeLast(4)) // Keep last 4 messages for context
+            {
+                if (msg.Role == MessageRole.User)
+                {
+                    sb.AppendLine("<|im_start|>user");
+                    sb.AppendLine(msg.Content);
+                    sb.AppendLine("<|im_end|>");
+                }
+                else if (msg.Role == MessageRole.Assistant)
+                {
+                    sb.AppendLine("<|im_start|>assistant");
+                    sb.AppendLine(msg.Content);
+                    sb.AppendLine("<|im_end|>");
+                }
+            }
+        }
+        
+        // Current user message with context
+        sb.AppendLine("<|im_start|>user");
+        
+        // Add context metadata
         if (!string.IsNullOrEmpty(context.CurrentLanguage))
             sb.AppendLine($"[Language: {context.CurrentLanguage}]");
         if (!string.IsNullOrEmpty(context.LessonTitle))
@@ -241,9 +222,13 @@ public class LlamaTutorService : ITutorService, IDisposable
         }
         if (!string.IsNullOrEmpty(context.ExecutionError))
             sb.AppendLine($"[Error: {context.ExecutionError}]");
-
+        
         sb.AppendLine(userMessage);
-
+        sb.AppendLine("<|im_end|>");
+        
+        // Assistant prefix
+        sb.AppendLine("<|im_start|>assistant");
+        
         return sb.ToString();
     }
 
