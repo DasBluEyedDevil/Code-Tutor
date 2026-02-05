@@ -1,4 +1,5 @@
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using CodeTutor.Wpf.Models;
@@ -25,10 +26,12 @@ public class LlamaTutorService : ITutorService, IDisposable
 
     public LlamaTutorService()
     {
+        // Get the directory where the assembly is located (works for both dotnet run and EXE)
+        var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+        var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? AppDomain.CurrentDomain.BaseDirectory;
+        
         // Model path for GGUF format
-        _modelPath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "models", "qwen2.5-coder-7b", "model.gguf");
+        _modelPath = Path.Combine(assemblyDirectory, "models", "qwen2.5-coder-7b", "model.gguf");
         
         _systemPrompt = "You are an expert coding tutor specializing in helping beginners learn programming. " +
             "Explain concepts clearly with code examples. Help debug errors step by step. " +
@@ -43,18 +46,43 @@ public class LlamaTutorService : ITutorService, IDisposable
         {
             UpdateProgress(10);
 
+            // Debug: Log the path being used
+            System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Looking for model at: {_modelPath}");
+            System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] File exists: {File.Exists(_modelPath)}");
+
             if (!File.Exists(_modelPath))
             {
+                // Try to find the model file in alternative locations
+                var alternativePaths = new[]
+                {
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "models", "qwen2.5-coder-7b", "model.gguf"),
+                    Path.Combine(Environment.CurrentDirectory, "models", "qwen2.5-coder-7b", "model.gguf"),
+                    Path.Combine(Directory.GetCurrentDirectory(), "models", "qwen2.5-coder-7b", "model.gguf"),
+                };
+
+                foreach (var altPath in alternativePaths)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Trying alternative: {altPath}");
+                    if (File.Exists(altPath))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Found at alternative path!");
+                        break;
+                    }
+                }
+
                 throw new FileNotFoundException(
-                    "The AI Tutor model was not found. Please download it from the AI Tutor panel.");
+                    $"The AI Tutor model was not found at '{_modelPath}'. " +
+                    "Please download it from the AI Tutor panel.");
             }
 
             // Check file size (should be ~4.5GB for Q4_K_M)
             var fileInfo = new FileInfo(_modelPath);
+            System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Model file size: {fileInfo.Length / 1024 / 1024}MB");
+            
             if (fileInfo.Length < 4_000_000_000) // Less than 4GB is likely incomplete
             {
                 throw new InvalidOperationException(
-                    $"Model file appears incomplete ({fileInfo.Length / 1024 / 1024}MB). Please re-download.");
+                    $"Model file appears incomplete ({fileInfo.Length / 1024 / 1024}MB, expected ~4500MB). Please re-download.");
             }
 
             UpdateProgress(30);
