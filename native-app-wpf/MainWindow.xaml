@@ -45,5 +45,60 @@
                                          SlideDistance="80" />
 
         <controls:SpotlightOverlay Grid.ColumnSpan="2" Panel.ZIndex="3" />
+
+        <!-- AI Tutor Button (Global) -->
+        <Button x:Name="TutorToggleButton"
+                Grid.Column="1"
+                Content="&#xE99A;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="24"
+                ToolTip="AI Tutor"
+                Width="56"
+                Height="56"
+                Background="Transparent"
+                Foreground="White"
+                BorderThickness="0"
+                Cursor="Hand"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="0,0,24,24"
+                Panel.ZIndex="10"
+                Click="TutorToggleButton_Click">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <!-- Glow effect -->
+                        <Ellipse Fill="{StaticResource AccentPurpleBrush}" 
+                                 Opacity="0.2"
+                                 Width="64" Height="64"/>
+                        <!-- Main circle -->
+                        <Ellipse Fill="{StaticResource AccentPurpleBrush}" 
+                                 Width="56" Height="56"/>
+                        <!-- Icon -->
+                        <ContentPresenter HorizontalAlignment="Center" 
+                                          VerticalAlignment="Center"
+                                          TextBlock.Foreground="White"/>
+                    </Grid>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <!-- AI Tutor Panel (slides in from right) -->
+        <Border x:Name="TutorPanel"
+                Grid.Column="1"
+                Grid.ColumnSpan="1"
+                Width="0"
+                Opacity="0"
+                Background="{StaticResource BackgroundDarkBrush}"
+                BorderBrush="{StaticResource BorderDefaultBrush}"
+                BorderThickness="1,0,0,0"
+                HorizontalAlignment="Right"
+                Panel.ZIndex="20"
+                RenderTransformOrigin="0.5,0.5">
+            <Border.RenderTransform>
+                <TranslateTransform X="24" />
+            </Border.RenderTransform>
+            <ContentPresenter x:Name="TutorContent"/>
+        </Border>
     </Grid>
 </Window>
