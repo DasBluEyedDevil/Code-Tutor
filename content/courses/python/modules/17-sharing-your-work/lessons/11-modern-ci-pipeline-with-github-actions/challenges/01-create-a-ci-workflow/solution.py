@@ -1,5 +1,7 @@
-# .github/workflows/ci.yml
-name: CI
+# GitHub Actions CI Workflow Solution
+# This file outputs the CI workflow YAML that students should create
+
+CI_WORKFLOW = """name: CI
 
 on:
   push:
@@ -50,3 +52,26 @@ jobs:
         run: uv run pytest --cov=src tests/
         env:
           DATABASE_URL: postgresql+asyncpg://test:test@localhost:5432/test
+"""
+
+print("=== GitHub Actions CI Workflow ===")
+print()
+print("Save this content to '.github/workflows/ci.yml':")
+print()
+print(CI_WORKFLOW)
+print()
+print("=== Key Features ===")
+print("1. Triggers on push/PR to main branch")
+print("2. PostgreSQL 16 service container with health checks")
+print("3. Uses uv for fast dependency management")
+print("4. Ruff for linting and formatting checks")
+print("5. pytest with coverage reporting")
+print()
+print("=== Pipeline Steps ===")
+print("1. Checkout code")
+print("2. Install uv (fast Python package manager)")
+print("3. Set up Python 3.13")
+print("4. Install dependencies with uv sync")
+print("5. Run linting (ruff check)")
+print("6. Run format check (ruff format --check)")
+print("7. Run tests with coverage")

@@ -1,5 +1,7 @@
-# docker-compose.yml
-services:
+# Docker Compose Solution
+# This file outputs the docker-compose.yml content that students should create
+
+DOCKER_COMPOSE = """services:
   app:
     build: .
     ports:
@@ -29,3 +31,22 @@ services:
 
 volumes:
   postgres_data:
+"""
+
+print("=== Docker Compose for Development ===")
+print()
+print("Save this content to 'docker-compose.yml':")
+print()
+print(DOCKER_COMPOSE)
+print()
+print("=== Key Features ===")
+print("1. FastAPI app with hot reload (--reload)")
+print("2. PostgreSQL 16 with health checks")
+print("3. Volume mount for live code changes")
+print("4. Database depends_on with health condition")
+print("5. Named volume for database persistence")
+print()
+print("=== Usage ===")
+print("docker compose up -d    # Start services")
+print("docker compose logs -f  # View logs")
+print("docker compose down     # Stop services")
