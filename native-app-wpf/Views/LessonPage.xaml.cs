@@ -21,8 +21,6 @@ public partial class LessonPage : UserControl
     private readonly ITutorService _tutorService;
     private readonly IModelDownloadService _downloadService;
     private readonly List<Controls.CodingChallenge> _challengeControls = new();
-    private TutorChat? _tutorChat;
-    private bool _isTutorOpen = false;
 
     public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation, ITutorService tutorService, IModelDownloadService downloadService)
     {
@@ -236,95 +234,6 @@ public partial class LessonPage : UserControl
                 CompleteButton.IsEnabled = false;
             }
         }
-    }
-
-    private void TutorToggleButton_Click(object sender, RoutedEventArgs e)
-    {
-        if (_isTutorOpen)
-        {
-            CloseTutorPanel();
-        }
-        else
-        {
-            OpenTutorPanel();
-        }
-    }
-
-    private void OpenTutorPanel()
-    {
-        if (_tutorChat == null)
-        {
-            _tutorChat = new TutorChat(_tutorService, _downloadService);        
-            _tutorChat.CloseRequested += (s, e) => CloseTutorPanel();
-            TutorContent.Content = _tutorChat;
-        }
-
-        // Update context with current lesson info
-        UpdateTutorContext();
-
-        AnimateTutorPanel(true);
-        _isTutorOpen = true;
-
-        TutorToggleButton.Foreground = (Brush)FindResource("AccentGreenBrush"); 
-    }
-
-    private void CloseTutorPanel()
-    {
-        AnimateTutorPanel(false);
-        _isTutorOpen = false;
-        TutorToggleButton.Foreground = (Brush)FindResource("AccentPurpleBrush");
-    }
-
-    private void AnimateTutorPanel(bool open)
-    {
-        if (TutorPanel.RenderTransform is not TranslateTransform translate)
-        {
-            translate = new TranslateTransform();
-            TutorPanel.RenderTransform = translate;
-        }
-
-        var duration = TimeSpan.FromMilliseconds(260);
-        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
-        var targetWidth = open ? 380 : 0;
-        var targetOpacity = open ? 1 : 0;
-        var targetX = open ? 0 : 24;
-
-        TutorPanel.BeginAnimation(WidthProperty, new DoubleAnimation
-        {
-            To = targetWidth,
-            Duration = duration,
-            EasingFunction = easing
-        });
-
-        TutorPanel.BeginAnimation(OpacityProperty, new DoubleAnimation
-        {
-            To = targetOpacity,
-            Duration = duration,
-            EasingFunction = easing
-        });
-
-        translate.BeginAnimation(TranslateTransform.XProperty, new DoubleAnimation
-        {
-            To = targetX,
-            Duration = duration,
-            EasingFunction = easing
-        });
-    }
-
-    private void UpdateTutorContext()
-    {
-        if (_tutorChat == null || _lesson == null) return;
-
-        var context = new TutorContext
-        {
-            CurrentLanguage = _course?.Language,
-            LessonTitle = _lesson.Title,
-            LessonContent = string.Join("\n", _lesson.ContentSections
-                .Where(s => s.Type == "THEORY")
-                .Select(s => s.Content))
-        };
-
-        _tutorChat.UpdateContext(context);
     }
 
 }
