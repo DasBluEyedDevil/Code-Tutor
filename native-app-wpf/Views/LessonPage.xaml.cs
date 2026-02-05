@@ -26,23 +26,34 @@ public partial class LessonPage : UserControl
 
     public LessonPage(Course course, Lesson lesson, ICourseService courseService, INavigationService navigation, ITutorService tutorService, IModelDownloadService downloadService)
     {
-        InitializeComponent();
-        _course = course;
-        _lesson = lesson;
-        _courseService = courseService;
-        _navigation = navigation;
-        _tutorService = tutorService;
-        _downloadService = downloadService;
+        try
+        {
+            InitializeComponent();
+            _course = course ?? throw new ArgumentNullException(nameof(course));
+            _lesson = lesson ?? throw new ArgumentNullException(nameof(lesson));
+            _courseService = courseService ?? throw new ArgumentNullException(nameof(courseService));
+            _navigation = navigation ?? throw new ArgumentNullException(nameof(navigation));
+            _tutorService = tutorService ?? throw new ArgumentNullException(nameof(tutorService));
+            _downloadService = downloadService ?? throw new ArgumentNullException(nameof(downloadService));
 
-        // Refresh sidebar and highlight active lesson
-        var mainWindow = Application.Current.MainWindow as MainWindow;
-        var sidebar = new CourseSidebar(course, courseService, navigation, tutorService, downloadService);
-        sidebar.SetCurrentLesson(lesson);
-        mainWindow?.SetSidebarContent(sidebar);
+            // Refresh sidebar and highlight active lesson
+            if (Application.Current.MainWindow is MainWindow mainWindow)
+            {
+                var sidebar = new CourseSidebar(course, courseService, navigation, tutorService, downloadService);
+                sidebar.SetCurrentLesson(lesson);
+                mainWindow.SetSidebarContent(sidebar);
+            }
 
-        LoadLesson();
-        SetupNavigation();
-        CheckCompletionStatus();
+            LoadLesson();
+            SetupNavigation();
+            CheckCompletionStatus();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error initializing lesson page: {ex.Message}\n\n{ex.StackTrace}", 
+                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            throw;
+        }
     }
 
     private async void CheckCompletionStatus()
