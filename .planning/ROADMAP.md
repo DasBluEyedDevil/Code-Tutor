@@ -161,14 +161,14 @@ Plans:
   3. Every coding challenge executes against Python 3.12+ and test validation passes
   4. A deployable capstone project exists (FastAPI or Django application with database)
   5. The former Module 14 (26 lessons covering FastAPI, Django, PostgreSQL, Auth) is split into 3-4 focused modules with clear progression
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 07-01: Python structural review (post-normalization module structure, progression analysis)
-- [ ] 07-02: Python content accuracy pass (Python 3.12+ verification, library freshness)
-- [ ] 07-03: Python Module 14 deep edit (content quality within restructured modules, bridge lessons)
-- [ ] 07-04: Python challenge validation (execute all solutions, fix broken challenges, verify capstone)
-- [ ] 07-05: Python voice and polish pass (consistent tone, difficulty progression, add Git/tools module if missing)
+- [ ] 07-01-PLAN.md -- Structural review and progression analysis (version targets, module structure, bridge lesson opportunities)
+- [ ] 07-02-PLAN.md -- Content accuracy pass (Python 3.12+ verification, Pydantic v2, SQLAlchemy 2.0, Django 5.x)
+- [ ] 07-03-PLAN.md -- Module 14-16 deep edit (bridge lessons, KEY_POINT/ANALOGY/WARNING enrichment)
+- [ ] 07-04-PLAN.md -- Challenge validation (execute all solutions, fix broken challenges, verify capstone)
+- [ ] 07-05-PLAN.md -- Voice polish and Git/tools integration (consistent tone, human checkpoint)
 
 ### Phase 8: AI Tutor Enhancement
 **Goal**: The local Phi-4 AI tutor uses Socratic method to guide students through concepts and debugging, with full lesson context awareness and progressive hint delivery
@@ -221,6 +221,6 @@ Note: Phases 2-7 (course audits) depend only on Phase 1 and can execute in any o
 | 4. C# Course Audit | 5/5 | Complete | 2026-02-03 |
 | 5. Flutter/Dart Course Audit | 7/7 | Complete | 2026-02-04 |
 | 6. Kotlin Course Audit | 10/10 | Complete | 2026-02-04 |
-| 7. Python Course Audit | 0/5 | Not started | - |
+| 7. Python Course Audit | 0/5 | Planned | - |
 | 8. AI Tutor Enhancement | 0/4 | Not started | - |
 | 9. UI and Engagement | 0/4 | Not started | - |
