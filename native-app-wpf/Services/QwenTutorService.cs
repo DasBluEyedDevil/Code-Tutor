@@ -63,12 +63,14 @@ public class QwenTutorService : ITutorService, IDisposable
                 // Qwen chat template
                 var dummyPrompt = "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\nHello<|im_end|>\n<|im_start|>assistant\n";
                 using var tokens = _tokenizer!.Encode(dummyPrompt);
+                
                 using var generatorParams = new GeneratorParams(_model!);
                 generatorParams.SetSearchOption("max_length", 10);
                 generatorParams.SetSearchOption("do_sample", false);
+                
                 using var generator = new Generator(_model!, generatorParams);
                 generator.AppendTokenSequences(tokens);
-
+                
                 for (int i = 0; i < 2 && !generator.IsDone(); i++)
                 {
                     generator.GenerateNextToken();

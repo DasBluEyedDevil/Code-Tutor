@@ -77,22 +77,24 @@ public class ModelDownloadService : IModelDownloadService
     private readonly HttpClient _httpClient;
     private const string HuggingFaceBaseUrl = "https://huggingface.co";
     
-    // Single model: Qwen2.5-Coder-7B
+    // Single model: Qwen2.5-Coder-7B (AMD ONNX export)
     private static readonly ModelInfo CurrentModel = new()
     {
         Id = "qwen2.5-coder-7b",
         Name = "Qwen2.5-Coder-7B",
         Description = "AI tutor model optimized for coding education. 2x faster than previous generation.",
-        SizeBytes = 4_500_000_000, // ~4.5GB
-        HuggingFaceRepo = "Qwen/Qwen2.5-Coder-7B-Instruct",
-        ModelPath = "onnx/gpu-int4-rtn-block-32",
+        SizeBytes = 8_650_000_000, // ~8.65GB total
+        HuggingFaceRepo = "amd/Qwen2.5-Coder-7B-Instruct-onnx-ryzenai-hybrid",
+        ModelPath = "", // Files are at root level
         RequiredFiles = new[]
         {
-            "model.onnx",
-            "model.onnx.data",
+            "model_jit.onnx",
+            "model_jit.onnx.data",
             "genai_config.json",
             "tokenizer.json",
-            "tokenizer_config.json"
+            "tokenizer_config.json",
+            "special_tokens_map.json",
+            "added_tokens.json"
         }
     };
 
