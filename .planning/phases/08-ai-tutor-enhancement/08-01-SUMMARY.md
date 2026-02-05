@@ -52,6 +52,24 @@ while (!generator.IsDone())
 
 **Fix**: Removed invalid style reference and added explicit TextBox styling properties
 
+### 7. 30-Second Freeze Fix
+**Root cause**: Tokenization and model inference were happening on the UI thread
+- `SendMessageAsync` was blocking the UI while encoding prompt and generating first token
+- This caused the app to freeze for ~30 seconds before showing any response
+
+**Fix**: Moved tokenization and generation to background thread using `Task.Run` and `Channel`
+- Model inference runs on background thread
+- Tokens are streamed back to UI via Channel
+- UI remains responsive during inference
+
+### 8. Duplicate Tutor Button Fix
+**Issue**: LessonPage had its own tutor button in addition to the global FAB
+- Two tutor buttons appeared on lesson screen (confusing)
+
+**Fix**: Removed tutor button and panel from LessonPage
+- Only the global FAB in MainWindow provides tutor access now
+- Consistent experience across all screens
+
 ## Files Modified
 
 | File | Changes |
@@ -65,6 +83,9 @@ while (!generator.IsDone())
 | `native-app-wpf/Controls/ChatMessageBubble.xaml.cs` | Use Text instead of TypewriterText |
 | `native-app-wpf/Views/CourseSidebar.xaml.cs` | Added null checks and error handling |
 | `native-app-wpf/Controls/CodingChallenge.xaml` | Fixed missing InputBox style |
+| `native-app-wpf/Services/Phi4TutorService.cs` | Background thread for model inference |
+| `native-app-wpf/Views/LessonPage.xaml` | Removed duplicate tutor button/panel |
+| `native-app-wpf/Views/LessonPage.xaml.cs` | Removed tutor-related code |
 
 ## Build Status
 
@@ -79,6 +100,8 @@ while (!generator.IsDone())
 - [x] AI tutor works with model inference
 - [x] Chat lag fixed (typewriter animation removed)
 - [x] "Start Learning" crash - FIXED (missing XAML style)
+- [x] 30-second freeze - FIXED (background thread inference)
+- [x] Duplicate tutor buttons - FIXED (removed LessonPage button)
 
 ## Commits
 
@@ -89,3 +112,4 @@ while (!generator.IsDone())
 5. `57d2cc13` - fix(08-01): remove typewriter animation causing lag in tutor chat
 6. `badeaf6d` - fix(08-01): add null checks to prevent CourseSidebar crash
 7. `c77e5ccb` - fix(08-01): fix missing InputBox style causing crash
+8. `f663ba46` - fix(08-01): fix 30s freeze and remove duplicate tutor button
