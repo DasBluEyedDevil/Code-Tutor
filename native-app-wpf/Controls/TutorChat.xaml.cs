@@ -314,6 +314,38 @@ public partial class TutorChat : UserControl
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
+    private async void UninstallButton_Click(object sender, RoutedEventArgs e)
+    {
+        var result = MessageBox.Show(
+            "This will uninstall the AI tutor model and free up disk space.\n\n" +
+            "You'll need to download it again to use the AI tutor.\n\n" +
+            "Are you sure you want to uninstall?",
+            "Uninstall AI Model",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            // Unload the model first
+            _tutorService.UnloadModel();
+
+            // Delete the model files
+            var success = await _downloadService.UninstallModelAsync();
+
+            if (success)
+            {
+                MessageBox.Show(
+                    "Model uninstalled successfully. Disk space freed.",
+                    "Uninstall Complete",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                // Show download prompt again
+                ShowDownloadPrompt();
+            }
+        }
+    }
+
     private void ScrollToBottom()
     {
         MessagesScrollViewer.ScrollToEnd();

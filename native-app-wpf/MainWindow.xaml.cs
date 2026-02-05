@@ -26,7 +26,7 @@ public partial class MainWindow : Window
         var services = new ServiceCollection();
         services.AddSingleton<ICourseService, CourseService>();
         services.AddSingleton<INavigationService, NavigationService>();
-        services.AddSingleton<ITutorService, Phi4TutorService>();
+        services.AddSingleton<ITutorService, QwenTutorService>();
         services.AddSingleton<IModelDownloadService, ModelDownloadService>();
         var provider = services.BuildServiceProvider();
 

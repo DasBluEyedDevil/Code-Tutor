@@ -68,6 +68,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <!-- Tutor icon -->
@@ -105,8 +106,19 @@
                     </StackPanel>
                 </StackPanel>
 
-                <!-- Close button -->
+                <!-- Uninstall button -->
                 <Button Grid.Column="2"
+                        x:Name="UninstallButton"
+                        Content="&#xE74D;"
+                        FontFamily="Segoe MDL2 Assets"
+                        FontSize="14"
+                        Style="{StaticResource IconButton}"
+                        Width="32" Height="32"
+                        ToolTip="Uninstall model to free disk space"
+                        Click="UninstallButton_Click"/>
+
+                <!-- Close button -->
+                <Button Grid.Column="3"
                         x:Name="CloseButton"
                         Content="&#xE8BB;"
                         FontFamily="Segoe MDL2 Assets"
@@ -137,7 +149,7 @@
                                FontWeight="SemiBold"
                                HorizontalAlignment="Center"
                                Foreground="{StaticResource TextPrimaryBrush}"/>
-                    <TextBlock Text="The Phi-4 model (~2.5GB) needs to be downloaded to enable the AI tutor."
+                    <TextBlock Text="The Qwen2.5-Coder-7B model (~4.5GB) needs to be downloaded to enable the AI tutor."
                                TextWrapping="Wrap"
                                TextAlignment="Center"
                                Margin="0,8,0,16"
