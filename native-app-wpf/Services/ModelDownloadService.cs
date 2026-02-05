@@ -77,14 +77,14 @@ public class ModelDownloadService : IModelDownloadService
     private readonly HttpClient _httpClient;
     private const string HuggingFaceBaseUrl = "https://huggingface.co";
     
-    // Single model: Qwen2.5-Coder-7B (onnx-community ONNX export)
+    // Single model: Phi-4 (proven working model with public access)
     private static readonly ModelInfo CurrentModel = new()
     {
-        Id = "qwen2.5-coder-7b",
-        Name = "Qwen2.5-Coder-7B",
-        Description = "AI tutor model optimized for coding education. 2x faster than previous generation.",
-        SizeBytes = 4_500_000_000, // ~4.5GB
-        HuggingFaceRepo = "onnx-community/Qwen2.5-Coder-7B-Instruct-ONNX",
+        Id = "phi4",
+        Name = "Phi-4",
+        Description = "Microsoft's AI tutor model for coding education.",
+        SizeBytes = 8_000_000_000, // ~8GB
+        HuggingFaceRepo = "microsoft/Phi-4-mini-instruct-onnx",
         ModelPath = "gpu/gpu-int4-rtn-block-32",
         RequiredFiles = new[]
         {
