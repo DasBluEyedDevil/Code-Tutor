@@ -45,10 +45,12 @@ while (!generator.IsDone())
 - **Fix**: Replaced TypewriterTextBlock with regular TextBlock for assistant messages
 - Messages now display immediately without animation lag
 
-### 6. Crash Prevention
-- Added null checks for ActiveIndicatorLayer and ActiveIndicator in CourseSidebar
-- Added try-catch around transform operations
-- Prevents potential crashes during sidebar initialization
+### 6. Crash Prevention - "Start Learning" Fix
+**Root cause**: `CodingChallenge.xaml` referenced a non-existent style `{StaticResource InputBox}`
+- This caused `XamlParseException` when loading lessons with challenges
+- The error happened at XAML parse time, before C# exception handling could catch it
+
+**Fix**: Removed invalid style reference and added explicit TextBox styling properties
 
 ## Files Modified
 
@@ -62,6 +64,7 @@ while (!generator.IsDone())
 | `native-app-wpf/Controls/ChatMessageBubble.xaml` | Removed TypewriterTextBlock |
 | `native-app-wpf/Controls/ChatMessageBubble.xaml.cs` | Use Text instead of TypewriterText |
 | `native-app-wpf/Views/CourseSidebar.xaml.cs` | Added null checks and error handling |
+| `native-app-wpf/Controls/CodingChallenge.xaml` | Fixed missing InputBox style |
 
 ## Build Status
 
@@ -75,7 +78,7 @@ while (!generator.IsDone())
 - [x] Global AI tutor button added
 - [x] AI tutor works with model inference
 - [x] Chat lag fixed (typewriter animation removed)
-- [ ] "Start Learning" crash - potential fix applied, needs testing
+- [x] "Start Learning" crash - FIXED (missing XAML style)
 
 ## Commits
 
@@ -85,3 +88,4 @@ while (!generator.IsDone())
 4. `22cb2f03` - fix(08-01): add error handling to LessonPage constructor
 5. `57d2cc13` - fix(08-01): remove typewriter animation causing lag in tutor chat
 6. `badeaf6d` - fix(08-01): add null checks to prevent CourseSidebar crash
+7. `c77e5ccb` - fix(08-01): fix missing InputBox style causing crash
