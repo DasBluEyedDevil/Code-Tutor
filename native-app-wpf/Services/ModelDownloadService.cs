@@ -11,11 +11,10 @@ public class ModelInfo
     public long SizeBytes { get; set; }
     public string SizeFormatted => FormatBytes(SizeBytes);
     public string HuggingFaceRepo { get; set; } = string.Empty;
-    public string ModelPath { get; set; } = string.Empty;
-    public string[] RequiredFiles { get; set; } = Array.Empty<string>();
+    public string ModelFile { get; set; } = string.Empty;  // GGUF filename
     public string LocalPath => Path.Combine(
         AppDomain.CurrentDomain.BaseDirectory,
-        "models", Id);
+        "models", Id, "model.gguf");
 
     private static string FormatBytes(long bytes)
     {
@@ -34,8 +33,6 @@ public class ModelInfo
 public class ModelDownloadProgress
 {
     public string CurrentFile { get; set; } = string.Empty;
-    public int FileIndex { get; set; }
-    public int TotalFiles { get; set; }
     public long BytesDownloaded { get; set; }
     public long TotalBytes { get; set; }
     public double OverallProgress { get; set; }
@@ -45,30 +42,11 @@ public interface IModelDownloadService
 {
     event EventHandler<ModelDownloadProgress>? ProgressChanged;
     event EventHandler<string>? StatusChanged;
-    
-    /// <summary>
-    /// Get current model info (Qwen2.5-Coder-7B)
-    /// </summary>
+
     ModelInfo GetCurrentModelInfo();
-    
-    /// <summary>
-    /// Download and install the AI tutor model
-    /// </summary>
     Task<bool> DownloadModelAsync(CancellationToken cancellationToken = default);
-    
-    /// <summary>
-    /// Uninstall and delete the AI tutor model to free disk space
-    /// </summary>
     Task<bool> UninstallModelAsync();
-    
-    /// <summary>
-    /// Check if the model is installed
-    /// </summary>
     Task<bool> IsModelInstalledAsync();
-    
-    /// <summary>
-    /// Get the disk space used by the model
-    /// </summary>
     Task<long> GetModelSizeAsync();
 }
 
@@ -76,26 +54,16 @@ public class ModelDownloadService : IModelDownloadService
 {
     private readonly HttpClient _httpClient;
     private const string HuggingFaceBaseUrl = "https://huggingface.co";
-    
-    // Single model: Phi-4 (proven working model with public access)
+
+    // Qwen2.5-Coder-7B GGUF model from bartowski (reliable GGUF converter)
     private static readonly ModelInfo CurrentModel = new()
     {
-        Id = "phi4",
-        Name = "Phi-4",
-        Description = "Microsoft's AI tutor model for coding education.",
-        SizeBytes = 8_000_000_000, // ~8GB
-        HuggingFaceRepo = "microsoft/Phi-4-mini-instruct-onnx",
-        ModelPath = "gpu/gpu-int4-rtn-block-32",
-        RequiredFiles = new[]
-        {
-            "model.onnx",
-            "model.onnx.data",
-            "genai_config.json",
-            "tokenizer.json",
-            "tokenizer_config.json",
-            "special_tokens_map.json",
-            "added_tokens.json"
-        }
+        Id = "qwen2.5-coder-7b",
+        Name = "Qwen2.5-Coder-7B",
+        Description = "AI tutor model optimized for coding. 2x faster than Phi-4 with excellent code understanding.",
+        SizeBytes = 4_500_000_000, // ~4.5GB for Q4_K_M quantized
+        HuggingFaceRepo = "bartowski/Qwen2.5-Coder-7B-Instruct-GGUF",
+        ModelFile = "Qwen2.5-Coder-7B-Instruct-Q4_K_M.gguf"  // Good balance of quality/size
     };
 
     public event EventHandler<ModelDownloadProgress>? ProgressChanged;
@@ -111,75 +79,62 @@ public class ModelDownloadService : IModelDownloadService
 
     public async Task<bool> IsModelInstalledAsync()
     {
-        var modelDir = CurrentModel.LocalPath;
-        if (!Directory.Exists(modelDir))
-            return false;
-
-        foreach (var file in CurrentModel.RequiredFiles)
-        {
-            var filePath = Path.Combine(modelDir, file);
-            if (!File.Exists(filePath))
-                return false;
-        }
-
-        return true;
+        return File.Exists(CurrentModel.LocalPath);
     }
 
     public async Task<long> GetModelSizeAsync()
     {
-        var modelDir = CurrentModel.LocalPath;
-        if (!Directory.Exists(modelDir))
-            return 0;
-
-        var dirInfo = new DirectoryInfo(modelDir);
-        return dirInfo.GetFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
+        if (File.Exists(CurrentModel.LocalPath))
+        {
+            var fileInfo = new FileInfo(CurrentModel.LocalPath);
+            return fileInfo.Length;
+        }
+        return 0;
     }
 
     public async Task<bool> DownloadModelAsync(CancellationToken cancellationToken = default)
     {
         try
         {
-            var targetDirectory = CurrentModel.LocalPath;
+            var targetDirectory = Path.GetDirectoryName(CurrentModel.LocalPath)!;
             Directory.CreateDirectory(targetDirectory);
+
+            var targetPath = CurrentModel.LocalPath;
+            var fileName = CurrentModel.ModelFile;
 
             StatusChanged?.Invoke(this, $"Downloading {CurrentModel.Name}...");
 
-            var files = CurrentModel.RequiredFiles;
-            long totalSize = CurrentModel.SizeBytes;
-            long downloadedTotal = 0;
+            // Download from HuggingFace
+            var url = $"{HuggingFaceBaseUrl}/{CurrentModel.HuggingFaceRepo}/resolve/main/{fileName}";
 
-            for (int i = 0; i < files.Length; i++)
+            using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            response.EnsureSuccessStatusCode();
+
+            var totalBytes = response.Content.Headers.ContentLength ?? 0;
+
+            await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
+            await using var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
+
+            var buffer = new byte[81920]; // 80KB buffer
+            long totalBytesRead = 0;
+            int bytesRead;
+
+            while ((bytesRead = await contentStream.ReadAsync(buffer, cancellationToken)) > 0)
             {
-                var file = files[i];
-                var targetPath = Path.Combine(targetDirectory, file);
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
+                totalBytesRead += bytesRead;
 
-                StatusChanged?.Invoke(this, $"Downloading {file}...");
-
-                await DownloadFileAsync(
-                    file,
-                    targetPath,
-                    (bytesDownloaded, fileTotal) =>
-                    {
-                        var progress = new ModelDownloadProgress
-                        {
-                            CurrentFile = file,
-                            FileIndex = i + 1,
-                            TotalFiles = files.Length,
-                            BytesDownloaded = downloadedTotal + bytesDownloaded,
-                            TotalBytes = totalSize,
-                            OverallProgress = totalSize > 0
-                                ? (double)(downloadedTotal + bytesDownloaded) / totalSize * 100
-                                : 0
-                        };
-                        ProgressChanged?.Invoke(this, progress);
-                    },
-                    cancellationToken);
-
-                var fileInfo = new FileInfo(targetPath);
-                downloadedTotal += fileInfo.Length;
+                var progress = new ModelDownloadProgress
+                {
+                    CurrentFile = fileName,
+                    BytesDownloaded = totalBytesRead,
+                    TotalBytes = totalBytes,
+                    OverallProgress = totalBytes > 0 ? (double)totalBytesRead / totalBytes * 100 : 0
+                };
+                ProgressChanged?.Invoke(this, progress);
             }
 
-            StatusChanged?.Invoke(this, "Download complete!");
+            StatusChanged?.Invoke(this, $"{CurrentModel.Name} download complete!");
             return true;
         }
         catch (OperationCanceledException)
@@ -198,8 +153,7 @@ public class ModelDownloadService : IModelDownloadService
     {
         try
         {
-            var modelDir = CurrentModel.LocalPath;
-            if (!Directory.Exists(modelDir))
+            if (!File.Exists(CurrentModel.LocalPath))
             {
                 StatusChanged?.Invoke(this, "Model not found.");
                 return true;
@@ -207,7 +161,14 @@ public class ModelDownloadService : IModelDownloadService
 
             StatusChanged?.Invoke(this, $"Uninstalling {CurrentModel.Name}...");
 
-            Directory.Delete(modelDir, true);
+            File.Delete(CurrentModel.LocalPath);
+
+            // Try to remove empty directory
+            var dir = Path.GetDirectoryName(CurrentModel.LocalPath);
+            if (dir != null && Directory.Exists(dir) && !Directory.EnumerateFileSystemEntries(dir).Any())
+            {
+                Directory.Delete(dir);
+            }
 
             StatusChanged?.Invoke(this, "Model uninstalled. Disk space freed.");
             return true;
@@ -216,34 +177,6 @@ public class ModelDownloadService : IModelDownloadService
         {
             StatusChanged?.Invoke(this, $"Uninstall failed: {ex.Message}");
             return false;
-        }
-    }
-
-    private async Task DownloadFileAsync(
-        string fileName,
-        string targetPath,
-        Action<long, long> progressCallback,
-        CancellationToken cancellationToken)
-    {
-        var url = $"{HuggingFaceBaseUrl}/{CurrentModel.HuggingFaceRepo}/resolve/main/{CurrentModel.ModelPath}/{fileName}";
-
-        using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        var totalBytes = response.Content.Headers.ContentLength ?? 0;
-
-        await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
-        await using var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
-
-        var buffer = new byte[81920];
-        long totalBytesRead = 0;
-        int bytesRead;
-
-        while ((bytesRead = await contentStream.ReadAsync(buffer, cancellationToken)) > 0)
-        {
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
-            totalBytesRead += bytesRead;
-            progressCallback(totalBytesRead, totalBytes);
         }
     }
 }
