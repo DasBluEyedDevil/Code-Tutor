@@ -47,4 +47,9 @@ public interface ITutorService
     /// Unload the model to free memory
     /// </summary>
     void UnloadModel();
+
+    /// <summary>
+    /// Warm up the model with a dummy inference to reduce first-response latency
+    /// </summary>
+    Task WarmUpAsync(CancellationToken cancellationToken = default);
 }

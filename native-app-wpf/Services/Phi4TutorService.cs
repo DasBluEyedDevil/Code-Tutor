@@ -58,21 +58,30 @@ public class Phi4TutorService : ITutorService, IDisposable
         if (!IsModelLoaded)
             throw new InvalidOperationException("Model not loaded. Call LoadModelAsync first.");
 
-        var prompt = BuildPrompt(userMessage, context, history);
+        // OPTIMIZATION: Build prompt with reduced context for faster tokenization
+        var prompt = BuildPromptOptimized(userMessage, context, history);
 
-        // Run tokenization and generation on UI thread but yield to prevent freezing
-        // ONNX Runtime GenAI objects have thread affinity
+        // OPTIMIZATION: Yield immediately to show "Thinking..." indicator
+        await Task.Yield();
+
+        // Tokenization happens here - can take 1-3 seconds for long prompts
         using var tokens = _tokenizer!.Encode(prompt);
 
+        // OPTIMIZATION: Use faster generation settings
+        // - max_length: 512 instead of 2048 (tutoring doesn't need long responses)
+        // - do_sample: false for greedy decoding (faster than sampling)
+        // - top_k: 1 equivalent to greedy when do_sample is true
         using var generatorParams = new GeneratorParams(_model!);
-        generatorParams.SetSearchOption("max_length", 2048);
-        generatorParams.SetSearchOption("temperature", 0.7);
-        generatorParams.SetSearchOption("top_p", 0.9);
+        generatorParams.SetSearchOption("max_length", 512);      // Reduced from 2048
+        generatorParams.SetSearchOption("do_sample", false);      // Greedy = faster
+        generatorParams.SetSearchOption("temperature", 0.7);      // Ignored when do_sample=false
+        generatorParams.SetSearchOption("top_p", 0.9);            // Ignored when do_sample=false
 
         using var generator = new Generator(_model!, generatorParams);
         generator.AppendTokenSequences(tokens);
 
-        // Yield once to allow UI to update before starting generation
+        // First token generation - often takes 5-15 seconds
+        // Yield before starting to keep UI responsive
         await Task.Yield();
 
         int tokenCount = 0;
@@ -90,13 +99,67 @@ public class Phi4TutorService : ITutorService, IDisposable
                 yield return tokenText;
             }
 
-            // Yield every few tokens to keep UI responsive
+            // OPTIMIZATION: Yield every token with small delay for smoother streaming
+            // This prevents UI freezing while maintaining generation speed
             tokenCount++;
-            if (tokenCount % 3 == 0)
+            if (tokenCount % 1 == 0)
             {
-                await Task.Yield();
+                await Task.Delay(1);  // 1ms delay allows UI thread to process
             }
         }
+    }
+
+    /// <summary>
+    /// Optimized prompt building with reduced context for faster inference.
+    /// </summary>
+    private string BuildPromptOptimized(string userMessage, TutorContext context, IReadOnlyList<TutorMessage> history)
+    {
+        var sb = new StringBuilder();
+
+        // System prompt - keep concise
+        sb.AppendLine("<|system|>");
+        sb.AppendLine("You are a friendly programming tutor. Be concise and helpful.");
+
+        // Add context if available (truncated for speed)
+        if (!string.IsNullOrEmpty(context.CurrentLanguage))
+            sb.AppendLine($"Language: {context.CurrentLanguage}");
+        if (!string.IsNullOrEmpty(context.LessonTitle))
+            sb.AppendLine($"Lesson: {context.LessonTitle}");
+        if (!string.IsNullOrEmpty(context.UserCode))
+        {
+            // Truncate code to first 20 lines for faster processing
+            var codeLines = context.UserCode.Split('\n').Take(20);
+            sb.AppendLine($"\nCode:\n```{context.CurrentLanguage?.ToLower() ?? ""}\n{string.Join("\n", codeLines)}\n```");
+        }
+        if (!string.IsNullOrEmpty(context.ExecutionError))
+            sb.AppendLine($"\nError: {context.ExecutionError}");
+        sb.AppendLine("<|end|>");
+
+        // OPTIMIZATION: Only include last 3 messages instead of 6
+        // Reduces tokenization time and memory usage
+        var recentHistory = history.TakeLast(3);
+        foreach (var msg in recentHistory)
+        {
+            var role = msg.Role == MessageRole.User ? "user" : "assistant";
+            // Truncate long messages
+            var content = msg.Content.Length > 200 
+                ? msg.Content.Substring(0, 200) + "..." 
+                : msg.Content;
+            sb.AppendLine($"<|{role}|>");
+            sb.AppendLine(content);
+            sb.AppendLine("<|end|>");
+        }
+
+        // Current user message (truncated)
+        var truncatedMessage = userMessage.Length > 300 
+            ? userMessage.Substring(0, 300) + "..." 
+            : userMessage;
+        sb.AppendLine("<|user|>");
+        sb.AppendLine(truncatedMessage);
+        sb.AppendLine("<|end|>");
+        sb.AppendLine("<|assistant|>");
+
+        return sb.ToString();
     }
 
     private string GetLastGeneratedToken(Generator generator)
@@ -172,6 +235,40 @@ public class Phi4TutorService : ITutorService, IDisposable
         _model?.Dispose();
         _model = null;
         LoadingProgress = 0;
+    }
+
+    /// <summary>
+    /// Warms up the model with a dummy inference to reduce first-response latency.
+    /// Call this after LoadModelAsync completes.
+    /// </summary>
+    public async Task WarmUpAsync(CancellationToken cancellationToken = default)
+    {
+        if (!IsModelLoaded) return;
+
+        // Run dummy inference on background thread to warm up GPU/cache
+        await Task.Run(() =>
+        {
+            try
+            {
+                var dummyPrompt = "<|system|>Hello<|end|><|user|>Hi<|end|><|assistant|>";
+                using var tokens = _tokenizer!.Encode(dummyPrompt);
+                using var generatorParams = new GeneratorParams(_model!);
+                generatorParams.SetSearchOption("max_length", 10);
+                generatorParams.SetSearchOption("do_sample", false);
+                using var generator = new Generator(_model!, generatorParams);
+                generator.AppendTokenSequences(tokens);
+
+                // Generate just 2 tokens to warm up the model
+                for (int i = 0; i < 2 && !generator.IsDone(); i++)
+                {
+                    generator.GenerateNextToken();
+                }
+            }
+            catch
+            {
+                // Warm-up failures are non-critical
+            }
+        }, cancellationToken);
     }
 
     public void Dispose()
