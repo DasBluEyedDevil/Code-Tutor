@@ -51,7 +51,7 @@ public partial class TutorChat : UserControl
         }
 
         // Check if model exists
-        var modelExists = await _downloadService.IsModelDownloadedAsync(_modelPath);
+        var modelExists = await _downloadService.IsModelInstalledAsync();
 
         if (modelExists)
         {
@@ -115,7 +115,7 @@ public partial class TutorChat : UserControl
 
         try
         {
-            var success = await _downloadService.DownloadModelAsync(_modelPath, _downloadCts.Token);
+            var success = await _downloadService.DownloadModelAsync(_downloadCts.Token);
 
             if (success)
             {
