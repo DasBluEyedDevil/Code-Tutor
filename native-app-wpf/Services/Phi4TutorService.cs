@@ -60,50 +60,42 @@ public class Phi4TutorService : ITutorService, IDisposable
 
         var prompt = BuildPrompt(userMessage, context, history);
 
-        // Offload tokenization and generation setup to background thread
-        var channel = System.Threading.Channels.Channel.CreateUnbounded<string>();
-        
-        _ = Task.Run(() =>
+        // Run tokenization and generation on UI thread but yield to prevent freezing
+        // ONNX Runtime GenAI objects have thread affinity
+        using var tokens = _tokenizer!.Encode(prompt);
+
+        using var generatorParams = new GeneratorParams(_model!);
+        generatorParams.SetSearchOption("max_length", 2048);
+        generatorParams.SetSearchOption("temperature", 0.7);
+        generatorParams.SetSearchOption("top_p", 0.9);
+
+        using var generator = new Generator(_model!, generatorParams);
+        generator.AppendTokenSequences(tokens);
+
+        // Yield once to allow UI to update before starting generation
+        await Task.Yield();
+
+        int tokenCount = 0;
+        while (!generator.IsDone())
         {
-            try
+            cancellationToken.ThrowIfCancellationRequested();
+
+            generator.GenerateNextToken();
+
+            var tokenText = GetLastGeneratedToken(generator);
+
+            // Skip special tokens
+            if (!tokenText.Contains("<|") && !tokenText.Contains("|>"))
             {
-                using var tokens = _tokenizer!.Encode(prompt);
-
-                using var generatorParams = new GeneratorParams(_model!);
-                generatorParams.SetSearchOption("max_length", 2048);
-                generatorParams.SetSearchOption("temperature", 0.7);
-                generatorParams.SetSearchOption("top_p", 0.9);
-
-                using var generator = new Generator(_model!, generatorParams);
-                generator.AppendTokenSequences(tokens);
-
-                while (!generator.IsDone())
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-
-                    generator.GenerateNextToken();
-
-                    var tokenText = GetLastGeneratedToken(generator);
-
-                    // Skip special tokens
-                    if (!tokenText.Contains("<|") && !tokenText.Contains("|>"))
-                    {
-                        channel.Writer.TryWrite(tokenText);
-                    }
-                }
-
-                channel.Writer.Complete();
+                yield return tokenText;
             }
-            catch (Exception ex)
+
+            // Yield every few tokens to keep UI responsive
+            tokenCount++;
+            if (tokenCount % 3 == 0)
             {
-                channel.Writer.Complete(ex);
+                await Task.Yield();
             }
-        }, cancellationToken);
-
-        // Yield tokens as they become available
-        await foreach (var token in channel.Reader.ReadAllAsync(cancellationToken))
-        {
-            yield return token;
         }
     }
 
