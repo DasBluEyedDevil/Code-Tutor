@@ -180,13 +180,13 @@ Plans:
   3. When a student is stuck on a challenge, the tutor provides progressive hints (nudge, then guidance, then solution) rather than immediately revealing the answer
   4. When a student's code fails, the tutor provides debugging suggestions tied to the specific lesson concepts being practiced
   5. ONNX Runtime GenAI is upgraded from 0.5.2 to current stable, with Phi-4 model running correctly on the new runtime
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 08-01: ONNX Runtime GenAI upgrade (0.5.2 to current stable, verify Phi-4 inference works)
-- [ ] 08-02: Socratic system prompt and lesson context injection (rewrite prompts, pass full lesson content)
-- [ ] 08-03: Progressive hints and debug assistance (3-level hint system, failure-triggered help)
-- [ ] 08-04: Tutor validation (test tutor against sample challenges across all 6 courses)
+- [ ] 08-01-PLAN.md -- ONNX Runtime GenAI upgrade (0.5.2 to 0.11.4, API migration, verify Phi-4 inference)
+- [ ] 08-02-PLAN.md -- Socratic system prompt and lesson context injection (structured TutorContext, full lesson content)
+- [ ] 08-03-PLAN.md -- Progressive hints and debug assistance (HintLevel enum, 3-level hint UI, debug mode)
+- [ ] 08-04-PLAN.md -- Tutor validation across all 6 courses (test scenarios, validation report, human approval)
 
 ### Phase 9: UI and Engagement
 **Goal**: The application provides an interactive, visually polished learning experience with working progress tracking, inline code execution for examples, and dedicated renderers for all content types
