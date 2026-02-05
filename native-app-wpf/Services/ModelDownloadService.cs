@@ -1,5 +1,6 @@
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 
 namespace CodeTutor.Wpf.Services;
 
@@ -12,9 +13,17 @@ public class ModelInfo
     public string SizeFormatted => FormatBytes(SizeBytes);
     public string HuggingFaceRepo { get; set; } = string.Empty;
     public string ModelFile { get; set; } = string.Empty;  // GGUF filename
-    public string LocalPath => Path.Combine(
-        AppDomain.CurrentDomain.BaseDirectory,
-        "models", Id, "model.gguf");
+    
+    // Use same path resolution as LlamaTutorService
+    public string LocalPath
+    {
+        get
+        {
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var assemblyDirectory = Path.GetDirectoryName(assemblyLocation) ?? AppDomain.CurrentDomain.BaseDirectory;
+            return Path.Combine(assemblyDirectory, "models", Id, "model.gguf");
+        }
+    }
 
     private static string FormatBytes(long bytes)
     {
@@ -103,14 +112,26 @@ public class ModelDownloadService : IModelDownloadService
             var fileName = CurrentModel.ModelFile;
 
             StatusChanged?.Invoke(this, $"Downloading {CurrentModel.Name}...");
+            StatusChanged?.Invoke(this, $"Target: {targetPath}");
 
             // Download from HuggingFace
             var url = $"{HuggingFaceBaseUrl}/{CurrentModel.HuggingFaceRepo}/resolve/main/{fileName}";
+            
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] Downloading from: {url}");
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] Saving to: {targetPath}");
 
             using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            response.EnsureSuccessStatusCode();
+            
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = $"Download failed: HTTP {(int)response.StatusCode} - {response.ReasonPhrase}";
+                System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] {errorMsg}");
+                StatusChanged?.Invoke(this, errorMsg);
+                return false;
+            }
 
             var totalBytes = response.Content.Headers.ContentLength ?? 0;
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] Content length: {totalBytes} bytes");
 
             await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken);
             await using var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
@@ -135,6 +156,7 @@ public class ModelDownloadService : IModelDownloadService
             }
 
             StatusChanged?.Invoke(this, $"{CurrentModel.Name} download complete!");
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] Download complete: {totalBytesRead} bytes");
             return true;
         }
         catch (OperationCanceledException)
@@ -142,9 +164,18 @@ public class ModelDownloadService : IModelDownloadService
             StatusChanged?.Invoke(this, "Download cancelled.");
             return false;
         }
+        catch (HttpRequestException ex)
+        {
+            var errorMsg = $"Network error: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] {errorMsg}");
+            StatusChanged?.Invoke(this, errorMsg);
+            return false;
+        }
         catch (Exception ex)
         {
-            StatusChanged?.Invoke(this, $"Download failed: {ex.Message}");
+            var errorMsg = $"Download failed: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"[ModelDownloadService] {errorMsg}");
+            StatusChanged?.Invoke(this, errorMsg);
             return false;
         }
     }
