@@ -39,6 +39,17 @@ while (!generator.IsDone())
 - Added null checks for all constructor parameters
 - Shows MessageBox with exception details if initialization fails
 
+### 5. Performance Fix - Lag in Chat
+- **Root cause**: TypewriterTextBlock animation was causing lag during streaming
+- Each token update triggered typewriter animation with 18ms character delay
+- **Fix**: Replaced TypewriterTextBlock with regular TextBlock for assistant messages
+- Messages now display immediately without animation lag
+
+### 6. Crash Prevention
+- Added null checks for ActiveIndicatorLayer and ActiveIndicator in CourseSidebar
+- Added try-catch around transform operations
+- Prevents potential crashes during sidebar initialization
+
 ## Files Modified
 
 | File | Changes |
@@ -48,19 +59,13 @@ while (!generator.IsDone())
 | `native-app-wpf/MainWindow.xaml` | Added global tutor button and panel |
 | `native-app-wpf/MainWindow.xaml.cs` | Added tutor panel logic |
 | `native-app-wpf/Views/LessonPage.xaml.cs` | Added error handling |
+| `native-app-wpf/Controls/ChatMessageBubble.xaml` | Removed TypewriterTextBlock |
+| `native-app-wpf/Controls/ChatMessageBubble.xaml.cs` | Use Text instead of TypewriterText |
+| `native-app-wpf/Views/CourseSidebar.xaml.cs` | Added null checks and error handling |
 
 ## Build Status
 
 ✅ Build succeeds with 0 errors, 0 warnings
-
-## Known Issues
-
-⚠️ **Runtime crash when clicking "Start Learning"** - This appears to be a separate issue from the ONNX upgrade. The crash happens during LessonPage initialization, before any ONNX Runtime code is invoked.
-
-**Next Steps:**
-1. Run with debug configuration to see detailed exception
-2. Check if crash is related to XAML resources or DI
-3. Verify lesson data loading
 
 ## Verification
 
@@ -68,7 +73,9 @@ while (!generator.IsDone())
 - [x] API pattern corrected for 0.11.4
 - [x] Build succeeds
 - [x] Global AI tutor button added
-- [ ] Runtime verification pending (blocked by "Start Learning" crash)
+- [x] AI tutor works with model inference
+- [x] Chat lag fixed (typewriter animation removed)
+- [ ] "Start Learning" crash - potential fix applied, needs testing
 
 ## Commits
 
@@ -76,3 +83,5 @@ while (!generator.IsDone())
 2. `8973d137` - fix(08-01): refactor Phi4TutorService for ONNX Runtime 0.11.x API
 3. `65ae9f28` - feat(08-01): add global AI tutor button to MainWindow
 4. `22cb2f03` - fix(08-01): add error handling to LessonPage constructor
+5. `57d2cc13` - fix(08-01): remove typewriter animation causing lag in tutor chat
+6. `badeaf6d` - fix(08-01): add null checks to prevent CourseSidebar crash
