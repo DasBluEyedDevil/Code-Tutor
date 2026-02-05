@@ -16,7 +16,7 @@ if errorlevel 1 (
 )
 
 echo Step 1: Installing required packages...
-python -m pip install -q onnxruntime-genai transformers torch onnx optimum[exporters] huggingface-hub
+python -m pip install -q transformers torch onnx optimum[exporters]
 
 echo.
 echo Step 2: Starting conversion...

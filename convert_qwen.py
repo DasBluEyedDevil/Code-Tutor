@@ -39,6 +39,7 @@ try:
     print()
     print("Next steps:")
     print("1. Upload to HuggingFace:")
+    print("   python -m pip install huggingface-hub")
     print("   huggingface-cli login")
     print(
         "   huggingface-cli upload your-username/Qwen2.5-Coder-7B-Instruct-ONNX ./qwen2.5-coder-7b-onnx ."
