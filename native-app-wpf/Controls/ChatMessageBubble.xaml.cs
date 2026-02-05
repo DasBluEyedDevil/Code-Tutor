@@ -56,7 +56,7 @@ public partial class ChatMessageBubble : UserControl
             MessageBorder.CornerRadius = new CornerRadius(12, 12, 12, 4);
             MessageBorder.HorizontalAlignment = HorizontalAlignment.Left;
             MessageBorder.Margin = new Thickness(8, 4, 40, 4);
-            AssistantMessageText.TypewriterText = message.Content;
+            AssistantMessageText.Text = message.Content;
             AssistantMessageText.Visibility = Visibility.Visible;
             UserMessageText.Visibility = Visibility.Collapsed;
         }
