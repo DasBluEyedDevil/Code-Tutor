@@ -151,40 +151,47 @@ public partial class CourseSidebar : UserControl
 
     private void MoveActiveIndicator(Button button)
     {
-        if (!button.IsLoaded)
+        if (!button.IsLoaded || ActiveIndicatorLayer == null || ActiveIndicator == null)
             return;
 
-        var transform = button.TransformToVisual(ActiveIndicatorLayer);
-        var point = transform.Transform(new Point(0, 0));
-        var targetHeight = Math.Max(16, button.ActualHeight - 4);
-        var targetTop = point.Y + (button.ActualHeight - targetHeight) / 2;
-
-        ActiveIndicator.Opacity = 1;
-        Canvas.SetLeft(ActiveIndicator, 0);
-
-        if (double.IsNaN(Canvas.GetTop(ActiveIndicator)))
+        try
         {
-            Canvas.SetTop(ActiveIndicator, targetTop);
-            ActiveIndicator.Height = targetHeight;
-            return;
+            var transform = button.TransformToVisual(ActiveIndicatorLayer);
+            var point = transform.Transform(new Point(0, 0));
+            var targetHeight = Math.Max(16, button.ActualHeight - 4);
+            var targetTop = point.Y + (button.ActualHeight - targetHeight) / 2;
+
+            ActiveIndicator.Opacity = 1;
+            Canvas.SetLeft(ActiveIndicator, 0);
+
+            if (double.IsNaN(Canvas.GetTop(ActiveIndicator)))
+            {
+                Canvas.SetTop(ActiveIndicator, targetTop);
+                ActiveIndicator.Height = targetHeight;
+                return;
+            }
+
+            var duration = TimeSpan.FromMilliseconds(220);
+            var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
+
+            ActiveIndicator.BeginAnimation(Canvas.TopProperty, new DoubleAnimation
+            {
+                To = targetTop,
+                Duration = duration,
+                EasingFunction = easing
+            });
+
+            ActiveIndicator.BeginAnimation(FrameworkElement.HeightProperty, new DoubleAnimation
+            {
+                To = targetHeight,
+                Duration = duration,
+                EasingFunction = easing
+            });
         }
-
-        var duration = TimeSpan.FromMilliseconds(220);
-        var easing = new CubicEase { EasingMode = EasingMode.EaseOut };
-
-        ActiveIndicator.BeginAnimation(Canvas.TopProperty, new DoubleAnimation
+        catch
         {
-            To = targetTop,
-            Duration = duration,
-            EasingFunction = easing
-        });
-
-        ActiveIndicator.BeginAnimation(FrameworkElement.HeightProperty, new DoubleAnimation
-        {
-            To = targetHeight,
-            Duration = duration,
-            EasingFunction = easing
-        });
+            // Ignore transform errors during initialization
+        }
     }
 
     private void AnimateExpand(ItemsControl lessonsPanel)
