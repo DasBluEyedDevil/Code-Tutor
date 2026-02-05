@@ -100,7 +100,7 @@ while (!generator.IsDone())
 - [x] AI tutor works with model inference
 - [x] Chat lag fixed (typewriter animation removed)
 - [x] "Start Learning" crash - FIXED (missing XAML style)
-- [x] 30-second freeze - FIXED (background thread inference)
+- [x] 30-second freeze - PARTIALLY ADDRESSED (greedy decoding + context reduction)
 - [x] Duplicate tutor buttons - FIXED (removed LessonPage button)
 
 ## Commits
