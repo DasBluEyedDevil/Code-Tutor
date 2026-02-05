@@ -15,8 +15,8 @@ public class LlamaTutorService : ITutorService, IDisposable
 {
     private LLamaWeights? _model;
     private LLamaContext? _context;
-    private ChatSession? _session;
     private readonly string _modelPath;
+    private readonly string _systemPrompt;
     private bool _disposed;
 
     public bool IsModelLoaded => _model != null && _context != null;
@@ -29,6 +29,10 @@ public class LlamaTutorService : ITutorService, IDisposable
         _modelPath = Path.Combine(
             AppDomain.CurrentDomain.BaseDirectory,
             "models", "qwen2.5-coder-7b", "model.gguf");
+        
+        _systemPrompt = "You are an expert coding tutor specializing in helping beginners learn programming. " +
+            "Explain concepts clearly with code examples. Help debug errors step by step. " +
+            "Be concise but thorough.";
     }
 
     public async Task LoadModelAsync(CancellationToken cancellationToken = default)
@@ -60,30 +64,24 @@ public class LlamaTutorService : ITutorService, IDisposable
             UpdateProgress(70);
             _context = _model.CreateContext(parameters);
 
-            // Create chat session with system prompt
-            var executor = new InteractiveExecutor(_context);
-            _session = new ChatSession(executor);
-            
-            // Add system message using AddSystemMessage
-            _session.AddSystemMessage(
-                "You are an expert coding tutor specializing in helping beginners learn programming. " +
-                "Explain concepts clearly with code examples. Help debug errors step by step. " +
-                "Be concise but thorough.");
-
             UpdateProgress(100);
         }, cancellationToken);
     }
 
     public async Task WarmUpAsync(CancellationToken cancellationToken = default)
     {
-        if (!IsModelLoaded || _session == null) return;
+        if (!IsModelLoaded || _context == null) return;
 
         // Simple warm-up inference
         await Task.Run(() =>
         {
             try
             {
-                var warmupResult = _session.ChatAsync(
+                var executor = new InteractiveExecutor(_context);
+                var session = new ChatSession(executor);
+                session.AddSystemMessage(_systemPrompt);
+                
+                var warmupResult = session.ChatAsync(
                     new ChatHistory.Message(AuthorRole.User, "Hello"),
                     inferenceParams: new InferenceParams { MaxTokens = 1 });
                 
@@ -105,7 +103,7 @@ public class LlamaTutorService : ITutorService, IDisposable
         IReadOnlyList<TutorMessage> history,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        if (!IsModelLoaded || _session == null)
+        if (!IsModelLoaded || _context == null)
             throw new InvalidOperationException("Model not loaded. Call LoadModelAsync first.");
 
         // Build context-aware message
@@ -114,23 +112,33 @@ public class LlamaTutorService : ITutorService, IDisposable
         // Yield immediately to show "Thinking..."
         await Task.Yield();
 
+        // Create a fresh session for each conversation to avoid history corruption
+        var executor = new InteractiveExecutor(_context);
+        var session = new ChatSession(executor);
+        
+        // Add system prompt
+        session.AddSystemMessage(_systemPrompt);
+
+        // Add conversation history - ensure strict alternation between user and assistant
+        // Filter to valid alternating pairs only
+        var validHistory = GetValidHistoryPairs(history);
+        foreach (var (user, assistant) in validHistory)
+        {
+            session.AddUserMessage(user);
+            if (!string.IsNullOrEmpty(assistant))
+            {
+                session.AddAssistantMessage(assistant);
+            }
+        }
+
         var inferenceParams = new InferenceParams
         {
             MaxTokens = 512,
             AntiPrompts = new[] { "<|im_end|>", "<|im_start|>", "User:", "Human:" },
         };
 
-        // Add context from history if needed
-        foreach (var msg in history.TakeLast(2))
-        {
-            if (msg.Role == MessageRole.User)
-                _session.AddUserMessage(msg.Content);
-            else
-                _session.AddAssistantMessage(msg.Content);
-        }
-
         // Generate response
-        var result = _session.ChatAsync(
+        var result = session.ChatAsync(
             new ChatHistory.Message(AuthorRole.User, contextualMessage),
             inferenceParams: inferenceParams);
 
@@ -139,6 +147,35 @@ public class LlamaTutorService : ITutorService, IDisposable
         {
             yield return enumerator.Current;
         }
+    }
+
+    /// <summary>
+    /// Extracts valid user-assistant pairs from history, ensuring strict alternation.
+    /// </summary>
+    private List<(string user, string assistant)> GetValidHistoryPairs(IReadOnlyList<TutorMessage> history)
+    {
+        var pairs = new List<(string user, string assistant)>();
+        if (history == null || history.Count == 0) return pairs;
+
+        string? pendingUser = null;
+        
+        foreach (var msg in history)
+        {
+            if (msg.Role == MessageRole.User)
+            {
+                // If we had a pending user message without an assistant response, skip it
+                // and start fresh with this one
+                pendingUser = msg.Content;
+            }
+            else if (msg.Role == MessageRole.Assistant && pendingUser != null)
+            {
+                // Complete pair
+                pairs.Add((pendingUser, msg.Content));
+                pendingUser = null;
+            }
+        }
+
+        return pairs;
     }
 
     private string BuildContextualMessage(string userMessage, TutorContext context)
@@ -170,8 +207,6 @@ public class LlamaTutorService : ITutorService, IDisposable
 
     public void UnloadModel()
     {
-        // ChatSession doesn't need explicit disposal
-        _session = null;
         _context?.Dispose();
         _context = null;
         _model?.Dispose();
