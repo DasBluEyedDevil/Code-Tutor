@@ -138,7 +138,7 @@ public class CodeExecutionService : ICodeExecutionService
         // ideally we track it and delete on session dispose.
         // For now, we leave it (OS cleans temp eventually) or we need a wrapper.
 
-        var args = extraArgs != null ? $"{extraArgs} \"{tempFile}\"" : $"\"{tempFile}\""
+        var args = extraArgs != null ? $"{extraArgs} \"{tempFile}\"" : $"\"{tempFile}\"";
         
         var psi = new ProcessStartInfo
         {

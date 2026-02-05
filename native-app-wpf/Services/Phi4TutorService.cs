@@ -66,15 +66,14 @@ public class Phi4TutorService : ITutorService, IDisposable
         generatorParams.SetSearchOption("max_length", 2048);
         generatorParams.SetSearchOption("temperature", 0.7);
         generatorParams.SetSearchOption("top_p", 0.9);
-        generatorParams.SetInputSequences(tokens);
 
         using var generator = new Generator(_model!, generatorParams);
+        generator.AppendTokenSequences(tokens);
 
         while (!generator.IsDone())
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            generator.ComputeLogits();
             generator.GenerateNextToken();
 
             var tokenText = GetLastGeneratedToken(generator);
