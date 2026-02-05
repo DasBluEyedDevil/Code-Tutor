@@ -25,7 +25,7 @@ class Transaction(BaseModel):
 @app.post("/transactions/")
 async def create_transaction(transaction: Transaction):
     # You must set up database, validation, auth yourself
-    return {"id": 1, **transaction.dict()}
+    return {"id": 1, **transaction.model_dump()}
 
 
 # Django approach - batteries included
