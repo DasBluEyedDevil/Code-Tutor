@@ -49,13 +49,23 @@ public class LlamaTutorService : ITutorService, IDisposable
                     "The AI Tutor model was not found. Please download it from the AI Tutor panel.");
             }
 
+            // Check file size (should be ~4.5GB for Q4_K_M)
+            var fileInfo = new FileInfo(_modelPath);
+            if (fileInfo.Length < 4_000_000_000) // Less than 4GB is likely incomplete
+            {
+                throw new InvalidOperationException(
+                    $"Model file appears incomplete ({fileInfo.Length / 1024 / 1024}MB). Please re-download.");
+            }
+
             UpdateProgress(30);
 
             // Load model parameters
             var parameters = new ModelParams(_modelPath)
             {
-                ContextSize = 4096,  // Context window
-                GpuLayerCount = 20,   // Offload 20 layers to GPU (adjust based on VRAM)
+                ContextSize = 2048,   // Reduced context window for faster inference
+                GpuLayerCount = 0,    // CPU only for compatibility (set to 20+ for GPU)
+                Threads = Environment.ProcessorCount / 2, // Use half the CPU cores
+                BatchSize = 512,      // Smaller batch for lower memory
             };
 
             UpdateProgress(50);
@@ -133,19 +143,29 @@ public class LlamaTutorService : ITutorService, IDisposable
 
         var inferenceParams = new InferenceParams
         {
-            MaxTokens = 512,
+            MaxTokens = 256,      // Reduced for faster response
             AntiPrompts = new[] { "<|im_end|>", "<|im_start|>", "User:", "Human:" },
         };
 
         // Generate response
-        var result = session.ChatAsync(
+        IAsyncEnumerable<string> result;
+        
+        result = session.ChatAsync(
             new ChatHistory.Message(AuthorRole.User, contextualMessage),
             inferenceParams: inferenceParams);
 
         await using var enumerator = result.GetAsyncEnumerator(cancellationToken);
+        bool hasTokens = false;
+        
         while (await enumerator.MoveNextAsync())
         {
+            hasTokens = true;
             yield return enumerator.Current;
+        }
+
+        if (!hasTokens)
+        {
+            yield return "[Model returned empty response - check if model file is complete]";
         }
     }
 
