@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,7 +16,6 @@ public partial class TutorChat : UserControl
     private CancellationTokenSource? _currentResponseCts;
     private CancellationTokenSource? _downloadCts;
     private TutorContext _currentContext = new();
-    private readonly string _modelPath;
 
     public event EventHandler? CloseRequested;
 
@@ -25,11 +23,6 @@ public partial class TutorChat : UserControl
     {
         _tutorService = tutorService;
         _downloadService = downloadService;
-
-        // Model path relative to application directory
-        _modelPath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "models", "phi4", "gpu", "gpu-int4-rtn-block-32");
 
         InitializeComponent();
 
@@ -176,6 +169,7 @@ public partial class TutorChat : UserControl
         try
         {
             await _tutorService.LoadModelAsync();
+            await _tutorService.WarmUpAsync();
             ShowReadyState();
         }
         catch (Exception ex)
@@ -245,13 +239,11 @@ public partial class TutorChat : UserControl
             await foreach (var token in _tutorService.SendMessageAsync(
                 userInput,
                 _currentContext,
-                _messages.Take(_messages.Count - 1).ToList(),
+                _messages.Take(_messages.Count - 2).ToList(),
                 _currentResponseCts.Token))
             {
+                // INotifyPropertyChanged on TutorMessage triggers UI update automatically
                 assistantMessage.Content += token;
-                // Force UI update
-                var index = _messages.IndexOf(assistantMessage);
-                _messages[index] = assistantMessage;
                 ScrollToBottom();
             }
         }

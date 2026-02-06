@@ -5,6 +5,7 @@ using System.Text;
 using CodeTutor.Wpf.Models;
 using LLama;
 using LLama.Common;
+using LLama.Sampling;
 
 namespace CodeTutor.Wpf.Services;
 
@@ -33,9 +34,9 @@ public class LlamaTutorService : ITutorService, IDisposable
         // Model path for GGUF format
         _modelPath = Path.Combine(assemblyDirectory, "models", "qwen2.5-coder-7b", "model.gguf");
         
-        _systemPrompt = "You are an expert coding tutor specializing in helping beginners learn programming. " +
-            "Explain concepts clearly with code examples. Help debug errors step by step. " +
-            "Be concise but thorough.";
+        _systemPrompt = "You are an expert coding tutor. The student is working through a programming course. " +
+            "Context about their current lesson and code may be provided. Use it to give specific, relevant help. " +
+            "Explain concepts clearly. Help debug errors step by step. Be concise.";
     }
 
     public async Task LoadModelAsync(CancellationToken cancellationToken = default)
@@ -142,34 +143,52 @@ public class LlamaTutorService : ITutorService, IDisposable
 
         // Build the full prompt with Qwen chat format
         var prompt = BuildQwenPrompt(userMessage, context, history);
-        
+
         System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Prompt length: {prompt.Length} chars");
+        System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Prompt:\n{prompt}");
 
         // Yield immediately to show "Thinking..."
         await Task.Yield();
 
-        // Use StatelessExecutor - more reliable for Qwen models
-        var executor = new StatelessExecutor(_model, _context.Params);
-        
+        // Clear KV cache so the context starts fresh for each conversation turn
+        _context.NativeHandle.MemoryClear();
+
+        // Use InteractiveExecutor with the existing context (not StatelessExecutor which
+        // creates a temporary context and may not parse special tokens correctly)
+        var executor = new InteractiveExecutor(_context);
+
         var inferenceParams = new InferenceParams
         {
             MaxTokens = 512,
-            AntiPrompts = new[] { "<|im_end|>", "<|im_start|>", "User:", "Assistant:", "System:" },
+            AntiPrompts = new[] { "<|im_end|>" },
+            SamplingPipeline = new DefaultSamplingPipeline
+            {
+                Temperature = 0.6f,
+                TopP = 0.9f,
+            },
         };
 
+        System.Diagnostics.Debug.WriteLine("[LlamaTutorService] Starting inference with InteractiveExecutor...");
         var result = executor.InferAsync(prompt, inferenceParams);
 
         await using var enumerator = result.GetAsyncEnumerator(cancellationToken);
         bool hasTokens = false;
-        
+        int tokenCount = 0;
+
         while (await enumerator.MoveNextAsync())
         {
             hasTokens = true;
+            tokenCount++;
+            if (tokenCount <= 3 || tokenCount % 50 == 0)
+                System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Token #{tokenCount}: \"{enumerator.Current}\"");
             yield return enumerator.Current;
         }
 
+        System.Diagnostics.Debug.WriteLine($"[LlamaTutorService] Inference complete. Total tokens: {tokenCount}");
+
         if (!hasTokens)
         {
+            System.Diagnostics.Debug.WriteLine("[LlamaTutorService] WARNING: No tokens generated!");
             yield return "[No response generated. The model may need more time to load.]";
         }
     }
@@ -181,12 +200,13 @@ public class LlamaTutorService : ITutorService, IDisposable
     private string BuildQwenPrompt(string userMessage, TutorContext context, IReadOnlyList<TutorMessage> history)
     {
         var sb = new StringBuilder();
-        
+
         // System message
-        sb.AppendLine("<|im_start|>system");
-        sb.AppendLine(_systemPrompt);
-        sb.AppendLine("<|im_end|>");
-        
+        // Use Append + '\n' instead of AppendLine to avoid Windows \r\n breaking tokenizer special tokens
+        sb.Append("<|im_start|>system\n");
+        sb.Append(_systemPrompt).Append('\n');
+        sb.Append("<|im_end|>\n");
+
         // Add conversation history
         if (history != null)
         {
@@ -194,41 +214,45 @@ public class LlamaTutorService : ITutorService, IDisposable
             {
                 if (msg.Role == MessageRole.User)
                 {
-                    sb.AppendLine("<|im_start|>user");
-                    sb.AppendLine(msg.Content);
-                    sb.AppendLine("<|im_end|>");
+                    sb.Append("<|im_start|>user\n");
+                    sb.Append(msg.Content).Append('\n');
+                    sb.Append("<|im_end|>\n");
                 }
                 else if (msg.Role == MessageRole.Assistant)
                 {
-                    sb.AppendLine("<|im_start|>assistant");
-                    sb.AppendLine(msg.Content);
-                    sb.AppendLine("<|im_end|>");
+                    sb.Append("<|im_start|>assistant\n");
+                    sb.Append(msg.Content).Append('\n');
+                    sb.Append("<|im_end|>\n");
                 }
             }
         }
-        
+
         // Current user message with context
-        sb.AppendLine("<|im_start|>user");
-        
+        sb.Append("<|im_start|>user\n");
+
         // Add context metadata
         if (!string.IsNullOrEmpty(context.CurrentLanguage))
-            sb.AppendLine($"[Language: {context.CurrentLanguage}]");
+            sb.Append($"[Language: {context.CurrentLanguage}]\n");
         if (!string.IsNullOrEmpty(context.LessonTitle))
-            sb.AppendLine($"[Lesson: {context.LessonTitle}]");
+            sb.Append($"[Lesson: {context.LessonTitle}]\n");
+        if (!string.IsNullOrEmpty(context.LessonContent))
+            sb.Append($"[Lesson Content:]\n{context.LessonContent}\n");
         if (!string.IsNullOrEmpty(context.UserCode))
         {
-            var codeLines = context.UserCode.Split('\n').Take(15);
-            sb.AppendLine($"[Code:]\n```{context.CurrentLanguage?.ToLower() ?? ""}\n{string.Join("\n", codeLines)}\n```");
+            var codeLines = context.UserCode.Split('\n').Take(30);
+            sb.Append($"[Code:]\n```{context.CurrentLanguage?.ToLower() ?? ""}\n{string.Join("\n", codeLines)}\n```\n");
         }
         if (!string.IsNullOrEmpty(context.ExecutionError))
-            sb.AppendLine($"[Error: {context.ExecutionError}]");
-        
-        sb.AppendLine(userMessage);
-        sb.AppendLine("<|im_end|>");
-        
+            sb.Append($"[Error: {context.ExecutionError}]\n");
+        if (!string.IsNullOrEmpty(context.ExpectedOutput))
+            sb.Append($"[Expected Output: {context.ExpectedOutput}]\n");
+
+        sb.Append(userMessage).Append('\n');
+        sb.Append("<|im_end|>\n");
+
         // Assistant prefix
-        sb.AppendLine("<|im_start|>assistant");
-        
+        sb.Append("<|im_start|>assistant\n");
+
         return sb.ToString();
     }
 

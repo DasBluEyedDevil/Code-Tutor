@@ -16,6 +16,7 @@ public partial class MainWindow : Window
     private readonly ITutorService _tutorService;
     private readonly IModelDownloadService _downloadService;
     private Controls.TutorChat? _tutorChat;
+    private TutorContext _latestTutorContext = new();
     private bool _isTutorOpen = false;
 
     public MainWindow()
@@ -65,6 +66,12 @@ public partial class MainWindow : Window
         SidebarContent.Content = content;
     }
 
+    public void UpdateTutorContext(TutorContext context)
+    {
+        _latestTutorContext = context;
+        _tutorChat?.UpdateContext(context);
+    }
+
     private void TutorToggleButton_Click(object sender, RoutedEventArgs e)
     {
         if (_isTutorOpen)
@@ -83,6 +90,7 @@ public partial class MainWindow : Window
         {
             _tutorChat = new Controls.TutorChat(_tutorService, _downloadService);
             _tutorChat.CloseRequested += (s, e) => CloseTutorPanel();
+            _tutorChat.UpdateContext(_latestTutorContext);
             TutorContent.Content = _tutorChat;
         }
 

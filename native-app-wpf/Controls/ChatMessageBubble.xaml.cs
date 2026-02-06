@@ -1,4 +1,4 @@
-using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,7 +13,7 @@ public partial class ChatMessageBubble : UserControl
         DependencyProperty.Register(nameof(Message), typeof(TutorMessage), typeof(ChatMessageBubble),
             new PropertyMetadata(null, OnMessageChanged));
 
-    private TutorMessage? _lastMessage;
+    private bool _hasAnimated;
 
     public TutorMessage? Message
     {
@@ -28,17 +28,37 @@ public partial class ChatMessageBubble : UserControl
 
     private static void OnMessageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is ChatMessageBubble bubble && e.NewValue is TutorMessage message)
+        if (d is ChatMessageBubble bubble)
         {
-            bubble.ApplyMessageStyle(message);
+            // Unsubscribe from old message
+            if (e.OldValue is TutorMessage oldMsg)
+                oldMsg.PropertyChanged -= bubble.OnMessagePropertyChanged;
+
+            // Subscribe to new message and apply style
+            if (e.NewValue is TutorMessage newMsg)
+            {
+                newMsg.PropertyChanged += bubble.OnMessagePropertyChanged;
+                bubble.ApplyMessageStyle(newMsg);
+            }
+        }
+    }
+
+    private void OnMessagePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(TutorMessage.Content) && sender is TutorMessage msg)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (msg.Role == MessageRole.User)
+                    UserMessageText.Text = msg.Content;
+                else
+                    AssistantMessageText.Text = msg.Content;
+            });
         }
     }
 
     private void ApplyMessageStyle(TutorMessage message)
     {
-        var isNewMessage = !ReferenceEquals(message, _lastMessage);
-        _lastMessage = message;
-
         if (message.Role == MessageRole.User)
         {
             MessageBorder.Background = (Brush)FindResource("AccentBlueBrush");
@@ -61,8 +81,9 @@ public partial class ChatMessageBubble : UserControl
             UserMessageText.Visibility = Visibility.Collapsed;
         }
 
-        if (isNewMessage)
+        if (!_hasAnimated)
         {
+            _hasAnimated = true;
             PlayEntranceAnimation(message.Role);
         }
     }

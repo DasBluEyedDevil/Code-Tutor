@@ -13,6 +13,15 @@ using CodeTutor.Wpf.Services;
 
 namespace CodeTutor.Wpf.Controls;
 
+public class ChallengeContextEventArgs : EventArgs
+{
+    public string ChallengeTitle { get; init; } = string.Empty;
+    public string ChallengeInstructions { get; init; } = string.Empty;
+    public string UserCode { get; init; } = string.Empty;
+    public string? ExecutionError { get; init; }
+    public string? ExpectedOutput { get; init; }
+}
+
 public partial class CodingChallenge : UserControl
 {
     private readonly Challenge _challenge;
@@ -20,13 +29,14 @@ public partial class CodingChallenge : UserControl
     private int _currentHintIndex = 0;
     private int _failedAttempts = 0;
     private readonly string _originalCode;
-    
+
     // Interactive session state
     private IInteractiveSession? _currentSession;
     private CancellationTokenSource? _executionCts;
     private readonly System.Text.StringBuilder _outputBuffer = new();
 
     public event EventHandler<string>? ChallengeCompleted;
+    public event EventHandler<ChallengeContextEventArgs>? ContextChanged;
     public bool IsCompleted { get; private set; }
     public string ChallengeId => _challenge.Id;
 
@@ -181,7 +191,7 @@ public partial class CodingChallenge : UserControl
         StatusBar.SetStatus("Ready", true);
 
         bool success = exitCode == 0;
-        
+
         if (success)
         {
             OutputPanel.BorderBrush = (System.Windows.Media.Brush)FindResource("AccentGreenBrush");
@@ -191,6 +201,10 @@ public partial class CodingChallenge : UserControl
             {
                 ValidateTestCases(_outputBuffer.ToString());
             }
+            else
+            {
+                RaiseContextChanged(executionError: null);
+            }
         }
         else
         {
@@ -198,8 +212,9 @@ public partial class CodingChallenge : UserControl
             OutputPanel.Background = (System.Windows.Media.Brush)FindResource("ErrorBackgroundBrush");
             _failedAttempts++;
             UpdateHintButtonState();
+            RaiseContextChanged(executionError: _outputBuffer.ToString());
         }
-        
+
         _currentSession?.Dispose();
         _currentSession = null;
     }
@@ -304,6 +319,18 @@ public partial class CodingChallenge : UserControl
             IsCompleted = true;
             ChallengeCompleted?.Invoke(this, _challenge.Id);
         }
+
+        // Notify tutor context with test results
+        var failedTests = _challenge.TestCases
+            .Where(tc => tc.IsVisible && !string.IsNullOrEmpty(tc.ExpectedOutput) && !actualOutput.Contains(tc.ExpectedOutput.Trim()))
+            .ToList();
+        string? error = failedTests.Count > 0
+            ? $"Failed tests: {string.Join("; ", failedTests.Select(t => t.Description))}"
+            : null;
+        string? expected = failedTests.Count > 0
+            ? string.Join("\n", failedTests.Select(t => t.ExpectedOutput))
+            : null;
+        RaiseContextChanged(executionError: error, expectedOutput: expected);
     }
 
     private void TriggerSuccessCelebration()
@@ -311,6 +338,18 @@ public partial class CodingChallenge : UserControl
         AnimationBehaviors.SetTriggerSuccessFlash(CodeEditorBorder, true);
         ConfettiOverlay.Play();
         AchievementBadge.Show("Perfect!", "All tests passed");
+    }
+
+    private void RaiseContextChanged(string? executionError, string? expectedOutput = null)
+    {
+        ContextChanged?.Invoke(this, new ChallengeContextEventArgs
+        {
+            ChallengeTitle = _challenge.Title,
+            ChallengeInstructions = _challenge.Instructions,
+            UserCode = CodeEditor.Text,
+            ExecutionError = executionError,
+            ExpectedOutput = expectedOutput,
+        });
     }
 
     private void ShowHint_Click(object sender, RoutedEventArgs e)

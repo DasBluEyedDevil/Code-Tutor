@@ -104,9 +104,13 @@ public partial class LessonPage : UserControl
         {
             var challengeControl = new Controls.CodingChallenge(challenge);
             challengeControl.ChallengeCompleted += OnChallengeCompleted;
+            challengeControl.ContextChanged += OnChallengeContextChanged;
             _challengeControls.Add(challengeControl);
             ContentPanel.Children.Add(challengeControl);
         }
+
+        // Set initial tutor context with lesson info
+        UpdateTutorWithLessonContext(contentSections);
     }
 
     private UIElement? CreateSectionControl(ContentSection section)
@@ -236,4 +240,45 @@ public partial class LessonPage : UserControl
         }
     }
 
+    private void UpdateTutorWithLessonContext(List<ContentSection> contentSections)
+    {
+        // Build a condensed summary from section titles/types
+        var summaryParts = contentSections
+            .Where(s => !string.IsNullOrEmpty(s.Title))
+            .Select(s => s.Title)
+            .ToList();
+        var lessonContent = summaryParts.Count > 0
+            ? string.Join(", ", summaryParts)
+            : null;
+
+        var context = new Services.TutorContext
+        {
+            CurrentLanguage = _course.Language,
+            LessonTitle = _lesson.Title,
+            LessonContent = lessonContent,
+        };
+
+        if (Application.Current.MainWindow is MainWindow mainWindow)
+        {
+            mainWindow.UpdateTutorContext(context);
+        }
+    }
+
+    private void OnChallengeContextChanged(object? sender, Controls.ChallengeContextEventArgs e)
+    {
+        var context = new Services.TutorContext
+        {
+            CurrentLanguage = _course.Language,
+            LessonTitle = _lesson.Title,
+            LessonContent = $"Challenge: {e.ChallengeTitle}\nInstructions: {e.ChallengeInstructions}",
+            UserCode = e.UserCode,
+            ExecutionError = e.ExecutionError,
+            ExpectedOutput = e.ExpectedOutput,
+        };
+
+        if (Application.Current.MainWindow is MainWindow mainWindow)
+        {
+            mainWindow.UpdateTutorContext(context);
+        }
+    }
 }
