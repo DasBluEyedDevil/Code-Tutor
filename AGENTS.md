@@ -36,3 +36,42 @@ This repository is a monorepo for the Code Tutor platform (web + desktop). Follo
 - For PRs, include a short summary, testing notes (`npm test`, `npm run lint`), and screenshots or GIFs for UI changes.
 - Link related issues and call out breaking changes explicitly.
 
+## Cursor Cloud specific instructions
+
+### Actual tech stack
+
+Despite the npm-based instructions above (which are outdated/legacy), this codebase is a **.NET 8.0 C#/WPF desktop application**. There is no `apps/` directory, no `package.json`, and no npm/Node.js project. The active code lives in:
+
+- `native-app-wpf/` — the main WPF desktop application (targets `net8.0-windows`)
+- `native-app.Tests/` — xUnit test suite (targets `net8.0`, runs on Linux)
+- `content/courses/` — educational content (JSON + Markdown, ~6,600 files across 6 languages)
+
+### Prerequisites
+
+- **.NET SDK 9.0** (needed because `CodeTutor.Wpf.csproj` uses `<LangVersion>13.0</LangVersion>`, which requires the .NET 9 compiler). The .NET 8.0 runtime is also installed for the `net8.0` test target.
+- The SDKs are installed at `$HOME/.dotnet` and `PATH`/`DOTNET_ROOT` are configured in `~/.bashrc`.
+
+### Build, test, and lint commands
+
+```bash
+# Restore NuGet packages (WPF app needs EnableWindowsTargeting on Linux)
+dotnet restore native-app-wpf/CodeTutor.Wpf.csproj -p:EnableWindowsTargeting=true
+dotnet restore native-app.Tests/native-app.Tests.csproj
+
+# Build the WPF app (cross-compile on Linux)
+dotnet build native-app-wpf/CodeTutor.Wpf.csproj -p:EnableWindowsTargeting=true
+
+# Build and run tests (targets net8.0, works natively on Linux)
+dotnet test native-app.Tests/native-app.Tests.csproj
+
+# Lint check (C# compiler analysis with warnings-as-errors)
+dotnet build native-app-wpf/CodeTutor.Wpf.csproj -p:EnableWindowsTargeting=true -warnaserror
+```
+
+### Key caveats
+
+- **WPF GUI cannot run on Linux.** The app targets `net8.0-windows` with `<UseWPF>true</UseWPF>`. You can build and cross-compile but not launch the GUI. The test suite targets `net8.0` (no Windows dependency) and runs fully on Linux.
+- **`-p:EnableWindowsTargeting=true`** must be passed to all `dotnet build`/`restore`/`publish` commands for the WPF project on Linux. Without it, you get `NETSDK1100`.
+- **29 pre-existing test failures** exist in content validation and user journey tests (e.g., `Course_ShouldHaveValidModules`, `UserJourney_LessonViewing_CanViewLessonContent`). These are course-content data issues, not environment problems. The remaining 232/261 tests pass.
+- **No solution file (.sln)** at the repo root. Build each `.csproj` individually.
+
